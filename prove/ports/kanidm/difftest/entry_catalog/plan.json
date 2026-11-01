@@ -1,0 +1,546 @@
+{
+  "names": [
+    "dl11_builtin_account_idm_admin",
+    "dl11_builtin_account_admin",
+    "dl11_builtin_account_anonymous_dl6",
+    "dl11_e_key_provider_internal_dl6",
+    "dl11_e_system_info_v1",
+    "dl11_e_domain_info_dl6",
+    "dl12_e_uuid_domain_id_verification_key_v1",
+    "dl12_e_hmac_name_history_feature",
+    "dl13_e_domain_info_dl6",
+    "dl_1_12_e_domain_info_dl6",
+    "dl_1_12_e_account_signup_feature"
+  ],
+  "declarations": {
+    "entry_catalog.dl11_builtin_account_idm_admin": [
+      {
+        "file": "server/lib/src/migration_data/dl11/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_IDM_ADMIN",
+        "kind": "static",
+        "start": 5,
+        "end": 13,
+        "sha256": "7bc85ed34aeac0bdf37c84e033772dbd70c4f16bcf6debebca184e5b521adb52"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_IDM_ADMIN",
+        "kind": "static",
+        "start": 5,
+        "end": 13,
+        "sha256": "7bc85ed34aeac0bdf37c84e033772dbd70c4f16bcf6debebca184e5b521adb52"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_IDM_ADMIN",
+        "kind": "static",
+        "start": 5,
+        "end": 13,
+        "sha256": "7bc85ed34aeac0bdf37c84e033772dbd70c4f16bcf6debebca184e5b521adb52"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_IDM_ADMIN",
+        "kind": "static",
+        "start": 5,
+        "end": 13,
+        "sha256": "7bc85ed34aeac0bdf37c84e033772dbd70c4f16bcf6debebca184e5b521adb52"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_IDM_ADMIN",
+        "kind": "static",
+        "start": 5,
+        "end": 13,
+        "sha256": "7bc85ed34aeac0bdf37c84e033772dbd70c4f16bcf6debebca184e5b521adb52"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_IDM_ADMIN",
+        "kind": "static",
+        "start": 5,
+        "end": 13,
+        "sha256": "7bc85ed34aeac0bdf37c84e033772dbd70c4f16bcf6debebca184e5b521adb52"
+      }
+    ],
+    "entry_catalog.dl11_builtin_account_admin": [
+      {
+        "file": "server/lib/src/migration_data/dl11/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ADMIN",
+        "kind": "static",
+        "start": 15,
+        "end": 23,
+        "sha256": "a154ab7607ad53cd20f4c410a32259504f2ee92212e41832cbd64dfb08118871"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ADMIN",
+        "kind": "static",
+        "start": 15,
+        "end": 23,
+        "sha256": "a154ab7607ad53cd20f4c410a32259504f2ee92212e41832cbd64dfb08118871"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ADMIN",
+        "kind": "static",
+        "start": 15,
+        "end": 23,
+        "sha256": "a154ab7607ad53cd20f4c410a32259504f2ee92212e41832cbd64dfb08118871"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ADMIN",
+        "kind": "static",
+        "start": 15,
+        "end": 23,
+        "sha256": "a154ab7607ad53cd20f4c410a32259504f2ee92212e41832cbd64dfb08118871"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ADMIN",
+        "kind": "static",
+        "start": 15,
+        "end": 23,
+        "sha256": "a154ab7607ad53cd20f4c410a32259504f2ee92212e41832cbd64dfb08118871"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ADMIN",
+        "kind": "static",
+        "start": 15,
+        "end": 23,
+        "sha256": "a154ab7607ad53cd20f4c410a32259504f2ee92212e41832cbd64dfb08118871"
+      }
+    ],
+    "entry_catalog.dl11_builtin_account_anonymous_dl6": [
+      {
+        "file": "server/lib/src/migration_data/dl11/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+        "kind": "static",
+        "start": 25,
+        "end": 32,
+        "sha256": "36641e7ff5656d3973751c9764baebca1473475daa2b1923127044df2bace12b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+        "kind": "static",
+        "start": 25,
+        "end": 32,
+        "sha256": "36641e7ff5656d3973751c9764baebca1473475daa2b1923127044df2bace12b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+        "kind": "static",
+        "start": 25,
+        "end": 32,
+        "sha256": "36641e7ff5656d3973751c9764baebca1473475daa2b1923127044df2bace12b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+        "kind": "static",
+        "start": 25,
+        "end": 32,
+        "sha256": "36641e7ff5656d3973751c9764baebca1473475daa2b1923127044df2bace12b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+        "kind": "static",
+        "start": 25,
+        "end": 32,
+        "sha256": "36641e7ff5656d3973751c9764baebca1473475daa2b1923127044df2bace12b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/accounts.rs",
+        "self_ty": "",
+        "name": "BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+        "kind": "static",
+        "start": 25,
+        "end": 32,
+        "sha256": "36641e7ff5656d3973751c9764baebca1473475daa2b1923127044df2bace12b"
+      }
+    ],
+    "entry_catalog.dl11_e_key_provider_internal_dl6": [
+      {
+        "file": "server/lib/src/migration_data/dl11/key_providers.rs",
+        "self_ty": "",
+        "name": "E_KEY_PROVIDER_INTERNAL_DL6",
+        "kind": "static",
+        "start": 3,
+        "end": 15,
+        "sha256": "87e8dc573c54c585c2c4306b147d85d8337556112bd79bdf7081eff898224b47"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/key_providers.rs",
+        "self_ty": "",
+        "name": "E_KEY_PROVIDER_INTERNAL_DL6",
+        "kind": "static",
+        "start": 3,
+        "end": 15,
+        "sha256": "87e8dc573c54c585c2c4306b147d85d8337556112bd79bdf7081eff898224b47"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/key_providers.rs",
+        "self_ty": "",
+        "name": "E_KEY_PROVIDER_INTERNAL_DL6",
+        "kind": "static",
+        "start": 3,
+        "end": 15,
+        "sha256": "87e8dc573c54c585c2c4306b147d85d8337556112bd79bdf7081eff898224b47"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/key_providers.rs",
+        "self_ty": "",
+        "name": "e_key_provider_internal_dl6",
+        "kind": "fn",
+        "start": 3,
+        "end": 15,
+        "sha256": "2b53820c240ab242f954463f22e087bccdc6bffd709ff5aace6c22cd914a3153"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/key_providers.rs",
+        "self_ty": "",
+        "name": "e_key_provider_internal_dl6",
+        "kind": "fn",
+        "start": 3,
+        "end": 15,
+        "sha256": "2b53820c240ab242f954463f22e087bccdc6bffd709ff5aace6c22cd914a3153"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/key_providers.rs",
+        "self_ty": "",
+        "name": "e_key_provider_internal_dl6",
+        "kind": "fn",
+        "start": 3,
+        "end": 15,
+        "sha256": "2b53820c240ab242f954463f22e087bccdc6bffd709ff5aace6c22cd914a3153"
+      }
+    ],
+    "entry_catalog.dl11_e_system_info_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/system_config.rs",
+        "self_ty": "",
+        "name": "E_SYSTEM_INFO_V1",
+        "kind": "static",
+        "start": 6,
+        "end": 18,
+        "sha256": "2a5becd0f9ffbabbdf69b404082f44f3b27acb7ba9eddf51e13e3c331371dd46"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/system_config.rs",
+        "self_ty": "",
+        "name": "E_SYSTEM_INFO_V1",
+        "kind": "static",
+        "start": 6,
+        "end": 18,
+        "sha256": "2a5becd0f9ffbabbdf69b404082f44f3b27acb7ba9eddf51e13e3c331371dd46"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/system_config.rs",
+        "self_ty": "",
+        "name": "E_SYSTEM_INFO_V1",
+        "kind": "static",
+        "start": 5,
+        "end": 17,
+        "sha256": "2a5becd0f9ffbabbdf69b404082f44f3b27acb7ba9eddf51e13e3c331371dd46"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/system_config.rs",
+        "self_ty": "",
+        "name": "e_system_info_v1",
+        "kind": "fn",
+        "start": 5,
+        "end": 17,
+        "sha256": "a89b95ed990eb022c3c090721a38c3351b4e32f54c95b028ed6a9c3d73d9f3cb"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/system_config.rs",
+        "self_ty": "",
+        "name": "e_system_info_v1",
+        "kind": "fn",
+        "start": 5,
+        "end": 17,
+        "sha256": "a89b95ed990eb022c3c090721a38c3351b4e32f54c95b028ed6a9c3d73d9f3cb"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/system_config.rs",
+        "self_ty": "",
+        "name": "e_system_info_v1",
+        "kind": "fn",
+        "start": 5,
+        "end": 17,
+        "sha256": "a89b95ed990eb022c3c090721a38c3351b4e32f54c95b028ed6a9c3d73d9f3cb"
+      }
+    ],
+    "entry_catalog.dl11_e_domain_info_dl6": [
+      {
+        "file": "server/lib/src/migration_data/dl11/system_config.rs",
+        "self_ty": "",
+        "name": "E_DOMAIN_INFO_DL6",
+        "kind": "static",
+        "start": 20,
+        "end": 35,
+        "sha256": "5100ef563ba84307a28aad4f6fc907130174df933ec40e576c18e7c23f00096b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/system_config.rs",
+        "self_ty": "",
+        "name": "E_DOMAIN_INFO_DL6",
+        "kind": "static",
+        "start": 20,
+        "end": 35,
+        "sha256": "5100ef563ba84307a28aad4f6fc907130174df933ec40e576c18e7c23f00096b"
+      }
+    ],
+    "entry_catalog.dl12_e_uuid_domain_id_verification_key_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl12/system_config.rs",
+        "self_ty": "",
+        "name": "E_UUID_DOMAIN_ID_VERIFICATION_KEY_V1",
+        "kind": "static",
+        "start": 37,
+        "end": 51,
+        "sha256": "b8735d79a5dd09bee0b5cfbac52dd7fa378f228b479ed855f3d49d5002d7aa03"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/system_config.rs",
+        "self_ty": "",
+        "name": "E_UUID_DOMAIN_ID_VERIFICATION_KEY_V1",
+        "kind": "static",
+        "start": 36,
+        "end": 50,
+        "sha256": "b8735d79a5dd09bee0b5cfbac52dd7fa378f228b479ed855f3d49d5002d7aa03"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/system_config.rs",
+        "self_ty": "",
+        "name": "e_uuid_domain_id_verification_key_v1",
+        "kind": "fn",
+        "start": 37,
+        "end": 51,
+        "sha256": "492cc3d7be2f0872e4ebb85152798f9d48c00e2376beb7c60ab30dc11c103945"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/system_config.rs",
+        "self_ty": "",
+        "name": "e_uuid_domain_id_verification_key_v1",
+        "kind": "fn",
+        "start": 37,
+        "end": 51,
+        "sha256": "492cc3d7be2f0872e4ebb85152798f9d48c00e2376beb7c60ab30dc11c103945"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/system_config.rs",
+        "self_ty": "",
+        "name": "e_uuid_domain_id_verification_key_v1",
+        "kind": "fn",
+        "start": 38,
+        "end": 52,
+        "sha256": "492cc3d7be2f0872e4ebb85152798f9d48c00e2376beb7c60ab30dc11c103945"
+      }
+    ],
+    "entry_catalog.dl12_e_hmac_name_history_feature": [
+      {
+        "file": "server/lib/src/migration_data/dl12/system_config.rs",
+        "self_ty": "",
+        "name": "E_HMAC_NAME_HISTORY_FEATURE",
+        "kind": "static",
+        "start": 53,
+        "end": 66,
+        "sha256": "5901b2d599a733f9ab359585a12fa1e62a7e90e0950840833634cc8203acf2bc"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/system_config.rs",
+        "self_ty": "",
+        "name": "E_HMAC_NAME_HISTORY_FEATURE",
+        "kind": "static",
+        "start": 52,
+        "end": 65,
+        "sha256": "5901b2d599a733f9ab359585a12fa1e62a7e90e0950840833634cc8203acf2bc"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/system_config.rs",
+        "self_ty": "",
+        "name": "e_hmac_name_history_feature",
+        "kind": "fn",
+        "start": 53,
+        "end": 66,
+        "sha256": "89b7fabffc4cbdc6a31d95cd7629c4f4e0f4c6f0672906b80759b41df09ab154"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/system_config.rs",
+        "self_ty": "",
+        "name": "e_hmac_name_history_feature",
+        "kind": "fn",
+        "start": 53,
+        "end": 66,
+        "sha256": "89b7fabffc4cbdc6a31d95cd7629c4f4e0f4c6f0672906b80759b41df09ab154"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/system_config.rs",
+        "self_ty": "",
+        "name": "e_hmac_name_history_feature",
+        "kind": "fn",
+        "start": 54,
+        "end": 67,
+        "sha256": "89b7fabffc4cbdc6a31d95cd7629c4f4e0f4c6f0672906b80759b41df09ab154"
+      }
+    ],
+    "entry_catalog.dl13_e_domain_info_dl6": [
+      {
+        "file": "server/lib/src/migration_data/dl13/system_config.rs",
+        "self_ty": "",
+        "name": "E_DOMAIN_INFO_DL6",
+        "kind": "static",
+        "start": 19,
+        "end": 35,
+        "sha256": "583fe551d86d5f7e30836ad05d01f365ece832b1bca9f36e22e716fe75e8a29e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/system_config.rs",
+        "self_ty": "",
+        "name": "e_domain_info_dl6",
+        "kind": "fn",
+        "start": 19,
+        "end": 35,
+        "sha256": "df6cf676a7d0d8e26b20c3e1976e56f63cd0aecbcbe65eddd3d458ead0b4c577"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/system_config.rs",
+        "self_ty": "",
+        "name": "e_domain_info_dl6",
+        "kind": "fn",
+        "start": 19,
+        "end": 35,
+        "sha256": "df6cf676a7d0d8e26b20c3e1976e56f63cd0aecbcbe65eddd3d458ead0b4c577"
+      }
+    ],
+    "entry_catalog.dl_1_12_e_domain_info_dl6": [
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/system_config.rs",
+        "self_ty": "",
+        "name": "e_domain_info_dl6",
+        "kind": "fn",
+        "start": 19,
+        "end": 36,
+        "sha256": "7e0215fe94170085f5e707d1073d5153d55419aef8673eedd25576de26d55927"
+      }
+    ],
+    "entry_catalog.dl_1_12_e_account_signup_feature": [
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/system_config.rs",
+        "self_ty": "",
+        "name": "e_account_signup_feature",
+        "kind": "fn",
+        "start": 70,
+        "end": 81,
+        "sha256": "2bf3f569ee8910a6d6ae136adcd879542ef41accfcd1fce2ff12049f8132a3f5"
+      }
+    ]
+  },
+  "aliases": {
+    "dl11_builtin_account_idm_admin": [
+      "dl11/BUILTIN_ACCOUNT_IDM_ADMIN",
+      "dl12/BUILTIN_ACCOUNT_IDM_ADMIN",
+      "dl13/BUILTIN_ACCOUNT_IDM_ADMIN",
+      "dl14/BUILTIN_ACCOUNT_IDM_ADMIN",
+      "dl15/BUILTIN_ACCOUNT_IDM_ADMIN",
+      "dl_1_12/BUILTIN_ACCOUNT_IDM_ADMIN"
+    ],
+    "dl11_builtin_account_admin": [
+      "dl11/BUILTIN_ACCOUNT_ADMIN",
+      "dl12/BUILTIN_ACCOUNT_ADMIN",
+      "dl13/BUILTIN_ACCOUNT_ADMIN",
+      "dl14/BUILTIN_ACCOUNT_ADMIN",
+      "dl15/BUILTIN_ACCOUNT_ADMIN",
+      "dl_1_12/BUILTIN_ACCOUNT_ADMIN"
+    ],
+    "dl11_builtin_account_anonymous_dl6": [
+      "dl11/BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+      "dl12/BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+      "dl13/BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+      "dl14/BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+      "dl15/BUILTIN_ACCOUNT_ANONYMOUS_DL6",
+      "dl_1_12/BUILTIN_ACCOUNT_ANONYMOUS_DL6"
+    ],
+    "dl11_e_key_provider_internal_dl6": [
+      "dl11/E_KEY_PROVIDER_INTERNAL_DL6",
+      "dl12/E_KEY_PROVIDER_INTERNAL_DL6",
+      "dl13/E_KEY_PROVIDER_INTERNAL_DL6",
+      "dl14/e_key_provider_internal_dl6",
+      "dl15/e_key_provider_internal_dl6",
+      "dl_1_12/e_key_provider_internal_dl6"
+    ],
+    "dl11_e_system_info_v1": [
+      "dl11/E_SYSTEM_INFO_V1",
+      "dl12/E_SYSTEM_INFO_V1",
+      "dl13/E_SYSTEM_INFO_V1",
+      "dl14/e_system_info_v1",
+      "dl15/e_system_info_v1",
+      "dl_1_12/e_system_info_v1"
+    ],
+    "dl11_e_domain_info_dl6": [
+      "dl11/E_DOMAIN_INFO_DL6",
+      "dl12/E_DOMAIN_INFO_DL6"
+    ],
+    "dl12_e_uuid_domain_id_verification_key_v1": [
+      "dl12/E_UUID_DOMAIN_ID_VERIFICATION_KEY_V1",
+      "dl13/E_UUID_DOMAIN_ID_VERIFICATION_KEY_V1",
+      "dl14/e_uuid_domain_id_verification_key_v1",
+      "dl15/e_uuid_domain_id_verification_key_v1",
+      "dl_1_12/e_uuid_domain_id_verification_key_v1"
+    ],
+    "dl12_e_hmac_name_history_feature": [
+      "dl12/E_HMAC_NAME_HISTORY_FEATURE",
+      "dl13/E_HMAC_NAME_HISTORY_FEATURE",
+      "dl14/e_hmac_name_history_feature",
+      "dl15/e_hmac_name_history_feature",
+      "dl_1_12/e_hmac_name_history_feature"
+    ],
+    "dl13_e_domain_info_dl6": [
+      "dl13/E_DOMAIN_INFO_DL6",
+      "dl14/e_domain_info_dl6",
+      "dl15/e_domain_info_dl6"
+    ],
+    "dl_1_12_e_domain_info_dl6": [
+      "dl_1_12/e_domain_info_dl6"
+    ],
+    "dl_1_12_e_account_signup_feature": [
+      "dl_1_12/e_account_signup_feature"
+    ]
+  },
+  "kinds": {
+    "dl11_builtin_account_idm_admin": "Account",
+    "dl11_builtin_account_admin": "Account",
+    "dl11_builtin_account_anonymous_dl6": "Account",
+    "dl11_e_key_provider_internal_dl6": "Entry",
+    "dl11_e_system_info_v1": "Entry",
+    "dl11_e_domain_info_dl6": "Entry",
+    "dl12_e_uuid_domain_id_verification_key_v1": "Entry",
+    "dl12_e_hmac_name_history_feature": "Entry",
+    "dl13_e_domain_info_dl6": "Entry",
+    "dl_1_12_e_domain_info_dl6": "Entry",
+    "dl_1_12_e_account_signup_feature": "Entry"
+  }
+}

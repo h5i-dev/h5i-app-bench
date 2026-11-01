@@ -7463,6 +7463,5515 @@ def account_policy.fold_from
   let acc1 ← account_policy.fold_from_loop policies acc 0#usize
   account_policy.finalize acc1
 
+/-- [kanidm_kernel::acp_catalog::Profile]
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 3:0-19:1
+    Visibility: public -/
+structure acp_catalog.Profile where
+  classes : alloc.vec.Vec Std.U16
+  «name» : alloc.vec.Vec Std.U8
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  receiver : Std.U8
+  groups : alloc.vec.Vec Std.U128
+  target : alloc.vec.Vec Std.U8
+  search_attrs : alloc.vec.Vec Std.U16
+  modify_present_attrs : alloc.vec.Vec Std.U16
+  modify_removed_attrs : alloc.vec.Vec Std.U16
+  modify_classes : alloc.vec.Vec Std.U16
+  modify_present_classes : alloc.vec.Vec Std.U16
+  modify_remove_classes : alloc.vec.Vec Std.U16
+  create_classes : alloc.vec.Vec Std.U16
+  create_attrs : alloc.vec.Vec Std.U16
+
+/-- [kanidm_kernel::acp_catalog::dl11_account_mail_read_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 22:0-40:1
+    Visibility: public -/
+def acp_catalog.dl11_account_mail_read_dl6 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 109#u8, 97#u8,
+        105#u8, 108#u8, 95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 109#u8, 97#u8, 105#u8, 108#u8,
+        32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+        101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 57#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 53#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933509#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_account_self_write_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 43:0-61:1
+    Visibility: public -/
+def acp_catalog.dl11_account_self_write_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 115#u8, 101#u8,
+        108#u8, 102#u8, 95#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 93#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 32#u8, 45#u8,
+        32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 117#u8,
+        112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 116#u8, 104#u8, 101#u8,
+        105#u8, 114#u8, 32#u8, 111#u8, 119#u8, 110#u8, 32#u8, 115#u8, 101#u8,
+        115#u8, 115#u8, 105#u8, 111#u8, 110#u8, 32#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 101#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 54#u128 ])
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 4#u8 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 108#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933510#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v6,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_account_unix_extend_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 64:0-82:1
+    Visibility: public -/
+def acp_catalog.dl11_account_unix_extend_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 117#u8, 110#u8,
+        105#u8, 120#u8, 95#u8, 101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 117#u8, 110#u8, 105#u8, 120#u8, 32#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 68#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 26#u16, 38#u16, 52#u16, 107#u16,
+        97#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 38#u16, 52#u16, 107#u16, 97#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 38#u16, 52#u16, 107#u16, 97#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 22#u16 ])
+  let v9 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933545#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v9,
+      modify_remove_classes := v9,
+      create_classes := v9,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_acp_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 85:0-103:1
+    Visibility: public -/
+def acp_catalog.dl11_acp_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8,
+        112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 61#u16, 26#u16, 5#u16, 9#u16, 11#u16, 10#u16, 8#u16, 7#u16,
+        6#u16, 4#u16, 3#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 3#u16, 4#u16, 2#u16, 0#u16, 1#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933465#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v6,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v6,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_all_accounts_posix_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 106:0-124:1
+    Visibility: public -/
+def acp_catalog.dl11_all_accounts_posix_read_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        108#u8, 108#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 95#u8, 112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 95#u8,
+        114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 103#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        109#u8, 97#u8, 108#u8, 32#u8, 112#u8, 111#u8, 115#u8, 105#u8, 120#u8,
+        32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 115#u8, 32#u8, 45#u8, 32#u8,
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 101#u8, 115#u8, 32#u8, 97#u8,
+        110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 97#u8,
+        117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 101#u8, 100#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 54#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 61#u16, 96#u16, 27#u16, 21#u16, 57#u16, 56#u16, 35#u16,
+        109#u16, 38#u16, 52#u16, 97#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933446#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_application_entry_manager_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 127:0-145:1
+    Visibility: public -/
+def acp_catalog.dl11_application_entry_manager_dl8
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8,
+        97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        21#u16, 109#u16, 61#u16, 27#u16, 53#u16, 107#u16, 13#u16, 108#u16,
+        26#u16, 51#u16, 37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 51#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 108#u16, 51#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933554#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_application_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 148:0-166:1
+    Visibility: public -/
+def acp_catalog.dl11_application_manage_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        21#u16, 109#u16, 61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16,
+        108#u16, 51#u16, 37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 51#u16, 37#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 108#u16, 51#u16,
+        37#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 5#u16, 25#u16, 7#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 109#u16, 61#u16, 26#u16, 27#u16, 53#u16, 51#u16, 37#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933555#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_domain_admin_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 169:0-187:1
+    Visibility: public -/
+def acp_catalog.dl11_domain_admin_dl9 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8, 109#u8,
+        105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 108#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 53#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        21#u16, 61#u16, 109#u16, 29#u16, 30#u16, 32#u16, 31#u16, 47#u16,
+        33#u16, 34#u16, 44#u16, 46#u16, 110#u16, 39#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        30#u16, 31#u16, 47#u16, 33#u16, 29#u16, 46#u16, 42#u16, 43#u16, 39#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        30#u16, 33#u16, 31#u16, 47#u16, 29#u16, 46#u16, 42#u16, 43#u16, 39#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933478#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_group_account_policy_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 190:0-208:1
+    Visibility: public -/
+def acp_catalog.dl11_group_account_policy_manage_dl8
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 95#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8,
+        121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8, 32#u8, 111#u8,
+        110#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        21#u16, 61#u16, 109#u16, 18#u16, 17#u16, 23#u16, 91#u16, 111#u16,
+        50#u16, 49#u16, 12#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 18#u16, 17#u16, 23#u16, 91#u16, 111#u16, 50#u16, 49#u16, 12#u16
+        ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 6#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933513#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_group_entry_managed_by_modify_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 211:0-229:1
+    Visibility: public -/
+def acp_catalog.dl11_group_entry_managed_by_modify_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8,
+        121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 100#u8,
+        95#u8, 98#u8, 121#u8, 95#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 110#u8, 32#u8,
+        103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 105#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 61#u16, 96#u16, 109#u16, 37#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933512#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_group_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 232:0-250:1
+    Visibility: public -/
+def acp_catalog.dl11_group_entry_manager_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8,
+        121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 109#u16, 26#u16, 56#u16, 35#u16,
+        37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 26#u16, 56#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933520#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_group_manage_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 253:0-271:1
+    Visibility: public -/
+def acp_catalog.dl11_group_manage_dl9 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8,
+        103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8,
+        101#u8, 99#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 109#u16, 26#u16, 53#u16, 56#u16,
+        35#u16, 37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 61#u16, 26#u16, 53#u16, 56#u16, 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 13#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 109#u16, 26#u16, 53#u16, 56#u16, 37#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933474#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_group_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 274:0-292:1
+    Visibility: public -/
+def acp_catalog.dl11_group_read_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 98#u8, 101#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8,
+        32#u8, 98#u8, 121#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8,
+        115#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8,
+        32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 35#u16, 61#u16, 109#u16, 96#u16, 26#u16, 56#u16, 37#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933522#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_group_unix_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 295:0-313:1
+    Visibility: public -/
+def acp_catalog.dl11_group_unix_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 117#u8, 110#u8, 105#u8, 120#u8,
+        95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 44#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 117#u8, 110#u8, 105#u8,
+        120#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 68#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        35#u16, 21#u16, 61#u16, 109#u16, 96#u16, 26#u16, 56#u16, 38#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 21#u16, 38#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 38#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 23#u16 ])
+  let v9 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933544#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v9,
+      modify_remove_classes := v9,
+      create_classes := v9,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_hp_client_certificate_manager_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 316:0-334:1
+    Visibility: public -/
+def acp_catalog.dl11_hp_client_certificate_manager_dl7
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 104#u8,
+        112#u8, 95#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 95#u8,
+        99#u8, 101#u8, 114#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 101#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 99#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8, 32#u8, 99#u8, 101#u8, 114#u8, 116#u8, 105#u8,
+        102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 32#u8, 109#u8, 97#u8,
+        110#u8, 97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 73#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 72#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 18#u8, 0#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8,
+        95#u8, 99#u8, 101#u8, 114#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 101#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8,
+        121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8,
+        115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 21#u16, 109#u16, 20#u16, 93#u16 ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 20#u16, 93#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 11#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 21#u16, 20#u16, 93#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933553#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_hp_group_unix_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 337:0-355:1
+    Visibility: public -/
+def acp_catalog.dl11_hp_group_unix_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 104#u8,
+        112#u8, 95#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 117#u8,
+        110#u8, 105#u8, 120#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 104#u8, 105#u8, 103#u8, 104#u8, 32#u8, 112#u8, 114#u8,
+        105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8, 101#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 119#u8, 105#u8, 116#u8,
+        104#u8, 32#u8, 117#u8, 110#u8, 105#u8, 120#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 68#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 0#u8, 8#u8,
+        0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 111#u8, 102#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        35#u16, 21#u16, 61#u16, 109#u16, 96#u16, 26#u16, 56#u16, 38#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 21#u16, 38#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 38#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 23#u16 ])
+  let v9 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933543#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v9,
+      modify_remove_classes := v9,
+      create_classes := v9,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_hp_people_credential_reset_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 358:0-376:1
+    Visibility: public -/
+def acp_catalog.dl11_hp_people_credential_reset_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 104#u8,
+        112#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8,
+        99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8,
+        108#u8, 95#u8, 114#u8, 101#u8, 115#u8, 101#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 115#u8,
+        101#u8, 116#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 104#u8, 105#u8,
+        103#u8, 104#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 105#u8, 108#u8,
+        101#u8, 103#u8, 101#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 115#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 97#u8, 108#u8, 115#u8, 32#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 19#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 126#usize [
+        1#u8, 4#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 0#u8, 8#u8, 0#u8,
+        109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 111#u8, 102#u8, 36#u8,
+        0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 90#u16, 0#u16, 2#u16, 88#u16, 15#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 90#u16, 0#u16, 2#u16, 88#u16, 15#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933528#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_hp_service_account_entry_managed_by_modify_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 379:0-397:1
+    Visibility: public -/
+def acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 43#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 104#u8,
+        112#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8,
+        101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 100#u8, 95#u8, 98#u8, 121#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 96#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 110#u8, 32#u8,
+        104#u8, 105#u8, 103#u8, 104#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8,
+        32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 101#u8,
+        110#u8, 116#u8, 114#u8, 105#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 4#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 0#u8, 8#u8, 0#u8,
+        109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 111#u8, 102#u8, 36#u8,
+        0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 61#u16, 96#u16, 109#u16, 37#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933539#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_mail_servers_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 400:0-418:1
+    Visibility: public -/
+def acp_catalog.dl11_mail_servers_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 109#u8,
+        97#u8, 105#u8, 108#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 77#u8, 65#u8, 73#u8,
+        76#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 115#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        101#u8, 109#u8, 97#u8, 105#u8, 108#u8, 32#u8, 97#u8, 100#u8, 100#u8,
+        114#u8, 101#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 110#u8,
+        101#u8, 101#u8, 100#u8, 101#u8, 100#u8, 32#u8, 97#u8, 116#u8, 116#u8,
+        114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 82#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 27#u16, 53#u16, 56#u16, 35#u16,
+        57#u16, 38#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933556#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 421:0-439:1
+    Visibility: public -/
+def acp_catalog.dl11_oauth2_manage : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        21#u16, 26#u16, 27#u16, 61#u16, 96#u16, 84#u16, 80#u16, 81#u16, 82#u16,
+        83#u16, 77#u16, 66#u16, 73#u16, 74#u16, 67#u16, 78#u16, 39#u16, 85#u16,
+        72#u16, 44#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        26#u16, 27#u16, 61#u16, 80#u16, 81#u16, 83#u16, 82#u16, 66#u16, 73#u16,
+        74#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16, 42#u16, 43#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        26#u16, 27#u16, 61#u16, 84#u16, 80#u16, 81#u16, 82#u16, 83#u16, 77#u16,
+        66#u16, 73#u16, 74#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16, 42#u16,
+        43#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 5#u16, 16#u16, 17#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        21#u16, 26#u16, 61#u16, 27#u16, 79#u16, 80#u16, 81#u16, 83#u16, 82#u16,
+        66#u16, 73#u16, 74#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_create_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 442:0-460:1
+    Visibility: public -/
+def acp_catalog.dl11_people_create_dl6 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 0#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 45#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 110#u8, 101#u8, 119#u8,
+        32#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u128, 69#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 5#u16, 21#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 109#u16, 61#u16, 27#u16, 53#u16, 0#u16, 2#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933524#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v6,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_credential_reset_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 463:0-481:1
+    Visibility: public -/
+def acp_catalog.dl11_people_credential_reset_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 95#u8, 114#u8,
+        101#u8, 115#u8, 101#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 115#u8,
+        101#u8, 116#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 112#u8, 101#u8,
+        111#u8, 112#u8, 108#u8, 101#u8, 115#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 115#u8, 32#u8
+        ])
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 3#usize [ 19#u128, 65#u128, 69#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 126#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 90#u16, 0#u16, 2#u16, 88#u16, 15#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 90#u16, 88#u16, 15#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933527#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_delete_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 484:0-502:1
+    Visibility: public -/
+def acp_catalog.dl11_people_delete_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 1#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 41#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 112#u8, 101#u8, 114#u8,
+        115#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 19#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933525#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 505:0-523:1
+    Visibility: public -/
+def acp_catalog.dl11_people_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 115#u8,
+        32#u8, 110#u8, 111#u8, 110#u8, 32#u8, 115#u8, 101#u8, 110#u8, 115#u8,
+        105#u8, 116#u8, 105#u8, 118#u8, 101#u8, 32#u8, 97#u8, 116#u8, 116#u8,
+        114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 19#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 126#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 2#usize [ 0#u16, 2#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933526#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_pii_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 526:0-544:1
+    Visibility: public -/
+def acp_catalog.dl11_people_pii_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 112#u8, 105#u8, 105#u8,
+        95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 105#u8, 110#u8, 103#u8, 32#u8, 112#u8, 101#u8,
+        111#u8, 112#u8, 108#u8, 101#u8, 115#u8, 32#u8, 112#u8, 101#u8, 114#u8,
+        115#u8, 111#u8, 110#u8, 97#u8, 108#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 115#u8, 101#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 118#u8,
+        101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 19#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 61#u16, 27#u16, 48#u16, 53#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933459#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_pii_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 547:0-565:1
+    Visibility: public -/
+def acp_catalog.dl11_people_pii_read_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 23#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 112#u8, 105#u8, 105#u8,
+        95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 112#u8, 101#u8, 114#u8, 115#u8,
+        111#u8, 110#u8, 97#u8, 108#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        115#u8, 101#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 118#u8, 101#u8,
+        32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8
+        ])
+  let v3 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u128, 2#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 27#u16, 48#u16, 53#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933447#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 568:0-586:1
+    Visibility: public -/
+def acp_catalog.dl11_people_read_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 114#u8, 101#u8, 97#u8,
+        100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 110#u8, 111#u8, 110#u8, 45#u8,
+        115#u8, 101#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 118#u8, 101#u8,
+        32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8
+        ])
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u128, 2#u128, 57#u128, 65#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 27#u16, 57#u16, 109#u16, 0#u16, 2#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933523#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_people_self_write_mail_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 589:0-607:1
+    Visibility: public -/
+def acp_catalog.dl11_people_self_write_mail_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 95#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 95#u8, 109#u8,
+        97#u8, 105#u8, 108#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 109#u8, 97#u8, 105#u8, 108#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 51#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 4#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 53#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933505#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_radius_secret_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 610:0-628:1
+    Visibility: public -/
+def acp_catalog.dl11_radius_secret_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 114#u8,
+        97#u8, 100#u8, 105#u8, 117#u8, 115#u8, 95#u8, 115#u8, 101#u8, 99#u8,
+        114#u8, 101#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8, 32#u8, 97#u8,
+        110#u8, 100#u8, 32#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8,
+        114#u8, 97#u8, 100#u8, 105#u8, 117#u8, 115#u8, 32#u8, 115#u8, 101#u8,
+        99#u8, 114#u8, 101#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 67#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 92#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933542#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_radius_servers_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 631:0-649:1
+    Visibility: public -/
+def acp_catalog.dl11_radius_servers_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 114#u8,
+        97#u8, 100#u8, 105#u8, 117#u8, 115#u8, 95#u8, 115#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 84#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 82#u8, 65#u8, 68#u8,
+        73#u8, 85#u8, 83#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 97#u8, 108#u8, 115#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 110#u8, 101#u8, 101#u8,
+        100#u8, 101#u8, 100#u8, 32#u8, 100#u8, 101#u8, 116#u8, 97#u8, 105#u8,
+        108#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 7#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        1#u8, 2#u8, 0#u8, 5#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 61#u16, 96#u16, 109#u16, 92#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933460#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_recycle_bin_revive_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 652:0-670:1
+    Visibility: public -/
+def acp_catalog.dl11_recycle_bin_revive_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 95#u8, 98#u8, 105#u8,
+        110#u8, 95#u8, 114#u8, 101#u8, 118#u8, 105#u8, 118#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 32#u8, 98#u8, 105#u8, 110#u8, 32#u8, 114#u8, 101#u8, 118#u8,
+        105#u8, 118#u8, 101#u8, 32#u8, 112#u8, 101#u8, 114#u8, 109#u8, 105#u8,
+        115#u8, 115#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 66#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 24#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933443#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v6,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v7,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_recycle_bin_search_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 673:0-691:1
+    Visibility: public -/
+def acp_catalog.dl11_recycle_bin_search_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 95#u8, 98#u8, 105#u8,
+        110#u8, 95#u8, 115#u8, 101#u8, 97#u8, 114#u8, 99#u8, 104#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 32#u8, 98#u8, 105#u8, 110#u8, 32#u8, 115#u8, 101#u8, 97#u8,
+        114#u8, 99#u8, 104#u8, 32#u8, 112#u8, 101#u8, 114#u8, 109#u8, 105#u8,
+        115#u8, 115#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 66#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 21#u16, 61#u16, 109#u16, 45#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933442#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_schema_write_attrs_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 694:0-712:1
+    Visibility: public -/
+def acp_catalog.dl11_schema_write_attrs_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 3#u16, 0#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 95#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 95#u8, 97#u8, 116#u8, 116#u8, 114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 56#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 16#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 13#u8, 0#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+        117#u8, 116#u8, 101#u8, 116#u8, 121#u8, 112#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 26#u16, 40#u16, 106#u16, 59#u16, 16#u16, 103#u16, 109#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 26#u16, 40#u16, 106#u16, 59#u16, 103#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 8#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933464#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_schema_write_classes_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 715:0-733:1
+    Visibility: public -/
+def acp_catalog.dl11_schema_write_classes_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 3#u16, 0#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 95#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 95#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8,
+        115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 53#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 16#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8,
+        99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8,
+        98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 22#u16, 26#u16, 104#u16, 55#u16, 105#u16, 60#u16, 109#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 61#u16, 26#u16, 55#u16, 60#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 21#u16, 26#u16, 55#u16, 60#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 10#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 21#u16, 22#u16, 26#u16, 55#u16, 60#u16, 109#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933472#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_self_name_write_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 736:0-754:1
+    Visibility: public -/
+def acp_catalog.dl11_self_name_write_dl7 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 23#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 108#u8, 102#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8, 95#u8,
+        119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 124#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8, 45#u8, 32#u8,
+        114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 117#u8, 112#u8, 100#u8, 97#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 104#u8, 101#u8, 105#u8, 114#u8, 32#u8,
+        111#u8, 119#u8, 110#u8, 32#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 116#u8, 105#u8, 101#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8,
+        108#u8, 105#u8, 110#u8, 101#u8, 32#u8, 119#u8, 105#u8, 116#u8, 104#u8,
+        32#u8, 98#u8, 101#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 97#u8,
+        99#u8, 116#u8, 105#u8, 99#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 72#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        1#u8, 3#u8, 0#u8, 4#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 61#u16, 27#u16, 48#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933521#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_self_read_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 757:0-775:1
+    Visibility: public -/
+def acp_catalog.dl11_self_read_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 108#u8, 102#u8, 95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8, 45#u8, 32#u8,
+        114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 119#u8, 104#u8, 111#u8, 97#u8, 109#u8,
+        105#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        121#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 102#u8,
+        117#u8, 110#u8, 99#u8, 116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 54#u128 ])
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 4#u8 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        21#u16, 61#u16, 96#u16, 27#u16, 48#u16, 21#u16, 57#u16, 53#u16, 92#u16,
+        38#u16, 52#u16, 109#u16, 100#u16, 0#u16, 2#u16, 90#u16, 108#u16,
+        88#u16, 15#u16, 14#u16, 97#u16, 107#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933444#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_self_write_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 778:0-796:1
+    Visibility: public -/
+def acp_catalog.dl11_self_write_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 108#u8, 102#u8, 95#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 117#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 32#u8, 45#u8,
+        32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8,
+        108#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 117#u8, 112#u8, 100#u8,
+        97#u8, 116#u8, 101#u8, 32#u8, 116#u8, 104#u8, 101#u8, 105#u8, 114#u8,
+        32#u8, 111#u8, 119#u8, 110#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 108#u8, 105#u8, 110#u8, 101#u8, 32#u8, 119#u8, 105#u8,
+        116#u8, 104#u8, 32#u8, 98#u8, 101#u8, 115#u8, 116#u8, 32#u8, 112#u8,
+        114#u8, 97#u8, 99#u8, 116#u8, 105#u8, 99#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 53#u128 ])
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 4#u8 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        92#u16, 90#u16, 97#u16, 107#u16, 88#u16, 15#u16, 14#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        92#u16, 90#u16, 97#u16, 107#u16, 88#u16, 15#u16, 108#u16, 14#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933473#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_service_account_create_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 799:0-817:1
+    Visibility: public -/
+def acp_catalog.dl11_service_account_create_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 0#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 110#u8, 101#u8, 119#u8,
+        32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 5#u16, 25#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 27#u16, 37#u16, 26#u16, 0#u16, 2#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933529#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v6,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_service_account_delete_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 820:0-838:1
+    Visibility: public -/
+def acp_catalog.dl11_service_account_delete_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 1#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 50#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 115#u8, 101#u8, 114#u8,
+        118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933536#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_service_account_entry_managed_by_modify_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 841:0-859:1
+    Visibility: public -/
+def acp_catalog.dl11_service_account_entry_managed_by_modify_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 47#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 95#u8, 109#u8, 111#u8, 100#u8, 105#u8,
+        102#u8, 121#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 110#u8, 32#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 105#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 61#u16, 96#u16, 109#u16, 37#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933538#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_service_account_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 862:0-880:1
+    Visibility: public -/
+def acp_catalog.dl11_service_account_entry_manager_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 37#u16, 27#u16, 97#u16, 38#u16,
+        52#u16, 107#u16, 88#u16, 90#u16, 0#u16, 2#u16, 13#u16, 108#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 27#u16, 97#u16, 90#u16, 0#u16, 2#u16, 13#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        27#u16, 97#u16, 90#u16, 107#u16, 88#u16, 0#u16, 2#u16, 13#u16, 108#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933537#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_service_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 883:0-901:1
+    Visibility: public -/
+def acp_catalog.dl11_service_account_manage_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 2#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 105#u8, 110#u8, 103#u8, 32#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 61#u16, 27#u16, 53#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        61#u16, 27#u16, 53#u16, 97#u16, 107#u16, 90#u16, 13#u16, 108#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933540#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v5,
+      create_attrs := v5
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_sync_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 904:0-922:1
+    Visibility: public -/
+def acp_catalog.dl11_sync_account_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 73#u8, 68#u8, 77#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8,
+        105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 12#u8, 0#u8, 115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8, 0#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 109#u16, 61#u16, 26#u16, 41#u16, 101#u16, 99#u16, 102#u16,
+        98#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 61#u16, 26#u16, 101#u16, 99#u16, 102#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        61#u16, 26#u16, 41#u16, 101#u16, 99#u16, 98#u16, 102#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 26#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 21#u16, 61#u16, 26#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933541#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl11_system_config_account_policy_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 925:0-943:1
+    Visibility: public -/
+def acp_catalog.dl11_system_config_account_policy_manage_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 43#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 95#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+        95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 115#u8, 121#u8, 115#u8,
+        116#u8, 101#u8, 109#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+        103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 55#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 61#u16, 109#u16, 26#u16, 19#u16, 25#u16, 18#u16, 91#u16,
+        110#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 25#u16, 18#u16, 91#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933480#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_all_accounts_posix_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 946:0-964:1
+    Visibility: public -/
+def acp_catalog.dl12_all_accounts_posix_read_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        108#u8, 108#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 95#u8, 112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 95#u8,
+        114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 102#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        109#u8, 97#u8, 108#u8, 32#u8, 80#u8, 79#u8, 83#u8, 73#u8, 88#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 115#u8, 46#u8, 32#u8, 82#u8, 101#u8,
+        113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 32#u8,
+        85#u8, 78#u8, 73#u8, 88#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 83#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 12#u8, 0#u8, 112#u8, 111#u8, 115#u8, 105#u8,
+        120#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 10#u8, 0#u8, 112#u8,
+        111#u8, 115#u8, 105#u8, 120#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 61#u16, 96#u16, 27#u16, 21#u16, 57#u16, 56#u16, 35#u16,
+        109#u16, 38#u16, 52#u16, 97#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933446#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_group_manage_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 967:0-985:1
+    Visibility: public -/
+def acp_catalog.dl12_group_manage_dl9 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8,
+        103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8,
+        101#u8, 99#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 21#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8,
+        48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 109#u16, 26#u16, 53#u16, 56#u16,
+        57#u16, 35#u16, 37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 61#u16, 26#u16, 53#u16, 56#u16, 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 13#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 109#u16, 26#u16, 53#u16, 56#u16, 37#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933474#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_group_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 988:0-1006:1
+    Visibility: public -/
+def acp_catalog.dl12_group_read_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 98#u8, 101#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8,
+        32#u8, 98#u8, 121#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8,
+        115#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8,
+        32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 35#u16, 61#u16, 109#u16, 96#u16, 26#u16, 56#u16, 57#u16, 37#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933522#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_hp_group_unix_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1009:0-1027:1
+    Visibility: public -/
+def acp_catalog.dl12_hp_group_unix_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 104#u8,
+        112#u8, 95#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 95#u8, 117#u8,
+        110#u8, 105#u8, 120#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 104#u8, 105#u8, 103#u8, 104#u8, 32#u8, 112#u8, 114#u8,
+        105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8, 101#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 115#u8, 32#u8, 119#u8, 105#u8, 116#u8,
+        104#u8, 32#u8, 117#u8, 110#u8, 105#u8, 120#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 68#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 108#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 0#u8, 8#u8,
+        0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 111#u8, 102#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        35#u16, 21#u16, 61#u16, 109#u16, 96#u16, 26#u16, 56#u16, 57#u16, 38#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 21#u16, 38#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 38#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 23#u16 ])
+  let v9 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933543#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v9,
+      modify_remove_classes := v9,
+      create_classes := v9,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_message_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1030:0-1048:1
+    Visibility: public -/
+def acp_catalog.dl12_message_manage : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 3#u16, 2#u16, 4#u16, 0#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 109#u8,
+        101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8, 95#u8, 109#u8, 97#u8,
+        110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 105#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 84#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 70#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 16#u8, 0#u8, 111#u8, 117#u8, 116#u8, 98#u8, 111#u8, 117#u8,
+        110#u8, 100#u8, 95#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8,
+        101#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 109#u16, 58#u16, 94#u16, 24#u16, 95#u16, 54#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 95#u16, 94#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 20#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 58#u16, 94#u16, 24#u16, 54#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933559#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_message_sender]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1051:0-1069:1
+    Visibility: public -/
+def acp_catalog.dl12_message_sender : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 109#u8,
+        101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        110#u8, 100#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 72#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 32#u8,
+        101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 32#u8,
+        115#u8, 101#u8, 110#u8, 100#u8, 101#u8, 114#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 112#u8, 114#u8, 111#u8, 99#u8, 101#u8, 115#u8, 115#u8, 32#u8,
+        109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 85#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 70#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 16#u8, 0#u8, 111#u8, 117#u8, 116#u8, 98#u8, 111#u8, 117#u8,
+        110#u8, 100#u8, 95#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8,
+        101#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 109#u16, 58#u16, 94#u16, 24#u16, 95#u16, 54#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 95#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933560#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_oauth2_account_enrol]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1072:0-1090:1
+    Visibility: public -/
+def acp_catalog.dl12_oauth2_account_enrol : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 114#u8, 111#u8,
+        108#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 83#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 101#u8, 110#u8, 114#u8,
+        111#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 116#u8, 104#u8,
+        101#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 32#u8, 97#u8, 115#u8, 32#u8, 111#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 117#u8, 109#u8, 101#u8, 114#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 87#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 109#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8,
+        98#u8, 101#u8, 114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        49#u8, 48#u8, 48#u8, 48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 21#u16, 61#u16, 96#u16, 63#u16, 64#u16, 62#u16 ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 21#u16, 63#u16, 64#u16, 62#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 14#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933568#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_oauth2_client_admin]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1093:0-1111:1
+    Visibility: public -/
+def acp_catalog.dl12_oauth2_client_admin : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 0#u16, 2#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 116#u8, 114#u8, 117#u8, 115#u8, 116#u8,
+        32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8,
+        32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 114#u8, 105#u8,
+        103#u8, 104#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 86#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 13#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 109#u16, 61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 76#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 76#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 15#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 76#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933561#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_radius_servers_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1114:0-1132:1
+    Visibility: public -/
+def acp_catalog.dl12_radius_servers_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 114#u8,
+        97#u8, 100#u8, 105#u8, 117#u8, 115#u8, 95#u8, 115#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 84#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 82#u8, 65#u8, 68#u8,
+        73#u8, 85#u8, 83#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 97#u8, 108#u8, 115#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 110#u8, 101#u8, 101#u8,
+        100#u8, 101#u8, 100#u8, 32#u8, 100#u8, 101#u8, 116#u8, 97#u8, 105#u8,
+        108#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 7#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        1#u8, 2#u8, 0#u8, 5#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 27#u16, 57#u16, 96#u16, 109#u16, 92#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933460#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_service_account_create_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1135:0-1153:1
+    Visibility: public -/
+def acp_catalog.dl12_service_account_create_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 0#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 110#u8, 101#u8, 119#u8,
+        32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 5#u16, 25#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 61#u16, 27#u16, 37#u16, 26#u16, 0#u16, 2#u16, 53#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933529#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v5,
+      modify_present_classes := v5,
+      modify_remove_classes := v5,
+      create_classes := v6,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_service_account_entry_managed_by_modify_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1156:0-1174:1
+    Visibility: public -/
+def acp_catalog.dl12_service_account_entry_managed_by_modify_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 47#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 95#u8, 109#u8, 111#u8, 100#u8, 105#u8,
+        102#u8, 121#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 110#u8, 32#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 105#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 21#u16, 61#u16, 96#u16, 109#u16, 37#u16, 53#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933538#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl12_service_account_entry_manager_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1177:0-1195:1
+    Visibility: public -/
+def acp_catalog.dl12_service_account_entry_manager_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 37#u16, 27#u16, 97#u16, 38#u16,
+        52#u16, 107#u16, 88#u16, 90#u16, 0#u16, 2#u16, 13#u16, 108#u16, 53#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 27#u16, 97#u16, 90#u16, 0#u16, 2#u16, 13#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        27#u16, 97#u16, 90#u16, 107#u16, 88#u16, 0#u16, 2#u16, 13#u16, 108#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933537#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_acp_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1198:0-1216:1
+    Visibility: public -/
+def acp_catalog.dl13_acp_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        99#u8, 112#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 17#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8,
+        112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        21#u16, 61#u16, 109#u16, 26#u16, 5#u16, 9#u16, 11#u16, 10#u16, 8#u16,
+        7#u16, 6#u16, 4#u16, 3#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 61#u16, 26#u16, 5#u16, 9#u16, 11#u16, 10#u16, 8#u16, 7#u16,
+        6#u16, 4#u16, 3#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 3#u16, 4#u16, 2#u16, 0#u16, 1#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933465#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v7,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_all_accounts_posix_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1219:0-1237:1
+    Visibility: public -/
+def acp_catalog.dl13_all_accounts_posix_read_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        108#u8, 108#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 95#u8, 112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 95#u8,
+        114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 102#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        109#u8, 97#u8, 108#u8, 32#u8, 80#u8, 79#u8, 83#u8, 73#u8, 88#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 115#u8, 46#u8, 32#u8, 82#u8, 101#u8,
+        113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 32#u8,
+        85#u8, 78#u8, 73#u8, 88#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 83#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 12#u8, 0#u8, 112#u8, 111#u8, 115#u8, 105#u8,
+        120#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 10#u8, 0#u8, 112#u8,
+        111#u8, 115#u8, 105#u8, 120#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 27#u16, 21#u16, 57#u16, 56#u16,
+        35#u16, 38#u16, 52#u16, 97#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933446#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_application_entry_manager_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1240:0-1258:1
+    Visibility: public -/
+def acp_catalog.dl13_application_entry_manager_dl8
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 95#u8, 109#u8,
+        97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 69#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 27#u16, 53#u16, 107#u16, 13#u16,
+        108#u16, 26#u16, 51#u16, 37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 51#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 108#u16, 51#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933554#u128,
+      description := v2,
+      receiver := 2#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_application_manage_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1261:0-1279:1
+    Visibility: public -/
+def acp_catalog.dl13_application_manage_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        111#u8, 114#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 11#u8, 0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8,
+        109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 26#u16, 27#u16, 53#u16, 107#u16,
+        13#u16, 108#u16, 51#u16, 37#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 51#u16, 37#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        61#u16, 26#u16, 27#u16, 53#u16, 107#u16, 13#u16, 108#u16, 51#u16,
+        37#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 5#u16, 25#u16, 7#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 109#u16, 61#u16, 26#u16, 27#u16, 53#u16, 51#u16, 37#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933555#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_mail_servers_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1282:0-1300:1
+    Visibility: public -/
+def acp_catalog.dl13_mail_servers_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 109#u8,
+        97#u8, 105#u8, 108#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 77#u8, 65#u8, 73#u8,
+        76#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 115#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8,
+        101#u8, 109#u8, 97#u8, 105#u8, 108#u8, 32#u8, 97#u8, 100#u8, 100#u8,
+        114#u8, 101#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 110#u8,
+        101#u8, 101#u8, 100#u8, 101#u8, 100#u8, 32#u8, 97#u8, 116#u8, 116#u8,
+        114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 82#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 27#u16, 53#u16, 56#u16, 35#u16,
+        57#u16, 38#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933556#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_oauth2_account_enrol]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1303:0-1321:1
+    Visibility: public -/
+def acp_catalog.dl13_oauth2_account_enrol : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 114#u8, 111#u8,
+        108#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 83#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 101#u8, 110#u8, 114#u8,
+        111#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 116#u8, 104#u8,
+        101#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 32#u8, 97#u8, 115#u8, 32#u8, 111#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 117#u8, 109#u8, 101#u8, 114#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 87#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 109#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8,
+        98#u8, 101#u8, 114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        49#u8, 48#u8, 48#u8, 48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 63#u16, 64#u16, 62#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 21#u16, 63#u16, 64#u16, 62#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 14#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933568#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_oauth2_client_admin]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1324:0-1342:1
+    Visibility: public -/
+def acp_catalog.dl13_oauth2_client_admin : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 0#u16, 2#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 116#u8, 114#u8, 117#u8, 115#u8, 116#u8,
+        32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8,
+        32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 114#u8, 105#u8,
+        103#u8, 104#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 86#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 13#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 69#u16, 70#u16, 68#u16, 86#u16, 76#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 76#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 15#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 76#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933561#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1345:0-1363:1
+    Visibility: public -/
+def acp_catalog.dl13_oauth2_manage : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        21#u16, 26#u16, 27#u16, 61#u16, 109#u16, 96#u16, 84#u16, 80#u16,
+        81#u16, 82#u16, 83#u16, 77#u16, 66#u16, 73#u16, 74#u16, 67#u16, 78#u16,
+        39#u16, 85#u16, 72#u16, 44#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        26#u16, 27#u16, 61#u16, 80#u16, 81#u16, 83#u16, 82#u16, 66#u16, 73#u16,
+        74#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16, 42#u16, 43#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        26#u16, 27#u16, 61#u16, 84#u16, 80#u16, 81#u16, 82#u16, 83#u16, 77#u16,
+        66#u16, 73#u16, 74#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16, 42#u16,
+        43#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 5#u16, 16#u16, 17#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        21#u16, 26#u16, 61#u16, 27#u16, 79#u16, 80#u16, 81#u16, 83#u16, 82#u16,
+        66#u16, 73#u16, 74#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_oauth2_manage_basic]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1366:0-1384:1
+    Visibility: public -/
+def acp_catalog.dl13_oauth2_manage_basic : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 95#u8, 98#u8, 97#u8, 115#u8, 105#u8, 99#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 66#u8, 97#u8, 115#u8,
+        105#u8, 99#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 32#u8, 105#u8,
+        110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 82#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 28#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 98#u8,
+        97#u8, 115#u8, 105#u8, 99#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8,
+        99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8,
+        98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933569#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v5,
+      modify_removed_attrs := v5,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_people_credential_reset_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1387:0-1405:1
+    Visibility: public -/
+def acp_catalog.dl13_people_credential_reset_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 112#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 95#u8, 114#u8,
+        101#u8, 115#u8, 101#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 115#u8,
+        101#u8, 116#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 112#u8, 101#u8,
+        111#u8, 112#u8, 108#u8, 101#u8, 115#u8, 32#u8, 99#u8, 114#u8, 101#u8,
+        100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 115#u8, 32#u8
+        ])
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 3#usize [ 19#u128, 65#u128, 69#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 126#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 90#u16, 0#u16, 2#u16, 88#u16, 15#u16,
+        1#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 90#u16, 88#u16, 15#u16, 2#u16, 0#u16, 1#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933527#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_radius_servers_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1408:0-1426:1
+    Visibility: public -/
+def acp_catalog.dl13_radius_servers_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 114#u8,
+        97#u8, 100#u8, 105#u8, 117#u8, 115#u8, 95#u8, 115#u8, 101#u8, 114#u8,
+        118#u8, 101#u8, 114#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 84#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 82#u8, 65#u8, 68#u8,
+        73#u8, 85#u8, 83#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 97#u8, 108#u8, 115#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 110#u8, 101#u8, 101#u8,
+        100#u8, 101#u8, 100#u8, 32#u8, 100#u8, 101#u8, 116#u8, 97#u8, 105#u8,
+        108#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 7#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        1#u8, 2#u8, 0#u8, 5#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        21#u16, 61#u16, 109#u16, 27#u16, 57#u16, 96#u16, 92#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933460#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_self_read_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1429:0-1447:1
+    Visibility: public -/
+def acp_catalog.dl13_self_read_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 108#u8, 102#u8, 95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8, 45#u8, 32#u8,
+        114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 119#u8, 104#u8, 111#u8, 97#u8, 109#u8,
+        105#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        121#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 102#u8,
+        117#u8, 110#u8, 99#u8, 116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 54#u128 ])
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 4#u8 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 27#u16, 48#u16, 21#u16, 57#u16,
+        53#u16, 92#u16, 38#u16, 52#u16, 100#u16, 0#u16, 2#u16, 90#u16, 108#u16,
+        88#u16, 15#u16, 14#u16, 97#u16, 107#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933444#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_service_account_entry_managed_by_modify_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1450:0-1468:1
+    Visibility: public -/
+def acp_catalog.dl13_service_account_entry_managed_by_modify_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 47#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 95#u8, 109#u8, 111#u8, 100#u8, 105#u8,
+        102#u8, 121#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        100#u8, 95#u8, 98#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 110#u8, 32#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 105#u8, 101#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 21#u16, 61#u16, 109#u16, 96#u16, 37#u16, 53#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 37#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933538#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_sync_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1471:0-1489:1
+    Visibility: public -/
+def acp_catalog.dl13_sync_account_manage_v1 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 73#u8, 68#u8, 77#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8,
+        105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 12#u8, 0#u8, 115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8, 0#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        21#u16, 61#u16, 109#u16, 26#u16, 41#u16, 101#u16, 99#u16, 102#u16,
+        98#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 61#u16, 26#u16, 101#u16, 99#u16, 102#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        61#u16, 26#u16, 41#u16, 101#u16, 99#u16, 98#u16, 102#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 19#u16, 26#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 21#u16, 61#u16, 26#u16 ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933541#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl13_system_config_account_policy_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1492:0-1510:1
+    Visibility: public -/
+def acp_catalog.dl13_system_config_account_policy_manage_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 43#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 95#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+        95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 115#u8, 121#u8, 115#u8,
+        116#u8, 101#u8, 109#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 105#u8,
+        103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 55#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 26#u16, 19#u16, 25#u16, 18#u16,
+        91#u16, 110#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 25#u16, 18#u16, 91#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933480#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl14_all_accounts_posix_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1513:0-1531:1
+    Visibility: public -/
+def acp_catalog.dl14_all_accounts_posix_read_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 97#u8,
+        108#u8, 108#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 95#u8, 112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 95#u8,
+        114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 102#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        109#u8, 97#u8, 108#u8, 32#u8, 80#u8, 79#u8, 83#u8, 73#u8, 88#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 115#u8, 46#u8, 32#u8, 82#u8, 101#u8,
+        113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 32#u8,
+        85#u8, 78#u8, 73#u8, 88#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 83#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 12#u8, 0#u8, 112#u8, 111#u8, 115#u8, 105#u8,
+        120#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 10#u8, 0#u8, 112#u8,
+        111#u8, 115#u8, 105#u8, 120#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        3#u8, 2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 27#u16, 21#u16, 57#u16, 56#u16,
+        35#u16, 38#u16, 52#u16, 97#u16, 89#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933446#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl14_domain_admin_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1534:0-1552:1
+    Visibility: public -/
+def acp_catalog.dl14_domain_admin_dl9 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8, 109#u8,
+        105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 108#u8, 121#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8,
+        36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 102#u8, 102#u8, 102#u8,
+        102#u8, 102#u8, 102#u8, 48#u8, 48#u8, 48#u8, 48#u8, 50#u8, 53#u8, 3#u8,
+        2#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8,
+        101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8,
+        110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        21#u16, 61#u16, 109#u16, 29#u16, 28#u16, 30#u16, 32#u16, 31#u16,
+        47#u16, 33#u16, 34#u16, 44#u16, 46#u16, 110#u16, 39#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        30#u16, 31#u16, 47#u16, 33#u16, 29#u16, 28#u16, 46#u16, 42#u16, 43#u16,
+        39#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        30#u16, 33#u16, 31#u16, 47#u16, 29#u16, 28#u16, 46#u16, 42#u16, 43#u16,
+        39#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933478#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl14_oauth2_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1555:0-1573:1
+    Visibility: public -/
+def acp_catalog.dl14_oauth2_manage : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 19#u16, 3#u16, 0#u16, 1#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 105#u8, 110#u8, 103#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8,
+        114#u8, 99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 103#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 39#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 76#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 22#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 3#u8, 2#u8,
+        2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8,
+        0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8,
+        101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        21#u16, 26#u16, 27#u16, 61#u16, 109#u16, 96#u16, 84#u16, 80#u16,
+        81#u16, 82#u16, 83#u16, 77#u16, 66#u16, 73#u16, 74#u16, 75#u16, 67#u16,
+        78#u16, 39#u16, 85#u16, 72#u16, 44#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        26#u16, 27#u16, 61#u16, 80#u16, 81#u16, 83#u16, 82#u16, 66#u16, 73#u16,
+        74#u16, 75#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16, 42#u16, 43#u16
+        ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        26#u16, 27#u16, 61#u16, 84#u16, 80#u16, 81#u16, 82#u16, 83#u16, 77#u16,
+        66#u16, 73#u16, 74#u16, 75#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16,
+        42#u16, 43#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 5#u16, 16#u16, 17#u16, 18#u16 ])
+  let v10 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        21#u16, 26#u16, 61#u16, 27#u16, 79#u16, 80#u16, 81#u16, 83#u16, 82#u16,
+        66#u16, 73#u16, 74#u16, 75#u16, 67#u16, 78#u16, 39#u16, 85#u16, 72#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933493#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v9,
+      create_attrs := v10
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl14_self_read_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1576:0-1594:1
+    Visibility: public -/
+def acp_catalog.dl14_self_read_dl8 : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 19#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 108#u8, 102#u8, 95#u8, 114#u8, 101#u8, 97#u8, 100#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 108#u8,
+        102#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8, 45#u8, 32#u8,
+        114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 119#u8, 104#u8, 111#u8, 97#u8, 109#u8,
+        105#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        121#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 102#u8,
+        117#u8, 110#u8, 99#u8, 116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 54#u128 ])
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 4#u8 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        21#u16, 61#u16, 109#u16, 96#u16, 27#u16, 48#u16, 21#u16, 57#u16,
+        53#u16, 92#u16, 38#u16, 52#u16, 100#u16, 0#u16, 2#u16, 90#u16, 108#u16,
+        88#u16, 15#u16, 14#u16, 97#u16, 107#u16, 45#u16, 89#u16
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933444#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v6,
+      modify_present_classes := v6,
+      modify_remove_classes := v6,
+      create_classes := v6,
+      create_attrs := v6
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl15_oauth2_account_enrol]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1597:0-1615:1
+    Visibility: public -/
+def acp_catalog.dl15_oauth2_account_enrol : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 101#u8, 110#u8, 114#u8, 111#u8,
+        108#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 83#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 101#u8, 110#u8, 114#u8,
+        111#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 116#u8, 104#u8,
+        101#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 32#u8, 97#u8, 115#u8, 32#u8, 111#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 117#u8, 109#u8, 101#u8, 114#u8,
+        115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 87#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 109#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        3#u8, 2#u8, 3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8,
+        98#u8, 101#u8, 114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        49#u8, 48#u8, 48#u8, 48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8,
+        111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 63#u16, 64#u16, 65#u16, 62#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 63#u16, 64#u16, 65#u16, 62#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 14#u16 ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933568#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl15_oauth2_client_admin]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1618:0-1636:1
+    Visibility: public -/
+def acp_catalog.dl15_oauth2_client_admin : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 19#u16, 0#u16, 2#u16, 3#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 111#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8,
+        110#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 116#u8, 114#u8, 117#u8, 115#u8, 116#u8,
+        32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8,
+        32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 114#u8, 105#u8,
+        103#u8, 104#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 86#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 13#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        95#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 3#u8, 2#u8, 2#u8,
+        0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8,
+        0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8,
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        21#u16, 109#u16, 61#u16, 96#u16, 69#u16, 70#u16, 68#u16, 86#u16,
+        87#u16, 76#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 87#u16, 76#u16
+        ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v8 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 15#u16 ])
+  let v9 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        21#u16, 61#u16, 69#u16, 70#u16, 68#u16, 86#u16, 87#u16, 76#u16
+        ])
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933561#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v8,
+      create_attrs := v9
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl15_service_account_manage_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1639:0-1657:1
+    Visibility: public -/
+def acp_catalog.dl15_service_account_manage_v1
+  : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 115#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8, 105#u8, 110#u8, 103#u8, 32#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 70#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 135#usize [
+        1#u8, 3#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 3#u8, 2#u8, 3#u8,
+        0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        111#u8, 102#u8, 36#u8, 0#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 49#u8, 48#u8, 48#u8, 48#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8,
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 0#u8,
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 9#u8, 0#u8, 116#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        21#u16, 61#u16, 96#u16, 109#u16, 37#u16, 27#u16, 97#u16, 107#u16,
+        90#u16, 13#u16, 108#u16, 53#u16
+        ])
+  let v6 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 61#u16, 27#u16, 53#u16 ])
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        61#u16, 27#u16, 53#u16, 97#u16, 107#u16, 90#u16, 13#u16, 108#u16,
+        53#u16
+        ])
+  let v8 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933540#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v7,
+      modify_classes := v8,
+      modify_present_classes := v8,
+      modify_remove_classes := v8,
+      create_classes := v8,
+      create_attrs := v8
+    }
+
+/-- [kanidm_kernel::acp_catalog::dl_1_12_feature_manage]:
+    Source: 'prove/ports/kanidm/kernel/src/acp_catalog.rs', lines 1660:0-1678:1
+    Visibility: public -/
+def acp_catalog.dl_1_12_feature_manage : Result acp_catalog.Profile := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 19#u16, 3#u16, 2#u16, 4#u16 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 112#u8, 95#u8, 102#u8,
+        101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 95#u8, 109#u8, 97#u8,
+        110#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 97#u8, 108#u8,
+        108#u8, 111#u8, 119#u8, 115#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 32#u8,
+        101#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 100#u8, 32#u8, 115#u8,
+        121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 102#u8, 101#u8, 97#u8,
+        116#u8, 117#u8, 114#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u128 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 110#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 7#u8, 0#u8, 102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8,
+        101#u8, 3#u8, 2#u8, 3#u8, 0#u8, 0#u8, 8#u8, 0#u8, 109#u8, 101#u8,
+        109#u8, 98#u8, 101#u8, 114#u8, 111#u8, 102#u8, 36#u8, 0#u8, 48#u8,
+        48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 45#u8, 48#u8, 48#u8,
+        48#u8, 48#u8, 45#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8, 48#u8,
+        48#u8, 49#u8, 48#u8, 48#u8, 48#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8,
+        99#u8, 108#u8, 101#u8, 100#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 9#u8, 0#u8, 116#u8, 111#u8, 109#u8, 98#u8, 115#u8,
+        116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 21#u16, 109#u16, 61#u16, 26#u16, 36#u16 ])
+  let v6 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 36#u16 ])
+  let v7 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  ok
+    {
+      classes := v,
+      «name» := v1,
+      uuid := 281474959933574#u128,
+      description := v2,
+      receiver := 1#u8,
+      groups := v3,
+      target := v4,
+      search_attrs := v5,
+      modify_present_attrs := v6,
+      modify_removed_attrs := v6,
+      modify_classes := v7,
+      modify_present_classes := v7,
+      modify_remove_classes := v7,
+      create_classes := v7,
+      create_attrs := v7
+    }
+
 /-- [kanidm_kernel::acp_defaults::Profile]
     Source: 'prove/ports/kanidm/kernel/src/acp_defaults.rs', lines 3:0-19:1
     Visibility: public -/
@@ -9206,6 +14715,380 @@ def credential_commit.can_commit
         no_valid_credentials := false
       }
 
+/-- [kanidm_kernel::entry_catalog::AccountRecord]
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 3:0-11:1
+    Visibility: public -/
+structure entry_catalog.AccountRecord where
+  account_type : Std.U8
+  has_entry_manager : Bool
+  entry_manager : Std.U128
+  «name» : alloc.vec.Vec Std.U8
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  displayname : alloc.vec.Vec Std.U8
+
+/-- [kanidm_kernel::entry_catalog::EntryRecord]
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 13:0-15:1
+    Visibility: public -/
+structure entry_catalog.EntryRecord where
+  bytes : alloc.vec.Vec Std.U8
+
+/-- [kanidm_kernel::entry_catalog::dl11_builtin_account_idm_admin]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 18:0-28:1
+    Visibility: public -/
+def entry_catalog.dl11_builtin_account_idm_admin
+  : Result entry_catalog.AccountRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        73#u8, 68#u8, 77#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8,
+        105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 111#u8, 114#u8
+        ])
+  ok
+    {
+      account_type := 0#u8,
+      has_entry_manager := false,
+      entry_manager := 0#u128,
+      «name» := v,
+      uuid := 24#u128,
+      description := v1,
+      displayname := v2
+    }
+
+/-- [kanidm_kernel::entry_catalog::dl11_builtin_account_admin]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 31:0-41:1
+    Visibility: public -/
+def entry_catalog.dl11_builtin_account_admin
+  : Result entry_catalog.AccountRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 83#u8,
+        121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 100#u8,
+        109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8,
+        111#u8, 114#u8
+        ])
+  ok
+    {
+      account_type := 0#u8,
+      has_entry_manager := false,
+      entry_manager := 0#u128,
+      «name» := v,
+      uuid := 0#u128,
+      description := v1,
+      displayname := v2
+    }
+
+/-- [kanidm_kernel::entry_catalog::dl11_builtin_account_anonymous_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 44:0-54:1
+    Visibility: public -/
+def entry_catalog.dl11_builtin_account_anonymous_dl6
+  : Result entry_catalog.AccountRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        65#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8,
+        32#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        65#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+        ])
+  ok
+    {
+      account_type := 0#u8,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      «name» := v,
+      uuid := 281474976710655#u128,
+      description := v1,
+      displayname := v2
+    }
+
+/-- [kanidm_kernel::entry_catalog::dl11_e_key_provider_internal_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 57:0-61:1
+    Visibility: public -/
+def entry_catalog.dl11_e_key_provider_internal_dl6
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 189#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 3#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 12#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 112#u8, 114#u8, 111#u8, 118#u8,
+        105#u8, 100#u8, 101#u8, 114#u8, 0#u8, 21#u8, 0#u8, 107#u8, 101#u8,
+        121#u8, 95#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8,
+        114#u8, 95#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8,
+        108#u8, 11#u8, 0#u8, 100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+        112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 1#u8, 0#u8, 2#u8, 57#u8, 0#u8,
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 101#u8, 102#u8, 97#u8, 117#u8,
+        108#u8, 116#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 98#u8, 97#u8,
+        115#u8, 101#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 108#u8, 32#u8, 99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8,
+        103#u8, 114#u8, 97#u8, 112#u8, 104#u8, 105#u8, 99#u8, 32#u8, 107#u8,
+        101#u8, 121#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8,
+        101#u8, 114#u8, 46#u8, 4#u8, 0#u8, 110#u8, 97#u8, 109#u8, 101#u8, 1#u8,
+        0#u8, 3#u8, 21#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 112#u8, 114#u8,
+        111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8, 95#u8, 105#u8, 110#u8,
+        116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 4#u8, 0#u8, 117#u8,
+        117#u8, 105#u8, 100#u8, 1#u8, 0#u8, 1#u8, 112#u8, 0#u8, 0#u8, 255#u8,
+        255#u8, 255#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl11_e_system_info_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 64:0-68:1
+    Visibility: public -/
+def entry_catalog.dl11_e_system_info_v1
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 140#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 3#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 6#u8,
+        0#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 0#u8, 11#u8,
+        0#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 95#u8, 105#u8,
+        110#u8, 102#u8, 111#u8, 11#u8, 0#u8, 100#u8, 101#u8, 115#u8, 99#u8,
+        114#u8, 105#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 1#u8, 0#u8,
+        2#u8, 40#u8, 0#u8, 83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8,
+        32#u8, 40#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 41#u8, 32#u8,
+        105#u8, 110#u8, 102#u8, 111#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        109#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8, 32#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 46#u8, 4#u8, 0#u8,
+        117#u8, 117#u8, 105#u8, 100#u8, 1#u8, 0#u8, 1#u8, 1#u8, 0#u8, 0#u8,
+        255#u8, 255#u8, 255#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8, 0#u8, 7#u8, 0#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8,
+        110#u8, 1#u8, 0#u8, 4#u8, 20#u8, 0#u8, 0#u8, 0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl11_e_domain_info_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 71:0-75:1
+    Visibility: public -/
+def entry_catalog.dl11_e_domain_info_dl6
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 213#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 6#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 6#u8,
+        0#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 0#u8, 10#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 0#u8, 11#u8, 0#u8, 100#u8, 111#u8, 109#u8, 97#u8,
+        105#u8, 110#u8, 95#u8, 105#u8, 110#u8, 102#u8, 111#u8, 0#u8, 20#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 95#u8, 106#u8, 119#u8, 116#u8, 95#u8, 101#u8, 115#u8,
+        50#u8, 53#u8, 54#u8, 0#u8, 22#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 95#u8, 106#u8, 119#u8,
+        101#u8, 95#u8, 97#u8, 49#u8, 50#u8, 56#u8, 103#u8, 99#u8, 109#u8,
+        11#u8, 0#u8, 100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 1#u8, 0#u8, 2#u8, 45#u8, 0#u8, 84#u8,
+        104#u8, 105#u8, 115#u8, 32#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8,
+        32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 39#u8, 115#u8,
+        32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 109#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8,
+        32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 46#u8, 4#u8, 0#u8,
+        110#u8, 97#u8, 109#u8, 101#u8, 1#u8, 0#u8, 3#u8, 12#u8, 0#u8, 100#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 108#u8, 111#u8, 99#u8,
+        97#u8, 108#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8, 1#u8, 0#u8,
+        1#u8, 37#u8, 0#u8, 0#u8, 255#u8, 255#u8, 255#u8, 0#u8, 0#u8, 0#u8,
+        0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl12_e_uuid_domain_id_verification_key_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 78:0-82:1
+    Visibility: public -/
+def entry_catalog.dl12_e_uuid_domain_id_verification_key_v1
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 153#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 3#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 10#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 0#u8, 20#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 95#u8, 104#u8, 107#u8,
+        100#u8, 102#u8, 95#u8, 115#u8, 50#u8, 53#u8, 54#u8, 11#u8, 0#u8,
+        100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 1#u8, 0#u8, 2#u8, 56#u8, 0#u8, 84#u8, 104#u8, 101#u8,
+        32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 45#u8, 108#u8,
+        111#u8, 99#u8, 97#u8, 108#u8, 32#u8, 72#u8, 77#u8, 65#u8, 67#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8,
+        73#u8, 68#u8, 32#u8, 118#u8, 101#u8, 114#u8, 105#u8, 102#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 46#u8, 4#u8, 0#u8,
+        117#u8, 117#u8, 105#u8, 100#u8, 1#u8, 0#u8, 1#u8, 118#u8, 0#u8, 0#u8,
+        255#u8, 255#u8, 255#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8, 0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl12_e_hmac_name_history_feature]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 85:0-89:1
+    Visibility: public -/
+def entry_catalog.dl12_e_hmac_name_history_feature
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 182#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 4#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 7#u8,
+        0#u8, 102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 0#u8,
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8, 0#u8, 20#u8, 0#u8, 107#u8, 101#u8, 121#u8,
+        95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 95#u8, 104#u8,
+        107#u8, 100#u8, 102#u8, 95#u8, 115#u8, 50#u8, 53#u8, 54#u8, 11#u8,
+        0#u8, 100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 1#u8, 0#u8, 2#u8, 47#u8, 0#u8, 67#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 101#u8,
+        32#u8, 72#u8, 77#u8, 65#u8, 67#u8, 32#u8, 78#u8, 97#u8, 109#u8, 101#u8,
+        32#u8, 72#u8, 105#u8, 115#u8, 116#u8, 111#u8, 114#u8, 121#u8, 32#u8,
+        70#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 46#u8, 4#u8,
+        0#u8, 110#u8, 97#u8, 109#u8, 101#u8, 1#u8, 0#u8, 3#u8, 17#u8, 0#u8,
+        104#u8, 109#u8, 97#u8, 99#u8, 95#u8, 110#u8, 97#u8, 109#u8, 101#u8,
+        95#u8, 102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 4#u8,
+        0#u8, 117#u8, 117#u8, 105#u8, 100#u8, 1#u8, 0#u8, 1#u8, 88#u8, 0#u8,
+        0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8, 0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl13_e_domain_info_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 92:0-96:1
+    Visibility: public -/
+def entry_catalog.dl13_e_domain_info_dl6
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 236#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 6#u8,
+        0#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 0#u8, 10#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 0#u8, 11#u8, 0#u8, 100#u8, 111#u8, 109#u8, 97#u8,
+        105#u8, 110#u8, 95#u8, 105#u8, 110#u8, 102#u8, 111#u8, 0#u8, 20#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 95#u8, 106#u8, 119#u8, 116#u8, 95#u8, 101#u8, 115#u8,
+        50#u8, 53#u8, 54#u8, 0#u8, 20#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 95#u8, 106#u8, 119#u8,
+        116#u8, 95#u8, 104#u8, 115#u8, 50#u8, 53#u8, 54#u8, 0#u8, 22#u8, 0#u8,
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 101#u8, 95#u8, 97#u8, 49#u8, 50#u8,
+        56#u8, 103#u8, 99#u8, 109#u8, 11#u8, 0#u8, 100#u8, 101#u8, 115#u8,
+        99#u8, 114#u8, 105#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 1#u8,
+        0#u8, 2#u8, 45#u8, 0#u8, 84#u8, 104#u8, 105#u8, 115#u8, 32#u8, 108#u8,
+        111#u8, 99#u8, 97#u8, 108#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8,
+        105#u8, 110#u8, 39#u8, 115#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8,
+        32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 101#u8, 116#u8, 97#u8,
+        100#u8, 97#u8, 116#u8, 97#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 46#u8, 4#u8, 0#u8, 110#u8, 97#u8, 109#u8, 101#u8, 1#u8,
+        0#u8, 3#u8, 12#u8, 0#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8,
+        95#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 4#u8, 0#u8, 117#u8,
+        117#u8, 105#u8, 100#u8, 1#u8, 0#u8, 1#u8, 37#u8, 0#u8, 0#u8, 255#u8,
+        255#u8, 255#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl_1_12_e_domain_info_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 99:0-103:1
+    Visibility: public -/
+def entry_catalog.dl_1_12_e_domain_info_dl6
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 261#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 8#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 6#u8,
+        0#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 0#u8, 10#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 0#u8, 11#u8, 0#u8, 100#u8, 111#u8, 109#u8, 97#u8,
+        105#u8, 110#u8, 95#u8, 105#u8, 110#u8, 102#u8, 111#u8, 0#u8, 20#u8,
+        0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 95#u8, 106#u8, 119#u8, 116#u8, 95#u8, 101#u8, 115#u8,
+        50#u8, 53#u8, 54#u8, 0#u8, 20#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 95#u8, 106#u8, 119#u8,
+        116#u8, 95#u8, 104#u8, 115#u8, 50#u8, 53#u8, 54#u8, 0#u8, 22#u8, 0#u8,
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 101#u8, 95#u8, 97#u8, 49#u8, 50#u8,
+        56#u8, 103#u8, 99#u8, 109#u8, 0#u8, 22#u8, 0#u8, 107#u8, 101#u8,
+        121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 95#u8,
+        106#u8, 119#u8, 101#u8, 95#u8, 97#u8, 50#u8, 53#u8, 54#u8, 103#u8,
+        99#u8, 109#u8, 11#u8, 0#u8, 100#u8, 101#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 1#u8, 0#u8, 2#u8,
+        45#u8, 0#u8, 84#u8, 104#u8, 105#u8, 115#u8, 32#u8, 108#u8, 111#u8,
+        99#u8, 97#u8, 108#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 39#u8, 115#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 109#u8, 101#u8, 116#u8, 97#u8, 100#u8,
+        97#u8, 116#u8, 97#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 46#u8, 4#u8, 0#u8, 110#u8, 97#u8, 109#u8, 101#u8, 1#u8, 0#u8,
+        3#u8, 12#u8, 0#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8,
+        95#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 4#u8, 0#u8, 117#u8,
+        117#u8, 105#u8, 100#u8, 1#u8, 0#u8, 1#u8, 37#u8, 0#u8, 0#u8, 255#u8,
+        255#u8, 255#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8
+        ])
+  ok { bytes := v }
+
+/-- [kanidm_kernel::entry_catalog::dl_1_12_e_account_signup_feature]:
+    Source: 'prove/ports/kanidm/kernel/src/entry_catalog.rs', lines 106:0-110:1
+    Visibility: public -/
+def entry_catalog.dl_1_12_e_account_signup_feature
+  : Result entry_catalog.EntryRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 148#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 2#u8, 0#u8, 0#u8,
+        6#u8, 0#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 0#u8, 7#u8,
+        0#u8, 102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 11#u8,
+        0#u8, 100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 1#u8, 0#u8, 2#u8, 44#u8, 0#u8, 67#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 101#u8,
+        32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8,
+        115#u8, 105#u8, 103#u8, 110#u8, 117#u8, 112#u8, 32#u8, 70#u8, 101#u8,
+        97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 46#u8, 4#u8, 0#u8, 110#u8,
+        97#u8, 109#u8, 101#u8, 1#u8, 0#u8, 3#u8, 22#u8, 0#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 115#u8, 105#u8, 103#u8,
+        110#u8, 117#u8, 112#u8, 95#u8, 102#u8, 101#u8, 97#u8, 116#u8, 117#u8,
+        114#u8, 101#u8, 4#u8, 0#u8, 117#u8, 117#u8, 105#u8, 100#u8, 1#u8, 0#u8,
+        1#u8, 89#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8,
+        0#u8, 0#u8, 0#u8, 0#u8, 0#u8, 0#u8
+        ])
+  ok { bytes := v }
+
 /-- [kanidm_kernel::entry_validation::Attribute]
     Source: 'prove/ports/kanidm/kernel/src/entry_validation.rs', lines 6:0-11:1
     Visibility: public -/
@@ -10047,6 +15930,11598 @@ def entry_validation.validate
           ok (core.result.Result.Err (entry_validation.Error.InvalidClass
             invalid))
   else ok (core.result.Result.Err entry_validation.Error.NoClassFound)
+
+/-- [kanidm_kernel::group_catalog::GroupRecord]
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 3:0-14:1
+    Visibility: public -/
+structure group_catalog.GroupRecord where
+  «name» : alloc.vec.Vec Std.U8
+  description : alloc.vec.Vec Std.U8
+  uuid : Std.U128
+  members : alloc.vec.Vec Std.U128
+  member_create_once : alloc.vec.Vec Std.U128
+  has_entry_manager : Bool
+  entry_manager : Std.U128
+  dyngroup : Bool
+  filter : alloc.vec.Vec Std.U8
+  extra_attributes : alloc.vec.Vec Std.U8
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_system_admins_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 17:0-30:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_system_admins_v1
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 95#u8, 97#u8, 100#u8,
+        109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 83#u8,
+        121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 111#u8,
+        114#u8, 115#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 0#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 25#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 25#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_idm_admins_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 33:0-46:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_idm_admins_v1
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8,
+        115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 111#u8, 114#u8, 115#u8, 32#u8,
+        71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 24#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 1#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_service_desk]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 49:0-62:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_service_desk
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 95#u8, 100#u8, 101#u8, 115#u8, 107#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 83#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 68#u8, 101#u8,
+        115#u8, 107#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 65#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_recycle_bin_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 65:0-78:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_recycle_bin_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 95#u8, 98#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8,
+        109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 41#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 82#u8,
+        101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 32#u8, 66#u8, 105#u8,
+        110#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8,
+        116#u8, 114#u8, 97#u8, 116#u8, 111#u8, 114#u8, 115#u8, 32#u8, 71#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 25#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 66#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 25#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_domain_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 81:0-94:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_domain_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 97#u8, 100#u8,
+        109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 98#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8,
+        32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 32#u8, 97#u8,
+        100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 114#u8, 105#u8, 103#u8, 104#u8,
+        116#u8, 115#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 116#u8, 114#u8,
+        117#u8, 115#u8, 116#u8, 32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8,
+        105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 114#u8, 105#u8, 103#u8, 104#u8, 116#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 25#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 32#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 25#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_schema_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 97:0-110:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_schema_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 115#u8, 99#u8, 104#u8, 101#u8, 109#u8,
+        97#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 83#u8,
+        99#u8, 104#u8, 101#u8, 109#u8, 97#u8, 32#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 25#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 16#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 25#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_access_control_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 113:0-126:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_access_control_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8,
+        115#u8, 95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8,
+        95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 44#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 65#u8,
+        99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8,
+        116#u8, 114#u8, 111#u8, 108#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8,
+        110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 25#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 17#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 25#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_people_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 129:0-142:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_people_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 80#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 32#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 19#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_people_on_boarding]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 145:0-158:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_people_on_boarding
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 95#u8, 111#u8, 110#u8, 95#u8, 98#u8, 111#u8, 97#u8, 114#u8,
+        100#u8, 105#u8, 110#u8, 103#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 80#u8,
+        101#u8, 111#u8, 112#u8, 108#u8, 101#u8, 32#u8, 79#u8, 110#u8, 32#u8,
+        66#u8, 111#u8, 97#u8, 114#u8, 100#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 69#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_people_pii_read]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 161:0-174:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_people_pii_read
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 95#u8, 112#u8, 105#u8, 105#u8, 95#u8, 114#u8, 101#u8, 97#u8,
+        100#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 108#u8, 101#u8, 118#u8, 97#u8,
+        116#u8, 101#u8, 100#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 32#u8, 40#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        97#u8, 108#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 41#u8, 32#u8,
+        114#u8, 101#u8, 97#u8, 100#u8, 32#u8, 112#u8, 101#u8, 114#u8, 109#u8,
+        105#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 2#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_people_self_name_write_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 177:0-190:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_people_self_name_write_dl7
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 95#u8, 115#u8, 101#u8, 108#u8, 102#u8, 95#u8, 110#u8, 97#u8,
+        109#u8, 101#u8, 95#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        100#u8, 101#u8, 110#u8, 111#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        117#u8, 115#u8, 101#u8, 114#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 101#u8,
+        105#u8, 114#u8, 32#u8, 111#u8, 119#u8, 110#u8, 32#u8, 110#u8, 97#u8,
+        109#u8, 101#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+        117#u8, 116#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 53#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 72#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_service_account_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 193:0-206:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_service_account_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 45#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 83#u8,
+        101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 70#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_oauth2_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 209:0-222:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_oauth2_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 79#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 73#u8, 110#u8, 116#u8,
+        101#u8, 103#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8,
+        117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 39#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_radius_service_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 225:0-238:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_radius_service_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 114#u8, 97#u8, 100#u8, 105#u8, 117#u8,
+        115#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 82#u8,
+        97#u8, 100#u8, 105#u8, 117#u8, 115#u8, 32#u8, 65#u8, 100#u8, 109#u8,
+        105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 67#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_idm_radius_servers_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 241:0-254:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_idm_radius_servers_v1
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 114#u8, 97#u8, 100#u8, 105#u8, 117#u8,
+        115#u8, 95#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 82#u8, 65#u8, 68#u8, 73#u8, 85#u8,
+        83#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 100#u8, 101#u8,
+        108#u8, 101#u8, 103#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 7#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 67#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_mail_service_admins_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 257:0-270:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_mail_service_admins_dl8
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 23#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 109#u8, 97#u8, 105#u8, 108#u8, 95#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8,
+        100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 41#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 77#u8,
+        97#u8, 105#u8, 108#u8, 32#u8, 83#u8, 101#u8, 114#u8, 118#u8, 101#u8,
+        114#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8,
+        116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 71#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 81#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_idm_mail_servers_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 273:0-286:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_idm_mail_servers_dl8
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 109#u8, 97#u8, 105#u8, 108#u8, 95#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 77#u8, 65#u8, 73#u8, 76#u8, 32#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 32#u8, 97#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 100#u8, 101#u8, 108#u8, 101#u8,
+        103#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 82#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 81#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_account_policy_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 289:0-302:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_account_policy_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+        95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 44#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 65#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 80#u8, 111#u8,
+        108#u8, 105#u8, 99#u8, 121#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8,
+        110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 71#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_unix_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 305:0-318:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_unix_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 117#u8, 110#u8, 105#u8, 120#u8, 95#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 85#u8,
+        110#u8, 105#u8, 120#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8,
+        105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 68#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_client_certificate_admins_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 321:0-334:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_client_certificate_admins_dl7
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8,
+        116#u8, 95#u8, 99#u8, 101#u8, 114#u8, 116#u8, 105#u8, 102#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 101#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8,
+        110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 67#u8,
+        108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8, 67#u8, 101#u8, 114#u8,
+        116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 32#u8,
+        65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8,
+        117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 73#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_group_admins_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 337:0-350:1
+    Visibility: public -/
+def group_catalog.dl11_idm_group_admins_v1
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 78#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 103#u8, 114#u8, 97#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 101#u8, 108#u8, 101#u8, 118#u8, 97#u8,
+        116#u8, 101#u8, 100#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        32#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 108#u8, 105#u8, 102#u8, 101#u8, 99#u8, 121#u8, 99#u8,
+        108#u8, 101#u8, 32#u8, 112#u8, 101#u8, 114#u8, 109#u8, 105#u8, 115#u8,
+        115#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 21#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_people_self_mail_write_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 353:0-366:1
+    Visibility: public -/
+def group_catalog.dl11_idm_people_self_mail_write_dl7
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 95#u8, 115#u8, 101#u8, 108#u8, 102#u8, 95#u8, 109#u8, 97#u8,
+        105#u8, 108#u8, 95#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 117#u8, 112#u8, 100#u8, 97#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 104#u8, 101#u8, 105#u8, 114#u8, 32#u8,
+        111#u8, 119#u8, 110#u8, 32#u8, 109#u8, 97#u8, 105#u8, 108#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 51#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := false,
+      entry_manager := 0#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_all_persons]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 369:0-382:1
+    Visibility: public -/
+def group_catalog.dl11_idm_all_persons : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 108#u8, 108#u8, 95#u8, 112#u8,
+        101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 49#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 100#u8, 121#u8, 110#u8, 97#u8, 109#u8, 105#u8,
+        99#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 97#u8, 105#u8, 110#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 112#u8, 101#u8, 114#u8, 115#u8,
+        111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        1#u8, 2#u8, 0#u8, 0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8,
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 68#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 0#u8, 14#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
+        111#u8, 108#u8, 105#u8, 99#u8, 121#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 0#u8, 6#u8, 0#u8, 115#u8, 121#u8, 115#u8,
+        116#u8, 101#u8, 109#u8, 23#u8, 0#u8, 99#u8, 114#u8, 101#u8, 100#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 95#u8, 116#u8, 121#u8,
+        112#u8, 101#u8, 95#u8, 109#u8, 105#u8, 110#u8, 105#u8, 109#u8, 117#u8,
+        109#u8, 1#u8, 10#u8, 0#u8
+        ])
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 53#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := false,
+      entry_manager := 0#u128,
+      dyngroup := true,
+      filter := v3,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_all_accounts]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 385:0-398:1
+    Visibility: public -/
+def group_catalog.dl11_idm_all_accounts
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 108#u8, 108#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 100#u8, 121#u8, 110#u8, 97#u8, 109#u8, 105#u8,
+        99#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 97#u8, 105#u8, 110#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8,
+        105#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8,
+        99#u8, 97#u8, 110#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        0#u8, 5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 7#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 40#usize [
+        5#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 0#u8, 14#u8, 0#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
+        111#u8, 108#u8, 105#u8, 99#u8, 121#u8, 5#u8, 0#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 0#u8, 6#u8, 0#u8, 115#u8, 121#u8, 115#u8,
+        116#u8, 101#u8, 109#u8
+        ])
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 54#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := false,
+      entry_manager := 0#u128,
+      dyngroup := true,
+      filter := v3,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_ui_enable_experimental_features]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 401:0-414:1
+    Visibility: public -/
+def group_catalog.dl11_idm_ui_enable_experimental_features
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 117#u8, 105#u8, 95#u8, 101#u8, 110#u8,
+        97#u8, 98#u8, 108#u8, 101#u8, 95#u8, 101#u8, 120#u8, 112#u8, 101#u8,
+        114#u8, 105#u8, 109#u8, 101#u8, 110#u8, 116#u8, 97#u8, 108#u8, 95#u8,
+        102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        77#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 115#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 103#u8, 114#u8,
+        111#u8, 117#u8, 112#u8, 32#u8, 119#u8, 105#u8, 108#u8, 108#u8, 32#u8,
+        104#u8, 97#u8, 118#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8,
+        115#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 101#u8, 120#u8, 112#u8,
+        101#u8, 114#u8, 105#u8, 109#u8, 101#u8, 110#u8, 116#u8, 97#u8, 108#u8,
+        32#u8, 119#u8, 101#u8, 98#u8, 32#u8, 85#u8, 73#u8, 32#u8, 102#u8,
+        101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        13#u8, 0#u8, 103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 95#u8, 117#u8,
+        105#u8, 95#u8, 104#u8, 105#u8, 110#u8, 116#u8, 2#u8
+        ])
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 56#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_account_mail_read]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 417:0-430:1
+    Visibility: public -/
+def group_catalog.dl11_idm_account_mail_read
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 95#u8, 109#u8, 97#u8, 105#u8, 108#u8, 95#u8, 114#u8,
+        101#u8, 97#u8, 100#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 102#usize [
+        77#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 115#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 103#u8, 114#u8,
+        111#u8, 117#u8, 112#u8, 32#u8, 119#u8, 105#u8, 108#u8, 108#u8, 32#u8,
+        104#u8, 97#u8, 118#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8,
+        115#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        100#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 109#u8, 97#u8, 105#u8,
+        108#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+        116#u8, 101#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 108#u8, 108#u8,
+        32#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 115#u8, 32#u8,
+        97#u8, 110#u8, 100#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 57#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 17#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_idm_high_privilege_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 433:0-446:1
+    Visibility: public -/
+def group_catalog.dl11_idm_high_privilege_dl8
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 104#u8, 105#u8, 103#u8, 104#u8, 95#u8,
+        112#u8, 114#u8, 105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 106#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8,
+        101#u8, 100#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8,
+        32#u8, 119#u8, 105#u8, 116#u8, 104#u8, 32#u8, 104#u8, 105#u8, 103#u8,
+        104#u8, 32#u8, 108#u8, 101#u8, 118#u8, 101#u8, 108#u8, 115#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 115#u8, 104#u8, 111#u8,
+        117#u8, 108#u8, 100#u8, 32#u8, 98#u8, 101#u8, 32#u8, 97#u8, 117#u8,
+        100#u8, 105#u8, 116#u8, 101#u8, 100#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 101#u8, 100#u8, 32#u8,
+        105#u8, 110#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        25#u128, 1#u128, 32#u128, 65#u128, 66#u128, 16#u128, 17#u128, 39#u128,
+        67#u128, 71#u128, 7#u128, 21#u128, 68#u128, 2#u128, 19#u128, 69#u128,
+        70#u128, 73#u128, 80#u128, 81#u128, 4096#u128
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 4096#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 17#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl11_builtin_group_application_admins_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 449:0-462:1
+    Visibility: public -/
+def group_catalog.dl11_builtin_group_application_admins_dl8
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 95#u8, 97#u8, 100#u8,
+        109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 41#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 65#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8, 115#u8,
+        116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 71#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 80#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl12_builtin_group_idm_unix_authentication_read_v1]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 465:0-478:1
+    Visibility: public -/
+def group_catalog.dl12_builtin_group_idm_unix_authentication_read_v1
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 117#u8, 110#u8, 105#u8, 120#u8, 95#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 95#u8, 114#u8, 101#u8, 97#u8,
+        100#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8,
+        120#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 115#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from (Array.make 1#usize [ 281474976710655#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 83#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 68#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl12_builtin_group_message_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 481:0-494:1
+    Visibility: public -/
+def group_catalog.dl12_builtin_group_message_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8,
+        103#u8, 101#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 77#u8,
+        101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8, 32#u8, 65#u8, 100#u8,
+        109#u8, 105#u8, 110#u8, 105#u8, 115#u8, 116#u8, 114#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 84#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl12_builtin_group_message_senders]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 497:0-510:1
+    Visibility: public -/
+def group_catalog.dl12_builtin_group_message_senders
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8,
+        103#u8, 101#u8, 95#u8, 115#u8, 101#u8, 110#u8, 100#u8, 101#u8, 114#u8,
+        115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8,
+        103#u8, 101#u8, 32#u8, 115#u8, 101#u8, 110#u8, 100#u8, 101#u8, 114#u8,
+        115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 97#u8, 100#u8,
+        32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 112#u8, 114#u8, 111#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 32#u8, 113#u8, 117#u8, 101#u8, 117#u8, 101#u8,
+        100#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8,
+        115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 85#u128,
+      members := v2,
+      member_create_once := v2,
+      has_entry_manager := true,
+      entry_manager := 84#u128,
+      dyngroup := false,
+      filter := v3,
+      extra_attributes := v3
+    }
+
+/-- [kanidm_kernel::group_catalog::dl12_builtin_group_oauth2_client_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 513:0-526:1
+    Visibility: public -/
+def group_catalog.dl12_builtin_group_oauth2_client_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 95#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 95#u8,
+        97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 68#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 32#u8, 84#u8, 114#u8, 117#u8,
+        115#u8, 116#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 25#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 86#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 25#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl12_builtin_group_oauth2_account_admins]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 529:0-542:1
+    Visibility: public -/
+def group_catalog.dl12_builtin_group_oauth2_account_admins
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 115#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 68#u8,
+        111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 32#u8, 84#u8, 114#u8, 117#u8,
+        115#u8, 116#u8, 32#u8, 65#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 1#u128 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 87#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl12_idm_high_privilege_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 545:0-558:1
+    Visibility: public -/
+def group_catalog.dl12_idm_high_privilege_dl8
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 104#u8, 105#u8, 103#u8, 104#u8, 95#u8,
+        112#u8, 114#u8, 105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 106#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8,
+        101#u8, 100#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8,
+        32#u8, 119#u8, 105#u8, 116#u8, 104#u8, 32#u8, 104#u8, 105#u8, 103#u8,
+        104#u8, 32#u8, 108#u8, 101#u8, 118#u8, 101#u8, 108#u8, 115#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 115#u8, 104#u8, 111#u8,
+        117#u8, 108#u8, 100#u8, 32#u8, 98#u8, 101#u8, 32#u8, 97#u8, 117#u8,
+        100#u8, 105#u8, 116#u8, 101#u8, 100#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 101#u8, 100#u8, 32#u8,
+        105#u8, 110#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        25#u128, 1#u128, 32#u128, 65#u128, 66#u128, 16#u128, 17#u128, 39#u128,
+        67#u128, 71#u128, 7#u128, 21#u128, 68#u128, 2#u128, 19#u128, 69#u128,
+        70#u128, 73#u128, 80#u128, 81#u128, 84#u128, 85#u128, 86#u128, 87#u128,
+        4096#u128
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 4096#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 17#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::group_catalog::dl14_builtin_group_people_self_name_write_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 561:0-574:1
+    Visibility: public -/
+def group_catalog.dl14_builtin_group_people_self_name_write_dl7
+  : Result group_catalog.GroupRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        105#u8, 100#u8, 109#u8, 95#u8, 112#u8, 101#u8, 111#u8, 112#u8, 108#u8,
+        101#u8, 95#u8, 115#u8, 101#u8, 108#u8, 102#u8, 95#u8, 110#u8, 97#u8,
+        109#u8, 101#u8, 95#u8, 119#u8, 114#u8, 105#u8, 116#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        66#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        100#u8, 101#u8, 110#u8, 111#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        117#u8, 115#u8, 101#u8, 114#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8, 119#u8, 114#u8, 105#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 101#u8,
+        105#u8, 114#u8, 32#u8, 111#u8, 119#u8, 110#u8, 32#u8, 110#u8, 97#u8,
+        109#u8, 101#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+        117#u8, 116#u8, 101#u8, 115#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U128)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 53#u128 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      description := v1,
+      uuid := 72#u128,
+      members := v2,
+      member_create_once := v3,
+      has_entry_manager := true,
+      entry_manager := 1#u128,
+      dyngroup := false,
+      filter := v4,
+      extra_attributes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::AttributeRecord]
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3:0-14:1
+    Visibility: public -/
+structure schema_catalog.AttributeRecord where
+  «name» : Std.U16
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  multivalue : Bool
+  unique : Bool
+  phantom : Bool
+  sync_allowed : Bool
+  replicated : Bool
+  indexed : Bool
+  «syntax» : Std.U16
+
+/-- [kanidm_kernel::schema_catalog::system_attr_home_directory]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1168:0-1181:1
+    Visibility: public -/
+def schema_catalog.system_attr_home_directory
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        104#u8, 111#u8, 109#u8, 101#u8, 68#u8, 105#u8, 114#u8, 101#u8, 99#u8,
+        116#u8, 111#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 68#u16,
+      uuid := 281470681743896#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_sudo_host]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1152:0-1165:1
+    Visibility: public -/
+def schema_catalog.system_attr_sudo_host
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        115#u8, 117#u8, 100#u8, 111#u8, 104#u8, 111#u8, 115#u8, 116#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 153#u16,
+      uuid := 281470681743689#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_uid_number]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1136:0-1149:1
+    Visibility: public -/
+def schema_catalog.system_attr_uid_number
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        117#u8, 105#u8, 100#u8, 78#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        46#u8
+        ])
+  ok
+    {
+      «name» := 170#u16,
+      uuid := 281470681743481#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_uid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1120:0-1133:1
+    Visibility: public -/
+def schema_catalog.system_attr_uid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 23#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        117#u8, 105#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 169#u16,
+      uuid := 281470681743696#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_gecos]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1104:0-1117:1
+    Visibility: public -/
+def schema_catalog.system_attr_gecos
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        103#u8, 101#u8, 99#u8, 111#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 63#u16,
+      uuid := 281470681743697#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_ldap_email_address]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1088:0-1101:1
+    Visibility: public -/
+def schema_catalog.system_attr_ldap_email_address
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        101#u8, 109#u8, 97#u8, 105#u8, 108#u8, 65#u8, 100#u8, 100#u8, 114#u8,
+        101#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 83#u16,
+      uuid := 281470681743478#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 17#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_email_alternative]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1072:0-1085:1
+    Visibility: public -/
+def schema_catalog.system_attr_email_alternative
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        97#u8, 108#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 116#u8, 105#u8,
+        118#u8, 101#u8, 32#u8, 101#u8, 109#u8, 97#u8, 105#u8, 108#u8
+        ])
+  ok
+    {
+      «name» := 54#u16,
+      uuid := 281470681743655#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 17#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_email_primary]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1056:0-1069:1
+    Visibility: public -/
+def schema_catalog.system_attr_email_primary
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        112#u8, 114#u8, 105#u8, 109#u8, 97#u8, 114#u8, 121#u8, 32#u8, 101#u8,
+        109#u8, 97#u8, 105#u8, 108#u8
+        ])
+  ok
+    {
+      «name» := 55#u16,
+      uuid := 281470681743654#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 17#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_email]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1040:0-1053:1
+    Visibility: public -/
+def schema_catalog.system_attr_email
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        101#u8, 109#u8, 97#u8, 105#u8, 108#u8
+        ])
+  ok
+    {
+      «name» := 53#u16,
+      uuid := 281470681743477#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 17#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_ldap_ssh_public_keys]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1024:0-1037:1
+    Visibility: public -/
+def schema_catalog.system_attr_ldap_ssh_public_keys
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        115#u8, 115#u8, 104#u8, 80#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8,
+        75#u8, 101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 86#u16,
+      uuid := 281470681743480#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 10#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_ldap_keys]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1008:0-1021:1
+    Visibility: public -/
+def schema_catalog.system_attr_ldap_keys
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 115#u8, 32#u8, 40#u8, 115#u8, 115#u8, 104#u8,
+        41#u8
+        ])
+  ok
+    {
+      «name» := 84#u16,
+      uuid := 281470681743479#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 10#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_cn]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 992:0-1005:1
+    Visibility: public -/
+def schema_catalog.system_attr_cn : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 67#u8, 108#u8, 97#u8,
+        115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 31#u16,
+      uuid := 281470681743495#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 14#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_object_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 976:0-989:1
+    Visibility: public -/
+def schema_catalog.system_attr_object_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 67#u8, 108#u8, 97#u8,
+        115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 132#u16,
+      uuid := 281470681743473#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_entry_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 960:0-973:1
+    Visibility: public -/
+def schema_catalog.system_attr_entry_uuid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 85#u8, 85#u8, 73#u8, 68#u8
+        ])
+  ok
+    {
+      «name» := 59#u16,
+      uuid := 281470681743472#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_entry_dn]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 944:0-957:1
+    Visibility: public -/
+def schema_catalog.system_attr_entry_dn
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        69#u8, 110#u8, 116#u8, 114#u8, 121#u8, 68#u8, 78#u8
+        ])
+  ok
+    {
+      «name» := 57#u16,
+      uuid := 281470681743476#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_dn]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 928:0-941:1
+    Visibility: public -/
+def schema_catalog.system_attr_dn : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        65#u8, 110#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 67#u8, 111#u8,
+        109#u8, 112#u8, 97#u8, 116#u8, 105#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        68#u8, 78#u8
+        ])
+  ok
+    {
+      «name» := 40#u16,
+      uuid := 281470681743464#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_totp_import]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 912:0-925:1
+    Visibility: public -/
+def schema_catalog.system_attr_totp_import
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        65#u8, 110#u8, 32#u8, 105#u8, 109#u8, 112#u8, 111#u8, 114#u8, 116#u8,
+        101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 116#u8, 112#u8, 32#u8, 115#u8,
+        101#u8, 99#u8, 114#u8, 101#u8, 116#u8, 32#u8, 102#u8, 114#u8, 111#u8,
+        109#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 115#u8, 121#u8, 115#u8, 116#u8,
+        101#u8, 109#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 168#u16,
+      uuid := 281470681743656#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := true,
+      replicated := false,
+      indexed := false,
+      «syntax» := 30#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_unix_password_import]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 896:0-909:1
+    Visibility: public -/
+def schema_catalog.system_attr_unix_password_import
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 55#usize [
+        65#u8, 110#u8, 32#u8, 105#u8, 109#u8, 112#u8, 111#u8, 114#u8, 116#u8,
+        101#u8, 100#u8, 32#u8, 117#u8, 110#u8, 105#u8, 120#u8, 32#u8, 112#u8,
+        97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8, 32#u8, 104#u8,
+        97#u8, 115#u8, 104#u8, 32#u8, 102#u8, 114#u8, 111#u8, 109#u8, 32#u8,
+        97#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 108#u8, 32#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8,
+        46#u8
+        ])
+  ok
+    {
+      «name» := 173#u16,
+      uuid := 281470681743703#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := true,
+      replicated := false,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_password_import]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 880:0-893:1
+    Visibility: public -/
+def schema_catalog.system_attr_password_import
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 50#usize [
+        65#u8, 110#u8, 32#u8, 105#u8, 109#u8, 112#u8, 111#u8, 114#u8, 116#u8,
+        101#u8, 100#u8, 32#u8, 112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8,
+        114#u8, 100#u8, 32#u8, 104#u8, 97#u8, 115#u8, 104#u8, 32#u8, 102#u8,
+        114#u8, 111#u8, 109#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 120#u8,
+        116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 115#u8, 121#u8,
+        115#u8, 116#u8, 101#u8, 109#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 135#u16,
+      uuid := 281470681743462#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := true,
+      replicated := false,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_sync_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 864:0-877:1
+    Visibility: public -/
+def schema_catalog.system_attr_sync_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 98#u8, 121#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        115#u8, 121#u8, 110#u8, 99#u8, 32#u8, 99#u8, 108#u8, 105#u8, 101#u8,
+        110#u8, 116#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 156#u16,
+      uuid := 281470681743652#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_sync_parent_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 848:0-861:1
+    Visibility: public -/
+def schema_catalog.system_attr_sync_parent_uuid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 85#u8, 85#u8, 73#u8, 68#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 112#u8, 97#u8,
+        114#u8, 101#u8, 110#u8, 116#u8, 32#u8, 115#u8, 121#u8, 110#u8, 99#u8,
+        32#u8, 97#u8, 103#u8, 114#u8, 101#u8, 101#u8, 109#u8, 101#u8, 110#u8,
+        116#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 114#u8,
+        101#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 104#u8, 105#u8,
+        115#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 160#u16,
+      uuid := 281470681743650#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_sync_external_id]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 832:0-845:1
+    Visibility: public -/
+def schema_catalog.system_attr_sync_external_id
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 64#usize [
+        65#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 108#u8, 32#u8, 115#u8, 116#u8, 114#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 73#u8, 68#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 105#u8, 109#u8,
+        112#u8, 111#u8, 114#u8, 116#u8, 101#u8, 100#u8, 32#u8, 102#u8, 114#u8,
+        111#u8, 109#u8, 32#u8, 97#u8, 32#u8, 115#u8, 121#u8, 110#u8, 99#u8,
+        32#u8, 97#u8, 103#u8, 114#u8, 101#u8, 101#u8, 109#u8, 101#u8, 110#u8,
+        116#u8
+        ])
+  ok
+    {
+      «name» := 159#u16,
+      uuid := 281470681743649#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_scope]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 816:0-829:1
+    Visibility: public -/
+def schema_catalog.system_attr_scope
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 56#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 116#u8, 114#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 102#u8,
+        105#u8, 101#u8, 114#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 109#u8, 105#u8, 115#u8, 115#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 97#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8, 105#u8,
+        111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 147#u16,
+      uuid := 281470681743621#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_claim]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 800:0-813:1
+    Visibility: public -/
+def schema_catalog.system_attr_claim
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 64#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 116#u8, 114#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 102#u8,
+        105#u8, 101#u8, 114#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 101#u8, 120#u8, 116#u8, 114#u8, 97#u8, 99#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 105#u8, 109#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 102#u8, 105#u8, 108#u8, 116#u8, 101#u8, 114#u8, 101#u8,
+        100#u8
+        ])
+  ok
+    {
+      «name» := 28#u16,
+      uuid := 281470681743461#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_domain]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 784:0-797:1
+    Visibility: public -/
+def schema_catalog.system_attr_domain
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        65#u8, 32#u8, 68#u8, 78#u8, 83#u8, 32#u8, 68#u8, 111#u8, 109#u8, 97#u8,
+        105#u8, 110#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8, 101#u8,
+        110#u8, 116#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 41#u16,
+      uuid := 281470681743382#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 14#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_version]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 768:0-781:1
+    Visibility: public -/
+def schema_catalog.system_attr_version
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8,
+        109#u8, 115#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8,
+        97#u8, 108#u8, 32#u8, 109#u8, 105#u8, 103#u8, 114#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 112#u8, 114#u8,
+        111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 100#u8, 32#u8, 111#u8, 98#u8,
+        106#u8, 101#u8, 99#u8, 116#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 176#u16,
+      uuid := 281470681743381#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_cascade_deleted]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 752:0-765:1
+    Visibility: public -/
+def schema_catalog.system_attr_cascade_deleted
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 94#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        32#u8, 100#u8, 101#u8, 110#u8, 111#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8,
+        115#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 119#u8,
+        97#u8, 115#u8, 32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 98#u8, 121#u8, 32#u8, 99#u8, 97#u8, 115#u8, 99#u8,
+        97#u8, 100#u8, 101#u8, 32#u8, 119#u8, 104#u8, 101#u8, 110#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 85#u8, 85#u8, 73#u8, 68#u8,
+        32#u8, 119#u8, 97#u8, 115#u8, 32#u8, 100#u8, 101#u8, 108#u8, 101#u8,
+        116#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 26#u16,
+      uuid := 281470681743764#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_refers]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 736:0-749:1
+    Visibility: public -/
+def schema_catalog.system_attr_refers
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        65#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 101#u8, 110#u8,
+        99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 110#u8, 111#u8,
+        116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 143#u16,
+      uuid := 281470681743735#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_dyn_member]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 720:0-733:1
+    Visibility: public -/
+def schema_catalog.system_attr_dyn_member
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        76#u8, 105#u8, 115#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8, 100#u8,
+        121#u8, 110#u8, 97#u8, 109#u8, 105#u8, 99#u8, 32#u8, 109#u8, 101#u8,
+        109#u8, 98#u8, 101#u8, 114#u8, 115#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  ok
+    {
+      «name» := 52#u16,
+      uuid := 281470681743666#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := false,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_member]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 704:0-717:1
+    Visibility: public -/
+def schema_catalog.system_attr_member
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        76#u8, 105#u8, 115#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8, 109#u8,
+        101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 115#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+        112#u8
+        ])
+  ok
+    {
+      «name» := 95#u16,
+      uuid := 281470681743379#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_recycled_direct_member_of]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 688:0-701:1
+    Visibility: public -/
+def schema_catalog.system_attr_recycled_direct_member_of
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 32#u8,
+        114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 101#u8, 32#u8, 100#u8,
+        105#u8, 114#u8, 101#u8, 99#u8, 116#u8, 32#u8, 103#u8, 114#u8, 111#u8,
+        117#u8, 112#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        115#u8, 104#u8, 105#u8, 112#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 115#u8, 115#u8, 105#u8, 115#u8,
+        116#u8, 32#u8, 105#u8, 110#u8, 32#u8, 114#u8, 101#u8, 118#u8, 105#u8,
+        118#u8, 101#u8, 32#u8, 111#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 142#u16,
+      uuid := 281470681743712#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_direct_member_of]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 672:0-685:1
+    Visibility: public -/
+def schema_catalog.system_attr_direct_member_of
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 45#usize [
+        114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 101#u8, 32#u8, 100#u8,
+        105#u8, 114#u8, 101#u8, 99#u8, 116#u8, 32#u8, 103#u8, 114#u8, 111#u8,
+        117#u8, 112#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        115#u8, 104#u8, 105#u8, 112#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 38#u16,
+      uuid := 281470681743380#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := false,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_member_of]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 656:0-669:1
+    Visibility: public -/
+def schema_catalog.system_attr_member_of
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 38#usize [
+        114#u8, 101#u8, 118#u8, 101#u8, 114#u8, 115#u8, 101#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8,
+        101#u8, 114#u8, 115#u8, 104#u8, 105#u8, 112#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 96#u16,
+      uuid := 281470681743378#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := false,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_entry_managed_by]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 640:0-653:1
+    Visibility: public -/
+def schema_catalog.system_attr_entry_managed_by
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        65#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 101#u8, 110#u8,
+        99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8,
+        32#u8, 104#u8, 97#u8, 115#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8,
+        115#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 97#u8, 110#u8,
+        97#u8, 103#u8, 101#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 58#u16,
+      uuid := 281470681743702#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_modify_remove_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 624:0-637:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_modify_remove_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 120#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 118#u8,
+        97#u8, 108#u8, 117#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 99#u8, 111#u8, 117#u8, 108#u8, 100#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 97#u8, 115#u8, 115#u8, 101#u8, 114#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 111#u8, 114#u8, 32#u8, 97#u8, 100#u8, 100#u8, 101#u8,
+        100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8,
+        110#u8, 116#u8, 114#u8, 121#u8, 46#u8, 32#u8, 79#u8, 110#u8, 108#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 58#u8, 58#u8, 114#u8, 101#u8, 109#u8, 111#u8, 118#u8, 101#u8,
+        32#u8, 111#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 115#u8, 32#u8, 111#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 10#u16,
+      uuid := 281470681743760#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_modify_present_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 608:0-621:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_modify_present_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 121#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 118#u8,
+        97#u8, 108#u8, 117#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 99#u8, 111#u8, 117#u8, 108#u8, 100#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 97#u8, 115#u8, 115#u8, 101#u8, 114#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 111#u8, 114#u8, 32#u8, 97#u8, 100#u8, 100#u8, 101#u8,
+        100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8,
+        110#u8, 116#u8, 114#u8, 121#u8, 46#u8, 32#u8, 79#u8, 110#u8, 108#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 58#u8, 58#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 32#u8, 111#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8, 32#u8, 111#u8, 110#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 9#u16,
+      uuid := 281470681743753#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_modify_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 592:0-605:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_modify_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 121#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 118#u8,
+        97#u8, 108#u8, 117#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 99#u8, 111#u8, 117#u8, 108#u8, 100#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 97#u8, 115#u8, 115#u8, 101#u8, 114#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 111#u8, 114#u8, 32#u8, 97#u8, 100#u8, 100#u8, 101#u8,
+        100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8,
+        110#u8, 116#u8, 114#u8, 121#u8, 46#u8, 32#u8, 79#u8, 110#u8, 108#u8,
+        121#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 58#u8, 58#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 32#u8, 111#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8, 32#u8, 111#u8, 110#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 7#u16,
+      uuid := 281470681743397#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_modify_present_attr]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 576:0-589:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_modify_present_attr
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 111#u8, 117#u8, 108#u8,
+        100#u8, 32#u8, 98#u8, 101#u8, 32#u8, 97#u8, 100#u8, 100#u8, 101#u8,
+        100#u8, 32#u8, 111#u8, 114#u8, 32#u8, 97#u8, 115#u8, 115#u8, 101#u8,
+        114#u8, 116#u8, 101#u8, 100#u8, 32#u8, 105#u8, 110#u8, 32#u8, 97#u8,
+        32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 8#u16,
+      uuid := 281470681743396#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_modify_removed_attr]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 560:0-573:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_modify_removed_attr
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 111#u8, 117#u8, 108#u8,
+        100#u8, 32#u8, 98#u8, 101#u8, 32#u8, 114#u8, 101#u8, 109#u8, 111#u8,
+        118#u8, 101#u8, 100#u8, 32#u8, 111#u8, 114#u8, 32#u8, 112#u8, 117#u8,
+        114#u8, 103#u8, 101#u8, 100#u8, 32#u8, 105#u8, 110#u8, 32#u8, 97#u8,
+        32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 11#u16,
+      uuid := 281470681743395#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_create_attr]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 544:0-557:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_create_attr
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+        116#u8, 101#u8, 32#u8, 116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8,
+        98#u8, 101#u8, 32#u8, 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 111#u8, 110#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8,
+        110#u8, 116#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 4#u16,
+      uuid := 281470681743394#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_create_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 528:0-541:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_create_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 98#u8, 101#u8, 32#u8, 99#u8, 114#u8, 101#u8, 97#u8, 116#u8,
+        101#u8, 100#u8, 32#u8, 111#u8, 110#u8, 32#u8, 97#u8, 32#u8, 110#u8,
+        101#u8, 119#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 5#u16,
+      uuid := 281470681743393#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_search_attr]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 512:0-525:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_search_attr
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 77#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8,
+        98#u8, 117#u8, 116#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 109#u8, 97#u8, 121#u8, 32#u8, 98#u8, 101#u8, 32#u8,
+        118#u8, 105#u8, 101#u8, 119#u8, 101#u8, 100#u8, 32#u8, 111#u8, 114#u8,
+        32#u8, 115#u8, 101#u8, 97#u8, 114#u8, 99#u8, 104#u8, 101#u8, 100#u8,
+        32#u8, 98#u8, 121#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 114#u8,
+        101#u8, 99#u8, 101#u8, 105#u8, 118#u8, 101#u8, 114#u8, 32#u8, 111#u8,
+        110#u8, 32#u8, 116#u8, 97#u8, 114#u8, 103#u8, 101#u8, 116#u8, 115#u8,
+        99#u8, 111#u8, 112#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 14#u16,
+      uuid := 281470681743392#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_target_scope]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 496:0-509:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_target_scope
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 101#u8, 102#u8, 102#u8, 101#u8, 99#u8,
+        116#u8, 105#u8, 118#u8, 101#u8, 32#u8, 116#u8, 97#u8, 114#u8, 103#u8,
+        101#u8, 116#u8, 115#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 65#u8, 67#u8, 80#u8, 44#u8, 32#u8, 101#u8, 46#u8,
+        103#u8, 46#u8, 32#u8, 119#u8, 104#u8, 97#u8, 116#u8, 32#u8, 119#u8,
+        105#u8, 108#u8, 108#u8, 32#u8, 98#u8, 101#u8, 32#u8, 97#u8, 99#u8,
+        116#u8, 101#u8, 100#u8, 32#u8, 117#u8, 112#u8, 111#u8, 110#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 15#u16,
+      uuid := 281470681743385#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 7#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_receiver_group]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 480:0-493:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_receiver_group
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 114#u8, 101#u8, 99#u8,
+        101#u8, 105#u8, 118#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 105#u8,
+        115#u8, 32#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 101#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 13#u16,
+      uuid := 281470681743640#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_receiver]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 464:0-477:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_receiver
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        87#u8, 104#u8, 111#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 65#u8,
+        67#u8, 80#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 101#u8,
+        115#u8, 32#u8, 116#u8, 111#u8, 44#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        115#u8, 116#u8, 114#u8, 97#u8, 105#u8, 110#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 111#u8, 114#u8, 32#u8, 97#u8, 108#u8, 108#u8, 111#u8, 119#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 112#u8, 101#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 12#u16,
+      uuid := 281470681743384#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 7#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_acp_enable]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 448:0-461:1
+    Visibility: public -/
+def schema_catalog.system_attr_acp_enable
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 124#usize [
+        65#u8, 32#u8, 102#u8, 108#u8, 97#u8, 103#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 100#u8, 101#u8, 116#u8, 101#u8, 114#u8, 109#u8, 105#u8, 110#u8,
+        101#u8, 32#u8, 105#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        32#u8, 65#u8, 67#u8, 80#u8, 32#u8, 105#u8, 115#u8, 32#u8, 97#u8, 99#u8,
+        116#u8, 105#u8, 118#u8, 101#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8,
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 46#u8, 32#u8, 84#u8, 114#u8, 117#u8, 101#u8, 32#u8,
+        105#u8, 115#u8, 32#u8, 101#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8,
+        100#u8, 44#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 101#u8, 110#u8,
+        102#u8, 111#u8, 114#u8, 99#u8, 101#u8, 100#u8, 46#u8, 32#u8, 70#u8,
+        97#u8, 108#u8, 115#u8, 101#u8, 32#u8, 105#u8, 115#u8, 32#u8, 99#u8,
+        104#u8, 101#u8, 99#u8, 107#u8, 101#u8, 100#u8, 32#u8, 98#u8, 117#u8,
+        116#u8, 32#u8, 110#u8, 111#u8, 116#u8, 32#u8, 101#u8, 110#u8, 102#u8,
+        111#u8, 114#u8, 99#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 6#u16,
+      uuid := 281470681743383#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_excludes]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 432:0-445:1
+    Visibility: public -/
+def schema_catalog.system_attr_excludes
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 85#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8,
+        102#u8, 105#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 97#u8, 114#u8, 101#u8, 32#u8, 100#u8, 101#u8, 110#u8,
+        105#u8, 101#u8, 100#u8, 32#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8,
+        110#u8, 99#u8, 101#u8, 32#u8, 105#u8, 110#u8, 32#u8, 99#u8, 111#u8,
+        110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 61#u16,
+      uuid := 281470681743620#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_system_excludes]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 416:0-429:1
+    Visibility: public -/
+def schema_catalog.system_attr_system_excludes
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 69#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 97#u8, 114#u8, 101#u8, 32#u8, 100#u8,
+        101#u8, 110#u8, 105#u8, 101#u8, 100#u8, 32#u8, 112#u8, 114#u8, 101#u8,
+        115#u8, 101#u8, 110#u8, 99#u8, 101#u8, 32#u8, 105#u8, 110#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 110#u8, 101#u8, 99#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 164#u16,
+      uuid := 281470681743619#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_supplements]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 400:0-413:1
+    Visibility: public -/
+def schema_catalog.system_attr_supplements
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 110#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8,
+        102#u8, 105#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 44#u8, 32#u8, 119#u8, 104#u8,
+        101#u8, 114#u8, 101#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        100#u8, 101#u8, 116#u8, 101#u8, 114#u8, 109#u8, 105#u8, 110#u8, 101#u8,
+        115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 97#u8, 116#u8,
+        32#u8, 108#u8, 101#u8, 97#u8, 115#u8, 116#u8, 32#u8, 111#u8, 110#u8,
+        101#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 32#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8,
+        115#u8, 117#u8, 112#u8, 112#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8,
+        116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 116#u8, 121#u8,
+        112#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := 154#u16,
+      uuid := 281470681743618#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_system_supplements]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 384:0-397:1
+    Visibility: public -/
+def schema_catalog.system_attr_system_supplements
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 97#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        116#u8, 121#u8, 112#u8, 101#u8, 32#u8, 115#u8, 117#u8, 112#u8, 112#u8,
+        108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 115#u8, 44#u8, 32#u8,
+        119#u8, 104#u8, 101#u8, 114#u8, 101#u8, 32#u8, 116#u8, 104#u8, 105#u8,
+        115#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 99#u8,
+        97#u8, 110#u8, 39#u8, 116#u8, 32#u8, 101#u8, 120#u8, 105#u8, 115#u8,
+        116#u8, 32#u8, 119#u8, 105#u8, 116#u8, 104#u8, 111#u8, 117#u8, 116#u8,
+        32#u8, 116#u8, 104#u8, 101#u8, 105#u8, 114#u8, 32#u8, 112#u8, 114#u8,
+        101#u8, 115#u8, 101#u8, 110#u8, 99#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 167#u16,
+      uuid := 281470681743617#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_must]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 368:0-381:1
+    Visibility: public -/
+def schema_catalog.system_attr_must
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 68#usize [
+        65#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 109#u8, 111#u8,
+        100#u8, 105#u8, 102#u8, 105#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        108#u8, 105#u8, 115#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8, 114#u8,
+        101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8, 97#u8,
+        116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 115#u8,
+        116#u8, 111#u8, 114#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 99#u16,
+      uuid := 281470681743377#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_system_must]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 352:0-365:1
+    Visibility: public -/
+def schema_catalog.system_attr_system_must
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 68#usize [
+        65#u8, 32#u8, 108#u8, 105#u8, 115#u8, 116#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 112#u8,
+        114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 100#u8, 32#u8, 114#u8,
+        101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 32#u8, 97#u8,
+        116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 115#u8,
+        116#u8, 111#u8, 114#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 166#u16,
+      uuid := 281470681743376#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_may]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 336:0-349:1
+    Visibility: public -/
+def schema_catalog.system_attr_may
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        65#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 109#u8, 111#u8,
+        100#u8, 105#u8, 102#u8, 105#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8,
+        108#u8, 105#u8, 115#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8, 111#u8,
+        112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 97#u8, 108#u8, 32#u8, 97#u8,
+        116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8, 115#u8, 116#u8,
+        111#u8, 114#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 94#u16,
+      uuid := 281470681743369#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_system_may]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 320:0-333:1
+    Visibility: public -/
+def schema_catalog.system_attr_system_may
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        65#u8, 32#u8, 108#u8, 105#u8, 115#u8, 116#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 112#u8,
+        114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 100#u8, 32#u8, 111#u8,
+        112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 97#u8, 108#u8, 32#u8, 97#u8,
+        116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8, 115#u8, 116#u8,
+        111#u8, 114#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 165#u16,
+      uuid := 281470681743368#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_syntax]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 304:0-317:1
+    Visibility: public -/
+def schema_catalog.system_attr_syntax
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 73#usize [
+        68#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 98#u8, 101#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 115#u8, 121#u8, 110#u8, 116#u8, 97#u8,
+        120#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+        101#u8, 46#u8, 32#u8, 84#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8,
+        102#u8, 102#u8, 101#u8, 99#u8, 116#u8, 115#u8, 32#u8, 105#u8, 110#u8,
+        100#u8, 101#u8, 120#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 115#u8, 111#u8, 114#u8, 116#u8, 105#u8, 110#u8, 103#u8,
+        46#u8
+        ])
+  ok
+    {
+      «name» := 163#u16,
+      uuid := 281470681743367#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 4#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_indexed]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 288:0-301:1
+    Visibility: public -/
+def schema_catalog.system_attr_indexed
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 82#usize [
+        65#u8, 32#u8, 98#u8, 111#u8, 111#u8, 108#u8, 101#u8, 97#u8, 110#u8,
+        32#u8, 115#u8, 116#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        105#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8,
+        116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8,
+        119#u8, 105#u8, 108#u8, 108#u8, 32#u8, 98#u8, 101#u8, 32#u8, 105#u8,
+        110#u8, 100#u8, 101#u8, 120#u8, 101#u8, 100#u8, 32#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 114#u8, 100#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 105#u8, 116#u8, 115#u8, 32#u8, 115#u8, 121#u8, 110#u8,
+        116#u8, 97#u8, 120#u8, 32#u8, 114#u8, 117#u8, 108#u8, 101#u8, 115#u8,
+        46#u8
+        ])
+  ok
+    {
+      «name» := 73#u16,
+      uuid := 281470681743752#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_index]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 272:0-285:1
+    Visibility: public -/
+def schema_catalog.system_attr_index
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        68#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 98#u8, 101#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8,
+        101#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 112#u8, 112#u8,
+        108#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 105#u8, 110#u8, 115#u8,
+        116#u8, 97#u8, 110#u8, 99#u8, 101#u8, 115#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 116#u8, 116#u8,
+        114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 72#u16,
+      uuid := 281470681743366#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 5#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_unique]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 256:0-269:1
+    Visibility: public -/
+def schema_catalog.system_attr_unique
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        73#u8, 102#u8, 32#u8, 116#u8, 114#u8, 117#u8, 101#u8, 44#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8,
+        105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 109#u8, 117#u8, 115#u8,
+        116#u8, 32#u8, 115#u8, 116#u8, 111#u8, 114#u8, 101#u8, 32#u8, 97#u8,
+        32#u8, 117#u8, 110#u8, 105#u8, 113#u8, 117#u8, 101#u8, 32#u8, 118#u8,
+        97#u8, 108#u8, 117#u8, 101#u8, 32#u8, 116#u8, 104#u8, 114#u8, 111#u8,
+        117#u8, 103#u8, 104#u8, 32#u8, 111#u8, 117#u8, 116#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 98#u8, 97#u8,
+        115#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 171#u16,
+      uuid := 281470681743431#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_replicated]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 240:0-253:1
+    Visibility: public -/
+def schema_catalog.system_attr_replicated
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        73#u8, 102#u8, 32#u8, 116#u8, 114#u8, 117#u8, 101#u8, 44#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8,
+        105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 111#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 98#u8, 121#u8, 32#u8, 114#u8, 101#u8, 112#u8, 108#u8, 105#u8,
+        99#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 98#u8, 101#u8, 116#u8,
+        119#u8, 101#u8, 101#u8, 110#u8, 32#u8, 110#u8, 111#u8, 100#u8, 101#u8,
+        115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        116#u8, 111#u8, 112#u8, 111#u8, 108#u8, 111#u8, 103#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 144#u16,
+      uuid := 281470681743657#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_sync_allowed]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 224:0-237:1
+    Visibility: public -/
+def schema_catalog.system_attr_sync_allowed
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        73#u8, 102#u8, 32#u8, 116#u8, 114#u8, 117#u8, 101#u8, 44#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8,
+        105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 111#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 98#u8, 121#u8, 32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 104#u8,
+        114#u8, 111#u8, 110#u8, 105#u8, 115#u8, 101#u8, 100#u8, 32#u8, 98#u8,
+        121#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 115#u8, 99#u8, 105#u8, 109#u8,
+        32#u8, 105#u8, 109#u8, 112#u8, 111#u8, 114#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 155#u16,
+      uuid := 281470681743653#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_phantom]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 208:0-221:1
+    Visibility: public -/
+def schema_catalog.system_attr_phantom
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 117#usize [
+        73#u8, 102#u8, 32#u8, 116#u8, 114#u8, 117#u8, 101#u8, 44#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8,
+        105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 109#u8, 117#u8, 115#u8,
+        116#u8, 32#u8, 78#u8, 79#u8, 84#u8, 32#u8, 98#u8, 101#u8, 32#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 97#u8, 110#u8, 121#u8, 32#u8, 109#u8, 97#u8, 121#u8,
+        47#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 115#u8, 101#u8, 116#u8,
+        115#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 32#u8, 97#u8, 115#u8, 46#u8, 32#u8, 84#u8,
+        104#u8, 105#u8, 115#u8, 32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8,
+        115#u8, 101#u8, 110#u8, 116#u8, 115#u8, 32#u8, 103#u8, 101#u8, 110#u8,
+        101#u8, 114#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 137#u16,
+      uuid := 281470681743460#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_multi_value]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 192:0-205:1
+    Visibility: public -/
+def schema_catalog.system_attr_multi_value
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 89#usize [
+        73#u8, 102#u8, 32#u8, 116#u8, 114#u8, 117#u8, 101#u8, 44#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8,
+        105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 105#u8, 115#u8, 32#u8,
+        97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 115#u8,
+        116#u8, 111#u8, 114#u8, 101#u8, 32#u8, 109#u8, 117#u8, 108#u8, 116#u8,
+        105#u8, 112#u8, 108#u8, 101#u8, 32#u8, 118#u8, 97#u8, 108#u8, 117#u8,
+        101#u8, 115#u8, 32#u8, 114#u8, 97#u8, 116#u8, 104#u8, 101#u8, 114#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 110#u8, 32#u8, 106#u8, 117#u8, 115#u8,
+        116#u8, 32#u8, 97#u8, 32#u8, 115#u8, 105#u8, 110#u8, 103#u8, 108#u8,
+        101#u8, 32#u8, 118#u8, 97#u8, 108#u8, 117#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 98#u16,
+      uuid := 281470681743365#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_description]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 176:0-189:1
+    Visibility: public -/
+def schema_catalog.system_attr_description
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        65#u8, 32#u8, 100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8,
+        110#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+        116#u8, 101#u8, 44#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 32#u8, 111#u8, 114#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8
+        ])
+  ok
+    {
+      «name» := 37#u16,
+      uuid := 281470681743364#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_class_name]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 160:0-173:1
+    Visibility: public -/
+def schema_catalog.system_attr_class_name
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8,
+        109#u8, 97#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 30#u16,
+      uuid := 281470681743433#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_attribute_name]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 144:0-157:1
+    Visibility: public -/
+def schema_catalog.system_attr_attribute_name
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 115#u8, 99#u8, 104#u8, 101#u8,
+        109#u8, 97#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8,
+        117#u8, 116#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := 21#u16,
+      uuid := 281470681743432#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_spn]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 128:0-141:1
+    Visibility: public -/
+def schema_catalog.system_attr_spn
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 73#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 83#u8, 101#u8, 99#u8, 117#u8, 114#u8,
+        105#u8, 116#u8, 121#u8, 32#u8, 80#u8, 114#u8, 105#u8, 110#u8, 99#u8,
+        105#u8, 112#u8, 97#u8, 108#u8, 32#u8, 78#u8, 97#u8, 109#u8, 101#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8, 32#u8, 111#u8, 98#u8,
+        106#u8, 101#u8, 99#u8, 116#u8, 44#u8, 32#u8, 117#u8, 110#u8, 105#u8,
+        113#u8, 117#u8, 101#u8, 32#u8, 97#u8, 99#u8, 114#u8, 111#u8, 115#u8,
+        115#u8, 32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 116#u8, 114#u8, 117#u8, 115#u8, 116#u8,
+        115#u8
+        ])
+  ok
+    {
+      «name» := 151#u16,
+      uuid := 281470681743363#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 11#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_name]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 112:0-125:1
+    Visibility: public -/
+def schema_catalog.system_attr_name
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 104#u8, 111#u8, 114#u8, 116#u8,
+        102#u8, 111#u8, 114#u8, 109#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8, 32#u8, 111#u8, 98#u8,
+        106#u8, 101#u8, 99#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 100#u16,
+      uuid := 281470681743362#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 14#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_last_modified_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 96:0-109:1
+    Visibility: public -/
+def schema_catalog.system_attr_last_modified_cid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 41#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 105#u8, 100#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 108#u8, 97#u8, 115#u8,
+        116#u8, 32#u8, 99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8, 32#u8,
+        116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 111#u8,
+        98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 81#u16,
+      uuid := 281470681743459#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 13#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_created_at_cid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 80:0-93:1
+    Visibility: public -/
+def schema_catalog.system_attr_created_at_cid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 105#u8, 100#u8, 32#u8, 119#u8,
+        104#u8, 101#u8, 110#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 119#u8, 97#u8, 115#u8,
+        32#u8, 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8, 100#u8
+        ])
+  ok
+    {
+      «name» := 32#u16,
+      uuid := 281470681743748#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := false,
+      indexed := false,
+      «syntax» := 13#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_source_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 64:0-77:1
+    Visibility: public -/
+def schema_catalog.system_attr_source_uuid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8, 118#u8, 101#u8,
+        114#u8, 115#u8, 97#u8, 108#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8,
+        117#u8, 101#u8, 32#u8, 105#u8, 100#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+        101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 40#u8,
+        115#u8, 41#u8, 32#u8, 119#u8, 104#u8, 105#u8, 99#u8, 104#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 102#u8, 108#u8, 105#u8, 99#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 119#u8, 105#u8, 116#u8, 104#u8, 32#u8, 116#u8, 104#u8,
+        105#u8, 115#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 150#u16,
+      uuid := 281470681743680#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 48:0-61:1
+    Visibility: public -/
+def schema_catalog.system_attr_uuid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8, 118#u8, 101#u8,
+        114#u8, 115#u8, 97#u8, 108#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8,
+        117#u8, 101#u8, 32#u8, 105#u8, 100#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8
+        ])
+  ok
+    {
+      «name» := 175#u16,
+      uuid := 281470681743361#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_attr_class]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 32:0-45:1
+    Visibility: public -/
+def schema_catalog.system_attr_class
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 101#u8, 115#u8,
+        32#u8, 100#u8, 101#u8, 102#u8, 105#u8, 110#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 110#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8
+        ])
+  ok
+    {
+      «name» := 29#u16,
+      uuid := 281470681743360#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::migration_catalog::system_attributes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 3:0-75:47
+    Visibility: public -/
+def migration_catalog.system_attributes
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.system_attr_class
+  let ar1 ← schema_catalog.system_attr_uuid
+  let ar2 ← schema_catalog.system_attr_source_uuid
+  let ar3 ← schema_catalog.system_attr_created_at_cid
+  let ar4 ← schema_catalog.system_attr_last_modified_cid
+  let ar5 ← schema_catalog.system_attr_name
+  let ar6 ← schema_catalog.system_attr_spn
+  let ar7 ← schema_catalog.system_attr_attribute_name
+  let ar8 ← schema_catalog.system_attr_class_name
+  let ar9 ← schema_catalog.system_attr_description
+  let ar10 ← schema_catalog.system_attr_multi_value
+  let ar11 ← schema_catalog.system_attr_phantom
+  let ar12 ← schema_catalog.system_attr_sync_allowed
+  let ar13 ← schema_catalog.system_attr_replicated
+  let ar14 ← schema_catalog.system_attr_unique
+  let ar15 ← schema_catalog.system_attr_index
+  let ar16 ← schema_catalog.system_attr_indexed
+  let ar17 ← schema_catalog.system_attr_syntax
+  let ar18 ← schema_catalog.system_attr_system_may
+  let ar19 ← schema_catalog.system_attr_may
+  let ar20 ← schema_catalog.system_attr_system_must
+  let ar21 ← schema_catalog.system_attr_must
+  let ar22 ← schema_catalog.system_attr_system_supplements
+  let ar23 ← schema_catalog.system_attr_supplements
+  let ar24 ← schema_catalog.system_attr_system_excludes
+  let ar25 ← schema_catalog.system_attr_excludes
+  let ar26 ← schema_catalog.system_attr_acp_enable
+  let ar27 ← schema_catalog.system_attr_acp_receiver
+  let ar28 ← schema_catalog.system_attr_acp_receiver_group
+  let ar29 ← schema_catalog.system_attr_acp_target_scope
+  let ar30 ← schema_catalog.system_attr_acp_search_attr
+  let ar31 ← schema_catalog.system_attr_acp_create_class
+  let ar32 ← schema_catalog.system_attr_acp_create_attr
+  let ar33 ← schema_catalog.system_attr_acp_modify_removed_attr
+  let ar34 ← schema_catalog.system_attr_acp_modify_present_attr
+  let ar35 ← schema_catalog.system_attr_acp_modify_class
+  let ar36 ← schema_catalog.system_attr_acp_modify_present_class
+  let ar37 ← schema_catalog.system_attr_acp_modify_remove_class
+  let ar38 ← schema_catalog.system_attr_entry_managed_by
+  let ar39 ← schema_catalog.system_attr_member_of
+  let ar40 ← schema_catalog.system_attr_direct_member_of
+  let ar41 ← schema_catalog.system_attr_recycled_direct_member_of
+  let ar42 ← schema_catalog.system_attr_member
+  let ar43 ← schema_catalog.system_attr_dyn_member
+  let ar44 ← schema_catalog.system_attr_refers
+  let ar45 ← schema_catalog.system_attr_cascade_deleted
+  let ar46 ← schema_catalog.system_attr_version
+  let ar47 ← schema_catalog.system_attr_domain
+  let ar48 ← schema_catalog.system_attr_claim
+  let ar49 ← schema_catalog.system_attr_scope
+  let ar50 ← schema_catalog.system_attr_sync_external_id
+  let ar51 ← schema_catalog.system_attr_sync_parent_uuid
+  let ar52 ← schema_catalog.system_attr_sync_class
+  let ar53 ← schema_catalog.system_attr_password_import
+  let ar54 ← schema_catalog.system_attr_unix_password_import
+  let ar55 ← schema_catalog.system_attr_totp_import
+  let ar56 ← schema_catalog.system_attr_dn
+  let ar57 ← schema_catalog.system_attr_entry_dn
+  let ar58 ← schema_catalog.system_attr_entry_uuid
+  let ar59 ← schema_catalog.system_attr_object_class
+  let ar60 ← schema_catalog.system_attr_cn
+  let ar61 ← schema_catalog.system_attr_ldap_keys
+  let ar62 ← schema_catalog.system_attr_ldap_ssh_public_keys
+  let ar63 ← schema_catalog.system_attr_email
+  let ar64 ← schema_catalog.system_attr_email_primary
+  let ar65 ← schema_catalog.system_attr_email_alternative
+  let ar66 ← schema_catalog.system_attr_ldap_email_address
+  let ar67 ← schema_catalog.system_attr_gecos
+  let ar68 ← schema_catalog.system_attr_uid
+  let ar69 ← schema_catalog.system_attr_uid_number
+  let ar70 ← schema_catalog.system_attr_sudo_host
+  let ar71 ← schema_catalog.system_attr_home_directory
+  alloc.vec.FromVecArray.from
+    (Array.make 72#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71
+      ])
+
+/-- [kanidm_kernel::schema_catalog::ClassRecord]
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 16:0-29:1
+    Visibility: public -/
+structure schema_catalog.ClassRecord where
+  «name» : alloc.vec.Vec Std.U8
+  uuid : Std.U128
+  description : alloc.vec.Vec Std.U8
+  sync_allowed : Bool
+  systemmay : alloc.vec.Vec Std.U16
+  may : alloc.vec.Vec Std.U16
+  systemmust : alloc.vec.Vec Std.U16
+  must : alloc.vec.Vec Std.U16
+  systemsupplements : alloc.vec.Vec Std.U8
+  supplements : alloc.vec.Vec Std.U8
+  systemexcludes : alloc.vec.Vec Std.U8
+  excludes : alloc.vec.Vec Std.U8
+
+/-- [kanidm_kernel::schema_catalog::system_class_sync_object]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1526:0-1541:1
+    Visibility: public -/
+def schema_catalog.system_class_sync_object
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 105#usize [
+        65#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 100#u8,
+        101#u8, 110#u8, 111#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 121#u8, 32#u8, 105#u8, 115#u8, 32#u8, 115#u8, 121#u8,
+        110#u8, 99#u8, 104#u8, 114#u8, 111#u8, 110#u8, 105#u8, 115#u8, 101#u8,
+        100#u8, 32#u8, 102#u8, 114#u8, 111#u8, 109#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8,
+        32#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 46#u8, 32#u8,
+        84#u8, 104#u8, 105#u8, 115#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8,
+        121#u8, 32#u8, 109#u8, 97#u8, 121#u8, 32#u8, 110#u8, 111#u8, 116#u8,
+        32#u8, 98#u8, 101#u8, 32#u8, 109#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        105#u8, 97#u8, 98#u8, 108#u8, 101#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 159#u16, 156#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 160#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743651#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_system]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1508:0-1523:1
+    Visibility: public -/
+def schema_catalog.system_class_system
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 98#usize [
+        65#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 100#u8,
+        101#u8, 110#u8, 111#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 97#u8, 32#u8, 116#u8, 121#u8, 112#u8,
+        101#u8, 32#u8, 105#u8, 115#u8, 32#u8, 115#u8, 121#u8, 115#u8, 116#u8,
+        101#u8, 109#u8, 32#u8, 103#u8, 101#u8, 110#u8, 101#u8, 114#u8, 97#u8,
+        116#u8, 101#u8, 100#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 112#u8,
+        114#u8, 111#u8, 116#u8, 101#u8, 99#u8, 116#u8, 101#u8, 100#u8, 46#u8,
+        32#u8, 73#u8, 116#u8, 32#u8, 104#u8, 97#u8, 115#u8, 32#u8, 115#u8,
+        112#u8, 101#u8, 99#u8, 105#u8, 97#u8, 108#u8, 32#u8, 105#u8, 110#u8,
+        116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 98#u8, 101#u8,
+        104#u8, 97#u8, 118#u8, 105#u8, 111#u8, 117#u8, 114#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743417#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v3,
+      systemexcludes := v3,
+      excludes := v3
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_countrol_target_scope]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1490:0-1505:1
+    Visibility: public -/
+def schema_catalog.system_class_access_countrol_target_scope
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 116#u8, 97#u8, 114#u8,
+        103#u8, 101#u8, 116#u8, 95#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 44#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 80#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 32#u8, 84#u8, 97#u8, 114#u8, 103#u8, 101#u8, 116#u8,
+        32#u8, 45#u8, 32#u8, 83#u8, 99#u8, 111#u8, 112#u8, 101#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 15#u16 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 112#u8, 114#u8,
+        111#u8, 102#u8, 105#u8, 108#u8, 101#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743701#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_receiver_group]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1472:0-1487:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_receiver_group
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 114#u8, 101#u8, 99#u8,
+        101#u8, 105#u8, 118#u8, 101#u8, 114#u8, 95#u8, 103#u8, 114#u8, 111#u8,
+        117#u8, 112#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 80#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 32#u8, 82#u8, 101#u8, 99#u8, 101#u8, 105#u8, 118#u8,
+        101#u8, 114#u8, 32#u8, 45#u8, 32#u8, 71#u8, 114#u8, 111#u8, 117#u8,
+        112#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 12#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 13#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 112#u8, 114#u8,
+        111#u8, 102#u8, 105#u8, 108#u8, 101#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v7 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 39#usize [
+        37#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 114#u8, 101#u8,
+        99#u8, 101#u8, 105#u8, 118#u8, 101#u8, 114#u8, 95#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743699#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v7,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_receiver_entry_manager]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1454:0-1469:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_receiver_entry_manager
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 114#u8, 101#u8, 99#u8,
+        101#u8, 105#u8, 118#u8, 101#u8, 114#u8, 95#u8, 101#u8, 110#u8, 116#u8,
+        114#u8, 121#u8, 95#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8,
+        114#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 80#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 32#u8, 82#u8, 101#u8, 99#u8, 101#u8, 105#u8, 118#u8,
+        101#u8, 114#u8, 32#u8, 45#u8, 32#u8, 69#u8, 110#u8, 116#u8, 114#u8,
+        121#u8, 32#u8, 77#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8, 114#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        22#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 112#u8, 114#u8,
+        111#u8, 102#u8, 105#u8, 108#u8, 101#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        29#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 114#u8, 101#u8,
+        99#u8, 101#u8, 105#u8, 118#u8, 101#u8, 114#u8, 95#u8, 103#u8, 114#u8,
+        111#u8, 117#u8, 112#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743700#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v5,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_profile]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1436:0-1451:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_profile
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 112#u8, 114#u8, 111#u8,
+        102#u8, 105#u8, 108#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 80#u8, 114#u8, 111#u8, 102#u8, 105#u8,
+        108#u8, 101#u8, 32#u8, 67#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 2#usize [ 6#u16, 37#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 92#usize [
+        21#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 115#u8, 101#u8,
+        97#u8, 114#u8, 99#u8, 104#u8, 21#u8, 0#u8, 97#u8, 99#u8, 99#u8, 101#u8,
+        115#u8, 115#u8, 95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 111#u8,
+        108#u8, 95#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 21#u8,
+        0#u8, 97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8,
+        111#u8, 110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 109#u8, 111#u8,
+        100#u8, 105#u8, 102#u8, 121#u8, 21#u8, 0#u8, 97#u8, 99#u8, 99#u8,
+        101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8, 110#u8, 116#u8, 114#u8,
+        111#u8, 108#u8, 95#u8, 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743412#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_create]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1418:0-1433:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_create
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 67#u8, 114#u8, 101#u8, 97#u8, 116#u8,
+        101#u8, 32#u8, 67#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 2#usize [ 5#u16, 4#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743416#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_modify]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1400:0-1415:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_modify
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 109#u8, 111#u8, 100#u8,
+        105#u8, 102#u8, 121#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 77#u8, 111#u8, 100#u8, 105#u8, 102#u8,
+        121#u8, 32#u8, 67#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 11#u16, 8#u16, 7#u16, 9#u16, 10#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743415#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_delete]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1382:0-1397:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_delete
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 68#u8, 69#u8, 76#u8, 69#u8, 84#u8,
+        69#u8, 32#u8, 67#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743414#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v3,
+      systemexcludes := v3,
+      excludes := v3
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_access_control_search]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1364:0-1379:1
+    Visibility: public -/
+def schema_catalog.system_class_access_control_search
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 116#u8, 114#u8, 111#u8, 108#u8, 95#u8, 115#u8, 101#u8, 97#u8,
+        114#u8, 99#u8, 104#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 65#u8, 99#u8,
+        99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 67#u8, 111#u8, 110#u8, 116#u8,
+        114#u8, 111#u8, 108#u8, 32#u8, 83#u8, 101#u8, 97#u8, 114#u8, 99#u8,
+        104#u8, 32#u8, 67#u8, 108#u8, 97#u8, 115#u8, 115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 14#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743413#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_system_info]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1346:0-1361:1
+    Visibility: public -/
+def schema_catalog.system_class_system_info
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 95#u8, 105#u8, 110#u8,
+        102#u8, 111#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        83#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 109#u8, 101#u8,
+        116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8, 32#u8, 111#u8, 98#u8,
+        106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 176#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743411#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_conflict]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1328:0-1343:1
+    Visibility: public -/
+def schema_catalog.system_class_conflict
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 111#u8, 110#u8, 102#u8, 108#u8, 105#u8, 99#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 64#usize [
+        65#u8, 110#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8,
+        114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 108#u8,
+        105#u8, 99#u8, 116#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8,
+        32#u8, 111#u8, 99#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 100#u8,
+        32#u8, 100#u8, 117#u8, 114#u8, 105#u8, 110#u8, 103#u8, 32#u8, 114#u8,
+        101#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 150#u16 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        8#u8, 0#u8, 114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8,
+        100#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743673#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_tombstone]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1310:0-1325:1
+    Visibility: public -/
+def schema_catalog.system_class_tombstone
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        116#u8, 111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 122#usize [
+        65#u8, 110#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 105#u8, 115#u8, 32#u8,
+        112#u8, 117#u8, 114#u8, 103#u8, 101#u8, 100#u8, 32#u8, 102#u8, 114#u8,
+        111#u8, 109#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 114#u8, 101#u8,
+        99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 32#u8, 98#u8, 105#u8, 110#u8,
+        46#u8, 32#u8, 84#u8, 104#u8, 105#u8, 115#u8, 32#u8, 105#u8, 115#u8,
+        32#u8, 97#u8, 32#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8,
+        32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8,
+        32#u8, 115#u8, 116#u8, 97#u8, 116#u8, 101#u8, 46#u8, 32#u8, 84#u8,
+        111#u8, 109#u8, 98#u8, 115#u8, 116#u8, 111#u8, 110#u8, 101#u8, 115#u8,
+        32#u8, 104#u8, 97#u8, 118#u8, 101#u8, 32#u8, 110#u8, 111#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        115#u8, 32#u8, 98#u8, 101#u8, 115#u8, 105#u8, 100#u8, 101#u8, 32#u8,
+        85#u8, 85#u8, 73#u8, 68#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 29#u16, 175#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743410#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_recycled]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1292:0-1307:1
+    Visibility: public -/
+def schema_catalog.system_class_recycled
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        114#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 133#usize [
+        65#u8, 110#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 104#u8, 97#u8, 115#u8,
+        32#u8, 98#u8, 101#u8, 101#u8, 110#u8, 32#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 101#u8, 100#u8, 44#u8, 32#u8, 98#u8, 117#u8, 116#u8,
+        32#u8, 115#u8, 116#u8, 105#u8, 108#u8, 108#u8, 32#u8, 114#u8, 101#u8,
+        99#u8, 111#u8, 118#u8, 101#u8, 114#u8, 97#u8, 98#u8, 108#u8, 101#u8,
+        32#u8, 118#u8, 105#u8, 97#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        114#u8, 101#u8, 118#u8, 105#u8, 118#u8, 101#u8, 32#u8, 111#u8, 112#u8,
+        101#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 46#u8, 32#u8,
+        82#u8, 101#u8, 99#u8, 121#u8, 99#u8, 108#u8, 101#u8, 100#u8, 32#u8,
+        111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 115#u8, 32#u8, 97#u8,
+        114#u8, 101#u8, 32#u8, 110#u8, 111#u8, 116#u8, 32#u8, 109#u8, 111#u8,
+        100#u8, 105#u8, 102#u8, 105#u8, 97#u8, 98#u8, 108#u8, 101#u8, 44#u8,
+        32#u8, 111#u8, 110#u8, 108#u8, 121#u8, 32#u8, 114#u8, 101#u8, 118#u8,
+        105#u8, 118#u8, 97#u8, 98#u8, 108#u8, 101#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 142#u16, 26#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743409#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_extensible_object]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1274:0-1289:1
+    Visibility: public -/
+def schema_catalog.system_class_extensible_object
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 115#u8, 105#u8, 98#u8, 108#u8,
+        101#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 60#usize [
+        65#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8,
+        104#u8, 97#u8, 115#u8, 32#u8, 103#u8, 114#u8, 101#u8, 101#u8, 110#u8,
+        32#u8, 104#u8, 97#u8, 105#u8, 114#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 116#u8, 117#u8, 114#u8, 110#u8, 115#u8, 32#u8, 111#u8, 102#u8,
+        102#u8, 32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 114#u8, 117#u8, 108#u8,
+        101#u8, 115#u8, 32#u8, 46#u8, 46#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743401#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v3,
+      systemexcludes := v3,
+      excludes := v3
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_member_of]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1256:0-1271:1
+    Visibility: public -/
+def schema_catalog.system_class_member_of
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 111#u8, 102#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 91#usize [
+        67#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 105#u8, 115#u8, 32#u8, 100#u8, 121#u8, 110#u8, 97#u8,
+        109#u8, 105#u8, 99#u8, 97#u8, 108#u8, 108#u8, 121#u8, 32#u8, 97#u8,
+        100#u8, 100#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 114#u8,
+        101#u8, 99#u8, 105#u8, 112#u8, 105#u8, 101#u8, 110#u8, 116#u8, 115#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 32#u8, 111#u8, 114#u8, 32#u8, 100#u8, 105#u8,
+        114#u8, 101#u8, 99#u8, 116#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 111#u8, 102#u8, 46#u8, 32#u8, 84#u8, 79#u8, 32#u8, 66#u8,
+        69#u8, 32#u8, 82#u8, 69#u8, 77#u8, 79#u8, 86#u8, 69#u8, 68#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743408#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v3,
+      systemexcludes := v3,
+      excludes := v3
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_builtin]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1238:0-1253:1
+    Visibility: public -/
+def schema_catalog.system_class_builtin
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        98#u8, 117#u8, 105#u8, 108#u8, 116#u8, 105#u8, 110#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 39#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 100#u8, 101#u8, 110#u8,
+        111#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 98#u8, 117#u8, 105#u8,
+        108#u8, 116#u8, 105#u8, 110#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8,
+        105#u8, 101#u8, 115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743715#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v3,
+      systemexcludes := v3,
+      excludes := v3
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_object]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1220:0-1235:1
+    Visibility: public -/
+def schema_catalog.system_class_object
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        65#u8, 32#u8, 115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 32#u8,
+        99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8,
+        32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8, 115#u8, 32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 116#u8, 97#u8, 105#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 37#u16, 58#u16, 96#u16, 38#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 29#u16, 175#u16, 81#u16, 32#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743400#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_class_type]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1202:0-1217:1
+    Visibility: public -/
+def schema_catalog.system_class_class_type
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 116#u8, 121#u8, 112#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        68#u8, 101#u8, 102#u8, 105#u8, 110#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 115#u8, 99#u8,
+        104#u8, 101#u8, 109#u8, 97#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 116#u8, 121#u8, 112#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        155#u16, 165#u16, 94#u16, 166#u16, 99#u16, 167#u16, 154#u16, 164#u16,
+        61#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 29#u16, 30#u16, 37#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        13#u8, 0#u8, 97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8,
+        116#u8, 101#u8, 116#u8, 121#u8, 112#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743399#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::system_class_attribute_type]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1184:0-1199:1
+    Visibility: public -/
+def schema_catalog.system_class_attribute_type
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        116#u8, 121#u8, 112#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        68#u8, 101#u8, 102#u8, 105#u8, 110#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 115#u8, 99#u8,
+        104#u8, 101#u8, 109#u8, 97#u8, 32#u8, 97#u8, 116#u8, 116#u8, 114#u8,
+        105#u8, 98#u8, 117#u8, 116#u8, 101#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 144#u16, 137#u16, 155#u16, 72#u16, 73#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 29#u16, 21#u16, 98#u16, 171#u16, 163#u16, 37#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        9#u8, 0#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 116#u8, 121#u8,
+        112#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743398#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::migration_catalog::system_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 76:0-96:45
+    Visibility: public -/
+def migration_catalog.system_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.system_class_attribute_type
+  let cr1 ← schema_catalog.system_class_class_type
+  let cr2 ← schema_catalog.system_class_object
+  let cr3 ← schema_catalog.system_class_builtin
+  let cr4 ← schema_catalog.system_class_member_of
+  let cr5 ← schema_catalog.system_class_extensible_object
+  let cr6 ← schema_catalog.system_class_recycled
+  let cr7 ← schema_catalog.system_class_tombstone
+  let cr8 ← schema_catalog.system_class_conflict
+  let cr9 ← schema_catalog.system_class_system_info
+  let cr10 ← schema_catalog.system_class_access_control_search
+  let cr11 ← schema_catalog.system_class_access_control_delete
+  let cr12 ← schema_catalog.system_class_access_control_modify
+  let cr13 ← schema_catalog.system_class_access_control_create
+  let cr14 ← schema_catalog.system_class_access_control_profile
+  let cr15 ←
+    schema_catalog.system_class_access_control_receiver_entry_manager
+  let cr16 ← schema_catalog.system_class_access_control_receiver_group
+  let cr17 ← schema_catalog.system_class_access_countrol_target_scope
+  let cr18 ← schema_catalog.system_class_system
+  let cr19 ← schema_catalog.system_class_sync_object
+  alloc.vec.FromVecArray.from
+    (Array.make 20#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_application_url]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2808:0-2821:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_application_url
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 85#u8, 82#u8, 76#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 97#u8, 112#u8, 112#u8, 108#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 19#u16,
+      uuid := 281470681743763#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_application_password_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2792:0-2805:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_application_password_dl8
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8,
+        114#u8, 100#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 18#u16,
+      uuid := 281470681743747#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 41#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_certificate_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2776:0-2789:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_certificate_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        65#u8, 110#u8, 32#u8, 120#u8, 53#u8, 48#u8, 57#u8, 32#u8, 67#u8,
+        101#u8, 114#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        101#u8
+        ])
+  ok
+    {
+      «name» := 27#u16,
+      uuid := 281470681743736#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 40#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_allow_primary_cred_fallback_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2760:0-2773:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        65#u8, 108#u8, 108#u8, 111#u8, 119#u8, 32#u8, 102#u8, 97#u8, 108#u8,
+        108#u8, 98#u8, 97#u8, 99#u8, 107#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        112#u8, 114#u8, 105#u8, 109#u8, 97#u8, 114#u8, 121#u8, 32#u8, 112#u8,
+        97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8, 32#u8, 105#u8,
+        102#u8, 32#u8, 110#u8, 111#u8, 32#u8, 80#u8, 79#u8, 83#u8, 73#u8,
+        88#u8, 32#u8, 112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8,
+        100#u8, 32#u8, 101#u8, 120#u8, 105#u8, 115#u8, 116#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 16#u16,
+      uuid := 281470681743749#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_linked_group_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2744:0-2757:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_linked_group_dl8
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 39#usize [
+        65#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 101#u8, 110#u8,
+        99#u8, 101#u8, 32#u8, 108#u8, 105#u8, 110#u8, 107#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 97#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 90#u16,
+      uuid := 281470681743746#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_refers_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2728:0-2741:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_refers_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        65#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 101#u8, 110#u8,
+        99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 108#u8, 105#u8, 110#u8,
+        107#u8, 101#u8, 100#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8
+        ])
+  ok
+    {
+      «name» := 143#u16,
+      uuid := 281470681743735#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_allow_easter_eggs_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2712:0-2725:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 98#usize [
+        65#u8, 32#u8, 102#u8, 108#u8, 97#u8, 103#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 101#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 101#u8,
+        97#u8, 115#u8, 116#u8, 101#u8, 114#u8, 32#u8, 101#u8, 103#u8, 103#u8,
+        115#u8, 32#u8, 105#u8, 110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 32#u8, 116#u8, 104#u8,
+        97#u8, 116#u8, 32#u8, 109#u8, 97#u8, 121#u8, 32#u8, 110#u8, 111#u8,
+        116#u8, 32#u8, 97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8, 32#u8,
+        98#u8, 101#u8, 32#u8, 119#u8, 97#u8, 110#u8, 116#u8, 101#u8, 100#u8,
+        32#u8, 98#u8, 121#u8, 32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 117#u8,
+        115#u8, 101#u8, 114#u8, 115#u8, 47#u8, 100#u8, 101#u8, 112#u8, 108#u8,
+        111#u8, 121#u8, 109#u8, 101#u8, 110#u8, 116#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 43#u16,
+      uuid := 281470681743750#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_development_taint_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2696:0-2709:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_development_taint_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 117#usize [
+        65#u8, 32#u8, 102#u8, 108#u8, 97#u8, 103#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 115#u8, 104#u8, 111#u8, 119#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 104#u8, 97#u8, 115#u8, 32#u8, 98#u8,
+        101#u8, 101#u8, 110#u8, 32#u8, 114#u8, 117#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 32#u8, 97#u8, 32#u8, 100#u8, 101#u8, 118#u8, 101#u8, 108#u8,
+        111#u8, 112#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 98#u8, 117#u8,
+        105#u8, 108#u8, 100#u8, 44#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        119#u8, 105#u8, 108#u8, 108#u8, 32#u8, 110#u8, 101#u8, 101#u8, 100#u8,
+        32#u8, 97#u8, 100#u8, 100#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        97#u8, 108#u8, 32#u8, 119#u8, 111#u8, 114#u8, 107#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 117#u8, 112#u8, 103#u8, 114#u8, 97#u8, 100#u8, 101#u8,
+        47#u8, 109#u8, 105#u8, 103#u8, 114#u8, 97#u8, 116#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 44#u16,
+      uuid := 281470681743734#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_patch_level_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2680:0-2693:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_patch_level_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 136#u16,
+      uuid := 281470681743733#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_key_action_import_jws_rs256_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2664:0-2677:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_key_action_import_jws_rs256_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 76#u16,
+      uuid := 281470681743761#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_key_action_import_jws_es256_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2648:0-2661:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_key_action_import_jws_es256_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 75#u16,
+      uuid := 281470681743731#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_key_action_revoke_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2632:0-2645:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_key_action_revoke_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 77#u16,
+      uuid := 281470681743729#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 39#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_key_action_rotate_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2616:0-2629:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_key_action_rotate_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 78#u16,
+      uuid := 281470681743730#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_key_provider_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2600:0-2613:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_key_provider_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 80#u16,
+      uuid := 281470681743728#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_key_internal_data_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2584:0-2597:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_key_internal_data_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 45#u8 ])
+  ok
+    {
+      «name» := 79#u16,
+      uuid := 281470681743721#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 38#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_limit_search_max_filter_test_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2568:0-2581:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 109#u8, 97#u8, 120#u8, 105#u8, 109#u8,
+        117#u8, 109#u8, 32#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 105#u8,
+        101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 109#u8,
+        97#u8, 121#u8, 32#u8, 98#u8, 101#u8, 32#u8, 101#u8, 120#u8, 97#u8,
+        109#u8, 105#u8, 110#u8, 101#u8, 100#u8, 32#u8, 105#u8, 110#u8, 32#u8,
+        97#u8, 32#u8, 112#u8, 97#u8, 114#u8, 116#u8, 105#u8, 97#u8, 108#u8,
+        108#u8, 121#u8, 32#u8, 105#u8, 110#u8, 100#u8, 101#u8, 120#u8, 101#u8,
+        100#u8, 32#u8, 113#u8, 117#u8, 101#u8, 114#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 88#u16,
+      uuid := 281470681743714#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_limit_search_max_results_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2552:0-2565:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_limit_search_max_results_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 78#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 109#u8, 97#u8, 120#u8, 105#u8, 109#u8,
+        117#u8, 109#u8, 32#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 113#u8, 117#u8, 101#u8, 114#u8, 121#u8,
+        32#u8, 114#u8, 101#u8, 115#u8, 117#u8, 108#u8, 116#u8, 115#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 109#u8, 97#u8, 121#u8, 32#u8,
+        98#u8, 101#u8, 32#u8, 114#u8, 101#u8, 116#u8, 117#u8, 114#u8, 110#u8,
+        101#u8, 100#u8, 32#u8, 105#u8, 110#u8, 32#u8, 97#u8, 32#u8, 115#u8,
+        105#u8, 110#u8, 103#u8, 108#u8, 101#u8, 32#u8, 111#u8, 112#u8, 101#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 89#u16,
+      uuid := 281470681743713#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_credential_type_minimum]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2536:0-2549:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_credential_type_minimum
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 109#u8, 105#u8, 110#u8, 105#u8, 109#u8,
+        117#u8, 109#u8, 32#u8, 108#u8, 101#u8, 118#u8, 101#u8, 108#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 97#u8, 108#u8, 32#u8, 116#u8, 121#u8, 112#u8, 101#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 115#u8, 97#u8, 116#u8, 105#u8, 115#u8, 102#u8, 121#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 112#u8, 111#u8, 108#u8, 105#u8,
+        99#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 33#u16,
+      uuid := 281470681743688#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 35#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_sync_yield_authority]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2520:0-2533:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_sync_yield_authority
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 83#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        97#u8, 116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8,
+        115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 104#u8, 97#u8,
+        118#u8, 101#u8, 32#u8, 116#u8, 104#u8, 101#u8, 105#u8, 114#u8, 32#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 111#u8, 114#u8, 105#u8, 116#u8, 121#u8,
+        32#u8, 121#u8, 105#u8, 101#u8, 108#u8, 100#u8, 101#u8, 100#u8, 32#u8,
+        116#u8, 111#u8, 32#u8, 75#u8, 97#u8, 110#u8, 105#u8, 100#u8, 109#u8,
+        32#u8, 105#u8, 110#u8, 32#u8, 97#u8, 32#u8, 115#u8, 121#u8, 110#u8,
+        99#u8, 32#u8, 97#u8, 103#u8, 114#u8, 101#u8, 101#u8, 109#u8, 101#u8,
+        110#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 162#u16,
+      uuid := 281470681743672#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_sync_credential_portal]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2504:0-2517:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_sync_credential_portal
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 97#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 114#u8, 108#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 32#u8, 112#u8, 111#u8,
+        114#u8, 116#u8, 97#u8, 108#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8,
+        115#u8, 121#u8, 110#u8, 99#u8, 101#u8, 100#u8, 32#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 118#u8, 105#u8, 115#u8, 105#u8, 116#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 105#u8, 114#u8, 32#u8, 99#u8, 114#u8, 101#u8, 100#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 158#u16,
+      uuid := 281470681743670#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_grant_ui_hint]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2488:0-2501:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_grant_ui_hint
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        65#u8, 32#u8, 85#u8, 73#u8, 32#u8, 104#u8, 105#u8, 110#u8, 116#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 105#u8, 115#u8, 32#u8,
+        103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 101#u8, 100#u8, 32#u8, 118#u8,
+        105#u8, 97#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        115#u8, 104#u8, 105#u8, 112#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8,
+        32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  ok
+    {
+      «name» := 65#u16,
+      uuid := 281470681743641#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 29#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_sync_cookie]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2472:0-2485:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_sync_cookie
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 45#usize [
+        65#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8, 101#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 32#u8, 99#u8, 111#u8, 111#u8,
+        107#u8, 105#u8, 101#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8,
+        32#u8, 114#u8, 101#u8, 109#u8, 111#u8, 116#u8, 101#u8, 32#u8, 73#u8,
+        68#u8, 77#u8, 32#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := 157#u16,
+      uuid := 281470681743638#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_sync_token_session]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2456:0-2469:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_sync_token_session
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 47#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 114#u8, 101#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        97#u8, 110#u8, 32#u8, 105#u8, 115#u8, 115#u8, 117#u8, 101#u8, 100#u8,
+        32#u8, 115#u8, 121#u8, 110#u8, 99#u8, 32#u8, 116#u8, 111#u8, 107#u8,
+        101#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 161#u16,
+      uuid := 281470681743637#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 31#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_session]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2440:0-2453:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_session
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 78#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 97#u8, 110#u8, 32#u8, 97#u8, 99#u8, 116#u8, 105#u8, 118#u8,
+        101#u8, 32#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8,
+        115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8, 44#u8, 32#u8,
+        98#u8, 111#u8, 117#u8, 110#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        97#u8, 32#u8, 112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+        117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 128#u16,
+      uuid := 281470681743639#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 28#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_user_auth_token_session]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2424:0-2437:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_user_auth_token_session
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 114#u8, 101#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        97#u8, 110#u8, 32#u8, 105#u8, 115#u8, 115#u8, 117#u8, 101#u8, 100#u8,
+        32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 97#u8, 117#u8, 116#u8,
+        104#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 174#u16,
+      uuid := 281470681743635#u128,
+      description := v,
+      multivalue := true,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 25#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_api_token_session]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2408:0-2421:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_api_token_session
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8, 114#u8, 101#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        97#u8, 110#u8, 32#u8, 105#u8, 115#u8, 115#u8, 117#u8, 101#u8, 100#u8,
+        32#u8, 65#u8, 80#u8, 73#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8,
+        110#u8
+        ])
+  ok
+    {
+      «name» := 17#u16,
+      uuid := 281470681743633#u128,
+      description := v,
+      multivalue := true,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 31#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_prefer_short_username]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2392:0-2405:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_prefer_short_username
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 59#usize [
+        85#u8, 115#u8, 101#u8, 32#u8, 39#u8, 110#u8, 97#u8, 109#u8, 101#u8,
+        39#u8, 32#u8, 105#u8, 110#u8, 115#u8, 116#u8, 101#u8, 97#u8, 100#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 39#u8, 115#u8, 112#u8, 110#u8, 39#u8,
+        32#u8, 105#u8, 110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 112#u8,
+        114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 114#u8, 101#u8, 100#u8, 95#u8,
+        117#u8, 115#u8, 101#u8, 114#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 105#u8, 109#u8
+        ])
+  ok
+    {
+      «name» := 116#u16,
+      uuid := 281470681743625#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_dyngroup_filter]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2376:0-2389:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_dyngroup_filter
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 64#usize [
+        65#u8, 32#u8, 102#u8, 105#u8, 108#u8, 116#u8, 101#u8, 114#u8, 32#u8,
+        100#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8, 98#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 105#u8,
+        101#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 100#u8, 100#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 32#u8, 100#u8, 121#u8, 110#u8,
+        97#u8, 109#u8, 105#u8, 99#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+        112#u8
+        ])
+  ok
+    {
+      «name» := 51#u16,
+      uuid := 281470681743624#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 7#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_attested_passkeys]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2360:0-2373:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_attested_passkeys
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        114#u8, 101#u8, 103#u8, 105#u8, 115#u8, 116#u8, 101#u8, 114#u8, 101#u8,
+        100#u8, 32#u8, 100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 20#u16,
+      uuid := 281470681743616#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 30#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_passkeys]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2344:0-2357:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_passkeys
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        114#u8, 101#u8, 103#u8, 105#u8, 115#u8, 116#u8, 101#u8, 114#u8, 101#u8,
+        100#u8, 32#u8, 112#u8, 97#u8, 115#u8, 115#u8, 107#u8, 101#u8, 121#u8,
+        115#u8
+        ])
+  ok
+    {
+      «name» := 133#u16,
+      uuid := 281470681743513#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 20#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_credential_update_intent_token]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2328:0-2341:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_credential_update_intent_token
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 116#u8, 97#u8, 116#u8, 117#u8,
+        115#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 99#u8, 114#u8,
+        101#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8, 32#u8,
+        117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 105#u8, 110#u8,
+        116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8,
+        110#u8
+        ])
+  ok
+    {
+      «name» := 34#u16,
+      uuid := 281470681743510#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 22#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_jwt_legacy_crypto_enable]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2312:0-2325:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_jwt_legacy_crypto_enable
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        65#u8, 108#u8, 108#u8, 111#u8, 119#u8, 115#u8, 32#u8, 101#u8, 110#u8,
+        97#u8, 98#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 108#u8, 101#u8,
+        103#u8, 97#u8, 99#u8, 121#u8, 32#u8, 74#u8, 87#u8, 84#u8, 32#u8, 99#u8,
+        114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 103#u8, 114#u8, 97#u8, 112#u8,
+        104#u8, 121#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 108#u8,
+        105#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 115#u16,
+      uuid := 281470681743506#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_allow_insecure_client_disable_pkce]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2296:0-2309:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        65#u8, 108#u8, 108#u8, 111#u8, 119#u8, 115#u8, 32#u8, 100#u8, 105#u8,
+        115#u8, 97#u8, 98#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 80#u8, 75#u8, 67#u8, 69#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 115#u8, 101#u8, 99#u8, 117#u8, 114#u8,
+        101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8,
+        99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 107#u16,
+      uuid := 281470681743505#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_private_cookie_key]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2280:0-2293:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_private_cookie_key
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        65#u8, 110#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8,
+        101#u8, 32#u8, 99#u8, 111#u8, 111#u8, 107#u8, 105#u8, 101#u8, 32#u8,
+        104#u8, 109#u8, 97#u8, 99#u8, 32#u8, 107#u8, 101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 139#u16,
+      uuid := 281470681743664#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_jws_es256_private_key]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2264:0-2277:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_jws_es256_private_key
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        65#u8, 110#u8, 32#u8, 101#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8,
+        112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8, 101#u8, 32#u8, 107#u8,
+        101#u8, 121#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 106#u8, 119#u8,
+        115#u8
+        ])
+  ok
+    {
+      «name» := 74#u16,
+      uuid := 281470681743632#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 26#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_rs256_private_key_der]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2248:0-2261:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_rs256_private_key_der
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        65#u8, 110#u8, 32#u8, 114#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8,
+        112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8, 101#u8, 32#u8, 107#u8,
+        101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 145#u16,
+      uuid := 281470681743507#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_es256_private_key_der]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2232:0-2245:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_es256_private_key_der
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        65#u8, 110#u8, 32#u8, 101#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8,
+        112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8, 101#u8, 32#u8, 107#u8,
+        101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 60#u16,
+      uuid := 281470681743504#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_device_flow_enable_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2216:0-2229:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_device_flow_enable_dl9
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        82#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        115#u8, 32#u8, 105#u8, 102#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8,
+        104#u8, 50#u8, 32#u8, 68#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        32#u8, 70#u8, 108#u8, 111#u8, 119#u8, 32#u8, 105#u8, 115#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 109#u8, 105#u8, 116#u8, 116#u8, 101#u8, 100#u8,
+        194#u8, 160#u8, 111#u8, 110#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 114#u16,
+      uuid := 281474959933557#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_strict_redirect_uri_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2200:0-2213:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 57#usize [
+        82#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        115#u8, 32#u8, 105#u8, 102#u8, 32#u8, 115#u8, 116#u8, 114#u8, 105#u8,
+        99#u8, 116#u8, 32#u8, 114#u8, 101#u8, 100#u8, 105#u8, 114#u8, 101#u8,
+        99#u8, 116#u8, 32#u8, 117#u8, 114#u8, 105#u8, 32#u8, 101#u8, 110#u8,
+        102#u8, 111#u8, 114#u8, 99#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 105#u8, 115#u8, 32#u8, 101#u8, 110#u8, 97#u8, 98#u8, 108#u8,
+        101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 129#u16,
+      uuid := 281470681743744#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_consent_scope_map]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2184:0-2197:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_consent_scope_map
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 162#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        115#u8, 99#u8, 111#u8, 112#u8, 101#u8, 115#u8, 32#u8, 109#u8, 97#u8,
+        112#u8, 112#u8, 101#u8, 100#u8, 32#u8, 102#u8, 114#u8, 111#u8, 109#u8,
+        32#u8, 97#u8, 32#u8, 114#u8, 101#u8, 108#u8, 121#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 32#u8,
+        116#u8, 111#u8, 32#u8, 97#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8,
+        44#u8, 32#u8, 119#u8, 104#u8, 101#u8, 114#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 104#u8,
+        97#u8, 115#u8, 32#u8, 112#u8, 114#u8, 101#u8, 118#u8, 105#u8, 111#u8,
+        117#u8, 115#u8, 108#u8, 121#u8, 32#u8, 99#u8, 111#u8, 110#u8, 115#u8,
+        101#u8, 110#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 102#u8, 111#u8, 108#u8, 108#u8, 111#u8,
+        119#u8, 105#u8, 110#u8, 103#u8, 46#u8, 32#u8, 73#u8, 102#u8, 32#u8,
+        99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8, 100#u8, 32#u8, 111#u8,
+        114#u8, 32#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 100#u8,
+        44#u8, 32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 119#u8, 105#u8, 108#u8, 108#u8, 32#u8, 98#u8, 101#u8, 32#u8,
+        114#u8, 101#u8, 45#u8, 115#u8, 111#u8, 117#u8, 103#u8, 104#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 113#u16,
+      uuid := 281470681743511#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 20#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_implicit_scopes]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2168:0-2181:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        65#u8, 110#u8, 32#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 115#u8, 32#u8,
+        115#u8, 99#u8, 111#u8, 112#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8,
+        97#u8, 116#u8, 32#u8, 97#u8, 114#u8, 101#u8, 32#u8, 105#u8, 109#u8,
+        112#u8, 108#u8, 105#u8, 99#u8, 105#u8, 116#u8, 108#u8, 121#u8, 32#u8,
+        103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 117#u8, 115#u8, 101#u8,
+        114#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 121#u16,
+      uuid := 281470681743497#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 19#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_token_key]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2152:0-2165:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_token_key
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        65#u8, 110#u8, 32#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8,
+        32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 115#u8, 32#u8,
+        117#u8, 110#u8, 105#u8, 113#u8, 117#u8, 101#u8, 32#u8, 116#u8, 111#u8,
+        107#u8, 101#u8, 110#u8, 32#u8, 115#u8, 105#u8, 103#u8, 110#u8, 105#u8,
+        110#u8, 103#u8, 32#u8, 107#u8, 101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 127#u16,
+      uuid := 281470681743492#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 9#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_basic_secret]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2136:0-2149:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        87#u8, 104#u8, 101#u8, 110#u8, 32#u8, 117#u8, 115#u8, 105#u8, 110#u8,
+        103#u8, 32#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8,
+        98#u8, 97#u8, 115#u8, 105#u8, 99#u8, 32#u8, 97#u8, 117#u8, 116#u8,
+        104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 44#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 115#u8,
+        101#u8, 99#u8, 114#u8, 101#u8, 116#u8, 32#u8, 115#u8, 116#u8, 114#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := 119#u16,
+      uuid := 281470681743491#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 9#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_sup_scope_map]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2120:0-2133:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 81#usize [
+        65#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 101#u8, 110#u8,
+        99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 109#u8, 97#u8, 112#u8, 112#u8,
+        101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 115#u8, 99#u8, 111#u8,
+        112#u8, 101#u8, 115#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 97#u8, 115#u8, 115#u8, 111#u8, 99#u8, 105#u8,
+        97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 111#u8, 97#u8, 117#u8, 116#u8,
+        104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8,
+        99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := 126#u16,
+      uuid := 281470681743634#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 20#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_scope_map]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2104:0-2117:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_scope_map
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 81#usize [
+        65#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8, 101#u8, 110#u8,
+        99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8, 32#u8, 109#u8, 97#u8, 112#u8, 112#u8,
+        101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 115#u8, 99#u8, 111#u8,
+        112#u8, 101#u8, 115#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 97#u8, 115#u8, 115#u8, 111#u8, 99#u8, 105#u8,
+        97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 111#u8, 97#u8, 117#u8, 116#u8,
+        104#u8, 50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8,
+        99#u8, 101#u8, 32#u8, 115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := 125#u16,
+      uuid := 281470681743490#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 20#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_claim_map_dl4]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2088:0-2101:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        99#u8, 117#u8, 115#u8, 116#u8, 111#u8, 109#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 105#u8, 109#u8, 115#u8, 32#u8, 109#u8, 97#u8, 112#u8, 112#u8,
+        101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 103#u8, 114#u8, 111#u8,
+        117#u8, 112#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        115#u8, 104#u8, 105#u8, 112#u8, 115#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 120#u16,
+      uuid := 281470681743705#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 37#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_allow_localhost_redirect_dl4]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2072:0-2085:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        65#u8, 108#u8, 108#u8, 111#u8, 119#u8, 32#u8, 112#u8, 117#u8, 98#u8,
+        108#u8, 105#u8, 99#u8, 32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8,
+        116#u8, 115#u8, 32#u8, 97#u8, 115#u8, 115#u8, 111#u8, 99#u8, 105#u8,
+        97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 116#u8,
+        104#u8, 105#u8, 115#u8, 32#u8, 82#u8, 83#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 114#u8, 101#u8, 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8,
+        104#u8, 111#u8, 115#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 108#u16,
+      uuid := 281470681743704#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_origin_landing]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2056:0-2069:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 108#u8, 97#u8, 110#u8, 100#u8, 105#u8,
+        110#u8, 103#u8, 32#u8, 112#u8, 97#u8, 103#u8, 101#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 110#u8, 32#u8, 82#u8, 83#u8, 44#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 119#u8, 105#u8, 108#u8, 108#u8,
+        32#u8, 97#u8, 117#u8, 116#u8, 111#u8, 109#u8, 97#u8, 116#u8, 105#u8,
+        99#u8, 97#u8, 108#u8, 108#u8, 121#u8, 32#u8, 116#u8, 114#u8, 105#u8,
+        103#u8, 103#u8, 101#u8, 114#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 32#u8, 112#u8, 114#u8, 111#u8, 99#u8,
+        101#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 124#u16,
+      uuid := 281470681743648#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_origin_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2040:0-2053:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 111#u8, 114#u8, 105#u8, 103#u8, 105#u8,
+        110#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 97#u8, 110#u8, 32#u8, 79#u8, 65#u8, 117#u8,
+        116#u8, 104#u8, 50#u8, 32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8,
+        116#u8
+        ])
+  ok
+    {
+      «name» := 123#u16,
+      uuid := 281470681743489#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_oauth2_rs_name]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2024:0-2037:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_oauth2_rs_name
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8, 117#u8,
+        101#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8, 114#u8,
+        110#u8, 97#u8, 108#u8, 32#u8, 79#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 32#u8, 114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8,
+        101#u8
+        ])
+  ok
+    {
+      «name» := 122#u16,
+      uuid := 281470681743488#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 14#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_webauthn_attestation_ca_list]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2008:0-2021:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 63#usize [
+        65#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        67#u8, 65#u8, 39#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8,
+        32#u8, 108#u8, 105#u8, 109#u8, 105#u8, 116#u8, 32#u8, 100#u8, 101#u8,
+        118#u8, 105#u8, 99#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8, 98#u8, 101#u8, 32#u8,
+        117#u8, 115#u8, 101#u8, 100#u8, 32#u8, 119#u8, 105#u8, 116#u8, 104#u8,
+        32#u8, 119#u8, 101#u8, 98#u8, 97#u8, 117#u8, 116#u8, 104#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 177#u16,
+      uuid := 281470681743698#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 36#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_account_valid_from]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1992:0-2005:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_account_valid_from
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 65#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 101#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 32#u8, 97#u8, 102#u8, 116#u8, 101#u8, 114#u8,
+        32#u8, 119#u8, 104#u8, 105#u8, 99#u8, 104#u8, 32#u8, 116#u8, 104#u8,
+        105#u8, 115#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 32#u8, 109#u8, 97#u8, 121#u8, 32#u8, 99#u8, 111#u8, 109#u8,
+        109#u8, 101#u8, 110#u8, 99#u8, 101#u8, 32#u8, 97#u8, 117#u8, 116#u8,
+        104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        110#u8, 103#u8
+        ])
+  ok
+    {
+      «name» := 3#u16,
+      uuid := 281470681743475#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_account_expire]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1976:0-1989:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_account_expire
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 64#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 101#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 32#u8, 97#u8, 102#u8, 116#u8, 101#u8, 114#u8,
+        32#u8, 119#u8, 104#u8, 105#u8, 99#u8, 104#u8, 32#u8, 116#u8, 104#u8,
+        105#u8, 115#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 32#u8, 110#u8, 111#u8, 32#u8, 108#u8, 111#u8, 110#u8, 103#u8,
+        101#u8, 114#u8, 32#u8, 109#u8, 97#u8, 121#u8, 32#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        101#u8
+        ])
+  ok
+    {
+      «name» := 1#u16,
+      uuid := 281470681743474#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_nsuniqueid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1960:0-1973:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_nsuniqueid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 41#usize [
+        65#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8, 117#u8, 101#u8, 32#u8,
+        105#u8, 100#u8, 32#u8, 99#u8, 111#u8, 109#u8, 112#u8, 97#u8, 116#u8,
+        105#u8, 98#u8, 105#u8, 108#u8, 105#u8, 116#u8, 121#u8, 32#u8, 102#u8,
+        111#u8, 114#u8, 32#u8, 51#u8, 56#u8, 57#u8, 45#u8, 100#u8, 115#u8,
+        47#u8, 100#u8, 115#u8, 101#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := 102#u16,
+      uuid := 281470681743463#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 15#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_unix_password]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1944:0-1957:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_unix_password
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        65#u8, 32#u8, 80#u8, 79#u8, 83#u8, 73#u8, 88#u8, 32#u8, 117#u8, 115#u8,
+        101#u8, 114#u8, 39#u8, 115#u8, 32#u8, 85#u8, 78#u8, 73#u8, 88#u8,
+        32#u8, 108#u8, 111#u8, 103#u8, 105#u8, 110#u8, 32#u8, 112#u8, 97#u8,
+        115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ])
+  ok
+    {
+      «name» := 172#u16,
+      uuid := 281470681743458#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 8#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_loginshell]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1928:0-1941:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_loginshell
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        65#u8, 32#u8, 80#u8, 79#u8, 83#u8, 73#u8, 88#u8, 32#u8, 117#u8, 115#u8,
+        101#u8, 114#u8, 39#u8, 115#u8, 32#u8, 85#u8, 78#u8, 73#u8, 88#u8,
+        32#u8, 108#u8, 111#u8, 103#u8, 105#u8, 110#u8, 32#u8, 115#u8, 104#u8,
+        101#u8, 108#u8, 108#u8
+        ])
+  ok
+    {
+      «name» := 91#u16,
+      uuid := 281470681743457#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_auth_password_minimum_length]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1912:0-1925:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_auth_password_minimum_length
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        77#u8, 105#u8, 110#u8, 105#u8, 109#u8, 117#u8, 109#u8, 32#u8, 108#u8,
+        101#u8, 110#u8, 103#u8, 116#u8, 104#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 23#u16,
+      uuid := 281470681743687#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_auth_privilege_expiry]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1896:0-1909:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_auth_privilege_expiry
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 58#usize [
+        65#u8, 110#u8, 32#u8, 101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 116#u8, 105#u8, 109#u8, 101#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 32#u8, 112#u8, 114#u8,
+        105#u8, 118#u8, 105#u8, 108#u8, 101#u8, 103#u8, 101#u8, 100#u8, 32#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 115#u8, 101#u8, 115#u8,
+        115#u8, 105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 140#u16,
+      uuid := 281470681743682#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_auth_session_expiry]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1880:0-1893:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_auth_session_expiry
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        65#u8, 110#u8, 32#u8, 101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 116#u8, 105#u8, 109#u8, 101#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 110#u8, 32#u8, 97#u8,
+        117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 24#u16,
+      uuid := 281470681743681#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_badlist_password]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1864:0-1877:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_badlist_password
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 99#usize [
+        65#u8, 32#u8, 112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8,
+        100#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 105#u8, 115#u8,
+        32#u8, 98#u8, 97#u8, 100#u8, 108#u8, 105#u8, 115#u8, 116#u8, 101#u8,
+        100#u8, 32#u8, 109#u8, 101#u8, 97#u8, 110#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 105#u8, 116#u8, 32#u8,
+        99#u8, 97#u8, 110#u8, 32#u8, 110#u8, 111#u8, 116#u8, 32#u8, 98#u8,
+        101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 97#u8, 115#u8, 32#u8,
+        97#u8, 32#u8, 118#u8, 97#u8, 108#u8, 105#u8, 100#u8, 32#u8, 112#u8,
+        97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8, 32#u8, 98#u8,
+        121#u8, 32#u8, 97#u8, 110#u8, 121#u8, 32#u8, 117#u8, 115#u8, 101#u8,
+        114#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 25#u16,
+      uuid := 281470681743449#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_gidnumber]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1848:0-1861:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_gidnumber
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 139#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8,
+        105#u8, 100#u8, 32#u8, 40#u8, 117#u8, 105#u8, 100#u8, 41#u8, 32#u8,
+        110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 97#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 32#u8,
+        111#u8, 114#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8, 46#u8, 116#u8, 111#u8, 95#u8, 115#u8, 116#u8, 114#u8, 105#u8,
+        110#u8, 103#u8, 40#u8, 41#u8, 46#u8, 32#u8, 84#u8, 104#u8, 105#u8,
+        115#u8, 32#u8, 105#u8, 115#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        115#u8, 97#u8, 109#u8, 101#u8, 32#u8, 118#u8, 97#u8, 108#u8, 117#u8,
+        101#u8, 32#u8, 97#u8, 115#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        85#u8, 73#u8, 68#u8, 32#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8,
+        114#u8, 32#u8, 111#u8, 110#u8, 32#u8, 112#u8, 111#u8, 115#u8, 105#u8,
+        120#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        115#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 99#u8,
+        117#u8, 114#u8, 105#u8, 116#u8, 121#u8, 32#u8, 114#u8, 101#u8, 97#u8,
+        115#u8, 111#u8, 110#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 64#u16,
+      uuid := 281470681743446#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_fernet_private_key_str]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1832:0-1845:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_fernet_private_key_str
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8,
+        32#u8, 101#u8, 110#u8, 99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8,
+        101#u8, 32#u8, 107#u8, 101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 62#u16,
+      uuid := 281470681743509#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 9#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_token_key]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1816:0-1829:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_token_key
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 50#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8, 32#u8, 101#u8,
+        110#u8, 99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8, 101#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 32#u8, 40#u8, 78#u8, 79#u8, 84#u8, 32#u8,
+        85#u8, 83#u8, 69#u8, 68#u8, 41#u8
+        ])
+  ok
+    {
+      «name» := 49#u16,
+      uuid := 281470681743496#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 9#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_denied_name_dl10]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1800:0-1813:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_denied_name_dl10
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 55#usize [
+        73#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8, 118#u8, 97#u8, 108#u8,
+        117#u8, 101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8,
+        97#u8, 114#u8, 101#u8, 32#u8, 110#u8, 111#u8, 116#u8, 32#u8, 97#u8,
+        108#u8, 108#u8, 111#u8, 119#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 98#u8, 101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8,
+        105#u8, 110#u8, 32#u8, 39#u8, 110#u8, 97#u8, 109#u8, 101#u8, 39#u8,
+        46#u8
+        ])
+  ok
+    {
+      «name» := 36#u16,
+      uuid := 281470681743684#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 14#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_ssid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1784:0-1797:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_ssid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 115#u8, 32#u8, 115#u8, 105#u8, 116#u8, 101#u8, 45#u8, 119#u8,
+        105#u8, 100#u8, 101#u8, 32#u8, 83#u8, 83#u8, 73#u8, 68#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 100#u8, 101#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 32#u8, 97#u8, 117#u8, 116#u8, 111#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 119#u8, 105#u8, 114#u8, 101#u8,
+        108#u8, 101#u8, 115#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 48#u16,
+      uuid := 281470681743445#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1768:0-1781:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_uuid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 39#u8, 115#u8, 32#u8, 117#u8, 117#u8, 105#u8, 100#u8, 44#u8,
+        32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8, 105#u8, 110#u8, 32#u8,
+        67#u8, 83#u8, 78#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 116#u8,
+        114#u8, 117#u8, 115#u8, 116#u8, 32#u8, 114#u8, 101#u8, 108#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 115#u8, 104#u8, 105#u8, 112#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 50#u16,
+      uuid := 281470681743444#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_display_name]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1752:0-1765:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_display_name
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 49#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 45#u8,
+        102#u8, 97#u8, 99#u8, 105#u8, 110#u8, 103#u8, 32#u8, 100#u8, 105#u8,
+        115#u8, 112#u8, 108#u8, 97#u8, 121#u8, 32#u8, 110#u8, 97#u8, 109#u8,
+        101#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        75#u8, 97#u8, 110#u8, 105#u8, 100#u8, 109#u8, 32#u8, 100#u8, 111#u8,
+        109#u8, 97#u8, 105#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 45#u16,
+      uuid := 281470681743512#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_image]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1736:0-1749:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_image
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        65#u8, 110#u8, 32#u8, 105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 32#u8,
+        102#u8, 111#u8, 114#u8, 32#u8, 100#u8, 105#u8, 115#u8, 112#u8, 108#u8,
+        97#u8, 121#u8, 32#u8, 116#u8, 111#u8, 32#u8, 101#u8, 110#u8, 100#u8,
+        32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 70#u16,
+      uuid := 281470681743683#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 34#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_ldap_maximum_queryable_attributes]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1720:0-1733:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 109#u8, 97#u8, 120#u8, 105#u8, 109#u8,
+        117#u8, 109#u8, 32#u8, 110#u8, 117#u8, 109#u8, 98#u8, 101#u8, 114#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 76#u8, 68#u8, 65#u8, 80#u8, 32#u8, 97#u8,
+        116#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 98#u8, 101#u8, 32#u8, 113#u8, 117#u8, 101#u8, 114#u8, 105#u8,
+        101#u8, 100#u8, 32#u8, 105#u8, 110#u8, 32#u8, 111#u8, 110#u8, 101#u8,
+        32#u8, 111#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8
+        ])
+  ok
+    {
+      «name» := 85#u16,
+      uuid := 281470681743751#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_ldap_basedn]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1704:0-1717:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_ldap_basedn
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 88#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 39#u8, 115#u8, 32#u8, 111#u8, 112#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 97#u8, 108#u8, 32#u8, 108#u8, 100#u8, 97#u8, 112#u8, 32#u8,
+        98#u8, 97#u8, 115#u8, 101#u8, 100#u8, 110#u8, 46#u8, 32#u8, 73#u8,
+        102#u8, 32#u8, 117#u8, 110#u8, 115#u8, 101#u8, 116#u8, 32#u8, 100#u8,
+        101#u8, 102#u8, 97#u8, 117#u8, 108#u8, 116#u8, 115#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 32#u8,
+        99#u8, 111#u8, 109#u8, 112#u8, 111#u8, 110#u8, 101#u8, 110#u8, 116#u8,
+        115#u8, 32#u8, 111#u8, 102#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8,
+        105#u8, 110#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8
+        ])
+  ok
+    {
+      «name» := 46#u16,
+      uuid := 281470681743665#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 1#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_ldap_allow_unix_pw_bind]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1688:0-1701:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 71#usize [
+        67#u8, 111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 116#u8, 111#u8, 32#u8, 101#u8,
+        110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 98#u8, 105#u8, 110#u8,
+        100#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 76#u8, 68#u8, 65#u8,
+        80#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 115#u8,
+        32#u8, 117#u8, 115#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 105#u8, 114#u8, 32#u8, 85#u8, 78#u8, 73#u8, 88#u8, 32#u8,
+        112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ])
+  ok
+    {
+      «name» := 82#u16,
+      uuid := 281470681743685#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_domain_name]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1672:0-1685:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_domain_name
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 62#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 39#u8, 115#u8, 32#u8, 68#u8, 78#u8, 83#u8, 32#u8, 110#u8,
+        97#u8, 109#u8, 101#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 119#u8,
+        101#u8, 98#u8, 97#u8, 117#u8, 116#u8, 104#u8, 110#u8, 32#u8, 97#u8,
+        110#u8, 100#u8, 32#u8, 83#u8, 80#u8, 78#u8, 32#u8, 103#u8, 101#u8,
+        110#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        112#u8, 117#u8, 114#u8, 112#u8, 111#u8, 115#u8, 101#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 47#u16,
+      uuid := 281470681743443#u128,
+      description := v,
+      multivalue := false,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 14#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_radius_secret]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1656:0-1669:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_radius_secret
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 70#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8,
+        110#u8, 116#u8, 115#u8, 32#u8, 103#u8, 101#u8, 110#u8, 101#u8, 114#u8,
+        97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 114#u8, 97#u8, 100#u8, 105#u8,
+        117#u8, 115#u8, 32#u8, 115#u8, 101#u8, 99#u8, 114#u8, 101#u8, 116#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 100#u8, 101#u8, 118#u8, 105#u8,
+        99#u8, 101#u8, 32#u8, 110#u8, 101#u8, 116#u8, 119#u8, 111#u8, 114#u8,
+        107#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 141#u16,
+      uuid := 281470681743441#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 9#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_name_history]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1640:0-1653:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_name_history
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 104#u8, 105#u8, 115#u8, 116#u8, 111#u8,
+        114#u8, 121#u8, 32#u8, 111#u8, 102#u8, 32#u8, 110#u8, 97#u8, 109#u8,
+        101#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 97#u8,
+        32#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 32#u8, 104#u8,
+        97#u8, 115#u8, 32#u8, 104#u8, 97#u8, 100#u8
+        ])
+  ok
+    {
+      «name» := 101#u16,
+      uuid := 281470681743667#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 32#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_legalname_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1624:0-1637:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_legalname_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8,
+        116#u8, 101#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8, 115#u8, 101#u8,
+        110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 118#u8, 101#u8, 32#u8, 108#u8,
+        101#u8, 103#u8, 97#u8, 108#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 87#u16,
+      uuid := 281470681743440#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_primary_credential]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1608:0-1621:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_primary_credential
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        80#u8, 114#u8, 105#u8, 109#u8, 97#u8, 114#u8, 121#u8, 32#u8, 99#u8,
+        114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8,
+        32#u8, 109#u8, 97#u8, 116#u8, 101#u8, 114#u8, 105#u8, 97#u8, 108#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 105#u8,
+        110#u8, 116#u8, 101#u8, 114#u8, 97#u8, 99#u8, 116#u8, 105#u8, 118#u8,
+        101#u8, 108#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 138#u16,
+      uuid := 281470681743427#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 8#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_ssh_publickey]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1592:0-1605:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_ssh_publickey
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        83#u8, 83#u8, 72#u8, 32#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8,
+        99#u8, 32#u8, 107#u8, 101#u8, 121#u8, 115#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8,
+        99#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 152#u16,
+      uuid := 281470681743426#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 10#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_ec_key_private]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1576:0-1589:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_ec_key_private
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        65#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 118#u8,
+        101#u8, 114#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8, 116#u8,
+        101#u8, 32#u8, 107#u8, 101#u8, 121#u8
+        ])
+  ok
+    {
+      «name» := 69#u16,
+      uuid := 281470681743668#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 9#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_mail_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1560:0-1573:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_mail_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        77#u8, 97#u8, 105#u8, 108#u8, 32#u8, 97#u8, 100#u8, 100#u8, 114#u8,
+        101#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8
+        ])
+  ok
+    {
+      «name» := 92#u16,
+      uuid := 281470681743425#u128,
+      description := v,
+      multivalue := true,
+      unique := true,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 17#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_attr_displayname_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 1544:0-1557:1
+    Visibility: public -/
+def schema_catalog.dl11_attr_displayname_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 112#u8, 117#u8, 98#u8, 108#u8, 105#u8,
+        99#u8, 108#u8, 121#u8, 32#u8, 118#u8, 105#u8, 115#u8, 105#u8, 98#u8,
+        108#u8, 101#u8, 32#u8, 100#u8, 105#u8, 115#u8, 112#u8, 108#u8, 97#u8,
+        121#u8, 32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 32#u8, 111#u8, 102#u8,
+        32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 112#u8, 101#u8, 114#u8,
+        115#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := 39#u16,
+      uuid := 281470681743424#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := true,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl11_phase_1_schema_attrs]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 97:0-177:36
+    Visibility: public -/
+def migration_catalog.dl11_phase_1_schema_attrs
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.dl11_attr_sync_credential_portal
+  let ar1 ← schema_catalog.dl11_attr_sync_yield_authority
+  let ar2 ← schema_catalog.dl11_attr_account_expire
+  let ar3 ← schema_catalog.dl11_attr_account_valid_from
+  let ar4 ← schema_catalog.dl11_attr_api_token_session
+  let ar5 ← schema_catalog.dl11_attr_auth_session_expiry
+  let ar6 ← schema_catalog.dl11_attr_auth_privilege_expiry
+  let ar7 ← schema_catalog.dl11_attr_auth_password_minimum_length
+  let ar8 ← schema_catalog.dl11_attr_badlist_password
+  let ar9 ← schema_catalog.dl11_attr_credential_update_intent_token
+  let ar10 ← schema_catalog.dl11_attr_attested_passkeys
+  let ar11 ← schema_catalog.dl11_attr_domain_display_name
+  let ar12 ← schema_catalog.dl11_attr_domain_ldap_basedn
+  let ar13 ← schema_catalog.dl11_attr_domain_name
+  let ar14 ← schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  let ar15 ← schema_catalog.dl11_attr_domain_ssid
+  let ar16 ← schema_catalog.dl11_attr_domain_token_key
+  let ar17 ← schema_catalog.dl11_attr_domain_uuid
+  let ar18 ← schema_catalog.dl11_attr_dyngroup_filter
+  let ar19 ← schema_catalog.dl11_attr_ec_key_private
+  let ar20 ← schema_catalog.dl11_attr_es256_private_key_der
+  let ar21 ← schema_catalog.dl11_attr_fernet_private_key_str
+  let ar22 ← schema_catalog.dl11_attr_gidnumber
+  let ar23 ← schema_catalog.dl11_attr_grant_ui_hint
+  let ar24 ← schema_catalog.dl11_attr_jws_es256_private_key
+  let ar25 ← schema_catalog.dl11_attr_loginshell
+  let ar26 ← schema_catalog.dl11_attr_name_history
+  let ar27 ← schema_catalog.dl11_attr_nsuniqueid
+  let ar28 ←
+    schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  let ar29 ← schema_catalog.dl11_attr_oauth2_consent_scope_map
+  let ar30 ← schema_catalog.dl11_attr_oauth2_jwt_legacy_crypto_enable
+  let ar31 ← schema_catalog.dl11_attr_oauth2_prefer_short_username
+  let ar32 ← schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  let ar33 ← schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  let ar34 ← schema_catalog.dl11_attr_oauth2_rs_name
+  let ar35 ← schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  let ar36 ← schema_catalog.dl11_attr_oauth2_rs_scope_map
+  let ar37 ← schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  let ar38 ← schema_catalog.dl11_attr_oauth2_rs_token_key
+  let ar39 ← schema_catalog.dl11_attr_oauth2_session
+  let ar40 ← schema_catalog.dl11_attr_passkeys
+  let ar41 ← schema_catalog.dl11_attr_primary_credential
+  let ar42 ← schema_catalog.dl11_attr_private_cookie_key
+  let ar43 ← schema_catalog.dl11_attr_radius_secret
+  let ar44 ← schema_catalog.dl11_attr_rs256_private_key_der
+  let ar45 ← schema_catalog.dl11_attr_ssh_publickey
+  let ar46 ← schema_catalog.dl11_attr_sync_cookie
+  let ar47 ← schema_catalog.dl11_attr_sync_token_session
+  let ar48 ← schema_catalog.dl11_attr_unix_password
+  let ar49 ← schema_catalog.dl11_attr_user_auth_token_session
+  let ar50 ← schema_catalog.dl11_attr_credential_type_minimum
+  let ar51 ← schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  let ar52 ← schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  let ar53 ← schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  let ar54 ← schema_catalog.dl11_attr_limit_search_max_results_dl6
+  let ar55 ← schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  let ar56 ← schema_catalog.dl11_attr_key_internal_data_dl6
+  let ar57 ← schema_catalog.dl11_attr_key_provider_dl6
+  let ar58 ← schema_catalog.dl11_attr_key_action_rotate_dl6
+  let ar59 ← schema_catalog.dl11_attr_key_action_revoke_dl6
+  let ar60 ← schema_catalog.dl11_attr_key_action_import_jws_es256_dl6
+  let ar61 ← schema_catalog.dl11_attr_patch_level_dl7
+  let ar62 ← schema_catalog.dl11_attr_domain_development_taint_dl7
+  let ar63 ← schema_catalog.dl11_attr_refers_dl7
+  let ar64 ← schema_catalog.dl11_attr_certificate_dl7
+  let ar65 ← schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  let ar66 ← schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  let ar67 ← schema_catalog.dl11_attr_mail_dl7
+  let ar68 ← schema_catalog.dl11_attr_legalname_dl7
+  let ar69 ← schema_catalog.dl11_attr_displayname_dl7
+  let ar70 ← schema_catalog.dl11_attr_linked_group_dl8
+  let ar71 ← schema_catalog.dl11_attr_application_password_dl8
+  let ar72 ← schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  let ar73 ← schema_catalog.dl11_attr_oauth2_device_flow_enable_dl9
+  let ar74 ← schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  let ar75 ← schema_catalog.dl11_attr_denied_name_dl10
+  let ar76 ← schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  let ar77 ← schema_catalog.dl11_attr_key_action_import_jws_rs256_dl6
+  let ar78 ← schema_catalog.dl11_attr_application_url
+  let ar79 ← schema_catalog.dl11_attr_image
+  alloc.vec.FromVecArray.from
+    (Array.make 80#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71, ar72, ar73,
+      ar74, ar75, ar76, ar77, ar78, ar79
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_application]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3238:0-3253:1
+    Visibility: public -/
+def schema_catalog.dl11_class_application
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 110#u8, 32#u8, 97#u8,
+        112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 19#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 90#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743745#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_client_certificate_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3220:0-3235:1
+    Visibility: public -/
+def schema_catalog.dl11_class_client_certificate_dl7
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 95#u8, 99#u8, 101#u8,
+        114#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        65#u8, 32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 99#u8, 101#u8, 114#u8,
+        116#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 27#u16, 143#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743737#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_object_internal_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3202:0-3217:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_object_internal_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8,
+        108#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 68#usize [
+        65#u8, 32#u8, 99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 103#u8,
+        114#u8, 97#u8, 112#u8, 104#u8, 105#u8, 99#u8, 32#u8, 107#u8, 101#u8,
+        121#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8,
+        98#u8, 101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8, 98#u8,
+        121#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 105#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 114#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 79#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743719#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_object_jwe_a128gcm_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3184:0-3199:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_object_jwe_a128gcm_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 101#u8, 95#u8, 97#u8, 49#u8, 50#u8,
+        56#u8, 103#u8, 99#u8, 109#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 106#u8, 119#u8, 101#u8, 32#u8,
+        97#u8, 101#u8, 115#u8, 45#u8, 50#u8, 53#u8, 54#u8, 45#u8, 103#u8,
+        99#u8, 109#u8, 32#u8, 99#u8, 97#u8, 112#u8, 97#u8, 98#u8, 105#u8,
+        108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743732#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_object_jwt_rs256]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3166:0-3181:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_object_jwt_rs256
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 116#u8, 95#u8, 114#u8, 115#u8, 50#u8,
+        53#u8, 54#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 106#u8, 119#u8, 116#u8, 32#u8,
+        114#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8, 99#u8, 97#u8, 112#u8,
+        97#u8, 98#u8, 105#u8, 108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743762#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_object_jwt_es256_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3148:0-3163:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 116#u8, 95#u8, 101#u8, 115#u8, 50#u8,
+        53#u8, 54#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 106#u8, 119#u8, 116#u8, 32#u8,
+        101#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8, 99#u8, 97#u8, 112#u8,
+        97#u8, 98#u8, 105#u8, 108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743720#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_object_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3130:0-3145:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_object_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 57#usize [
+        65#u8, 32#u8, 99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 103#u8,
+        114#u8, 97#u8, 112#u8, 104#u8, 105#u8, 99#u8, 32#u8, 107#u8, 101#u8,
+        121#u8, 32#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8, 110#u8, 32#u8,
+        98#u8, 101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8, 98#u8,
+        121#u8, 32#u8, 97#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8,
+        100#u8, 101#u8, 114#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 80#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743718#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_provider_internal_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3112:0-3127:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_provider_internal_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8,
+        100#u8, 101#u8, 114#u8, 95#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+        110#u8, 97#u8, 108#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 75#u8, 97#u8, 110#u8, 105#u8, 100#u8,
+        109#u8, 32#u8, 105#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8,
+        108#u8, 32#u8, 99#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 103#u8,
+        114#u8, 97#u8, 112#u8, 104#u8, 105#u8, 99#u8, 32#u8, 107#u8, 101#u8,
+        121#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8,
+        114#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743717#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v3,
+      systemexcludes := v3,
+      excludes := v3
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_key_provider_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3094:0-3109:1
+    Visibility: public -/
+def schema_catalog.dl11_class_key_provider_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8,
+        100#u8, 101#u8, 114#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 55#usize [
+        65#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8,
+        114#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 114#u8, 121#u8,
+        112#u8, 116#u8, 111#u8, 103#u8, 114#u8, 97#u8, 112#u8, 104#u8, 105#u8,
+        99#u8, 32#u8, 107#u8, 101#u8, 121#u8, 32#u8, 115#u8, 116#u8, 111#u8,
+        114#u8, 97#u8, 103#u8, 101#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        111#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        115#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 37#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 23#usize [
+        21#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 114#u8, 95#u8, 105#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 110#u8, 97#u8, 108#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743716#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_oauth2_rs_public_dl4]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3076:0-3091:1
+    Visibility: public -/
+def schema_catalog.dl11_class_oauth2_rs_public_dl4
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 112#u8, 117#u8, 98#u8, 108#u8,
+        105#u8, 99#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        80#u8, 117#u8, 98#u8, 108#u8, 105#u8, 99#u8, 32#u8, 79#u8, 65#u8,
+        117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 108#u8, 105#u8, 101#u8,
+        110#u8, 116#u8, 32#u8, 119#u8, 105#u8, 116#u8, 104#u8, 32#u8, 80#u8,
+        75#u8, 67#u8, 69#u8, 32#u8, 118#u8, 101#u8, 114#u8, 105#u8, 102#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 108#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        28#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8,
+        114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 98#u8, 97#u8,
+        115#u8, 105#u8, 99#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743671#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v5,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_oauth2_rs_basic_dl5]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3058:0-3073:1
+    Visibility: public -/
+def schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 28#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 98#u8, 97#u8, 115#u8, 105#u8,
+        99#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 94#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 99#u8, 108#u8,
+        105#u8, 101#u8, 110#u8, 116#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8,
+        101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 100#u8,
+        32#u8, 119#u8, 105#u8, 116#u8, 104#u8, 32#u8, 72#u8, 84#u8, 84#u8,
+        80#u8, 32#u8, 98#u8, 97#u8, 115#u8, 105#u8, 99#u8, 32#u8, 97#u8,
+        117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 107#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 119#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 31#usize [
+        29#u8, 0#u8, 111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8,
+        114#u8, 101#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8,
+        115#u8, 101#u8, 114#u8, 118#u8, 101#u8, 114#u8, 95#u8, 112#u8, 117#u8,
+        98#u8, 108#u8, 105#u8, 99#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743494#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_oauth2_rs_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3040:0-3055:1
+    Visibility: public -/
+def schema_catalog.dl11_class_oauth2_rs_dl9
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8, 79#u8,
+        65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        37#u16, 125#u16, 126#u16, 115#u16, 116#u16, 70#u16, 120#u16, 128#u16,
+        123#u16, 129#u16, 114#u16, 145#u16, 127#u16, 60#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 124#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743493#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_system_config]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3022:0-3037:1
+    Visibility: public -/
+def schema_catalog.dl11_class_system_config
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        115#u8, 121#u8, 115#u8, 116#u8, 101#u8, 109#u8, 95#u8, 99#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 115#u8, 121#u8,
+        115#u8, 116#u8, 101#u8, 109#u8, 32#u8, 40#u8, 116#u8, 111#u8, 112#u8,
+        111#u8, 108#u8, 111#u8, 103#u8, 105#u8, 101#u8, 115#u8, 41#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 112#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 37#u16, 25#u16, 24#u16, 140#u16, 36#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743456#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_posixaccount]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3004:0-3019:1
+    Visibility: public -/
+def schema_catalog.dl11_class_posixaccount
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 58#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 44#u8, 32#u8, 114#u8, 101#u8, 113#u8,
+        117#u8, 105#u8, 114#u8, 101#u8, 115#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 91#u16, 172#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 64#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743447#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_posixgroup]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2986:0-3001:1
+    Visibility: public -/
+def schema_catalog.dl11_class_posixgroup
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 103#u8, 114#u8, 111#u8, 117#u8,
+        112#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 111#u8, 115#u8, 105#u8, 120#u8, 32#u8, 103#u8, 114#u8, 111#u8,
+        117#u8, 112#u8, 44#u8, 32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 105#u8,
+        114#u8, 101#u8, 115#u8, 32#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 64#u16 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743448#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_domain_info_dl10]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2968:0-2983:1
+    Visibility: public -/
+def schema_catalog.dl11_class_domain_info_dl10
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 105#u8, 110#u8,
+        102#u8, 111#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        76#u8, 111#u8, 99#u8, 97#u8, 108#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 114#u8,
+        109#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        48#u16, 46#u16, 85#u16, 82#u16, 70#u16, 136#u16, 44#u16, 43#u16, 45#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 100#u16, 50#u16, 47#u16, 176#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743442#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_sync_account_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2950:0-2965:1
+    Visibility: public -/
+def schema_catalog.dl11_class_sync_account_dl7
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        115#u8, 121#u8, 110#u8, 99#u8, 95#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 115#u8, 121#u8,
+        110#u8, 99#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8,
+        116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 161#u16, 157#u16, 158#u16, 162#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        7#u8, 0#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743636#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_service_account_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2932:0-2947:1
+    Visibility: public -/
+def schema_catalog.dl11_class_service_account_dl7
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 40#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        152#u16, 174#u16, 128#u16, 113#u16, 37#u16, 92#u16, 138#u16, 17#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743622#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v5,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_account_dl5]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2914:0-2929:1
+    Visibility: public -/
+def schema_catalog.dl11_class_account_dl5
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 1#u16, 3#u16, 101#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 3#usize [ 39#u16, 100#u16, 151#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 49#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 22#u8, 0#u8,
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743430#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_account_policy_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2896:0-2911:1
+    Visibility: public -/
+def schema_catalog.dl11_class_account_policy_dl8
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 112#u8,
+        111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 56#usize [
+        80#u8, 111#u8, 108#u8, 105#u8, 99#u8, 105#u8, 101#u8, 115#u8, 32#u8,
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 101#u8, 100#u8, 32#u8, 116#u8,
+        111#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8,
+        115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 97#u8, 114#u8,
+        101#u8, 32#u8, 109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 115#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8, 103#u8, 114#u8, 111#u8,
+        117#u8, 112#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        24#u16, 140#u16, 23#u16, 33#u16, 177#u16, 89#u16, 88#u16, 16#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743686#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v3,
+      must := v3,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_dyngroup]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2878:0-2893:1
+    Visibility: public -/
+def schema_catalog.dl11_class_dyngroup
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        100#u8, 121#u8, 110#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 40#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        100#u8, 121#u8, 110#u8, 97#u8, 109#u8, 105#u8, 99#u8, 32#u8, 103#u8,
+        114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 52#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 51#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        5#u8, 0#u8, 103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743623#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_group_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2860:0-2875:1
+    Visibility: public -/
+def schema_catalog.dl11_class_group_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 95#u16, 65#u16, 37#u16, 92#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 100#u16, 151#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743429#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_orgperson]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2842:0-2857:1
+    Visibility: public -/
+def schema_catalog.dl11_class_orgperson
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        111#u8, 114#u8, 103#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 38#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 111#u8, 114#u8, 103#u8, 32#u8, 112#u8, 101#u8, 114#u8, 115#u8,
+        111#u8, 110#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 87#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 3#usize [ 92#u16, 39#u16, 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743508#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl11_class_person_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 2824:0-2839:1
+    Visibility: public -/
+def schema_catalog.dl11_class_person_dl8
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        138#u16, 133#u16, 20#u16, 34#u16, 152#u16, 141#u16, 113#u16, 174#u16,
+        128#u16, 92#u16, 87#u16, 18#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 69#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 11#u8,
+        0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743428#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl11_phase_2_schema_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 178:0-202:43
+    Visibility: public -/
+def migration_catalog.dl11_phase_2_schema_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.dl11_class_dyngroup
+  let cr1 ← schema_catalog.dl11_class_orgperson
+  let cr2 ← schema_catalog.dl11_class_posixaccount
+  let cr3 ← schema_catalog.dl11_class_posixgroup
+  let cr4 ← schema_catalog.dl11_class_system_config
+  let cr5 ← schema_catalog.dl11_class_oauth2_rs_public_dl4
+  let cr6 ← schema_catalog.dl11_class_account_dl5
+  let cr7 ← schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  let cr8 ← schema_catalog.dl11_class_group_dl6
+  let cr9 ← schema_catalog.dl11_class_key_provider_dl6
+  let cr10 ← schema_catalog.dl11_class_key_provider_internal_dl6
+  let cr11 ← schema_catalog.dl11_class_key_object_dl6
+  let cr12 ← schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  let cr13 ← schema_catalog.dl11_class_key_object_jwe_a128gcm_dl6
+  let cr14 ← schema_catalog.dl11_class_key_object_internal_dl6
+  let cr15 ← schema_catalog.dl11_class_service_account_dl7
+  let cr16 ← schema_catalog.dl11_class_sync_account_dl7
+  let cr17 ← schema_catalog.dl11_class_client_certificate_dl7
+  let cr18 ← schema_catalog.dl11_class_account_policy_dl8
+  let cr19 ← schema_catalog.dl11_class_person_dl8
+  let cr20 ← schema_catalog.dl11_class_oauth2_rs_dl9
+  let cr21 ← schema_catalog.dl11_class_domain_info_dl10
+  let cr22 ← schema_catalog.dl11_class_key_object_jwt_rs256
+  let cr23 ← schema_catalog.dl11_class_application
+  alloc.vec.FromVecArray.from
+    (Array.make 24#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19, cr20, cr21, cr22, cr23
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl11_phase_7_builtin_access_control_profiles]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 203:0-247:36
+    Visibility: public -/
+def migration_catalog.dl11_phase_7_builtin_access_control_profiles
+  : Result (alloc.vec.Vec acp_catalog.Profile) := do
+  let p ← acp_catalog.dl11_recycle_bin_search_v1
+  let p1 ← acp_catalog.dl11_recycle_bin_revive_v1
+  let p2 ← acp_catalog.dl11_schema_write_attrs_v1
+  let p3 ← acp_catalog.dl11_schema_write_classes_v1
+  let p4 ← acp_catalog.dl11_acp_manage_v1
+  let p5 ← acp_catalog.dl11_group_entry_managed_by_modify_v1
+  let p6 ← acp_catalog.dl11_group_entry_manager_v1
+  let p7 ← acp_catalog.dl11_sync_account_manage_v1
+  let p8 ← acp_catalog.dl11_radius_servers_v1
+  let p9 ← acp_catalog.dl11_radius_secret_manage_v1
+  let p10 ← acp_catalog.dl11_people_self_write_mail_v1
+  let p11 ← acp_catalog.dl11_account_self_write_v1
+  let p12 ← acp_catalog.dl11_all_accounts_posix_read_v1
+  let p13 ← acp_catalog.dl11_system_config_account_policy_manage_v1
+  let p14 ← acp_catalog.dl11_group_unix_manage_v1
+  let p15 ← acp_catalog.dl11_hp_group_unix_manage_v1
+  let p16 ← acp_catalog.dl11_group_read_v1
+  let p17 ← acp_catalog.dl11_account_unix_extend_v1
+  let p18 ← acp_catalog.dl11_people_pii_read_v1
+  let p19 ← acp_catalog.dl11_people_pii_manage_v1
+  let p20 ← acp_catalog.dl11_people_read_v1
+  let p21 ← acp_catalog.dl11_people_manage_v1
+  let p22 ← acp_catalog.dl11_people_delete_v1
+  let p23 ← acp_catalog.dl11_people_credential_reset_v1
+  let p24 ← acp_catalog.dl11_hp_people_credential_reset_v1
+  let p25 ← acp_catalog.dl11_service_account_create_v1
+  let p26 ← acp_catalog.dl11_service_account_delete_v1
+  let p27 ← acp_catalog.dl11_service_account_entry_manager_v1
+  let p28 ← acp_catalog.dl11_service_account_entry_managed_by_modify_v1
+  let p29 ← acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  let p30 ← acp_catalog.dl11_service_account_manage_v1
+  let p31 ← acp_catalog.dl11_people_create_dl6
+  let p32 ← acp_catalog.dl11_account_mail_read_dl6
+  let p33 ← acp_catalog.dl11_self_name_write_dl7
+  let p34 ← acp_catalog.dl11_hp_client_certificate_manager_dl7
+  let p35 ← acp_catalog.dl11_self_read_dl8
+  let p36 ← acp_catalog.dl11_self_write_dl8
+  let p37 ← acp_catalog.dl11_application_manage_dl8
+  let p38 ← acp_catalog.dl11_application_entry_manager_dl8
+  let p39 ← acp_catalog.dl11_mail_servers_dl8
+  let p40 ← acp_catalog.dl11_group_account_policy_manage_dl8
+  let p41 ← acp_catalog.dl11_group_manage_dl9
+  let p42 ← acp_catalog.dl11_domain_admin_dl9
+  let p43 ← acp_catalog.dl11_oauth2_manage
+  alloc.vec.FromVecArray.from
+    (Array.make 44#usize [
+      p, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
+      p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+      p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_enabled]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3528:0-3541:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_enabled
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        65#u8, 32#u8, 102#u8, 108#u8, 97#u8, 103#u8, 32#u8, 100#u8, 101#u8,
+        115#u8, 99#u8, 114#u8, 105#u8, 98#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        105#u8, 102#u8, 32#u8, 97#u8, 32#u8, 102#u8, 101#u8, 97#u8, 116#u8,
+        117#u8, 114#u8, 101#u8, 32#u8, 105#u8, 115#u8, 32#u8, 101#u8, 110#u8,
+        97#u8, 98#u8, 108#u8, 101#u8, 100#u8, 32#u8, 111#u8, 114#u8, 32#u8,
+        100#u8, 105#u8, 115#u8, 97#u8, 98#u8, 108#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 56#u16,
+      uuid := 281470681743891#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_in_memoriam]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3512:0-3525:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_in_memoriam
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 57#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 117#u8, 105#u8, 100#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 101#u8, 110#u8,
+        116#u8, 114#u8, 121#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 109#u8, 101#u8, 109#u8, 111#u8,
+        114#u8, 105#u8, 97#u8, 108#u8, 32#u8, 105#u8, 115#u8, 32#u8, 100#u8,
+        101#u8, 100#u8, 105#u8, 99#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8,
+        116#u8, 111#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 71#u16,
+      uuid := 281470681743894#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_hmac_name_history]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3496:0-3509:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_hmac_name_history
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 97#u8, 108#u8, 108#u8, 32#u8, 110#u8, 97#u8, 109#u8,
+        101#u8, 115#u8, 32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8, 111#u8,
+        110#u8, 32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8,
+        121#u8, 44#u8, 32#u8, 72#u8, 77#u8, 65#u8, 67#u8, 101#u8, 100#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 32#u8, 112#u8, 114#u8, 105#u8, 118#u8, 97#u8,
+        99#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 67#u16,
+      uuid := 281470681743890#u128,
+      description := v,
+      multivalue := true,
+      unique := true,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 44#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_request_scopes]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3480:0-3493:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_request_scopes
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 115#u8, 101#u8, 116#u8, 32#u8, 111#u8,
+        102#u8, 32#u8, 115#u8, 99#u8, 111#u8, 112#u8, 101#u8, 115#u8, 32#u8,
+        116#u8, 111#u8, 32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8,
+        116#u8, 32#u8, 100#u8, 117#u8, 114#u8, 105#u8, 110#u8, 103#u8, 32#u8,
+        79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 111#u8, 114#u8, 105#u8, 115#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8,
+        116#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 118#u16,
+      uuid := 281470681743880#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 19#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_token_endpoint]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3464:0-3477:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_token_endpoint
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 36#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8,
+        32#u8, 117#u8, 114#u8, 108#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := 130#u16,
+      uuid := 281470681743877#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_authorisation_endpoint]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3448:0-3461:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_authorisation_endpoint
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 44#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 111#u8,
+        114#u8, 105#u8, 115#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        117#u8, 114#u8, 108#u8, 32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8,
+        112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := 109#u16,
+      uuid := 281470681743876#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_client_secret]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3432:0-3445:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_client_secret
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 32#u8, 67#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+        83#u8, 101#u8, 99#u8, 114#u8, 101#u8, 116#u8
+        ])
+  ok
+    {
+      «name» := 111#u16,
+      uuid := 281470681743879#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_client_id]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3416:0-3429:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_client_id
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 32#u8, 67#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+        73#u8, 68#u8
+        ])
+  ok
+    {
+      «name» := 110#u16,
+      uuid := 281470681743875#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_account_unique_user_id]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3400:0-3413:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_account_unique_user_id
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8, 117#u8,
+        101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 105#u8, 100#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 97#u8,
+        115#u8, 32#u8, 107#u8, 110#u8, 111#u8, 119#u8, 110#u8, 32#u8, 98#u8,
+        121#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 114#u8, 101#u8, 109#u8,
+        111#u8, 116#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8,
+        114#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 105#u16,
+      uuid := 281470681743874#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_account_credential_uuid]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3384:0-3397:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_account_credential_uuid
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 85#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 117#u8, 105#u8, 100#u8, 32#u8,
+        111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 99#u8,
+        114#u8, 101#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8, 108#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8, 115#u8, 115#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 116#u8, 114#u8, 97#u8, 99#u8, 107#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 119#u8, 104#u8, 101#u8, 110#u8, 32#u8,
+        79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 105#u8, 115#u8,
+        32#u8, 117#u8, 115#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        97#u8, 117#u8, 116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 103#u16,
+      uuid := 281470681743878#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 2#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_account_provider]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3368:0-3381:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_account_provider
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8,
+        101#u8, 110#u8, 99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8,
+        100#u8, 101#u8, 115#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 104#u16,
+      uuid := 281470681743889#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_mail_destination]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3352:0-3365:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_mail_destination
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 57#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 101#u8, 115#u8, 116#u8, 105#u8,
+        110#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8, 100#u8,
+        100#u8, 114#u8, 101#u8, 115#u8, 115#u8, 101#u8, 115#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 119#u8, 105#u8, 108#u8, 108#u8, 32#u8,
+        114#u8, 101#u8, 99#u8, 105#u8, 101#u8, 118#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 105#u8, 115#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8,
+        103#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 93#u16,
+      uuid := 281470681743872#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 17#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_sent_at]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3336:0-3349:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_sent_at
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 40#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 101#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 32#u8, 119#u8, 104#u8, 101#u8, 110#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8,
+        97#u8, 103#u8, 101#u8, 32#u8, 119#u8, 97#u8, 115#u8, 32#u8, 115#u8,
+        101#u8, 110#u8, 116#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 149#u16,
+      uuid := 281470681743769#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_delete_after]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3320:0-3333:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_delete_after
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 52#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 101#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 32#u8, 97#u8, 102#u8, 116#u8, 101#u8, 114#u8,
+        32#u8, 119#u8, 104#u8, 105#u8, 99#u8, 104#u8, 32#u8, 116#u8, 104#u8,
+        105#u8, 115#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 32#u8,
+        119#u8, 105#u8, 108#u8, 108#u8, 32#u8, 98#u8, 101#u8, 32#u8, 100#u8,
+        101#u8, 108#u8, 101#u8, 116#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 35#u16,
+      uuid := 281470681743768#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_send_after]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3304:0-3317:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_send_after
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 82#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 101#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 32#u8, 97#u8, 102#u8, 116#u8, 101#u8, 114#u8,
+        32#u8, 119#u8, 104#u8, 105#u8, 99#u8, 104#u8, 32#u8, 116#u8, 104#u8,
+        105#u8, 115#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8,
+        101#u8, 32#u8, 105#u8, 115#u8, 32#u8, 97#u8, 108#u8, 108#u8, 111#u8,
+        119#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8, 101#u8,
+        32#u8, 114#u8, 101#u8, 108#u8, 101#u8, 97#u8, 115#u8, 101#u8, 100#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 100#u8,
+        101#u8, 115#u8, 116#u8, 105#u8, 110#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8
+        ])
+  ok
+    {
+      «name» := 148#u16,
+      uuid := 281470681743767#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_message_template]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3288:0-3301:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_message_template
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 126#usize [
+        65#u8, 32#u8, 74#u8, 83#u8, 79#u8, 78#u8, 32#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8, 32#u8, 99#u8, 111#u8, 110#u8, 116#u8, 97#u8,
+        105#u8, 110#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 104#u8, 101#u8,
+        32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 100#u8, 32#u8, 109#u8, 101#u8,
+        115#u8, 115#u8, 97#u8, 103#u8, 101#u8, 32#u8, 116#u8, 101#u8, 109#u8,
+        112#u8, 108#u8, 97#u8, 116#u8, 101#u8, 32#u8, 97#u8, 110#u8, 100#u8,
+        32#u8, 102#u8, 105#u8, 101#u8, 108#u8, 100#u8, 115#u8, 32#u8, 114#u8,
+        101#u8, 108#u8, 97#u8, 116#u8, 101#u8, 100#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 97#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8,
+        101#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 99#u8, 97#u8,
+        110#u8, 32#u8, 98#u8, 101#u8, 32#u8, 115#u8, 117#u8, 98#u8, 115#u8,
+        116#u8, 105#u8, 116#u8, 117#u8, 116#u8, 101#u8, 100#u8, 32#u8, 105#u8,
+        110#u8, 116#u8, 111#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 116#u8,
+        101#u8, 109#u8, 112#u8, 108#u8, 97#u8, 116#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 97#u16,
+      uuid := 281470681743766#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 43#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_device_flow_enable]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3272:0-3285:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_device_flow_enable
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        69#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8,
+        68#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 70#u8, 108#u8,
+        111#u8, 119#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 116#u8, 104#u8,
+        105#u8, 115#u8, 32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8,
+        46#u8
+        ])
+  ok
+    {
+      «name» := 114#u16,
+      uuid := 281474959933557#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_attr_oauth2_jwt_legacy_crypto_enable]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3256:0-3269:1
+    Visibility: public -/
+def schema_catalog.dl12_attr_oauth2_jwt_legacy_crypto_enable
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 51#usize [
+        65#u8, 108#u8, 108#u8, 111#u8, 119#u8, 115#u8, 32#u8, 101#u8, 110#u8,
+        97#u8, 98#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 108#u8, 101#u8,
+        103#u8, 97#u8, 99#u8, 121#u8, 32#u8, 74#u8, 87#u8, 84#u8, 32#u8, 99#u8,
+        114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 103#u8, 114#u8, 97#u8, 104#u8,
+        112#u8, 121#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 99#u8, 108#u8,
+        105#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ])
+  ok
+    {
+      «name» := 115#u16,
+      uuid := 281470681743506#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl12_phase_1_schema_attrs]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 248:0-343:42
+    Visibility: public -/
+def migration_catalog.dl12_phase_1_schema_attrs
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.dl11_attr_sync_credential_portal
+  let ar1 ← schema_catalog.dl11_attr_sync_yield_authority
+  let ar2 ← schema_catalog.dl11_attr_account_expire
+  let ar3 ← schema_catalog.dl11_attr_account_valid_from
+  let ar4 ← schema_catalog.dl11_attr_api_token_session
+  let ar5 ← schema_catalog.dl11_attr_auth_session_expiry
+  let ar6 ← schema_catalog.dl11_attr_auth_privilege_expiry
+  let ar7 ← schema_catalog.dl11_attr_auth_password_minimum_length
+  let ar8 ← schema_catalog.dl11_attr_badlist_password
+  let ar9 ← schema_catalog.dl11_attr_credential_update_intent_token
+  let ar10 ← schema_catalog.dl11_attr_attested_passkeys
+  let ar11 ← schema_catalog.dl11_attr_domain_display_name
+  let ar12 ← schema_catalog.dl11_attr_domain_ldap_basedn
+  let ar13 ← schema_catalog.dl11_attr_domain_name
+  let ar14 ← schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  let ar15 ← schema_catalog.dl11_attr_domain_ssid
+  let ar16 ← schema_catalog.dl11_attr_domain_token_key
+  let ar17 ← schema_catalog.dl11_attr_domain_uuid
+  let ar18 ← schema_catalog.dl11_attr_dyngroup_filter
+  let ar19 ← schema_catalog.dl11_attr_ec_key_private
+  let ar20 ← schema_catalog.dl11_attr_es256_private_key_der
+  let ar21 ← schema_catalog.dl11_attr_fernet_private_key_str
+  let ar22 ← schema_catalog.dl11_attr_gidnumber
+  let ar23 ← schema_catalog.dl11_attr_grant_ui_hint
+  let ar24 ← schema_catalog.dl11_attr_jws_es256_private_key
+  let ar25 ← schema_catalog.dl11_attr_loginshell
+  let ar26 ← schema_catalog.dl11_attr_name_history
+  let ar27 ← schema_catalog.dl11_attr_nsuniqueid
+  let ar28 ←
+    schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  let ar29 ← schema_catalog.dl11_attr_oauth2_consent_scope_map
+  let ar30 ← schema_catalog.dl12_attr_oauth2_jwt_legacy_crypto_enable
+  let ar31 ← schema_catalog.dl11_attr_oauth2_prefer_short_username
+  let ar32 ← schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  let ar33 ← schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  let ar34 ← schema_catalog.dl11_attr_oauth2_rs_name
+  let ar35 ← schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  let ar36 ← schema_catalog.dl11_attr_oauth2_rs_scope_map
+  let ar37 ← schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  let ar38 ← schema_catalog.dl11_attr_oauth2_rs_token_key
+  let ar39 ← schema_catalog.dl11_attr_oauth2_session
+  let ar40 ← schema_catalog.dl11_attr_passkeys
+  let ar41 ← schema_catalog.dl11_attr_primary_credential
+  let ar42 ← schema_catalog.dl11_attr_private_cookie_key
+  let ar43 ← schema_catalog.dl11_attr_radius_secret
+  let ar44 ← schema_catalog.dl11_attr_rs256_private_key_der
+  let ar45 ← schema_catalog.dl11_attr_ssh_publickey
+  let ar46 ← schema_catalog.dl11_attr_sync_cookie
+  let ar47 ← schema_catalog.dl11_attr_sync_token_session
+  let ar48 ← schema_catalog.dl11_attr_unix_password
+  let ar49 ← schema_catalog.dl11_attr_user_auth_token_session
+  let ar50 ← schema_catalog.dl11_attr_credential_type_minimum
+  let ar51 ← schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  let ar52 ← schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  let ar53 ← schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  let ar54 ← schema_catalog.dl11_attr_limit_search_max_results_dl6
+  let ar55 ← schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  let ar56 ← schema_catalog.dl11_attr_key_internal_data_dl6
+  let ar57 ← schema_catalog.dl11_attr_key_provider_dl6
+  let ar58 ← schema_catalog.dl11_attr_key_action_rotate_dl6
+  let ar59 ← schema_catalog.dl11_attr_key_action_revoke_dl6
+  let ar60 ← schema_catalog.dl11_attr_key_action_import_jws_es256_dl6
+  let ar61 ← schema_catalog.dl11_attr_patch_level_dl7
+  let ar62 ← schema_catalog.dl11_attr_domain_development_taint_dl7
+  let ar63 ← schema_catalog.dl11_attr_certificate_dl7
+  let ar64 ← schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  let ar65 ← schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  let ar66 ← schema_catalog.dl11_attr_mail_dl7
+  let ar67 ← schema_catalog.dl11_attr_legalname_dl7
+  let ar68 ← schema_catalog.dl11_attr_displayname_dl7
+  let ar69 ← schema_catalog.dl11_attr_linked_group_dl8
+  let ar70 ← schema_catalog.dl11_attr_application_password_dl8
+  let ar71 ← schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  let ar72 ← schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  let ar73 ← schema_catalog.dl11_attr_denied_name_dl10
+  let ar74 ← schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  let ar75 ← schema_catalog.dl11_attr_key_action_import_jws_rs256_dl6
+  let ar76 ← schema_catalog.dl11_attr_application_url
+  let ar77 ← schema_catalog.dl11_attr_image
+  let ar78 ← schema_catalog.dl12_attr_oauth2_device_flow_enable
+  let ar79 ← schema_catalog.dl12_attr_message_template
+  let ar80 ← schema_catalog.dl12_attr_send_after
+  let ar81 ← schema_catalog.dl12_attr_delete_after
+  let ar82 ← schema_catalog.dl12_attr_sent_at
+  let ar83 ← schema_catalog.dl12_attr_mail_destination
+  let ar84 ← schema_catalog.dl12_attr_oauth2_account_provider
+  let ar85 ← schema_catalog.dl12_attr_oauth2_account_unique_user_id
+  let ar86 ← schema_catalog.dl12_attr_oauth2_account_credential_uuid
+  let ar87 ← schema_catalog.dl12_attr_oauth2_client_id
+  let ar88 ← schema_catalog.dl12_attr_oauth2_client_secret
+  let ar89 ← schema_catalog.dl12_attr_oauth2_authorisation_endpoint
+  let ar90 ← schema_catalog.dl12_attr_oauth2_token_endpoint
+  let ar91 ← schema_catalog.dl12_attr_oauth2_request_scopes
+  let ar92 ← schema_catalog.dl12_attr_hmac_name_history
+  let ar93 ← schema_catalog.dl12_attr_enabled
+  let ar94 ← schema_catalog.dl12_attr_in_memoriam
+  alloc.vec.FromVecArray.from
+    (Array.make 95#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71, ar72, ar73,
+      ar74, ar75, ar76, ar77, ar78, ar79, ar80, ar81, ar82, ar83, ar84, ar85,
+      ar86, ar87, ar88, ar89, ar90, ar91, ar92, ar93, ar94
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_memorial]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3724:0-3739:1
+    Visibility: public -/
+def schema_catalog.dl12_class_memorial
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        109#u8, 101#u8, 109#u8, 111#u8, 114#u8, 105#u8, 97#u8, 108#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 68#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 109#u8, 101#u8,
+        109#u8, 111#u8, 114#u8, 105#u8, 97#u8, 108#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 97#u8, 110#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8,
+        32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 104#u8, 97#u8, 115#u8,
+        32#u8, 98#u8, 101#u8, 101#u8, 110#u8, 32#u8, 100#u8, 101#u8, 108#u8,
+        101#u8, 116#u8, 101#u8, 100#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 67#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 71#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743893#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_feature]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3706:0-3721:1
+    Visibility: public -/
+def schema_catalog.dl12_class_feature : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 46#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        115#u8, 116#u8, 97#u8, 116#u8, 101#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        97#u8, 32#u8, 102#u8, 101#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8,
+        46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 56#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 100#u16, 37#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743892#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_outbound_message]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3688:0-3703:1
+    Visibility: public -/
+def schema_catalog.dl12_class_outbound_message
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        111#u8, 117#u8, 116#u8, 98#u8, 111#u8, 117#u8, 110#u8, 100#u8, 95#u8,
+        109#u8, 101#u8, 115#u8, 115#u8, 97#u8, 103#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 104#usize [
+        65#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 114#u8,
+        101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 105#u8,
+        110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 109#u8, 101#u8, 115#u8, 115#u8,
+        97#u8, 103#u8, 101#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8, 32#u8,
+        105#u8, 115#u8, 32#u8, 116#u8, 111#u8, 32#u8, 98#u8, 101#u8, 32#u8,
+        115#u8, 101#u8, 110#u8, 116#u8, 32#u8, 101#u8, 120#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 97#u8, 108#u8, 108#u8, 121#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 97#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 105#u8,
+        110#u8, 32#u8, 115#u8, 111#u8, 109#u8, 101#u8, 32#u8, 119#u8, 97#u8,
+        121#u8, 44#u8, 32#u8, 103#u8, 101#u8, 110#u8, 101#u8, 114#u8, 97#u8,
+        108#u8, 108#u8, 121#u8, 32#u8, 118#u8, 105#u8, 97#u8, 32#u8, 101#u8,
+        109#u8, 97#u8, 105#u8, 108#u8, 46#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 149#u16, 93#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 3#usize [ 97#u16, 148#u16, 35#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743873#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_key_object_hkdf_s256]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3670:0-3685:1
+    Visibility: public -/
+def schema_catalog.dl12_class_key_object_hkdf_s256
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 104#u8, 107#u8, 100#u8, 102#u8, 95#u8, 115#u8, 50#u8,
+        53#u8, 54#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 104#u8, 109#u8, 97#u8, 99#u8,
+        32#u8, 107#u8, 100#u8, 102#u8, 32#u8, 115#u8, 104#u8, 97#u8, 50#u8,
+        53#u8, 54#u8, 32#u8, 99#u8, 97#u8, 112#u8, 97#u8, 98#u8, 105#u8,
+        108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743765#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_oauth2_client]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3652:0-3667:1
+    Visibility: public -/
+def schema_catalog.dl12_class_oauth2_client
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 108#u8,
+        105#u8, 101#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 97#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8,
+        108#u8, 32#u8, 67#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+        97#u8, 99#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 115#u8,
+        32#u8, 97#u8, 110#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [
+        100#u16, 110#u16, 111#u16, 109#u16, 130#u16, 118#u16
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743888#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_oauth2_rs_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3634:0-3649:1
+    Visibility: public -/
+def schema_catalog.dl12_class_oauth2_rs_dl9
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8, 79#u8,
+        65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        37#u16, 125#u16, 126#u16, 115#u16, 116#u16, 70#u16, 120#u16, 128#u16,
+        123#u16, 129#u16, 114#u16, 145#u16, 127#u16, 60#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 124#u16, 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743493#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_service_account_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3616:0-3631:1
+    Visibility: public -/
+def schema_catalog.dl12_class_service_account_dl7
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 40#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        152#u16, 174#u16, 128#u16, 113#u16, 37#u16, 92#u16, 138#u16, 17#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743622#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_account_dl5]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3598:0-3613:1
+    Visibility: public -/
+def schema_catalog.dl12_class_account_dl5
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 1#u16, 3#u16, 101#u16, 67#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 39#u16, 151#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 49#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 22#u8, 0#u8,
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743430#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_group_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3580:0-3595:1
+    Visibility: public -/
+def schema_catalog.dl12_class_group_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        103#u8, 114#u8, 111#u8, 117#u8, 112#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 95#u16, 65#u16, 37#u16, 92#u16, 100#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 151#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743429#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_oauth2_account]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3562:0-3577:1
+    Visibility: public -/
+def schema_catalog.dl12_class_oauth2_account
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        77#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 32#u8, 100#u8, 101#u8, 115#u8, 105#u8, 103#u8,
+        110#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 104#u8,
+        97#u8, 116#u8, 32#u8, 97#u8, 110#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 117#u8, 115#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8,
+        104#u8, 50#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 3#usize [ 104#u16, 105#u16, 103#u16 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743881#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl12_class_person_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3544:0-3559:1
+    Visibility: public -/
+def schema_catalog.dl12_class_person_dl8
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        138#u16, 133#u16, 20#u16, 34#u16, 152#u16, 141#u16, 113#u16, 174#u16,
+        128#u16, 92#u16, 87#u16, 18#u16, 69#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 11#u8,
+        0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743428#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl12_phase_2_schema_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 344:0-374:40
+    Visibility: public -/
+def migration_catalog.dl12_phase_2_schema_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.dl11_class_dyngroup
+  let cr1 ← schema_catalog.dl11_class_orgperson
+  let cr2 ← schema_catalog.dl11_class_posixaccount
+  let cr3 ← schema_catalog.dl11_class_posixgroup
+  let cr4 ← schema_catalog.dl11_class_system_config
+  let cr5 ← schema_catalog.dl11_class_oauth2_rs_public_dl4
+  let cr6 ← schema_catalog.dl12_class_account_dl5
+  let cr7 ← schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  let cr8 ← schema_catalog.dl12_class_group_dl6
+  let cr9 ← schema_catalog.dl11_class_key_provider_dl6
+  let cr10 ← schema_catalog.dl11_class_key_provider_internal_dl6
+  let cr11 ← schema_catalog.dl11_class_key_object_dl6
+  let cr12 ← schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  let cr13 ← schema_catalog.dl11_class_key_object_jwe_a128gcm_dl6
+  let cr14 ← schema_catalog.dl11_class_key_object_internal_dl6
+  let cr15 ← schema_catalog.dl12_class_service_account_dl7
+  let cr16 ← schema_catalog.dl11_class_sync_account_dl7
+  let cr17 ← schema_catalog.dl11_class_client_certificate_dl7
+  let cr18 ← schema_catalog.dl11_class_account_policy_dl8
+  let cr19 ← schema_catalog.dl12_class_person_dl8
+  let cr20 ← schema_catalog.dl12_class_oauth2_rs_dl9
+  let cr21 ← schema_catalog.dl11_class_domain_info_dl10
+  let cr22 ← schema_catalog.dl11_class_key_object_jwt_rs256
+  let cr23 ← schema_catalog.dl11_class_application
+  let cr24 ← schema_catalog.dl12_class_key_object_hkdf_s256
+  let cr25 ← schema_catalog.dl12_class_outbound_message
+  let cr26 ← schema_catalog.dl12_class_oauth2_account
+  let cr27 ← schema_catalog.dl12_class_oauth2_client
+  let cr28 ← schema_catalog.dl12_class_feature
+  let cr29 ← schema_catalog.dl12_class_memorial
+  alloc.vec.FromVecArray.from
+    (Array.make 30#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19, cr20, cr21, cr22, cr23, cr24, cr25,
+      cr26, cr27, cr28, cr29
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl12_phase_7_builtin_access_control_profiles]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 375:0-423:43
+    Visibility: public -/
+def migration_catalog.dl12_phase_7_builtin_access_control_profiles
+  : Result (alloc.vec.Vec acp_catalog.Profile) := do
+  let p ← acp_catalog.dl11_recycle_bin_search_v1
+  let p1 ← acp_catalog.dl11_recycle_bin_revive_v1
+  let p2 ← acp_catalog.dl11_schema_write_attrs_v1
+  let p3 ← acp_catalog.dl11_schema_write_classes_v1
+  let p4 ← acp_catalog.dl11_acp_manage_v1
+  let p5 ← acp_catalog.dl11_group_entry_managed_by_modify_v1
+  let p6 ← acp_catalog.dl11_group_entry_manager_v1
+  let p7 ← acp_catalog.dl11_sync_account_manage_v1
+  let p8 ← acp_catalog.dl12_radius_servers_v1
+  let p9 ← acp_catalog.dl11_radius_secret_manage_v1
+  let p10 ← acp_catalog.dl11_people_self_write_mail_v1
+  let p11 ← acp_catalog.dl11_account_self_write_v1
+  let p12 ← acp_catalog.dl12_all_accounts_posix_read_v1
+  let p13 ← acp_catalog.dl11_system_config_account_policy_manage_v1
+  let p14 ← acp_catalog.dl11_group_unix_manage_v1
+  let p15 ← acp_catalog.dl12_hp_group_unix_manage_v1
+  let p16 ← acp_catalog.dl12_group_read_v1
+  let p17 ← acp_catalog.dl11_account_unix_extend_v1
+  let p18 ← acp_catalog.dl11_people_pii_read_v1
+  let p19 ← acp_catalog.dl11_people_pii_manage_v1
+  let p20 ← acp_catalog.dl11_people_read_v1
+  let p21 ← acp_catalog.dl11_people_manage_v1
+  let p22 ← acp_catalog.dl11_people_delete_v1
+  let p23 ← acp_catalog.dl11_people_credential_reset_v1
+  let p24 ← acp_catalog.dl11_hp_people_credential_reset_v1
+  let p25 ← acp_catalog.dl12_service_account_create_v1
+  let p26 ← acp_catalog.dl11_service_account_delete_v1
+  let p27 ← acp_catalog.dl12_service_account_entry_manager_v1
+  let p28 ← acp_catalog.dl12_service_account_entry_managed_by_modify_v1
+  let p29 ← acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  let p30 ← acp_catalog.dl11_service_account_manage_v1
+  let p31 ← acp_catalog.dl11_people_create_dl6
+  let p32 ← acp_catalog.dl11_account_mail_read_dl6
+  let p33 ← acp_catalog.dl11_self_name_write_dl7
+  let p34 ← acp_catalog.dl11_hp_client_certificate_manager_dl7
+  let p35 ← acp_catalog.dl11_self_read_dl8
+  let p36 ← acp_catalog.dl11_self_write_dl8
+  let p37 ← acp_catalog.dl11_application_manage_dl8
+  let p38 ← acp_catalog.dl11_application_entry_manager_dl8
+  let p39 ← acp_catalog.dl11_mail_servers_dl8
+  let p40 ← acp_catalog.dl11_group_account_policy_manage_dl8
+  let p41 ← acp_catalog.dl12_group_manage_dl9
+  let p42 ← acp_catalog.dl11_domain_admin_dl9
+  let p43 ← acp_catalog.dl11_oauth2_manage
+  let p44 ← acp_catalog.dl12_message_manage
+  let p45 ← acp_catalog.dl12_message_sender
+  let p46 ← acp_catalog.dl12_oauth2_client_admin
+  let p47 ← acp_catalog.dl12_oauth2_account_enrol
+  alloc.vec.FromVecArray.from
+    (Array.make 48#usize [
+      p, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
+      p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+      p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44,
+      p45, p46, p47
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl13_attr_s256]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3806:0-3819:1
+    Visibility: public -/
+def schema_catalog.dl13_attr_s256 : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        65#u8, 32#u8, 83#u8, 104#u8, 97#u8, 50#u8, 53#u8, 54#u8, 32#u8, 111#u8,
+        117#u8, 116#u8, 112#u8, 117#u8, 116#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 146#u16,
+      uuid := 281470681743897#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 44#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_attr_oauth2_consent_prompt_enable]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3790:0-3803:1
+    Visibility: public -/
+def schema_catalog.dl13_attr_oauth2_consent_prompt_enable
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 84#usize [
+        69#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 114#u8, 111#u8, 109#u8, 112#u8, 116#u8, 32#u8, 119#u8,
+        104#u8, 101#u8, 110#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 111#u8,
+        114#u8, 105#u8, 115#u8, 105#u8, 110#u8, 103#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 102#u8, 105#u8, 114#u8,
+        115#u8, 116#u8, 32#u8, 116#u8, 105#u8, 109#u8, 101#u8, 32#u8, 111#u8,
+        114#u8, 32#u8, 119#u8, 104#u8, 101#u8, 110#u8, 32#u8, 115#u8, 99#u8,
+        111#u8, 112#u8, 101#u8, 115#u8, 32#u8, 99#u8, 104#u8, 97#u8, 110#u8,
+        103#u8, 101#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 112#u16,
+      uuid := 281470681743895#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_attr_oauth2_account_unique_user_id]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3774:0-3787:1
+    Visibility: public -/
+def schema_catalog.dl13_attr_oauth2_account_unique_user_id
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 74#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8, 117#u8,
+        101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 105#u8, 100#u8,
+        32#u8, 111#u8, 102#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 97#u8,
+        115#u8, 32#u8, 107#u8, 110#u8, 111#u8, 119#u8, 110#u8, 32#u8, 98#u8,
+        121#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 114#u8, 101#u8, 109#u8,
+        111#u8, 116#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8,
+        114#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 105#u16,
+      uuid := 281470681743874#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_attr_oauth2_account_provider]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3758:0-3771:1
+    Visibility: public -/
+def schema_catalog.dl13_attr_oauth2_account_provider
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 114#u8, 101#u8, 102#u8, 101#u8, 114#u8,
+        101#u8, 110#u8, 99#u8, 101#u8, 32#u8, 116#u8, 111#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8,
+        32#u8, 99#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8,
+        100#u8, 101#u8, 115#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8,
+        32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 121#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 104#u16,
+      uuid := 281470681743889#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_attr_account_softlock_expire]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3742:0-3755:1
+    Visibility: public -/
+def schema_catalog.dl13_attr_account_softlock_expire
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 91#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 97#u8, 116#u8, 101#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 32#u8, 97#u8, 102#u8, 116#u8, 101#u8, 114#u8,
+        32#u8, 119#u8, 104#u8, 105#u8, 99#u8, 104#u8, 32#u8, 115#u8, 111#u8,
+        102#u8, 116#u8, 108#u8, 111#u8, 99#u8, 107#u8, 115#u8, 32#u8, 110#u8,
+        111#u8, 32#u8, 108#u8, 111#u8, 110#u8, 103#u8, 101#u8, 114#u8, 32#u8,
+        97#u8, 114#u8, 101#u8, 32#u8, 118#u8, 97#u8, 108#u8, 105#u8, 100#u8,
+        32#u8, 45#u8, 32#u8, 97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 115#u8,
+        32#u8, 116#u8, 104#u8, 101#u8, 109#u8, 32#u8, 116#u8, 111#u8, 32#u8,
+        98#u8, 101#u8, 32#u8, 114#u8, 101#u8, 115#u8, 101#u8, 116#u8, 32#u8,
+        102#u8, 114#u8, 111#u8, 109#u8, 32#u8, 39#u8, 110#u8, 111#u8, 119#u8,
+        39#u8
+        ])
+  ok
+    {
+      «name» := 2#u16,
+      uuid := 281470681743906#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl13_phase_1_schema_attrs]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 424:0-521:54
+    Visibility: public -/
+def migration_catalog.dl13_phase_1_schema_attrs
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.dl11_attr_sync_credential_portal
+  let ar1 ← schema_catalog.dl11_attr_sync_yield_authority
+  let ar2 ← schema_catalog.dl11_attr_account_expire
+  let ar3 ← schema_catalog.dl11_attr_account_valid_from
+  let ar4 ← schema_catalog.dl11_attr_api_token_session
+  let ar5 ← schema_catalog.dl11_attr_auth_session_expiry
+  let ar6 ← schema_catalog.dl11_attr_auth_privilege_expiry
+  let ar7 ← schema_catalog.dl11_attr_auth_password_minimum_length
+  let ar8 ← schema_catalog.dl11_attr_badlist_password
+  let ar9 ← schema_catalog.dl11_attr_credential_update_intent_token
+  let ar10 ← schema_catalog.dl11_attr_attested_passkeys
+  let ar11 ← schema_catalog.dl11_attr_domain_display_name
+  let ar12 ← schema_catalog.dl11_attr_domain_ldap_basedn
+  let ar13 ← schema_catalog.dl11_attr_domain_name
+  let ar14 ← schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  let ar15 ← schema_catalog.dl11_attr_domain_ssid
+  let ar16 ← schema_catalog.dl11_attr_domain_token_key
+  let ar17 ← schema_catalog.dl11_attr_domain_uuid
+  let ar18 ← schema_catalog.dl11_attr_dyngroup_filter
+  let ar19 ← schema_catalog.dl11_attr_es256_private_key_der
+  let ar20 ← schema_catalog.dl11_attr_fernet_private_key_str
+  let ar21 ← schema_catalog.dl11_attr_gidnumber
+  let ar22 ← schema_catalog.dl11_attr_grant_ui_hint
+  let ar23 ← schema_catalog.dl11_attr_jws_es256_private_key
+  let ar24 ← schema_catalog.dl11_attr_loginshell
+  let ar25 ← schema_catalog.dl11_attr_name_history
+  let ar26 ← schema_catalog.dl11_attr_nsuniqueid
+  let ar27 ←
+    schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  let ar28 ← schema_catalog.dl11_attr_oauth2_consent_scope_map
+  let ar29 ← schema_catalog.dl12_attr_oauth2_jwt_legacy_crypto_enable
+  let ar30 ← schema_catalog.dl11_attr_oauth2_prefer_short_username
+  let ar31 ← schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  let ar32 ← schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  let ar33 ← schema_catalog.dl11_attr_oauth2_rs_name
+  let ar34 ← schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  let ar35 ← schema_catalog.dl11_attr_oauth2_rs_scope_map
+  let ar36 ← schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  let ar37 ← schema_catalog.dl11_attr_oauth2_rs_token_key
+  let ar38 ← schema_catalog.dl11_attr_oauth2_session
+  let ar39 ← schema_catalog.dl11_attr_passkeys
+  let ar40 ← schema_catalog.dl11_attr_primary_credential
+  let ar41 ← schema_catalog.dl11_attr_private_cookie_key
+  let ar42 ← schema_catalog.dl11_attr_radius_secret
+  let ar43 ← schema_catalog.dl11_attr_rs256_private_key_der
+  let ar44 ← schema_catalog.dl11_attr_ssh_publickey
+  let ar45 ← schema_catalog.dl11_attr_sync_cookie
+  let ar46 ← schema_catalog.dl11_attr_sync_token_session
+  let ar47 ← schema_catalog.dl11_attr_unix_password
+  let ar48 ← schema_catalog.dl11_attr_user_auth_token_session
+  let ar49 ← schema_catalog.dl11_attr_credential_type_minimum
+  let ar50 ← schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  let ar51 ← schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  let ar52 ← schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  let ar53 ← schema_catalog.dl11_attr_limit_search_max_results_dl6
+  let ar54 ← schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  let ar55 ← schema_catalog.dl11_attr_key_internal_data_dl6
+  let ar56 ← schema_catalog.dl11_attr_key_provider_dl6
+  let ar57 ← schema_catalog.dl11_attr_key_action_rotate_dl6
+  let ar58 ← schema_catalog.dl11_attr_key_action_revoke_dl6
+  let ar59 ← schema_catalog.dl11_attr_key_action_import_jws_es256_dl6
+  let ar60 ← schema_catalog.dl11_attr_patch_level_dl7
+  let ar61 ← schema_catalog.dl11_attr_domain_development_taint_dl7
+  let ar62 ← schema_catalog.dl11_attr_certificate_dl7
+  let ar63 ← schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  let ar64 ← schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  let ar65 ← schema_catalog.dl11_attr_mail_dl7
+  let ar66 ← schema_catalog.dl11_attr_legalname_dl7
+  let ar67 ← schema_catalog.dl11_attr_displayname_dl7
+  let ar68 ← schema_catalog.dl11_attr_linked_group_dl8
+  let ar69 ← schema_catalog.dl11_attr_application_password_dl8
+  let ar70 ← schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  let ar71 ← schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  let ar72 ← schema_catalog.dl11_attr_denied_name_dl10
+  let ar73 ← schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  let ar74 ← schema_catalog.dl11_attr_key_action_import_jws_rs256_dl6
+  let ar75 ← schema_catalog.dl11_attr_application_url
+  let ar76 ← schema_catalog.dl11_attr_image
+  let ar77 ← schema_catalog.dl12_attr_oauth2_device_flow_enable
+  let ar78 ← schema_catalog.dl12_attr_message_template
+  let ar79 ← schema_catalog.dl12_attr_send_after
+  let ar80 ← schema_catalog.dl12_attr_delete_after
+  let ar81 ← schema_catalog.dl12_attr_sent_at
+  let ar82 ← schema_catalog.dl12_attr_mail_destination
+  let ar83 ← schema_catalog.dl13_attr_oauth2_account_provider
+  let ar84 ← schema_catalog.dl13_attr_oauth2_account_unique_user_id
+  let ar85 ← schema_catalog.dl12_attr_oauth2_account_credential_uuid
+  let ar86 ← schema_catalog.dl12_attr_oauth2_client_id
+  let ar87 ← schema_catalog.dl12_attr_oauth2_client_secret
+  let ar88 ← schema_catalog.dl12_attr_oauth2_authorisation_endpoint
+  let ar89 ← schema_catalog.dl12_attr_oauth2_token_endpoint
+  let ar90 ← schema_catalog.dl12_attr_oauth2_request_scopes
+  let ar91 ← schema_catalog.dl12_attr_hmac_name_history
+  let ar92 ← schema_catalog.dl12_attr_enabled
+  let ar93 ← schema_catalog.dl12_attr_in_memoriam
+  let ar94 ← schema_catalog.dl13_attr_oauth2_consent_prompt_enable
+  let ar95 ← schema_catalog.dl13_attr_s256
+  let ar96 ← schema_catalog.dl13_attr_account_softlock_expire
+  alloc.vec.FromVecArray.from
+    (Array.make 97#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71, ar72, ar73,
+      ar74, ar75, ar76, ar77, ar78, ar79, ar80, ar81, ar82, ar83, ar84, ar85,
+      ar86, ar87, ar88, ar89, ar90, ar91, ar92, ar93, ar94, ar95, ar96
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl13_class_assertion_nonce]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3894:0-3909:1
+    Visibility: public -/
+def schema_catalog.dl13_class_assertion_nonce
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        97#u8, 115#u8, 115#u8, 101#u8, 114#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        95#u8, 110#u8, 111#u8, 110#u8, 99#u8, 101#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 92#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        110#u8, 111#u8, 110#u8, 99#u8, 101#u8, 32#u8, 116#u8, 105#u8, 101#u8,
+        100#u8, 32#u8, 116#u8, 111#u8, 32#u8, 97#u8, 110#u8, 32#u8, 97#u8,
+        115#u8, 115#u8, 101#u8, 114#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        101#u8, 118#u8, 101#u8, 110#u8, 116#u8, 32#u8, 115#u8, 111#u8, 32#u8,
+        116#u8, 104#u8, 97#u8, 116#u8, 32#u8, 105#u8, 116#u8, 32#u8, 105#u8,
+        115#u8, 32#u8, 111#u8, 110#u8, 108#u8, 121#u8, 32#u8, 97#u8, 112#u8,
+        112#u8, 108#u8, 105#u8, 101#u8, 100#u8, 32#u8, 111#u8, 110#u8, 99#u8,
+        101#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 175#u16, 146#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743905#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_class_key_object_jwt_hs256_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3876:0-3891:1
+    Visibility: public -/
+def schema_catalog.dl13_class_key_object_jwt_hs256_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 116#u8, 95#u8, 104#u8, 115#u8, 50#u8,
+        53#u8, 54#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 106#u8, 119#u8, 116#u8, 32#u8,
+        104#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8, 99#u8, 97#u8, 112#u8,
+        97#u8, 98#u8, 105#u8, 108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743904#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_class_oauth2_rs_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3858:0-3873:1
+    Visibility: public -/
+def schema_catalog.dl13_class_oauth2_rs_dl9
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8, 79#u8,
+        65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        37#u16, 125#u16, 126#u16, 115#u16, 116#u16, 70#u16, 120#u16, 128#u16,
+        123#u16, 129#u16, 114#u16, 112#u16, 145#u16, 127#u16, 60#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 124#u16, 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743493#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_class_account_dl5]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3840:0-3855:1
+    Visibility: public -/
+def schema_catalog.dl13_class_account_dl5
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 35#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 110#u8,
+        32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 1#u16, 3#u16, 101#u16, 67#u16, 2#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 39#u16, 151#u16 ])
+  let v5 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 49#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 15#u8,
+        0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8, 95#u8,
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 22#u8, 0#u8,
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v6 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743430#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v6,
+      systemexcludes := v6,
+      excludes := v6
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl13_class_person_dl8]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3822:0-3837:1
+    Visibility: public -/
+def schema_catalog.dl13_class_person_dl8
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        138#u16, 133#u16, 20#u16, 34#u16, 152#u16, 141#u16, 113#u16, 174#u16,
+        128#u16, 92#u16, 87#u16, 18#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 11#u8,
+        0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743428#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl13_phase_2_schema_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 522:0-556:47
+    Visibility: public -/
+def migration_catalog.dl13_phase_2_schema_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.dl11_class_dyngroup
+  let cr1 ← schema_catalog.dl11_class_orgperson
+  let cr2 ← schema_catalog.dl11_class_posixaccount
+  let cr3 ← schema_catalog.dl11_class_posixgroup
+  let cr4 ← schema_catalog.dl11_class_system_config
+  let cr5 ← schema_catalog.dl11_class_oauth2_rs_public_dl4
+  let cr6 ← schema_catalog.dl13_class_account_dl5
+  let cr7 ← schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  let cr8 ← schema_catalog.dl12_class_group_dl6
+  let cr9 ← schema_catalog.dl11_class_key_provider_dl6
+  let cr10 ← schema_catalog.dl11_class_key_provider_internal_dl6
+  let cr11 ← schema_catalog.dl11_class_key_object_dl6
+  let cr12 ← schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  let cr13 ← schema_catalog.dl11_class_key_object_jwe_a128gcm_dl6
+  let cr14 ← schema_catalog.dl11_class_key_object_internal_dl6
+  let cr15 ← schema_catalog.dl12_class_service_account_dl7
+  let cr16 ← schema_catalog.dl11_class_sync_account_dl7
+  let cr17 ← schema_catalog.dl11_class_client_certificate_dl7
+  let cr18 ← schema_catalog.dl11_class_account_policy_dl8
+  let cr19 ← schema_catalog.dl13_class_person_dl8
+  let cr20 ← schema_catalog.dl13_class_oauth2_rs_dl9
+  let cr21 ← schema_catalog.dl11_class_domain_info_dl10
+  let cr22 ← schema_catalog.dl11_class_key_object_jwt_rs256
+  let cr23 ← schema_catalog.dl11_class_application
+  let cr24 ← schema_catalog.dl12_class_key_object_hkdf_s256
+  let cr25 ← schema_catalog.dl12_class_outbound_message
+  let cr26 ← schema_catalog.dl12_class_oauth2_account
+  let cr27 ← schema_catalog.dl12_class_oauth2_client
+  let cr28 ← schema_catalog.dl12_class_feature
+  let cr29 ← schema_catalog.dl12_class_memorial
+  let cr30 ← schema_catalog.dl13_class_key_object_jwt_hs256_dl6
+  let cr31 ← schema_catalog.dl13_class_assertion_nonce
+  alloc.vec.FromVecArray.from
+    (Array.make 34#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19, cr20, cr21, cr22, cr23, cr24, cr25,
+      cr26, cr27, cr28, cr29, cr30, cr31, cr30, cr31
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl13_phase_7_builtin_access_control_profiles]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 557:0-606:42
+    Visibility: public -/
+def migration_catalog.dl13_phase_7_builtin_access_control_profiles
+  : Result (alloc.vec.Vec acp_catalog.Profile) := do
+  let p ← acp_catalog.dl11_recycle_bin_search_v1
+  let p1 ← acp_catalog.dl11_recycle_bin_revive_v1
+  let p2 ← acp_catalog.dl11_schema_write_attrs_v1
+  let p3 ← acp_catalog.dl11_schema_write_classes_v1
+  let p4 ← acp_catalog.dl13_acp_manage_v1
+  let p5 ← acp_catalog.dl11_group_entry_managed_by_modify_v1
+  let p6 ← acp_catalog.dl11_group_entry_manager_v1
+  let p7 ← acp_catalog.dl13_sync_account_manage_v1
+  let p8 ← acp_catalog.dl13_radius_servers_v1
+  let p9 ← acp_catalog.dl11_radius_secret_manage_v1
+  let p10 ← acp_catalog.dl11_people_self_write_mail_v1
+  let p11 ← acp_catalog.dl11_account_self_write_v1
+  let p12 ← acp_catalog.dl13_all_accounts_posix_read_v1
+  let p13 ← acp_catalog.dl13_system_config_account_policy_manage_v1
+  let p14 ← acp_catalog.dl11_group_unix_manage_v1
+  let p15 ← acp_catalog.dl12_hp_group_unix_manage_v1
+  let p16 ← acp_catalog.dl12_group_read_v1
+  let p17 ← acp_catalog.dl11_account_unix_extend_v1
+  let p18 ← acp_catalog.dl11_people_pii_read_v1
+  let p19 ← acp_catalog.dl11_people_pii_manage_v1
+  let p20 ← acp_catalog.dl11_people_read_v1
+  let p21 ← acp_catalog.dl11_people_manage_v1
+  let p22 ← acp_catalog.dl11_people_delete_v1
+  let p23 ← acp_catalog.dl13_people_credential_reset_v1
+  let p24 ← acp_catalog.dl11_hp_people_credential_reset_v1
+  let p25 ← acp_catalog.dl12_service_account_create_v1
+  let p26 ← acp_catalog.dl11_service_account_delete_v1
+  let p27 ← acp_catalog.dl12_service_account_entry_manager_v1
+  let p28 ← acp_catalog.dl13_service_account_entry_managed_by_modify_v1
+  let p29 ← acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  let p30 ← acp_catalog.dl11_service_account_manage_v1
+  let p31 ← acp_catalog.dl11_people_create_dl6
+  let p32 ← acp_catalog.dl11_account_mail_read_dl6
+  let p33 ← acp_catalog.dl11_self_name_write_dl7
+  let p34 ← acp_catalog.dl11_hp_client_certificate_manager_dl7
+  let p35 ← acp_catalog.dl13_self_read_dl8
+  let p36 ← acp_catalog.dl11_self_write_dl8
+  let p37 ← acp_catalog.dl13_application_manage_dl8
+  let p38 ← acp_catalog.dl13_application_entry_manager_dl8
+  let p39 ← acp_catalog.dl13_mail_servers_dl8
+  let p40 ← acp_catalog.dl11_group_account_policy_manage_dl8
+  let p41 ← acp_catalog.dl12_group_manage_dl9
+  let p42 ← acp_catalog.dl11_domain_admin_dl9
+  let p43 ← acp_catalog.dl13_oauth2_manage
+  let p44 ← acp_catalog.dl12_message_manage
+  let p45 ← acp_catalog.dl12_message_sender
+  let p46 ← acp_catalog.dl13_oauth2_client_admin
+  let p47 ← acp_catalog.dl13_oauth2_account_enrol
+  let p48 ← acp_catalog.dl13_oauth2_manage_basic
+  alloc.vec.FromVecArray.from
+    (Array.make 49#usize [
+      p, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
+      p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+      p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44,
+      p45, p46, p47, p48
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_domain_allow_account_recovery]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4056:0-4069:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_domain_allow_account_recovery
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 68#usize [
+        65#u8, 32#u8, 102#u8, 108#u8, 97#u8, 103#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 101#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 97#u8,
+        99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        99#u8, 111#u8, 118#u8, 101#u8, 114#u8, 121#u8, 32#u8, 114#u8, 101#u8,
+        113#u8, 117#u8, 101#u8, 115#u8, 116#u8, 115#u8, 32#u8, 116#u8, 111#u8,
+        32#u8, 98#u8, 101#u8, 32#u8, 115#u8, 117#u8, 98#u8, 109#u8, 105#u8,
+        116#u8, 116#u8, 101#u8, 100#u8, 32#u8, 98#u8, 121#u8, 32#u8, 117#u8,
+        115#u8, 101#u8, 114#u8, 115#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 42#u16,
+      uuid := 281470681743908#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 3#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_patch_level_dl7]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4040:0-4053:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_patch_level_dl7
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 111#u8, 109#u8, 97#u8, 105#u8,
+        110#u8, 39#u8, 115#u8, 32#u8, 112#u8, 97#u8, 116#u8, 99#u8, 104#u8,
+        32#u8, 108#u8, 101#u8, 118#u8, 101#u8, 108#u8
+        ])
+  ok
+    {
+      «name» := 136#u16,
+      uuid := 281470681743733#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_key_action_import_jws_rs256_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4024:0-4037:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_key_action_import_jws_rs256_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        77#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 100#u8, 101#u8, 110#u8, 111#u8, 116#u8,
+        101#u8, 115#u8, 32#u8, 97#u8, 32#u8, 106#u8, 119#u8, 115#u8, 32#u8,
+        114#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8, 107#u8, 101#u8, 121#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 98#u8, 101#u8, 32#u8, 105#u8, 109#u8,
+        112#u8, 111#u8, 114#u8, 116#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 76#u16,
+      uuid := 281470681743761#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_key_action_import_jws_es256_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4008:0-4021:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_key_action_import_jws_es256_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        77#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 100#u8, 101#u8, 110#u8, 111#u8, 116#u8,
+        101#u8, 115#u8, 32#u8, 97#u8, 32#u8, 106#u8, 119#u8, 115#u8, 32#u8,
+        101#u8, 115#u8, 50#u8, 53#u8, 54#u8, 32#u8, 107#u8, 101#u8, 121#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 98#u8, 101#u8, 32#u8, 105#u8, 109#u8,
+        112#u8, 111#u8, 114#u8, 116#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 75#u16,
+      uuid := 281470681743731#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 21#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_key_action_revoke_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3992:0-4005:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_key_action_revoke_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 54#usize [
+        77#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 100#u8, 101#u8, 110#u8, 111#u8, 116#u8,
+        101#u8, 115#u8, 32#u8, 97#u8, 32#u8, 107#u8, 101#u8, 121#u8, 32#u8,
+        115#u8, 104#u8, 111#u8, 117#u8, 108#u8, 100#u8, 32#u8, 98#u8, 101#u8,
+        32#u8, 114#u8, 101#u8, 118#u8, 111#u8, 107#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 77#u16,
+      uuid := 281470681743729#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 39#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_key_action_rotate_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3976:0-3989:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_key_action_rotate_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 58#usize [
+        77#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8, 97#u8, 116#u8,
+        116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8, 101#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 100#u8, 101#u8, 110#u8, 111#u8, 116#u8,
+        101#u8, 115#u8, 32#u8, 97#u8, 32#u8, 107#u8, 101#u8, 121#u8, 32#u8,
+        114#u8, 111#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        115#u8, 104#u8, 111#u8, 117#u8, 108#u8, 100#u8, 32#u8, 111#u8, 99#u8,
+        99#u8, 117#u8, 114#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 78#u16,
+      uuid := 281470681743730#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := true,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_key_provider_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3960:0-3973:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_key_provider_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        67#u8, 114#u8, 121#u8, 112#u8, 116#u8, 111#u8, 103#u8, 114#u8, 97#u8,
+        112#u8, 104#u8, 105#u8, 99#u8, 32#u8, 75#u8, 101#u8, 121#u8, 32#u8,
+        80#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8
+        ])
+  ok
+    {
+      «name» := 80#u16,
+      uuid := 281470681743728#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := true,
+      «syntax» := 6#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_key_internal_data_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3944:0-3957:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_key_internal_data_dl6
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        73#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 32#u8,
+        75#u8, 101#u8, 121#u8, 32#u8, 68#u8, 97#u8, 116#u8, 97#u8
+        ])
+  ok
+    {
+      «name» := 79#u16,
+      uuid := 281470681743721#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 38#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_oauth2_refresh_token_expiry]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3928:0-3941:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_oauth2_refresh_token_expiry
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 66#usize [
+        68#u8, 101#u8, 102#u8, 105#u8, 110#u8, 101#u8, 115#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 100#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 32#u8, 105#u8, 110#u8, 32#u8, 115#u8, 101#u8, 99#u8,
+        111#u8, 110#u8, 100#u8, 115#u8, 32#u8, 116#u8, 104#u8, 97#u8, 116#u8,
+        32#u8, 97#u8, 32#u8, 114#u8, 101#u8, 102#u8, 114#u8, 101#u8, 115#u8,
+        104#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8, 32#u8, 105#u8,
+        115#u8, 32#u8, 118#u8, 97#u8, 108#u8, 105#u8, 100#u8, 32#u8, 102#u8,
+        111#u8, 114#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 117#u16,
+      uuid := 281470681743909#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 12#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_attr_password_changed_time]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 3912:0-3925:1
+    Visibility: public -/
+def schema_catalog.dl14_attr_password_changed_time
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 44#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 116#u8, 105#u8, 109#u8, 101#u8, 32#u8,
+        119#u8, 104#u8, 101#u8, 110#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8, 32#u8,
+        119#u8, 97#u8, 115#u8, 32#u8, 108#u8, 97#u8, 115#u8, 116#u8, 32#u8,
+        99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8, 100#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 134#u16,
+      uuid := 281470681743907#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 16#u16
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl14_phase_1_schema_attrs]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 607:0-707:60
+    Visibility: public -/
+def migration_catalog.dl14_phase_1_schema_attrs
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.dl11_attr_sync_credential_portal
+  let ar1 ← schema_catalog.dl11_attr_sync_yield_authority
+  let ar2 ← schema_catalog.dl11_attr_account_expire
+  let ar3 ← schema_catalog.dl11_attr_account_valid_from
+  let ar4 ← schema_catalog.dl11_attr_api_token_session
+  let ar5 ← schema_catalog.dl11_attr_auth_session_expiry
+  let ar6 ← schema_catalog.dl11_attr_auth_privilege_expiry
+  let ar7 ← schema_catalog.dl11_attr_auth_password_minimum_length
+  let ar8 ← schema_catalog.dl11_attr_badlist_password
+  let ar9 ← schema_catalog.dl11_attr_credential_update_intent_token
+  let ar10 ← schema_catalog.dl11_attr_attested_passkeys
+  let ar11 ← schema_catalog.dl11_attr_domain_display_name
+  let ar12 ← schema_catalog.dl11_attr_domain_ldap_basedn
+  let ar13 ← schema_catalog.dl11_attr_domain_name
+  let ar14 ← schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  let ar15 ← schema_catalog.dl11_attr_domain_ssid
+  let ar16 ← schema_catalog.dl11_attr_domain_token_key
+  let ar17 ← schema_catalog.dl11_attr_domain_uuid
+  let ar18 ← schema_catalog.dl11_attr_dyngroup_filter
+  let ar19 ← schema_catalog.dl11_attr_es256_private_key_der
+  let ar20 ← schema_catalog.dl11_attr_fernet_private_key_str
+  let ar21 ← schema_catalog.dl11_attr_gidnumber
+  let ar22 ← schema_catalog.dl11_attr_grant_ui_hint
+  let ar23 ← schema_catalog.dl11_attr_jws_es256_private_key
+  let ar24 ← schema_catalog.dl11_attr_loginshell
+  let ar25 ← schema_catalog.dl11_attr_name_history
+  let ar26 ← schema_catalog.dl11_attr_nsuniqueid
+  let ar27 ←
+    schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  let ar28 ← schema_catalog.dl11_attr_oauth2_consent_scope_map
+  let ar29 ← schema_catalog.dl12_attr_oauth2_jwt_legacy_crypto_enable
+  let ar30 ← schema_catalog.dl11_attr_oauth2_prefer_short_username
+  let ar31 ← schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  let ar32 ← schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  let ar33 ← schema_catalog.dl11_attr_oauth2_rs_name
+  let ar34 ← schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  let ar35 ← schema_catalog.dl11_attr_oauth2_rs_scope_map
+  let ar36 ← schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  let ar37 ← schema_catalog.dl11_attr_oauth2_rs_token_key
+  let ar38 ← schema_catalog.dl11_attr_oauth2_session
+  let ar39 ← schema_catalog.dl11_attr_passkeys
+  let ar40 ← schema_catalog.dl11_attr_primary_credential
+  let ar41 ← schema_catalog.dl11_attr_private_cookie_key
+  let ar42 ← schema_catalog.dl11_attr_radius_secret
+  let ar43 ← schema_catalog.dl11_attr_rs256_private_key_der
+  let ar44 ← schema_catalog.dl11_attr_ssh_publickey
+  let ar45 ← schema_catalog.dl11_attr_sync_cookie
+  let ar46 ← schema_catalog.dl11_attr_sync_token_session
+  let ar47 ← schema_catalog.dl11_attr_unix_password
+  let ar48 ← schema_catalog.dl11_attr_user_auth_token_session
+  let ar49 ← schema_catalog.dl11_attr_credential_type_minimum
+  let ar50 ← schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  let ar51 ← schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  let ar52 ← schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  let ar53 ← schema_catalog.dl11_attr_limit_search_max_results_dl6
+  let ar54 ← schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  let ar55 ← schema_catalog.dl14_attr_key_internal_data_dl6
+  let ar56 ← schema_catalog.dl14_attr_key_provider_dl6
+  let ar57 ← schema_catalog.dl14_attr_key_action_rotate_dl6
+  let ar58 ← schema_catalog.dl14_attr_key_action_revoke_dl6
+  let ar59 ← schema_catalog.dl14_attr_key_action_import_jws_es256_dl6
+  let ar60 ← schema_catalog.dl14_attr_patch_level_dl7
+  let ar61 ← schema_catalog.dl11_attr_domain_development_taint_dl7
+  let ar62 ← schema_catalog.dl11_attr_certificate_dl7
+  let ar63 ← schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  let ar64 ← schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  let ar65 ← schema_catalog.dl11_attr_mail_dl7
+  let ar66 ← schema_catalog.dl11_attr_legalname_dl7
+  let ar67 ← schema_catalog.dl11_attr_displayname_dl7
+  let ar68 ← schema_catalog.dl11_attr_linked_group_dl8
+  let ar69 ← schema_catalog.dl11_attr_application_password_dl8
+  let ar70 ← schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  let ar71 ← schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  let ar72 ← schema_catalog.dl11_attr_denied_name_dl10
+  let ar73 ← schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  let ar74 ← schema_catalog.dl14_attr_key_action_import_jws_rs256_dl6
+  let ar75 ← schema_catalog.dl11_attr_application_url
+  let ar76 ← schema_catalog.dl11_attr_image
+  let ar77 ← schema_catalog.dl12_attr_oauth2_device_flow_enable
+  let ar78 ← schema_catalog.dl12_attr_message_template
+  let ar79 ← schema_catalog.dl12_attr_send_after
+  let ar80 ← schema_catalog.dl12_attr_delete_after
+  let ar81 ← schema_catalog.dl12_attr_sent_at
+  let ar82 ← schema_catalog.dl12_attr_mail_destination
+  let ar83 ← schema_catalog.dl13_attr_oauth2_account_provider
+  let ar84 ← schema_catalog.dl13_attr_oauth2_account_unique_user_id
+  let ar85 ← schema_catalog.dl12_attr_oauth2_account_credential_uuid
+  let ar86 ← schema_catalog.dl12_attr_oauth2_client_id
+  let ar87 ← schema_catalog.dl12_attr_oauth2_client_secret
+  let ar88 ← schema_catalog.dl12_attr_oauth2_authorisation_endpoint
+  let ar89 ← schema_catalog.dl12_attr_oauth2_token_endpoint
+  let ar90 ← schema_catalog.dl12_attr_oauth2_request_scopes
+  let ar91 ← schema_catalog.dl12_attr_hmac_name_history
+  let ar92 ← schema_catalog.dl12_attr_enabled
+  let ar93 ← schema_catalog.dl12_attr_in_memoriam
+  let ar94 ← schema_catalog.dl13_attr_oauth2_consent_prompt_enable
+  let ar95 ← schema_catalog.dl13_attr_s256
+  let ar96 ← schema_catalog.dl13_attr_account_softlock_expire
+  let ar97 ← schema_catalog.dl14_attr_password_changed_time
+  let ar98 ← schema_catalog.dl14_attr_oauth2_refresh_token_expiry
+  let ar99 ← schema_catalog.dl14_attr_domain_allow_account_recovery
+  alloc.vec.FromVecArray.from
+    (Array.make 100#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71, ar72, ar73,
+      ar74, ar75, ar76, ar77, ar78, ar79, ar80, ar81, ar82, ar83, ar84, ar85,
+      ar86, ar87, ar88, ar89, ar90, ar91, ar92, ar93, ar94, ar95, ar96, ar97,
+      ar98, ar99
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl14_class_oauth2_rs_dl9]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4108:0-4123:1
+    Visibility: public -/
+def schema_catalog.dl14_class_oauth2_rs_dl9
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8, 95#u8, 115#u8, 101#u8,
+        114#u8, 118#u8, 101#u8, 114#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 48#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8, 79#u8,
+        65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 108#u8, 105#u8,
+        101#u8, 110#u8, 116#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        37#u16, 125#u16, 126#u16, 115#u16, 116#u16, 117#u16, 70#u16, 120#u16,
+        128#u16, 123#u16, 129#u16, 114#u16, 112#u16, 145#u16, 127#u16, 60#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 124#u16, 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743493#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_class_domain_info_dl10]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4090:0-4105:1
+    Visibility: public -/
+def schema_catalog.dl14_class_domain_info_dl10
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8, 95#u8, 105#u8, 110#u8,
+        102#u8, 111#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        76#u8, 111#u8, 99#u8, 97#u8, 108#u8, 32#u8, 100#u8, 111#u8, 109#u8,
+        97#u8, 105#u8, 110#u8, 32#u8, 105#u8, 110#u8, 102#u8, 111#u8, 114#u8,
+        109#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 103#u8, 117#u8,
+        114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        48#u16, 46#u16, 85#u16, 82#u16, 70#u16, 136#u16, 44#u16, 43#u16,
+        42#u16, 45#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 100#u16, 50#u16, 47#u16, 176#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743442#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl14_class_person_dl14]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4072:0-4087:1
+    Visibility: public -/
+def schema_catalog.dl14_class_person_dl14
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8 ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        79#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 114#u8, 101#u8,
+        112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 111#u8, 102#u8, 32#u8, 97#u8, 32#u8,
+        112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v2 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        138#u16, 133#u16, 20#u16, 34#u16, 152#u16, 141#u16, 113#u16, 174#u16,
+        128#u16, 92#u16, 87#u16, 18#u16, 134#u16
+        ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 100#u16 ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  let v6 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        15#u8, 0#u8, 115#u8, 101#u8, 114#u8, 118#u8, 105#u8, 99#u8, 101#u8,
+        95#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 11#u8,
+        0#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743428#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v6,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl14_phase_2_schema_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 708:0-742:47
+    Visibility: public -/
+def migration_catalog.dl14_phase_2_schema_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.dl11_class_dyngroup
+  let cr1 ← schema_catalog.dl11_class_orgperson
+  let cr2 ← schema_catalog.dl11_class_posixaccount
+  let cr3 ← schema_catalog.dl11_class_posixgroup
+  let cr4 ← schema_catalog.dl11_class_system_config
+  let cr5 ← schema_catalog.dl11_class_oauth2_rs_public_dl4
+  let cr6 ← schema_catalog.dl13_class_account_dl5
+  let cr7 ← schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  let cr8 ← schema_catalog.dl12_class_group_dl6
+  let cr9 ← schema_catalog.dl11_class_key_provider_dl6
+  let cr10 ← schema_catalog.dl11_class_key_provider_internal_dl6
+  let cr11 ← schema_catalog.dl11_class_key_object_dl6
+  let cr12 ← schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  let cr13 ← schema_catalog.dl11_class_key_object_jwe_a128gcm_dl6
+  let cr14 ← schema_catalog.dl11_class_key_object_internal_dl6
+  let cr15 ← schema_catalog.dl12_class_service_account_dl7
+  let cr16 ← schema_catalog.dl11_class_sync_account_dl7
+  let cr17 ← schema_catalog.dl11_class_client_certificate_dl7
+  let cr18 ← schema_catalog.dl11_class_account_policy_dl8
+  let cr19 ← schema_catalog.dl14_class_person_dl14
+  let cr20 ← schema_catalog.dl14_class_oauth2_rs_dl9
+  let cr21 ← schema_catalog.dl14_class_domain_info_dl10
+  let cr22 ← schema_catalog.dl11_class_key_object_jwt_rs256
+  let cr23 ← schema_catalog.dl11_class_application
+  let cr24 ← schema_catalog.dl12_class_key_object_hkdf_s256
+  let cr25 ← schema_catalog.dl12_class_outbound_message
+  let cr26 ← schema_catalog.dl12_class_oauth2_account
+  let cr27 ← schema_catalog.dl12_class_oauth2_client
+  let cr28 ← schema_catalog.dl12_class_feature
+  let cr29 ← schema_catalog.dl12_class_memorial
+  let cr30 ← schema_catalog.dl13_class_key_object_jwt_hs256_dl6
+  let cr31 ← schema_catalog.dl13_class_assertion_nonce
+  alloc.vec.FromVecArray.from
+    (Array.make 34#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19, cr20, cr21, cr22, cr23, cr24, cr25,
+      cr26, cr27, cr28, cr29, cr30, cr31, cr30, cr31
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl14_phase_7_builtin_access_control_profiles]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 743:0-792:42
+    Visibility: public -/
+def migration_catalog.dl14_phase_7_builtin_access_control_profiles
+  : Result (alloc.vec.Vec acp_catalog.Profile) := do
+  let p ← acp_catalog.dl11_recycle_bin_search_v1
+  let p1 ← acp_catalog.dl11_recycle_bin_revive_v1
+  let p2 ← acp_catalog.dl11_schema_write_attrs_v1
+  let p3 ← acp_catalog.dl11_schema_write_classes_v1
+  let p4 ← acp_catalog.dl13_acp_manage_v1
+  let p5 ← acp_catalog.dl11_group_entry_managed_by_modify_v1
+  let p6 ← acp_catalog.dl11_group_entry_manager_v1
+  let p7 ← acp_catalog.dl13_sync_account_manage_v1
+  let p8 ← acp_catalog.dl13_radius_servers_v1
+  let p9 ← acp_catalog.dl11_radius_secret_manage_v1
+  let p10 ← acp_catalog.dl11_people_self_write_mail_v1
+  let p11 ← acp_catalog.dl11_account_self_write_v1
+  let p12 ← acp_catalog.dl14_all_accounts_posix_read_v1
+  let p13 ← acp_catalog.dl13_system_config_account_policy_manage_v1
+  let p14 ← acp_catalog.dl11_group_unix_manage_v1
+  let p15 ← acp_catalog.dl12_hp_group_unix_manage_v1
+  let p16 ← acp_catalog.dl12_group_read_v1
+  let p17 ← acp_catalog.dl11_account_unix_extend_v1
+  let p18 ← acp_catalog.dl11_people_pii_read_v1
+  let p19 ← acp_catalog.dl11_people_pii_manage_v1
+  let p20 ← acp_catalog.dl11_people_read_v1
+  let p21 ← acp_catalog.dl11_people_manage_v1
+  let p22 ← acp_catalog.dl11_people_delete_v1
+  let p23 ← acp_catalog.dl13_people_credential_reset_v1
+  let p24 ← acp_catalog.dl11_hp_people_credential_reset_v1
+  let p25 ← acp_catalog.dl12_service_account_create_v1
+  let p26 ← acp_catalog.dl11_service_account_delete_v1
+  let p27 ← acp_catalog.dl12_service_account_entry_manager_v1
+  let p28 ← acp_catalog.dl13_service_account_entry_managed_by_modify_v1
+  let p29 ← acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  let p30 ← acp_catalog.dl11_service_account_manage_v1
+  let p31 ← acp_catalog.dl11_people_create_dl6
+  let p32 ← acp_catalog.dl11_account_mail_read_dl6
+  let p33 ← acp_catalog.dl11_self_name_write_dl7
+  let p34 ← acp_catalog.dl11_hp_client_certificate_manager_dl7
+  let p35 ← acp_catalog.dl14_self_read_dl8
+  let p36 ← acp_catalog.dl11_self_write_dl8
+  let p37 ← acp_catalog.dl13_application_manage_dl8
+  let p38 ← acp_catalog.dl13_application_entry_manager_dl8
+  let p39 ← acp_catalog.dl13_mail_servers_dl8
+  let p40 ← acp_catalog.dl11_group_account_policy_manage_dl8
+  let p41 ← acp_catalog.dl12_group_manage_dl9
+  let p42 ← acp_catalog.dl14_domain_admin_dl9
+  let p43 ← acp_catalog.dl14_oauth2_manage
+  let p44 ← acp_catalog.dl12_message_manage
+  let p45 ← acp_catalog.dl12_message_sender
+  let p46 ← acp_catalog.dl13_oauth2_client_admin
+  let p47 ← acp_catalog.dl13_oauth2_account_enrol
+  let p48 ← acp_catalog.dl13_oauth2_manage_basic
+  alloc.vec.FromVecArray.from
+    (Array.make 49#usize [
+      p, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
+      p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+      p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44,
+      p45, p46, p47, p48
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl15_attr_s256]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4158:0-4171:1
+    Visibility: public -/
+def schema_catalog.dl15_attr_s256 : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        65#u8, 32#u8, 83#u8, 104#u8, 97#u8, 50#u8, 53#u8, 54#u8, 32#u8, 111#u8,
+        117#u8, 116#u8, 112#u8, 117#u8, 116#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 146#u16,
+      uuid := 281470681743897#u128,
+      description := v,
+      multivalue := true,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 44#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl15_attr_oauth2_token_introspect_endpoint]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4142:0-4155:1
+    Visibility: public -/
+def schema_catalog.dl15_attr_oauth2_token_introspect_endpoint
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 55#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 114#u8, 102#u8, 99#u8, 55#u8, 54#u8,
+        54#u8, 50#u8, 32#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8, 32#u8,
+        105#u8, 110#u8, 116#u8, 114#u8, 111#u8, 115#u8, 112#u8, 101#u8, 99#u8,
+        116#u8, 32#u8, 117#u8, 114#u8, 108#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        116#u8, 104#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8, 104#u8,
+        50#u8, 32#u8, 112#u8, 114#u8, 111#u8, 118#u8, 105#u8, 100#u8, 101#u8,
+        114#u8
+        ])
+  ok
+    {
+      «name» := 131#u16,
+      uuid := 281470681743911#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := false,
+      replicated := true,
+      indexed := false,
+      «syntax» := 18#u16
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl15_attr_oauth2_account_unique_user_sub]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4126:0-4139:1
+    Visibility: public -/
+def schema_catalog.dl15_attr_oauth2_account_unique_user_sub
+  : Result schema_catalog.AttributeRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 79#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 110#u8, 105#u8, 113#u8, 117#u8,
+        101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8, 115#u8, 117#u8,
+        98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 111#u8, 102#u8, 32#u8,
+        116#u8, 104#u8, 105#u8, 115#u8, 32#u8, 97#u8, 99#u8, 99#u8, 111#u8,
+        117#u8, 110#u8, 116#u8, 32#u8, 97#u8, 115#u8, 32#u8, 107#u8, 110#u8,
+        111#u8, 119#u8, 110#u8, 32#u8, 98#u8, 121#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 114#u8, 101#u8, 109#u8, 111#u8, 116#u8, 101#u8, 32#u8,
+        79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 112#u8, 114#u8,
+        111#u8, 118#u8, 105#u8, 100#u8, 101#u8, 114#u8, 46#u8
+        ])
+  ok
+    {
+      «name» := 106#u16,
+      uuid := 281470681743910#u128,
+      description := v,
+      multivalue := false,
+      unique := false,
+      phantom := false,
+      sync_allowed := true,
+      replicated := true,
+      indexed := false,
+      «syntax» := 0#u16
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl15_phase_1_schema_attrs]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 793:0-895:63
+    Visibility: public -/
+def migration_catalog.dl15_phase_1_schema_attrs
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.dl11_attr_sync_credential_portal
+  let ar1 ← schema_catalog.dl11_attr_sync_yield_authority
+  let ar2 ← schema_catalog.dl11_attr_account_expire
+  let ar3 ← schema_catalog.dl11_attr_account_valid_from
+  let ar4 ← schema_catalog.dl11_attr_api_token_session
+  let ar5 ← schema_catalog.dl11_attr_auth_session_expiry
+  let ar6 ← schema_catalog.dl11_attr_auth_privilege_expiry
+  let ar7 ← schema_catalog.dl11_attr_auth_password_minimum_length
+  let ar8 ← schema_catalog.dl11_attr_badlist_password
+  let ar9 ← schema_catalog.dl11_attr_credential_update_intent_token
+  let ar10 ← schema_catalog.dl11_attr_attested_passkeys
+  let ar11 ← schema_catalog.dl11_attr_domain_display_name
+  let ar12 ← schema_catalog.dl11_attr_domain_ldap_basedn
+  let ar13 ← schema_catalog.dl11_attr_domain_name
+  let ar14 ← schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  let ar15 ← schema_catalog.dl11_attr_domain_ssid
+  let ar16 ← schema_catalog.dl11_attr_domain_token_key
+  let ar17 ← schema_catalog.dl11_attr_domain_uuid
+  let ar18 ← schema_catalog.dl11_attr_dyngroup_filter
+  let ar19 ← schema_catalog.dl11_attr_es256_private_key_der
+  let ar20 ← schema_catalog.dl11_attr_fernet_private_key_str
+  let ar21 ← schema_catalog.dl11_attr_gidnumber
+  let ar22 ← schema_catalog.dl11_attr_grant_ui_hint
+  let ar23 ← schema_catalog.dl11_attr_jws_es256_private_key
+  let ar24 ← schema_catalog.dl11_attr_loginshell
+  let ar25 ← schema_catalog.dl11_attr_name_history
+  let ar26 ← schema_catalog.dl11_attr_nsuniqueid
+  let ar27 ←
+    schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  let ar28 ← schema_catalog.dl11_attr_oauth2_consent_scope_map
+  let ar29 ← schema_catalog.dl12_attr_oauth2_jwt_legacy_crypto_enable
+  let ar30 ← schema_catalog.dl11_attr_oauth2_prefer_short_username
+  let ar31 ← schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  let ar32 ← schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  let ar33 ← schema_catalog.dl11_attr_oauth2_rs_name
+  let ar34 ← schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  let ar35 ← schema_catalog.dl11_attr_oauth2_rs_scope_map
+  let ar36 ← schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  let ar37 ← schema_catalog.dl11_attr_oauth2_rs_token_key
+  let ar38 ← schema_catalog.dl11_attr_oauth2_session
+  let ar39 ← schema_catalog.dl11_attr_passkeys
+  let ar40 ← schema_catalog.dl11_attr_primary_credential
+  let ar41 ← schema_catalog.dl11_attr_private_cookie_key
+  let ar42 ← schema_catalog.dl11_attr_radius_secret
+  let ar43 ← schema_catalog.dl11_attr_rs256_private_key_der
+  let ar44 ← schema_catalog.dl11_attr_ssh_publickey
+  let ar45 ← schema_catalog.dl11_attr_sync_cookie
+  let ar46 ← schema_catalog.dl11_attr_sync_token_session
+  let ar47 ← schema_catalog.dl11_attr_unix_password
+  let ar48 ← schema_catalog.dl11_attr_user_auth_token_session
+  let ar49 ← schema_catalog.dl11_attr_credential_type_minimum
+  let ar50 ← schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  let ar51 ← schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  let ar52 ← schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  let ar53 ← schema_catalog.dl11_attr_limit_search_max_results_dl6
+  let ar54 ← schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  let ar55 ← schema_catalog.dl14_attr_key_internal_data_dl6
+  let ar56 ← schema_catalog.dl14_attr_key_provider_dl6
+  let ar57 ← schema_catalog.dl14_attr_key_action_rotate_dl6
+  let ar58 ← schema_catalog.dl14_attr_key_action_revoke_dl6
+  let ar59 ← schema_catalog.dl14_attr_key_action_import_jws_es256_dl6
+  let ar60 ← schema_catalog.dl14_attr_patch_level_dl7
+  let ar61 ← schema_catalog.dl11_attr_domain_development_taint_dl7
+  let ar62 ← schema_catalog.dl11_attr_certificate_dl7
+  let ar63 ← schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  let ar64 ← schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  let ar65 ← schema_catalog.dl11_attr_mail_dl7
+  let ar66 ← schema_catalog.dl11_attr_legalname_dl7
+  let ar67 ← schema_catalog.dl11_attr_displayname_dl7
+  let ar68 ← schema_catalog.dl11_attr_linked_group_dl8
+  let ar69 ← schema_catalog.dl11_attr_application_password_dl8
+  let ar70 ← schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  let ar71 ← schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  let ar72 ← schema_catalog.dl11_attr_denied_name_dl10
+  let ar73 ← schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  let ar74 ← schema_catalog.dl14_attr_key_action_import_jws_rs256_dl6
+  let ar75 ← schema_catalog.dl11_attr_application_url
+  let ar76 ← schema_catalog.dl11_attr_image
+  let ar77 ← schema_catalog.dl12_attr_oauth2_device_flow_enable
+  let ar78 ← schema_catalog.dl12_attr_message_template
+  let ar79 ← schema_catalog.dl12_attr_send_after
+  let ar80 ← schema_catalog.dl12_attr_delete_after
+  let ar81 ← schema_catalog.dl12_attr_sent_at
+  let ar82 ← schema_catalog.dl12_attr_mail_destination
+  let ar83 ← schema_catalog.dl13_attr_oauth2_account_provider
+  let ar84 ← schema_catalog.dl13_attr_oauth2_account_unique_user_id
+  let ar85 ← schema_catalog.dl12_attr_oauth2_account_credential_uuid
+  let ar86 ← schema_catalog.dl12_attr_oauth2_client_id
+  let ar87 ← schema_catalog.dl12_attr_oauth2_client_secret
+  let ar88 ← schema_catalog.dl12_attr_oauth2_authorisation_endpoint
+  let ar89 ← schema_catalog.dl12_attr_oauth2_token_endpoint
+  let ar90 ← schema_catalog.dl12_attr_oauth2_request_scopes
+  let ar91 ← schema_catalog.dl12_attr_hmac_name_history
+  let ar92 ← schema_catalog.dl12_attr_enabled
+  let ar93 ← schema_catalog.dl12_attr_in_memoriam
+  let ar94 ← schema_catalog.dl13_attr_oauth2_consent_prompt_enable
+  let ar95 ← schema_catalog.dl15_attr_s256
+  let ar96 ← schema_catalog.dl13_attr_account_softlock_expire
+  let ar97 ← schema_catalog.dl14_attr_password_changed_time
+  let ar98 ← schema_catalog.dl14_attr_oauth2_refresh_token_expiry
+  let ar99 ← schema_catalog.dl14_attr_domain_allow_account_recovery
+  let ar100 ← schema_catalog.dl15_attr_oauth2_account_unique_user_sub
+  let ar101 ← schema_catalog.dl15_attr_oauth2_token_introspect_endpoint
+  alloc.vec.FromVecArray.from
+    (Array.make 102#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71, ar72, ar73,
+      ar74, ar75, ar76, ar77, ar78, ar79, ar80, ar81, ar82, ar83, ar84, ar85,
+      ar86, ar87, ar88, ar89, ar90, ar91, ar92, ar93, ar94, ar95, ar96, ar97,
+      ar98, ar99, ar100, ar101
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl15_class_oauth2_client]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4192:0-4207:1
+    Visibility: public -/
+def schema_catalog.dl15_class_oauth2_client
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 99#u8, 108#u8,
+        105#u8, 101#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 97#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        32#u8, 114#u8, 101#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8, 110#u8,
+        116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 32#u8, 99#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 103#u8, 117#u8, 114#u8, 101#u8, 100#u8, 32#u8,
+        79#u8, 65#u8, 117#u8, 116#u8, 104#u8, 50#u8, 32#u8, 67#u8, 111#u8,
+        110#u8, 102#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 97#u8,
+        108#u8, 32#u8, 67#u8, 108#u8, 105#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+        97#u8, 99#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 97#u8, 115#u8,
+        32#u8, 97#u8, 110#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 101#u8,
+        110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        32#u8, 115#u8, 111#u8, 117#u8, 114#u8, 99#u8, 101#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Array.make 1#usize [ 131#u16 ])
+  let v3 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [
+        100#u16, 110#u16, 111#u16, 109#u16, 130#u16, 118#u16
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743888#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v3,
+      systemmust := v4,
+      must := v3,
+      systemsupplements := v5,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl15_class_oauth2_account]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4174:0-4189:1
+    Visibility: public -/
+def schema_catalog.dl15_class_oauth2_account
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        111#u8, 97#u8, 117#u8, 116#u8, 104#u8, 50#u8, 95#u8, 97#u8, 99#u8,
+        99#u8, 111#u8, 117#u8, 110#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        77#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 32#u8, 100#u8, 101#u8, 115#u8, 105#u8, 103#u8,
+        110#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 104#u8,
+        97#u8, 116#u8, 32#u8, 97#u8, 110#u8, 32#u8, 99#u8, 97#u8, 110#u8,
+        32#u8, 117#u8, 115#u8, 101#u8, 32#u8, 79#u8, 65#u8, 117#u8, 116#u8,
+        104#u8, 50#u8, 32#u8, 102#u8, 111#u8, 114#u8, 32#u8, 97#u8, 117#u8,
+        116#u8, 104#u8, 101#u8, 110#u8, 116#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 104#u16, 105#u16, 106#u16, 103#u16 ])
+  let v4 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        6#u8, 0#u8, 112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8
+        ])
+  let v5 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743881#u128,
+      description := v1,
+      sync_allowed := true,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v5,
+      systemexcludes := v5,
+      excludes := v5
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl15_phase_2_schema_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 896:0-930:47
+    Visibility: public -/
+def migration_catalog.dl15_phase_2_schema_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.dl11_class_dyngroup
+  let cr1 ← schema_catalog.dl11_class_orgperson
+  let cr2 ← schema_catalog.dl11_class_posixaccount
+  let cr3 ← schema_catalog.dl11_class_posixgroup
+  let cr4 ← schema_catalog.dl11_class_system_config
+  let cr5 ← schema_catalog.dl11_class_oauth2_rs_public_dl4
+  let cr6 ← schema_catalog.dl13_class_account_dl5
+  let cr7 ← schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  let cr8 ← schema_catalog.dl12_class_group_dl6
+  let cr9 ← schema_catalog.dl11_class_key_provider_dl6
+  let cr10 ← schema_catalog.dl11_class_key_provider_internal_dl6
+  let cr11 ← schema_catalog.dl11_class_key_object_dl6
+  let cr12 ← schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  let cr13 ← schema_catalog.dl11_class_key_object_jwe_a128gcm_dl6
+  let cr14 ← schema_catalog.dl11_class_key_object_internal_dl6
+  let cr15 ← schema_catalog.dl12_class_service_account_dl7
+  let cr16 ← schema_catalog.dl11_class_sync_account_dl7
+  let cr17 ← schema_catalog.dl11_class_client_certificate_dl7
+  let cr18 ← schema_catalog.dl11_class_account_policy_dl8
+  let cr19 ← schema_catalog.dl14_class_person_dl14
+  let cr20 ← schema_catalog.dl14_class_oauth2_rs_dl9
+  let cr21 ← schema_catalog.dl14_class_domain_info_dl10
+  let cr22 ← schema_catalog.dl11_class_key_object_jwt_rs256
+  let cr23 ← schema_catalog.dl11_class_application
+  let cr24 ← schema_catalog.dl12_class_key_object_hkdf_s256
+  let cr25 ← schema_catalog.dl12_class_outbound_message
+  let cr26 ← schema_catalog.dl15_class_oauth2_account
+  let cr27 ← schema_catalog.dl15_class_oauth2_client
+  let cr28 ← schema_catalog.dl12_class_feature
+  let cr29 ← schema_catalog.dl12_class_memorial
+  let cr30 ← schema_catalog.dl13_class_key_object_jwt_hs256_dl6
+  let cr31 ← schema_catalog.dl13_class_assertion_nonce
+  alloc.vec.FromVecArray.from
+    (Array.make 34#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19, cr20, cr21, cr22, cr23, cr24, cr25,
+      cr26, cr27, cr28, cr29, cr30, cr31, cr30, cr31
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl15_phase_7_builtin_access_control_profiles]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 931:0-980:42
+    Visibility: public -/
+def migration_catalog.dl15_phase_7_builtin_access_control_profiles
+  : Result (alloc.vec.Vec acp_catalog.Profile) := do
+  let p ← acp_catalog.dl11_recycle_bin_search_v1
+  let p1 ← acp_catalog.dl11_recycle_bin_revive_v1
+  let p2 ← acp_catalog.dl11_schema_write_attrs_v1
+  let p3 ← acp_catalog.dl11_schema_write_classes_v1
+  let p4 ← acp_catalog.dl13_acp_manage_v1
+  let p5 ← acp_catalog.dl11_group_entry_managed_by_modify_v1
+  let p6 ← acp_catalog.dl11_group_entry_manager_v1
+  let p7 ← acp_catalog.dl13_sync_account_manage_v1
+  let p8 ← acp_catalog.dl13_radius_servers_v1
+  let p9 ← acp_catalog.dl11_radius_secret_manage_v1
+  let p10 ← acp_catalog.dl11_people_self_write_mail_v1
+  let p11 ← acp_catalog.dl11_account_self_write_v1
+  let p12 ← acp_catalog.dl14_all_accounts_posix_read_v1
+  let p13 ← acp_catalog.dl13_system_config_account_policy_manage_v1
+  let p14 ← acp_catalog.dl11_group_unix_manage_v1
+  let p15 ← acp_catalog.dl12_hp_group_unix_manage_v1
+  let p16 ← acp_catalog.dl12_group_read_v1
+  let p17 ← acp_catalog.dl11_account_unix_extend_v1
+  let p18 ← acp_catalog.dl11_people_pii_read_v1
+  let p19 ← acp_catalog.dl11_people_pii_manage_v1
+  let p20 ← acp_catalog.dl11_people_read_v1
+  let p21 ← acp_catalog.dl11_people_manage_v1
+  let p22 ← acp_catalog.dl11_people_delete_v1
+  let p23 ← acp_catalog.dl13_people_credential_reset_v1
+  let p24 ← acp_catalog.dl11_hp_people_credential_reset_v1
+  let p25 ← acp_catalog.dl12_service_account_create_v1
+  let p26 ← acp_catalog.dl11_service_account_delete_v1
+  let p27 ← acp_catalog.dl12_service_account_entry_manager_v1
+  let p28 ← acp_catalog.dl13_service_account_entry_managed_by_modify_v1
+  let p29 ← acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  let p30 ← acp_catalog.dl15_service_account_manage_v1
+  let p31 ← acp_catalog.dl11_people_create_dl6
+  let p32 ← acp_catalog.dl11_account_mail_read_dl6
+  let p33 ← acp_catalog.dl11_self_name_write_dl7
+  let p34 ← acp_catalog.dl11_hp_client_certificate_manager_dl7
+  let p35 ← acp_catalog.dl14_self_read_dl8
+  let p36 ← acp_catalog.dl11_self_write_dl8
+  let p37 ← acp_catalog.dl13_application_manage_dl8
+  let p38 ← acp_catalog.dl13_application_entry_manager_dl8
+  let p39 ← acp_catalog.dl13_mail_servers_dl8
+  let p40 ← acp_catalog.dl11_group_account_policy_manage_dl8
+  let p41 ← acp_catalog.dl12_group_manage_dl9
+  let p42 ← acp_catalog.dl14_domain_admin_dl9
+  let p43 ← acp_catalog.dl14_oauth2_manage
+  let p44 ← acp_catalog.dl12_message_manage
+  let p45 ← acp_catalog.dl12_message_sender
+  let p46 ← acp_catalog.dl15_oauth2_client_admin
+  let p47 ← acp_catalog.dl15_oauth2_account_enrol
+  let p48 ← acp_catalog.dl13_oauth2_manage_basic
+  alloc.vec.FromVecArray.from
+    (Array.make 49#usize [
+      p, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
+      p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+      p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44,
+      p45, p46, p47, p48
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl_1_12_phase_1_schema_attrs]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 981:0-1083:63
+    Visibility: public -/
+def migration_catalog.dl_1_12_phase_1_schema_attrs
+  : Result (alloc.vec.Vec schema_catalog.AttributeRecord) := do
+  let ar ← schema_catalog.dl11_attr_sync_credential_portal
+  let ar1 ← schema_catalog.dl11_attr_sync_yield_authority
+  let ar2 ← schema_catalog.dl11_attr_account_expire
+  let ar3 ← schema_catalog.dl11_attr_account_valid_from
+  let ar4 ← schema_catalog.dl11_attr_api_token_session
+  let ar5 ← schema_catalog.dl11_attr_auth_session_expiry
+  let ar6 ← schema_catalog.dl11_attr_auth_privilege_expiry
+  let ar7 ← schema_catalog.dl11_attr_auth_password_minimum_length
+  let ar8 ← schema_catalog.dl11_attr_badlist_password
+  let ar9 ← schema_catalog.dl11_attr_credential_update_intent_token
+  let ar10 ← schema_catalog.dl11_attr_attested_passkeys
+  let ar11 ← schema_catalog.dl11_attr_domain_display_name
+  let ar12 ← schema_catalog.dl11_attr_domain_ldap_basedn
+  let ar13 ← schema_catalog.dl11_attr_domain_name
+  let ar14 ← schema_catalog.dl11_attr_ldap_allow_unix_pw_bind
+  let ar15 ← schema_catalog.dl11_attr_domain_ssid
+  let ar16 ← schema_catalog.dl11_attr_domain_token_key
+  let ar17 ← schema_catalog.dl11_attr_domain_uuid
+  let ar18 ← schema_catalog.dl11_attr_dyngroup_filter
+  let ar19 ← schema_catalog.dl11_attr_es256_private_key_der
+  let ar20 ← schema_catalog.dl11_attr_fernet_private_key_str
+  let ar21 ← schema_catalog.dl11_attr_gidnumber
+  let ar22 ← schema_catalog.dl11_attr_grant_ui_hint
+  let ar23 ← schema_catalog.dl11_attr_jws_es256_private_key
+  let ar24 ← schema_catalog.dl11_attr_loginshell
+  let ar25 ← schema_catalog.dl11_attr_name_history
+  let ar26 ← schema_catalog.dl11_attr_nsuniqueid
+  let ar27 ←
+    schema_catalog.dl11_attr_oauth2_allow_insecure_client_disable_pkce
+  let ar28 ← schema_catalog.dl11_attr_oauth2_consent_scope_map
+  let ar29 ← schema_catalog.dl12_attr_oauth2_jwt_legacy_crypto_enable
+  let ar30 ← schema_catalog.dl11_attr_oauth2_prefer_short_username
+  let ar31 ← schema_catalog.dl11_attr_oauth2_rs_basic_secret
+  let ar32 ← schema_catalog.dl11_attr_oauth2_rs_implicit_scopes
+  let ar33 ← schema_catalog.dl11_attr_oauth2_rs_name
+  let ar34 ← schema_catalog.dl11_attr_oauth2_rs_origin_landing
+  let ar35 ← schema_catalog.dl11_attr_oauth2_rs_scope_map
+  let ar36 ← schema_catalog.dl11_attr_oauth2_rs_sup_scope_map
+  let ar37 ← schema_catalog.dl11_attr_oauth2_rs_token_key
+  let ar38 ← schema_catalog.dl11_attr_oauth2_session
+  let ar39 ← schema_catalog.dl11_attr_passkeys
+  let ar40 ← schema_catalog.dl11_attr_primary_credential
+  let ar41 ← schema_catalog.dl11_attr_private_cookie_key
+  let ar42 ← schema_catalog.dl11_attr_radius_secret
+  let ar43 ← schema_catalog.dl11_attr_rs256_private_key_der
+  let ar44 ← schema_catalog.dl11_attr_ssh_publickey
+  let ar45 ← schema_catalog.dl11_attr_sync_cookie
+  let ar46 ← schema_catalog.dl11_attr_sync_token_session
+  let ar47 ← schema_catalog.dl11_attr_unix_password
+  let ar48 ← schema_catalog.dl11_attr_user_auth_token_session
+  let ar49 ← schema_catalog.dl11_attr_credential_type_minimum
+  let ar50 ← schema_catalog.dl11_attr_webauthn_attestation_ca_list
+  let ar51 ← schema_catalog.dl11_attr_oauth2_rs_claim_map_dl4
+  let ar52 ← schema_catalog.dl11_attr_oauth2_allow_localhost_redirect_dl4
+  let ar53 ← schema_catalog.dl11_attr_limit_search_max_results_dl6
+  let ar54 ← schema_catalog.dl11_attr_limit_search_max_filter_test_dl6
+  let ar55 ← schema_catalog.dl14_attr_key_internal_data_dl6
+  let ar56 ← schema_catalog.dl14_attr_key_provider_dl6
+  let ar57 ← schema_catalog.dl14_attr_key_action_rotate_dl6
+  let ar58 ← schema_catalog.dl14_attr_key_action_revoke_dl6
+  let ar59 ← schema_catalog.dl14_attr_key_action_import_jws_es256_dl6
+  let ar60 ← schema_catalog.dl14_attr_patch_level_dl7
+  let ar61 ← schema_catalog.dl11_attr_domain_development_taint_dl7
+  let ar62 ← schema_catalog.dl11_attr_certificate_dl7
+  let ar63 ← schema_catalog.dl11_attr_oauth2_rs_origin_dl7
+  let ar64 ← schema_catalog.dl11_attr_oauth2_strict_redirect_uri_dl7
+  let ar65 ← schema_catalog.dl11_attr_mail_dl7
+  let ar66 ← schema_catalog.dl11_attr_legalname_dl7
+  let ar67 ← schema_catalog.dl11_attr_displayname_dl7
+  let ar68 ← schema_catalog.dl11_attr_linked_group_dl8
+  let ar69 ← schema_catalog.dl11_attr_application_password_dl8
+  let ar70 ← schema_catalog.dl11_attr_allow_primary_cred_fallback_dl8
+  let ar71 ← schema_catalog.dl11_attr_domain_allow_easter_eggs_dl9
+  let ar72 ← schema_catalog.dl11_attr_denied_name_dl10
+  let ar73 ← schema_catalog.dl11_attr_ldap_maximum_queryable_attributes
+  let ar74 ← schema_catalog.dl14_attr_key_action_import_jws_rs256_dl6
+  let ar75 ← schema_catalog.dl11_attr_application_url
+  let ar76 ← schema_catalog.dl11_attr_image
+  let ar77 ← schema_catalog.dl12_attr_oauth2_device_flow_enable
+  let ar78 ← schema_catalog.dl12_attr_message_template
+  let ar79 ← schema_catalog.dl12_attr_send_after
+  let ar80 ← schema_catalog.dl12_attr_delete_after
+  let ar81 ← schema_catalog.dl12_attr_sent_at
+  let ar82 ← schema_catalog.dl12_attr_mail_destination
+  let ar83 ← schema_catalog.dl13_attr_oauth2_account_provider
+  let ar84 ← schema_catalog.dl13_attr_oauth2_account_unique_user_id
+  let ar85 ← schema_catalog.dl12_attr_oauth2_account_credential_uuid
+  let ar86 ← schema_catalog.dl12_attr_oauth2_client_id
+  let ar87 ← schema_catalog.dl12_attr_oauth2_client_secret
+  let ar88 ← schema_catalog.dl12_attr_oauth2_authorisation_endpoint
+  let ar89 ← schema_catalog.dl12_attr_oauth2_token_endpoint
+  let ar90 ← schema_catalog.dl12_attr_oauth2_request_scopes
+  let ar91 ← schema_catalog.dl12_attr_hmac_name_history
+  let ar92 ← schema_catalog.dl12_attr_enabled
+  let ar93 ← schema_catalog.dl12_attr_in_memoriam
+  let ar94 ← schema_catalog.dl13_attr_oauth2_consent_prompt_enable
+  let ar95 ← schema_catalog.dl15_attr_s256
+  let ar96 ← schema_catalog.dl13_attr_account_softlock_expire
+  let ar97 ← schema_catalog.dl14_attr_password_changed_time
+  let ar98 ← schema_catalog.dl14_attr_oauth2_refresh_token_expiry
+  let ar99 ← schema_catalog.dl14_attr_domain_allow_account_recovery
+  let ar100 ← schema_catalog.dl15_attr_oauth2_account_unique_user_sub
+  let ar101 ← schema_catalog.dl15_attr_oauth2_token_introspect_endpoint
+  alloc.vec.FromVecArray.from
+    (Array.make 102#usize [
+      ar, ar1, ar2, ar3, ar4, ar5, ar6, ar7, ar8, ar9, ar10, ar11, ar12, ar13,
+      ar14, ar15, ar16, ar17, ar18, ar19, ar20, ar21, ar22, ar23, ar24, ar25,
+      ar26, ar27, ar28, ar29, ar30, ar31, ar32, ar33, ar34, ar35, ar36, ar37,
+      ar38, ar39, ar40, ar41, ar42, ar43, ar44, ar45, ar46, ar47, ar48, ar49,
+      ar50, ar51, ar52, ar53, ar54, ar55, ar56, ar57, ar58, ar59, ar60, ar61,
+      ar62, ar63, ar64, ar65, ar66, ar67, ar68, ar69, ar70, ar71, ar72, ar73,
+      ar74, ar75, ar76, ar77, ar78, ar79, ar80, ar81, ar82, ar83, ar84, ar85,
+      ar86, ar87, ar88, ar89, ar90, ar91, ar92, ar93, ar94, ar95, ar96, ar97,
+      ar98, ar99, ar100, ar101
+      ])
+
+/-- [kanidm_kernel::schema_catalog::dl_1_12_class_account_signup_request]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4246:0-4261:1
+    Visibility: public -/
+def schema_catalog.dl_1_12_class_account_signup_request
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 95#u8, 115#u8,
+        105#u8, 103#u8, 110#u8, 117#u8, 112#u8, 95#u8, 114#u8, 101#u8, 113#u8,
+        117#u8, 101#u8, 115#u8, 116#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 75#usize [
+        65#u8, 32#u8, 112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8,
+        32#u8, 97#u8, 99#u8, 99#u8, 111#u8, 117#u8, 110#u8, 116#u8, 32#u8,
+        115#u8, 105#u8, 103#u8, 110#u8, 117#u8, 112#u8, 32#u8, 114#u8, 101#u8,
+        113#u8, 117#u8, 101#u8, 115#u8, 116#u8, 32#u8, 116#u8, 104#u8, 97#u8,
+        116#u8, 32#u8, 105#u8, 115#u8, 32#u8, 112#u8, 101#u8, 110#u8, 100#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 114#u8, 101#u8, 118#u8, 105#u8, 101#u8,
+        119#u8, 32#u8, 97#u8, 110#u8, 100#u8, 47#u8, 111#u8, 114#u8, 32#u8,
+        118#u8, 101#u8, 114#u8, 105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 100#u16, 39#u16, 92#u16, 35#u16 ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743912#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v3,
+      must := v2,
+      systemsupplements := v4,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl_1_12_class_key_object_jwe_a256gcm]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4228:0-4243:1
+    Visibility: public -/
+def schema_catalog.dl_1_12_class_key_object_jwe_a256gcm
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 101#u8, 95#u8, 97#u8, 50#u8, 53#u8,
+        54#u8, 103#u8, 99#u8, 109#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 106#u8, 119#u8, 101#u8, 32#u8,
+        97#u8, 101#u8, 115#u8, 45#u8, 50#u8, 53#u8, 54#u8, 45#u8, 103#u8,
+        99#u8, 109#u8, 32#u8, 99#u8, 97#u8, 112#u8, 97#u8, 98#u8, 105#u8,
+        108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743913#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::schema_catalog::dl_1_12_class_key_object_jwe_a128gcm_dl6]:
+    Source: 'prove/ports/kanidm/kernel/src/schema_catalog.rs', lines 4210:0-4225:1
+    Visibility: public -/
+def schema_catalog.dl_1_12_class_key_object_jwe_a128gcm_dl6
+  : Result schema_catalog.ClassRecord := do
+  let v ←
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8,
+        116#u8, 95#u8, 106#u8, 119#u8, 101#u8, 95#u8, 97#u8, 49#u8, 50#u8,
+        56#u8, 103#u8, 99#u8, 109#u8
+        ])
+  let v1 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 86#usize [
+        65#u8, 32#u8, 109#u8, 97#u8, 114#u8, 107#u8, 101#u8, 114#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 32#u8, 105#u8, 110#u8, 100#u8,
+        105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8,
+        104#u8, 97#u8, 116#u8, 32#u8, 116#u8, 104#u8, 105#u8, 115#u8, 32#u8,
+        107#u8, 101#u8, 121#u8, 111#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8,
+        32#u8, 109#u8, 117#u8, 115#u8, 116#u8, 32#u8, 112#u8, 114#u8, 111#u8,
+        118#u8, 105#u8, 100#u8, 101#u8, 32#u8, 106#u8, 119#u8, 101#u8, 32#u8,
+        97#u8, 101#u8, 115#u8, 45#u8, 49#u8, 50#u8, 56#u8, 45#u8, 103#u8,
+        99#u8, 109#u8, 32#u8, 99#u8, 97#u8, 112#u8, 97#u8, 98#u8, 105#u8,
+        108#u8, 105#u8, 116#u8, 121#u8, 46#u8
+        ])
+  let v2 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U16)
+  let v3 ←
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        10#u8, 0#u8, 107#u8, 101#u8, 121#u8, 95#u8, 111#u8, 98#u8, 106#u8,
+        101#u8, 99#u8, 116#u8
+        ])
+  let v4 ← alloc.vec.FromVecArray.from (Std.Array.empty Std.U8)
+  ok
+    {
+      «name» := v,
+      uuid := 281470681743732#u128,
+      description := v1,
+      sync_allowed := false,
+      systemmay := v2,
+      may := v2,
+      systemmust := v2,
+      must := v2,
+      systemsupplements := v3,
+      supplements := v4,
+      systemexcludes := v4,
+      excludes := v4
+    }
+
+/-- [kanidm_kernel::migration_catalog::dl_1_12_phase_2_schema_classes]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 1084:0-1120:57
+    Visibility: public -/
+def migration_catalog.dl_1_12_phase_2_schema_classes
+  : Result (alloc.vec.Vec schema_catalog.ClassRecord) := do
+  let cr ← schema_catalog.dl11_class_dyngroup
+  let cr1 ← schema_catalog.dl11_class_orgperson
+  let cr2 ← schema_catalog.dl11_class_posixaccount
+  let cr3 ← schema_catalog.dl11_class_posixgroup
+  let cr4 ← schema_catalog.dl11_class_system_config
+  let cr5 ← schema_catalog.dl11_class_oauth2_rs_public_dl4
+  let cr6 ← schema_catalog.dl13_class_account_dl5
+  let cr7 ← schema_catalog.dl11_class_oauth2_rs_basic_dl5
+  let cr8 ← schema_catalog.dl12_class_group_dl6
+  let cr9 ← schema_catalog.dl11_class_key_provider_dl6
+  let cr10 ← schema_catalog.dl11_class_key_provider_internal_dl6
+  let cr11 ← schema_catalog.dl11_class_key_object_dl6
+  let cr12 ← schema_catalog.dl11_class_key_object_jwt_es256_dl6
+  let cr13 ← schema_catalog.dl_1_12_class_key_object_jwe_a128gcm_dl6
+  let cr14 ← schema_catalog.dl11_class_key_object_internal_dl6
+  let cr15 ← schema_catalog.dl12_class_service_account_dl7
+  let cr16 ← schema_catalog.dl11_class_sync_account_dl7
+  let cr17 ← schema_catalog.dl11_class_client_certificate_dl7
+  let cr18 ← schema_catalog.dl11_class_account_policy_dl8
+  let cr19 ← schema_catalog.dl14_class_person_dl14
+  let cr20 ← schema_catalog.dl14_class_oauth2_rs_dl9
+  let cr21 ← schema_catalog.dl14_class_domain_info_dl10
+  let cr22 ← schema_catalog.dl11_class_key_object_jwt_rs256
+  let cr23 ← schema_catalog.dl11_class_application
+  let cr24 ← schema_catalog.dl12_class_key_object_hkdf_s256
+  let cr25 ← schema_catalog.dl12_class_outbound_message
+  let cr26 ← schema_catalog.dl15_class_oauth2_account
+  let cr27 ← schema_catalog.dl15_class_oauth2_client
+  let cr28 ← schema_catalog.dl12_class_feature
+  let cr29 ← schema_catalog.dl12_class_memorial
+  let cr30 ← schema_catalog.dl13_class_key_object_jwt_hs256_dl6
+  let cr31 ← schema_catalog.dl13_class_assertion_nonce
+  let cr32 ← schema_catalog.dl_1_12_class_account_signup_request
+  let cr33 ← schema_catalog.dl_1_12_class_key_object_jwe_a256gcm
+  alloc.vec.FromVecArray.from
+    (Array.make 36#usize [
+      cr, cr1, cr2, cr3, cr4, cr5, cr6, cr7, cr8, cr9, cr10, cr11, cr12, cr13,
+      cr14, cr15, cr16, cr17, cr18, cr19, cr20, cr21, cr22, cr23, cr24, cr25,
+      cr26, cr27, cr28, cr29, cr30, cr31, cr30, cr31, cr32, cr33
+      ])
+
+/-- [kanidm_kernel::migration_catalog::dl_1_12_phase_7_builtin_access_control_profiles]:
+    Source: 'prove/ports/kanidm/kernel/src/migration_catalog.rs', lines 1121:0-1171:40
+    Visibility: public -/
+def migration_catalog.dl_1_12_phase_7_builtin_access_control_profiles
+  : Result (alloc.vec.Vec acp_catalog.Profile) := do
+  let p ← acp_catalog.dl11_recycle_bin_search_v1
+  let p1 ← acp_catalog.dl11_recycle_bin_revive_v1
+  let p2 ← acp_catalog.dl11_schema_write_attrs_v1
+  let p3 ← acp_catalog.dl11_schema_write_classes_v1
+  let p4 ← acp_catalog.dl13_acp_manage_v1
+  let p5 ← acp_catalog.dl11_group_entry_managed_by_modify_v1
+  let p6 ← acp_catalog.dl11_group_entry_manager_v1
+  let p7 ← acp_catalog.dl13_sync_account_manage_v1
+  let p8 ← acp_catalog.dl13_radius_servers_v1
+  let p9 ← acp_catalog.dl11_radius_secret_manage_v1
+  let p10 ← acp_catalog.dl11_people_self_write_mail_v1
+  let p11 ← acp_catalog.dl11_account_self_write_v1
+  let p12 ← acp_catalog.dl14_all_accounts_posix_read_v1
+  let p13 ← acp_catalog.dl13_system_config_account_policy_manage_v1
+  let p14 ← acp_catalog.dl11_group_unix_manage_v1
+  let p15 ← acp_catalog.dl12_hp_group_unix_manage_v1
+  let p16 ← acp_catalog.dl12_group_read_v1
+  let p17 ← acp_catalog.dl11_account_unix_extend_v1
+  let p18 ← acp_catalog.dl11_people_pii_read_v1
+  let p19 ← acp_catalog.dl11_people_pii_manage_v1
+  let p20 ← acp_catalog.dl11_people_read_v1
+  let p21 ← acp_catalog.dl11_people_manage_v1
+  let p22 ← acp_catalog.dl11_people_delete_v1
+  let p23 ← acp_catalog.dl13_people_credential_reset_v1
+  let p24 ← acp_catalog.dl11_hp_people_credential_reset_v1
+  let p25 ← acp_catalog.dl12_service_account_create_v1
+  let p26 ← acp_catalog.dl11_service_account_delete_v1
+  let p27 ← acp_catalog.dl12_service_account_entry_manager_v1
+  let p28 ← acp_catalog.dl13_service_account_entry_managed_by_modify_v1
+  let p29 ← acp_catalog.dl11_hp_service_account_entry_managed_by_modify_v1
+  let p30 ← acp_catalog.dl15_service_account_manage_v1
+  let p31 ← acp_catalog.dl11_people_create_dl6
+  let p32 ← acp_catalog.dl11_account_mail_read_dl6
+  let p33 ← acp_catalog.dl11_self_name_write_dl7
+  let p34 ← acp_catalog.dl11_hp_client_certificate_manager_dl7
+  let p35 ← acp_catalog.dl14_self_read_dl8
+  let p36 ← acp_catalog.dl11_self_write_dl8
+  let p37 ← acp_catalog.dl13_application_manage_dl8
+  let p38 ← acp_catalog.dl13_application_entry_manager_dl8
+  let p39 ← acp_catalog.dl13_mail_servers_dl8
+  let p40 ← acp_catalog.dl11_group_account_policy_manage_dl8
+  let p41 ← acp_catalog.dl12_group_manage_dl9
+  let p42 ← acp_catalog.dl14_domain_admin_dl9
+  let p43 ← acp_catalog.dl14_oauth2_manage
+  let p44 ← acp_catalog.dl12_message_manage
+  let p45 ← acp_catalog.dl12_message_sender
+  let p46 ← acp_catalog.dl15_oauth2_client_admin
+  let p47 ← acp_catalog.dl15_oauth2_account_enrol
+  let p48 ← acp_catalog.dl13_oauth2_manage_basic
+  let p49 ← acp_catalog.dl_1_12_feature_manage
+  alloc.vec.FromVecArray.from
+    (Array.make 50#usize [
+      p, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16,
+      p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30,
+      p31, p32, p33, p34, p35, p36, p37, p38, p39, p40, p41, p42, p43, p44,
+      p45, p46, p47, p48, p49
+      ])
 
 /-- [kanidm_kernel::migration_defaults::SystemConfig]
     Source: 'prove/ports/kanidm/kernel/src/migration_defaults.rs', lines 5:0-9:1

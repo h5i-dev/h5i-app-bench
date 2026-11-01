@@ -307,3 +307,13 @@ pub mod syntax_types;
 pub mod migration_defaults;
 
 pub mod acp_defaults;
+
+pub mod acp_catalog;
+
+pub mod schema_catalog;
+
+pub mod group_catalog;
+
+pub mod entry_catalog;
+
+pub mod migration_catalog;

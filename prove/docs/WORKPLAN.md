@@ -159,3 +159,27 @@ Candidate reach and isolated proofs are not counted as passing project gates.
 Durable coordination and validation evidence are under
 `results/campaigns/coverage-20k-20261028T202224Z/`. The checked aggregate has not
 established the 20,000-line milestone.
+
+
+## Accepted 40k source reach milestone (2026-10-31 local / 2026-11-01 UTC)
+
+The next campaign started from an accepted 20,765 pinned executable source lines
+and 609 project properties. It now reaches **40,317 lines with 1,010 accepted
+properties**, adding 19,552 deduplicated lines and 401 complete Kanidm catalog
+and ordered-selection properties. All 142 earlier Kanidm property types remain
+unchanged. The gain covers ACP, schema, group and entry construction, and twenty
+complete migration record selections; it does not certify database migrations or
+whole-application equivalence.
+
+The standard Kanidm gate checked 3,514 theorems across 470 modules using only
+the three permitted axioms. Its inputs were unchanged throughout the run. The
+matching official extraction passed, as did all 43 Rust tests and all 13 source
+reach, dashboard accounting and detail tests. All six projects retain fresh gate
+and extraction evidence. The local dashboard assets are refreshed; deployment
+has not been performed.
+
+Evidence and the 100k+ candidate plan are in
+`results/campaigns/coverage-40k-20261101/accepted-checkpoint.json` and `NEXT.md`.
+Reaching 100k+ will require further executable validation, parsing and policy
+logic as well as complete data construction. Candidate estimates are not counted
+as accepted source reach.

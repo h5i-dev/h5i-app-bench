@@ -1,0 +1,111 @@
+import Verified.AcpCatalog0
+import Verified.AcpCatalog1
+import Verified.AcpCatalog2
+import Verified.AcpCatalog8
+import Verified.AcpCatalog9
+import Verified.AcpCatalog10
+import Verified.AcpCatalog13
+import Verified.AcpCatalog14
+import Verified.AcpCatalog16
+import Verified.AcpCatalog17
+import Verified.AcpCatalog20
+import Verified.AcpCatalog22
+import Verified.AcpCatalog23
+import Verified.AcpCatalog24
+import Verified.AcpCatalog25
+import Verified.AcpCatalog26
+import Verified.AcpCatalog27
+import Verified.AcpCatalog28
+import Verified.AcpCatalog30
+import Verified.AcpCatalog31
+import Verified.AcpCatalog32
+import Verified.AcpCatalog33
+import Verified.AcpCatalog34
+import Verified.AcpCatalog36
+import Verified.AcpCatalog38
+import Verified.AcpCatalog45
+import Verified.AcpCatalog46
+import Verified.AcpCatalog47
+import Verified.AcpCatalog48
+import Verified.AcpCatalog49
+import Verified.AcpCatalog53
+import Verified.AcpCatalog55
+import Verified.AcpCatalog56
+import Verified.AcpCatalog58
+import Verified.AcpCatalog59
+import Verified.AcpCatalog60
+import Verified.AcpCatalog64
+import Verified.AcpCatalog65
+import Verified.AcpCatalog66
+import Verified.AcpCatalog68
+import Verified.AcpCatalog69
+import Verified.AcpCatalog70
+import Verified.AcpCatalog71
+import Verified.AcpCatalog72
+import Verified.AcpCatalog73
+import Verified.AcpCatalog74
+import Verified.AcpCatalog75
+import Verified.AcpCatalog76
+import Verified.AcpCatalog77
+import Verified.AcpCatalog78
+open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
+open H5iAppLib hiding lit
+namespace kanidm_kernel.Verified.MigrationCatalog
+set_option maxRecDepth 32768
+set_option maxHeartbeats 16000000
+def expected_dl_1_12_phase_7_builtin_access_control_profiles : List AcpCatalog.Model := [AcpCatalog.expected_dl11_recycle_bin_search_v1,
+AcpCatalog.expected_dl11_recycle_bin_revive_v1,
+AcpCatalog.expected_dl11_schema_write_attrs_v1,
+AcpCatalog.expected_dl11_schema_write_classes_v1,
+AcpCatalog.expected_dl13_acp_manage_v1,
+AcpCatalog.expected_dl11_group_entry_managed_by_modify_v1,
+AcpCatalog.expected_dl11_group_entry_manager_v1,
+AcpCatalog.expected_dl13_sync_account_manage_v1,
+AcpCatalog.expected_dl13_radius_servers_v1,
+AcpCatalog.expected_dl11_radius_secret_manage_v1,
+AcpCatalog.expected_dl11_people_self_write_mail_v1,
+AcpCatalog.expected_dl11_account_self_write_v1,
+AcpCatalog.expected_dl14_all_accounts_posix_read_v1,
+AcpCatalog.expected_dl13_system_config_account_policy_manage_v1,
+AcpCatalog.expected_dl11_group_unix_manage_v1,
+AcpCatalog.expected_dl12_hp_group_unix_manage_v1,
+AcpCatalog.expected_dl12_group_read_v1,
+AcpCatalog.expected_dl11_account_unix_extend_v1,
+AcpCatalog.expected_dl11_people_pii_read_v1,
+AcpCatalog.expected_dl11_people_pii_manage_v1,
+AcpCatalog.expected_dl11_people_read_v1,
+AcpCatalog.expected_dl11_people_manage_v1,
+AcpCatalog.expected_dl11_people_delete_v1,
+AcpCatalog.expected_dl13_people_credential_reset_v1,
+AcpCatalog.expected_dl11_hp_people_credential_reset_v1,
+AcpCatalog.expected_dl12_service_account_create_v1,
+AcpCatalog.expected_dl11_service_account_delete_v1,
+AcpCatalog.expected_dl12_service_account_entry_manager_v1,
+AcpCatalog.expected_dl13_service_account_entry_managed_by_modify_v1,
+AcpCatalog.expected_dl11_hp_service_account_entry_managed_by_modify_v1,
+AcpCatalog.expected_dl15_service_account_manage_v1,
+AcpCatalog.expected_dl11_people_create_dl6,
+AcpCatalog.expected_dl11_account_mail_read_dl6,
+AcpCatalog.expected_dl11_self_name_write_dl7,
+AcpCatalog.expected_dl11_hp_client_certificate_manager_dl7,
+AcpCatalog.expected_dl14_self_read_dl8,
+AcpCatalog.expected_dl11_self_write_dl8,
+AcpCatalog.expected_dl13_application_manage_dl8,
+AcpCatalog.expected_dl13_application_entry_manager_dl8,
+AcpCatalog.expected_dl13_mail_servers_dl8,
+AcpCatalog.expected_dl11_group_account_policy_manage_dl8,
+AcpCatalog.expected_dl12_group_manage_dl9,
+AcpCatalog.expected_dl14_domain_admin_dl9,
+AcpCatalog.expected_dl14_oauth2_manage,
+AcpCatalog.expected_dl12_message_manage,
+AcpCatalog.expected_dl12_message_sender,
+AcpCatalog.expected_dl15_oauth2_client_admin,
+AcpCatalog.expected_dl15_oauth2_account_enrol,
+AcpCatalog.expected_dl13_oauth2_manage_basic,
+AcpCatalog.expected_dl_1_12_feature_manage]
+@[step] theorem dl_1_12_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl_1_12_phase_7_builtin_access_control_profiles ⦃r => r.val.map AcpCatalog.view = expected_dl_1_12_phase_7_builtin_access_control_profiles⦄ := by
+  unfold migration_catalog.dl_1_12_phase_7_builtin_access_control_profiles
+  h5i_steps
+  all_goals simp_all [expected_dl_1_12_phase_7_builtin_access_control_profiles, Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val, alloc.vec.FromVecArray.from, Std.Array.empty]
+  all_goals scalar_tac
+end kanidm_kernel.Verified.MigrationCatalog

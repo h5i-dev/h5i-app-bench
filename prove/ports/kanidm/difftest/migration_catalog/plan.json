@@ -1,0 +1,268 @@
+{
+  "names": [
+    "system_attributes",
+    "system_classes",
+    "dl11_phase_1_schema_attrs",
+    "dl11_phase_2_schema_classes",
+    "dl11_phase_7_builtin_access_control_profiles",
+    "dl12_phase_1_schema_attrs",
+    "dl12_phase_2_schema_classes",
+    "dl12_phase_7_builtin_access_control_profiles",
+    "dl13_phase_1_schema_attrs",
+    "dl13_phase_2_schema_classes",
+    "dl13_phase_7_builtin_access_control_profiles",
+    "dl14_phase_1_schema_attrs",
+    "dl14_phase_2_schema_classes",
+    "dl14_phase_7_builtin_access_control_profiles",
+    "dl15_phase_1_schema_attrs",
+    "dl15_phase_2_schema_classes",
+    "dl15_phase_7_builtin_access_control_profiles",
+    "dl_1_12_phase_1_schema_attrs",
+    "dl_1_12_phase_2_schema_classes",
+    "dl_1_12_phase_7_builtin_access_control_profiles"
+  ],
+  "declarations": {
+    "migration_catalog.system_attributes": [
+      {
+        "file": "server/lib/src/migration_data/system/mod.rs",
+        "self_ty": "",
+        "name": "attributes",
+        "kind": "fn",
+        "start": 6,
+        "end": 81,
+        "sha256": "04b970aedf47bc65d182b5b2dfad0db03849926e681cb5bd02bb927d9f0d898d"
+      }
+    ],
+    "migration_catalog.system_classes": [
+      {
+        "file": "server/lib/src/migration_data/system/mod.rs",
+        "self_ty": "",
+        "name": "classes",
+        "kind": "fn",
+        "start": 83,
+        "end": 106,
+        "sha256": "ed9d30503cd3d09fe2b21dde85970db6ee725755895e4b29bab6bfe564b41a5b"
+      }
+    ],
+    "migration_catalog.dl11_phase_1_schema_attrs": [
+      {
+        "file": "server/lib/src/migration_data/dl11/mod.rs",
+        "self_ty": "",
+        "name": "phase_1_schema_attrs",
+        "kind": "fn",
+        "start": 13,
+        "end": 109,
+        "sha256": "07bccb8b616ec66fa92db0d879ac1505bc13cedc5614e427078fc88d75c896f1"
+      }
+    ],
+    "migration_catalog.dl11_phase_2_schema_classes": [
+      {
+        "file": "server/lib/src/migration_data/dl11/mod.rs",
+        "self_ty": "",
+        "name": "phase_2_schema_classes",
+        "kind": "fn",
+        "start": 111,
+        "end": 146,
+        "sha256": "dddd43d89f371bc3a20ec09eb186bd43b49c3f7b147fccf1785c97c5cef95edb"
+      }
+    ],
+    "migration_catalog.dl11_phase_7_builtin_access_control_profiles": [
+      {
+        "file": "server/lib/src/migration_data/dl11/mod.rs",
+        "self_ty": "",
+        "name": "phase_7_builtin_access_control_profiles",
+        "kind": "fn",
+        "start": 209,
+        "end": 270,
+        "sha256": "23ff62e8e494000681f9d7c7410fa4e64bbb2ef481fc0c4b374272553a8907b8"
+      }
+    ],
+    "migration_catalog.dl12_phase_1_schema_attrs": [
+      {
+        "file": "server/lib/src/migration_data/dl12/mod.rs",
+        "self_ty": "",
+        "name": "phase_1_schema_attrs",
+        "kind": "fn",
+        "start": 13,
+        "end": 124,
+        "sha256": "b298485cc444f3326d626210a731a7cfca6f467e8ac8ef2f1a4438c148e7723d"
+      }
+    ],
+    "migration_catalog.dl12_phase_2_schema_classes": [
+      {
+        "file": "server/lib/src/migration_data/dl12/mod.rs",
+        "self_ty": "",
+        "name": "phase_2_schema_classes",
+        "kind": "fn",
+        "start": 126,
+        "end": 168,
+        "sha256": "9c389bc7750241d9c4b442e682ffe7ee17ad8172c32bdc42437a3d00d7552f09"
+      }
+    ],
+    "migration_catalog.dl12_phase_7_builtin_access_control_profiles": [
+      {
+        "file": "server/lib/src/migration_data/dl12/mod.rs",
+        "self_ty": "",
+        "name": "phase_7_builtin_access_control_profiles",
+        "kind": "fn",
+        "start": 240,
+        "end": 306,
+        "sha256": "5559c22b38a0d3c7f8d94744cc7d6de8a28d9868244ded8629536ae188711c9d"
+      }
+    ],
+    "migration_catalog.dl13_phase_1_schema_attrs": [
+      {
+        "file": "server/lib/src/migration_data/dl13/mod.rs",
+        "self_ty": "",
+        "name": "phase_1_schema_attrs",
+        "kind": "fn",
+        "start": 13,
+        "end": 127,
+        "sha256": "2bac323e47024a23fd0fd136bf91d3357f5b2bac02ec5f7111a242566d70d07b"
+      }
+    ],
+    "migration_catalog.dl13_phase_2_schema_classes": [
+      {
+        "file": "server/lib/src/migration_data/dl13/mod.rs",
+        "self_ty": "",
+        "name": "phase_2_schema_classes",
+        "kind": "fn",
+        "start": 129,
+        "end": 176,
+        "sha256": "a9c733fefdde9f12dcbabe0fb6c42fc348596554a382799e0477da13d615a336"
+      }
+    ],
+    "migration_catalog.dl13_phase_7_builtin_access_control_profiles": [
+      {
+        "file": "server/lib/src/migration_data/dl13/mod.rs",
+        "self_ty": "",
+        "name": "phase_7_builtin_access_control_profiles",
+        "kind": "fn",
+        "start": 248,
+        "end": 316,
+        "sha256": "644b728f7fe900aabc1d134c1b41f1278a78ea69bf0e840f8bfe33a2755a6404"
+      }
+    ],
+    "migration_catalog.dl14_phase_1_schema_attrs": [
+      {
+        "file": "server/lib/src/migration_data/dl14/mod.rs",
+        "self_ty": "",
+        "name": "phase_1_schema_attrs",
+        "kind": "fn",
+        "start": 16,
+        "end": 134,
+        "sha256": "449a50db26019e3756a0a4f0dc3aa0d81971a251cab073274390ac8fd4ac2729"
+      }
+    ],
+    "migration_catalog.dl14_phase_2_schema_classes": [
+      {
+        "file": "server/lib/src/migration_data/dl14/mod.rs",
+        "self_ty": "",
+        "name": "phase_2_schema_classes",
+        "kind": "fn",
+        "start": 136,
+        "end": 183,
+        "sha256": "295e70f1628b1dacc4b7fd90b4d223b9373cffffa779072c2f9e8493b8ccbe6e"
+      }
+    ],
+    "migration_catalog.dl14_phase_7_builtin_access_control_profiles": [
+      {
+        "file": "server/lib/src/migration_data/dl14/mod.rs",
+        "self_ty": "",
+        "name": "phase_7_builtin_access_control_profiles",
+        "kind": "fn",
+        "start": 255,
+        "end": 323,
+        "sha256": "644b728f7fe900aabc1d134c1b41f1278a78ea69bf0e840f8bfe33a2755a6404"
+      }
+    ],
+    "migration_catalog.dl15_phase_1_schema_attrs": [
+      {
+        "file": "server/lib/src/migration_data/dl15/mod.rs",
+        "self_ty": "",
+        "name": "phase_1_schema_attrs",
+        "kind": "fn",
+        "start": 16,
+        "end": 133,
+        "sha256": "e830802bb549aed81b5bb2ccd0371909ca6d234665f8dfedd1bac8f978d2f292"
+      }
+    ],
+    "migration_catalog.dl15_phase_2_schema_classes": [
+      {
+        "file": "server/lib/src/migration_data/dl15/mod.rs",
+        "self_ty": "",
+        "name": "phase_2_schema_classes",
+        "kind": "fn",
+        "start": 135,
+        "end": 182,
+        "sha256": "4ea4b3f8b66b23a96f920b35b5ab514f3e3596b4cd7b2c509941956ed92297ee"
+      }
+    ],
+    "migration_catalog.dl15_phase_7_builtin_access_control_profiles": [
+      {
+        "file": "server/lib/src/migration_data/dl15/mod.rs",
+        "self_ty": "",
+        "name": "phase_7_builtin_access_control_profiles",
+        "kind": "fn",
+        "start": 254,
+        "end": 322,
+        "sha256": "644b728f7fe900aabc1d134c1b41f1278a78ea69bf0e840f8bfe33a2755a6404"
+      }
+    ],
+    "migration_catalog.dl_1_12_phase_1_schema_attrs": [
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/mod.rs",
+        "self_ty": "",
+        "name": "phase_1_schema_attrs",
+        "kind": "fn",
+        "start": 16,
+        "end": 133,
+        "sha256": "e830802bb549aed81b5bb2ccd0371909ca6d234665f8dfedd1bac8f978d2f292"
+      }
+    ],
+    "migration_catalog.dl_1_12_phase_2_schema_classes": [
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/mod.rs",
+        "self_ty": "",
+        "name": "phase_2_schema_classes",
+        "kind": "fn",
+        "start": 135,
+        "end": 185,
+        "sha256": "c5fcc351e5a53b0e36157137cf4c72af15b58759984898ea02b0dd39c9885c43"
+      }
+    ],
+    "migration_catalog.dl_1_12_phase_7_builtin_access_control_profiles": [
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/mod.rs",
+        "self_ty": "",
+        "name": "phase_7_builtin_access_control_profiles",
+        "kind": "fn",
+        "start": 258,
+        "end": 328,
+        "sha256": "2750c86db999898a6eb2c09280a68b6a26472af0c473960c3a972459007d6c74"
+      }
+    ]
+  },
+  "wrappers": [
+    "theorem migration_catalog_system_attributes_complete : migration_catalog.system_attributes \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_system_attributes\u2984 := Verified.MigrationCatalog.system_attributes_complete",
+    "theorem migration_catalog_system_classes_complete : migration_catalog.system_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_system_classes\u2984 := Verified.MigrationCatalog.system_classes_complete",
+    "theorem migration_catalog_dl11_phase_1_schema_attrs_complete : migration_catalog.dl11_phase_1_schema_attrs \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_dl11_phase_1_schema_attrs\u2984 := Verified.MigrationCatalog.dl11_phase_1_schema_attrs_complete",
+    "theorem migration_catalog_dl11_phase_2_schema_classes_complete : migration_catalog.dl11_phase_2_schema_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl11_phase_2_schema_classes\u2984 := Verified.MigrationCatalog.dl11_phase_2_schema_classes_complete",
+    "theorem migration_catalog_dl11_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl11_phase_7_builtin_access_control_profiles \u2983r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl11_phase_7_builtin_access_control_profiles\u2984 := Verified.MigrationCatalog.dl11_phase_7_builtin_access_control_profiles_complete",
+    "theorem migration_catalog_dl12_phase_1_schema_attrs_complete : migration_catalog.dl12_phase_1_schema_attrs \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_dl12_phase_1_schema_attrs\u2984 := Verified.MigrationCatalog.dl12_phase_1_schema_attrs_complete",
+    "theorem migration_catalog_dl12_phase_2_schema_classes_complete : migration_catalog.dl12_phase_2_schema_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl12_phase_2_schema_classes\u2984 := Verified.MigrationCatalog.dl12_phase_2_schema_classes_complete",
+    "theorem migration_catalog_dl12_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl12_phase_7_builtin_access_control_profiles \u2983r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl12_phase_7_builtin_access_control_profiles\u2984 := Verified.MigrationCatalog.dl12_phase_7_builtin_access_control_profiles_complete",
+    "theorem migration_catalog_dl13_phase_1_schema_attrs_complete : migration_catalog.dl13_phase_1_schema_attrs \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_dl13_phase_1_schema_attrs\u2984 := Verified.MigrationCatalog.dl13_phase_1_schema_attrs_complete",
+    "theorem migration_catalog_dl13_phase_2_schema_classes_complete : migration_catalog.dl13_phase_2_schema_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl13_phase_2_schema_classes\u2984 := Verified.MigrationCatalog.dl13_phase_2_schema_classes_complete",
+    "theorem migration_catalog_dl13_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl13_phase_7_builtin_access_control_profiles \u2983r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl13_phase_7_builtin_access_control_profiles\u2984 := Verified.MigrationCatalog.dl13_phase_7_builtin_access_control_profiles_complete",
+    "theorem migration_catalog_dl14_phase_1_schema_attrs_complete : migration_catalog.dl14_phase_1_schema_attrs \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_dl14_phase_1_schema_attrs\u2984 := Verified.MigrationCatalog.dl14_phase_1_schema_attrs_complete",
+    "theorem migration_catalog_dl14_phase_2_schema_classes_complete : migration_catalog.dl14_phase_2_schema_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl14_phase_2_schema_classes\u2984 := Verified.MigrationCatalog.dl14_phase_2_schema_classes_complete",
+    "theorem migration_catalog_dl14_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl14_phase_7_builtin_access_control_profiles \u2983r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl14_phase_7_builtin_access_control_profiles\u2984 := Verified.MigrationCatalog.dl14_phase_7_builtin_access_control_profiles_complete",
+    "theorem migration_catalog_dl15_phase_1_schema_attrs_complete : migration_catalog.dl15_phase_1_schema_attrs \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_dl15_phase_1_schema_attrs\u2984 := Verified.MigrationCatalog.dl15_phase_1_schema_attrs_complete",
+    "theorem migration_catalog_dl15_phase_2_schema_classes_complete : migration_catalog.dl15_phase_2_schema_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl15_phase_2_schema_classes\u2984 := Verified.MigrationCatalog.dl15_phase_2_schema_classes_complete",
+    "theorem migration_catalog_dl15_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl15_phase_7_builtin_access_control_profiles \u2983r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl15_phase_7_builtin_access_control_profiles\u2984 := Verified.MigrationCatalog.dl15_phase_7_builtin_access_control_profiles_complete",
+    "theorem migration_catalog_dl_1_12_phase_1_schema_attrs_complete : migration_catalog.dl_1_12_phase_1_schema_attrs \u2983r => r.val.map Verified.SchemaCatalog.viewAttribute = Verified.MigrationCatalog.expected_dl_1_12_phase_1_schema_attrs\u2984 := Verified.MigrationCatalog.dl_1_12_phase_1_schema_attrs_complete",
+    "theorem migration_catalog_dl_1_12_phase_2_schema_classes_complete : migration_catalog.dl_1_12_phase_2_schema_classes \u2983r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl_1_12_phase_2_schema_classes\u2984 := Verified.MigrationCatalog.dl_1_12_phase_2_schema_classes_complete",
+    "theorem migration_catalog_dl_1_12_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl_1_12_phase_7_builtin_access_control_profiles \u2983r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl_1_12_phase_7_builtin_access_control_profiles\u2984 := Verified.MigrationCatalog.dl_1_12_phase_7_builtin_access_control_profiles_complete"
+  ]
+}

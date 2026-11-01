@@ -1,0 +1,2150 @@
+{
+  "names": [
+    "dl11_builtin_group_system_admins_v1",
+    "dl11_builtin_group_idm_admins_v1",
+    "dl11_builtin_group_service_desk",
+    "dl11_builtin_group_recycle_bin_admins",
+    "dl11_builtin_group_domain_admins",
+    "dl11_builtin_group_schema_admins",
+    "dl11_builtin_group_access_control_admins",
+    "dl11_builtin_group_people_admins",
+    "dl11_builtin_group_people_on_boarding",
+    "dl11_builtin_group_people_pii_read",
+    "dl11_builtin_group_people_self_name_write_dl7",
+    "dl11_builtin_group_service_account_admins",
+    "dl11_builtin_group_oauth2_admins",
+    "dl11_builtin_group_radius_service_admins",
+    "dl11_builtin_idm_radius_servers_v1",
+    "dl11_builtin_group_mail_service_admins_dl8",
+    "dl11_builtin_idm_mail_servers_dl8",
+    "dl11_builtin_group_account_policy_admins",
+    "dl11_builtin_group_unix_admins",
+    "dl11_builtin_group_client_certificate_admins_dl7",
+    "dl11_idm_group_admins_v1",
+    "dl11_idm_people_self_mail_write_dl7",
+    "dl11_idm_all_persons",
+    "dl11_idm_all_accounts",
+    "dl11_idm_ui_enable_experimental_features",
+    "dl11_idm_account_mail_read",
+    "dl11_idm_high_privilege_dl8",
+    "dl11_builtin_group_application_admins_dl8",
+    "dl12_builtin_group_idm_unix_authentication_read_v1",
+    "dl12_builtin_group_message_admins",
+    "dl12_builtin_group_message_senders",
+    "dl12_builtin_group_oauth2_client_admins",
+    "dl12_builtin_group_oauth2_account_admins",
+    "dl12_idm_high_privilege_dl8",
+    "dl14_builtin_group_people_self_name_write_dl7"
+  ],
+  "declarations": {
+    "group_catalog.dl11_builtin_group_system_admins_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+        "kind": "static",
+        "start": 80,
+        "end": 88,
+        "sha256": "e0881f91f59da3ac8ea9e1194360284ef7d0a60687524716ddd041c387407b88"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+        "kind": "static",
+        "start": 80,
+        "end": 88,
+        "sha256": "e0881f91f59da3ac8ea9e1194360284ef7d0a60687524716ddd041c387407b88"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+        "kind": "static",
+        "start": 80,
+        "end": 88,
+        "sha256": "e0881f91f59da3ac8ea9e1194360284ef7d0a60687524716ddd041c387407b88"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+        "kind": "static",
+        "start": 88,
+        "end": 96,
+        "sha256": "e0881f91f59da3ac8ea9e1194360284ef7d0a60687524716ddd041c387407b88"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+        "kind": "static",
+        "start": 88,
+        "end": 96,
+        "sha256": "e0881f91f59da3ac8ea9e1194360284ef7d0a60687524716ddd041c387407b88"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+        "kind": "static",
+        "start": 88,
+        "end": 96,
+        "sha256": "e0881f91f59da3ac8ea9e1194360284ef7d0a60687524716ddd041c387407b88"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_idm_admins_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_ADMINS_V1",
+        "kind": "static",
+        "start": 90,
+        "end": 97,
+        "sha256": "692eb42c7ce6380f83608c32652ffdc0f1f8fe12acf6332ebf5848dbd4e92c26"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_ADMINS_V1",
+        "kind": "static",
+        "start": 90,
+        "end": 97,
+        "sha256": "692eb42c7ce6380f83608c32652ffdc0f1f8fe12acf6332ebf5848dbd4e92c26"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_ADMINS_V1",
+        "kind": "static",
+        "start": 90,
+        "end": 97,
+        "sha256": "692eb42c7ce6380f83608c32652ffdc0f1f8fe12acf6332ebf5848dbd4e92c26"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_ADMINS_V1",
+        "kind": "static",
+        "start": 98,
+        "end": 105,
+        "sha256": "692eb42c7ce6380f83608c32652ffdc0f1f8fe12acf6332ebf5848dbd4e92c26"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_ADMINS_V1",
+        "kind": "static",
+        "start": 98,
+        "end": 105,
+        "sha256": "692eb42c7ce6380f83608c32652ffdc0f1f8fe12acf6332ebf5848dbd4e92c26"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_ADMINS_V1",
+        "kind": "static",
+        "start": 98,
+        "end": 105,
+        "sha256": "692eb42c7ce6380f83608c32652ffdc0f1f8fe12acf6332ebf5848dbd4e92c26"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_service_desk": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_DESK",
+        "kind": "static",
+        "start": 99,
+        "end": 106,
+        "sha256": "9805a11ba4cca876246bb362594f630364edb9e6cc1deac142c47852d80da5d8"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_DESK",
+        "kind": "static",
+        "start": 99,
+        "end": 106,
+        "sha256": "9805a11ba4cca876246bb362594f630364edb9e6cc1deac142c47852d80da5d8"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_DESK",
+        "kind": "static",
+        "start": 99,
+        "end": 106,
+        "sha256": "9805a11ba4cca876246bb362594f630364edb9e6cc1deac142c47852d80da5d8"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_DESK",
+        "kind": "static",
+        "start": 107,
+        "end": 114,
+        "sha256": "663b7b4bfd45df029693d10147e0d67c9a4bcdc269f8c2d78e6fbddea9f2dc90"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_DESK",
+        "kind": "static",
+        "start": 107,
+        "end": 114,
+        "sha256": "663b7b4bfd45df029693d10147e0d67c9a4bcdc269f8c2d78e6fbddea9f2dc90"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_DESK",
+        "kind": "static",
+        "start": 107,
+        "end": 114,
+        "sha256": "663b7b4bfd45df029693d10147e0d67c9a4bcdc269f8c2d78e6fbddea9f2dc90"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_recycle_bin_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+        "kind": "static",
+        "start": 111,
+        "end": 119,
+        "sha256": "52dac3d49dfac84c49aa2f069d045d98d0fa1ba4c62a8980db76425a32848eca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+        "kind": "static",
+        "start": 111,
+        "end": 119,
+        "sha256": "52dac3d49dfac84c49aa2f069d045d98d0fa1ba4c62a8980db76425a32848eca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+        "kind": "static",
+        "start": 111,
+        "end": 119,
+        "sha256": "52dac3d49dfac84c49aa2f069d045d98d0fa1ba4c62a8980db76425a32848eca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+        "kind": "static",
+        "start": 119,
+        "end": 127,
+        "sha256": "52dac3d49dfac84c49aa2f069d045d98d0fa1ba4c62a8980db76425a32848eca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+        "kind": "static",
+        "start": 119,
+        "end": 127,
+        "sha256": "52dac3d49dfac84c49aa2f069d045d98d0fa1ba4c62a8980db76425a32848eca"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+        "kind": "static",
+        "start": 119,
+        "end": 127,
+        "sha256": "52dac3d49dfac84c49aa2f069d045d98d0fa1ba4c62a8980db76425a32848eca"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_domain_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_DOMAIN_ADMINS",
+        "kind": "static",
+        "start": 121,
+        "end": 131,
+        "sha256": "d236130c5e8cdf6430e6439a3054273ea11d7412026dd7b0e56e596aaa377fe7"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_DOMAIN_ADMINS",
+        "kind": "static",
+        "start": 121,
+        "end": 131,
+        "sha256": "d236130c5e8cdf6430e6439a3054273ea11d7412026dd7b0e56e596aaa377fe7"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_DOMAIN_ADMINS",
+        "kind": "static",
+        "start": 121,
+        "end": 131,
+        "sha256": "d236130c5e8cdf6430e6439a3054273ea11d7412026dd7b0e56e596aaa377fe7"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_DOMAIN_ADMINS",
+        "kind": "static",
+        "start": 129,
+        "end": 139,
+        "sha256": "d236130c5e8cdf6430e6439a3054273ea11d7412026dd7b0e56e596aaa377fe7"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_DOMAIN_ADMINS",
+        "kind": "static",
+        "start": 129,
+        "end": 139,
+        "sha256": "d236130c5e8cdf6430e6439a3054273ea11d7412026dd7b0e56e596aaa377fe7"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_DOMAIN_ADMINS",
+        "kind": "static",
+        "start": 129,
+        "end": 139,
+        "sha256": "d236130c5e8cdf6430e6439a3054273ea11d7412026dd7b0e56e596aaa377fe7"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_schema_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SCHEMA_ADMINS",
+        "kind": "static",
+        "start": 133,
+        "end": 140,
+        "sha256": "57b6c0e130d5175e8525bf36bb15aacc295b809e73435b4f8422737d61304cd3"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SCHEMA_ADMINS",
+        "kind": "static",
+        "start": 133,
+        "end": 140,
+        "sha256": "57b6c0e130d5175e8525bf36bb15aacc295b809e73435b4f8422737d61304cd3"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SCHEMA_ADMINS",
+        "kind": "static",
+        "start": 133,
+        "end": 140,
+        "sha256": "57b6c0e130d5175e8525bf36bb15aacc295b809e73435b4f8422737d61304cd3"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SCHEMA_ADMINS",
+        "kind": "static",
+        "start": 141,
+        "end": 148,
+        "sha256": "57b6c0e130d5175e8525bf36bb15aacc295b809e73435b4f8422737d61304cd3"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SCHEMA_ADMINS",
+        "kind": "static",
+        "start": 141,
+        "end": 148,
+        "sha256": "57b6c0e130d5175e8525bf36bb15aacc295b809e73435b4f8422737d61304cd3"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SCHEMA_ADMINS",
+        "kind": "static",
+        "start": 141,
+        "end": 148,
+        "sha256": "57b6c0e130d5175e8525bf36bb15aacc295b809e73435b4f8422737d61304cd3"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_access_control_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+        "kind": "static",
+        "start": 142,
+        "end": 150,
+        "sha256": "98f3623e66d4472e13aeb9ecae6723a781e4e5b30e7ed4054f0538712c03ca94"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+        "kind": "static",
+        "start": 142,
+        "end": 150,
+        "sha256": "98f3623e66d4472e13aeb9ecae6723a781e4e5b30e7ed4054f0538712c03ca94"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+        "kind": "static",
+        "start": 142,
+        "end": 150,
+        "sha256": "98f3623e66d4472e13aeb9ecae6723a781e4e5b30e7ed4054f0538712c03ca94"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+        "kind": "static",
+        "start": 150,
+        "end": 158,
+        "sha256": "98f3623e66d4472e13aeb9ecae6723a781e4e5b30e7ed4054f0538712c03ca94"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+        "kind": "static",
+        "start": 150,
+        "end": 158,
+        "sha256": "98f3623e66d4472e13aeb9ecae6723a781e4e5b30e7ed4054f0538712c03ca94"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+        "kind": "static",
+        "start": 150,
+        "end": 158,
+        "sha256": "98f3623e66d4472e13aeb9ecae6723a781e4e5b30e7ed4054f0538712c03ca94"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_people_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ADMINS",
+        "kind": "static",
+        "start": 155,
+        "end": 163,
+        "sha256": "e1faaeb36a57de55072ee674e803f12e972220cdc9e433ecb29b2dd2b03c757c"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ADMINS",
+        "kind": "static",
+        "start": 155,
+        "end": 163,
+        "sha256": "e1faaeb36a57de55072ee674e803f12e972220cdc9e433ecb29b2dd2b03c757c"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ADMINS",
+        "kind": "static",
+        "start": 155,
+        "end": 163,
+        "sha256": "e1faaeb36a57de55072ee674e803f12e972220cdc9e433ecb29b2dd2b03c757c"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ADMINS",
+        "kind": "static",
+        "start": 163,
+        "end": 171,
+        "sha256": "e1faaeb36a57de55072ee674e803f12e972220cdc9e433ecb29b2dd2b03c757c"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ADMINS",
+        "kind": "static",
+        "start": 163,
+        "end": 171,
+        "sha256": "e1faaeb36a57de55072ee674e803f12e972220cdc9e433ecb29b2dd2b03c757c"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ADMINS",
+        "kind": "static",
+        "start": 163,
+        "end": 171,
+        "sha256": "e1faaeb36a57de55072ee674e803f12e972220cdc9e433ecb29b2dd2b03c757c"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_people_on_boarding": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+        "kind": "static",
+        "start": 165,
+        "end": 173,
+        "sha256": "dc7e6f8b7a9992e77b05afeedcb9c75f79a7e0aee3e080c928edc1085ed4055d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+        "kind": "static",
+        "start": 165,
+        "end": 173,
+        "sha256": "dc7e6f8b7a9992e77b05afeedcb9c75f79a7e0aee3e080c928edc1085ed4055d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+        "kind": "static",
+        "start": 165,
+        "end": 173,
+        "sha256": "dc7e6f8b7a9992e77b05afeedcb9c75f79a7e0aee3e080c928edc1085ed4055d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+        "kind": "static",
+        "start": 173,
+        "end": 181,
+        "sha256": "dc7e6f8b7a9992e77b05afeedcb9c75f79a7e0aee3e080c928edc1085ed4055d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+        "kind": "static",
+        "start": 173,
+        "end": 181,
+        "sha256": "dc7e6f8b7a9992e77b05afeedcb9c75f79a7e0aee3e080c928edc1085ed4055d"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+        "kind": "static",
+        "start": 173,
+        "end": 181,
+        "sha256": "dc7e6f8b7a9992e77b05afeedcb9c75f79a7e0aee3e080c928edc1085ed4055d"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_people_pii_read": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_PII_READ",
+        "kind": "static",
+        "start": 175,
+        "end": 183,
+        "sha256": "d252161e0564190d39c6d0756c1c7e4fa34ecb38c97d4d170f50b09ef4133062"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_PII_READ",
+        "kind": "static",
+        "start": 175,
+        "end": 183,
+        "sha256": "d252161e0564190d39c6d0756c1c7e4fa34ecb38c97d4d170f50b09ef4133062"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_PII_READ",
+        "kind": "static",
+        "start": 175,
+        "end": 183,
+        "sha256": "d252161e0564190d39c6d0756c1c7e4fa34ecb38c97d4d170f50b09ef4133062"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_PII_READ",
+        "kind": "static",
+        "start": 183,
+        "end": 191,
+        "sha256": "d252161e0564190d39c6d0756c1c7e4fa34ecb38c97d4d170f50b09ef4133062"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_PII_READ",
+        "kind": "static",
+        "start": 183,
+        "end": 191,
+        "sha256": "d252161e0564190d39c6d0756c1c7e4fa34ecb38c97d4d170f50b09ef4133062"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_PII_READ",
+        "kind": "static",
+        "start": 183,
+        "end": 191,
+        "sha256": "d252161e0564190d39c6d0756c1c7e4fa34ecb38c97d4d170f50b09ef4133062"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_people_self_name_write_dl7": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+        "kind": "static",
+        "start": 185,
+        "end": 195,
+        "sha256": "bf3c985a06bd2b3c0f6124f7357e0f9e81b9690db6960be6f3b5e2121756d735"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+        "kind": "static",
+        "start": 185,
+        "end": 195,
+        "sha256": "bf3c985a06bd2b3c0f6124f7357e0f9e81b9690db6960be6f3b5e2121756d735"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+        "kind": "static",
+        "start": 185,
+        "end": 195,
+        "sha256": "bf3c985a06bd2b3c0f6124f7357e0f9e81b9690db6960be6f3b5e2121756d735"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_service_account_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 197,
+        "end": 205,
+        "sha256": "d191cadbca93f8d99dc70e1bad434dac6d5999f5769a37f440f328359a14d5a2"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 197,
+        "end": 205,
+        "sha256": "d191cadbca93f8d99dc70e1bad434dac6d5999f5769a37f440f328359a14d5a2"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 197,
+        "end": 205,
+        "sha256": "d191cadbca93f8d99dc70e1bad434dac6d5999f5769a37f440f328359a14d5a2"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 207,
+        "end": 215,
+        "sha256": "d191cadbca93f8d99dc70e1bad434dac6d5999f5769a37f440f328359a14d5a2"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 207,
+        "end": 215,
+        "sha256": "d191cadbca93f8d99dc70e1bad434dac6d5999f5769a37f440f328359a14d5a2"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 207,
+        "end": 215,
+        "sha256": "d191cadbca93f8d99dc70e1bad434dac6d5999f5769a37f440f328359a14d5a2"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_oauth2_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ADMINS",
+        "kind": "static",
+        "start": 207,
+        "end": 215,
+        "sha256": "11299f6e0bc1a9db6ae7ece864b240c4d9263e403ece02d2df46947eb1b6d0bd"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ADMINS",
+        "kind": "static",
+        "start": 207,
+        "end": 215,
+        "sha256": "11299f6e0bc1a9db6ae7ece864b240c4d9263e403ece02d2df46947eb1b6d0bd"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ADMINS",
+        "kind": "static",
+        "start": 207,
+        "end": 215,
+        "sha256": "11299f6e0bc1a9db6ae7ece864b240c4d9263e403ece02d2df46947eb1b6d0bd"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ADMINS",
+        "kind": "static",
+        "start": 217,
+        "end": 225,
+        "sha256": "11299f6e0bc1a9db6ae7ece864b240c4d9263e403ece02d2df46947eb1b6d0bd"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ADMINS",
+        "kind": "static",
+        "start": 217,
+        "end": 225,
+        "sha256": "11299f6e0bc1a9db6ae7ece864b240c4d9263e403ece02d2df46947eb1b6d0bd"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ADMINS",
+        "kind": "static",
+        "start": 217,
+        "end": 225,
+        "sha256": "11299f6e0bc1a9db6ae7ece864b240c4d9263e403ece02d2df46947eb1b6d0bd"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_radius_service_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+        "kind": "static",
+        "start": 217,
+        "end": 225,
+        "sha256": "5f2ab3c507e95947566706364865a822c644d6a738430b15fdc1238f1a23321f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+        "kind": "static",
+        "start": 217,
+        "end": 225,
+        "sha256": "5f2ab3c507e95947566706364865a822c644d6a738430b15fdc1238f1a23321f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+        "kind": "static",
+        "start": 217,
+        "end": 225,
+        "sha256": "5f2ab3c507e95947566706364865a822c644d6a738430b15fdc1238f1a23321f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+        "kind": "static",
+        "start": 227,
+        "end": 235,
+        "sha256": "5f2ab3c507e95947566706364865a822c644d6a738430b15fdc1238f1a23321f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+        "kind": "static",
+        "start": 227,
+        "end": 235,
+        "sha256": "5f2ab3c507e95947566706364865a822c644d6a738430b15fdc1238f1a23321f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+        "kind": "static",
+        "start": 227,
+        "end": 235,
+        "sha256": "5f2ab3c507e95947566706364865a822c644d6a738430b15fdc1238f1a23321f"
+      }
+    ],
+    "group_catalog.dl11_builtin_idm_radius_servers_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_RADIUS_SERVERS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 235,
+        "sha256": "6b7d73df65ef89ef4454ec3306d3b3c0173b85c20369387a97510426781eeddf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_RADIUS_SERVERS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 235,
+        "sha256": "6b7d73df65ef89ef4454ec3306d3b3c0173b85c20369387a97510426781eeddf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_RADIUS_SERVERS_V1",
+        "kind": "static",
+        "start": 227,
+        "end": 235,
+        "sha256": "6b7d73df65ef89ef4454ec3306d3b3c0173b85c20369387a97510426781eeddf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_RADIUS_SERVERS_V1",
+        "kind": "static",
+        "start": 237,
+        "end": 245,
+        "sha256": "6b7d73df65ef89ef4454ec3306d3b3c0173b85c20369387a97510426781eeddf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_RADIUS_SERVERS_V1",
+        "kind": "static",
+        "start": 237,
+        "end": 245,
+        "sha256": "6b7d73df65ef89ef4454ec3306d3b3c0173b85c20369387a97510426781eeddf"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_RADIUS_SERVERS_V1",
+        "kind": "static",
+        "start": 237,
+        "end": 245,
+        "sha256": "6b7d73df65ef89ef4454ec3306d3b3c0173b85c20369387a97510426781eeddf"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_mail_service_admins_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+        "kind": "static",
+        "start": 237,
+        "end": 245,
+        "sha256": "1d8a9d4897c59698301d3ebcfe378a415f48f0913f372091fbfa3b7c1430fde5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+        "kind": "static",
+        "start": 237,
+        "end": 245,
+        "sha256": "1d8a9d4897c59698301d3ebcfe378a415f48f0913f372091fbfa3b7c1430fde5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+        "kind": "static",
+        "start": 237,
+        "end": 245,
+        "sha256": "1d8a9d4897c59698301d3ebcfe378a415f48f0913f372091fbfa3b7c1430fde5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+        "kind": "static",
+        "start": 247,
+        "end": 255,
+        "sha256": "1d8a9d4897c59698301d3ebcfe378a415f48f0913f372091fbfa3b7c1430fde5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+        "kind": "static",
+        "start": 247,
+        "end": 255,
+        "sha256": "1d8a9d4897c59698301d3ebcfe378a415f48f0913f372091fbfa3b7c1430fde5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+        "kind": "static",
+        "start": 247,
+        "end": 255,
+        "sha256": "1d8a9d4897c59698301d3ebcfe378a415f48f0913f372091fbfa3b7c1430fde5"
+      }
+    ],
+    "group_catalog.dl11_builtin_idm_mail_servers_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_MAIL_SERVERS_DL8",
+        "kind": "static",
+        "start": 247,
+        "end": 255,
+        "sha256": "ffc8eb84003e4aee9dce8f56122213d135305b47c9b1a1c489184e7da472e804"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_MAIL_SERVERS_DL8",
+        "kind": "static",
+        "start": 247,
+        "end": 255,
+        "sha256": "ffc8eb84003e4aee9dce8f56122213d135305b47c9b1a1c489184e7da472e804"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_MAIL_SERVERS_DL8",
+        "kind": "static",
+        "start": 247,
+        "end": 255,
+        "sha256": "ffc8eb84003e4aee9dce8f56122213d135305b47c9b1a1c489184e7da472e804"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_MAIL_SERVERS_DL8",
+        "kind": "static",
+        "start": 257,
+        "end": 265,
+        "sha256": "ffc8eb84003e4aee9dce8f56122213d135305b47c9b1a1c489184e7da472e804"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_MAIL_SERVERS_DL8",
+        "kind": "static",
+        "start": 257,
+        "end": 265,
+        "sha256": "ffc8eb84003e4aee9dce8f56122213d135305b47c9b1a1c489184e7da472e804"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_IDM_MAIL_SERVERS_DL8",
+        "kind": "static",
+        "start": 257,
+        "end": 265,
+        "sha256": "ffc8eb84003e4aee9dce8f56122213d135305b47c9b1a1c489184e7da472e804"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_account_policy_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+        "kind": "static",
+        "start": 257,
+        "end": 265,
+        "sha256": "c9cf68fa3ba2c22eb8f358d9ad99dfd5bd9efb9980923a8a52935febba47d50e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+        "kind": "static",
+        "start": 257,
+        "end": 265,
+        "sha256": "c9cf68fa3ba2c22eb8f358d9ad99dfd5bd9efb9980923a8a52935febba47d50e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+        "kind": "static",
+        "start": 257,
+        "end": 265,
+        "sha256": "c9cf68fa3ba2c22eb8f358d9ad99dfd5bd9efb9980923a8a52935febba47d50e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+        "kind": "static",
+        "start": 267,
+        "end": 275,
+        "sha256": "c9cf68fa3ba2c22eb8f358d9ad99dfd5bd9efb9980923a8a52935febba47d50e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+        "kind": "static",
+        "start": 267,
+        "end": 275,
+        "sha256": "c9cf68fa3ba2c22eb8f358d9ad99dfd5bd9efb9980923a8a52935febba47d50e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+        "kind": "static",
+        "start": 267,
+        "end": 275,
+        "sha256": "c9cf68fa3ba2c22eb8f358d9ad99dfd5bd9efb9980923a8a52935febba47d50e"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_unix_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_UNIX_ADMINS",
+        "kind": "static",
+        "start": 267,
+        "end": 275,
+        "sha256": "e6f90435b051397c3cca304a5384bf8d6fc596473bcdad29da298213436dbc98"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_UNIX_ADMINS",
+        "kind": "static",
+        "start": 267,
+        "end": 275,
+        "sha256": "e6f90435b051397c3cca304a5384bf8d6fc596473bcdad29da298213436dbc98"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_UNIX_ADMINS",
+        "kind": "static",
+        "start": 267,
+        "end": 275,
+        "sha256": "e6f90435b051397c3cca304a5384bf8d6fc596473bcdad29da298213436dbc98"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_UNIX_ADMINS",
+        "kind": "static",
+        "start": 277,
+        "end": 285,
+        "sha256": "e6f90435b051397c3cca304a5384bf8d6fc596473bcdad29da298213436dbc98"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_UNIX_ADMINS",
+        "kind": "static",
+        "start": 277,
+        "end": 285,
+        "sha256": "e6f90435b051397c3cca304a5384bf8d6fc596473bcdad29da298213436dbc98"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_UNIX_ADMINS",
+        "kind": "static",
+        "start": 277,
+        "end": 285,
+        "sha256": "e6f90435b051397c3cca304a5384bf8d6fc596473bcdad29da298213436dbc98"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_client_certificate_admins_dl7": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+        "kind": "static",
+        "start": 277,
+        "end": 286,
+        "sha256": "150c87affccaa75ebdb9189f6ced704080399fce530c17f73ac5f2ece5f61788"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+        "kind": "static",
+        "start": 291,
+        "end": 300,
+        "sha256": "150c87affccaa75ebdb9189f6ced704080399fce530c17f73ac5f2ece5f61788"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+        "kind": "static",
+        "start": 291,
+        "end": 300,
+        "sha256": "150c87affccaa75ebdb9189f6ced704080399fce530c17f73ac5f2ece5f61788"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+        "kind": "static",
+        "start": 301,
+        "end": 310,
+        "sha256": "150c87affccaa75ebdb9189f6ced704080399fce530c17f73ac5f2ece5f61788"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+        "kind": "static",
+        "start": 301,
+        "end": 310,
+        "sha256": "150c87affccaa75ebdb9189f6ced704080399fce530c17f73ac5f2ece5f61788"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+        "kind": "static",
+        "start": 301,
+        "end": 310,
+        "sha256": "150c87affccaa75ebdb9189f6ced704080399fce530c17f73ac5f2ece5f61788"
+      }
+    ],
+    "group_catalog.dl11_idm_group_admins_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_GROUP_ADMINS_V1",
+        "kind": "static",
+        "start": 288,
+        "end": 296,
+        "sha256": "45e80f93a465c30bea41a7c6e20bbf2fd334d1824a90b48f43ec8ca2bdf3baa0"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_GROUP_ADMINS_V1",
+        "kind": "static",
+        "start": 302,
+        "end": 310,
+        "sha256": "45e80f93a465c30bea41a7c6e20bbf2fd334d1824a90b48f43ec8ca2bdf3baa0"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_GROUP_ADMINS_V1",
+        "kind": "static",
+        "start": 302,
+        "end": 310,
+        "sha256": "45e80f93a465c30bea41a7c6e20bbf2fd334d1824a90b48f43ec8ca2bdf3baa0"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_GROUP_ADMINS_V1",
+        "kind": "static",
+        "start": 312,
+        "end": 320,
+        "sha256": "45e80f93a465c30bea41a7c6e20bbf2fd334d1824a90b48f43ec8ca2bdf3baa0"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_GROUP_ADMINS_V1",
+        "kind": "static",
+        "start": 312,
+        "end": 320,
+        "sha256": "45e80f93a465c30bea41a7c6e20bbf2fd334d1824a90b48f43ec8ca2bdf3baa0"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_GROUP_ADMINS_V1",
+        "kind": "static",
+        "start": 312,
+        "end": 320,
+        "sha256": "45e80f93a465c30bea41a7c6e20bbf2fd334d1824a90b48f43ec8ca2bdf3baa0"
+      }
+    ],
+    "group_catalog.dl11_idm_people_self_mail_write_dl7": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+        "kind": "static",
+        "start": 298,
+        "end": 306,
+        "sha256": "56fe72267467e4f89b502d47012af87c86e9a4f06804d306943e95b3c07d7fda"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+        "kind": "static",
+        "start": 312,
+        "end": 320,
+        "sha256": "56fe72267467e4f89b502d47012af87c86e9a4f06804d306943e95b3c07d7fda"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+        "kind": "static",
+        "start": 312,
+        "end": 320,
+        "sha256": "56fe72267467e4f89b502d47012af87c86e9a4f06804d306943e95b3c07d7fda"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+        "kind": "static",
+        "start": 322,
+        "end": 330,
+        "sha256": "56fe72267467e4f89b502d47012af87c86e9a4f06804d306943e95b3c07d7fda"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+        "kind": "static",
+        "start": 322,
+        "end": 330,
+        "sha256": "56fe72267467e4f89b502d47012af87c86e9a4f06804d306943e95b3c07d7fda"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+        "kind": "static",
+        "start": 322,
+        "end": 330,
+        "sha256": "56fe72267467e4f89b502d47012af87c86e9a4f06804d306943e95b3c07d7fda"
+      }
+    ],
+    "group_catalog.dl11_idm_all_persons": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_PERSONS",
+        "kind": "static",
+        "start": 310,
+        "end": 332,
+        "sha256": "c42edaa79fdba91d995442e1753d82775354136cfa465083823901a861b8ac28"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_PERSONS",
+        "kind": "static",
+        "start": 363,
+        "end": 385,
+        "sha256": "c42edaa79fdba91d995442e1753d82775354136cfa465083823901a861b8ac28"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_PERSONS",
+        "kind": "static",
+        "start": 363,
+        "end": 385,
+        "sha256": "c42edaa79fdba91d995442e1753d82775354136cfa465083823901a861b8ac28"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_PERSONS",
+        "kind": "static",
+        "start": 373,
+        "end": 395,
+        "sha256": "c42edaa79fdba91d995442e1753d82775354136cfa465083823901a861b8ac28"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_PERSONS",
+        "kind": "static",
+        "start": 373,
+        "end": 395,
+        "sha256": "c42edaa79fdba91d995442e1753d82775354136cfa465083823901a861b8ac28"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_PERSONS",
+        "kind": "static",
+        "start": 373,
+        "end": 395,
+        "sha256": "c42edaa79fdba91d995442e1753d82775354136cfa465083823901a861b8ac28"
+      }
+    ],
+    "group_catalog.dl11_idm_all_accounts": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_ACCOUNTS",
+        "kind": "static",
+        "start": 334,
+        "end": 351,
+        "sha256": "f724a91f34155cc2c103e26b76668af31683823e301de51045d0c1a5816a560b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_ACCOUNTS",
+        "kind": "static",
+        "start": 387,
+        "end": 404,
+        "sha256": "f724a91f34155cc2c103e26b76668af31683823e301de51045d0c1a5816a560b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_ACCOUNTS",
+        "kind": "static",
+        "start": 387,
+        "end": 404,
+        "sha256": "f724a91f34155cc2c103e26b76668af31683823e301de51045d0c1a5816a560b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_ACCOUNTS",
+        "kind": "static",
+        "start": 397,
+        "end": 414,
+        "sha256": "f724a91f34155cc2c103e26b76668af31683823e301de51045d0c1a5816a560b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_ACCOUNTS",
+        "kind": "static",
+        "start": 397,
+        "end": 414,
+        "sha256": "f724a91f34155cc2c103e26b76668af31683823e301de51045d0c1a5816a560b"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ALL_ACCOUNTS",
+        "kind": "static",
+        "start": 397,
+        "end": 414,
+        "sha256": "f724a91f34155cc2c103e26b76668af31683823e301de51045d0c1a5816a560b"
+      }
+    ],
+    "group_catalog.dl11_idm_ui_enable_experimental_features": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+        "kind": "static",
+        "start": 353,
+        "end": 364,
+        "sha256": "99af4718ea1071319afe5c8db277dbcc55e2ab8fbb8cfd8282412467b2c5c322"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+        "kind": "static",
+        "start": 406,
+        "end": 417,
+        "sha256": "99af4718ea1071319afe5c8db277dbcc55e2ab8fbb8cfd8282412467b2c5c322"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+        "kind": "static",
+        "start": 406,
+        "end": 417,
+        "sha256": "99af4718ea1071319afe5c8db277dbcc55e2ab8fbb8cfd8282412467b2c5c322"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+        "kind": "static",
+        "start": 416,
+        "end": 427,
+        "sha256": "99af4718ea1071319afe5c8db277dbcc55e2ab8fbb8cfd8282412467b2c5c322"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+        "kind": "static",
+        "start": 416,
+        "end": 427,
+        "sha256": "99af4718ea1071319afe5c8db277dbcc55e2ab8fbb8cfd8282412467b2c5c322"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+        "kind": "static",
+        "start": 416,
+        "end": 427,
+        "sha256": "99af4718ea1071319afe5c8db277dbcc55e2ab8fbb8cfd8282412467b2c5c322"
+      }
+    ],
+    "group_catalog.dl11_idm_account_mail_read": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ACCOUNT_MAIL_READ",
+        "kind": "static",
+        "start": 366,
+        "end": 375,
+        "sha256": "142833a48089e7dc2fc3612bc73e413ed8124a54bcb1e56d89a5a48cd4f6b751"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ACCOUNT_MAIL_READ",
+        "kind": "static",
+        "start": 419,
+        "end": 428,
+        "sha256": "142833a48089e7dc2fc3612bc73e413ed8124a54bcb1e56d89a5a48cd4f6b751"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ACCOUNT_MAIL_READ",
+        "kind": "static",
+        "start": 419,
+        "end": 428,
+        "sha256": "142833a48089e7dc2fc3612bc73e413ed8124a54bcb1e56d89a5a48cd4f6b751"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ACCOUNT_MAIL_READ",
+        "kind": "static",
+        "start": 429,
+        "end": 438,
+        "sha256": "142833a48089e7dc2fc3612bc73e413ed8124a54bcb1e56d89a5a48cd4f6b751"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ACCOUNT_MAIL_READ",
+        "kind": "static",
+        "start": 429,
+        "end": 438,
+        "sha256": "142833a48089e7dc2fc3612bc73e413ed8124a54bcb1e56d89a5a48cd4f6b751"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_ACCOUNT_MAIL_READ",
+        "kind": "static",
+        "start": 429,
+        "end": 438,
+        "sha256": "142833a48089e7dc2fc3612bc73e413ed8124a54bcb1e56d89a5a48cd4f6b751"
+      }
+    ],
+    "group_catalog.dl11_idm_high_privilege_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "IDM_HIGH_PRIVILEGE_DL8",
+        "kind": "static",
+        "start": 377,
+        "end": 409,
+        "sha256": "63b793f8878c3e0495926df9ab87204c2f3f4805f1a200f33a1bdcef26e265d6"
+      }
+    ],
+    "group_catalog.dl11_builtin_group_application_admins_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl11/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+        "kind": "static",
+        "start": 411,
+        "end": 419,
+        "sha256": "7c9656b015c27e5e6e1c030634fcdf8791a7589863103ba86159478b207e1bed"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+        "kind": "static",
+        "start": 468,
+        "end": 476,
+        "sha256": "7c9656b015c27e5e6e1c030634fcdf8791a7589863103ba86159478b207e1bed"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+        "kind": "static",
+        "start": 468,
+        "end": 476,
+        "sha256": "7c9656b015c27e5e6e1c030634fcdf8791a7589863103ba86159478b207e1bed"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+        "kind": "static",
+        "start": 478,
+        "end": 486,
+        "sha256": "7c9656b015c27e5e6e1c030634fcdf8791a7589863103ba86159478b207e1bed"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+        "kind": "static",
+        "start": 478,
+        "end": 486,
+        "sha256": "7c9656b015c27e5e6e1c030634fcdf8791a7589863103ba86159478b207e1bed"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+        "kind": "static",
+        "start": 478,
+        "end": 486,
+        "sha256": "7c9656b015c27e5e6e1c030634fcdf8791a7589863103ba86159478b207e1bed"
+      }
+    ],
+    "group_catalog.dl12_builtin_group_idm_unix_authentication_read_v1": [
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+        "kind": "static",
+        "start": 277,
+        "end": 289,
+        "sha256": "0995d09b778ff5da2e1bd8edfa372257b58dcf327a64b6c967e91743fa01916f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+        "kind": "static",
+        "start": 277,
+        "end": 289,
+        "sha256": "0995d09b778ff5da2e1bd8edfa372257b58dcf327a64b6c967e91743fa01916f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+        "kind": "static",
+        "start": 287,
+        "end": 299,
+        "sha256": "0995d09b778ff5da2e1bd8edfa372257b58dcf327a64b6c967e91743fa01916f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+        "kind": "static",
+        "start": 287,
+        "end": 299,
+        "sha256": "0995d09b778ff5da2e1bd8edfa372257b58dcf327a64b6c967e91743fa01916f"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+        "kind": "static",
+        "start": 287,
+        "end": 299,
+        "sha256": "0995d09b778ff5da2e1bd8edfa372257b58dcf327a64b6c967e91743fa01916f"
+      }
+    ],
+    "group_catalog.dl12_builtin_group_message_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_ADMINS",
+        "kind": "static",
+        "start": 322,
+        "end": 329,
+        "sha256": "b0a0bfcbb714040f81d3e1d31441f59ea4b9a1c3c58da6644e280c80d850c53e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_ADMINS",
+        "kind": "static",
+        "start": 322,
+        "end": 329,
+        "sha256": "b0a0bfcbb714040f81d3e1d31441f59ea4b9a1c3c58da6644e280c80d850c53e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_ADMINS",
+        "kind": "static",
+        "start": 332,
+        "end": 339,
+        "sha256": "b0a0bfcbb714040f81d3e1d31441f59ea4b9a1c3c58da6644e280c80d850c53e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_ADMINS",
+        "kind": "static",
+        "start": 332,
+        "end": 339,
+        "sha256": "b0a0bfcbb714040f81d3e1d31441f59ea4b9a1c3c58da6644e280c80d850c53e"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_ADMINS",
+        "kind": "static",
+        "start": 332,
+        "end": 339,
+        "sha256": "b0a0bfcbb714040f81d3e1d31441f59ea4b9a1c3c58da6644e280c80d850c53e"
+      }
+    ],
+    "group_catalog.dl12_builtin_group_message_senders": [
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_SENDERS",
+        "kind": "static",
+        "start": 331,
+        "end": 339,
+        "sha256": "23ad6b0aa2026518d5fa1e707997be92ed9691fa1b199eaf01de6bf5f014d398"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_SENDERS",
+        "kind": "static",
+        "start": 331,
+        "end": 339,
+        "sha256": "23ad6b0aa2026518d5fa1e707997be92ed9691fa1b199eaf01de6bf5f014d398"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_SENDERS",
+        "kind": "static",
+        "start": 341,
+        "end": 349,
+        "sha256": "23ad6b0aa2026518d5fa1e707997be92ed9691fa1b199eaf01de6bf5f014d398"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_SENDERS",
+        "kind": "static",
+        "start": 341,
+        "end": 349,
+        "sha256": "23ad6b0aa2026518d5fa1e707997be92ed9691fa1b199eaf01de6bf5f014d398"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_MESSAGE_SENDERS",
+        "kind": "static",
+        "start": 341,
+        "end": 349,
+        "sha256": "23ad6b0aa2026518d5fa1e707997be92ed9691fa1b199eaf01de6bf5f014d398"
+      }
+    ],
+    "group_catalog.dl12_builtin_group_oauth2_client_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+        "kind": "static",
+        "start": 341,
+        "end": 349,
+        "sha256": "757d7ddf1e29d505a9caab14ef3f46125f2f4916bbd088a68f8f25a36dbe97e5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+        "kind": "static",
+        "start": 341,
+        "end": 349,
+        "sha256": "757d7ddf1e29d505a9caab14ef3f46125f2f4916bbd088a68f8f25a36dbe97e5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+        "kind": "static",
+        "start": 351,
+        "end": 359,
+        "sha256": "757d7ddf1e29d505a9caab14ef3f46125f2f4916bbd088a68f8f25a36dbe97e5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+        "kind": "static",
+        "start": 351,
+        "end": 359,
+        "sha256": "757d7ddf1e29d505a9caab14ef3f46125f2f4916bbd088a68f8f25a36dbe97e5"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+        "kind": "static",
+        "start": 351,
+        "end": 359,
+        "sha256": "757d7ddf1e29d505a9caab14ef3f46125f2f4916bbd088a68f8f25a36dbe97e5"
+      }
+    ],
+    "group_catalog.dl12_builtin_group_oauth2_account_admins": [
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 351,
+        "end": 359,
+        "sha256": "e22170e5a0123bc3c51c2c0a564068d978639e6bc6911f91ce3d52c9b7f7b448"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 351,
+        "end": 359,
+        "sha256": "e22170e5a0123bc3c51c2c0a564068d978639e6bc6911f91ce3d52c9b7f7b448"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 361,
+        "end": 369,
+        "sha256": "e22170e5a0123bc3c51c2c0a564068d978639e6bc6911f91ce3d52c9b7f7b448"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 361,
+        "end": 369,
+        "sha256": "e22170e5a0123bc3c51c2c0a564068d978639e6bc6911f91ce3d52c9b7f7b448"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+        "kind": "static",
+        "start": 361,
+        "end": 369,
+        "sha256": "e22170e5a0123bc3c51c2c0a564068d978639e6bc6911f91ce3d52c9b7f7b448"
+      }
+    ],
+    "group_catalog.dl12_idm_high_privilege_dl8": [
+      {
+        "file": "server/lib/src/migration_data/dl12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_HIGH_PRIVILEGE_DL8",
+        "kind": "static",
+        "start": 430,
+        "end": 466,
+        "sha256": "36f50535b67573afe9729c47492991a199a0f506834dcd94ae12b8ed916ce671"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl13/groups.rs",
+        "self_ty": "",
+        "name": "IDM_HIGH_PRIVILEGE_DL8",
+        "kind": "static",
+        "start": 430,
+        "end": 466,
+        "sha256": "36f50535b67573afe9729c47492991a199a0f506834dcd94ae12b8ed916ce671"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "IDM_HIGH_PRIVILEGE_DL8",
+        "kind": "static",
+        "start": 440,
+        "end": 476,
+        "sha256": "36f50535b67573afe9729c47492991a199a0f506834dcd94ae12b8ed916ce671"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "IDM_HIGH_PRIVILEGE_DL8",
+        "kind": "static",
+        "start": 440,
+        "end": 476,
+        "sha256": "36f50535b67573afe9729c47492991a199a0f506834dcd94ae12b8ed916ce671"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "IDM_HIGH_PRIVILEGE_DL8",
+        "kind": "static",
+        "start": 440,
+        "end": 476,
+        "sha256": "36f50535b67573afe9729c47492991a199a0f506834dcd94ae12b8ed916ce671"
+      }
+    ],
+    "group_catalog.dl14_builtin_group_people_self_name_write_dl7": [
+      {
+        "file": "server/lib/src/migration_data/dl14/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+        "kind": "static",
+        "start": 193,
+        "end": 205,
+        "sha256": "1fc3ab9ff281b228a2dc4fd26189bf6fc38965ceddc63d11107b771a4253dfac"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl15/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+        "kind": "static",
+        "start": 193,
+        "end": 205,
+        "sha256": "1fc3ab9ff281b228a2dc4fd26189bf6fc38965ceddc63d11107b771a4253dfac"
+      },
+      {
+        "file": "server/lib/src/migration_data/dl_1_12/groups.rs",
+        "self_ty": "",
+        "name": "BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+        "kind": "static",
+        "start": 193,
+        "end": 205,
+        "sha256": "1fc3ab9ff281b228a2dc4fd26189bf6fc38965ceddc63d11107b771a4253dfac"
+      }
+    ]
+  },
+  "aliases": {
+    "dl11_builtin_group_system_admins_v1": [
+      "dl11/BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+      "dl12/BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+      "dl13/BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+      "dl14/BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+      "dl15/BUILTIN_GROUP_SYSTEM_ADMINS_V1",
+      "dl_1_12/BUILTIN_GROUP_SYSTEM_ADMINS_V1"
+    ],
+    "dl11_builtin_group_idm_admins_v1": [
+      "dl11/BUILTIN_GROUP_IDM_ADMINS_V1",
+      "dl12/BUILTIN_GROUP_IDM_ADMINS_V1",
+      "dl13/BUILTIN_GROUP_IDM_ADMINS_V1",
+      "dl14/BUILTIN_GROUP_IDM_ADMINS_V1",
+      "dl15/BUILTIN_GROUP_IDM_ADMINS_V1",
+      "dl_1_12/BUILTIN_GROUP_IDM_ADMINS_V1"
+    ],
+    "dl11_builtin_group_service_desk": [
+      "dl11/BUILTIN_GROUP_SERVICE_DESK",
+      "dl12/BUILTIN_GROUP_SERVICE_DESK",
+      "dl13/BUILTIN_GROUP_SERVICE_DESK",
+      "dl14/BUILTIN_GROUP_SERVICE_DESK",
+      "dl15/BUILTIN_GROUP_SERVICE_DESK",
+      "dl_1_12/BUILTIN_GROUP_SERVICE_DESK"
+    ],
+    "dl11_builtin_group_recycle_bin_admins": [
+      "dl11/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+      "dl12/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+      "dl13/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+      "dl14/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+      "dl15/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_RECYCLE_BIN_ADMINS"
+    ],
+    "dl11_builtin_group_domain_admins": [
+      "dl11/BUILTIN_GROUP_DOMAIN_ADMINS",
+      "dl12/BUILTIN_GROUP_DOMAIN_ADMINS",
+      "dl13/BUILTIN_GROUP_DOMAIN_ADMINS",
+      "dl14/BUILTIN_GROUP_DOMAIN_ADMINS",
+      "dl15/BUILTIN_GROUP_DOMAIN_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_DOMAIN_ADMINS"
+    ],
+    "dl11_builtin_group_schema_admins": [
+      "dl11/BUILTIN_GROUP_SCHEMA_ADMINS",
+      "dl12/BUILTIN_GROUP_SCHEMA_ADMINS",
+      "dl13/BUILTIN_GROUP_SCHEMA_ADMINS",
+      "dl14/BUILTIN_GROUP_SCHEMA_ADMINS",
+      "dl15/BUILTIN_GROUP_SCHEMA_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_SCHEMA_ADMINS"
+    ],
+    "dl11_builtin_group_access_control_admins": [
+      "dl11/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+      "dl12/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+      "dl13/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+      "dl14/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+      "dl15/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS"
+    ],
+    "dl11_builtin_group_people_admins": [
+      "dl11/BUILTIN_GROUP_PEOPLE_ADMINS",
+      "dl12/BUILTIN_GROUP_PEOPLE_ADMINS",
+      "dl13/BUILTIN_GROUP_PEOPLE_ADMINS",
+      "dl14/BUILTIN_GROUP_PEOPLE_ADMINS",
+      "dl15/BUILTIN_GROUP_PEOPLE_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_PEOPLE_ADMINS"
+    ],
+    "dl11_builtin_group_people_on_boarding": [
+      "dl11/BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+      "dl12/BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+      "dl13/BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+      "dl14/BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+      "dl15/BUILTIN_GROUP_PEOPLE_ON_BOARDING",
+      "dl_1_12/BUILTIN_GROUP_PEOPLE_ON_BOARDING"
+    ],
+    "dl11_builtin_group_people_pii_read": [
+      "dl11/BUILTIN_GROUP_PEOPLE_PII_READ",
+      "dl12/BUILTIN_GROUP_PEOPLE_PII_READ",
+      "dl13/BUILTIN_GROUP_PEOPLE_PII_READ",
+      "dl14/BUILTIN_GROUP_PEOPLE_PII_READ",
+      "dl15/BUILTIN_GROUP_PEOPLE_PII_READ",
+      "dl_1_12/BUILTIN_GROUP_PEOPLE_PII_READ"
+    ],
+    "dl11_builtin_group_people_self_name_write_dl7": [
+      "dl11/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+      "dl12/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+      "dl13/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7"
+    ],
+    "dl11_builtin_group_service_account_admins": [
+      "dl11/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+      "dl12/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+      "dl13/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+      "dl14/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+      "dl15/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS"
+    ],
+    "dl11_builtin_group_oauth2_admins": [
+      "dl11/BUILTIN_GROUP_OAUTH2_ADMINS",
+      "dl12/BUILTIN_GROUP_OAUTH2_ADMINS",
+      "dl13/BUILTIN_GROUP_OAUTH2_ADMINS",
+      "dl14/BUILTIN_GROUP_OAUTH2_ADMINS",
+      "dl15/BUILTIN_GROUP_OAUTH2_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_OAUTH2_ADMINS"
+    ],
+    "dl11_builtin_group_radius_service_admins": [
+      "dl11/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+      "dl12/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+      "dl13/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+      "dl14/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+      "dl15/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS"
+    ],
+    "dl11_builtin_idm_radius_servers_v1": [
+      "dl11/BUILTIN_IDM_RADIUS_SERVERS_V1",
+      "dl12/BUILTIN_IDM_RADIUS_SERVERS_V1",
+      "dl13/BUILTIN_IDM_RADIUS_SERVERS_V1",
+      "dl14/BUILTIN_IDM_RADIUS_SERVERS_V1",
+      "dl15/BUILTIN_IDM_RADIUS_SERVERS_V1",
+      "dl_1_12/BUILTIN_IDM_RADIUS_SERVERS_V1"
+    ],
+    "dl11_builtin_group_mail_service_admins_dl8": [
+      "dl11/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+      "dl12/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+      "dl13/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+      "dl14/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+      "dl15/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",
+      "dl_1_12/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8"
+    ],
+    "dl11_builtin_idm_mail_servers_dl8": [
+      "dl11/BUILTIN_IDM_MAIL_SERVERS_DL8",
+      "dl12/BUILTIN_IDM_MAIL_SERVERS_DL8",
+      "dl13/BUILTIN_IDM_MAIL_SERVERS_DL8",
+      "dl14/BUILTIN_IDM_MAIL_SERVERS_DL8",
+      "dl15/BUILTIN_IDM_MAIL_SERVERS_DL8",
+      "dl_1_12/BUILTIN_IDM_MAIL_SERVERS_DL8"
+    ],
+    "dl11_builtin_group_account_policy_admins": [
+      "dl11/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+      "dl12/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+      "dl13/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+      "dl14/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+      "dl15/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS"
+    ],
+    "dl11_builtin_group_unix_admins": [
+      "dl11/BUILTIN_GROUP_UNIX_ADMINS",
+      "dl12/BUILTIN_GROUP_UNIX_ADMINS",
+      "dl13/BUILTIN_GROUP_UNIX_ADMINS",
+      "dl14/BUILTIN_GROUP_UNIX_ADMINS",
+      "dl15/BUILTIN_GROUP_UNIX_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_UNIX_ADMINS"
+    ],
+    "dl11_builtin_group_client_certificate_admins_dl7": [
+      "dl11/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+      "dl12/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+      "dl13/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+      "dl14/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+      "dl15/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",
+      "dl_1_12/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7"
+    ],
+    "dl11_idm_group_admins_v1": [
+      "dl11/IDM_GROUP_ADMINS_V1",
+      "dl12/IDM_GROUP_ADMINS_V1",
+      "dl13/IDM_GROUP_ADMINS_V1",
+      "dl14/IDM_GROUP_ADMINS_V1",
+      "dl15/IDM_GROUP_ADMINS_V1",
+      "dl_1_12/IDM_GROUP_ADMINS_V1"
+    ],
+    "dl11_idm_people_self_mail_write_dl7": [
+      "dl11/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+      "dl12/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+      "dl13/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+      "dl14/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+      "dl15/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",
+      "dl_1_12/IDM_PEOPLE_SELF_MAIL_WRITE_DL7"
+    ],
+    "dl11_idm_all_persons": [
+      "dl11/IDM_ALL_PERSONS",
+      "dl12/IDM_ALL_PERSONS",
+      "dl13/IDM_ALL_PERSONS",
+      "dl14/IDM_ALL_PERSONS",
+      "dl15/IDM_ALL_PERSONS",
+      "dl_1_12/IDM_ALL_PERSONS"
+    ],
+    "dl11_idm_all_accounts": [
+      "dl11/IDM_ALL_ACCOUNTS",
+      "dl12/IDM_ALL_ACCOUNTS",
+      "dl13/IDM_ALL_ACCOUNTS",
+      "dl14/IDM_ALL_ACCOUNTS",
+      "dl15/IDM_ALL_ACCOUNTS",
+      "dl_1_12/IDM_ALL_ACCOUNTS"
+    ],
+    "dl11_idm_ui_enable_experimental_features": [
+      "dl11/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+      "dl12/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+      "dl13/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+      "dl14/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+      "dl15/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",
+      "dl_1_12/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES"
+    ],
+    "dl11_idm_account_mail_read": [
+      "dl11/IDM_ACCOUNT_MAIL_READ",
+      "dl12/IDM_ACCOUNT_MAIL_READ",
+      "dl13/IDM_ACCOUNT_MAIL_READ",
+      "dl14/IDM_ACCOUNT_MAIL_READ",
+      "dl15/IDM_ACCOUNT_MAIL_READ",
+      "dl_1_12/IDM_ACCOUNT_MAIL_READ"
+    ],
+    "dl11_idm_high_privilege_dl8": [
+      "dl11/IDM_HIGH_PRIVILEGE_DL8"
+    ],
+    "dl11_builtin_group_application_admins_dl8": [
+      "dl11/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+      "dl12/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+      "dl13/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+      "dl14/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+      "dl15/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",
+      "dl_1_12/BUILTIN_GROUP_APPLICATION_ADMINS_DL8"
+    ],
+    "dl12_builtin_group_idm_unix_authentication_read_v1": [
+      "dl12/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+      "dl13/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+      "dl14/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+      "dl15/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",
+      "dl_1_12/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1"
+    ],
+    "dl12_builtin_group_message_admins": [
+      "dl12/BUILTIN_GROUP_MESSAGE_ADMINS",
+      "dl13/BUILTIN_GROUP_MESSAGE_ADMINS",
+      "dl14/BUILTIN_GROUP_MESSAGE_ADMINS",
+      "dl15/BUILTIN_GROUP_MESSAGE_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_MESSAGE_ADMINS"
+    ],
+    "dl12_builtin_group_message_senders": [
+      "dl12/BUILTIN_GROUP_MESSAGE_SENDERS",
+      "dl13/BUILTIN_GROUP_MESSAGE_SENDERS",
+      "dl14/BUILTIN_GROUP_MESSAGE_SENDERS",
+      "dl15/BUILTIN_GROUP_MESSAGE_SENDERS",
+      "dl_1_12/BUILTIN_GROUP_MESSAGE_SENDERS"
+    ],
+    "dl12_builtin_group_oauth2_client_admins": [
+      "dl12/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+      "dl13/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+      "dl14/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+      "dl15/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS"
+    ],
+    "dl12_builtin_group_oauth2_account_admins": [
+      "dl12/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+      "dl13/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+      "dl14/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+      "dl15/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",
+      "dl_1_12/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS"
+    ],
+    "dl12_idm_high_privilege_dl8": [
+      "dl12/IDM_HIGH_PRIVILEGE_DL8",
+      "dl13/IDM_HIGH_PRIVILEGE_DL8",
+      "dl14/IDM_HIGH_PRIVILEGE_DL8",
+      "dl15/IDM_HIGH_PRIVILEGE_DL8",
+      "dl_1_12/IDM_HIGH_PRIVILEGE_DL8"
+    ],
+    "dl14_builtin_group_people_self_name_write_dl7": [
+      "dl14/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+      "dl15/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",
+      "dl_1_12/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7"
+    ]
+  },
+  "kinds": {
+    "dl11_builtin_group_system_admins_v1": "Group",
+    "dl11_builtin_group_idm_admins_v1": "Group",
+    "dl11_builtin_group_service_desk": "Group",
+    "dl11_builtin_group_recycle_bin_admins": "Group",
+    "dl11_builtin_group_domain_admins": "Group",
+    "dl11_builtin_group_schema_admins": "Group",
+    "dl11_builtin_group_access_control_admins": "Group",
+    "dl11_builtin_group_people_admins": "Group",
+    "dl11_builtin_group_people_on_boarding": "Group",
+    "dl11_builtin_group_people_pii_read": "Group",
+    "dl11_builtin_group_people_self_name_write_dl7": "Group",
+    "dl11_builtin_group_service_account_admins": "Group",
+    "dl11_builtin_group_oauth2_admins": "Group",
+    "dl11_builtin_group_radius_service_admins": "Group",
+    "dl11_builtin_idm_radius_servers_v1": "Group",
+    "dl11_builtin_group_mail_service_admins_dl8": "Group",
+    "dl11_builtin_idm_mail_servers_dl8": "Group",
+    "dl11_builtin_group_account_policy_admins": "Group",
+    "dl11_builtin_group_unix_admins": "Group",
+    "dl11_builtin_group_client_certificate_admins_dl7": "Group",
+    "dl11_idm_group_admins_v1": "Group",
+    "dl11_idm_people_self_mail_write_dl7": "Group",
+    "dl11_idm_all_persons": "Group",
+    "dl11_idm_all_accounts": "Group",
+    "dl11_idm_ui_enable_experimental_features": "Group",
+    "dl11_idm_account_mail_read": "Group",
+    "dl11_idm_high_privilege_dl8": "Group",
+    "dl11_builtin_group_application_admins_dl8": "Group",
+    "dl12_builtin_group_idm_unix_authentication_read_v1": "Group",
+    "dl12_builtin_group_message_admins": "Group",
+    "dl12_builtin_group_message_senders": "Group",
+    "dl12_builtin_group_oauth2_client_admins": "Group",
+    "dl12_builtin_group_oauth2_account_admins": "Group",
+    "dl12_idm_high_privilege_dl8": "Group",
+    "dl14_builtin_group_people_self_name_write_dl7": "Group"
+  }
+}

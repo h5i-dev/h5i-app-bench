@@ -1,0 +1,155 @@
+import Verified.SchemaCatalog0
+import Verified.SchemaCatalog1
+import Verified.SchemaCatalog2
+import Verified.SchemaCatalog3
+import Verified.SchemaCatalog4
+import Verified.SchemaCatalog5
+import Verified.SchemaCatalog6
+import Verified.SchemaCatalog7
+import Verified.SchemaCatalog8
+import Verified.SchemaCatalog9
+import Verified.SchemaCatalog10
+import Verified.SchemaCatalog11
+import Verified.SchemaCatalog12
+import Verified.SchemaCatalog13
+import Verified.SchemaCatalog14
+import Verified.SchemaCatalog15
+import Verified.SchemaCatalog16
+import Verified.SchemaCatalog17
+import Verified.SchemaCatalog18
+import Verified.SchemaCatalog19
+import Verified.SchemaCatalog20
+import Verified.SchemaCatalog21
+import Verified.SchemaCatalog22
+import Verified.SchemaCatalog23
+import Verified.SchemaCatalog24
+import Verified.SchemaCatalog25
+import Verified.SchemaCatalog26
+import Verified.SchemaCatalog27
+import Verified.SchemaCatalog28
+import Verified.SchemaCatalog29
+import Verified.SchemaCatalog30
+import Verified.SchemaCatalog31
+import Verified.SchemaCatalog32
+import Verified.SchemaCatalog33
+import Verified.SchemaCatalog34
+import Verified.SchemaCatalog35
+import Verified.SchemaCatalog36
+import Verified.SchemaCatalog37
+import Verified.SchemaCatalog38
+import Verified.SchemaCatalog39
+import Verified.SchemaCatalog40
+import Verified.SchemaCatalog41
+import Verified.SchemaCatalog42
+import Verified.SchemaCatalog43
+import Verified.SchemaCatalog44
+import Verified.SchemaCatalog45
+import Verified.SchemaCatalog46
+import Verified.SchemaCatalog47
+import Verified.SchemaCatalog48
+import Verified.SchemaCatalog49
+import Verified.SchemaCatalog50
+import Verified.SchemaCatalog51
+import Verified.SchemaCatalog52
+import Verified.SchemaCatalog53
+import Verified.SchemaCatalog54
+import Verified.SchemaCatalog55
+import Verified.SchemaCatalog56
+import Verified.SchemaCatalog57
+import Verified.SchemaCatalog58
+import Verified.SchemaCatalog59
+import Verified.SchemaCatalog60
+import Verified.SchemaCatalog61
+import Verified.SchemaCatalog62
+import Verified.SchemaCatalog63
+import Verified.SchemaCatalog64
+import Verified.SchemaCatalog65
+import Verified.SchemaCatalog66
+import Verified.SchemaCatalog67
+import Verified.SchemaCatalog68
+import Verified.SchemaCatalog69
+import Verified.SchemaCatalog70
+import Verified.SchemaCatalog71
+open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
+open H5iAppLib hiding lit
+namespace kanidm_kernel.Verified.MigrationCatalog
+set_option maxRecDepth 32768
+set_option maxHeartbeats 16000000
+def expected_system_attributes : List SchemaCatalog.AttributeModel := [SchemaCatalog.expected_system_attr_class,
+SchemaCatalog.expected_system_attr_uuid,
+SchemaCatalog.expected_system_attr_source_uuid,
+SchemaCatalog.expected_system_attr_created_at_cid,
+SchemaCatalog.expected_system_attr_last_modified_cid,
+SchemaCatalog.expected_system_attr_name,
+SchemaCatalog.expected_system_attr_spn,
+SchemaCatalog.expected_system_attr_attribute_name,
+SchemaCatalog.expected_system_attr_class_name,
+SchemaCatalog.expected_system_attr_description,
+SchemaCatalog.expected_system_attr_multi_value,
+SchemaCatalog.expected_system_attr_phantom,
+SchemaCatalog.expected_system_attr_sync_allowed,
+SchemaCatalog.expected_system_attr_replicated,
+SchemaCatalog.expected_system_attr_unique,
+SchemaCatalog.expected_system_attr_index,
+SchemaCatalog.expected_system_attr_indexed,
+SchemaCatalog.expected_system_attr_syntax,
+SchemaCatalog.expected_system_attr_system_may,
+SchemaCatalog.expected_system_attr_may,
+SchemaCatalog.expected_system_attr_system_must,
+SchemaCatalog.expected_system_attr_must,
+SchemaCatalog.expected_system_attr_system_supplements,
+SchemaCatalog.expected_system_attr_supplements,
+SchemaCatalog.expected_system_attr_system_excludes,
+SchemaCatalog.expected_system_attr_excludes,
+SchemaCatalog.expected_system_attr_acp_enable,
+SchemaCatalog.expected_system_attr_acp_receiver,
+SchemaCatalog.expected_system_attr_acp_receiver_group,
+SchemaCatalog.expected_system_attr_acp_target_scope,
+SchemaCatalog.expected_system_attr_acp_search_attr,
+SchemaCatalog.expected_system_attr_acp_create_class,
+SchemaCatalog.expected_system_attr_acp_create_attr,
+SchemaCatalog.expected_system_attr_acp_modify_removed_attr,
+SchemaCatalog.expected_system_attr_acp_modify_present_attr,
+SchemaCatalog.expected_system_attr_acp_modify_class,
+SchemaCatalog.expected_system_attr_acp_modify_present_class,
+SchemaCatalog.expected_system_attr_acp_modify_remove_class,
+SchemaCatalog.expected_system_attr_entry_managed_by,
+SchemaCatalog.expected_system_attr_member_of,
+SchemaCatalog.expected_system_attr_direct_member_of,
+SchemaCatalog.expected_system_attr_recycled_direct_member_of,
+SchemaCatalog.expected_system_attr_member,
+SchemaCatalog.expected_system_attr_dyn_member,
+SchemaCatalog.expected_system_attr_refers,
+SchemaCatalog.expected_system_attr_cascade_deleted,
+SchemaCatalog.expected_system_attr_version,
+SchemaCatalog.expected_system_attr_domain,
+SchemaCatalog.expected_system_attr_claim,
+SchemaCatalog.expected_system_attr_scope,
+SchemaCatalog.expected_system_attr_sync_external_id,
+SchemaCatalog.expected_system_attr_sync_parent_uuid,
+SchemaCatalog.expected_system_attr_sync_class,
+SchemaCatalog.expected_system_attr_password_import,
+SchemaCatalog.expected_system_attr_unix_password_import,
+SchemaCatalog.expected_system_attr_totp_import,
+SchemaCatalog.expected_system_attr_dn,
+SchemaCatalog.expected_system_attr_entry_dn,
+SchemaCatalog.expected_system_attr_entry_uuid,
+SchemaCatalog.expected_system_attr_object_class,
+SchemaCatalog.expected_system_attr_cn,
+SchemaCatalog.expected_system_attr_ldap_keys,
+SchemaCatalog.expected_system_attr_ldap_ssh_public_keys,
+SchemaCatalog.expected_system_attr_email,
+SchemaCatalog.expected_system_attr_email_primary,
+SchemaCatalog.expected_system_attr_email_alternative,
+SchemaCatalog.expected_system_attr_ldap_email_address,
+SchemaCatalog.expected_system_attr_gecos,
+SchemaCatalog.expected_system_attr_uid,
+SchemaCatalog.expected_system_attr_uid_number,
+SchemaCatalog.expected_system_attr_sudo_host,
+SchemaCatalog.expected_system_attr_home_directory]
+@[step] theorem system_attributes_complete : migration_catalog.system_attributes ⦃r => r.val.map SchemaCatalog.viewAttribute = expected_system_attributes⦄ := by
+  unfold migration_catalog.system_attributes
+  h5i_steps
+  all_goals simp_all [expected_system_attributes, Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val, alloc.vec.FromVecArray.from, Std.Array.empty]
+  all_goals scalar_tac
+end kanidm_kernel.Verified.MigrationCatalog

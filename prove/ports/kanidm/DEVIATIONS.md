@@ -271,3 +271,52 @@ including every default empty permission list, against independent Lean models.
 Pinned differential tests compile all original initializer bodies unchanged with
 minimal enum/UUID/filter carriers and compare every represented field. The portable
 extractor rebuilds those bodies, dictionaries and reference projection from git.
+
+### Complete migration catalogs (40k expansion)
+
+All catalogs use the same immutable Kanidm pin as above. Their portable extractors
+compile verbatim initializer bodies with minimal Rust carriers; these differential
+checks validate the stated projections empirically, rather than proving upstream
+crate equivalence. Each full-record Lean theorem establishes unconditional success
+and every represented field against an explicit model independent of extraction.
+No existing property is replaced or weakened.
+
+* `acp_catalog` covers all 289 ACP initializers across the six migration versions,
+  sharing 79 constructors only when all 15 fields agree. This also includes the
+  original 66 initializers without changing `acp_defaults` or its dictionaries.
+  Dictionaries are local to this catalog. Filter encoding extends the previous
+  encoding with Pres=5, followed by the attribute's u16-LE byte length and bytes.
+* `schema_catalog` covers all 852 schema initializers, including the system schema,
+  sharing 256 constructors. All ten attribute fields and all twelve class fields
+  are retained. Attribute variants use the injective dictionary recorded in
+  metadata, syntax variants use their actual pinned discriminants, and Replicated
+  retains its default True value. Class names and descriptions are UTF-8 bytes.
+  Each supplement/exclusion string list is encoded in order as u16-LE byte length
+  followed by its UTF-8 bytes; permission attribute lists retain order and repeats.
+* `group_catalog` covers all 193 group initializers with 35 complete constructors.
+  Strings and UUIDs retain their actual values. Optional manager uses presence plus
+  UUID; absent filter uses empty bytes. Present filters use Eq=0 and And=1, with
+  the same length/count encoding as ACPs. Extra attributes retain ordered pairs:
+  attribute string, then tagged value (Class=0 plus string, CredentialType=1 plus
+  pinned u16 discriminant, UiHint::ExperimentalFeatures=2). These are all value
+  variants appearing in this selected domain. Member lists retain every UUID.
+* `entry_catalog` covers 47 account and remaining simple entry initializers with
+  eleven constructors. All six account fields are retained in seven projected fields (ServiceAccount=0;
+  optional manager uses presence plus UUID). Entries preserve complete attribute
+  value sets: attributes sorted by canonical string, values encoded then sorted
+  and deduplicated. Each attribute is u16-LE byte length/string, then u16-LE value
+  count. Tags: Class=0 plus length/string, UUID=1 plus 16 LE bytes, Utf8=2 plus
+  length/string, Iname=3 plus length/string, Uint32=4 plus four LE bytes. These
+  constructors contain ASCII Iname values, so upstream lowercase behavior is
+  preserved. This models entry contents, not storage or lazy global state.
+* `migration_catalog` reconstructs all complete records and their order for the
+  system schema lists and phases 1, 2, and 7 in each of the six versions (twenty
+  functions). Theorems specify the entire list of full-record models, retaining
+  duplicate entries. The differential reference compiles the original list bodies
+  using lossless full-record carriers. Entry conversion is deliberately outside
+  this selection model; no conversion validation, fallible migration phase,
+  database writes, or successful database migration is claimed.
+
+Lazy values become fresh owned records. All catalog strings and tree encodings
+are data representations, not implementations of access checks, schema validation,
+filter evaluation, or persistence. Allocator failure is outside Aeneas's model.
