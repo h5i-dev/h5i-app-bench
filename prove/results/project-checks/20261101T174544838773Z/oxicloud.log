@@ -1,0 +1,371 @@
+
+[earlier output omitted]
+This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2606:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2615:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2624:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2633:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2642:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2651:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2660:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2669:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2678:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2687:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2696:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2705:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2714:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2723:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2732:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2741:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2750:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2759:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2768:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2777:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2786:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2795:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2804:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2813:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2822:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2831:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2840:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2849:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2858:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2867:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2876:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2885:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2894:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2903:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2912:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2921:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2930:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2939:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2948:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2957:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2966:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2975:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2984:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:2993:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:3002:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Asyncapi.lean:3011:55: This simp argument is unused:
+  Slice.from_val
+
+Hint: Omit it from the simp argument list.
+  simp only [Array.to_slice, Array.make_val,̵ ̵S̵l̵i̵c̵e̵.̵f̵r̵o̵m̵_̵v̵a̵l̵] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1766/1767] Built Properties (10s)
+warning: Properties.lean:45:95: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:79:64: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:678:50: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:684:57: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:690:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:696:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:702:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:708:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:715:48: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:722:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:729:57: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (1767 jobs).
+
+note: solutions.oxicloud-create-needs-share.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-drive-read-only.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-migration-readonly.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-personal-drive.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-refused-writes-nothing.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-sharing-policies.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/proofs/.lake/h5i/Gate.lean
+gate: 2914 theorems in 36 modules checked against propext, Classical.choice, Quot.sound
+
+ports/oxicloud: proofs ok

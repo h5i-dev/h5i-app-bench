@@ -1,0 +1,409 @@
+{
+  "app": "nora",
+  "revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+  "records": [
+    {
+      "name": "SigningConfig",
+      "id": "signing_config_default_942b3541",
+      "source": "    fn default() -> Self {\n        Self {\n            enabled: true,\n            key_path: String::new(),\n        }\n    }",
+      "meta": {
+        "file": "nora-registry/src/config/signing_cfg.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "SigningConfig",
+        "start": 28,
+        "end": 33,
+        "sha256": "5893972308dec9a9703ae110729459b8e197ebc7e45c59ed2261bdcb47707fde"
+      },
+      "carrier_source": "#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]\npub struct SigningConfig {\n    /// Sign rpm/deb repository indexes. On by default: with local storage a\n    /// key is generated at first boot; signed and unsigned clients both keep\n    /// working (unsigned clients simply don't fetch the signatures).\n    #[serde(default = \"default_signing_enabled\")]\n    pub enabled: bool,\n    /// Path of the armored OpenPGP secret key. Empty = derive\n    /// `<storage.path>/.signing/nora.key` for local storage; required for S3\n    /// (there is no local data directory to derive from).\n    #[serde(default)]\n    pub key_path: String,\n}",
+      "fields": [
+        [
+          "enabled",
+          "bool"
+        ],
+        [
+          "key_path",
+          "String"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "enabled",
+          "true"
+        ],
+        [
+          "key_path",
+          "Vec::new()"
+        ]
+      ],
+      "values": {
+        "enabled": true,
+        "key_path": []
+      }
+    },
+    {
+      "name": "EnvProvider",
+      "id": "env_provider_new_23e18cff",
+      "source": "    /// Create a new environment provider\n    pub fn new() -> Self {\n        Self {\n            clear_after_read: false,\n        }\n    }",
+      "meta": {
+        "file": "nora-registry/src/secrets/env.rs",
+        "kind": "method",
+        "name": "new",
+        "self_ty": "EnvProvider",
+        "start": 27,
+        "end": 32,
+        "sha256": "549d1cf2360c91d25f775d66ff01adfb15b1d79b103a10e49427f2da92acdd7b"
+      },
+      "carrier_source": "#[allow(dead_code)] // Scaffolding for future secrets integration\n/// Environment variables secrets provider\n///\n/// Reads secrets from environment variables.\n/// Optionally clears variables after reading for extra security.\n#[derive(Debug, Clone)]\npub struct EnvProvider {\n    /// Clear environment variables after reading\n    clear_after_read: bool,\n}",
+      "fields": [
+        [
+          "clear_after_read",
+          "bool"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "clear_after_read",
+          "false"
+        ]
+      ],
+      "values": {
+        "clear_after_read": false
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "file": "nora-registry/src/activity_log.rs",
+      "type": "ActivityEntry",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/activity_log.rs",
+      "type": "ActivityLog",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/activity_log.rs",
+      "type": "ActivityLog",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/audit.rs",
+      "type": "AuditEntry",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/audit.rs",
+      "type": "AuditLog",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/auth/mod.rs",
+      "type": "AuthFailureTracker",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/auth/oidc.rs",
+      "type": "OidcValidator",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/circuit_breaker.rs",
+      "type": "CircuitBreakerRegistry",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/config/audit_cfg.rs",
+      "type": "AuditConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/config/auth.rs",
+      "type": "TrustedProxies",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/config/auth.rs",
+      "type": "OidcConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/auth.rs",
+      "type": "AuthConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/circuit_breaker.rs",
+      "type": "CircuitBreakerConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/config/curation.rs",
+      "type": "CurationConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/gc.rs",
+      "type": "GcConfig",
+      "reason": "non-closed expression 'default_gc_grace()' : u64"
+    },
+    {
+      "file": "nora-registry/src/config/rate_limit.rs",
+      "type": "RateLimitConfig",
+      "reason": "non-closed expression 'default_rate_limit_enabled()' : bool"
+    },
+    {
+      "file": "nora-registry/src/config/registry/ansible.rs",
+      "type": "AnsibleConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/cargo.rs",
+      "type": "CargoConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/conan.rs",
+      "type": "ConanConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/cpan.rs",
+      "type": "CpanConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/deb.rs",
+      "type": "DebConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/config/registry/docker.rs",
+      "type": "DockerConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/gems.rs",
+      "type": "GemsConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/go.rs",
+      "type": "GoConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/maven.rs",
+      "type": "MavenConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/npm.rs",
+      "type": "NpmConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/nuget.rs",
+      "type": "NugetConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/pub_dart.rs",
+      "type": "PubDartConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/pypi.rs",
+      "type": "PypiConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/registry/raw.rs",
+      "type": "RawConfig",
+      "reason": "non-closed expression 'default_raw_cache_control()' : String"
+    },
+    {
+      "file": "nora-registry/src/config/registry/rpm.rs",
+      "type": "RpmConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/config/registry/terraform.rs",
+      "type": "TerraformConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/retention.rs",
+      "type": "RetentionConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/config/server.rs",
+      "type": "ServerConfig",
+      "reason": "fields/order mismatch"
+    },
+    {
+      "file": "nora-registry/src/config/storage.rs",
+      "type": "StorageConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/curation.rs",
+      "type": "CurationEngine",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/curation.rs",
+      "type": "CurationMetrics",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/curation.rs",
+      "type": "BlocklistFilter",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/curation.rs",
+      "type": "NamespaceFilter",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "nora-registry/src/curation.rs",
+      "type": "MinReleaseAgeFilter",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/dashboard_metrics.rs",
+      "type": "DashboardMetrics",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/digest_quarantine.rs",
+      "type": "DigestStore",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/hash_pin_store.rs",
+      "type": "HashPinStore",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/import/source/artifactory.rs",
+      "type": "Artifactory",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/import/source/nexus.rs",
+      "type": "Nexus",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/import/transfer.rs",
+      "type": "TempFileGuard",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/metrics.rs",
+      "type": "LeakFinders",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/proxy_coalesce.rs",
+      "type": "Slot",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/proxy_coalesce.rs",
+      "type": "InflightMap",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/proxy_coalesce.rs",
+      "type": "InflightMap",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/rate_limit.rs",
+      "type": "TrustedProxyKeyExtractor",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/registry/docker.rs",
+      "type": "VerifyingReader",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/registry/docker_auth.rs",
+      "type": "DockerAuth",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/registry/docker_auth.rs",
+      "type": "DockerAuth",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/registry/mod.rs",
+      "type": "TempFileGuard",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "nora-registry/src/repo_index.rs",
+      "type": "RegistryIndex",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/repo_index.rs",
+      "type": "RegistryIndex",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/repo_index.rs",
+      "type": "RepoIndex",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/repo_index.rs",
+      "type": "RepoIndex",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/secrets/env.rs",
+      "type": "EnvProvider",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "nora-registry/src/secrets/mod.rs",
+      "type": "SecretsConfig",
+      "reason": "non-closed expression 'default_provider()' : String"
+    },
+    {
+      "file": "nora-registry/src/secrets/protected.rs",
+      "type": "ProtectedString",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "nora-registry/src/secrets/protected.rs",
+      "type": "S3Credentials",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/storage/local.rs",
+      "type": "LocalStorage",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "nora-registry/src/storage/object.rs",
+      "type": "ObjectStorage",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "nora-registry/src/tokens.rs",
+      "type": "TokenStore",
+      "reason": "non-simple fields"
+    }
+  ]
+}

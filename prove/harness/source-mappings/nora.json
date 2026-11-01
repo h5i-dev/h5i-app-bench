@@ -672,6 +672,28 @@
         "end": 417,
         "sha256": "35e0bd0cdb73ed2981725697028f7af72937d3b358160e174cc9045d26b486e8"
       }
+    ],
+    "closed_records.signing_config_default_942b3541.make": [
+      {
+        "file": "nora-registry/src/config/signing_cfg.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "SigningConfig",
+        "start": 28,
+        "end": 33,
+        "sha256": "5893972308dec9a9703ae110729459b8e197ebc7e45c59ed2261bdcb47707fde"
+      }
+    ],
+    "closed_records.env_provider_new_23e18cff.make": [
+      {
+        "file": "nora-registry/src/secrets/env.rs",
+        "kind": "method",
+        "name": "new",
+        "self_ty": "EnvProvider",
+        "start": 27,
+        "end": 32,
+        "sha256": "549d1cf2360c91d25f775d66ff01adfb15b1d79b103a10e49427f2da92acdd7b"
+      }
     ]
   }
 }

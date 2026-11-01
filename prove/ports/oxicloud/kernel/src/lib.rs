@@ -28,3 +28,5 @@ pub mod finite_catalog;
 pub mod display_classifiers;
 
 pub mod asyncapi;
+
+pub mod closed_records;

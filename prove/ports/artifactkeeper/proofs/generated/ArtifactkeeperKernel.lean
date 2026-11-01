@@ -19,6 +19,138 @@ set_option maxRecDepth 2048
 
 namespace artifactkeeper_kernel
 
+/-- [artifactkeeper_kernel::closed_records::plugin_resource_limits_default_a005c35c::PluginResourceLimits]
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 3:0-3:84
+    Visibility: public -/
+structure closed_records.plugin_resource_limits_default_a005c35c.PluginResourceLimits
+  where
+  memory_mb : Std.U32
+  timeout_secs : Std.U32
+  fuel : Std.U64
+
+/-- [artifactkeeper_kernel::closed_records::plugin_resource_limits_default_a005c35c::make]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 4:0-4:112
+    Visibility: public -/
+def closed_records.plugin_resource_limits_default_a005c35c.make
+  :
+  Result
+    closed_records.plugin_resource_limits_default_a005c35c.PluginResourceLimits
+  := do
+  ok { memory_mb := 64#u32, timeout_secs := 5#u32, fuel := 500000000#u64 }
+
+/-- [artifactkeeper_kernel::closed_records::plugin_capabilities_default_a005c35c::PluginCapabilities]
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 7:0-7:129
+    Visibility: public -/
+structure closed_records.plugin_capabilities_default_a005c35c.PluginCapabilities
+  where
+  parse_metadata : Bool
+  generate_index : Bool
+  validate_artifact : Bool
+  handle_request : Bool
+
+/-- [artifactkeeper_kernel::closed_records::plugin_capabilities_default_a005c35c::make]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 8:0-8:149
+    Visibility: public -/
+def closed_records.plugin_capabilities_default_a005c35c.make
+  :
+  Result closed_records.plugin_capabilities_default_a005c35c.PluginCapabilities
+  := do
+  ok
+    {
+      parse_metadata := true,
+      generate_index := false,
+      validate_artifact := true,
+      handle_request := false
+    }
+
+/-- [artifactkeeper_kernel::closed_records::capabilities_config_default_75c080e9::CapabilitiesConfig]
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 11:0-11:129
+    Visibility: public -/
+structure closed_records.capabilities_config_default_75c080e9.CapabilitiesConfig
+  where
+  parse_metadata : Bool
+  generate_index : Bool
+  validate_artifact : Bool
+  handle_request : Bool
+
+/-- [artifactkeeper_kernel::closed_records::capabilities_config_default_75c080e9::make]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 12:0-12:149
+    Visibility: public -/
+def closed_records.capabilities_config_default_75c080e9.make
+  :
+  Result closed_records.capabilities_config_default_75c080e9.CapabilitiesConfig
+  := do
+  ok
+    {
+      parse_metadata := true,
+      generate_index := false,
+      validate_artifact := true,
+      handle_request := false
+    }
+
+/-- [artifactkeeper_kernel::closed_records::telemetry_settings_default_453927f4::TelemetrySettings]
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 15:0-15:120
+    Visibility: public -/
+structure closed_records.telemetry_settings_default_453927f4.TelemetrySettings
+  where
+  enabled : Bool
+  review_before_send : Bool
+  scrub_level : alloc.vec.Vec Std.U8
+  include_logs : Bool
+
+/-- [artifactkeeper_kernel::closed_records::telemetry_settings_default_453927f4::make]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 16:0-16:152
+    Visibility: public -/
+def closed_records.telemetry_settings_default_453927f4.make
+  :
+  Result closed_records.telemetry_settings_default_453927f4.TelemetrySettings
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        115#u8, 116#u8, 97#u8, 110#u8, 100#u8, 97#u8, 114#u8, 100#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  ok
+    {
+      enabled := false,
+      review_before_send := true,
+      scrub_level := v,
+      include_logs := false
+    }
+
+/-- [artifactkeeper_kernel::closed_records::password_policy_config_default_97110402::PasswordPolicyConfig]
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 19:0-19:196
+    Visibility: public -/
+structure closed_records.password_policy_config_default_97110402.PasswordPolicyConfig
+  where
+  min_length : Std.Usize
+  max_length : Std.Usize
+  require_uppercase : Bool
+  require_lowercase : Bool
+  require_digit : Bool
+  require_special : Bool
+  min_strength : Std.U8
+
+/-- [artifactkeeper_kernel::closed_records::password_policy_config_default_97110402::make]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/closed_records.rs', lines 20:0-20:204
+    Visibility: public -/
+def closed_records.password_policy_config_default_97110402.make
+  :
+  Result
+    closed_records.password_policy_config_default_97110402.PasswordPolicyConfig
+  := do
+  ok
+    {
+      min_length := 8#usize,
+      max_length := 128#usize,
+      require_uppercase := false,
+      require_lowercase := false,
+      require_digit := false,
+      require_special := false,
+      min_strength := 0#u8
+    }
+
 /-- [artifactkeeper_kernel::finite_catalog::repodata_encoding_df7b79f6::RepodataEncoding]
     Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 4:0-4:40
     Visibility: public -/

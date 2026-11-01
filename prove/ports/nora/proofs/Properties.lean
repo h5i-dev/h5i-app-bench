@@ -1,3 +1,4 @@
+import Verified.ClosedRecords
 import Verified.Sidebar
 import Verified.Rendering
 import Verified.FiniteCatalog
@@ -445,5 +446,18 @@ theorem sidebar_complete (active : Slice U8) (t : sidebar.Translations)
     sidebar.sidebar active t auth e version ⦃r =>
       Verified.Sidebar.decode r = Verified.Sidebar.sidebar_model active.val t auth e version.val⦄ :=
   Verified.Sidebar.sidebar_complete active t auth e version
+
+end nora_kernel.Properties
+-- Complete pinned closed record constructors.
+namespace nora_kernel.Properties
+
+theorem closed_records_signing_config_default_942b3541_complete :
+    closed_records.signing_config_default_942b3541.make ⦃r => r.enabled = true ∧
+      r.key_path.val = []⦄ :=
+  Verified.ClosedRecords.signing_config_default_942b3541_complete
+
+theorem closed_records_env_provider_new_23e18cff_complete :
+    closed_records.env_provider_new_23e18cff.make ⦃r => r.clear_after_read = false⦄ :=
+  Verified.ClosedRecords.env_provider_new_23e18cff_complete
 
 end nora_kernel.Properties

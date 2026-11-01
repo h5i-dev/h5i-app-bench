@@ -1,6 +1,6 @@
 {
   "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
-  "mapping_sha256": "4a563b0ebb41e5b89e4e8f019a367c9a9e6962574c67eec819736c1be669a154",
+  "mapping_sha256": "af6887de29d185386726cb26671f1862e8cea72e8056e2d8889c7f5086fadbc8",
   "lines": {
     "backend/src/api/handlers/conda.rs": [
       1678,
@@ -1172,6 +1172,33 @@
       55,
       56
     ],
+    "backend/src/models/plugin.rs": [
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127
+    ],
+    "backend/src/models/plugin_manifest.rs": [
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78
+    ],
     "backend/src/models/repository.rs": [
       397,
       398,
@@ -1413,6 +1440,16 @@
       85,
       86
     ],
+    "backend/src/services/crash_reporting_service.rs": [
+      379,
+      380,
+      381,
+      382,
+      383,
+      384,
+      385,
+      386
+    ],
     "backend/src/services/curation/attestation_verify.rs": [
       135,
       136,
@@ -1579,6 +1616,19 @@
       2243,
       2244,
       2245
+    ],
+    "backend/src/services/password_policy.rs": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
     ],
     "backend/src/services/permission_service.rs": [
       77,
@@ -2181,7 +2231,7 @@
       222
     ]
   },
-  "upstream_reached": 2080,
+  "upstream_reached": 2122,
   "properties": [
     {
       "name": "artifactkeeper_kernel.Properties.scope_validation_spec",
@@ -10134,6 +10184,96 @@
           "start": 219,
           "end": 222,
           "sha256": "98babbd847290f751f5cf8a51217aa3586db31017635fd9ffb48e828e218c61a"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.closed_records_plugin_resource_limits_default_a005c35c_complete",
+      "generated_dependencies": [
+        "closed_records.plugin_resource_limits_default_a005c35c.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.plugin_resource_limits_default_a005c35c.make",
+          "file": "backend/src/models/plugin.rs",
+          "kind": "method",
+          "name": "default",
+          "self_ty": "PluginResourceLimits",
+          "start": 96,
+          "end": 102,
+          "sha256": "60e773cb17b1602b3bf539df8e942165f14d97dc73fa0a0cb94f6d694f8170e3"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.closed_records_plugin_capabilities_default_a005c35c_complete",
+      "generated_dependencies": [
+        "closed_records.plugin_capabilities_default_a005c35c.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.plugin_capabilities_default_a005c35c.make",
+          "file": "backend/src/models/plugin.rs",
+          "kind": "method",
+          "name": "default",
+          "self_ty": "PluginCapabilities",
+          "start": 120,
+          "end": 127,
+          "sha256": "0ebf5b54939c8e31d8cb04845f4464d66610f43e0e9859dc684ae1d2b02ffb8b"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.closed_records_capabilities_config_default_75c080e9_complete",
+      "generated_dependencies": [
+        "closed_records.capabilities_config_default_75c080e9.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.capabilities_config_default_75c080e9.make",
+          "file": "backend/src/models/plugin_manifest.rs",
+          "kind": "method",
+          "name": "default",
+          "self_ty": "CapabilitiesConfig",
+          "start": 71,
+          "end": 78,
+          "sha256": "0ebf5b54939c8e31d8cb04845f4464d66610f43e0e9859dc684ae1d2b02ffb8b"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.closed_records_telemetry_settings_default_453927f4_complete",
+      "generated_dependencies": [
+        "closed_records.telemetry_settings_default_453927f4.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.telemetry_settings_default_453927f4.make",
+          "file": "backend/src/services/crash_reporting_service.rs",
+          "kind": "method",
+          "name": "default",
+          "self_ty": "TelemetrySettings",
+          "start": 379,
+          "end": 386,
+          "sha256": "18cb22dc2c5cf6086801efdc1cec462998e6cb719289426aadde40850c5516e9"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.closed_records_password_policy_config_default_97110402_complete",
+      "generated_dependencies": [
+        "closed_records.password_policy_config_default_97110402.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.password_policy_config_default_97110402.make",
+          "file": "backend/src/services/password_policy.rs",
+          "kind": "method",
+          "name": "default",
+          "self_ty": "PasswordPolicyConfig",
+          "start": 21,
+          "end": 31,
+          "sha256": "52468ce74949bfb240d8c825946f5cc4633b7ce760af0f5bbc9667317d424384"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
-  "mapping_sha256": "6a8eeb0c0e1dff05cd27faf2551a64360968dc30dfd4702ba68fcca6cdf1a09a",
+  "mapping_sha256": "a88bc094ab8009383f8933e989595e2242a5cc597bd0c60b031c3f19290109de",
   "lines": {
     "nora-registry/src/auth/mod.rs": [
       79,
@@ -746,6 +746,14 @@
       102,
       103
     ],
+    "nora-registry/src/config/signing_cfg.rs": [
+      28,
+      29,
+      30,
+      31,
+      32,
+      33
+    ],
     "nora-registry/src/curation.rs": [
       82,
       141,
@@ -1155,6 +1163,13 @@
       222,
       223,
       224
+    ],
+    "nora-registry/src/secrets/env.rs": [
+      28,
+      29,
+      30,
+      31,
+      32
     ],
     "nora-registry/src/tokens.rs": [
       59,
@@ -1975,7 +1990,7 @@
       458
     ]
   },
-  "upstream_reached": 1948,
+  "upstream_reached": 1959,
   "properties": [
     {
       "name": "nora_kernel.Properties.curation_evaluate_spec",
@@ -6523,6 +6538,42 @@
           "start": 127,
           "end": 417,
           "sha256": "35e0bd0cdb73ed2981725697028f7af72937d3b358160e174cc9045d26b486e8"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.closed_records_signing_config_default_942b3541_complete",
+      "generated_dependencies": [
+        "closed_records.signing_config_default_942b3541.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.signing_config_default_942b3541.make",
+          "file": "nora-registry/src/config/signing_cfg.rs",
+          "kind": "method",
+          "name": "default",
+          "self_ty": "SigningConfig",
+          "start": 28,
+          "end": 33,
+          "sha256": "5893972308dec9a9703ae110729459b8e197ebc7e45c59ed2261bdcb47707fde"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.closed_records_env_provider_new_23e18cff_complete",
+      "generated_dependencies": [
+        "closed_records.env_provider_new_23e18cff.make"
+      ],
+      "items": [
+        {
+          "declaration": "closed_records.env_provider_new_23e18cff.make",
+          "file": "nora-registry/src/secrets/env.rs",
+          "kind": "method",
+          "name": "new",
+          "self_ty": "EnvProvider",
+          "start": 27,
+          "end": 32,
+          "sha256": "549d1cf2360c91d25f775d66ff01adfb15b1d79b103a10e49427f2da92acdd7b"
         }
       ]
     }

@@ -10865,6 +10865,471 @@ def authwire.subject_token_id
   | model.Subject.Group _ => ok none
   | model.Subject.Token id => ok (some id)
 
+/-- [oxicloud_kernel::closed_records::cache_config_default_a4fe67b2::CacheConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 3:0-3:90
+    Visibility: public -/
+structure closed_records.cache_config_default_a4fe67b2.CacheConfig where
+  file_ttl_ms : Std.U64
+  directory_ttl_ms : Std.U64
+  max_entries : Std.Usize
+
+/-- [oxicloud_kernel::closed_records::cache_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 4:0-4:112
+    Visibility: public -/
+def closed_records.cache_config_default_a4fe67b2.make
+  : Result closed_records.cache_config_default_a4fe67b2.CacheConfig := do
+  ok
+    {
+      file_ttl_ms := 60000#u64,
+      directory_ttl_ms := 120000#u64,
+      max_entries := 10000#usize
+    }
+
+/-- [oxicloud_kernel::closed_records::timeout_config_default_a4fe67b2::TimeoutConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 7:0-7:165
+    Visibility: public -/
+structure closed_records.timeout_config_default_a4fe67b2.TimeoutConfig where
+  file_operation_ms : Std.U64
+  dir_operation_ms : Std.U64
+  lock_acquisition_ms : Std.U64
+  network_operation_ms : Std.U64
+  thumbnail_generation_ms : Std.U64
+
+/-- [oxicloud_kernel::closed_records::timeout_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 8:0-8:184
+    Visibility: public -/
+def closed_records.timeout_config_default_a4fe67b2.make
+  : Result closed_records.timeout_config_default_a4fe67b2.TimeoutConfig := do
+  ok
+    {
+      file_operation_ms := 10000#u64,
+      dir_operation_ms := 30000#u64,
+      lock_acquisition_ms := 5000#u64,
+      network_operation_ms := 15000#u64,
+      thumbnail_generation_ms := 30000#u64
+    }
+
+/-- [oxicloud_kernel::closed_records::resource_config_default_a4fe67b2::ResourceConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 11:0-11:158
+    Visibility: public -/
+structure closed_records.resource_config_default_a4fe67b2.ResourceConfig where
+  large_file_threshold_mb : Std.U64
+  large_dir_threshold_entries : Std.Usize
+  chunk_size_bytes : Std.Usize
+  max_in_memory_file_size_mb : Std.U64
+
+/-- [oxicloud_kernel::closed_records::resource_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 12:0-12:176
+    Visibility: public -/
+def closed_records.resource_config_default_a4fe67b2.make
+  : Result closed_records.resource_config_default_a4fe67b2.ResourceConfig := do
+  let i ← 1024#usize * 1024#usize
+  ok
+    {
+      large_file_threshold_mb := 100#u64,
+      large_dir_threshold_entries := 1000#usize,
+      chunk_size_bytes := i,
+      max_in_memory_file_size_mb := 50#u64
+    }
+
+/-- [oxicloud_kernel::closed_records::concurrency_config_default_a4fe67b2::ConcurrencyConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 15:0-15:224
+    Visibility: public -/
+structure closed_records.concurrency_config_default_a4fe67b2.ConcurrencyConfig
+  where
+  max_concurrent_files : Std.Usize
+  max_concurrent_dirs : Std.Usize
+  max_concurrent_io : Std.Usize
+  max_parallel_chunks : Std.Usize
+  min_size_for_parallel_chunks_mb : Std.U64
+  parallel_chunk_size_bytes : Std.Usize
+
+/-- [oxicloud_kernel::closed_records::concurrency_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 16:0-16:231
+    Visibility: public -/
+def closed_records.concurrency_config_default_a4fe67b2.make
+  :
+  Result closed_records.concurrency_config_default_a4fe67b2.ConcurrencyConfig
+  := do
+  let i ← 8#usize * 1024#usize
+  let i1 ← i * 1024#usize
+  ok
+    {
+      max_concurrent_files := 10#usize,
+      max_concurrent_dirs := 5#usize,
+      max_concurrent_io := 20#usize,
+      max_parallel_chunks := 8#usize,
+      min_size_for_parallel_chunks_mb := 200#u64,
+      parallel_chunk_size_bytes := i1
+    }
+
+/-- [oxicloud_kernel::closed_records::blob_cache_config_default_a4fe67b2::BlobCacheConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 19:0-19:98
+    Visibility: public -/
+structure closed_records.blob_cache_config_default_a4fe67b2.BlobCacheConfig
+  where
+  enabled : Bool
+  max_size_bytes : Std.U64
+  cache_path : Option (alloc.vec.Vec Std.U8)
+
+/-- [oxicloud_kernel::closed_records::blob_cache_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 20:0-20:126
+    Visibility: public -/
+def closed_records.blob_cache_config_default_a4fe67b2.make
+  :
+  Result closed_records.blob_cache_config_default_a4fe67b2.BlobCacheConfig
+  := do
+  let i ← 50#u64 * 1024#u64
+  let i1 ← i * 1024#u64
+  let i2 ← i1 * 1024#u64
+  ok { enabled := false, max_size_bytes := i2, cache_path := none }
+
+/-- [oxicloud_kernel::closed_records::encryption_config_default_a4fe67b2::EncryptionConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 23:0-23:76
+    Visibility: public -/
+structure closed_records.encryption_config_default_a4fe67b2.EncryptionConfig
+  where
+  enabled : Bool
+  key_base64 : Option (alloc.vec.Vec Std.U8)
+
+/-- [oxicloud_kernel::closed_records::encryption_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 24:0-24:88
+    Visibility: public -/
+def closed_records.encryption_config_default_a4fe67b2.make
+  :
+  Result closed_records.encryption_config_default_a4fe67b2.EncryptionConfig
+  := do
+  ok { enabled := false, key_base64 := none }
+
+/-- [oxicloud_kernel::closed_records::database_config_default_a4fe67b2::DatabaseConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 27:0-27:323
+    Visibility: public -/
+structure closed_records.database_config_default_a4fe67b2.DatabaseConfig where
+  connection_string : alloc.vec.Vec Std.U8
+  max_connections : Std.U32
+  min_connections : Std.U32
+  connect_timeout_secs : Std.U64
+  idle_timeout_secs : Std.U64
+  max_lifetime_secs : Std.U64
+  maintenance_max_connections : Std.U32
+  maintenance_min_connections : Std.U32
+  statement_timeout_secs : Std.U64
+  pool_monitor_interval_secs : Std.U64
+
+/-- [oxicloud_kernel::closed_records::database_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 28:0-28:367
+    Visibility: public -/
+def closed_records.database_config_default_a4fe67b2.make
+  : Result closed_records.database_config_default_a4fe67b2.DatabaseConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 52#usize [
+        112#u8, 111#u8, 115#u8, 116#u8, 103#u8, 114#u8, 101#u8, 115#u8, 58#u8,
+        47#u8, 47#u8, 112#u8, 111#u8, 115#u8, 116#u8, 103#u8, 114#u8, 101#u8,
+        115#u8, 58#u8, 112#u8, 111#u8, 115#u8, 116#u8, 103#u8, 114#u8, 101#u8,
+        115#u8, 64#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 104#u8, 111#u8,
+        115#u8, 116#u8, 58#u8, 53#u8, 52#u8, 51#u8, 50#u8, 47#u8, 111#u8,
+        120#u8, 105#u8, 99#u8, 108#u8, 111#u8, 117#u8, 100#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  ok
+    {
+      connection_string := v,
+      max_connections := 20#u32,
+      min_connections := 5#u32,
+      connect_timeout_secs := 10#u64,
+      idle_timeout_secs := 300#u64,
+      max_lifetime_secs := 1800#u64,
+      maintenance_max_connections := 5#u32,
+      maintenance_min_connections := 1#u32,
+      statement_timeout_secs := 30#u64,
+      pool_monitor_interval_secs := 30#u64
+    }
+
+/-- [oxicloud_kernel::closed_records::rate_limit_config_default_a4fe67b2::RateLimitConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 31:0-31:389
+    Visibility: public -/
+structure closed_records.rate_limit_config_default_a4fe67b2.RateLimitConfig
+  where
+  login_max_requests : Std.U32
+  login_window_secs : Std.U64
+  register_max_requests : Std.U32
+  register_window_secs : Std.U64
+  refresh_max_requests : Std.U32
+  refresh_window_secs : Std.U64
+  lockout_max_failures : Std.U32
+  lockout_duration_secs : Std.U64
+  user_profile_max_requests : Std.U32
+  user_profile_window_secs : Std.U64
+  delta_upload_max_requests : Std.U32
+  delta_upload_window_secs : Std.U64
+
+/-- [oxicloud_kernel::closed_records::rate_limit_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 32:0-32:370
+    Visibility: public -/
+def closed_records.rate_limit_config_default_a4fe67b2.make
+  :
+  Result closed_records.rate_limit_config_default_a4fe67b2.RateLimitConfig
+  := do
+  ok
+    {
+      login_max_requests := 10#u32,
+      login_window_secs := 60#u64,
+      register_max_requests := 5#u32,
+      register_window_secs := 3600#u64,
+      refresh_max_requests := 20#u32,
+      refresh_window_secs := 60#u64,
+      lockout_max_failures := 5#u32,
+      lockout_duration_secs := 900#u64,
+      user_profile_max_requests := 60#u32,
+      user_profile_window_secs := 60#u64,
+      delta_upload_max_requests := 240#u32,
+      delta_upload_window_secs := 60#u64
+    }
+
+/-- [oxicloud_kernel::closed_records::oidc_config_default_a4fe67b2::OidcConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 35:0-35:317
+    Visibility: public -/
+structure closed_records.oidc_config_default_a4fe67b2.OidcConfig where
+  enabled : Bool
+  issuer_url : alloc.vec.Vec Std.U8
+  client_id : alloc.vec.Vec Std.U8
+  client_secret : alloc.vec.Vec Std.U8
+  redirect_uri : alloc.vec.Vec Std.U8
+  scopes : alloc.vec.Vec Std.U8
+  frontend_url : alloc.vec.Vec Std.U8
+  auto_provision : Bool
+  admin_groups : alloc.vec.Vec Std.U8
+  disable_password_login : Bool
+  provider_name : alloc.vec.Vec Std.U8
+  auto_link_email_match : Bool
+
+/-- [oxicloud_kernel::closed_records::oidc_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 36:0-36:425
+    Visibility: public -/
+def closed_records.oidc_config_default_a4fe67b2.make
+  : Result closed_records.oidc_config_default_a4fe67b2.OidcConfig := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 44#usize [
+        104#u8, 116#u8, 116#u8, 112#u8, 58#u8, 47#u8, 47#u8, 108#u8, 111#u8,
+        99#u8, 97#u8, 108#u8, 104#u8, 111#u8, 115#u8, 116#u8, 58#u8, 56#u8,
+        48#u8, 56#u8, 54#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8, 97#u8,
+        117#u8, 116#u8, 104#u8, 47#u8, 111#u8, 105#u8, 100#u8, 99#u8, 47#u8,
+        99#u8, 97#u8, 108#u8, 108#u8, 98#u8, 97#u8, 99#u8, 107#u8
+        ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 20#usize [
+        111#u8, 112#u8, 101#u8, 110#u8, 105#u8, 100#u8, 32#u8, 112#u8, 114#u8,
+        111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 32#u8, 101#u8, 109#u8, 97#u8,
+        105#u8, 108#u8
+        ]))
+  let v1 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 21#usize [
+        104#u8, 116#u8, 116#u8, 112#u8, 58#u8, 47#u8, 47#u8, 108#u8, 111#u8,
+        99#u8, 97#u8, 108#u8, 104#u8, 111#u8, 115#u8, 116#u8, 58#u8, 56#u8,
+        48#u8, 56#u8, 54#u8
+        ]))
+  let v2 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+  let s3 ← lift (Array.to_slice (Array.make 3#usize [ 83#u8, 83#u8, 79#u8 ]))
+  let v3 ← alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+  ok
+    {
+      enabled := false,
+      issuer_url := (alloc.vec.Vec.new Std.U8),
+      client_id := (alloc.vec.Vec.new Std.U8),
+      client_secret := (alloc.vec.Vec.new Std.U8),
+      redirect_uri := v,
+      scopes := v1,
+      frontend_url := v2,
+      auto_provision := true,
+      admin_groups := (alloc.vec.Vec.new Std.U8),
+      disable_password_login := false,
+      provider_name := v3,
+      auto_link_email_match := true
+    }
+
+/-- [oxicloud_kernel::closed_records::smtp_config_default_a4fe67b2::SmtpTlsMode]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 39:0-39:40
+    Visibility: public -/
+@[discriminant isize]
+inductive closed_records.smtp_config_default_a4fe67b2.SmtpTlsMode where
+| Starttls : closed_records.smtp_config_default_a4fe67b2.SmtpTlsMode
+| Tls : closed_records.smtp_config_default_a4fe67b2.SmtpTlsMode
+| None : closed_records.smtp_config_default_a4fe67b2.SmtpTlsMode
+
+/-- [oxicloud_kernel::closed_records::smtp_config_default_a4fe67b2::SmtpConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 40:0-40:137
+    Visibility: public -/
+structure closed_records.smtp_config_default_a4fe67b2.SmtpConfig where
+  host : alloc.vec.Vec Std.U8
+  port : Std.U16
+  user : alloc.vec.Vec Std.U8
+  pass : alloc.vec.Vec Std.U8
+  «from» : alloc.vec.Vec Std.U8
+  tls : closed_records.smtp_config_default_a4fe67b2.SmtpTlsMode
+  mock : Bool
+
+/-- [oxicloud_kernel::closed_records::smtp_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 41:0-41:161
+    Visibility: public -/
+def closed_records.smtp_config_default_a4fe67b2.make
+  : Result closed_records.smtp_config_default_a4fe67b2.SmtpConfig := do
+  ok
+    {
+      host := (alloc.vec.Vec.new Std.U8),
+      port := 587#u16,
+      user := (alloc.vec.Vec.new Std.U8),
+      pass := (alloc.vec.Vec.new Std.U8),
+      «from» := (alloc.vec.Vec.new Std.U8),
+      tls := closed_records.smtp_config_default_a4fe67b2.SmtpTlsMode.Starttls,
+      mock := false
+    }
+
+/-- [oxicloud_kernel::closed_records::magic_link_config_default_a4fe67b2::MagicLinkConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 44:0-44:315
+    Visibility: public -/
+structure closed_records.magic_link_config_default_a4fe67b2.MagicLinkConfig
+  where
+  login_ttl_minutes : Std.U64
+  invite_ttl_hours : Std.U64
+  allow_external_users : Bool
+  allowed_email_domains : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  invite_per_caller_per_hour : Std.U32
+  send_per_email_per_hour : Std.U32
+  send_per_ip_per_hour : Std.U32
+  open_to_password_users : Bool
+  notify_internal_users_on_share : Bool
+
+/-- [oxicloud_kernel::closed_records::magic_link_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 45:0-45:309
+    Visibility: public -/
+def closed_records.magic_link_config_default_a4fe67b2.make
+  :
+  Result closed_records.magic_link_config_default_a4fe67b2.MagicLinkConfig
+  := do
+  ok
+    {
+      login_ttl_minutes := 10#u64,
+      invite_ttl_hours := 24#u64,
+      allow_external_users := true,
+      allowed_email_domains := (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)),
+      invite_per_caller_per_hour := 50#u32,
+      send_per_email_per_hour := 5#u32,
+      send_per_ip_per_hour := 200#u32,
+      open_to_password_users := false,
+      notify_internal_users_on_share := true
+    }
+
+/-- [oxicloud_kernel::closed_records::grant_cleanup_config_default_a4fe67b2::GrantCleanupConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 48:0-48:89
+    Visibility: public -/
+structure closed_records.grant_cleanup_config_default_a4fe67b2.GrantCleanupConfig
+  where
+  enabled : Bool
+  grace_days : Std.U32
+  interval_hours : Std.U64
+
+/-- [oxicloud_kernel::closed_records::grant_cleanup_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 49:0-49:108
+    Visibility: public -/
+def closed_records.grant_cleanup_config_default_a4fe67b2.make
+  :
+  Result
+    closed_records.grant_cleanup_config_default_a4fe67b2.GrantCleanupConfig
+  := do
+  ok { enabled := true, grace_days := 15#u32, interval_hours := 24#u64 }
+
+/-- [oxicloud_kernel::closed_records::search_cache_config_default_a4fe67b2::SearchCacheConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 52:0-52:47
+    Visibility: public -/
+structure closed_records.search_cache_config_default_a4fe67b2.SearchCacheConfig
+  where
+  max_bytes : Std.U64
+
+/-- [oxicloud_kernel::closed_records::search_cache_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 53:0-53:86
+    Visibility: public -/
+def closed_records.search_cache_config_default_a4fe67b2.make
+  :
+  Result closed_records.search_cache_config_default_a4fe67b2.SearchCacheConfig
+  := do
+  let i ← 32#u64 * 1024#u64
+  let i1 ← i * 1024#u64
+  ok { max_bytes := i1 }
+
+/-- [oxicloud_kernel::closed_records::i18n_config_default_a4fe67b2::I18nConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 56:0-56:49
+    Visibility: public -/
+structure closed_records.i18n_config_default_a4fe67b2.I18nConfig where
+  default_locale : alloc.vec.Vec Std.U8
+
+/-- [oxicloud_kernel::closed_records::i18n_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 57:0-57:75
+    Visibility: public -/
+def closed_records.i18n_config_default_a4fe67b2.make
+  : Result closed_records.i18n_config_default_a4fe67b2.I18nConfig := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 101#u8, 110#u8 ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  ok { default_locale := v }
+
+/-- [oxicloud_kernel::closed_records::video_thumbnail_config_default_a4fe67b2::VideoThumbnailConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 60:0-60:122
+    Visibility: public -/
+structure closed_records.video_thumbnail_config_default_a4fe67b2.VideoThumbnailConfig
+  where
+  ffmpeg_path : alloc.vec.Vec Std.U8
+  concurrency : Option Std.Usize
+  timeout_secs : Std.U64
+  max_mb : Std.U64
+
+/-- [oxicloud_kernel::closed_records::video_thumbnail_config_default_a4fe67b2::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 61:0-61:144
+    Visibility: public -/
+def closed_records.video_thumbnail_config_default_a4fe67b2.make
+  :
+  Result
+    closed_records.video_thumbnail_config_default_a4fe67b2.VideoThumbnailConfig
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 102#u8, 102#u8, 109#u8, 112#u8, 101#u8, 103#u8 ]))
+  let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  ok
+    {
+      ffmpeg_path := v,
+      concurrency := none,
+      timeout_secs := 30#u64,
+      max_mb := 2048#u64
+    }
+
+/-- [oxicloud_kernel::closed_records::file_content_cache_config_default_28be87aa::FileContentCacheConfig]
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 64:0-64:105
+    Visibility: public -/
+structure closed_records.file_content_cache_config_default_28be87aa.FileContentCacheConfig
+  where
+  max_file_size : Std.Usize
+  max_total_size : Std.Usize
+  max_entries : Std.Usize
+
+/-- [oxicloud_kernel::closed_records::file_content_cache_config_default_28be87aa::make]:
+    Source: 'prove/ports/oxicloud/kernel/src/closed_records.rs', lines 65:0-65:153
+    Visibility: public -/
+def closed_records.file_content_cache_config_default_28be87aa.make
+  :
+  Result
+    closed_records.file_content_cache_config_default_28be87aa.FileContentCacheConfig
+  := do
+  let i ← 10#usize * 1024#usize
+  let i1 ← i * 1024#usize
+  let i2 ← 512#usize * 1024#usize
+  let i3 ← i2 * 1024#usize
+  ok { max_file_size := i1, max_total_size := i3, max_entries := 10000#usize }
+
 /-- [oxicloud_kernel::davstate::Email]
     Source: 'prove/ports/oxicloud/kernel/src/davstate.rs', lines 3:0-7:1
     Visibility: public -/

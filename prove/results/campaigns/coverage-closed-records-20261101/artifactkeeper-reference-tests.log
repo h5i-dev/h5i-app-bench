@@ -1,0 +1,25 @@
+   Compiling closed-records-reference v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/artifactkeeper/difftest/closed_records)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.56s
+     Running unittests src/lib.rs (prove/ports/artifactkeeper/difftest/closed_records/target/debug/deps/closed_records_reference-99d8b31688e6dff1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/complete.rs (prove/ports/artifactkeeper/difftest/closed_records/target/debug/deps/complete-4b77d8c80d7cc883)
+
+running 5 tests
+test capabilities_config_default_75c080e9_complete ... ok
+test password_policy_config_default_97110402_complete ... ok
+test plugin_capabilities_default_a005c35c_complete ... ok
+test plugin_resource_limits_default_a005c35c_complete ... ok
+test telemetry_settings_default_453927f4_complete ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests closed_records_reference
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

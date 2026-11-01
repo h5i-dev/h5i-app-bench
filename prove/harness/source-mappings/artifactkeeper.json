@@ -1640,6 +1640,61 @@
         "end": 222,
         "sha256": "98babbd847290f751f5cf8a51217aa3586db31017635fd9ffb48e828e218c61a"
       }
+    ],
+    "closed_records.plugin_resource_limits_default_a005c35c.make": [
+      {
+        "file": "backend/src/models/plugin.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "PluginResourceLimits",
+        "start": 96,
+        "end": 102,
+        "sha256": "60e773cb17b1602b3bf539df8e942165f14d97dc73fa0a0cb94f6d694f8170e3"
+      }
+    ],
+    "closed_records.plugin_capabilities_default_a005c35c.make": [
+      {
+        "file": "backend/src/models/plugin.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "PluginCapabilities",
+        "start": 120,
+        "end": 127,
+        "sha256": "0ebf5b54939c8e31d8cb04845f4464d66610f43e0e9859dc684ae1d2b02ffb8b"
+      }
+    ],
+    "closed_records.capabilities_config_default_75c080e9.make": [
+      {
+        "file": "backend/src/models/plugin_manifest.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "CapabilitiesConfig",
+        "start": 71,
+        "end": 78,
+        "sha256": "0ebf5b54939c8e31d8cb04845f4464d66610f43e0e9859dc684ae1d2b02ffb8b"
+      }
+    ],
+    "closed_records.telemetry_settings_default_453927f4.make": [
+      {
+        "file": "backend/src/services/crash_reporting_service.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "TelemetrySettings",
+        "start": 379,
+        "end": 386,
+        "sha256": "18cb22dc2c5cf6086801efdc1cec462998e6cb719289426aadde40850c5516e9"
+      }
+    ],
+    "closed_records.password_policy_config_default_97110402.make": [
+      {
+        "file": "backend/src/services/password_policy.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "PasswordPolicyConfig",
+        "start": 21,
+        "end": 31,
+        "sha256": "52468ce74949bfb240d8c825946f5cc4633b7ce760af0f5bbc9667317d424384"
+      }
     ]
   }
 }

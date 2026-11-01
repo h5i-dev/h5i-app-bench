@@ -1,0 +1,2 @@
+oxicloud: running h5i app extract --check ports/oxicloud
+oxicloud: passed; results/project-checks/20261101T174544819942Z/oxicloud.log

@@ -243,6 +243,33 @@ def circuit_breaker.reset_timeout
   | none => ok default
   | some x => ok x
 
+/-- [nora_kernel::closed_records::signing_config_default_942b3541::SigningConfig]
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 3:0-3:63
+    Visibility: public -/
+structure closed_records.signing_config_default_942b3541.SigningConfig where
+  enabled : Bool
+  key_path : alloc.vec.Vec Std.U8
+
+/-- [nora_kernel::closed_records::signing_config_default_942b3541::make]:
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 4:0-4:85
+    Visibility: public -/
+def closed_records.signing_config_default_942b3541.make
+  : Result closed_records.signing_config_default_942b3541.SigningConfig := do
+  ok { enabled := true, key_path := (alloc.vec.Vec.new Std.U8) }
+
+/-- [nora_kernel::closed_records::env_provider_new_23e18cff::EnvProvider]
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 7:0-7:49
+    Visibility: public -/
+structure closed_records.env_provider_new_23e18cff.EnvProvider where
+  clear_after_read : Bool
+
+/-- [nora_kernel::closed_records::env_provider_new_23e18cff::make]:
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 8:0-8:70
+    Visibility: public -/
+def closed_records.env_provider_new_23e18cff.make
+  : Result closed_records.env_provider_new_23e18cff.EnvProvider := do
+  ok { clear_after_read := false }
+
 /-- [nora_kernel::curation::Mode]
     Source: 'prove/ports/nora/kernel/src/curation.rs', lines 8:0-8:37
     Visibility: public -/

@@ -477,3 +477,5 @@ pub mod finite_catalog;
 pub mod rendering;
 
 pub mod sidebar;
+
+pub mod closed_records;

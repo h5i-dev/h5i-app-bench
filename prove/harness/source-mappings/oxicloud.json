@@ -3664,6 +3664,182 @@
         "end": 1259,
         "sha256": "3a77636de2b1c2c24a7bd2c3d5c3145a368188ad1e31777ac53610783a86cbca"
       }
+    ],
+    "closed_records.cache_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "CacheConfig",
+        "start": 19,
+        "end": 25,
+        "sha256": "dd6e9f1efd71fe86f930c4629b4acae226efe7165d2a783e3d227316270c1f1b"
+      }
+    ],
+    "closed_records.timeout_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "TimeoutConfig",
+        "start": 44,
+        "end": 52,
+        "sha256": "2460f64ab74c66b9147f88bd57a103d833d2a2304bd5c9cbcda8a97807314a58"
+      }
+    ],
+    "closed_records.resource_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "ResourceConfig",
+        "start": 111,
+        "end": 118,
+        "sha256": "e5b89fee79da7c8d52b6b4ad507d44f7e8a6e1c94cc6dd309fb5ef7069ed1c52"
+      }
+    ],
+    "closed_records.concurrency_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "ConcurrencyConfig",
+        "start": 190,
+        "end": 199,
+        "sha256": "fe5ee43a2b7c0fb528317b970e2f80bd6f4df003c66cbd1df6698eb1cc42ea68"
+      }
+    ],
+    "closed_records.blob_cache_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "BlobCacheConfig",
+        "start": 336,
+        "end": 342,
+        "sha256": "791ef212697437af7beba0ab6b33a8d4a93e053bc378f98a67112964ed23723a"
+      }
+    ],
+    "closed_records.encryption_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "EncryptionConfig",
+        "start": 355,
+        "end": 361,
+        "sha256": "efcd1a3e31674b606444e92256b893be7be9870c433c52c48b0e6f330af4041c"
+      }
+    ],
+    "closed_records.database_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "DatabaseConfig",
+        "start": 1338,
+        "end": 1352,
+        "sha256": "84dc952f57b18025c3578730a5420e54f227a591a7d61278351e90c6c18b9286"
+      }
+    ],
+    "closed_records.rate_limit_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "RateLimitConfig",
+        "start": 1678,
+        "end": 1695,
+        "sha256": "80a7c8f7af29274ebe3034f2762f66ab09630b36b8da6aa8b59bdbf4eff423ae"
+      }
+    ],
+    "closed_records.oidc_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "OidcConfig",
+        "start": 1779,
+        "end": 1794,
+        "sha256": "9b66ef832d98d25cab153525606348d4e0f59799b628917b8390dd2bfdeeaaba"
+      }
+    ],
+    "closed_records.smtp_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "SmtpConfig",
+        "start": 2145,
+        "end": 2155,
+        "sha256": "41ded3553d9346ef160a60444a02b7bf5ecea224eab62a1b403e48e017bb7a0f"
+      }
+    ],
+    "closed_records.magic_link_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "MagicLinkConfig",
+        "start": 2260,
+        "end": 2272,
+        "sha256": "7d08b4d2527ff22c2cbc85066cbbb30aaac2bad5f3dcd16530643fa88ea6789f"
+      }
+    ],
+    "closed_records.grant_cleanup_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "GrantCleanupConfig",
+        "start": 2617,
+        "end": 2623,
+        "sha256": "3e97409c39ad0dae6ae829b10f546ac2627ca1cd6c007b83e4c1da6bb711e061"
+      }
+    ],
+    "closed_records.search_cache_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "SearchCacheConfig",
+        "start": 2765,
+        "end": 2769,
+        "sha256": "0211bdf7cce3caac54f4bad3e5624dc059e78a9267c8029ea296c9247c38a22b"
+      }
+    ],
+    "closed_records.i18n_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "I18nConfig",
+        "start": 3010,
+        "end": 3014,
+        "sha256": "1cd16877d01b5722c899895d7c486ed578d74b051175de9ad3dd603f2c69b752"
+      }
+    ],
+    "closed_records.video_thumbnail_config_default_a4fe67b2.make": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "VideoThumbnailConfig",
+        "start": 3074,
+        "end": 3081,
+        "sha256": "9453a913deecfe5e230cc159b5f337cbda70f5ace22e1a199fa036d21ccc8de0"
+      }
+    ],
+    "closed_records.file_content_cache_config_default_28be87aa.make": [
+      {
+        "file": "src/infrastructure/services/file_content_cache.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "FileContentCacheConfig",
+        "start": 22,
+        "end": 28,
+        "sha256": "49629589b737f33ea23f6f8886459b56fc920266382edeb7470c95dea6b4c80a"
+      }
     ]
   }
 }

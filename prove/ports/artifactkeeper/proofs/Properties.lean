@@ -1,3 +1,4 @@
+import Verified.ClosedRecords
 import Verified.FiniteCatalog
 import Verified.TokenScope
 import Verified.TotpPolicy
@@ -467,5 +468,46 @@ theorem finite_sampler_choice_f5cc6ea1_name_complete (v : finite_catalog.sampler
 
 theorem finite_sampler_choice_f5cc6ea1_uses_ratio_complete (v : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice) :
     finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio v ⦃r => r = sampler_choice_f5cc6ea1_uses_ratio_model v⦄ := Verified.FiniteCatalog.sampler_choice_f5cc6ea1_uses_ratio_complete v
+
+end artifactkeeper_kernel.Properties
+-- Complete pinned closed record constructors.
+namespace artifactkeeper_kernel.Properties
+
+theorem closed_records_plugin_resource_limits_default_a005c35c_complete :
+    closed_records.plugin_resource_limits_default_a005c35c.make ⦃r => r.memory_mb.val = 64 ∧
+      r.timeout_secs.val = 5 ∧
+      r.fuel.val = 500000000⦄ :=
+  Verified.ClosedRecords.plugin_resource_limits_default_a005c35c_complete
+
+theorem closed_records_plugin_capabilities_default_a005c35c_complete :
+    closed_records.plugin_capabilities_default_a005c35c.make ⦃r => r.parse_metadata = true ∧
+      r.generate_index = false ∧
+      r.validate_artifact = true ∧
+      r.handle_request = false⦄ :=
+  Verified.ClosedRecords.plugin_capabilities_default_a005c35c_complete
+
+theorem closed_records_capabilities_config_default_75c080e9_complete :
+    closed_records.capabilities_config_default_75c080e9.make ⦃r => r.parse_metadata = true ∧
+      r.generate_index = false ∧
+      r.validate_artifact = true ∧
+      r.handle_request = false⦄ :=
+  Verified.ClosedRecords.capabilities_config_default_75c080e9_complete
+
+theorem closed_records_telemetry_settings_default_453927f4_complete :
+    closed_records.telemetry_settings_default_453927f4.make ⦃r => r.enabled = false ∧
+      r.review_before_send = true ∧
+      r.scrub_level.val = [115#u8, 116#u8, 97#u8, 110#u8, 100#u8, 97#u8, 114#u8, 100#u8] ∧
+      r.include_logs = false⦄ :=
+  Verified.ClosedRecords.telemetry_settings_default_453927f4_complete
+
+theorem closed_records_password_policy_config_default_97110402_complete :
+    closed_records.password_policy_config_default_97110402.make ⦃r => r.min_length.val = 8 ∧
+      r.max_length.val = 128 ∧
+      r.require_uppercase = false ∧
+      r.require_lowercase = false ∧
+      r.require_digit = false ∧
+      r.require_special = false ∧
+      r.min_strength.val = 0⦄ :=
+  Verified.ClosedRecords.password_policy_config_default_97110402_complete
 
 end artifactkeeper_kernel.Properties

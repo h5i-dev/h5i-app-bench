@@ -143,3 +143,24 @@ roots. Regenerate with `python3 harness/finite_catalog.py generate --app artifac
 from `prove/`. Integration is a separate one-time action; standard extraction,
 project gates and source-reach validation are still required for credit.
 Enum declarations, test data and generated code add no upstream line credit.
+
+## Complete closed record constructors
+
+The `closed_records` module ports the complete literal record initializers listed
+in `difftest/closed_records/plan.json`. Every upstream field is retained. String
+fields use their UTF-8 bytes; scalar widths, None, empty vectors, unit-enum
+variants and integer multiplication are preserved. The admission grammar rejects
+unresolved calls, environment access, clocks, randomness, floating point,
+conditional definitions, partial records and unsupported field types. Constructor
+bodies remain verbatim in the independently compiled Rust reference; carrier
+records keep the exact upstream field names and types, and visibility changes
+only let the reference driver inspect their values.
+
+The Lean properties state all fields of every returned record and successful
+termination. Reference evaluation supplies the independent field models and Rust
+tests compare each ported result with those models. `closed_records.py audit`
+recompiles the pinned bodies, recomputes every field, checks byte-identical
+regeneration, and reruns the comparisons. Only constructor bodies receive source
+mappings: carrier definitions, enum definitions and harness code receive no credit.
+These properties describe constructor defaults; they make no claim about runtime
+configuration loading or enforcement by callers.
