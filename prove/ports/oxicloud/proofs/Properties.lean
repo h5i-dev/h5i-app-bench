@@ -1,3 +1,4 @@
+import Verified.DisplayClassifiers
 import Verified.FiniteCatalog
 import Verified.OxicloudDavState
 import Verified.OxicloudUserRole
@@ -964,5 +965,18 @@ theorem finite_thumbnail_size_4088a69a_max_dimension_complete (v : finite_catalo
 
 theorem finite_thumbnail_size_4088a69a_dir_name_complete (v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
     finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name v ⦃r => r.val = thumbnail_size_4088a69a_dir_name_model v⦄ := Verified.FiniteCatalog.thumbnail_size_4088a69a_dir_name_complete v
+
+-- Complete arbitrary-byte display decisions.
+theorem display_icon_class_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
+    display_classifiers.icon_class_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.icon_class_with_ext_model mime.val (ext.map Slice.val)⦄ :=
+  Verified.DisplayClassifiers.icon_class_with_ext_complete mime ext
+
+theorem display_icon_special_class_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
+    display_classifiers.icon_special_class_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.icon_special_class_with_ext_model mime.val (ext.map Slice.val)⦄ :=
+  Verified.DisplayClassifiers.icon_special_class_with_ext_complete mime ext
+
+theorem display_category_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
+    display_classifiers.category_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.category_with_ext_model mime.val (ext.map Slice.val)⦄ :=
+  Verified.DisplayClassifiers.category_with_ext_complete mime ext
 
 end oxicloud_kernel.Properties

@@ -19,6 +19,18 @@ set_option maxRecDepth 2048
 
 namespace oxicloud_kernel
 
+/-- Trait implementation: [core::slice::cmp::{impl core::cmp::PartialEq<[U]> for [T]}]
+    Source: '/rustc/library/core/src/slice/cmp.rs', lines 14:0-16:28
+    Name pattern: [core::cmp::PartialEq<[@T], [@U]>] -/
+@[reducible, rust_trait_impl "core::cmp::PartialEq<[@T], [@U]>"]
+impl_def Slice.Insts.CoreCmpPartialEqSlice {T : Type} {U : Type}
+  (cmpPartialEqInst : core.cmp.PartialEq T U) : core.cmp.PartialEq (Slice T)
+  (Slice U) := {
+  eq := core.slice.cmp.PartialEqSlice.eq cmpPartialEqInst
+  ne := core.cmp.PartialEq.ne.trait_default (Slice.Insts.CoreCmpPartialEqSlice
+    cmpPartialEqInst)
+}
+
 /-- [oxicloud_kernel::acl::INTERNAL_GROUP_ID]
     Source: 'prove/ports/oxicloud/kernel/src/acl.rs', lines 8:0-8:37
     Visibility: public -/
@@ -3195,6 +3207,5026 @@ def davstate.TrashedItem.impl.trashed_at
 def davstate.TrashedItem.impl.deletion_date
   (self : davstate.TrashedItem) : Result session.Timestamp := do
   ok self.deletion_date
+
+/-- [oxicloud_kernel::display_classifiers::DisplayValue]
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 3:0-3:231
+    Visibility: public -/
+@[discriminant isize]
+inductive display_classifiers.DisplayValue where
+| V0 : display_classifiers.DisplayValue
+| V1 : display_classifiers.DisplayValue
+| V2 : display_classifiers.DisplayValue
+| V3 : display_classifiers.DisplayValue
+| V4 : display_classifiers.DisplayValue
+| V5 : display_classifiers.DisplayValue
+| V6 : display_classifiers.DisplayValue
+| V7 : display_classifiers.DisplayValue
+| V8 : display_classifiers.DisplayValue
+| V9 : display_classifiers.DisplayValue
+| V10 : display_classifiers.DisplayValue
+| V11 : display_classifiers.DisplayValue
+| V12 : display_classifiers.DisplayValue
+| V13 : display_classifiers.DisplayValue
+| V14 : display_classifiers.DisplayValue
+| V15 : display_classifiers.DisplayValue
+| V16 : display_classifiers.DisplayValue
+| V17 : display_classifiers.DisplayValue
+| V18 : display_classifiers.DisplayValue
+| V19 : display_classifiers.DisplayValue
+| V20 : display_classifiers.DisplayValue
+| V21 : display_classifiers.DisplayValue
+| V22 : display_classifiers.DisplayValue
+| V23 : display_classifiers.DisplayValue
+| V24 : display_classifiers.DisplayValue
+| V25 : display_classifiers.DisplayValue
+| V26 : display_classifiers.DisplayValue
+| V27 : display_classifiers.DisplayValue
+| V28 : display_classifiers.DisplayValue
+| V29 : display_classifiers.DisplayValue
+| V30 : display_classifiers.DisplayValue
+| V31 : display_classifiers.DisplayValue
+| V32 : display_classifiers.DisplayValue
+| V33 : display_classifiers.DisplayValue
+| V34 : display_classifiers.DisplayValue
+| V35 : display_classifiers.DisplayValue
+| V36 : display_classifiers.DisplayValue
+| V37 : display_classifiers.DisplayValue
+| V38 : display_classifiers.DisplayValue
+| V39 : display_classifiers.DisplayValue
+| V40 : display_classifiers.DisplayValue
+| V41 : display_classifiers.DisplayValue
+| V42 : display_classifiers.DisplayValue
+| V43 : display_classifiers.DisplayValue
+| V44 : display_classifiers.DisplayValue
+| V45 : display_classifiers.DisplayValue
+| V46 : display_classifiers.DisplayValue
+| V47 : display_classifiers.DisplayValue
+| V48 : display_classifiers.DisplayValue
+| V49 : display_classifiers.DisplayValue
+| V50 : display_classifiers.DisplayValue
+| V51 : display_classifiers.DisplayValue
+| V52 : display_classifiers.DisplayValue
+| V53 : display_classifiers.DisplayValue
+
+/-- [oxicloud_kernel::display_classifiers::starts_at]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 5:0-9:1
+    Visibility: public -/
+def display_classifiers.starts_at
+  (hay : Slice Std.U8) (needle : Slice Std.U8) («at» : Std.Usize) :
+  Result Bool
+  := do
+  let i := Slice.len hay
+  if «at» > i
+  then ok false
+  else
+    let i1 := Slice.len needle
+    let i2 := Slice.len hay
+    let i3 ← i2 - «at»
+    if i1 > i3
+    then ok false
+    else
+      let i4 := Slice.len needle
+      let i5 ← «at» + i4
+      let s ←
+        core.slice.index.Slice.index
+          (core.slice.index.SliceIndexRangeUsizeSlice Std.U8) hay
+          { start := «at», «end» := i5 }
+      core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 s needle
+
+/-- [oxicloud_kernel::display_classifiers::prefix]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 10:0-10:78
+    Visibility: public -/
+def display_classifiers.prefix
+  (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
+  display_classifiers.starts_at hay needle 0#usize
+
+/-- [oxicloud_kernel::display_classifiers::contains]: loop body 0:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 15:4-19:5
+    Visibility: public -/
+@[rust_loop_body]
+def display_classifiers.contains_loop.body
+  (hay : Slice Std.U8) (needle : Slice Std.U8) (last : Std.Usize)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let b ← display_classifiers.starts_at hay needle i
+  if b
+  then ok (done true)
+  else
+    if i = last
+    then ok (done false)
+    else let i1 ← i + 1#usize
+         ok (cont i1)
+
+/-- [oxicloud_kernel::display_classifiers::contains]: loop 0:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 15:4-19:5
+    Visibility: public -/
+@[rust_loop]
+def display_classifiers.contains_loop
+  (hay : Slice Std.U8) (needle : Slice Std.U8) (last : Std.Usize)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => display_classifiers.contains_loop.body hay needle last i1)
+    i
+
+/-- [oxicloud_kernel::display_classifiers::contains]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 11:0-20:1
+    Visibility: public -/
+def display_classifiers.contains
+  (hay : Slice Std.U8) (needle : Slice Std.U8) : Result Bool := do
+  let i := Slice.len needle
+  let i1 := Slice.len hay
+  if i > i1
+  then ok false
+  else
+    let i2 := Slice.len hay
+    let i3 := Slice.len needle
+    let last ← i2 - i3
+    display_classifiers.contains_loop hay needle last 0#usize
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 21:0-29:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 112#u8, 100#u8, 102#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V41)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 109#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V44)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 71#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8, 102#u8,
+            111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8, 111#u8,
+            102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8, 111#u8, 99#u8,
+            117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 119#u8, 111#u8,
+            114#u8, 100#u8, 112#u8, 114#u8, 111#u8, 99#u8, 101#u8, 115#u8,
+            115#u8, 105#u8, 110#u8, 103#u8, 109#u8, 108#u8, 46#u8, 100#u8,
+            111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V44)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 39#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+              111#u8, 97#u8, 115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8,
+              101#u8, 110#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+              110#u8, 116#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V44)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                109#u8, 115#u8, 45#u8, 101#u8, 120#u8, 99#u8, 101#u8, 108#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V39)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 65#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                  111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8,
+                  102#u8, 111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8,
+                  111#u8, 102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8,
+                  111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8,
+                  115#u8, 112#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8,
+                  104#u8, 101#u8, 101#u8, 116#u8, 109#u8, 108#u8, 46#u8,
+                  115#u8, 104#u8, 101#u8, 101#u8, 116#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V39)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 30:0-38:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 46#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 111#u8, 97#u8,
+        115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8, 101#u8, 110#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 115#u8,
+        112#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8, 104#u8, 101#u8, 101#u8,
+        116#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V39)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 99#u8, 115#u8, 118#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V39)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 29#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            109#u8, 115#u8, 45#u8, 112#u8, 111#u8, 119#u8, 101#u8, 114#u8,
+            112#u8, 111#u8, 105#u8, 110#u8, 116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V42)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 73#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+              111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8, 102#u8,
+              111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8, 111#u8,
+              102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8, 111#u8, 99#u8,
+              117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 112#u8, 114#u8,
+              101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8, 105#u8,
+              111#u8, 110#u8, 109#u8, 108#u8, 46#u8, 112#u8, 114#u8, 101#u8,
+              115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+              110#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V42)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 47#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                111#u8, 97#u8, 115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8,
+                101#u8, 110#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+                110#u8, 116#u8, 46#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8,
+                110#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V42)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 15#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 122#u8, 105#u8, 112#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V36)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 39:0-47:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 28#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 114#u8, 97#u8, 114#u8, 45#u8,
+        99#u8, 111#u8, 109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8, 101#u8,
+        100#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V36)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 114#u8, 97#u8,
+          114#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V36)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 27#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 55#u8, 122#u8, 45#u8,
+            99#u8, 111#u8, 109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8,
+            101#u8, 100#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V36)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 103#u8, 122#u8, 105#u8, 112#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V36)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 18#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 103#u8, 122#u8,
+                105#u8, 112#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V36)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 17#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 116#u8, 97#u8,
+                  114#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V36)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_3]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 48:0-56:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_3
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 98#u8, 122#u8, 105#u8, 112#u8,
+        50#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V36)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 120#u8, 122#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V36)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 22#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 99#u8, 111#u8,
+            109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V36)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 106#u8, 115#u8, 111#u8, 110#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 19#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 108#u8, 100#u8, 43#u8, 106#u8,
+                115#u8, 111#u8, 110#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 22#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 106#u8, 97#u8, 118#u8, 97#u8,
+                  115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_4]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 57:0-65:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_4
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 22#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 99#u8,
+        114#u8, 105#u8, 112#u8, 116#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 104#u8, 116#u8, 116#u8, 112#u8,
+          100#u8, 45#u8, 112#u8, 104#u8, 112#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 15#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 109#u8, 108#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 21#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 104#u8, 116#u8, 109#u8,
+              108#u8, 43#u8, 120#u8, 109#u8, 108#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 15#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 115#u8, 113#u8, 108#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 18#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 121#u8, 97#u8,
+                  109#u8, 108#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_5]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 66:0-74:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_5
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 16#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 116#u8, 111#u8, 109#u8, 108#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 115#u8, 104#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 25#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 115#u8, 104#u8,
+            101#u8, 108#u8, 108#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+            116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 17#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 99#u8, 115#u8,
+              104#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 29#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 97#u8, 112#u8,
+                112#u8, 108#u8, 101#u8, 45#u8, 100#u8, 105#u8, 115#u8, 107#u8,
+                105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V45)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 31#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8,
+                  45#u8, 100#u8, 111#u8, 115#u8, 45#u8, 101#u8, 120#u8, 101#u8,
+                  99#u8, 117#u8, 116#u8, 97#u8, 98#u8, 108#u8, 101#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V45)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_exact_6]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 75:0-82:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_exact_6
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 24#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8, 100#u8, 111#u8,
+        119#u8, 110#u8, 108#u8, 111#u8, 97#u8, 100#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V45)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8, 105#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V45)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 37#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            100#u8, 101#u8, 98#u8, 105#u8, 97#u8, 110#u8, 46#u8, 98#u8, 105#u8,
+            110#u8, 97#u8, 114#u8, 121#u8, 45#u8, 112#u8, 97#u8, 99#u8, 107#u8,
+            97#u8, 103#u8, 101#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V45)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 17#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 114#u8, 112#u8,
+              109#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V45)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                97#u8, 112#u8, 112#u8, 105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V45)
+          else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_mime_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 83:0-91:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_mime_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8 ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V40)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 118#u8, 105#u8, 100#u8, 101#u8, 111#u8, 47#u8 ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V43)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [ 97#u8, 117#u8, 100#u8, 105#u8, 111#u8, 47#u8 ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V37)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 13#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 115#u8,
+              99#u8, 114#u8, 105#u8, 112#u8, 116#u8
+              ]))
+        let b3 ← display_classifiers.prefix raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 13#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 112#u8,
+                121#u8, 116#u8, 104#u8, 111#u8, 110#u8
+                ]))
+          let b4 ← display_classifiers.prefix raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 11#usize [
+                  116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 106#u8,
+                  97#u8, 118#u8, 97#u8
+                  ]))
+            let b5 ← display_classifiers.prefix raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_mime_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 92:0-100:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_mime_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 99#u8
+        ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 11#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 114#u8, 117#u8,
+          115#u8, 116#u8
+          ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 9#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 103#u8,
+            111#u8
+            ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 11#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 114#u8,
+              117#u8, 98#u8, 121#u8
+              ]))
+        let b3 ← display_classifiers.prefix raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 18#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 115#u8,
+                104#u8, 101#u8, 108#u8, 108#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+                112#u8, 116#u8
+                ]))
+          let b4 ← display_classifiers.prefix raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 10#usize [
+                  116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 112#u8,
+                  104#u8, 112#u8
+                  ]))
+            let b5 ← display_classifiers.prefix raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_mime_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 101:0-106:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_mime_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        106#u8, 97#u8, 118#u8, 97#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+        116#u8
+        ]))
+  let b ← display_classifiers.contains raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 10#usize [
+          116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+          112#u8, 116#u8
+          ]))
+    let b1 ← display_classifiers.contains raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 116#u8, 101#u8, 120#u8, 116#u8, 47#u8 ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V35)
+      else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 107:0-115:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 112#u8, 100#u8, 102#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V41)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 100#u8, 111#u8, 99#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V44)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 100#u8, 111#u8, 99#u8, 120#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V44)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V44)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 114#u8, 116#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V44)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 120#u8, 108#u8, 115#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V39)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 116:0-124:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 120#u8, 108#u8, 115#u8, 120#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V39)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 115#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V39)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 99#u8, 115#u8, 118#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V39)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 112#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V42)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 112#u8, 112#u8, 116#u8, 120#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V42)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 111#u8, 100#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V42)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 125:0-133:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 107#u8, 101#u8, 121#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V42)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 106#u8, 112#u8, 103#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V40)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 106#u8, 112#u8, 101#u8, 103#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V40)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 110#u8, 103#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V40)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 103#u8, 105#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V40)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 98#u8, 109#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V40)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_3]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 134:0-142:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_3
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 115#u8, 118#u8, 103#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V40)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 112#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V40)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 105#u8, 99#u8, 111#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V40)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 116#u8, 105#u8, 102#u8, 102#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V40)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 116#u8, 105#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V40)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 104#u8, 101#u8, 105#u8, 99#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V40)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_4]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 143:0-151:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_4
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 104#u8, 101#u8, 105#u8, 102#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V40)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 97#u8, 118#u8, 105#u8, 102#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V40)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 109#u8, 112#u8, 52#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V43)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 97#u8, 118#u8, 105#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V43)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 107#u8, 118#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V43)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 109#u8, 111#u8, 118#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V43)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_5]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 152:0-160:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_5
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 119#u8, 109#u8, 118#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V43)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 102#u8, 108#u8, 118#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V43)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 109#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V43)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 109#u8, 52#u8, 118#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V43)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 112#u8, 51#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V37)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 119#u8, 97#u8, 118#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V37)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_6]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 161:0-169:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_6
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 111#u8, 103#u8, 103#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V37)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 108#u8, 97#u8, 99#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V37)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 97#u8, 97#u8, 99#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V37)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 119#u8, 109#u8, 97#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V37)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 3#usize [ 109#u8, 52#u8, 97#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V37)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 111#u8, 112#u8, 117#u8, 115#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V37)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_7]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 170:0-178:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_7
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 122#u8, 105#u8, 112#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V36)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 114#u8, 97#u8, 114#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V36)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 55#u8, 122#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V36)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 116#u8, 97#u8, 114#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V36)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 2#usize [ 103#u8, 122#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V36)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 98#u8, 122#u8, 50#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V36)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_8]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 179:0-187:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_8
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 120#u8, 122#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V36)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 122#u8, 115#u8, 116#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V36)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 108#u8, 122#u8, 52#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V36)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 101#u8, 120#u8, 101#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V45)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 115#u8, 105#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V45)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 100#u8, 109#u8, 103#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V45)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_9]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 188:0-196:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_9
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 100#u8, 101#u8, 98#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V45)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 114#u8, 112#u8, 109#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V45)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 8#usize [
+            97#u8, 112#u8, 112#u8, 105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V45)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 107#u8, 103#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V45)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 115#u8, 110#u8, 97#u8, 112#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V45)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 7#usize [
+                  102#u8, 108#u8, 97#u8, 116#u8, 112#u8, 97#u8, 107#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V45)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_10]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 197:0-205:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_10
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 106#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 106#u8, 115#u8, 120#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 109#u8, 106#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 99#u8, 106#u8, 115#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 2#usize [ 116#u8, 115#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 116#u8, 115#u8, 120#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_11]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 206:0-214:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_11
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 112#u8, 121#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 112#u8, 121#u8, 119#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 114#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 2#usize [ 103#u8, 111#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 106#u8, 97#u8, 118#u8, 97#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 107#u8, 116#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_12]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 215:0-223:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_12
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 107#u8, 116#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 99#u8, 97#u8, 108#u8, 97#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 99#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ← lift (Array.to_slice (Array.make 1#usize [ 104#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 99#u8, 112#u8, 112#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 104#u8, 112#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_13]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 224:0-232:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_13
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 99#u8, 99#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 99#u8, 120#u8, 120#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 99#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ← lift (Array.to_slice (Array.make 2#usize [ 114#u8, 98#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 112#u8, 104#u8, 112#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 5#usize [ 115#u8, 119#u8, 105#u8, 102#u8, 116#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_14]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 233:0-241:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_14
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 114#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 108#u8, 117#u8, 97#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 112#u8, 108#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 2#usize [ 112#u8, 109#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 104#u8, 116#u8, 109#u8, 108#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 104#u8, 116#u8, 109#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_15]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 242:0-250:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_15
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 99#u8, 115#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 115#u8, 99#u8, 115#u8, 115#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 115#u8, 97#u8, 115#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 108#u8, 101#u8, 115#u8, 115#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 106#u8, 115#u8, 111#u8, 110#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 120#u8, 109#u8, 108#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_16]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 251:0-259:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_16
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 121#u8, 97#u8, 109#u8, 108#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 121#u8, 109#u8, 108#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 116#u8, 111#u8, 109#u8, 108#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 105#u8, 110#u8, 105#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 99#u8, 102#u8, 103#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 99#u8, 111#u8, 110#u8, 102#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V38)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_17]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 260:0-268:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_17
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 115#u8, 113#u8, 108#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V38)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          103#u8, 114#u8, 97#u8, 112#u8, 104#u8, 113#u8, 108#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V38)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 112#u8, 114#u8, 111#u8, 116#u8, 111#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V38)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 118#u8, 117#u8, 101#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V38)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                115#u8, 118#u8, 101#u8, 108#u8, 116#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V38)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 115#u8, 104#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V46)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_18]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 269:0-277:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_18
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 4#usize [ 98#u8, 97#u8, 115#u8, 104#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V46)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 122#u8, 115#u8, 104#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V46)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 102#u8, 105#u8, 115#u8, 104#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V46)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 115#u8, 49#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V46)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 3#usize [ 98#u8, 97#u8, 116#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V46)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 99#u8, 109#u8, 100#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V46)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext_ext_19]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 278:0-284:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext_ext_19
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 109#u8, 100#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V35)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          109#u8, 97#u8, 114#u8, 107#u8, 100#u8, 111#u8, 119#u8, 110#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V35)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 114#u8, 115#u8, 116#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V35)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 116#u8, 120#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V35)
+        else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_class_with_ext]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 285:0-319:1
+    Visibility: public -/
+def display_classifiers.icon_class_with_ext
+  (mime : Slice Std.U8) (ext : Option (Slice Std.U8)) :
+  Result display_classifiers.DisplayValue
+  := do
+  let o ← display_classifiers.icon_class_with_ext_exact_0 mime
+  match o with
+  | none =>
+    let o1 ← display_classifiers.icon_class_with_ext_exact_1 mime
+    match o1 with
+    | none =>
+      let o2 ← display_classifiers.icon_class_with_ext_exact_2 mime
+      match o2 with
+      | none =>
+        let o3 ← display_classifiers.icon_class_with_ext_exact_3 mime
+        match o3 with
+        | none =>
+          let o4 ← display_classifiers.icon_class_with_ext_exact_4 mime
+          match o4 with
+          | none =>
+            let o5 ← display_classifiers.icon_class_with_ext_exact_5 mime
+            match o5 with
+            | none =>
+              let o6 ← display_classifiers.icon_class_with_ext_exact_6 mime
+              match o6 with
+              | none =>
+                let o7 ← display_classifiers.icon_class_with_ext_mime_0 mime
+                match o7 with
+                | none =>
+                  let o8 ←
+                    display_classifiers.icon_class_with_ext_mime_1 mime
+                  match o8 with
+                  | none =>
+                    let o9 ←
+                      display_classifiers.icon_class_with_ext_mime_2 mime
+                    match o9 with
+                    | none =>
+                      match ext with
+                      | none => ok display_classifiers.DisplayValue.V34
+                      | some ext1 =>
+                        let o10 ←
+                          display_classifiers.icon_class_with_ext_ext_0 ext1
+                        match o10 with
+                        | none =>
+                          let o11 ←
+                            display_classifiers.icon_class_with_ext_ext_1 ext1
+                          match o11 with
+                          | none =>
+                            let o12 ←
+                              display_classifiers.icon_class_with_ext_ext_2
+                                ext1
+                            match o12 with
+                            | none =>
+                              let o13 ←
+                                display_classifiers.icon_class_with_ext_ext_3
+                                  ext1
+                              match o13 with
+                              | none =>
+                                let o14 ←
+                                  display_classifiers.icon_class_with_ext_ext_4
+                                    ext1
+                                match o14 with
+                                | none =>
+                                  let o15 ←
+                                    display_classifiers.icon_class_with_ext_ext_5
+                                      ext1
+                                  match o15 with
+                                  | none =>
+                                    let o16 ←
+                                      display_classifiers.icon_class_with_ext_ext_6
+                                        ext1
+                                    match o16 with
+                                    | none =>
+                                      let o17 ←
+                                        display_classifiers.icon_class_with_ext_ext_7
+                                          ext1
+                                      match o17 with
+                                      | none =>
+                                        let o18 ←
+                                          display_classifiers.icon_class_with_ext_ext_8
+                                            ext1
+                                        match o18 with
+                                        | none =>
+                                          let o19 ←
+                                            display_classifiers.icon_class_with_ext_ext_9
+                                              ext1
+                                          match o19 with
+                                          | none =>
+                                            let o20 ←
+                                              display_classifiers.icon_class_with_ext_ext_10
+                                                ext1
+                                            match o20 with
+                                            | none =>
+                                              let o21 ←
+                                                display_classifiers.icon_class_with_ext_ext_11
+                                                  ext1
+                                              match o21 with
+                                              | none =>
+                                                let o22 ←
+                                                  display_classifiers.icon_class_with_ext_ext_12
+                                                    ext1
+                                                match o22 with
+                                                | none =>
+                                                  let o23 ←
+                                                    display_classifiers.icon_class_with_ext_ext_13
+                                                      ext1
+                                                  match o23 with
+                                                  | none =>
+                                                    let o24 ←
+                                                      display_classifiers.icon_class_with_ext_ext_14
+                                                        ext1
+                                                    match o24 with
+                                                    | none =>
+                                                      let o25 ←
+                                                        display_classifiers.icon_class_with_ext_ext_15
+                                                          ext1
+                                                      match o25 with
+                                                      | none =>
+                                                        let o26 ←
+                                                          display_classifiers.icon_class_with_ext_ext_16
+                                                            ext1
+                                                        match o26 with
+                                                        | none =>
+                                                          let o27 ←
+                                                            display_classifiers.icon_class_with_ext_ext_17
+                                                              ext1
+                                                          match o27 with
+                                                          | none =>
+                                                            let o28 ←
+                                                              display_classifiers.icon_class_with_ext_ext_18
+                                                                ext1
+                                                            match o28 with
+                                                            | none =>
+                                                              let o29 ←
+                                                                display_classifiers.icon_class_with_ext_ext_19
+                                                                  ext1
+                                                              match o29 with
+                                                              | none =>
+                                                                ok
+                                                                  display_classifiers.DisplayValue.V34
+                                                              | some v => ok v
+                                                            | some v => ok v
+                                                          | some v => ok v
+                                                        | some v => ok v
+                                                      | some v => ok v
+                                                    | some v => ok v
+                                                  | some v => ok v
+                                                | some v => ok v
+                                              | some v => ok v
+                                            | some v => ok v
+                                          | some v => ok v
+                                        | some v => ok v
+                                      | some v => ok v
+                                    | some v => ok v
+                                  | some v => ok v
+                                | some v => ok v
+                              | some v => ok v
+                            | some v => ok v
+                          | some v => ok v
+                        | some v => ok v
+                    | some v => ok v
+                  | some v => ok v
+                | some v => ok v
+              | some v => ok v
+            | some v => ok v
+          | some v => ok v
+        | some v => ok v
+      | some v => ok v
+    | some v => ok v
+  | some v => ok v
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 320:0-328:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 112#u8, 100#u8, 102#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V49)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 109#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V33)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 71#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8, 102#u8,
+            111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8, 111#u8,
+            102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8, 111#u8, 99#u8,
+            117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 119#u8, 111#u8,
+            114#u8, 100#u8, 112#u8, 114#u8, 111#u8, 99#u8, 101#u8, 115#u8,
+            115#u8, 105#u8, 110#u8, 103#u8, 109#u8, 108#u8, 46#u8, 100#u8,
+            111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V33)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 39#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+              111#u8, 97#u8, 115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8,
+              101#u8, 110#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+              110#u8, 116#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V33)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                109#u8, 115#u8, 45#u8, 101#u8, 120#u8, 99#u8, 101#u8, 108#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V52)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 65#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                  111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8,
+                  102#u8, 111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8,
+                  111#u8, 102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8,
+                  111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8,
+                  115#u8, 112#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8,
+                  104#u8, 101#u8, 101#u8, 116#u8, 109#u8, 108#u8, 46#u8,
+                  115#u8, 104#u8, 101#u8, 101#u8, 116#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V52)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 329:0-337:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 46#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 111#u8, 97#u8,
+        115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8, 101#u8, 110#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 115#u8,
+        112#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8, 104#u8, 101#u8, 101#u8,
+        116#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V52)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 99#u8, 115#u8, 118#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V52)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 29#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            109#u8, 115#u8, 45#u8, 112#u8, 111#u8, 119#u8, 101#u8, 114#u8,
+            112#u8, 111#u8, 105#u8, 110#u8, 116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V50)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 73#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+              111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8, 102#u8,
+              111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8, 111#u8,
+              102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8, 111#u8, 99#u8,
+              117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 112#u8, 114#u8,
+              101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8, 105#u8,
+              111#u8, 110#u8, 109#u8, 108#u8, 46#u8, 112#u8, 114#u8, 101#u8,
+              115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+              110#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V50)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 47#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                111#u8, 97#u8, 115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8,
+                101#u8, 110#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+                110#u8, 116#u8, 46#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8,
+                110#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V50)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 15#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 122#u8, 105#u8, 112#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V13)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 338:0-346:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 28#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 114#u8, 97#u8, 114#u8, 45#u8,
+        99#u8, 111#u8, 109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8, 101#u8,
+        100#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V13)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 114#u8, 97#u8,
+          114#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V13)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 27#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 55#u8, 122#u8, 45#u8,
+            99#u8, 111#u8, 109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8,
+            101#u8, 100#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V13)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 103#u8, 122#u8, 105#u8, 112#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V13)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 18#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 103#u8, 122#u8,
+                105#u8, 112#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V13)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 17#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 116#u8, 97#u8,
+                  114#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V13)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_3]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 347:0-355:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_3
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 19#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 98#u8, 122#u8, 105#u8, 112#u8,
+        50#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V13)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 120#u8, 122#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V13)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 22#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 99#u8, 111#u8,
+            109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V13)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 106#u8, 115#u8, 111#u8, 110#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V24)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 19#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 108#u8, 100#u8, 43#u8, 106#u8,
+                115#u8, 111#u8, 110#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V24)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 22#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 106#u8, 97#u8, 118#u8, 97#u8,
+                  115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V23)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_4]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 356:0-364:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_4
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 22#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 99#u8,
+        114#u8, 105#u8, 112#u8, 116#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V32)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 15#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 109#u8, 108#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V21)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 21#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 104#u8, 116#u8, 109#u8,
+            108#u8, 43#u8, 120#u8, 109#u8, 108#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V21)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 15#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 115#u8, 113#u8, 108#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V30)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 18#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 121#u8, 97#u8,
+                109#u8, 108#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V17)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 16#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 116#u8, 111#u8, 109#u8, 108#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V17)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_5]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 365:0-373:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_5
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 23#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 104#u8, 116#u8, 116#u8, 112#u8,
+        100#u8, 45#u8, 112#u8, 104#u8, 112#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V26)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 16#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 115#u8, 104#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V51)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 25#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 115#u8, 104#u8,
+            101#u8, 108#u8, 108#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+            116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V51)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 17#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 99#u8, 115#u8,
+              104#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V51)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 29#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 97#u8, 112#u8,
+                112#u8, 108#u8, 101#u8, 45#u8, 100#u8, 105#u8, 115#u8, 107#u8,
+                105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V48)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 31#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8,
+                  45#u8, 100#u8, 111#u8, 115#u8, 45#u8, 101#u8, 120#u8, 101#u8,
+                  99#u8, 117#u8, 116#u8, 97#u8, 98#u8, 108#u8, 101#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V48)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_exact_6]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 374:0-381:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_exact_6
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 24#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8, 100#u8, 111#u8,
+        119#u8, 110#u8, 108#u8, 111#u8, 97#u8, 100#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V48)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8, 105#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V48)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 37#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            100#u8, 101#u8, 98#u8, 105#u8, 97#u8, 110#u8, 46#u8, 98#u8, 105#u8,
+            110#u8, 97#u8, 114#u8, 121#u8, 45#u8, 112#u8, 97#u8, 99#u8, 107#u8,
+            97#u8, 103#u8, 101#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V48)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 17#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 114#u8, 112#u8,
+              109#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V48)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                97#u8, 112#u8, 112#u8, 105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V48)
+          else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_mime_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 382:0-390:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_mime_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8 ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V47)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 118#u8, 105#u8, 100#u8, 101#u8, 111#u8, 47#u8 ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V53)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [ 97#u8, 117#u8, 100#u8, 105#u8, 111#u8, 47#u8 ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V14)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 13#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 112#u8,
+              121#u8, 116#u8, 104#u8, 111#u8, 110#u8
+              ]))
+        let b3 ← display_classifiers.prefix raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V27)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 11#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 114#u8,
+                117#u8, 115#u8, 116#u8
+                ]))
+          let b4 ← display_classifiers.prefix raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V29)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 11#usize [
+                  116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 106#u8,
+                  97#u8, 118#u8, 97#u8
+                  ]))
+            let b5 ← display_classifiers.prefix raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V15)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_mime_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 391:0-399:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_mime_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 99#u8
+        ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V15)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 103#u8, 111#u8
+          ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V20)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 11#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 114#u8,
+            117#u8, 98#u8, 121#u8
+            ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V28)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 18#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 115#u8,
+              104#u8, 101#u8, 108#u8, 108#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+              112#u8, 116#u8
+              ]))
+        let b3 ← display_classifiers.prefix raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V51)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 13#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 115#u8,
+                99#u8, 114#u8, 105#u8, 112#u8, 116#u8
+                ]))
+          let b4 ← display_classifiers.prefix raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V15)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 10#usize [
+                  116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8, 112#u8,
+                  104#u8, 112#u8
+                  ]))
+            let b5 ← display_classifiers.prefix raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V15)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_mime_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 400:0-408:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_mime_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 109#u8, 97#u8, 114#u8, 107#u8,
+        100#u8, 111#u8, 119#u8, 110#u8
+        ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V25)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 104#u8, 116#u8, 109#u8, 108#u8
+          ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V21)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 8#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 99#u8, 115#u8, 115#u8
+            ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V19)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 10#usize [
+              106#u8, 97#u8, 118#u8, 97#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+              112#u8, 116#u8
+              ]))
+        let b3 ← display_classifiers.contains raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V23)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 10#usize [
+                116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+                112#u8, 116#u8
+                ]))
+          let b4 ← display_classifiers.contains raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V32)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 5#usize [ 116#u8, 101#u8, 120#u8, 116#u8, 47#u8 ]))
+            let b5 ← display_classifiers.prefix raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V33)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 409:0-417:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 112#u8, 100#u8, 102#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V49)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 100#u8, 111#u8, 99#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V33)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 100#u8, 111#u8, 99#u8, 120#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V33)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V33)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 114#u8, 116#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V33)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 120#u8, 108#u8, 115#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V52)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 418:0-426:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 120#u8, 108#u8, 115#u8, 120#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V52)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 115#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V52)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 99#u8, 115#u8, 118#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V52)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 112#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V50)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 112#u8, 112#u8, 116#u8, 120#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V50)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 111#u8, 100#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V50)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 427:0-435:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 107#u8, 101#u8, 121#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V50)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 106#u8, 112#u8, 103#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V47)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 106#u8, 112#u8, 101#u8, 103#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V47)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 110#u8, 103#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V47)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 103#u8, 105#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V47)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 98#u8, 109#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V47)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_3]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 436:0-444:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_3
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 115#u8, 118#u8, 103#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V47)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 112#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V47)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 105#u8, 99#u8, 111#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V47)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 116#u8, 105#u8, 102#u8, 102#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V47)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 116#u8, 105#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V47)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 104#u8, 101#u8, 105#u8, 99#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V47)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_4]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 445:0-453:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_4
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 104#u8, 101#u8, 105#u8, 102#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V47)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 97#u8, 118#u8, 105#u8, 102#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V47)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 109#u8, 112#u8, 52#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V53)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 97#u8, 118#u8, 105#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V53)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 107#u8, 118#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V53)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 109#u8, 111#u8, 118#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V53)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_5]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 454:0-462:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_5
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 119#u8, 109#u8, 118#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V53)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 102#u8, 108#u8, 118#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V53)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 109#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V53)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 109#u8, 52#u8, 118#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V53)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 112#u8, 51#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V14)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 119#u8, 97#u8, 118#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V14)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_6]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 463:0-471:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_6
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 111#u8, 103#u8, 103#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V14)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 102#u8, 108#u8, 97#u8, 99#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V14)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 97#u8, 97#u8, 99#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V14)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 119#u8, 109#u8, 97#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V14)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 3#usize [ 109#u8, 52#u8, 97#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V14)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 111#u8, 112#u8, 117#u8, 115#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V14)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_7]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 472:0-480:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_7
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 122#u8, 105#u8, 112#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V13)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 114#u8, 97#u8, 114#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V13)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 55#u8, 122#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V13)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 116#u8, 97#u8, 114#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V13)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 2#usize [ 103#u8, 122#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V13)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 98#u8, 122#u8, 50#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V13)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_8]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 481:0-489:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_8
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 120#u8, 122#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V13)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 122#u8, 115#u8, 116#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V13)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 108#u8, 122#u8, 52#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V13)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 101#u8, 120#u8, 101#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V48)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 115#u8, 105#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V48)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 100#u8, 109#u8, 103#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V48)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_9]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 490:0-498:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_9
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 100#u8, 101#u8, 98#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V48)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 114#u8, 112#u8, 109#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V48)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 8#usize [
+            97#u8, 112#u8, 112#u8, 105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V48)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 107#u8, 103#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V48)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 115#u8, 110#u8, 97#u8, 112#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V48)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 7#usize [
+                  102#u8, 108#u8, 97#u8, 116#u8, 112#u8, 97#u8, 107#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V48)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_10]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 499:0-507:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_10
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 112#u8, 121#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V27)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 112#u8, 121#u8, 119#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V27)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 114#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V29)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 2#usize [ 103#u8, 111#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V20)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 106#u8, 97#u8, 118#u8, 97#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V22)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 107#u8, 116#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V22)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_11]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 508:0-516:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_11
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 107#u8, 116#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V22)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 99#u8, 97#u8, 108#u8, 97#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V22)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 106#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V23)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 106#u8, 115#u8, 120#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V23)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 106#u8, 115#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V23)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 99#u8, 106#u8, 115#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V23)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_12]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 517:0-525:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_12
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 116#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V32)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 116#u8, 115#u8, 120#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V32)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 99#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V16)
+      else
+        let s3 ← lift (Array.to_slice (Array.make 1#usize [ 104#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V16)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 99#u8, 112#u8, 112#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V16)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 104#u8, 112#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V16)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_13]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 526:0-534:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_13
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 99#u8, 99#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V16)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 99#u8, 120#u8, 120#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V16)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 99#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V18)
+      else
+        let s3 ← lift (Array.to_slice (Array.make 2#usize [ 114#u8, 98#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V28)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 112#u8, 104#u8, 112#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V26)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 5#usize [ 115#u8, 119#u8, 105#u8, 102#u8, 116#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V31)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_14]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 535:0-543:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_14
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 114#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V15)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 108#u8, 117#u8, 97#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V15)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 112#u8, 108#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V15)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 2#usize [ 112#u8, 109#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V15)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 104#u8, 116#u8, 109#u8, 108#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V21)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 104#u8, 116#u8, 109#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V21)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_15]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 544:0-552:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_15
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 99#u8, 115#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V19)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 115#u8, 99#u8, 115#u8, 115#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V19)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 115#u8, 97#u8, 115#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V19)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 108#u8, 101#u8, 115#u8, 115#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V19)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 106#u8, 115#u8, 111#u8, 110#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V24)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 120#u8, 109#u8, 108#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V21)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_16]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 553:0-561:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_16
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 121#u8, 97#u8, 109#u8, 108#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V17)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 121#u8, 109#u8, 108#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V17)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 116#u8, 111#u8, 109#u8, 108#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V17)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 105#u8, 110#u8, 105#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V17)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 99#u8, 102#u8, 103#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V17)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 99#u8, 111#u8, 110#u8, 102#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V17)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_17]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 562:0-570:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_17
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 115#u8, 113#u8, 108#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V30)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 7#usize [
+          103#u8, 114#u8, 97#u8, 112#u8, 104#u8, 113#u8, 108#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V30)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 112#u8, 114#u8, 111#u8, 116#u8, 111#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V30)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 118#u8, 117#u8, 101#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V23)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                115#u8, 118#u8, 101#u8, 108#u8, 116#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V23)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 115#u8, 104#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V51)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_18]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 571:0-579:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_18
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 4#usize [ 98#u8, 97#u8, 115#u8, 104#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V51)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 122#u8, 115#u8, 104#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V51)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 102#u8, 105#u8, 115#u8, 104#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V51)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 112#u8, 115#u8, 49#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V51)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 3#usize [ 98#u8, 97#u8, 116#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V51)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 99#u8, 109#u8, 100#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V51)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext_ext_19]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 580:0-586:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext_ext_19
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 109#u8, 100#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V25)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          109#u8, 97#u8, 114#u8, 107#u8, 100#u8, 111#u8, 119#u8, 110#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V25)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 114#u8, 115#u8, 116#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V25)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 116#u8, 120#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V33)
+        else ok none
+
+/-- [oxicloud_kernel::display_classifiers::icon_special_class_with_ext]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 587:0-621:1
+    Visibility: public -/
+def display_classifiers.icon_special_class_with_ext
+  (mime : Slice Std.U8) (ext : Option (Slice Std.U8)) :
+  Result display_classifiers.DisplayValue
+  := do
+  let o ← display_classifiers.icon_special_class_with_ext_exact_0 mime
+  match o with
+  | none =>
+    let o1 ← display_classifiers.icon_special_class_with_ext_exact_1 mime
+    match o1 with
+    | none =>
+      let o2 ← display_classifiers.icon_special_class_with_ext_exact_2 mime
+      match o2 with
+      | none =>
+        let o3 ← display_classifiers.icon_special_class_with_ext_exact_3 mime
+        match o3 with
+        | none =>
+          let o4 ←
+            display_classifiers.icon_special_class_with_ext_exact_4 mime
+          match o4 with
+          | none =>
+            let o5 ←
+              display_classifiers.icon_special_class_with_ext_exact_5 mime
+            match o5 with
+            | none =>
+              let o6 ←
+                display_classifiers.icon_special_class_with_ext_exact_6 mime
+              match o6 with
+              | none =>
+                let o7 ←
+                  display_classifiers.icon_special_class_with_ext_mime_0 mime
+                match o7 with
+                | none =>
+                  let o8 ←
+                    display_classifiers.icon_special_class_with_ext_mime_1 mime
+                  match o8 with
+                  | none =>
+                    let o9 ←
+                      display_classifiers.icon_special_class_with_ext_mime_2
+                        mime
+                    match o9 with
+                    | none =>
+                      match ext with
+                      | none => ok display_classifiers.DisplayValue.V0
+                      | some ext1 =>
+                        let o10 ←
+                          display_classifiers.icon_special_class_with_ext_ext_0
+                            ext1
+                        match o10 with
+                        | none =>
+                          let o11 ←
+                            display_classifiers.icon_special_class_with_ext_ext_1
+                              ext1
+                          match o11 with
+                          | none =>
+                            let o12 ←
+                              display_classifiers.icon_special_class_with_ext_ext_2
+                                ext1
+                            match o12 with
+                            | none =>
+                              let o13 ←
+                                display_classifiers.icon_special_class_with_ext_ext_3
+                                  ext1
+                              match o13 with
+                              | none =>
+                                let o14 ←
+                                  display_classifiers.icon_special_class_with_ext_ext_4
+                                    ext1
+                                match o14 with
+                                | none =>
+                                  let o15 ←
+                                    display_classifiers.icon_special_class_with_ext_ext_5
+                                      ext1
+                                  match o15 with
+                                  | none =>
+                                    let o16 ←
+                                      display_classifiers.icon_special_class_with_ext_ext_6
+                                        ext1
+                                    match o16 with
+                                    | none =>
+                                      let o17 ←
+                                        display_classifiers.icon_special_class_with_ext_ext_7
+                                          ext1
+                                      match o17 with
+                                      | none =>
+                                        let o18 ←
+                                          display_classifiers.icon_special_class_with_ext_ext_8
+                                            ext1
+                                        match o18 with
+                                        | none =>
+                                          let o19 ←
+                                            display_classifiers.icon_special_class_with_ext_ext_9
+                                              ext1
+                                          match o19 with
+                                          | none =>
+                                            let o20 ←
+                                              display_classifiers.icon_special_class_with_ext_ext_10
+                                                ext1
+                                            match o20 with
+                                            | none =>
+                                              let o21 ←
+                                                display_classifiers.icon_special_class_with_ext_ext_11
+                                                  ext1
+                                              match o21 with
+                                              | none =>
+                                                let o22 ←
+                                                  display_classifiers.icon_special_class_with_ext_ext_12
+                                                    ext1
+                                                match o22 with
+                                                | none =>
+                                                  let o23 ←
+                                                    display_classifiers.icon_special_class_with_ext_ext_13
+                                                      ext1
+                                                  match o23 with
+                                                  | none =>
+                                                    let o24 ←
+                                                      display_classifiers.icon_special_class_with_ext_ext_14
+                                                        ext1
+                                                    match o24 with
+                                                    | none =>
+                                                      let o25 ←
+                                                        display_classifiers.icon_special_class_with_ext_ext_15
+                                                          ext1
+                                                      match o25 with
+                                                      | none =>
+                                                        let o26 ←
+                                                          display_classifiers.icon_special_class_with_ext_ext_16
+                                                            ext1
+                                                        match o26 with
+                                                        | none =>
+                                                          let o27 ←
+                                                            display_classifiers.icon_special_class_with_ext_ext_17
+                                                              ext1
+                                                          match o27 with
+                                                          | none =>
+                                                            let o28 ←
+                                                              display_classifiers.icon_special_class_with_ext_ext_18
+                                                                ext1
+                                                            match o28 with
+                                                            | none =>
+                                                              let o29 ←
+                                                                display_classifiers.icon_special_class_with_ext_ext_19
+                                                                  ext1
+                                                              match o29 with
+                                                              | none =>
+                                                                ok
+                                                                  display_classifiers.DisplayValue.V0
+                                                              | some v => ok v
+                                                            | some v => ok v
+                                                          | some v => ok v
+                                                        | some v => ok v
+                                                      | some v => ok v
+                                                    | some v => ok v
+                                                  | some v => ok v
+                                                | some v => ok v
+                                              | some v => ok v
+                                            | some v => ok v
+                                          | some v => ok v
+                                        | some v => ok v
+                                      | some v => ok v
+                                    | some v => ok v
+                                  | some v => ok v
+                                | some v => ok v
+                              | some v => ok v
+                            | some v => ok v
+                          | some v => ok v
+                        | some v => ok v
+                    | some v => ok v
+                  | some v => ok v
+                | some v => ok v
+              | some v => ok v
+            | some v => ok v
+          | some v => ok v
+        | some v => ok v
+      | some v => ok v
+    | some v => ok v
+  | some v => ok v
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_exact_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 622:0-630:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_exact_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 15#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 112#u8, 100#u8, 102#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V8)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 18#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 109#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V4)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 71#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8, 102#u8,
+            111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8, 111#u8,
+            102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8, 111#u8, 99#u8,
+            117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 119#u8, 111#u8,
+            114#u8, 100#u8, 112#u8, 114#u8, 111#u8, 99#u8, 101#u8, 115#u8,
+            115#u8, 105#u8, 110#u8, 103#u8, 109#u8, 108#u8, 46#u8, 100#u8,
+            111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V4)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 39#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+              111#u8, 97#u8, 115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8,
+              101#u8, 110#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+              110#u8, 116#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V4)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 24#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                109#u8, 115#u8, 45#u8, 101#u8, 120#u8, 99#u8, 101#u8, 108#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V10)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 65#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                  111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8,
+                  102#u8, 111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8,
+                  111#u8, 102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8,
+                  111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8,
+                  115#u8, 112#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8,
+                  104#u8, 101#u8, 101#u8, 116#u8, 109#u8, 108#u8, 46#u8,
+                  115#u8, 104#u8, 101#u8, 101#u8, 116#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V10)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_exact_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 631:0-639:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_exact_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 46#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 111#u8, 97#u8,
+        115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8, 101#u8, 110#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 115#u8,
+        112#u8, 114#u8, 101#u8, 97#u8, 100#u8, 115#u8, 104#u8, 101#u8, 101#u8,
+        116#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V10)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 8#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 99#u8, 115#u8, 118#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V10)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 29#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+            109#u8, 115#u8, 45#u8, 112#u8, 111#u8, 119#u8, 101#u8, 114#u8,
+            112#u8, 111#u8, 105#u8, 110#u8, 116#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V9)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 73#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+              111#u8, 112#u8, 101#u8, 110#u8, 120#u8, 109#u8, 108#u8, 102#u8,
+              111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 115#u8, 45#u8, 111#u8,
+              102#u8, 102#u8, 105#u8, 99#u8, 101#u8, 100#u8, 111#u8, 99#u8,
+              117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 112#u8, 114#u8,
+              101#u8, 115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8, 105#u8,
+              111#u8, 110#u8, 109#u8, 108#u8, 46#u8, 112#u8, 114#u8, 101#u8,
+              115#u8, 101#u8, 110#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+              110#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V9)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 47#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8,
+                111#u8, 97#u8, 115#u8, 105#u8, 115#u8, 46#u8, 111#u8, 112#u8,
+                101#u8, 110#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+                110#u8, 116#u8, 46#u8, 112#u8, 114#u8, 101#u8, 115#u8, 101#u8,
+                110#u8, 116#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V9)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 15#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 122#u8, 105#u8, 112#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V1)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_exact_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 640:0-648:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_exact_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 28#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 114#u8, 97#u8, 114#u8, 45#u8,
+        99#u8, 111#u8, 109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8, 101#u8,
+        100#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V1)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 19#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 114#u8, 97#u8,
+          114#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V1)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 27#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 55#u8, 122#u8, 45#u8,
+            99#u8, 111#u8, 109#u8, 112#u8, 114#u8, 101#u8, 115#u8, 115#u8,
+            101#u8, 100#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V1)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 16#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 103#u8, 122#u8, 105#u8, 112#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V1)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 17#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 116#u8, 97#u8,
+                114#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V1)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 16#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 106#u8, 115#u8, 111#u8, 110#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_exact_3]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 649:0-657:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_exact_3
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 22#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 106#u8, 97#u8, 118#u8, 97#u8, 115#u8, 99#u8,
+        114#u8, 105#u8, 112#u8, 116#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 22#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 116#u8, 121#u8, 112#u8, 101#u8, 115#u8, 99#u8,
+          114#u8, 105#u8, 112#u8, 116#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 15#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 109#u8, 108#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 15#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 115#u8, 113#u8, 108#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 16#usize [
+                97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 115#u8, 104#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 25#usize [
+                  97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+                  105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 115#u8, 104#u8,
+                  101#u8, 108#u8, 108#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+                  112#u8, 116#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_exact_4]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 658:0-664:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_exact_4
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 29#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 97#u8, 112#u8, 112#u8, 108#u8,
+        101#u8, 45#u8, 100#u8, 105#u8, 115#u8, 107#u8, 105#u8, 109#u8, 97#u8,
+        103#u8, 101#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V6)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 31#usize [
+          97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8, 45#u8, 100#u8,
+          111#u8, 115#u8, 45#u8, 101#u8, 120#u8, 101#u8, 99#u8, 117#u8, 116#u8,
+          97#u8, 98#u8, 108#u8, 101#u8
+          ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V6)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 24#usize [
+            97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+            105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8,
+            100#u8, 111#u8, 119#u8, 110#u8, 108#u8, 111#u8, 97#u8, 100#u8
+            ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V6)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 17#usize [
+              97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8,
+              105#u8, 111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 109#u8, 115#u8,
+              105#u8
+              ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V6)
+        else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_mime_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 665:0-673:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_mime_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8 ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V5)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 118#u8, 105#u8, 100#u8, 101#u8, 111#u8, 47#u8 ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V12)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 6#usize [ 97#u8, 117#u8, 100#u8, 105#u8, 111#u8, 47#u8 ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V2)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 7#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 120#u8, 45#u8
+              ]))
+        let b3 ← display_classifiers.prefix raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                115#u8, 99#u8, 114#u8, 105#u8, 112#u8, 116#u8
+                ]))
+          let b4 ← display_classifiers.contains raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 10#usize [
+                  106#u8, 97#u8, 118#u8, 97#u8, 115#u8, 99#u8, 114#u8, 105#u8,
+                  112#u8, 116#u8
+                  ]))
+            let b5 ← display_classifiers.contains raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_mime_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 674:0-680:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_mime_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 109#u8, 97#u8, 114#u8, 107#u8,
+        100#u8, 111#u8, 119#u8, 110#u8
+        ]))
+  let b ← display_classifiers.prefix raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V7)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 104#u8, 116#u8, 109#u8, 108#u8
+          ]))
+    let b1 ← display_classifiers.prefix raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 8#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 47#u8, 99#u8, 115#u8, 115#u8
+            ]))
+      let b2 ← display_classifiers.prefix raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 5#usize [ 116#u8, 101#u8, 120#u8, 116#u8, 47#u8 ]))
+        let b3 ← display_classifiers.prefix raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V11)
+        else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_0]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 681:0-689:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_0
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 112#u8, 100#u8, 102#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V8)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 100#u8, 111#u8, 99#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V4)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 100#u8, 111#u8, 99#u8, 120#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V4)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 116#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V4)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 114#u8, 116#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V4)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 116#u8, 120#u8, 116#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V4)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_1]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 690:0-698:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_1
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 120#u8, 108#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V10)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 120#u8, 108#u8, 115#u8, 120#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V10)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V10)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 99#u8, 115#u8, 118#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V10)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 112#u8, 112#u8, 116#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V9)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 112#u8, 112#u8, 116#u8, 120#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V9)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_2]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 699:0-707:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_2
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 111#u8, 100#u8, 112#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V9)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 107#u8, 101#u8, 121#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V9)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 106#u8, 112#u8, 103#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V5)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 106#u8, 112#u8, 101#u8, 103#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V5)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 112#u8, 110#u8, 103#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V5)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 103#u8, 105#u8, 102#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V5)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_3]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 708:0-716:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_3
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 98#u8, 109#u8, 112#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V5)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 115#u8, 118#u8, 103#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V5)
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 112#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V5)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 105#u8, 99#u8, 111#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V5)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 116#u8, 105#u8, 102#u8, 102#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V5)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 104#u8, 101#u8, 105#u8, 99#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V5)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_4]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 717:0-725:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_4
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 97#u8, 118#u8, 105#u8, 102#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V5)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 109#u8, 112#u8, 52#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V12)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 97#u8, 118#u8, 105#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V12)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 109#u8, 107#u8, 118#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V12)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 109#u8, 111#u8, 118#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V12)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 119#u8, 109#u8, 118#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V12)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_5]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 726:0-734:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_5
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 102#u8, 108#u8, 118#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V12)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 109#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V12)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 109#u8, 52#u8, 118#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V12)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 109#u8, 112#u8, 51#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V2)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 119#u8, 97#u8, 118#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V2)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 111#u8, 103#u8, 103#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V2)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_6]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 735:0-743:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_6
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 4#usize [ 102#u8, 108#u8, 97#u8, 99#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V2)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 97#u8, 97#u8, 99#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V2)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 119#u8, 109#u8, 97#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V2)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 109#u8, 52#u8, 97#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V2)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 111#u8, 112#u8, 117#u8, 115#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V2)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 122#u8, 105#u8, 112#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V1)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_7]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 744:0-752:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_7
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 97#u8, 114#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V1)
+  else
+    let s1 ← lift (Array.to_slice (Array.make 2#usize [ 55#u8, 122#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V1)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 116#u8, 97#u8, 114#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V1)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 2#usize [ 103#u8, 122#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V1)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 3#usize [ 98#u8, 122#u8, 50#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V1)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 120#u8, 122#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V1)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_8]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 753:0-761:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_8
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 101#u8, 120#u8, 101#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V6)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 109#u8, 115#u8, 105#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V6)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 100#u8, 109#u8, 103#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V6)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 100#u8, 101#u8, 98#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V6)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 114#u8, 112#u8, 109#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V6)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 8#usize [
+                  97#u8, 112#u8, 112#u8, 105#u8, 109#u8, 97#u8, 103#u8, 101#u8
+                  ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V6)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_9]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 762:0-770:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_9
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 106#u8, 115#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 106#u8, 115#u8, 120#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 116#u8, 115#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 116#u8, 115#u8, 120#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 2#usize [ 112#u8, 121#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 114#u8, 115#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_10]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 771:0-779:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_10
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 103#u8, 111#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 106#u8, 97#u8, 118#u8, 97#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 1#usize [ 99#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 99#u8, 112#u8, 112#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice (Array.make 2#usize [ 99#u8, 115#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 114#u8, 98#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_11]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 780:0-788:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_11
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 112#u8, 104#u8, 112#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 115#u8, 119#u8, 105#u8, 102#u8, 116#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ← lift (Array.to_slice (Array.make 2#usize [ 107#u8, 116#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 5#usize [ 115#u8, 99#u8, 97#u8, 108#u8, 97#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ← lift (Array.to_slice (Array.make 1#usize [ 114#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 3#usize [ 108#u8, 117#u8, 97#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_12]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 789:0-797:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_12
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ← lift (Array.to_slice (Array.make 2#usize [ 112#u8, 108#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 104#u8, 116#u8, 109#u8, 108#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 104#u8, 116#u8, 109#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 99#u8, 115#u8, 115#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 4#usize [ 115#u8, 99#u8, 115#u8, 115#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice
+                (Array.make 4#usize [ 106#u8, 115#u8, 111#u8, 110#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_13]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 798:0-806:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_13
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 3#usize [ 120#u8, 109#u8, 108#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 121#u8, 97#u8, 109#u8, 108#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 121#u8, 109#u8, 108#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 4#usize [ 116#u8, 111#u8, 109#u8, 108#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 3#usize [ 115#u8, 113#u8, 108#u8 ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 115#u8, 104#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V3)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_14]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 807:0-815:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_14
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice (Array.make 4#usize [ 98#u8, 97#u8, 115#u8, 104#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V3)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 98#u8, 97#u8, 116#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V3)
+    else
+      let s2 ←
+        lift (Array.to_slice (Array.make 3#usize [ 112#u8, 115#u8, 49#u8 ]))
+      let b2 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s2
+      if b2
+      then ok (some display_classifiers.DisplayValue.V3)
+      else
+        let s3 ←
+          lift (Array.to_slice (Array.make 3#usize [ 118#u8, 117#u8, 101#u8 ]))
+        let b3 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s3
+        if b3
+        then ok (some display_classifiers.DisplayValue.V3)
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 6#usize [
+                115#u8, 118#u8, 101#u8, 108#u8, 116#u8, 101#u8
+                ]))
+          let b4 ←
+            core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s4
+          if b4
+          then ok (some display_classifiers.DisplayValue.V3)
+          else
+            let s5 ←
+              lift (Array.to_slice (Array.make 2#usize [ 109#u8, 100#u8 ]))
+            let b5 ←
+              core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s5
+            if b5
+            then ok (some display_classifiers.DisplayValue.V7)
+            else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext_ext_15]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 816:0-820:1
+    Visibility: public -/
+def display_classifiers.category_with_ext_ext_15
+  (raw : Slice Std.U8) : Result (Option display_classifiers.DisplayValue) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        109#u8, 97#u8, 114#u8, 107#u8, 100#u8, 111#u8, 119#u8, 110#u8
+        ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s
+  if b
+  then ok (some display_classifiers.DisplayValue.V7)
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 3#usize [ 114#u8, 115#u8, 116#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 raw s1
+    if b1
+    then ok (some display_classifiers.DisplayValue.V7)
+    else ok none
+
+/-- [oxicloud_kernel::display_classifiers::category_with_ext]:
+    Source: 'prove/ports/oxicloud/kernel/src/display_classifiers.rs', lines 821:0-848:1
+    Visibility: public -/
+def display_classifiers.category_with_ext
+  (mime : Slice Std.U8) (ext : Option (Slice Std.U8)) :
+  Result display_classifiers.DisplayValue
+  := do
+  let o ← display_classifiers.category_with_ext_exact_0 mime
+  match o with
+  | none =>
+    let o1 ← display_classifiers.category_with_ext_exact_1 mime
+    match o1 with
+    | none =>
+      let o2 ← display_classifiers.category_with_ext_exact_2 mime
+      match o2 with
+      | none =>
+        let o3 ← display_classifiers.category_with_ext_exact_3 mime
+        match o3 with
+        | none =>
+          let o4 ← display_classifiers.category_with_ext_exact_4 mime
+          match o4 with
+          | none =>
+            let o5 ← display_classifiers.category_with_ext_mime_0 mime
+            match o5 with
+            | none =>
+              let o6 ← display_classifiers.category_with_ext_mime_1 mime
+              match o6 with
+              | none =>
+                match ext with
+                | none => ok display_classifiers.DisplayValue.V4
+                | some ext1 =>
+                  let o7 ← display_classifiers.category_with_ext_ext_0 ext1
+                  match o7 with
+                  | none =>
+                    let o8 ← display_classifiers.category_with_ext_ext_1 ext1
+                    match o8 with
+                    | none =>
+                      let o9 ←
+                        display_classifiers.category_with_ext_ext_2 ext1
+                      match o9 with
+                      | none =>
+                        let o10 ←
+                          display_classifiers.category_with_ext_ext_3 ext1
+                        match o10 with
+                        | none =>
+                          let o11 ←
+                            display_classifiers.category_with_ext_ext_4 ext1
+                          match o11 with
+                          | none =>
+                            let o12 ←
+                              display_classifiers.category_with_ext_ext_5 ext1
+                            match o12 with
+                            | none =>
+                              let o13 ←
+                                display_classifiers.category_with_ext_ext_6
+                                  ext1
+                              match o13 with
+                              | none =>
+                                let o14 ←
+                                  display_classifiers.category_with_ext_ext_7
+                                    ext1
+                                match o14 with
+                                | none =>
+                                  let o15 ←
+                                    display_classifiers.category_with_ext_ext_8
+                                      ext1
+                                  match o15 with
+                                  | none =>
+                                    let o16 ←
+                                      display_classifiers.category_with_ext_ext_9
+                                        ext1
+                                    match o16 with
+                                    | none =>
+                                      let o17 ←
+                                        display_classifiers.category_with_ext_ext_10
+                                          ext1
+                                      match o17 with
+                                      | none =>
+                                        let o18 ←
+                                          display_classifiers.category_with_ext_ext_11
+                                            ext1
+                                        match o18 with
+                                        | none =>
+                                          let o19 ←
+                                            display_classifiers.category_with_ext_ext_12
+                                              ext1
+                                          match o19 with
+                                          | none =>
+                                            let o20 ←
+                                              display_classifiers.category_with_ext_ext_13
+                                                ext1
+                                            match o20 with
+                                            | none =>
+                                              let o21 ←
+                                                display_classifiers.category_with_ext_ext_14
+                                                  ext1
+                                              match o21 with
+                                              | none =>
+                                                let o22 ←
+                                                  display_classifiers.category_with_ext_ext_15
+                                                    ext1
+                                                match o22 with
+                                                | none =>
+                                                  ok
+                                                    display_classifiers.DisplayValue.V4
+                                                | some v => ok v
+                                              | some v => ok v
+                                            | some v => ok v
+                                          | some v => ok v
+                                        | some v => ok v
+                                      | some v => ok v
+                                    | some v => ok v
+                                  | some v => ok v
+                                | some v => ok v
+                              | some v => ok v
+                            | some v => ok v
+                          | some v => ok v
+                        | some v => ok v
+                      | some v => ok v
+                    | some v => ok v
+                  | some v => ok v
+              | some v => ok v
+            | some v => ok v
+          | some v => ok v
+        | some v => ok v
+      | some v => ok v
+    | some v => ok v
+  | some v => ok v
 
 /-- [oxicloud_kernel::drivepolicy::Policies]
     Source: 'prove/ports/oxicloud/kernel/src/drivepolicy.rs', lines 5:0-16:1

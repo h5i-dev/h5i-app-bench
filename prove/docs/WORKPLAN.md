@@ -211,3 +211,27 @@ Exact acceptance evidence, reproducible checks and the next substantive candidat
 are in `results/campaigns/coverage-100k-20261101/{accepted-checkpoint.json,STATUS.md,NEXT.md}`.
 Finite enum methods supply only a small part of the remaining target; broader
 value-set, parsing, policy and exact-output transformations are still needed.
+
+## Accepted arbitrary string checkpoint toward 100k (2026-11-01)
+
+The accepted total is **41,414 pinned executable source lines and 1,133
+canonical properties**, up 281 lines and three properties from `1827206`.
+The 100,000-line objective remains active, with 58,586 lines left.
+
+OxiCloud's complete MIME/extension display decisions now have arbitrary-byte
+output and termination proofs, including bounded substring search and exact
+54-string output interning. The pinned Rust reference passed 201,750 complete
+string comparisons. All 1,130 prior statements remain unchanged. Synthetic
+chunks, enum declarations, tests and generated source receive no line credit.
+
+The complete OxiCloud gate checked 1,728 theorems across 34 modules, with only
+the permitted axioms. Matching extraction, byte-for-byte regeneration, pinned
+reference audits, all OxiCloud Rust tests, and 19 source/accounting/dashboard/
+runner tests pass. All six apps retain fresh gate and extraction evidence.
+The local dashboard is refreshed; historical benchmark accounting remains
+101 tasks / 99 accepted, and deployment has not been performed.
+
+Evidence and the continuing work queue are in
+`results/campaigns/coverage-strings-20261101/{accepted-checkpoint.json,STATUS.md,NEXT.md}`.
+This establishes reusable string-decision proofs; larger collection, parsing
+and transformation ports are still required to reach the target.

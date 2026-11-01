@@ -332,3 +332,29 @@ roots. Regenerate with `python3 harness/finite_catalog.py generate --app oxiclou
 from `prove/`. Integration is a separate one-time action; standard extraction,
 project gates and source-reach validation are still required for credit.
 Enum declarations, test data and generated code add no upstream line credit.
+
+### Display classifier decisions
+
+`display_classifiers` ports the complete ordered decisions of the pinned
+`icon_class_with_ext`, `icon_special_class_with_ext`, and `category_with_ext`
+functions in `src/application/dtos/display_helpers.rs`. MIME and optional
+extension inputs are byte slices. For UTF-8 source inputs this preserves exact
+comparison, prefix and substring semantics. The Lean statements quantify over
+all byte slices, including non-UTF-8 values, and establish successful termination
+and the complete decision result. The substring model searches every possible
+fitting byte offset; empty needles and bounds are included.
+
+The source returns one of 54 distinct static strings. `DisplayValue::V0` through
+`V53` intern these exact strings in the sorted `outputs` table in
+`difftest/display_classifiers/plan.json`; the differential test decodes every
+result to its original full string. The output representation changes, but no
+string is merged or replaced with a placeholder. Generated chunk functions and
+byte predicates receive no upstream coverage credit. Filename extension parsing,
+lowercasing, and callers outside these three functions are not mapped.
+
+Reproduce with `python3 prove/harness/display_classifiers.py` from the repository
+root. The reference functions are retained unchanged from the pinned source,
+with a separate test wrapper. The corpus crosses literal and adversarial MIME
+values with all extension literals and absence, and adds 20,000 deterministic
+random UTF-8 pairs. Formal models use plain lists and ordered mathematical
+predicates, without calling extracted kernel functions.

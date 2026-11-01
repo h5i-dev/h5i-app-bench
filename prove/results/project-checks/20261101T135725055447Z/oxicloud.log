@@ -1,0 +1,298 @@
+
+[earlier output omitted]
+ false`
+warning: Verified/FiniteCatalog.lean:624:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:624:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:623:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:625:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:625:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:637:85: This simp argument is unused:
+  finite_catalog.output_format_a83b795c.OutputFormat.mime_type
+
+Hint: Omit it from the simp argument list.
+  simp only [finite_catalog.output_format_a83b795c.OutputFormat.extension,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵o̵u̵t̵p̵u̵t̵_̵f̵o̵r̵m̵a̵t̵_̵a̵8̵3̵b̵7̵9̵5̵c̵.̵O̵u̵t̵p̵u̵t̵F̵o̵r̵m̵a̵t̵.̵m̵i̵m̵e̵_̵t̵y̵p̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:639:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:639:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:639:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:638:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:640:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:640:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:636:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/FiniteCatalog.lean:652:23: This simp argument is unused:
+  finite_catalog.output_format_a83b795c.OutputFormat.extension
+
+Hint: Omit it from the simp argument list.
+  simp only [̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵o̵u̵t̵p̵u̵t̵_̵f̵o̵r̵m̵a̵t̵_̵a̵8̵3̵b̵7̵9̵5̵c̵.̵O̵u̵t̵p̵u̵t̵F̵o̵r̵m̵a̵t̵.̵e̵x̵t̵e̵n̵s̵i̵o̵n̵,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵o̵u̵t̵p̵u̵t̵_̵f̵o̵r̵m̵a̵t̵_̵a̵8̵3̵b̵7̵9̵5̵c̵.̵O̵u̵t̵p̵u̵t̵F̵o̵r̵m̵a̵t̵.̵m̵i̵m̵e̵_̵t̵y̵p̵e̵]̵[̲f̲i̲n̲i̲t̲e̲_̲c̲a̲t̲a̲l̲o̲g̲.̲o̲u̲t̲p̲u̲t̲_̲f̲o̲r̲m̲a̲t̲_̲a̲8̲3̲b̲7̲9̲5̲c̲.̲O̲u̲t̲p̲u̲t̲F̲o̲r̲m̲a̲t̲.̲m̲i̲m̲e̲_̲t̲y̲p̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:654:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:654:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:654:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:653:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:655:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:655:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:651:10: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Verified/FiniteCatalog.lean:671:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:671:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:671:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:670:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:672:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:672:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:687:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:687:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:687:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:686:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:688:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:688:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:702:91: This simp argument is unused:
+  finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name
+
+Hint: Omit it from the simp argument list.
+  simp only [finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵t̵h̵u̵m̵b̵n̵a̵i̵l̵_̵s̵i̵z̵e̵_̵4̵0̵8̵8̵a̵6̵9̵a̵.̵T̵h̵u̵m̵b̵n̵a̵i̵l̵S̵i̵z̵e̵.̵d̵i̵r̵_̵n̵a̵m̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:704:2: 'all_goals
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+    alloc.vec.FromVecArray.from, Std.Array.empty]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:705:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:704:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:705:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:719:23: This simp argument is unused:
+  finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension
+
+Hint: Omit it from the simp argument list.
+  simp only [̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵t̵h̵u̵m̵b̵n̵a̵i̵l̵_̵s̵i̵z̵e̵_̵4̵0̵8̵8̵a̵6̵9̵a̵.̵T̵h̵u̵m̵b̵n̵a̵i̵l̵S̵i̵z̵e̵.̵m̵a̵x̵_̵d̵i̵m̵e̵n̵s̵i̵o̵n̵,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵t̵h̵u̵m̵b̵n̵a̵i̵l̵_̵s̵i̵z̵e̵_̵4̵0̵8̵8̵a̵6̵9̵a̵.̵T̵h̵u̵m̵b̵n̵a̵i̵l̵S̵i̵z̵e̵.̵d̵i̵r̵_̵n̵a̵m̵e̵]̵[̲f̲i̲n̲i̲t̲e̲_̲c̲a̲t̲a̲l̲o̲g̲.̲t̲h̲u̲m̲b̲n̲a̲i̲l̲_̲s̲i̲z̲e̲_̲4̲0̲8̲8̲a̲6̲9̲a̲.̲T̲h̲u̲m̲b̲n̲a̲i̲l̲S̲i̲z̲e̲.̲d̲i̲r̲_̲n̲a̲m̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:721:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:721:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:721:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:720:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:722:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:722:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1760/1765] Built Verified.OxicloudAdmin (16s)
+warning: Verified/OxicloudAdmin.lean:32:22: This simp argument is unused:
+  SystemAdminDenial
+
+Hint: Omit it from the simp argument list.
+  simp_all ̵[̵S̵y̵s̵t̵e̵m̵A̵d̵m̵i̵n̵D̵e̵n̵i̵a̵l̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1761/1765] Built Verified.OxicloudPolicyMetadata (20s)
+✔ [1762/1765] Built Verified.DisplayClassifiers (71s)
+✔ [1763/1765] Built Verified.OxicloudPolicyDefaults (17s)
+⚠ [1764/1765] Built Properties (6.0s)
+warning: Properties.lean:43:95: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:77:64: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:676:50: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:682:57: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:688:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:694:55: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:700:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:706:60: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:713:48: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:720:54: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:727:57: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (1765 jobs).
+
+note: solutions.oxicloud-create-needs-share.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-drive-read-only.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-migration-readonly.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-personal-drive.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-refused-writes-nothing.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.oxicloud-sharing-policies.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/proofs/.lake/h5i/Gate.lean
+gate: 1728 theorems in 34 modules checked against propext, Classical.choice, Quot.sound
+
+ports/oxicloud: proofs ok

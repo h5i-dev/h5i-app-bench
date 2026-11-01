@@ -24,3 +24,5 @@ pub mod policydefaults;
 pub mod davstate;
 
 pub mod finite_catalog;
+
+pub mod display_classifiers;

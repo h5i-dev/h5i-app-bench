@@ -3268,6 +3268,39 @@
         "end": 61,
         "sha256": "873cd9303a7ebd46ca1a9d8561e7774a283e1645853cc8ace3ffc8d5ca5a1ef7"
       }
+    ],
+    "display_classifiers.icon_class_with_ext": [
+      {
+        "file": "src/application/dtos/display_helpers.rs",
+        "kind": "fn",
+        "name": "icon_class_with_ext",
+        "self_ty": "",
+        "start": 248,
+        "end": 354,
+        "sha256": "694d5a78865e422efd86bde34bd9dc9bf31216627b7efa4fbe1ee98424d062b2"
+      }
+    ],
+    "display_classifiers.icon_special_class_with_ext": [
+      {
+        "file": "src/application/dtos/display_helpers.rs",
+        "kind": "fn",
+        "name": "icon_special_class_with_ext",
+        "self_ty": "",
+        "start": 369,
+        "end": 490,
+        "sha256": "076a5a4fd51c4f08157f4a78f25cba81e29f9f07f0b945b05f36691128dfd36a"
+      }
+    ],
+    "display_classifiers.category_with_ext": [
+      {
+        "file": "src/application/dtos/display_helpers.rs",
+        "kind": "fn",
+        "name": "category_with_ext",
+        "self_ty": "",
+        "start": 501,
+        "end": 576,
+        "sha256": "40fc078ade247088ffff6b9583dcca6c06565e88caf16820e7cc290711a8001c"
+      }
     ]
   }
 }
