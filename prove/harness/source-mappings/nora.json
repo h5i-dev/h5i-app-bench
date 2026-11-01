@@ -661,6 +661,17 @@
         "end": 691,
         "sha256": "963e15732b1da82b70855f4d1bf8de7b8fc27a771586381b6d3b1676b07c4ea4"
       }
+    ],
+    "sidebar.sidebar": [
+      {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "sidebar_dark_with_registries",
+        "self_ty": "",
+        "start": 127,
+        "end": 417,
+        "sha256": "35e0bd0cdb73ed2981725697028f7af72937d3b358160e174cc9045d26b486e8"
+      }
     ]
   }
 }

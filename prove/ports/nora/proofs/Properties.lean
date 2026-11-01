@@ -1,3 +1,4 @@
+import Verified.Sidebar
 import Verified.Rendering
 import Verified.FiniteCatalog
 import Verified.Curation
@@ -434,5 +435,15 @@ theorem rendering_registry_search_bar_complete (registry placeholder : Slice U8)
     (hbound : (registry_search_bar_model registry.val placeholder.val).length ≤ Usize.max) :
     rendering.registry_search_bar registry placeholder ⦃r => r.val = registry_search_bar_model registry.val placeholder.val⦄ :=
   Verified.Rendering.registry_search_bar_complete registry placeholder hbound
+
+end nora_kernel.Properties
+
+namespace nora_kernel.Properties
+
+theorem sidebar_complete (active : Slice U8) (t : sidebar.Translations)
+    (auth : Bool) (e : sidebar.Enabled) (version : Slice U8) :
+    sidebar.sidebar active t auth e version ⦃r =>
+      Verified.Sidebar.decode r = Verified.Sidebar.sidebar_model active.val t auth e version.val⦄ :=
+  Verified.Sidebar.sidebar_complete active t auth e version
 
 end nora_kernel.Properties

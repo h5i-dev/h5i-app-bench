@@ -475,3 +475,5 @@ pub mod curation;
 pub mod finite_catalog;
 
 pub mod rendering;
+
+pub mod sidebar;

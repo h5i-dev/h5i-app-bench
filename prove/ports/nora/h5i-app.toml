@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["curation::evaluate", "curation::is_active", "curation::check_download", "curation::verify_integrity", "curation::verify_integrity_by_hash", "curation::check_namespace_isolation", "curation::is_internal_namespace", "curation::namespace_filter_active", "transition", "validation", "middleware::auth_middleware", "tokens::revoke_token", "tokens::revoke_all_for_user", "permission_import::map_to_proposal", "circuit_breaker::check", "circuit_breaker::record_success", "circuit_breaker::record_alive", "circuit_breaker::record_failure", "circuit_breaker::new", "circuit_breaker::threshold", "circuit_breaker::reset_timeout", "finite_catalog::breaker_state_f11f5e92::_::as_gauge", "finite_catalog::breaker_state_f11f5e92::_::as_health_str", "finite_catalog::role_a890c86c::_::can_write", "finite_catalog::role_a890c86c::_::can_admin", "finite_catalog::lang_986f59b4::_::code", "rendering::html_escape", "rendering::render_activity_row", "rendering::render_activity_log", "rendering::render_polling_script", "rendering::header_dark", "rendering::encode_uri_component", "rendering::registry_search_bar"]
+start-from = ["curation::evaluate", "curation::is_active", "curation::check_download", "curation::verify_integrity", "curation::verify_integrity_by_hash", "curation::check_namespace_isolation", "curation::is_internal_namespace", "curation::namespace_filter_active", "transition", "validation", "middleware::auth_middleware", "tokens::revoke_token", "tokens::revoke_all_for_user", "permission_import::map_to_proposal", "circuit_breaker::check", "circuit_breaker::record_success", "circuit_breaker::record_alive", "circuit_breaker::record_failure", "circuit_breaker::new", "circuit_breaker::threshold", "circuit_breaker::reset_timeout", "finite_catalog::breaker_state_f11f5e92::_::as_gauge", "finite_catalog::breaker_state_f11f5e92::_::as_health_str", "finite_catalog::role_a890c86c::_::can_write", "finite_catalog::role_a890c86c::_::can_admin", "finite_catalog::lang_986f59b4::_::code", "rendering::html_escape", "rendering::render_activity_row", "rendering::render_activity_log", "rendering::render_polling_script", "rendering::header_dark", "rendering::encode_uri_component", "rendering::registry_search_bar", "sidebar::sidebar"]
 
 [check]
 theorems = [
@@ -63,4 +63,5 @@ theorems = [
   "nora_kernel.Properties.rendering_header_dark_complete",
   "nora_kernel.Properties.rendering_encode_uri_component_complete",
   "nora_kernel.Properties.rendering_registry_search_bar_complete",
+  "nora_kernel.Properties.sidebar_complete",
 ]
