@@ -154,3 +154,33 @@ roots. Regenerate with `python3 harness/finite_catalog.py generate --app nora`
 from `prove/`. Integration is a separate one-time action; standard extraction,
 project gates and source-reach validation are still required for credit.
 Enum declarations, test data and generated code add no upstream line credit.
+
+## Complete rendering outputs
+
+`rendering` ports seven complete pinned functions: HTML escaping, URI component
+encoding, the activity row and log, the polling script string, the dark header,
+and the registry search bar. String inputs and outputs use UTF-8 bytes without
+normalization. The HTML proof relates its byte loop to upstream's five ordered
+replacements. URI encoding preserves ASCII letters, digits and `-_.~`, and
+percent-encodes other bytes with uppercase hexadecimal digits.
+
+Renderer models retain every literal byte and dynamic insertion. Translations
+carry the seven fields read by the activity log; the language carrier retains
+all three upstream variants. The capacity hypothesis requires the complete
+output length to fit `usize`. JavaScript is compared as returned text; browser
+execution and DOM behavior are outside this claim. Registry and placeholder
+values retain upstream's direct insertion behavior.
+
+The header kernel folds the literal template substitutions separately for each
+of its three language variants. The generator reads the exact upstream class
+tuples; exhaustive differential checks cover the entire language domain. Its
+Lean model retains the separate template literals and substitutions.
+The folded bytes are split into shared bounded fragments. Each fragment has a
+complete-output lemma; their composition is proved equal to the independent
+template model. These helper functions receive no additional upstream credit.
+
+`harness/nora_rendering.py` regenerates the kernels and retains unchanged source
+bodies, spans and SHA-256 hashes under `difftest/rendering`. Differential tests
+compare complete fragments and exercise both encoders across every Unicode
+scalar plus randomized strings. Only mapped upstream function spans qualify
+for source credit; helper code and proof definitions add no lines.

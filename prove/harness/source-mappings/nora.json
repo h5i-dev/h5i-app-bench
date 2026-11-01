@@ -584,6 +584,83 @@
         "end": 40,
         "sha256": "0010642a0a02917b18b473a72bcd8f952d8b19499da99af6d193cf436afc41d2"
       }
+    ],
+    "rendering.html_escape": [
+      {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "html_escape",
+        "self_ty": "",
+        "start": 798,
+        "end": 805,
+        "sha256": "f539a8b8a222601373e20cfbe122d3fc0630564f18e10fd8ecc844c29930fed1"
+      }
+    ],
+    "rendering.render_activity_row": [
+      {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "render_activity_row",
+        "self_ty": "",
+        "start": 649,
+        "end": 682,
+        "sha256": "b836e30d7315c0d7714f6da7b18a451c3902f324b3a38f74422684ef28c5a966"
+      }
+    ],
+    "rendering.render_activity_log": [
+      {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "render_activity_log",
+        "self_ty": "",
+        "start": 684,
+        "end": 720,
+        "sha256": "27e39c800c52ee9b1bd212fd003f842a59b43bae6f3339697549afe932f819ca"
+      }
+    ],
+    "rendering.render_polling_script": [
+      {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "render_polling_script",
+        "self_ty": "",
+        "start": 722,
+        "end": 759,
+        "sha256": "339f3b5d242a57c6b7d6539b2b70b70794c6612c5ae8ea9edbfb37876a3b5327"
+      }
+    ],
+    "rendering.header_dark": [
+      {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "header_dark",
+        "self_ty": "",
+        "start": 419,
+        "end": 476,
+        "sha256": "338afc3eeea1b53f8aa02dbd77a6bfdd3a8e8b63bf61dec835e9d1318dc7f174"
+      }
+    ],
+    "rendering.encode_uri_component": [
+      {
+        "file": "nora-registry/src/ui/templates.rs",
+        "kind": "fn",
+        "name": "encode_uri_component",
+        "self_ty": "",
+        "start": 2000,
+        "end": 2014,
+        "sha256": "6b021b527a75aa9afab32f4d549c1a58815bd6cabc42da55a21d7284a98a1bc0"
+      }
+    ],
+    "rendering.registry_search_bar": [
+      {
+        "file": "nora-registry/src/ui/templates.rs",
+        "kind": "fn",
+        "name": "registry_search_bar",
+        "self_ty": "",
+        "start": 675,
+        "end": 691,
+        "sha256": "963e15732b1da82b70855f4d1bf8de7b8fc27a771586381b6d3b1676b07c4ea4"
+      }
     ]
   }
 }

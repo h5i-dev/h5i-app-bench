@@ -1,0 +1,253 @@
+
+[earlier output omitted]
+ackages/aesop/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/proofwidgets/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/importGraph/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/LeanSearchClient/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/plausible/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/mathlib/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aeneas/backends/lean/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/h5i_app_lib/crates/h5i-app-core/proofs/.lake/build/lib/lean:/home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean /home/ht2673/.elan/toolchains/leanprover--lean4---v4.31.0/bin/lean /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/Verified/Rendering.lean -o /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean/Verified/Rendering.olean -i /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean/Verified/Rendering.ilean -c /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/ir/Verified/Rendering.c --setup /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/ir/Verified/Rendering.setup.json --json
+warning: Verified/Rendering.lean:60:2: 'all_goals omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:60:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/Rendering.lean:69:2: 'all_goals simp_all [List.getElem!_eq_getElem?_getD, List.getElem?_eq_getElem]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:69:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/Rendering.lean:114:21: This simp argument is unused:
+  if_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, i̵f̵_̵n̵e̵g̵,̵ ̵WP.spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:114:29: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, if_neg,̵ ̵W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:111:4: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:149:21: This simp argument is unused:
+  if_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, i̵f̵_̵n̵e̵g̵,̵ ̵WP.spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:149:29: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, if_neg,̵ ̵W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:146:4: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:180:42: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:181:34: This simp argument is unused:
+  UScalar.eq_equiv
+
+Hint: Omit it from the simp argument list.
+  simp_all [U̵S̵c̵a̵l̵a̵r̵.̵e̵q̵_̵e̵q̵u̵i̵v̵,̵ ̵byte_literal_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:181:52: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:182:34: This simp argument is unused:
+  UScalar.eq_equiv
+
+Hint: Omit it from the simp argument list.
+  simp_all [U̵S̵c̵a̵l̵a̵r̵.̵e̵q̵_̵e̵q̵u̵i̵v̵,̵ ̵byte_literal_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:182:52: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:183:34: This simp argument is unused:
+  UScalar.eq_equiv
+
+Hint: Omit it from the simp argument list.
+  simp_all [U̵S̵c̵a̵l̵a̵r̵.̵e̵q̵_̵e̵q̵u̵i̵v̵,̵ ̵byte_literal_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:183:52: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:184:4: 'all_goals split <;> simp_all [UScalar.eq_equiv, byte_literal_val]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:184:14: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/Rendering.lean:205:49: This simp argument is unused:
+  bind_tc_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [rendering.language_index,̵ ̵b̵i̵n̵d̵_̵t̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:221:162: This simp argument is unused:
+  header_class_model
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.Vec.deref, Slice.from_val, List.append_assoc,̵ ̵h̵e̵a̵d̵e̵r̵_̵c̵l̵a̵s̵s̵_̵m̵o̵d̵e̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:233:162: This simp argument is unused:
+  header_class_model
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.Vec.deref, Slice.from_val, List.append_assoc,̵ ̵h̵e̵a̵d̵e̵r̵_̵c̵l̵a̵s̵s̵_̵m̵o̵d̵e̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:245:106: This simp argument is unused:
+  alloc.vec.Vec.deref
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲ a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵v̵a̵l̵,̵  ̲ ̲alloc.vec.Vec.d̵e̵r̵e̵f̵v̲a̲l̲, Slice.from_val, List.append_assoc, header_class_model]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:245:143: This simp argument is unused:
+  List.append_assoc
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.Vec.deref, Slice.from_val, L̵i̵s̵t̵.̵a̵p̵p̵e̵n̵d̵_̵a̵s̵s̵o̵c̵,̵ ̵header_class_model]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:245:162: This simp argument is unused:
+  header_class_model
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.Vec.deref, Slice.from_val, List.append_assoc,̵ ̵h̵e̵a̵d̵e̵r̵_̵c̵l̵a̵s̵s̵_̵m̵o̵d̵e̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:259:12: `simp` failed: maximum number of steps exceeded
+error: Verified/Rendering.lean:252:0: (deterministic) timeout at `whnf`, maximum number of heartbeats (10000000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+error: Verified/Rendering.lean:252:2: (kernel) unknown constant 'nora_kernel.Verified.Rendering.header_dark_complete'
+warning: Verified/Rendering.lean:271:106: This simp argument is unused:
+  alloc.vec.Vec.deref
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲ a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵v̵a̵l̵,̵  ̲ ̲alloc.vec.Vec.d̵e̵r̵e̵f̵v̲a̲l̲, Slice.from_val, List.append_assoc, header_class_model]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:271:162: This simp argument is unused:
+  header_class_model
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.Vec.deref, Slice.from_val, List.append_assoc,̵ ̵h̵e̵a̵d̵e̵r̵_̵c̵l̵a̵s̵s̵_̵m̵o̵d̵e̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+Some required targets logged failures:
+- Verified.Rendering
+error: build failed
+
+Error: `lake build` failed

@@ -19,6 +19,18 @@ set_option maxRecDepth 2048
 
 namespace nora_kernel
 
+/-- Trait implementation: [core::slice::cmp::{impl core::cmp::PartialEq<[U]> for [T]}]
+    Source: '/rustc/library/core/src/slice/cmp.rs', lines 14:0-16:28
+    Name pattern: [core::cmp::PartialEq<[@T], [@U]>] -/
+@[reducible, rust_trait_impl "core::cmp::PartialEq<[@T], [@U]>"]
+impl_def Slice.Insts.CoreCmpPartialEqSlice {T : Type} {U : Type}
+  (cmpPartialEqInst : core.cmp.PartialEq T U) : core.cmp.PartialEq (Slice T)
+  (Slice U) := {
+  eq := core.slice.cmp.PartialEqSlice.eq cmpPartialEqInst
+  ne := core.cmp.PartialEq.ne.trait_default (Slice.Insts.CoreCmpPartialEqSlice
+    cmpPartialEqInst)
+}
+
 /-- [nora_kernel::circuit_breaker::Phase]
     Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 7:0-11:1
     Visibility: public -/
@@ -11823,6 +11835,1892 @@ def permission_import.map_to_proposal
   := do
   let c ← permission_import.collect principals
   permission_import.emit c grant_write
+
+/-- [nora_kernel::rendering::Lang]
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 5:0-5:28
+    Visibility: public -/
+@[discriminant isize]
+inductive rendering.Lang where
+| En : rendering.Lang
+| Ru : rendering.Lang
+| Zh : rendering.Lang
+
+/-- [nora_kernel::rendering::Translations]
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 6:0-6:191
+    Visibility: public -/
+structure rendering.Translations where
+  recent_activity : alloc.vec.Vec Std.U8
+  last_n_events : alloc.vec.Vec Std.U8
+  time : alloc.vec.Vec Std.U8
+  action : alloc.vec.Vec Std.U8
+  artifact : alloc.vec.Vec Std.U8
+  registry : alloc.vec.Vec Std.U8
+  source : alloc.vec.Vec Std.U8
+
+/-- [nora_kernel::rendering::append]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 8:0-8:80
+    Visibility: public -/
+def rendering.append
+  (out : alloc.vec.Vec Std.U8) (bytes : Slice Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  alloc.vec.Vec.extend_from_slice core.clone.CloneU8 out bytes
+
+/-- [nora_kernel::rendering::action_color]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 14:0-20:1
+    Visibility: public -/
+def rendering.action_color
+  (action : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice (Array.make 4#usize [ 80#u8, 85#u8, 76#u8, 76#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 98#u8, 108#u8, 117#u8, 101#u8,
+          45#u8, 52#u8, 48#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 4#usize [ 80#u8, 85#u8, 83#u8, 72#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s1
+    if b1
+    then
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 14#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 103#u8, 114#u8, 101#u8,
+            101#u8, 110#u8, 45#u8, 52#u8, 48#u8, 48#u8
+            ]))
+      alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 67#u8, 65#u8, 67#u8, 72#u8, 69#u8 ]))
+      let b2 ←
+        core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s2
+      if b2
+      then
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 15#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 121#u8, 101#u8, 108#u8,
+              108#u8, 111#u8, 119#u8, 45#u8, 52#u8, 48#u8, 48#u8
+              ]))
+        alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 5#usize [ 80#u8, 82#u8, 79#u8, 88#u8, 89#u8 ]))
+        let b3 ←
+          core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s3
+        if b3
+        then
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 15#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 112#u8, 117#u8, 114#u8,
+                112#u8, 108#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8
+                ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 14#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+                116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8
+                ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+
+/-- [nora_kernel::rendering::html_byte]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 23:0-25:1
+    Visibility: public -/
+def rendering.html_byte (b : Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  match b with
+  | 38#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 38#u8, 97#u8, 109#u8, 112#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 60#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 38#u8, 108#u8, 116#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 62#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 38#u8, 103#u8, 116#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 34#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 38#u8, 113#u8, 117#u8, 111#u8, 116#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 39#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 38#u8, 35#u8, 51#u8, 57#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ =>
+    let s ← lift (Array.to_slice (Array.make 1#usize [ b ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::uri_allowed]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 26:0-28:1
+    Visibility: public -/
+def rendering.uri_allowed (b : Std.U8) : Result Bool := do
+  if b >= 97#u8
+  then
+    if b <= 122#u8
+    then ok true
+    else
+      if b >= 65#u8
+      then
+        if b <= 90#u8
+        then ok true
+        else
+          if b >= 48#u8
+          then
+            if b <= 57#u8
+            then ok true
+            else
+              if b = 45#u8
+              then ok true
+              else
+                if b = 95#u8
+                then ok true
+                else if b = 46#u8
+                     then ok true
+                     else ok (b = 126#u8)
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 46#u8
+                   then ok true
+                   else ok (b = 126#u8)
+      else
+        if b >= 48#u8
+        then
+          if b <= 57#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 46#u8
+                   then ok true
+                   else ok (b = 126#u8)
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 46#u8
+                 then ok true
+                 else ok (b = 126#u8)
+  else
+    if b >= 65#u8
+    then
+      if b <= 90#u8
+      then ok true
+      else
+        if b >= 48#u8
+        then
+          if b <= 57#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 46#u8
+                   then ok true
+                   else ok (b = 126#u8)
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 46#u8
+                 then ok true
+                 else ok (b = 126#u8)
+    else
+      if b >= 48#u8
+      then
+        if b <= 57#u8
+        then ok true
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 46#u8
+                 then ok true
+                 else ok (b = 126#u8)
+      else
+        if b = 45#u8
+        then ok true
+        else
+          if b = 95#u8
+          then ok true
+          else if b = 46#u8
+               then ok true
+               else ok (b = 126#u8)
+
+/-- [nora_kernel::rendering::uri_byte]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 29:0-34:1
+    Visibility: public -/
+def rendering.uri_byte (b : Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let b1 ← rendering.uri_allowed b
+  if b1
+  then
+    let s ← lift (Array.to_slice (Array.make 1#usize [ b ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else
+    let i ← b / 16#u8
+    let i1 ← lift (UScalar.cast .Usize i)
+    let i2 ←
+      Array.index_usize
+        (Array.make 16#usize [
+          48#u8, 49#u8, 50#u8, 51#u8, 52#u8, 53#u8, 54#u8, 55#u8, 56#u8, 57#u8,
+          65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8
+          ]) i1
+    let i3 ← b % 16#u8
+    let i4 ← lift (UScalar.cast .Usize i3)
+    let i5 ←
+      Array.index_usize
+        (Array.make 16#usize [
+          48#u8, 49#u8, 50#u8, 51#u8, 52#u8, 53#u8, 54#u8, 55#u8, 56#u8, 57#u8,
+          65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8
+          ]) i4
+    let s ← lift (Array.to_slice (Array.make 3#usize [ 37#u8, i2, i5 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::html_escape]: loop body 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 38:4-42:5
+    Visibility: public -/
+@[rust_loop_body]
+def rendering.html_escape_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let piece ← rendering.html_byte i2
+    let s1 := alloc.vec.Vec.deref piece
+    let out1 ← rendering.append out s1
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [nora_kernel::rendering::html_escape]: loop 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 38:4-42:5
+    Visibility: public -/
+@[rust_loop]
+def rendering.html_escape_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => rendering.html_escape_loop.body s out1 i1)
+    (out, i)
+
+/-- [nora_kernel::rendering::html_escape]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 35:0-44:1
+    Visibility: public -/
+@[reducible]
+def rendering.html_escape
+  (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  rendering.html_escape_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [nora_kernel::rendering::encode_uri_component]: loop body 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 48:4-52:5
+    Visibility: public -/
+@[rust_loop_body]
+def rendering.encode_uri_component_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let piece ← rendering.uri_byte i2
+    let s1 := alloc.vec.Vec.deref piece
+    let out1 ← rendering.append out s1
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [nora_kernel::rendering::encode_uri_component]: loop 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 48:4-52:5
+    Visibility: public -/
+@[rust_loop]
+def rendering.encode_uri_component_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => rendering.encode_uri_component_loop.body s out1 i1)
+    (out, i)
+
+/-- [nora_kernel::rendering::encode_uri_component]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 45:0-54:1
+    Visibility: public -/
+@[reducible]
+def rendering.encode_uri_component
+  (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  rendering.encode_uri_component_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [nora_kernel::rendering::render_activity_row]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 56:0-74:1
+    Visibility: public -/
+def rendering.render_activity_row
+  (timestamp : Slice Std.U8) (action : Slice Std.U8) (artifact : Slice Std.U8)
+  (registry : Slice Std.U8) (source : Slice Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let action_color ← rendering.action_color action
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        116#u8, 114#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 98#u8,
+        32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 47#u8,
+        53#u8, 48#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        109#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 100#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8,
+        45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 53#u8, 48#u8,
+        48#u8, 34#u8, 62#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let v ← rendering.html_escape timestamp
+  let s2 := alloc.vec.Vec.deref v
+  let out2 ← rendering.append out1 s2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 51#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8,
+        32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+        105#u8, 117#u8, 109#u8, 32#u8
+        ]))
+  let out3 ← rendering.append out2 s3
+  let s4 := alloc.vec.Vec.deref action_color
+  let out4 ← rendering.append out3 s4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 49#usize [
+        34#u8, 62#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        50#u8, 32#u8, 112#u8, 121#u8, 45#u8, 48#u8, 46#u8, 53#u8, 32#u8, 98#u8,
+        103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8,
+        48#u8, 48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8,
+        100#u8, 34#u8, 62#u8
+        ]))
+  let out5 ← rendering.append out4 s5
+  let v1 ← rendering.html_escape action
+  let s6 := alloc.vec.Vec.deref v1
+  let out6 ← rendering.append out5 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 80#usize [
+        60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 60#u8, 47#u8,
+        116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 100#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8,
+        45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 51#u8, 48#u8, 48#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8,
+        45#u8, 109#u8, 111#u8, 110#u8, 111#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 120#u8, 115#u8, 34#u8, 62#u8
+        ]))
+  let out7 ← rendering.append out6 s7
+  let v2 ← rendering.html_escape artifact
+  let s8 := alloc.vec.Vec.deref v2
+  let out8 ← rendering.append out7 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 55#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 34#u8, 62#u8
+        ]))
+  let out9 ← rendering.append out8 s9
+  let v3 ← rendering.html_escape registry
+  let s10 := alloc.vec.Vec.deref v3
+  let out10 ← rendering.append out9 s10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 55#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 53#u8, 48#u8, 48#u8, 34#u8, 62#u8
+        ]))
+  let out11 ← rendering.append out10 s11
+  let v4 ← rendering.html_escape source
+  let s12 := alloc.vec.Vec.deref v4
+  let out12 ← rendering.append out11 s12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 28#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 116#u8, 114#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  rendering.append out12 s13
+
+/-- [nora_kernel::rendering::render_activity_log]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 76:0-103:1
+    Visibility: public -/
+def rendering.render_activity_log
+  (rows : Slice Std.U8) (t : rendering.Translations) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 98#u8, 103#u8, 45#u8, 91#u8, 35#u8, 49#u8, 101#u8, 50#u8,
+        57#u8, 51#u8, 98#u8, 93#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+        100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8,
+        101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8,
+        55#u8, 48#u8, 48#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 104#u8, 105#u8, 100#u8, 100#u8, 101#u8,
+        110#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 98#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8, 102#u8, 108#u8, 101#u8,
+        120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8,
+        101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 106#u8, 117#u8, 115#u8,
+        116#u8, 105#u8, 102#u8, 121#u8, 45#u8, 98#u8, 101#u8, 116#u8, 119#u8,
+        101#u8, 101#u8, 110#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 48#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 104#u8, 51#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8,
+        45#u8, 115#u8, 101#u8, 109#u8, 105#u8, 98#u8, 111#u8, 108#u8, 100#u8,
+        34#u8, 62#u8
+        ]))
+  let out2 ← rendering.append out1 s2
+  let s3 := alloc.vec.Vec.deref t.recent_activity
+  let out3 ← rendering.append out2 s3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 59#usize [
+        60#u8, 47#u8, 104#u8, 51#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 120#u8, 115#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 53#u8, 48#u8,
+        48#u8, 34#u8, 62#u8
+        ]))
+  let out4 ← rendering.append out3 s4
+  let s5 := alloc.vec.Vec.deref t.last_n_events
+  let out5 ← rendering.append out4 s5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 97#u8, 117#u8, 116#u8, 111#u8, 32#u8,
+        109#u8, 97#u8, 120#u8, 45#u8, 104#u8, 45#u8, 56#u8, 48#u8, 34#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        97#u8, 98#u8
+        ]))
+  let out6 ← rendering.append out5 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        108#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 119#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 34#u8, 32#u8,
+        105#u8, 100#u8, 61#u8, 34#u8, 97#u8, 99#u8, 116#u8, 105#u8, 118#u8,
+        105#u8, 116#u8, 121#u8, 45#u8, 108#u8, 111#u8, 103#u8, 34#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 116#u8, 104#u8, 101#u8, 97#u8, 100#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 115#u8, 116#u8, 105#u8,
+        99#u8, 107#u8, 121#u8, 32#u8, 116#u8, 111#u8, 112#u8, 45#u8, 48#u8,
+        32#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 56#u8, 48#u8, 48#u8
+        ]))
+  let out7 ← rendering.append out6 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 114#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 108#u8, 101#u8, 102#u8, 116#u8, 32#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 120#u8, 115#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 53#u8, 48#u8, 48#u8, 32#u8, 117#u8, 112#u8, 112#u8, 101#u8,
+        114#u8, 99#u8, 97#u8, 115#u8, 101#u8, 32#u8, 98#u8, 111#u8, 114#u8,
+        100#u8, 101#u8, 114#u8, 45#u8, 98#u8, 32#u8, 98#u8, 111#u8, 114#u8,
+        100#u8, 101#u8, 114#u8
+        ]))
+  let out8 ← rendering.append out7 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 63#usize [
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8,
+        48#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8,
+        112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out9 ← rendering.append out8 s9
+  let s10 := alloc.vec.Vec.deref t.time
+  let out10 ← rendering.append out9 s10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out11 ← rendering.append out10 s11
+  let s12 := alloc.vec.Vec.deref t.action
+  let out12 ← rendering.append out11 s12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out13 ← rendering.append out12 s13
+  let s14 := alloc.vec.Vec.deref t.artifact
+  let out14 ← rendering.append out13 s14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out15 ← rendering.append out14 s15
+  let s16 := alloc.vec.Vec.deref t.registry
+  let out16 ← rendering.append out15 s16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out17 ← rendering.append out16 s17
+  let s18 := alloc.vec.Vec.deref t.source
+  let out18 ← rendering.append out17 s18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 47#u8, 116#u8, 114#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 116#u8, 104#u8,
+        101#u8, 97#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 98#u8, 111#u8,
+        100#u8, 121#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out19 ← rendering.append out18 s19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 21#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8
+        ]))
+  let out20 ← rendering.append out19 s20
+  let out21 ← rendering.append out20 rows
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 47#u8, 116#u8, 98#u8, 111#u8, 100#u8, 121#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 116#u8,
+        97#u8, 98#u8, 108#u8, 101#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+        100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out22 ← rendering.append out21 s21
+  let s22 ← lift (Array.to_slice (Array.make 1#usize [ 32#u8 ]))
+  rendering.append out22 s22
+
+/-- [nora_kernel::rendering::render_polling_script]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 105:0-126:1
+    Visibility: public -/
+def rendering.render_polling_script : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 112#u8, 116#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 115#u8, 101#u8, 116#u8, 73#u8, 110#u8,
+        116#u8, 101#u8, 114#u8, 118#u8, 97#u8, 108#u8, 40#u8, 97#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 32#u8, 40#u8, 41#u8, 32#u8, 61#u8, 62#u8, 32#u8,
+        123#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 116#u8, 114#u8, 121#u8, 32#u8, 123#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        115#u8, 116#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 32#u8, 61#u8,
+        32#u8, 97#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        119#u8, 97#u8, 105#u8, 116#u8, 32#u8, 102#u8, 101#u8, 116#u8, 99#u8,
+        104#u8, 40#u8, 39#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8, 117#u8,
+        105#u8, 47#u8, 100#u8, 97#u8, 115#u8, 104#u8, 98#u8, 111#u8, 97#u8,
+        114#u8, 100#u8, 39#u8, 41#u8, 46#u8, 116#u8, 104#u8, 101#u8, 110#u8,
+        40#u8, 114#u8, 32#u8, 61#u8, 62#u8, 32#u8, 114#u8, 46#u8, 106#u8,
+        115#u8, 111#u8, 110#u8, 40#u8, 41#u8, 41#u8, 59#u8, 10#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 47#u8, 47#u8, 32#u8, 85#u8,
+        112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 103#u8, 108#u8, 111#u8,
+        98#u8, 97#u8, 108#u8, 32#u8, 115#u8, 116#u8, 97#u8, 116#u8, 115#u8,
+        10#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+        110#u8, 116#u8, 46#u8, 103#u8, 101#u8, 116#u8, 69#u8, 108#u8, 101#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 66#u8, 121#u8, 73#u8, 100#u8, 40#u8,
+        39#u8, 115#u8, 116#u8, 97#u8, 116#u8, 45#u8, 100#u8, 111#u8, 119#u8,
+        110#u8, 108#u8, 111#u8, 97#u8, 100#u8, 115#u8, 39#u8, 41#u8, 46#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8, 110#u8, 116#u8, 101#u8,
+        110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8,
+        46#u8, 103#u8, 108#u8, 111#u8, 98#u8, 97#u8, 108#u8, 95#u8, 115#u8,
+        116#u8, 97#u8, 116#u8, 115#u8, 46#u8, 100#u8, 111#u8, 119#u8, 110#u8,
+        108#u8, 111#u8, 97#u8, 100#u8, 115#u8
+        ]))
+  let out2 ← rendering.append out1 s2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8, 111#u8,
+        99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8, 101#u8,
+        116#u8, 69#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 66#u8,
+        121#u8, 73#u8, 100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8, 116#u8,
+        45#u8, 117#u8, 112#u8, 108#u8, 111#u8, 97#u8, 100#u8, 115#u8, 39#u8,
+        41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8, 110#u8,
+        116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8,
+        116#u8, 97#u8, 46#u8, 103#u8, 108#u8, 111#u8, 98#u8, 97#u8, 108#u8,
+        95#u8, 115#u8, 116#u8, 97#u8, 116#u8, 115#u8, 46#u8, 117#u8, 112#u8,
+        108#u8, 111#u8, 97#u8, 100#u8
+        ]))
+  let out3 ← rendering.append out2 s3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        115#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8,
+        101#u8, 116#u8, 69#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        66#u8, 121#u8, 73#u8, 100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 45#u8, 97#u8, 114#u8, 116#u8, 105#u8, 102#u8, 97#u8, 99#u8,
+        116#u8, 115#u8, 39#u8, 41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        67#u8, 111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8,
+        32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8, 103#u8, 108#u8, 111#u8,
+        98#u8, 97#u8, 108#u8, 95#u8, 115#u8, 116#u8, 97#u8, 116#u8, 115#u8,
+        46#u8, 97#u8, 114#u8, 116#u8
+        ]))
+  let out4 ← rendering.append out3 s4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        105#u8, 102#u8, 97#u8, 99#u8, 116#u8, 115#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8, 111#u8, 99#u8, 117#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8, 101#u8, 116#u8, 69#u8,
+        108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 66#u8, 121#u8, 73#u8,
+        100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8, 116#u8, 45#u8, 99#u8,
+        97#u8, 99#u8, 104#u8, 101#u8, 45#u8, 104#u8, 105#u8, 116#u8, 39#u8,
+        41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8, 110#u8,
+        116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8,
+        116#u8, 97#u8, 46#u8, 103#u8, 108#u8, 111#u8, 98#u8, 97#u8, 108#u8,
+        95#u8, 115#u8, 116#u8, 97#u8, 116#u8
+        ]))
+  let out5 ← rendering.append out4 s5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        115#u8, 46#u8, 99#u8, 97#u8, 99#u8, 104#u8, 101#u8, 95#u8, 104#u8,
+        105#u8, 116#u8, 95#u8, 112#u8, 101#u8, 114#u8, 99#u8, 101#u8, 110#u8,
+        116#u8, 46#u8, 116#u8, 111#u8, 70#u8, 105#u8, 120#u8, 101#u8, 100#u8,
+        40#u8, 49#u8, 41#u8, 32#u8, 43#u8, 32#u8, 39#u8, 37#u8, 39#u8, 59#u8,
+        10#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 47#u8, 47#u8,
+        32#u8, 70#u8, 111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 32#u8, 115#u8,
+        116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8, 32#u8, 115#u8, 105#u8,
+        122#u8, 101#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8,
+        111#u8
+        ]))
+  let out6 ← rendering.append out5 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        110#u8, 115#u8, 116#u8, 32#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 61#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8, 103#u8,
+        108#u8, 111#u8, 98#u8, 97#u8, 108#u8, 95#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 115#u8, 46#u8, 115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8,
+        101#u8, 95#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 59#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 108#u8, 101#u8, 116#u8,
+        32#u8, 115#u8, 105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 59#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 105#u8, 102#u8, 32#u8,
+        40#u8, 98#u8, 121#u8
+        ]))
+  let out7 ← rendering.append out6 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        116#u8, 101#u8, 115#u8, 32#u8, 62#u8, 61#u8, 32#u8, 49#u8, 48#u8,
+        55#u8, 51#u8, 55#u8, 52#u8, 49#u8, 56#u8, 50#u8, 52#u8, 41#u8, 32#u8,
+        115#u8, 105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8,
+        32#u8, 40#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 49#u8, 48#u8, 55#u8, 51#u8, 55#u8, 52#u8, 49#u8, 56#u8, 50#u8,
+        52#u8, 41#u8, 46#u8, 116#u8, 111#u8, 70#u8, 105#u8, 120#u8, 101#u8,
+        100#u8, 40#u8, 49#u8, 41#u8, 32#u8, 43#u8, 32#u8, 39#u8, 32#u8, 71#u8,
+        66#u8, 39#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        101#u8, 108#u8, 115#u8, 101#u8, 32#u8, 105#u8, 102#u8, 32#u8, 40#u8,
+        98#u8
+        ]))
+  let out8 ← rendering.append out7 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 62#u8, 61#u8, 32#u8, 49#u8,
+        48#u8, 52#u8, 56#u8, 53#u8, 55#u8, 54#u8, 41#u8, 32#u8, 115#u8, 105#u8,
+        122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8, 32#u8, 40#u8,
+        98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 47#u8, 32#u8, 49#u8,
+        48#u8, 52#u8, 56#u8, 53#u8, 55#u8, 54#u8, 41#u8, 46#u8, 116#u8, 111#u8,
+        70#u8, 105#u8, 120#u8, 101#u8, 100#u8, 40#u8, 49#u8, 41#u8, 32#u8,
+        43#u8, 32#u8, 39#u8, 32#u8, 77#u8, 66#u8, 39#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 101#u8, 108#u8, 115#u8, 101#u8,
+        32#u8, 105#u8, 102#u8, 32#u8, 40#u8, 98#u8, 121#u8, 116#u8, 101#u8,
+        115#u8, 32#u8
+        ]))
+  let out9 ← rendering.append out8 s9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        62#u8, 61#u8, 32#u8, 49#u8, 48#u8, 50#u8, 52#u8, 41#u8, 32#u8, 115#u8,
+        105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8, 32#u8,
+        40#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 47#u8, 32#u8,
+        49#u8, 48#u8, 50#u8, 52#u8, 41#u8, 46#u8, 116#u8, 111#u8, 70#u8,
+        105#u8, 120#u8, 101#u8, 100#u8, 40#u8, 49#u8, 41#u8, 32#u8, 43#u8,
+        32#u8, 39#u8, 32#u8, 75#u8, 66#u8, 39#u8, 59#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 101#u8, 108#u8, 115#u8, 101#u8, 32#u8,
+        115#u8, 105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8,
+        32#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 43#u8, 32#u8,
+        39#u8, 32#u8, 66#u8
+        ]))
+  let out10 ← rendering.append out9 s10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        39#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8,
+        101#u8, 116#u8, 69#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        66#u8, 121#u8, 73#u8, 100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 45#u8, 115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8,
+        39#u8, 41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8,
+        110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 115#u8,
+        105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 59#u8, 10#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8
+        ]))
+  let out11 ← rendering.append out10 s11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 47#u8, 47#u8, 32#u8, 85#u8, 112#u8, 100#u8, 97#u8,
+        116#u8, 101#u8, 32#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        115#u8, 116#u8, 32#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8,
+        32#u8, 61#u8, 32#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+        110#u8, 116#u8, 46#u8, 103#u8, 101#u8, 116#u8, 69#u8, 108#u8, 101#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 66#u8, 121#u8, 73#u8, 100#u8, 40#u8,
+        39#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8, 39#u8, 41#u8,
+        59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8
+        ]))
+  let out12 ← rendering.append out11 s12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 105#u8, 102#u8, 32#u8, 40#u8,
+        117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8, 41#u8, 32#u8, 123#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 116#u8, 32#u8, 115#u8, 101#u8,
+        99#u8, 115#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8,
+        46#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8, 95#u8, 115#u8,
+        101#u8, 99#u8, 111#u8, 110#u8, 100#u8, 115#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8,
+        111#u8
+        ]))
+  let out13 ← rendering.append out12 s13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        110#u8, 115#u8, 116#u8, 32#u8, 104#u8, 111#u8, 117#u8, 114#u8, 115#u8,
+        32#u8, 61#u8, 32#u8, 77#u8, 97#u8, 116#u8, 104#u8, 46#u8, 102#u8,
+        108#u8, 111#u8, 111#u8, 114#u8, 40#u8, 115#u8, 101#u8, 99#u8, 115#u8,
+        32#u8, 47#u8, 32#u8, 51#u8, 54#u8, 48#u8, 48#u8, 41#u8, 59#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 115#u8, 116#u8, 32#u8, 109#u8, 105#u8, 110#u8,
+        115#u8, 32#u8, 61#u8, 32#u8, 77#u8, 97#u8, 116#u8, 104#u8, 46#u8,
+        102#u8, 108#u8, 111#u8, 111#u8, 114#u8, 40#u8, 40#u8, 115#u8, 101#u8,
+        99#u8, 115#u8, 32#u8, 37#u8, 32#u8, 51#u8, 54#u8, 48#u8, 48#u8, 41#u8,
+        32#u8, 47#u8
+        ]))
+  let out14 ← rendering.append out13 s14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 54#u8, 48#u8, 41#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 117#u8, 112#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8,
+        111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8,
+        104#u8, 111#u8, 117#u8, 114#u8, 115#u8, 32#u8, 43#u8, 32#u8, 39#u8,
+        104#u8, 32#u8, 39#u8, 32#u8, 43#u8, 32#u8, 109#u8, 105#u8, 110#u8,
+        115#u8, 32#u8, 43#u8, 32#u8, 39#u8, 109#u8, 39#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8
+        ]))
+  let out15 ← rendering.append out14 s15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8, 32#u8,
+        99#u8, 97#u8, 116#u8, 99#u8, 104#u8, 32#u8, 40#u8, 101#u8, 41#u8,
+        32#u8, 123#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8,
+        111#u8, 110#u8, 115#u8, 111#u8, 108#u8, 101#u8, 46#u8, 101#u8, 114#u8,
+        114#u8, 111#u8, 114#u8, 40#u8, 39#u8, 68#u8, 97#u8, 115#u8, 104#u8,
+        98#u8, 111#u8, 97#u8, 114#u8, 100#u8, 32#u8, 112#u8, 111#u8, 108#u8,
+        108#u8, 32#u8, 102#u8, 97#u8, 105#u8, 108#u8, 101#u8, 100#u8, 58#u8,
+        39#u8, 44#u8, 32#u8, 101#u8, 41#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8,
+        10#u8
+        ]))
+  let out16 ← rendering.append out15 s16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 36#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8, 44#u8,
+        32#u8, 53#u8, 48#u8, 48#u8, 48#u8, 41#u8, 59#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+        116#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  rendering.append out16 s17
+
+/-- [nora_kernel::rendering::header_piece_0]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 128:0-128:337
+    Visibility: public -/
+def rendering.header_piece_0 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        104#u8, 101#u8, 97#u8, 100#u8, 101#u8, 114#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 104#u8, 45#u8, 49#u8, 54#u8,
+        32#u8, 98#u8, 103#u8, 45#u8, 91#u8, 35#u8, 49#u8, 101#u8, 50#u8, 57#u8,
+        51#u8, 98#u8, 93#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8,
+        114#u8, 45#u8, 98#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8,
+        114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8,
+        48#u8, 48#u8, 32#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+        116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 32#u8, 106#u8, 117#u8, 115#u8, 116#u8, 105#u8, 102#u8,
+        121#u8, 45#u8, 98#u8, 101#u8, 116#u8, 119#u8, 101#u8, 101#u8, 110#u8,
+        32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 109#u8, 100#u8, 58#u8,
+        112#u8, 120#u8, 45#u8, 54#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8,
+        101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8,
+        114#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 116#u8,
+        111#u8, 103#u8, 103#u8, 108#u8, 101#u8, 83#u8, 105#u8, 100#u8, 101#u8,
+        98#u8, 97#u8, 114#u8, 40#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 109#u8, 100#u8, 58#u8, 104#u8, 105#u8,
+        100#u8, 100#u8, 101#u8, 110#u8, 32#u8, 112#u8, 45#u8, 50#u8, 32#u8,
+        45#u8, 109#u8, 108#u8, 45#u8, 50#u8, 32#u8, 109#u8, 114#u8, 45#u8,
+        50#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 32#u8, 104#u8, 111#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_1]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 130:0-130:367
+    Visibility: public -/
+def rendering.header_piece_1 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        118#u8, 101#u8, 114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 34#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 119#u8, 45#u8, 54#u8, 32#u8, 104#u8, 45#u8,
+        54#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 51#u8, 48#u8, 48#u8, 34#u8, 32#u8,
+        102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8,
+        101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8,
+        67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8,
+        101#u8, 119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8,
+        48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8,
+        32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8,
+        105#u8, 110#u8, 101#u8, 99#u8, 97#u8, 112#u8, 61#u8, 34#u8, 114#u8,
+        111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8,
+        111#u8, 107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 106#u8,
+        111#u8, 105#u8, 110#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+        100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        45#u8, 119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8,
+        34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 52#u8, 32#u8, 54#u8, 104#u8,
+        49#u8, 54#u8, 77#u8, 52#u8, 32#u8, 49#u8, 50#u8, 104#u8, 49#u8, 54#u8,
+        77#u8, 52#u8, 32#u8, 49#u8, 56#u8, 104#u8, 49#u8, 54#u8, 34#u8, 47#u8,
+        62#u8, 10#u8, 32#u8, 32#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_2]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 132:0-132:331
+    Visibility: public -/
+def rendering.header_piece_2 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+        115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8,
+        110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 109#u8, 100#u8, 58#u8, 104#u8, 105#u8, 100#u8, 100#u8,
+        101#u8, 110#u8, 32#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+        116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8,
+        110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 98#u8, 111#u8, 108#u8, 100#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 116#u8, 114#u8,
+        97#u8, 99#u8, 107#u8, 105#u8, 110#u8, 103#u8, 45#u8, 116#u8, 105#u8,
+        103#u8, 104#u8, 116#u8, 34#u8, 62#u8, 78#u8, 60#u8, 115#u8, 112#u8,
+        97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 105#u8, 110#u8, 108#u8, 105#u8, 110#u8, 101#u8, 45#u8, 98#u8,
+        108#u8, 111#u8, 99#u8, 107#u8, 32#u8, 119#u8, 45#u8, 52#u8, 32#u8,
+        104#u8, 45#u8, 52#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8,
+        101#u8, 100#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 98#u8,
+        111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 50#u8, 32#u8, 98#u8,
+        111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 99#u8, 117#u8, 114#u8,
+        114#u8, 101#u8, 110#u8, 116#u8, 32#u8, 97#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_3]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 134:0-134:334
+    Visibility: public -/
+def rendering.header_piece_3 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        108#u8, 105#u8, 103#u8, 110#u8, 45#u8, 109#u8, 105#u8, 100#u8, 100#u8,
+        108#u8, 101#u8, 32#u8, 109#u8, 120#u8, 45#u8, 112#u8, 120#u8, 34#u8,
+        62#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 82#u8,
+        65#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8,
+        118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8,
+        118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 102#u8,
+        108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8,
+        45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 115#u8,
+        112#u8, 97#u8, 99#u8, 101#u8, 45#u8, 120#u8, 45#u8, 50#u8, 32#u8,
+        109#u8, 100#u8, 58#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 45#u8,
+        120#u8, 45#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 33#u8, 45#u8, 45#u8, 32#u8, 76#u8, 97#u8, 110#u8,
+        103#u8, 117#u8, 97#u8, 103#u8, 101#u8, 32#u8, 115#u8, 119#u8, 105#u8,
+        116#u8, 99#u8, 104#u8, 101#u8, 114#u8, 32#u8, 45#u8, 45#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8,
+        118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8,
+        115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8,
+        98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 54#u8, 48#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_4]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 136:0-136:337
+    Visibility: public -/
+def rendering.header_piece_4 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 104#u8, 105#u8, 100#u8, 100#u8, 101#u8,
+        110#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+        34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8,
+        61#u8, 34#u8, 115#u8, 101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8,
+        40#u8, 39#u8, 101#u8, 110#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        51#u8, 32#u8, 112#u8, 121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 119#u8, 104#u8, 105#u8, 116#u8,
+        101#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 115#u8, 101#u8,
+        109#u8, 105#u8, 98#u8, 111#u8, 108#u8, 100#u8, 32#u8, 116#u8, 114#u8,
+        97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+        99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 69#u8,
+        78#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 54#u8,
+        48#u8, 48#u8, 34#u8, 62#u8, 124#u8, 60#u8, 47#u8, 115#u8, 112#u8,
+        97#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8,
+        111#u8, 110#u8, 32#u8, 111#u8, 110#u8, 99#u8, 108#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_5]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 138:0-138:340
+    Visibility: public -/
+def rendering.header_piece_5 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8, 101#u8, 116#u8, 76#u8,
+        97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 114#u8, 117#u8, 39#u8, 41#u8,
+        34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8, 121#u8, 45#u8, 49#u8,
+        46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8,
+        104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8,
+        48#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8,
+        114#u8, 115#u8, 34#u8, 62#u8, 82#u8, 85#u8, 60#u8, 47#u8, 98#u8,
+        117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+        112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 54#u8, 48#u8, 48#u8, 34#u8, 62#u8,
+        124#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8,
+        101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 122#u8,
+        104#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8,
+        121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8,
+        48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_6]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 140:0-140:359
+    Visibility: public -/
+def rendering.header_piece_6 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 260#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8,
+        110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8,
+        111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 228#u8, 184#u8,
+        173#u8, 230#u8, 150#u8, 135#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8,
+        116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8,
+        114#u8, 101#u8, 102#u8, 61#u8, 34#u8, 104#u8, 116#u8, 116#u8, 112#u8,
+        115#u8, 58#u8, 47#u8, 47#u8, 103#u8, 105#u8, 116#u8, 104#u8, 117#u8,
+        98#u8, 46#u8, 99#u8, 111#u8, 109#u8, 47#u8, 103#u8, 101#u8, 116#u8,
+        110#u8, 111#u8, 114#u8, 97#u8, 45#u8, 105#u8, 111#u8, 47#u8, 110#u8,
+        111#u8, 114#u8, 97#u8, 34#u8, 32#u8, 116#u8, 97#u8, 114#u8, 103#u8,
+        101#u8, 116#u8, 61#u8, 34#u8, 95#u8, 98#u8, 108#u8, 97#u8, 110#u8,
+        107#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 112#u8, 45#u8, 50#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8,
+        48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8,
+        114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+        110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 34#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_7]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 142:0-142:337
+    Visibility: public -/
+def rendering.header_piece_7 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8, 34#u8, 32#u8,
+        102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8,
+        114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8,
+        34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8, 66#u8, 111#u8, 120#u8,
+        61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8,
+        52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 112#u8,
+        97#u8, 116#u8, 104#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 45#u8,
+        114#u8, 117#u8, 108#u8, 101#u8, 61#u8, 34#u8, 101#u8, 118#u8, 101#u8,
+        110#u8, 111#u8, 100#u8, 100#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8,
+        77#u8, 49#u8, 50#u8, 32#u8, 50#u8, 67#u8, 54#u8, 46#u8, 52#u8, 55#u8,
+        55#u8, 32#u8, 50#u8, 32#u8, 50#u8, 32#u8, 54#u8, 46#u8, 52#u8, 56#u8,
+        52#u8, 32#u8, 50#u8, 32#u8, 49#u8, 50#u8, 46#u8, 48#u8, 49#u8, 55#u8,
+        99#u8, 48#u8, 32#u8, 52#u8, 46#u8, 52#u8, 50#u8, 53#u8, 32#u8, 50#u8,
+        46#u8, 56#u8, 54#u8, 53#u8, 32#u8, 56#u8, 46#u8, 49#u8, 56#u8, 32#u8,
+        54#u8, 46#u8, 56#u8, 51#u8, 57#u8, 32#u8, 57#u8, 46#u8, 53#u8, 48#u8,
+        52#u8, 46#u8, 53#u8, 46#u8, 48#u8, 57#u8, 50#u8, 46#u8, 54#u8, 56#u8,
+        50#u8, 45#u8, 46#u8, 50#u8, 49#u8, 55#u8, 46#u8, 54#u8, 56#u8, 50#u8,
+        45#u8, 46#u8, 52#u8, 56#u8, 51#u8, 32#u8, 48#u8, 45#u8, 46#u8, 50#u8,
+        51#u8, 55#u8, 45#u8, 46#u8, 48#u8, 48#u8, 56#u8, 45#u8, 46#u8, 56#u8,
+        54#u8, 56#u8, 45#u8, 46#u8, 48#u8, 49#u8, 51#u8, 45#u8, 49#u8, 46#u8,
+        55#u8, 48#u8, 51#u8, 45#u8, 50#u8, 46#u8, 55#u8, 56#u8, 50#u8, 46#u8,
+        54#u8, 48#u8, 53#u8, 45#u8, 51#u8, 46#u8, 51#u8, 54#u8, 57#u8, 45#u8,
+        49#u8, 46#u8, 51#u8, 52#u8, 51#u8, 45#u8, 51#u8, 46#u8, 51#u8, 54#u8,
+        57#u8, 45#u8, 49#u8, 46#u8, 51#u8, 52#u8, 51#u8, 45#u8, 46#u8, 52#u8,
+        53#u8, 52#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_8]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 144:0-144:307
+    Visibility: public -/
+def rendering.header_piece_8 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        45#u8, 49#u8, 46#u8, 49#u8, 53#u8, 56#u8, 45#u8, 49#u8, 46#u8, 49#u8,
+        49#u8, 45#u8, 49#u8, 46#u8, 52#u8, 54#u8, 54#u8, 45#u8, 49#u8, 46#u8,
+        49#u8, 49#u8, 45#u8, 49#u8, 46#u8, 52#u8, 54#u8, 54#u8, 45#u8, 46#u8,
+        57#u8, 48#u8, 56#u8, 45#u8, 46#u8, 54#u8, 50#u8, 46#u8, 48#u8, 54#u8,
+        57#u8, 45#u8, 46#u8, 54#u8, 48#u8, 56#u8, 46#u8, 48#u8, 54#u8, 57#u8,
+        45#u8, 46#u8, 54#u8, 48#u8, 56#u8, 32#u8, 49#u8, 46#u8, 48#u8, 48#u8,
+        51#u8, 46#u8, 48#u8, 55#u8, 32#u8, 49#u8, 46#u8, 53#u8, 51#u8, 49#u8,
+        32#u8, 49#u8, 46#u8, 48#u8, 51#u8, 50#u8, 32#u8, 49#u8, 46#u8, 53#u8,
+        51#u8, 49#u8, 32#u8, 49#u8, 46#u8, 48#u8, 51#u8, 50#u8, 46#u8, 56#u8,
+        57#u8, 50#u8, 32#u8, 49#u8, 46#u8, 53#u8, 51#u8, 32#u8, 50#u8, 46#u8,
+        51#u8, 52#u8, 49#u8, 32#u8, 49#u8, 46#u8, 48#u8, 56#u8, 56#u8, 32#u8,
+        50#u8, 46#u8, 57#u8, 49#u8, 46#u8, 56#u8, 51#u8, 50#u8, 46#u8, 48#u8,
+        57#u8, 50#u8, 45#u8, 46#u8, 54#u8, 52#u8, 55#u8, 46#u8, 51#u8, 53#u8,
+        45#u8, 49#u8, 46#u8, 48#u8, 56#u8, 56#u8, 46#u8, 54#u8, 51#u8, 54#u8,
+        45#u8, 49#u8, 46#u8, 51#u8, 51#u8, 56#u8, 45#u8, 50#u8, 46#u8, 50#u8,
+        50#u8, 45#u8, 46#u8, 50#u8, 53#u8, 51#u8, 45#u8, 52#u8, 46#u8, 53#u8,
+        53#u8, 53#u8, 45#u8, 49#u8, 46#u8, 49#u8, 49#u8, 51#u8, 45#u8, 52#u8,
+        46#u8, 53#u8, 53#u8, 53#u8, 45#u8, 52#u8, 46#u8, 57#u8, 53#u8, 49#u8,
+        32#u8, 48#u8, 45#u8, 49#u8, 46#u8, 48#u8, 57#u8, 51#u8, 46#u8, 51#u8,
+        57#u8, 45#u8, 49#u8, 46#u8, 57#u8, 56#u8, 56#u8, 32#u8, 49#u8, 46#u8,
+        48#u8, 50#u8, 57#u8, 45#u8, 50#u8, 46#u8, 54#u8, 56#u8, 56#u8, 45#u8,
+        46#u8, 49#u8, 48#u8, 51#u8, 45#u8, 46#u8, 50#u8, 53#u8, 51#u8, 45#u8,
+        46#u8, 52#u8, 52#u8, 54#u8, 45#u8, 49#u8, 46#u8, 50#u8, 55#u8, 50#u8,
+        46#u8, 48#u8, 57#u8, 56#u8, 45#u8, 50#u8, 46#u8, 54#u8, 53#u8, 32#u8,
+        48#u8, 32#u8, 48#u8, 32#u8, 46#u8, 56#u8, 52#u8, 45#u8, 46#u8, 50#u8,
+        55#u8, 32#u8, 50#u8, 46#u8, 55#u8, 53#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_9]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 146:0-146:307
+    Visibility: public -/
+def rendering.header_piece_9 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        32#u8, 49#u8, 46#u8, 48#u8, 50#u8, 54#u8, 65#u8, 57#u8, 46#u8, 53#u8,
+        54#u8, 52#u8, 32#u8, 57#u8, 46#u8, 53#u8, 54#u8, 52#u8, 32#u8, 48#u8,
+        32#u8, 48#u8, 49#u8, 49#u8, 50#u8, 32#u8, 54#u8, 46#u8, 56#u8, 52#u8,
+        52#u8, 99#u8, 46#u8, 56#u8, 53#u8, 46#u8, 48#u8, 48#u8, 52#u8, 32#u8,
+        49#u8, 46#u8, 55#u8, 48#u8, 53#u8, 46#u8, 49#u8, 49#u8, 53#u8, 32#u8,
+        50#u8, 46#u8, 53#u8, 48#u8, 52#u8, 46#u8, 51#u8, 51#u8, 55#u8, 32#u8,
+        49#u8, 46#u8, 57#u8, 48#u8, 57#u8, 45#u8, 49#u8, 46#u8, 50#u8, 57#u8,
+        54#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 55#u8, 45#u8, 49#u8, 46#u8,
+        48#u8, 50#u8, 55#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 55#u8, 45#u8,
+        49#u8, 46#u8, 48#u8, 50#u8, 55#u8, 46#u8, 53#u8, 52#u8, 54#u8, 32#u8,
+        49#u8, 46#u8, 51#u8, 55#u8, 57#u8, 46#u8, 50#u8, 48#u8, 50#u8, 32#u8,
+        50#u8, 46#u8, 51#u8, 57#u8, 56#u8, 46#u8, 49#u8, 32#u8, 50#u8, 46#u8,
+        54#u8, 53#u8, 49#u8, 46#u8, 54#u8, 52#u8, 46#u8, 55#u8, 32#u8, 49#u8,
+        46#u8, 48#u8, 50#u8, 56#u8, 32#u8, 49#u8, 46#u8, 53#u8, 57#u8, 53#u8,
+        32#u8, 49#u8, 46#u8, 48#u8, 50#u8, 56#u8, 32#u8, 50#u8, 46#u8, 54#u8,
+        56#u8, 56#u8, 32#u8, 48#u8, 32#u8, 51#u8, 46#u8, 56#u8, 52#u8, 56#u8,
+        45#u8, 50#u8, 46#u8, 51#u8, 51#u8, 57#u8, 32#u8, 52#u8, 46#u8, 54#u8,
+        57#u8, 53#u8, 45#u8, 52#u8, 46#u8, 53#u8, 54#u8, 54#u8, 32#u8, 52#u8,
+        46#u8, 57#u8, 52#u8, 51#u8, 46#u8, 51#u8, 53#u8, 57#u8, 46#u8, 51#u8,
+        48#u8, 57#u8, 46#u8, 54#u8, 55#u8, 56#u8, 46#u8, 57#u8, 50#u8, 46#u8,
+        54#u8, 55#u8, 56#u8, 32#u8, 49#u8, 46#u8, 56#u8, 53#u8, 53#u8, 32#u8,
+        48#u8, 32#u8, 49#u8, 46#u8, 51#u8, 51#u8, 56#u8, 45#u8, 46#u8, 48#u8,
+        49#u8, 50#u8, 32#u8, 50#u8, 46#u8, 52#u8, 49#u8, 57#u8, 45#u8, 46#u8,
+        48#u8, 49#u8, 50#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 55#u8, 32#u8,
+        48#u8, 32#u8, 46#u8, 50#u8, 54#u8, 56#u8, 46#u8, 49#u8, 56#u8, 46#u8,
+        53#u8, 56#u8, 46#u8, 54#u8, 56#u8, 56#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_10]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 148:0-148:341
+    Visibility: public -/
+def rendering.header_piece_10 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        46#u8, 52#u8, 56#u8, 50#u8, 65#u8, 49#u8, 48#u8, 46#u8, 48#u8, 49#u8,
+        57#u8, 32#u8, 49#u8, 48#u8, 46#u8, 48#u8, 49#u8, 57#u8, 32#u8, 48#u8,
+        32#u8, 48#u8, 48#u8, 50#u8, 50#u8, 32#u8, 49#u8, 50#u8, 46#u8, 48#u8,
+        49#u8, 55#u8, 67#u8, 50#u8, 50#u8, 32#u8, 54#u8, 46#u8, 52#u8, 56#u8,
+        52#u8, 32#u8, 49#u8, 55#u8, 46#u8, 53#u8, 50#u8, 50#u8, 32#u8, 50#u8,
+        32#u8, 49#u8, 50#u8, 32#u8, 50#u8, 122#u8, 34#u8, 32#u8, 99#u8, 108#u8,
+        105#u8, 112#u8, 45#u8, 114#u8, 117#u8, 108#u8, 101#u8, 61#u8, 34#u8,
+        101#u8, 118#u8, 101#u8, 110#u8, 111#u8, 100#u8, 100#u8, 34#u8, 47#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8,
+        104#u8, 114#u8, 101#u8, 102#u8, 61#u8, 34#u8, 47#u8, 97#u8, 112#u8,
+        105#u8, 45#u8, 100#u8, 111#u8, 99#u8, 115#u8, 34#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 45#u8, 50#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8,
+        118#u8, 101#u8, 114#u8, 58#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+        115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8,
+        32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 98#u8, 103#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8,
+        48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 34#u8, 32#u8, 116#u8, 105#u8, 116#u8, 108#u8,
+        101#u8, 61#u8, 34#u8, 65#u8, 80#u8, 73#u8, 32#u8, 68#u8, 111#u8, 99#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_11]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 150:0-150:362
+    Visibility: public -/
+def rendering.header_piece_11 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        115#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 118#u8, 103#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 119#u8, 45#u8,
+        53#u8, 32#u8, 104#u8, 45#u8, 53#u8, 34#u8, 32#u8, 102#u8, 105#u8,
+        108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8,
+        32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8,
+        99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+        108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8,
+        66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8, 50#u8,
+        52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 115#u8, 116#u8,
+        114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8,
+        99#u8, 97#u8, 112#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+        100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 106#u8, 111#u8, 105#u8, 110#u8,
+        61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8,
+        115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 119#u8, 105#u8,
+        100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8, 32#u8, 100#u8,
+        61#u8, 34#u8, 77#u8, 57#u8, 32#u8, 49#u8, 50#u8, 104#u8, 54#u8, 109#u8,
+        45#u8, 54#u8, 32#u8, 52#u8, 104#u8, 54#u8, 109#u8, 50#u8, 32#u8, 53#u8,
+        72#u8, 55#u8, 97#u8, 50#u8, 32#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+        49#u8, 45#u8, 50#u8, 45#u8, 50#u8, 86#u8, 53#u8, 97#u8, 50#u8, 32#u8,
+        50#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 50#u8, 45#u8, 50#u8, 104#u8,
+        53#u8, 46#u8, 53#u8, 56#u8, 54#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8,
+        48#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_12]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 152:0-152:220
+    Visibility: public -/
+def rendering.header_piece_12 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 150#usize [
+        32#u8, 48#u8, 49#u8, 46#u8, 55#u8, 48#u8, 55#u8, 46#u8, 50#u8, 57#u8,
+        51#u8, 108#u8, 53#u8, 46#u8, 52#u8, 49#u8, 52#u8, 32#u8, 53#u8, 46#u8,
+        52#u8, 49#u8, 52#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8,
+        48#u8, 49#u8, 46#u8, 50#u8, 57#u8, 51#u8, 46#u8, 55#u8, 48#u8, 55#u8,
+        86#u8, 49#u8, 57#u8, 97#u8, 50#u8, 32#u8, 50#u8, 32#u8, 48#u8, 32#u8,
+        48#u8, 49#u8, 45#u8, 50#u8, 32#u8, 50#u8, 122#u8, 34#u8, 47#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+        104#u8, 101#u8, 97#u8, 100#u8, 101#u8, 114#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_13]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 154:0-154:338
+    Visibility: public -/
+def rendering.header_piece_13 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 104#u8, 105#u8, 100#u8, 100#u8, 101#u8,
+        110#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+        34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8,
+        61#u8, 34#u8, 115#u8, 101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8,
+        40#u8, 39#u8, 101#u8, 110#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        51#u8, 32#u8, 112#u8, 121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8,
+        101#u8, 114#u8, 58#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8,
+        116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8,
+        62#u8, 69#u8, 78#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8, 116#u8,
+        111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 54#u8, 48#u8, 48#u8, 34#u8, 62#u8, 124#u8, 60#u8, 47#u8, 115#u8,
+        112#u8, 97#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_14]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 156:0-156:341
+    Visibility: public -/
+def rendering.header_piece_14 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8, 110#u8,
+        99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8, 101#u8,
+        116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 114#u8, 117#u8,
+        39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8, 121#u8,
+        45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 119#u8, 104#u8, 105#u8, 116#u8, 101#u8, 32#u8, 102#u8, 111#u8,
+        110#u8, 116#u8, 45#u8, 115#u8, 101#u8, 109#u8, 105#u8, 98#u8, 111#u8,
+        108#u8, 100#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8,
+        114#u8, 115#u8, 34#u8, 62#u8, 82#u8, 85#u8, 60#u8, 47#u8, 98#u8,
+        117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+        112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 54#u8, 48#u8, 48#u8, 34#u8, 62#u8,
+        124#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8,
+        101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 122#u8,
+        104#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8,
+        121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8,
+        48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_15]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 158:0-158:341
+    Visibility: public -/
+def rendering.header_piece_15 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8, 110#u8,
+        99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8, 101#u8,
+        116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 114#u8, 117#u8,
+        39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8, 121#u8,
+        45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8,
+        48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8,
+        115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8,
+        108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 82#u8, 85#u8, 60#u8,
+        47#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+        115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 54#u8, 48#u8, 48#u8,
+        34#u8, 62#u8, 124#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8,
+        32#u8, 111#u8, 110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8,
+        34#u8, 115#u8, 101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8,
+        39#u8, 122#u8, 104#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8,
+        32#u8, 112#u8, 121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 119#u8, 104#u8, 105#u8, 116#u8, 101#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_16]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 160:0-160:360
+    Visibility: public -/
+def rendering.header_piece_16 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 260#usize [
+        32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 115#u8, 101#u8, 109#u8,
+        105#u8, 98#u8, 111#u8, 108#u8, 100#u8, 32#u8, 116#u8, 114#u8, 97#u8,
+        110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8,
+        111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 228#u8, 184#u8,
+        173#u8, 230#u8, 150#u8, 135#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8,
+        116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8,
+        114#u8, 101#u8, 102#u8, 61#u8, 34#u8, 104#u8, 116#u8, 116#u8, 112#u8,
+        115#u8, 58#u8, 47#u8, 47#u8, 103#u8, 105#u8, 116#u8, 104#u8, 117#u8,
+        98#u8, 46#u8, 99#u8, 111#u8, 109#u8, 47#u8, 103#u8, 101#u8, 116#u8,
+        110#u8, 111#u8, 114#u8, 97#u8, 45#u8, 105#u8, 111#u8, 47#u8, 110#u8,
+        111#u8, 114#u8, 97#u8, 34#u8, 32#u8, 116#u8, 97#u8, 114#u8, 103#u8,
+        101#u8, 116#u8, 61#u8, 34#u8, 95#u8, 98#u8, 108#u8, 97#u8, 110#u8,
+        107#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 112#u8, 45#u8, 50#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8,
+        48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8,
+        114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+        110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 34#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_dark]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 162:0-255:1
+    Visibility: public -/
+def rendering.header_dark
+  (lang : rendering.Lang) : Result (alloc.vec.Vec Std.U8) := do
+  match lang with
+  | rendering.Lang.En =>
+    let piece ← rendering.header_piece_0
+    let s := alloc.vec.Vec.deref piece
+    let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+    let piece1 ← rendering.header_piece_1
+    let s1 := alloc.vec.Vec.deref piece1
+    let out1 ← rendering.append out s1
+    let piece2 ← rendering.header_piece_2
+    let s2 := alloc.vec.Vec.deref piece2
+    let out2 ← rendering.append out1 s2
+    let piece3 ← rendering.header_piece_3
+    let s3 := alloc.vec.Vec.deref piece3
+    let out3 ← rendering.append out2 s3
+    let piece4 ← rendering.header_piece_4
+    let s4 := alloc.vec.Vec.deref piece4
+    let out4 ← rendering.append out3 s4
+    let piece5 ← rendering.header_piece_5
+    let s5 := alloc.vec.Vec.deref piece5
+    let out5 ← rendering.append out4 s5
+    let piece6 ← rendering.header_piece_6
+    let s6 := alloc.vec.Vec.deref piece6
+    let out6 ← rendering.append out5 s6
+    let piece7 ← rendering.header_piece_7
+    let s7 := alloc.vec.Vec.deref piece7
+    let out7 ← rendering.append out6 s7
+    let piece8 ← rendering.header_piece_8
+    let s8 := alloc.vec.Vec.deref piece8
+    let out8 ← rendering.append out7 s8
+    let piece9 ← rendering.header_piece_9
+    let s9 := alloc.vec.Vec.deref piece9
+    let out9 ← rendering.append out8 s9
+    let piece10 ← rendering.header_piece_10
+    let s10 := alloc.vec.Vec.deref piece10
+    let out10 ← rendering.append out9 s10
+    let piece11 ← rendering.header_piece_11
+    let s11 := alloc.vec.Vec.deref piece11
+    let out11 ← rendering.append out10 s11
+    let piece12 ← rendering.header_piece_12
+    let s12 := alloc.vec.Vec.deref piece12
+    rendering.append out11 s12
+  | rendering.Lang.Ru =>
+    let piece ← rendering.header_piece_0
+    let s := alloc.vec.Vec.deref piece
+    let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+    let piece1 ← rendering.header_piece_1
+    let s1 := alloc.vec.Vec.deref piece1
+    let out1 ← rendering.append out s1
+    let piece2 ← rendering.header_piece_2
+    let s2 := alloc.vec.Vec.deref piece2
+    let out2 ← rendering.append out1 s2
+    let piece3 ← rendering.header_piece_3
+    let s3 := alloc.vec.Vec.deref piece3
+    let out3 ← rendering.append out2 s3
+    let piece4 ← rendering.header_piece_13
+    let s4 := alloc.vec.Vec.deref piece4
+    let out4 ← rendering.append out3 s4
+    let piece5 ← rendering.header_piece_14
+    let s5 := alloc.vec.Vec.deref piece5
+    let out5 ← rendering.append out4 s5
+    let piece6 ← rendering.header_piece_6
+    let s6 := alloc.vec.Vec.deref piece6
+    let out6 ← rendering.append out5 s6
+    let piece7 ← rendering.header_piece_7
+    let s7 := alloc.vec.Vec.deref piece7
+    let out7 ← rendering.append out6 s7
+    let piece8 ← rendering.header_piece_8
+    let s8 := alloc.vec.Vec.deref piece8
+    let out8 ← rendering.append out7 s8
+    let piece9 ← rendering.header_piece_9
+    let s9 := alloc.vec.Vec.deref piece9
+    let out9 ← rendering.append out8 s9
+    let piece10 ← rendering.header_piece_10
+    let s10 := alloc.vec.Vec.deref piece10
+    let out10 ← rendering.append out9 s10
+    let piece11 ← rendering.header_piece_11
+    let s11 := alloc.vec.Vec.deref piece11
+    let out11 ← rendering.append out10 s11
+    let piece12 ← rendering.header_piece_12
+    let s12 := alloc.vec.Vec.deref piece12
+    rendering.append out11 s12
+  | rendering.Lang.Zh =>
+    let piece ← rendering.header_piece_0
+    let s := alloc.vec.Vec.deref piece
+    let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+    let piece1 ← rendering.header_piece_1
+    let s1 := alloc.vec.Vec.deref piece1
+    let out1 ← rendering.append out s1
+    let piece2 ← rendering.header_piece_2
+    let s2 := alloc.vec.Vec.deref piece2
+    let out2 ← rendering.append out1 s2
+    let piece3 ← rendering.header_piece_3
+    let s3 := alloc.vec.Vec.deref piece3
+    let out3 ← rendering.append out2 s3
+    let piece4 ← rendering.header_piece_13
+    let s4 := alloc.vec.Vec.deref piece4
+    let out4 ← rendering.append out3 s4
+    let piece5 ← rendering.header_piece_15
+    let s5 := alloc.vec.Vec.deref piece5
+    let out5 ← rendering.append out4 s5
+    let piece6 ← rendering.header_piece_16
+    let s6 := alloc.vec.Vec.deref piece6
+    let out6 ← rendering.append out5 s6
+    let piece7 ← rendering.header_piece_7
+    let s7 := alloc.vec.Vec.deref piece7
+    let out7 ← rendering.append out6 s7
+    let piece8 ← rendering.header_piece_8
+    let s8 := alloc.vec.Vec.deref piece8
+    let out8 ← rendering.append out7 s8
+    let piece9 ← rendering.header_piece_9
+    let s9 := alloc.vec.Vec.deref piece9
+    let out9 ← rendering.append out8 s9
+    let piece10 ← rendering.header_piece_10
+    let s10 := alloc.vec.Vec.deref piece10
+    let out10 ← rendering.append out9 s10
+    let piece11 ← rendering.header_piece_11
+    let s11 := alloc.vec.Vec.deref piece11
+    let out11 ← rendering.append out10 s11
+    let piece12 ← rendering.header_piece_12
+    let s12 := alloc.vec.Vec.deref piece12
+    rendering.append out11 s12
+
+/-- [nora_kernel::rendering::registry_search_bar]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 257:0-272:1
+    Visibility: public -/
+def rendering.registry_search_bar
+  (registry : Slice Std.U8) (placeholder : Slice Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+        116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 32#u8, 106#u8, 117#u8, 115#u8, 116#u8, 105#u8, 102#u8,
+        121#u8, 45#u8, 101#u8, 110#u8, 100#u8, 32#u8, 109#u8, 98#u8, 45#u8,
+        52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8,
+        118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        114#u8, 101#u8, 108#u8, 97#u8, 116#u8, 105#u8, 118#u8, 101#u8, 32#u8,
+        119#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 109#u8, 100#u8,
+        58#u8, 119#u8, 45#u8, 97#u8, 117#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 53#usize [
+        116#u8, 111#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 105#u8, 110#u8, 112#u8, 117#u8, 116#u8, 32#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        34#u8, 32#u8, 112#u8, 108#u8, 97#u8, 99#u8, 101#u8, 104#u8, 111#u8,
+        108#u8, 100#u8, 101#u8, 114#u8, 61#u8, 34#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let out2 ← rendering.append out1 placeholder
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        34#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        119#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 109#u8, 100#u8,
+        58#u8, 119#u8, 45#u8, 97#u8, 117#u8, 116#u8, 111#u8, 32#u8, 112#u8,
+        108#u8, 45#u8, 49#u8, 48#u8, 32#u8, 112#u8, 114#u8, 45#u8, 52#u8,
+        32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 32#u8, 98#u8, 103#u8, 45#u8,
+        115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 56#u8, 48#u8, 48#u8,
+        32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 32#u8, 98#u8,
+        111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 54#u8
+        ]))
+  let out3 ← rendering.append out2 s2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        48#u8, 48#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8,
+        114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8,
+        103#u8, 32#u8, 102#u8, 111#u8, 99#u8, 117#u8, 115#u8, 58#u8, 111#u8,
+        117#u8, 116#u8, 108#u8, 105#u8, 110#u8, 101#u8, 45#u8, 110#u8, 111#u8,
+        110#u8, 101#u8, 32#u8, 102#u8, 111#u8, 99#u8, 117#u8, 115#u8, 58#u8,
+        114#u8, 105#u8, 110#u8, 103#u8, 45#u8, 50#u8, 32#u8, 102#u8, 111#u8,
+        99#u8, 117#u8, 115#u8, 58#u8, 114#u8, 105#u8, 110#u8, 103#u8, 45#u8,
+        98#u8, 108#u8, 117#u8, 101#u8, 45#u8, 53#u8, 48#u8, 48#u8, 32#u8,
+        102#u8, 111#u8, 99#u8, 117#u8, 115#u8, 58#u8, 98#u8, 111#u8, 114#u8,
+        100#u8, 101#u8, 114#u8, 45#u8, 116#u8, 114#u8
+        ]))
+  let out4 ← rendering.append out3 s3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 69#usize [
+        97#u8, 110#u8, 115#u8, 112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 108#u8, 97#u8, 99#u8, 101#u8, 104#u8, 111#u8, 108#u8,
+        100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 53#u8, 48#u8, 48#u8, 34#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 104#u8, 120#u8, 45#u8,
+        103#u8, 101#u8, 116#u8, 61#u8, 34#u8, 47#u8, 97#u8, 112#u8, 105#u8,
+        47#u8, 117#u8, 105#u8, 47#u8
+        ]))
+  let out5 ← rendering.append out4 s4
+  let out6 ← rendering.append out5 registry
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        47#u8, 115#u8, 101#u8, 97#u8, 114#u8, 99#u8, 104#u8, 34#u8, 32#u8,
+        104#u8, 120#u8, 45#u8, 116#u8, 114#u8, 105#u8, 103#u8, 103#u8, 101#u8,
+        114#u8, 61#u8, 34#u8, 107#u8, 101#u8, 121#u8, 117#u8, 112#u8, 32#u8,
+        99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8, 100#u8, 32#u8, 100#u8,
+        101#u8, 108#u8, 97#u8, 121#u8, 58#u8, 51#u8, 48#u8, 48#u8, 109#u8,
+        115#u8, 34#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 104#u8, 120#u8, 45#u8, 116#u8, 97#u8, 114#u8,
+        103#u8, 101#u8, 116#u8, 61#u8, 34#u8, 35#u8, 114#u8, 101#u8, 112#u8,
+        111#u8, 45#u8, 116#u8, 97#u8, 98#u8, 108#u8, 101#u8, 45#u8, 98#u8,
+        111#u8, 100#u8, 121#u8, 34#u8
+        ]))
+  let out7 ← rendering.append out6 s5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 61#u8, 34#u8, 113#u8, 34#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+        118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 97#u8, 98#u8, 115#u8, 111#u8, 108#u8, 117#u8, 116#u8, 101#u8,
+        32#u8, 108#u8, 101#u8, 102#u8, 116#u8, 45#u8, 51#u8, 32#u8, 116#u8,
+        111#u8, 112#u8, 45#u8, 50#u8, 46#u8, 53#u8, 32#u8, 104#u8, 45#u8,
+        53#u8, 32#u8, 119#u8, 45#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 53#u8,
+        48#u8, 48#u8, 34#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8,
+        34#u8, 110#u8, 111#u8, 110#u8
+        ]))
+  let out8 ← rendering.append out7 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8,
+        67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8,
+        101#u8, 119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8,
+        48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 60#u8,
+        112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8,
+        107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 99#u8, 97#u8,
+        112#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8,
+        32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8,
+        105#u8, 110#u8, 101#u8, 106#u8, 111#u8, 105#u8, 110#u8, 61#u8, 34#u8,
+        114#u8, 111#u8, 117#u8, 110#u8, 100#u8
+        ]))
+  let out9 ← rendering.append out8 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8,
+        119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8,
+        32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 50#u8, 49#u8, 32#u8, 50#u8, 49#u8,
+        108#u8, 45#u8, 54#u8, 45#u8, 54#u8, 109#u8, 50#u8, 45#u8, 53#u8, 97#u8,
+        55#u8, 32#u8, 55#u8, 32#u8, 48#u8, 32#u8, 49#u8, 49#u8, 45#u8, 49#u8,
+        52#u8, 32#u8, 48#u8, 32#u8, 55#u8, 32#u8, 55#u8, 32#u8, 48#u8, 32#u8,
+        48#u8, 49#u8, 49#u8, 52#u8, 32#u8, 48#u8, 122#u8, 34#u8, 47#u8, 62#u8,
+        60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8, 32#u8
+        ]))
+  let out10 ← rendering.append out9 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8,
+        118#u8, 62#u8
+        ]))
+  rendering.append out10 s9
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenFile}::clone]:
     Source: 'prove/ports/nora/kernel/src/tokens.rs', lines 24:4-30:5

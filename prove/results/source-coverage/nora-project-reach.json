@@ -1,6 +1,6 @@
 {
   "upstream_revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
-  "mapping_sha256": "e4debf8fcf69153a242219f08a4634a3a13721f9a0d70a7fecf25b0b7da32141",
+  "mapping_sha256": "104d34b7a4d5d604dee5a1c0bca4ce2437f9ee80770ce8a81fe458d1f44caa86",
   "lines": {
     "nora-registry/src/auth/mod.rs": [
       79,
@@ -1277,6 +1277,170 @@
       436,
       437
     ],
+    "nora-registry/src/ui/components.rs": [
+      420,
+      421,
+      422,
+      423,
+      424,
+      425,
+      426,
+      427,
+      428,
+      429,
+      430,
+      431,
+      432,
+      433,
+      434,
+      435,
+      436,
+      437,
+      439,
+      440,
+      441,
+      442,
+      443,
+      444,
+      445,
+      446,
+      447,
+      448,
+      449,
+      450,
+      451,
+      452,
+      453,
+      454,
+      455,
+      456,
+      457,
+      458,
+      459,
+      460,
+      461,
+      462,
+      463,
+      464,
+      465,
+      466,
+      467,
+      468,
+      469,
+      470,
+      471,
+      472,
+      473,
+      474,
+      475,
+      476,
+      650,
+      651,
+      652,
+      653,
+      654,
+      655,
+      656,
+      657,
+      658,
+      659,
+      660,
+      661,
+      662,
+      663,
+      665,
+      666,
+      667,
+      668,
+      669,
+      670,
+      671,
+      672,
+      673,
+      674,
+      675,
+      676,
+      677,
+      678,
+      679,
+      680,
+      681,
+      682,
+      685,
+      686,
+      687,
+      688,
+      689,
+      690,
+      691,
+      692,
+      693,
+      694,
+      695,
+      696,
+      697,
+      698,
+      699,
+      700,
+      701,
+      702,
+      703,
+      704,
+      705,
+      706,
+      707,
+      708,
+      709,
+      710,
+      711,
+      712,
+      713,
+      714,
+      715,
+      716,
+      717,
+      718,
+      719,
+      720,
+      723,
+      724,
+      725,
+      726,
+      727,
+      728,
+      731,
+      732,
+      733,
+      734,
+      737,
+      738,
+      739,
+      740,
+      741,
+      742,
+      743,
+      746,
+      747,
+      748,
+      749,
+      750,
+      751,
+      752,
+      753,
+      754,
+      755,
+      756,
+      757,
+      758,
+      759,
+      799,
+      800,
+      801,
+      802,
+      803,
+      804,
+      805
+    ],
     "nora-registry/src/ui/i18n.rs": [
       34,
       35,
@@ -1285,6 +1449,35 @@
       38,
       39,
       40
+    ],
+    "nora-registry/src/ui/templates.rs": [
+      679,
+      680,
+      681,
+      682,
+      683,
+      684,
+      685,
+      686,
+      687,
+      688,
+      689,
+      690,
+      691,
+      2001,
+      2002,
+      2003,
+      2004,
+      2005,
+      2006,
+      2007,
+      2008,
+      2009,
+      2010,
+      2011,
+      2012,
+      2013,
+      2014
     ],
     "nora-registry/src/validation.rs": [
       78,
@@ -1511,7 +1704,7 @@
       458
     ]
   },
-  "upstream_reached": 1488,
+  "upstream_reached": 1677,
   "properties": [
     {
       "name": "nora_kernel.Properties.curation_evaluate_spec",
@@ -5688,6 +5881,178 @@
           "start": 34,
           "end": 40,
           "sha256": "0010642a0a02917b18b473a72bcd8f952d8b19499da99af6d193cf436afc41d2"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_html_escape_complete",
+      "generated_dependencies": [
+        "rendering.append",
+        "rendering.html_byte",
+        "rendering.html_escape",
+        "rendering.html_escape_loop",
+        "rendering.html_escape_loop.body"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.html_escape",
+          "file": "nora-registry/src/ui/components.rs",
+          "kind": "fn",
+          "name": "html_escape",
+          "self_ty": "",
+          "start": 798,
+          "end": 805,
+          "sha256": "f539a8b8a222601373e20cfbe122d3fc0630564f18e10fd8ecc844c29930fed1"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_render_activity_row_complete",
+      "generated_dependencies": [
+        "rendering.action_color",
+        "rendering.append",
+        "rendering.html_byte",
+        "rendering.html_escape",
+        "rendering.html_escape_loop",
+        "rendering.html_escape_loop.body",
+        "rendering.render_activity_row"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.html_escape",
+          "file": "nora-registry/src/ui/components.rs",
+          "kind": "fn",
+          "name": "html_escape",
+          "self_ty": "",
+          "start": 798,
+          "end": 805,
+          "sha256": "f539a8b8a222601373e20cfbe122d3fc0630564f18e10fd8ecc844c29930fed1"
+        },
+        {
+          "declaration": "rendering.render_activity_row",
+          "file": "nora-registry/src/ui/components.rs",
+          "kind": "fn",
+          "name": "render_activity_row",
+          "self_ty": "",
+          "start": 649,
+          "end": 682,
+          "sha256": "b836e30d7315c0d7714f6da7b18a451c3902f324b3a38f74422684ef28c5a966"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_render_activity_log_complete",
+      "generated_dependencies": [
+        "rendering.append",
+        "rendering.render_activity_log"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.render_activity_log",
+          "file": "nora-registry/src/ui/components.rs",
+          "kind": "fn",
+          "name": "render_activity_log",
+          "self_ty": "",
+          "start": 684,
+          "end": 720,
+          "sha256": "27e39c800c52ee9b1bd212fd003f842a59b43bae6f3339697549afe932f819ca"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_render_polling_script_complete",
+      "generated_dependencies": [
+        "rendering.append",
+        "rendering.render_polling_script"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.render_polling_script",
+          "file": "nora-registry/src/ui/components.rs",
+          "kind": "fn",
+          "name": "render_polling_script",
+          "self_ty": "",
+          "start": 722,
+          "end": 759,
+          "sha256": "339f3b5d242a57c6b7d6539b2b70b70794c6612c5ae8ea9edbfb37876a3b5327"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_header_dark_complete",
+      "generated_dependencies": [
+        "rendering.append",
+        "rendering.header_dark",
+        "rendering.header_piece_0",
+        "rendering.header_piece_1",
+        "rendering.header_piece_10",
+        "rendering.header_piece_11",
+        "rendering.header_piece_12",
+        "rendering.header_piece_13",
+        "rendering.header_piece_14",
+        "rendering.header_piece_15",
+        "rendering.header_piece_16",
+        "rendering.header_piece_2",
+        "rendering.header_piece_3",
+        "rendering.header_piece_4",
+        "rendering.header_piece_5",
+        "rendering.header_piece_6",
+        "rendering.header_piece_7",
+        "rendering.header_piece_8",
+        "rendering.header_piece_9"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.header_dark",
+          "file": "nora-registry/src/ui/components.rs",
+          "kind": "fn",
+          "name": "header_dark",
+          "self_ty": "",
+          "start": 419,
+          "end": 476,
+          "sha256": "338afc3eeea1b53f8aa02dbd77a6bfdd3a8e8b63bf61dec835e9d1318dc7f174"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_encode_uri_component_complete",
+      "generated_dependencies": [
+        "rendering.append",
+        "rendering.encode_uri_component",
+        "rendering.encode_uri_component_loop",
+        "rendering.encode_uri_component_loop.body",
+        "rendering.uri_allowed",
+        "rendering.uri_byte"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.encode_uri_component",
+          "file": "nora-registry/src/ui/templates.rs",
+          "kind": "fn",
+          "name": "encode_uri_component",
+          "self_ty": "",
+          "start": 2000,
+          "end": 2014,
+          "sha256": "6b021b527a75aa9afab32f4d549c1a58815bd6cabc42da55a21d7284a98a1bc0"
+        }
+      ]
+    },
+    {
+      "name": "nora_kernel.Properties.rendering_registry_search_bar_complete",
+      "generated_dependencies": [
+        "rendering.append",
+        "rendering.registry_search_bar"
+      ],
+      "items": [
+        {
+          "declaration": "rendering.registry_search_bar",
+          "file": "nora-registry/src/ui/templates.rs",
+          "kind": "fn",
+          "name": "registry_search_bar",
+          "self_ty": "",
+          "start": 675,
+          "end": 691,
+          "sha256": "963e15732b1da82b70855f4d1bf8de7b8fc27a771586381b6d3b1676b07c4ea4"
         }
       ]
     }

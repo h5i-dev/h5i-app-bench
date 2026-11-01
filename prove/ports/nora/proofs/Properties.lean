@@ -1,3 +1,4 @@
+import Verified.Rendering
 import Verified.FiniteCatalog
 import Verified.Curation
 import Verified.CircuitBreaker
@@ -388,5 +389,50 @@ theorem finite_role_a890c86c_can_admin_complete (v : finite_catalog.role_a890c86
 
 theorem finite_lang_986f59b4_code_complete (v : finite_catalog.lang_986f59b4.Lang) :
     finite_catalog.lang_986f59b4.Lang.code v ⦃r => r.val = lang_986f59b4_code_model v⦄ := Verified.FiniteCatalog.lang_986f59b4_code_complete v
+
+end nora_kernel.Properties
+-- Complete pinned Nora rendering outputs.
+namespace nora_kernel.Properties
+open Verified.Rendering
+
+theorem rendering_html_escape_complete (s : Slice U8)
+    (hbound : (replacements_model s.val).length ≤ Usize.max) :
+    rendering.html_escape s ⦃r => r.val = replacements_model s.val⦄ :=
+  by
+  have hb : (html_model s.val).length ≤ Usize.max := by
+    simpa only [html_model_replacements] using hbound
+  apply WP.spec_mono (Verified.Rendering.html_escape_complete s hb)
+  intro r hr
+  exact hr.trans (html_model_replacements s.val)
+
+theorem rendering_render_activity_row_complete (timestamp action artifact registry source : Slice U8)
+    (hbound : (render_activity_row_model timestamp.val action.val artifact.val registry.val source.val).length ≤ Usize.max) :
+    rendering.render_activity_row timestamp action artifact registry source ⦃r => r.val = render_activity_row_model timestamp.val action.val artifact.val registry.val source.val⦄ :=
+  Verified.Rendering.render_activity_row_complete timestamp action artifact registry source hbound
+
+theorem rendering_render_activity_log_complete (rows : Slice U8) (t : rendering.Translations)
+    (hbound : (render_activity_log_model rows.val t).length ≤ Usize.max) :
+    rendering.render_activity_log rows t ⦃r => r.val = render_activity_log_model rows.val t⦄ :=
+  Verified.Rendering.render_activity_log_complete rows t hbound
+
+theorem rendering_render_polling_script_complete
+    (hbound : (render_polling_script_model ).length ≤ Usize.max) :
+    rendering.render_polling_script  ⦃r => r.val = render_polling_script_model ⦄ :=
+  Verified.Rendering.render_polling_script_complete  hbound
+
+theorem rendering_header_dark_complete (lang : rendering.Lang)
+    (hbound : (header_dark_model lang).length ≤ Usize.max) :
+    rendering.header_dark lang ⦃r => r.val = header_dark_model lang⦄ :=
+  Verified.Rendering.header_dark_complete lang hbound
+
+theorem rendering_encode_uri_component_complete (s : Slice U8)
+    (hbound : (uri_model s.val).length ≤ Usize.max) :
+    rendering.encode_uri_component s ⦃r => r.val = uri_model s.val⦄ :=
+  Verified.Rendering.encode_uri_component_complete s hbound
+
+theorem rendering_registry_search_bar_complete (registry placeholder : Slice U8)
+    (hbound : (registry_search_bar_model registry.val placeholder.val).length ≤ Usize.max) :
+    rendering.registry_search_bar registry placeholder ⦃r => r.val = registry_search_bar_model registry.val placeholder.val⦄ :=
+  Verified.Rendering.registry_search_bar_complete registry placeholder hbound
 
 end nora_kernel.Properties
