@@ -947,6 +947,699 @@
         "end": 270,
         "sha256": "fa5c7a2f4d2a1483e3f1bcefcc7ec920c328d1fbc27d5cf78cb015442008f002"
       }
+    ],
+    "finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.content_type": [
+      {
+        "file": "backend/src/api/handlers/conda.rs",
+        "kind": "method",
+        "name": "content_type",
+        "self_ty": "RepodataEncoding",
+        "start": 1678,
+        "end": 1684,
+        "sha256": "bb8d989bbde13f83eaaff0917bedd26de323294dd4b47b096b5f93f04096b39b"
+      }
+    ],
+    "finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.upstream_filename": [
+      {
+        "file": "backend/src/api/handlers/conda.rs",
+        "kind": "method",
+        "name": "upstream_filename",
+        "self_ty": "RepodataEncoding",
+        "start": 1686,
+        "end": 1692,
+        "sha256": "e431409cbb1db6c2640df0c727c1350563e37676b608975483b352627a969b3c"
+      }
+    ],
+    "finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.as_str": [
+      {
+        "file": "backend/src/api/handlers/debian.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "SignedReleaseVariant",
+        "start": 1819,
+        "end": 1824,
+        "sha256": "db298dca48bcf61e3bdab2e15defa84971c0649a3dfa88149dcfe877188ca80d"
+      }
+    ],
+    "finite_catalog.upload_session_state_a43ea4df.UploadSessionState.as_str": [
+      {
+        "file": "backend/src/api/handlers/oci_v2.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "UploadSessionState",
+        "start": 1571,
+        "end": 1576,
+        "sha256": "a3e6b3616e78e9dad00c611a5a13fb262ff182f4eee32e69f031352f49da5700"
+      }
+    ],
+    "finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.may_serve_stored_object": [
+      {
+        "file": "backend/src/api/handlers/pypi.rs",
+        "kind": "method",
+        "name": "may_serve_stored_object",
+        "self_ty": "CachedObjectVerdict",
+        "start": 3373,
+        "end": 3375,
+        "sha256": "84eb1cb70ac5ecea173ce14c8556bd1a92247190cb722d6100c446424e3baa6f"
+      }
+    ],
+    "finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.env_var": [
+      {
+        "file": "backend/src/api/validation.rs",
+        "kind": "method",
+        "name": "env_var",
+        "self_ty": "OutboundUrlContext",
+        "start": 140,
+        "end": 154,
+        "sha256": "ad269953ad77578534c4c95a2ad33331392fc249d596d20180c755d4b0199d42"
+      }
+    ],
+    "finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.message": [
+      {
+        "file": "backend/src/config.rs",
+        "kind": "method",
+        "name": "message",
+        "self_ty": "JwtSecretWarning",
+        "start": 1926,
+        "end": 1934,
+        "sha256": "dfb9859a2824b1d985e904344ea648bda7520f2bd64461d47ae6e683cfebc262"
+      }
+    ],
+    "finite_catalog.incus_file_type_eee7eb85.IncusFileType.as_str": [
+      {
+        "file": "backend/src/formats/incus.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "IncusFileType",
+        "start": 300,
+        "end": 308,
+        "sha256": "783c03cc9525936e15bd21630a03cdb6826c54347c6de79d0e83760472e9a116"
+      }
+    ],
+    "finite_catalog.incus_file_type_eee7eb85.IncusFileType.is_tarball": [
+      {
+        "file": "backend/src/formats/incus.rs",
+        "kind": "method",
+        "name": "is_tarball",
+        "self_ty": "IncusFileType",
+        "start": 310,
+        "end": 312,
+        "sha256": "c4a508ea827d4889d661873f7208adce6216eddfbb26f08d9f5957a0d9e1cb93"
+      }
+    ],
+    "finite_catalog.sbom_format_104be95e.SbomFormat.as_str": [
+      {
+        "file": "backend/src/models/sbom.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "SbomFormat",
+        "start": 19,
+        "end": 24,
+        "sha256": "1807762bb77492f7159769820232aa5698131c7140c03d1e335e98b2fbbaa779"
+      }
+    ],
+    "finite_catalog.sbom_format_104be95e.SbomFormat.content_type": [
+      {
+        "file": "backend/src/models/sbom.rs",
+        "kind": "method",
+        "name": "content_type",
+        "self_ty": "SbomFormat",
+        "start": 34,
+        "end": 39,
+        "sha256": "cc839438c45a0e124e56b27852d168b77cc38d60fc49467644e75be82d4a5b03"
+      }
+    ],
+    "finite_catalog.cve_status_104be95e.CveStatus.as_str": [
+      {
+        "file": "backend/src/models/sbom.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "CveStatus",
+        "start": 146,
+        "end": 153,
+        "sha256": "441e587ced75b5cbf118bbc8fdaf0df8cc758502e57a8521ba0e075415e5965b"
+      }
+    ],
+    "finite_catalog.policy_action_104be95e.PolicyAction.as_str": [
+      {
+        "file": "backend/src/models/sbom.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "PolicyAction",
+        "start": 177,
+        "end": 183,
+        "sha256": "9e2468a373fd5c425c18978bec518edf29c6e457e992f64af439f58426cab81b"
+      }
+    ],
+    "finite_catalog.severity_1259a9af.Severity.penalty_weight": [
+      {
+        "file": "backend/src/models/security.rs",
+        "kind": "method",
+        "name": "penalty_weight",
+        "self_ty": "Severity",
+        "start": 57,
+        "end": 66,
+        "sha256": "10a8bd27c62f68f2f21ddbbf356e51ccba8ff019de7bfd4e488436b978da964e"
+      }
+    ],
+    "finite_catalog.severity_1259a9af.Severity.as_str": [
+      {
+        "file": "backend/src/models/security.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Severity",
+        "start": 162,
+        "end": 174,
+        "sha256": "8195302c6cdf3ccb7585a6bd12c745236cee65e7389f788396b391649351438f"
+      }
+    ],
+    "finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.as_str": [
+      {
+        "file": "backend/src/services/age_gate_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "AgeGateMode",
+        "start": 54,
+        "end": 59,
+        "sha256": "52dc032fea4c35a91cbd888466083ce4a1cdafa81f8c16ddb6c04b5b90b23acf"
+      }
+    ],
+    "finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.as_str": [
+      {
+        "file": "backend/src/services/age_gate_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "AgeGateReviewStatus",
+        "start": 199,
+        "end": 205,
+        "sha256": "46faf292420b6d3ce7decdef63215afe2f40889beffa82a891c794dcc5db5048"
+      }
+    ],
+    "finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.name": [
+      {
+        "file": "backend/src/services/audit_export.rs",
+        "kind": "method",
+        "name": "name",
+        "self_ty": "AuditStreamMode",
+        "start": 725,
+        "end": 731,
+        "sha256": "fa945a45c4deaa0813335e8a58e3daaebf404b3d91855d119cc0450b84d5e34c"
+      }
+    ],
+    "finite_catalog.audit_action_3ef0ea8f.AuditAction.as_str": [
+      {
+        "file": "backend/src/services/audit_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "AuditAction",
+        "start": 142,
+        "end": 201,
+        "sha256": "5473ed501211fb69fb7ff8a5d7aa0ab3cf0e253e4f16c2f623fb99cb4fc1d804"
+      }
+    ],
+    "finite_catalog.resource_type_3ef0ea8f.ResourceType.as_str": [
+      {
+        "file": "backend/src/services/audit_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ResourceType",
+        "start": 220,
+        "end": 233,
+        "sha256": "c66899f77351a82e9605a740782026921cbf9a7a087008d9b99329cfffc199a2"
+      }
+    ],
+    "finite_catalog.noarch_kind_b8478f7b.NoarchKind.as_str": [
+      {
+        "file": "backend/src/services/conda_identity.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "NoarchKind",
+        "start": 176,
+        "end": 181,
+        "sha256": "bfdbf3ef48a43f0b1f9e5e7d9545155199e514d68bc58010459095ce13b845c2"
+      }
+    ],
+    "finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.as_str": [
+      {
+        "file": "backend/src/services/conda_identity.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "CondaArchiveType",
+        "start": 208,
+        "end": 213,
+        "sha256": "f30dc37d684beb8578f833730328ce122aa76da1822f787b42ece6dd7e386fff"
+      }
+    ],
+    "finite_catalog.script_kind_a04cea8b.ScriptKind.as_str": [
+      {
+        "file": "backend/src/services/conda_scripts.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ScriptKind",
+        "start": 72,
+        "end": 94,
+        "sha256": "22785f3a4f687b16a25d1af55a6a7f0013436f4e9e0786cc7f51728390fae38a"
+      }
+    ],
+    "finite_catalog.script_kind_a04cea8b.ScriptKind.runs_as_root": [
+      {
+        "file": "backend/src/services/conda_scripts.rs",
+        "kind": "method",
+        "name": "runs_as_root",
+        "self_ty": "ScriptKind",
+        "start": 96,
+        "end": 115,
+        "sha256": "adb5f5f777e9fe40c9c3454d378239d5d49cdd74aaa84a2ec856023f432b987d"
+      }
+    ],
+    "finite_catalog.candidate_confidence_8223875f.CandidateConfidence.as_str": [
+      {
+        "file": "backend/src/services/cpe_candidates.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "CandidateConfidence",
+        "start": 79,
+        "end": 86,
+        "sha256": "f52a82e22f10547061e73338556bf910ac75434599c1c1e1bf3ba2906753703e"
+      }
+    ],
+    "finite_catalog.check_b0946112.Check.bit": [
+      {
+        "file": "backend/src/services/curation/attestation_verify.rs",
+        "kind": "method",
+        "name": "bit",
+        "self_ty": "Check",
+        "start": 135,
+        "end": 137,
+        "sha256": "516339c8a5c97e9f92ade43ba4232ebf9fbc59f0dcf960b03328933427ca3fd1"
+      }
+    ],
+    "finite_catalog.check_b0946112.Check.reason_label": [
+      {
+        "file": "backend/src/services/curation/attestation_verify.rs",
+        "kind": "method",
+        "name": "reason_label",
+        "self_ty": "Check",
+        "start": 139,
+        "end": 151,
+        "sha256": "1047aafeea50b8845e373526c967078260ab3afa5858c5a49548cbf37c764bb3"
+      }
+    ],
+    "finite_catalog.attestation_state_b0946112.AttestationState.as_str": [
+      {
+        "file": "backend/src/services/curation/attestation_verify.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "AttestationState",
+        "start": 248,
+        "end": 254,
+        "sha256": "ba10522b238801adff23d1129e663d2172659c80a4f69b4bf3dbf98d18acd9de"
+      }
+    ],
+    "finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.as_str": [
+      {
+        "file": "backend/src/services/declared_dependencies.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "InventoryCompleteness",
+        "start": 57,
+        "end": 65,
+        "sha256": "72866d9a6d6aaaeac61d46fe4952acc0630af43a26c03e0dd0869a1fbb63d445"
+      }
+    ],
+    "finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.as_str": [
+      {
+        "file": "backend/src/services/egress_proxy.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "EgressProxyMode",
+        "start": 99,
+        "end": 106,
+        "sha256": "459f48d88d716af8bfeed241286d915708bc7a3d3d04fdf609992467d10ed5b1"
+      }
+    ],
+    "finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.label": [
+      {
+        "file": "backend/src/services/email_rate_limiter.rs",
+        "kind": "method",
+        "name": "label",
+        "self_ty": "RateLimitDecision",
+        "start": 160,
+        "end": 167,
+        "sha256": "e348ee33ac0a4a9f0e3dd5d1f4a2c8e3ec5f5aec8f2af613488fefaa99cf87e2"
+      }
+    ],
+    "finite_catalog.lock_format_99735155.LockFormat.as_str": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "LockFormat",
+        "start": 153,
+        "end": 163,
+        "sha256": "71d4ec334df2c009addcff3d7610dadca4f90b5f0ae15d0597ba9ddeed7ea9c1"
+      }
+    ],
+    "finite_catalog.lock_format_99735155.LockFormat.is_per_platform": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "is_per_platform",
+        "self_ty": "LockFormat",
+        "start": 165,
+        "end": 170,
+        "sha256": "bdfe2438619edcaf9fa5ef0dce32393e6d1d4f6b92d9428883cf343655f28117"
+      }
+    ],
+    "finite_catalog.ecosystem_99735155.Ecosystem.as_str": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Ecosystem",
+        "start": 191,
+        "end": 199,
+        "sha256": "65a9243d154c692b876e8886e0c8cd87beed673301b73d02dec888b990bd57ff"
+      }
+    ],
+    "finite_catalog.edge_kind_99735155.EdgeKind.as_str": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "EdgeKind",
+        "start": 339,
+        "end": 349,
+        "sha256": "c7548a8b80b45981c5a61f37d4426c093973445a162097a0a514f8182391924f"
+      }
+    ],
+    "finite_catalog.unresolved_kind_99735155.UnresolvedKind.as_str": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "UnresolvedKind",
+        "start": 404,
+        "end": 413,
+        "sha256": "73f9c311697479983ce545639d4a6a1cf77ce6488da4f91477f6984d910affe4"
+      }
+    ],
+    "finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_parse_failure": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "is_parse_failure",
+        "self_ty": "UnresolvedKind",
+        "start": 415,
+        "end": 419,
+        "sha256": "2429a0786e38e7de039efb74a4c4698d459acd07992f2a93c3f123a9310ed7f8"
+      }
+    ],
+    "finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_graph_gap": [
+      {
+        "file": "backend/src/services/environment_lock.rs",
+        "kind": "method",
+        "name": "is_graph_gap",
+        "self_ty": "UnresolvedKind",
+        "start": 421,
+        "end": 429,
+        "sha256": "19c9cd1c0357f669824648f40ae0ede6d55175bccbb548a46c8bffa1bd8c155c"
+      }
+    ],
+    "finite_catalog.package_manager_7f965e35.PackageManager.as_str": [
+      {
+        "file": "backend/src/services/image_build_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "PackageManager",
+        "start": 93,
+        "end": 103,
+        "sha256": "6bde593154708c4e80b7a1e1721ea688b30bcf6bebdc7056a70c8cd866529797"
+      }
+    ],
+    "finite_catalog.package_manager_7f965e35.PackageManager.is_system": [
+      {
+        "file": "backend/src/services/image_build_service.rs",
+        "kind": "method",
+        "name": "is_system",
+        "self_ty": "PackageManager",
+        "start": 105,
+        "end": 115,
+        "sha256": "28d9c5bc171f3987cafd151f4299073d0e3bf333a0ca4cb68e0a6b4709b80216"
+      }
+    ],
+    "finite_catalog.policy_type_080e6210.PolicyType.as_wire_str": [
+      {
+        "file": "backend/src/services/lifecycle_service.rs",
+        "kind": "method",
+        "name": "as_wire_str",
+        "self_ty": "PolicyType",
+        "start": 544,
+        "end": 555,
+        "sha256": "352fd546a4a87b72af98acdeea83513dfc8fa8f2c646f3cfa956092974a40657"
+      }
+    ],
+    "finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.needs_release_on_failure": [
+      {
+        "file": "backend/src/services/maven_flat_attribution.rs",
+        "kind": "method",
+        "name": "needs_release_on_failure",
+        "self_ty": "FlatKeyWriteClaim",
+        "start": 564,
+        "end": 568,
+        "sha256": "052870ab5306079b26e21216a537e1a2bba5d44b69fcd10a8555c3a492e3d8dc"
+      }
+    ],
+    "finite_catalog.source_view_73842ce1.SourceView.overwrites": [
+      {
+        "file": "backend/src/services/migration_service.rs",
+        "kind": "method",
+        "name": "overwrites",
+        "self_ty": "SourceView",
+        "start": 79,
+        "end": 82,
+        "sha256": "2e5f57a33f1071621f699303493deaa92c5e7872eeac8909c966c13d7058020e"
+      }
+    ],
+    "finite_catalog.repository_type_73842ce1.RepositoryType.to_artifact_keeper": [
+      {
+        "file": "backend/src/services/migration_service.rs",
+        "kind": "method",
+        "name": "to_artifact_keeper",
+        "self_ty": "RepositoryType",
+        "start": 143,
+        "end": 150,
+        "sha256": "274a7e77b5b2c67ac00f8e8d7d9f7e22b6e49be3620e55ebff19208dab9c62b2"
+      }
+    ],
+    "finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.as_str": [
+      {
+        "file": "backend/src/services/package_analysis_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "AdvisoryScanStatus",
+        "start": 2237,
+        "end": 2245,
+        "sha256": "4a8b1aecb7fff6646f5158df5903ccb75a4775c113adf1907299b8085eda4f32"
+      }
+    ],
+    "finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.is_fail_closed": [
+      {
+        "file": "backend/src/services/proxy_scan_service.rs",
+        "kind": "method",
+        "name": "is_fail_closed",
+        "self_ty": "ProxyScanAction",
+        "start": 170,
+        "end": 172,
+        "sha256": "a0c47678fece2c481d6814b6bb129b37a1d68f86b4f3e94899ddafcb59e78829"
+      }
+    ],
+    "finite_catalog.vendoring_tool_8d235a49.VendoringTool.as_str": [
+      {
+        "file": "backend/src/services/pypi_analysis.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "VendoringTool",
+        "start": 72,
+        "end": 79,
+        "sha256": "1f2a18d9adf0c60a8fbb673276f17b7385266b27d0a6a3eb8c5fa0a7154765c3"
+      }
+    ],
+    "finite_catalog.quarantine_state_63e328a6.QuarantineState.as_str": [
+      {
+        "file": "backend/src/services/quarantine_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "QuarantineState",
+        "start": 99,
+        "end": 105,
+        "sha256": "650e3c0f1ec91ce2cf53a211888b74f9ad51e93044ca42fa750cf3529cb4d58e"
+      }
+    ],
+    "finite_catalog.inventory_status_731e13d3.InventoryStatus.as_db_str": [
+      {
+        "file": "backend/src/services/scan_result_service.rs",
+        "kind": "method",
+        "name": "as_db_str",
+        "self_ty": "InventoryStatus",
+        "start": 127,
+        "end": 133,
+        "sha256": "451b31c716d2dc64dee0ea0e1c480a6b26cc5fa429609d1390cfa948779d63dd"
+      }
+    ],
+    "finite_catalog.scan_state_5f365d9c.ScanState.is_unscanned": [
+      {
+        "file": "backend/src/services/scan_state.rs",
+        "kind": "method",
+        "name": "is_unscanned",
+        "self_ty": "ScanState",
+        "start": 135,
+        "end": 144,
+        "sha256": "723a799fa0a0f0ef8e74917dc972b346a22c482fabbd45685682205ec81f73ba"
+      }
+    ],
+    "finite_catalog.scan_state_5f365d9c.ScanState.reason_token": [
+      {
+        "file": "backend/src/services/scan_state.rs",
+        "kind": "method",
+        "name": "reason_token",
+        "self_ty": "ScanState",
+        "start": 146,
+        "end": 156,
+        "sha256": "cc0e3823222a3edf3b8178b599120013654448d1aa5d5e9bc09a580035e10d18"
+      }
+    ],
+    "finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.as_str": [
+      {
+        "file": "backend/src/services/scanner_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ScanCompleteness",
+        "start": 3516,
+        "end": 3525,
+        "sha256": "1e2c495c09bee3029d97cf03732104ca83dec46a64468390a82777b2204fd626"
+      }
+    ],
+    "finite_catalog.oci_content_kind_bc817bda.OciContentKind.path_segment": [
+      {
+        "file": "backend/src/services/source_registry.rs",
+        "kind": "method",
+        "name": "path_segment",
+        "self_ty": "OciContentKind",
+        "start": 37,
+        "end": 43,
+        "sha256": "5af6d2d15ba36a6ea471c1b4c3797bfb9ed369a1a3a080a60ab7ed97d1d35084"
+      }
+    ],
+    "finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.session_predicate_sql": [
+      {
+        "file": "backend/src/services/storage_gc_service.rs",
+        "kind": "method",
+        "name": "session_predicate_sql",
+        "self_ty": "OciCleanupKeyFamily",
+        "start": 3200,
+        "end": 3211,
+        "sha256": "4fb49b6bd885a2ce5ccf8374910cb5029ea3eee9d97c53c9cbd56c8980f1432d"
+      }
+    ],
+    "finite_catalog.dedup_scope_78b2cf8c.DedupScope.as_str": [
+      {
+        "file": "backend/src/services/storage_stats_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "DedupScope",
+        "start": 203,
+        "end": 210,
+        "sha256": "3029e64ead653ef16ba4d12f1f0b0d77c86533547e68fe7a1973c304ed0b1daa"
+      }
+    ],
+    "finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "TotpPolicy",
+        "start": 70,
+        "end": 77,
+        "sha256": "1179a8cf27c4f3abd8cf1afd38a4b2a155a5052d610412aec2b8424439c7a3f4"
+      }
+    ],
+    "finite_catalog.totp_policy_31812d2d.TotpPolicy.is_enforcing": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "kind": "method",
+        "name": "is_enforcing",
+        "self_ty": "TotpPolicy",
+        "start": 94,
+        "end": 97,
+        "sha256": "b4d21213bb6a6304cdd40baea4aa961120da3c8cef84c5a2334655e951ed0615"
+      }
+    ],
+    "finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.message": [
+      {
+        "file": "backend/src/services/totp_policy.rs",
+        "kind": "method",
+        "name": "message",
+        "self_ty": "PolicyActivationRefusal",
+        "start": 193,
+        "end": 207,
+        "sha256": "70043ed1cf495b9fc3b51180e96644e6daa55f6ee18b0c883956e7961c33cc24"
+      }
+    ],
+    "finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.has_fallback": [
+      {
+        "file": "backend/src/storage/path_format.rs",
+        "kind": "method",
+        "name": "has_fallback",
+        "self_ty": "StoragePathFormat",
+        "start": 80,
+        "end": 83,
+        "sha256": "230ef173eb10680826b504b8e6cafb1e2103b6277e096fc7f6375d5763d27f36"
+      }
+    ],
+    "finite_catalog.log_format_f5cc6ea1.LogFormat.name": [
+      {
+        "file": "backend/src/telemetry.rs",
+        "kind": "method",
+        "name": "name",
+        "self_ty": "LogFormat",
+        "start": 52,
+        "end": 58,
+        "sha256": "a6281d56fed56e35d2c5d910e7e4a78cac2e940c240c58e9e9bb06f1d7340f6d"
+      }
+    ],
+    "finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.name": [
+      {
+        "file": "backend/src/telemetry.rs",
+        "kind": "method",
+        "name": "name",
+        "self_ty": "OtlpProtocol",
+        "start": 102,
+        "end": 108,
+        "sha256": "9c07bcbd76a09db77020b2af77109ba85561a029d413139aa5f9c80f16089c17"
+      }
+    ],
+    "finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name": [
+      {
+        "file": "backend/src/telemetry.rs",
+        "kind": "method",
+        "name": "name",
+        "self_ty": "SamplerChoice",
+        "start": 208,
+        "end": 217,
+        "sha256": "0b909c5dca741be94955bf1e3fdb9ab8c05f1a01d1cf25232974b5b3f0cb4a8c"
+      }
+    ],
+    "finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio": [
+      {
+        "file": "backend/src/telemetry.rs",
+        "kind": "method",
+        "name": "uses_ratio",
+        "self_ty": "SamplerChoice",
+        "start": 219,
+        "end": 222,
+        "sha256": "98babbd847290f751f5cf8a51217aa3586db31017635fd9ffb48e828e218c61a"
+      }
     ]
   }
 }

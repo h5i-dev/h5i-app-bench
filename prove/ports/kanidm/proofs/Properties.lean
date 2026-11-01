@@ -1,3 +1,4 @@
+import Verified.FiniteCatalog
 import Verified.AcpCatalog0
 import Verified.AcpCatalog1
 import Verified.AcpCatalog2
@@ -1941,5 +1942,15 @@ theorem migration_catalog_dl_1_12_phase_1_schema_attrs_complete : migration_cata
 theorem migration_catalog_dl_1_12_phase_2_schema_classes_complete : migration_catalog.dl_1_12_phase_2_schema_classes ⦃r => r.val.map Verified.SchemaCatalog.viewClass = Verified.MigrationCatalog.expected_dl_1_12_phase_2_schema_classes⦄ := Verified.MigrationCatalog.dl_1_12_phase_2_schema_classes_complete
 
 theorem migration_catalog_dl_1_12_phase_7_builtin_access_control_profiles_complete : migration_catalog.dl_1_12_phase_7_builtin_access_control_profiles ⦃r => r.val.map Verified.AcpCatalog.view = Verified.MigrationCatalog.expected_dl_1_12_phase_7_builtin_access_control_profiles⦄ := Verified.MigrationCatalog.dl_1_12_phase_7_builtin_access_control_profiles_complete
+
+end kanidm_kernel.Properties
+
+namespace kanidm_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_index_type_edc7b397_as_idx_str_complete (v : finite_catalog.index_type_edc7b397.IndexType) :
+    finite_catalog.index_type_edc7b397.IndexType.as_idx_str v ⦃r => r.val = index_type_edc7b397_as_idx_str_model v⦄ := Verified.FiniteCatalog.index_type_edc7b397_as_idx_str_complete v
+
+theorem finite_oauth_claim_map_join_edc7b397_to_str_complete (v : finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin) :
+    finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str v ⦃r => r.val = oauth_claim_map_join_edc7b397_to_str_model v⦄ := Verified.FiniteCatalog.oauth_claim_map_join_edc7b397_to_str_complete v
 
 end kanidm_kernel.Properties

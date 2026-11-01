@@ -949,6 +949,83 @@
         "end": 733,
         "sha256": "c89f1e222c56e29a34e9c9c50e071619f42f4e6174dccacd99eb5e14d5cb006f"
       }
+    ],
+    "finite_catalog.field_bea9b175.Field.label": [
+      {
+        "file": "src/admin/query/feds/version.rs",
+        "kind": "method",
+        "name": "label",
+        "self_ty": "Field",
+        "start": 43,
+        "end": 49,
+        "sha256": "14403cb4db9486d9318ef3ebcfc88f575fb2ce032fde43fbe090cef8a998f649"
+      }
+    ],
+    "finite_catalog.state_after_c4e3af58.StateAfter.requested": [
+      {
+        "file": "src/api/client/sync/v3.rs",
+        "kind": "method",
+        "name": "requested",
+        "self_ty": "StateAfter",
+        "start": 177,
+        "end": 177,
+        "sha256": "42b0b7eac0269e265859bb410abdcf73f5c46529734f1db178987e8eeab123e0"
+      }
+    ],
+    "finite_catalog.fallback_08cb57a8.Fallback.name": [
+      {
+        "file": "src/service/rooms/event_handler/state_local_build.rs",
+        "kind": "method",
+        "name": "name",
+        "self_ty": "Fallback",
+        "start": 1100,
+        "end": 1112,
+        "sha256": "19163d94cc9c43a28f10251a19ed9ebb5f6e7b27b89da62aaa175780131549b9"
+      }
+    ],
+    "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str": [
+      {
+        "file": "src/service/rooms/state_res/events/power_levels.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "RoomPowerLevelsIntField",
+        "start": 361,
+        "end": 364,
+        "sha256": "f93699864132d428eb697c20fa98834a4d6149625129d5ce83dbdc66bbba85dc"
+      }
+    ],
+    "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref": [
+      {
+        "file": "src/service/rooms/state_res/events/power_levels.rs",
+        "kind": "method",
+        "name": "as_ref",
+        "self_ty": "RoomPowerLevelsIntField",
+        "start": 378,
+        "end": 389,
+        "sha256": "6a4e2c7725203924d61b11c14e28fd714ddcc2b726430ee0862a2063026edfc0"
+      }
+    ],
+    "finite_catalog.status_4004009f.Status.is_terminal": [
+      {
+        "file": "src/service/tasks/mod.rs",
+        "kind": "method",
+        "name": "is_terminal",
+        "self_ty": "Status",
+        "start": 274,
+        "end": 279,
+        "sha256": "ee6f6e2b2ea006b5cdfa189d9c19b9232d859f06698feac1fc179cfc00e35f55"
+      }
+    ],
+    "finite_catalog.status_4004009f.Status.as_str": [
+      {
+        "file": "src/service/tasks/mod.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Status",
+        "start": 281,
+        "end": 293,
+        "sha256": "cee80c3f78bc2a108c059b92392386d7b7cfe57b01ce78ed814f5907a5b765bd"
+      }
     ]
   },
   "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/tuwunel/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."

@@ -1,7 +1,39 @@
 {
   "upstream_revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
-  "mapping_sha256": "49d6b829176b5a963f294d98350a92ad9724d9273563998bbf3af0ddc8b5375b",
+  "mapping_sha256": "4a563b0ebb41e5b89e4e8f019a367c9a9e6962574c67eec819736c1be669a154",
   "lines": {
+    "backend/src/api/handlers/conda.rs": [
+      1678,
+      1679,
+      1680,
+      1681,
+      1682,
+      1683,
+      1684,
+      1686,
+      1687,
+      1688,
+      1689,
+      1690,
+      1691,
+      1692
+    ],
+    "backend/src/api/handlers/debian.rs": [
+      1819,
+      1820,
+      1821,
+      1822,
+      1823,
+      1824
+    ],
+    "backend/src/api/handlers/oci_v2.rs": [
+      1571,
+      1572,
+      1573,
+      1574,
+      1575,
+      1576
+    ],
     "backend/src/api/handlers/permissions.rs": [
       20,
       21,
@@ -89,6 +121,11 @@
       455,
       457,
       458
+    ],
+    "backend/src/api/handlers/pypi.rs": [
+      3373,
+      3374,
+      3375
     ],
     "backend/src/api/middleware/auth.rs": [
       128,
@@ -1092,6 +1129,41 @@
       94,
       95
     ],
+    "backend/src/api/validation.rs": [
+      142,
+      143,
+      144,
+      145,
+      146,
+      152,
+      153,
+      154
+    ],
+    "backend/src/config.rs": [
+      1926,
+      1927,
+      1928,
+      1929,
+      1930,
+      1931,
+      1932,
+      1933,
+      1934
+    ],
+    "backend/src/formats/incus.rs": [
+      300,
+      301,
+      302,
+      303,
+      304,
+      305,
+      306,
+      307,
+      308,
+      310,
+      311,
+      312
+    ],
     "backend/src/models/access_scope.rs": [
       51,
       52,
@@ -1107,6 +1179,154 @@
       407,
       408,
       409
+    ],
+    "backend/src/models/sbom.rs": [
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183
+    ],
+    "backend/src/models/security.rs": [
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174
+    ],
+    "backend/src/services/age_gate_service.rs": [
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205
+    ],
+    "backend/src/services/audit_export.rs": [
+      726,
+      727,
+      728,
+      729,
+      730,
+      731
+    ],
+    "backend/src/services/audit_service.rs": [
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      220,
+      221,
+      222,
+      223,
+      224,
+      225,
+      226,
+      227,
+      228,
+      229,
+      230,
+      231,
+      232,
+      233
     ],
     "backend/src/services/auth_config_service.rs": [
       2107,
@@ -1130,6 +1350,235 @@
       222,
       223,
       224
+    ],
+    "backend/src/services/conda_identity.rs": [
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213
+    ],
+    "backend/src/services/conda_scripts.rs": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115
+    ],
+    "backend/src/services/cpe_candidates.rs": [
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86
+    ],
+    "backend/src/services/curation/attestation_verify.rs": [
+      135,
+      136,
+      137,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      248,
+      249,
+      250,
+      251,
+      252,
+      253,
+      254
+    ],
+    "backend/src/services/declared_dependencies.rs": [
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65
+    ],
+    "backend/src/services/egress_proxy.rs": [
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106
+    ],
+    "backend/src/services/email_rate_limiter.rs": [
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167
+    ],
+    "backend/src/services/environment_lock.rs": [
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      168,
+      169,
+      170,
+      192,
+      193,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      340,
+      341,
+      342,
+      343,
+      344,
+      345,
+      346,
+      347,
+      348,
+      349,
+      405,
+      406,
+      407,
+      408,
+      409,
+      410,
+      411,
+      412,
+      413,
+      417,
+      418,
+      419,
+      422,
+      423,
+      424,
+      425,
+      426,
+      427,
+      428,
+      429
+    ],
+    "backend/src/services/image_build_service.rs": [
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115
+    ],
+    "backend/src/services/lifecycle_service.rs": [
+      546,
+      547,
+      548,
+      549,
+      550,
+      551,
+      552,
+      553,
+      554,
+      555
+    ],
+    "backend/src/services/maven_flat_attribution.rs": [
+      566,
+      567,
+      568
+    ],
+    "backend/src/services/migration_service.rs": [
+      80,
+      81,
+      82,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150
+    ],
+    "backend/src/services/package_analysis_service.rs": [
+      2239,
+      2240,
+      2241,
+      2242,
+      2243,
+      2244,
+      2245
     ],
     "backend/src/services/permission_service.rs": [
       77,
@@ -1418,6 +1867,90 @@
       708,
       709
     ],
+    "backend/src/services/proxy_scan_service.rs": [
+      170,
+      171,
+      172
+    ],
+    "backend/src/services/pypi_analysis.rs": [
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "backend/src/services/quarantine_service.rs": [
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105
+    ],
+    "backend/src/services/scan_result_service.rs": [
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133
+    ],
+    "backend/src/services/scan_state.rs": [
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156
+    ],
+    "backend/src/services/scanner_service.rs": [
+      3519,
+      3520,
+      3521,
+      3522,
+      3523,
+      3524,
+      3525
+    ],
+    "backend/src/services/source_registry.rs": [
+      38,
+      39,
+      40,
+      41,
+      42,
+      43
+    ],
+    "backend/src/services/storage_gc_service.rs": [
+      3204,
+      3205,
+      3206,
+      3207,
+      3208,
+      3209,
+      3210,
+      3211
+    ],
+    "backend/src/services/storage_stats_service.rs": [
+      205,
+      206,
+      207,
+      208,
+      209,
+      210
+    ],
     "backend/src/services/token_expiry_policy.rs": [
       84,
       85,
@@ -1532,6 +2065,13 @@
       233
     ],
     "backend/src/services/totp_policy.rs": [
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
       95,
       96,
       97,
@@ -1565,6 +2105,20 @@
       179,
       180,
       181,
+      194,
+      195,
+      196,
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
+      205,
+      206,
+      207,
       224,
       225,
       226,
@@ -1593,9 +2147,41 @@
       253,
       254,
       255
+    ],
+    "backend/src/storage/path_format.rs": [
+      81,
+      82,
+      83
+    ],
+    "backend/src/telemetry.rs": [
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      208,
+      209,
+      210,
+      211,
+      212,
+      213,
+      214,
+      215,
+      216,
+      217,
+      220,
+      221,
+      222
     ]
   },
-  "upstream_reached": 1566,
+  "upstream_reached": 2080,
   "properties": [
     {
       "name": "artifactkeeper_kernel.Properties.scope_validation_spec",
@@ -8414,6 +9000,1140 @@
           "start": 136,
           "end": 166,
           "sha256": "b596b31673c565b5b9caa148e397585db2181073228e2f901a939db91d08d836"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_repodata_encoding_df7b79f6_content_type_complete",
+      "generated_dependencies": [
+        "finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.content_type"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.content_type",
+          "file": "backend/src/api/handlers/conda.rs",
+          "kind": "method",
+          "name": "content_type",
+          "self_ty": "RepodataEncoding",
+          "start": 1678,
+          "end": 1684,
+          "sha256": "bb8d989bbde13f83eaaff0917bedd26de323294dd4b47b096b5f93f04096b39b"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_repodata_encoding_df7b79f6_upstream_filename_complete",
+      "generated_dependencies": [
+        "finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.upstream_filename"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.upstream_filename",
+          "file": "backend/src/api/handlers/conda.rs",
+          "kind": "method",
+          "name": "upstream_filename",
+          "self_ty": "RepodataEncoding",
+          "start": 1686,
+          "end": 1692,
+          "sha256": "e431409cbb1db6c2640df0c727c1350563e37676b608975483b352627a969b3c"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_signed_release_variant_007f0cf5_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.as_str",
+          "file": "backend/src/api/handlers/debian.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "SignedReleaseVariant",
+          "start": 1819,
+          "end": 1824,
+          "sha256": "db298dca48bcf61e3bdab2e15defa84971c0649a3dfa88149dcfe877188ca80d"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_upload_session_state_a43ea4df_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.upload_session_state_a43ea4df.UploadSessionState.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.upload_session_state_a43ea4df.UploadSessionState.as_str",
+          "file": "backend/src/api/handlers/oci_v2.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "UploadSessionState",
+          "start": 1571,
+          "end": 1576,
+          "sha256": "a3e6b3616e78e9dad00c611a5a13fb262ff182f4eee32e69f031352f49da5700"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_cached_object_verdict_b87a78e2_may_serve_stored_object_complete",
+      "generated_dependencies": [
+        "finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.may_serve_stored_object"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.may_serve_stored_object",
+          "file": "backend/src/api/handlers/pypi.rs",
+          "kind": "method",
+          "name": "may_serve_stored_object",
+          "self_ty": "CachedObjectVerdict",
+          "start": 3373,
+          "end": 3375,
+          "sha256": "84eb1cb70ac5ecea173ce14c8556bd1a92247190cb722d6100c446424e3baa6f"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_outbound_url_context_dd3b7559_env_var_complete",
+      "generated_dependencies": [
+        "finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.env_var"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.env_var",
+          "file": "backend/src/api/validation.rs",
+          "kind": "method",
+          "name": "env_var",
+          "self_ty": "OutboundUrlContext",
+          "start": 140,
+          "end": 154,
+          "sha256": "ad269953ad77578534c4c95a2ad33331392fc249d596d20180c755d4b0199d42"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_jwt_secret_warning_4946346a_message_complete",
+      "generated_dependencies": [
+        "finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.message"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.message",
+          "file": "backend/src/config.rs",
+          "kind": "method",
+          "name": "message",
+          "self_ty": "JwtSecretWarning",
+          "start": 1926,
+          "end": 1934,
+          "sha256": "dfb9859a2824b1d985e904344ea648bda7520f2bd64461d47ae6e683cfebc262"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_incus_file_type_eee7eb85_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.incus_file_type_eee7eb85.IncusFileType.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.incus_file_type_eee7eb85.IncusFileType.as_str",
+          "file": "backend/src/formats/incus.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "IncusFileType",
+          "start": 300,
+          "end": 308,
+          "sha256": "783c03cc9525936e15bd21630a03cdb6826c54347c6de79d0e83760472e9a116"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_incus_file_type_eee7eb85_is_tarball_complete",
+      "generated_dependencies": [
+        "finite_catalog.incus_file_type_eee7eb85.IncusFileType.is_tarball"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.incus_file_type_eee7eb85.IncusFileType.is_tarball",
+          "file": "backend/src/formats/incus.rs",
+          "kind": "method",
+          "name": "is_tarball",
+          "self_ty": "IncusFileType",
+          "start": 310,
+          "end": 312,
+          "sha256": "c4a508ea827d4889d661873f7208adce6216eddfbb26f08d9f5957a0d9e1cb93"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_sbom_format_104be95e_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.sbom_format_104be95e.SbomFormat.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.sbom_format_104be95e.SbomFormat.as_str",
+          "file": "backend/src/models/sbom.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "SbomFormat",
+          "start": 19,
+          "end": 24,
+          "sha256": "1807762bb77492f7159769820232aa5698131c7140c03d1e335e98b2fbbaa779"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_sbom_format_104be95e_content_type_complete",
+      "generated_dependencies": [
+        "finite_catalog.sbom_format_104be95e.SbomFormat.content_type"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.sbom_format_104be95e.SbomFormat.content_type",
+          "file": "backend/src/models/sbom.rs",
+          "kind": "method",
+          "name": "content_type",
+          "self_ty": "SbomFormat",
+          "start": 34,
+          "end": 39,
+          "sha256": "cc839438c45a0e124e56b27852d168b77cc38d60fc49467644e75be82d4a5b03"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_cve_status_104be95e_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.cve_status_104be95e.CveStatus.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.cve_status_104be95e.CveStatus.as_str",
+          "file": "backend/src/models/sbom.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "CveStatus",
+          "start": 146,
+          "end": 153,
+          "sha256": "441e587ced75b5cbf118bbc8fdaf0df8cc758502e57a8521ba0e075415e5965b"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_policy_action_104be95e_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.policy_action_104be95e.PolicyAction.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.policy_action_104be95e.PolicyAction.as_str",
+          "file": "backend/src/models/sbom.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "PolicyAction",
+          "start": 177,
+          "end": 183,
+          "sha256": "9e2468a373fd5c425c18978bec518edf29c6e457e992f64af439f58426cab81b"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_severity_1259a9af_penalty_weight_complete",
+      "generated_dependencies": [
+        "finite_catalog.severity_1259a9af.Severity.penalty_weight"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.severity_1259a9af.Severity.penalty_weight",
+          "file": "backend/src/models/security.rs",
+          "kind": "method",
+          "name": "penalty_weight",
+          "self_ty": "Severity",
+          "start": 57,
+          "end": 66,
+          "sha256": "10a8bd27c62f68f2f21ddbbf356e51ccba8ff019de7bfd4e488436b978da964e"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_severity_1259a9af_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.severity_1259a9af.Severity.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.severity_1259a9af.Severity.as_str",
+          "file": "backend/src/models/security.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "Severity",
+          "start": 162,
+          "end": 174,
+          "sha256": "8195302c6cdf3ccb7585a6bd12c745236cee65e7389f788396b391649351438f"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_age_gate_mode_3fdb45b7_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.as_str",
+          "file": "backend/src/services/age_gate_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "AgeGateMode",
+          "start": 54,
+          "end": 59,
+          "sha256": "52dc032fea4c35a91cbd888466083ce4a1cdafa81f8c16ddb6c04b5b90b23acf"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_age_gate_review_status_3fdb45b7_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.as_str",
+          "file": "backend/src/services/age_gate_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "AgeGateReviewStatus",
+          "start": 199,
+          "end": 205,
+          "sha256": "46faf292420b6d3ce7decdef63215afe2f40889beffa82a891c794dcc5db5048"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_audit_stream_mode_8053ef47_name_complete",
+      "generated_dependencies": [
+        "finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.name"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.name",
+          "file": "backend/src/services/audit_export.rs",
+          "kind": "method",
+          "name": "name",
+          "self_ty": "AuditStreamMode",
+          "start": 725,
+          "end": 731,
+          "sha256": "fa945a45c4deaa0813335e8a58e3daaebf404b3d91855d119cc0450b84d5e34c"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_audit_action_3ef0ea8f_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.audit_action_3ef0ea8f.AuditAction.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.audit_action_3ef0ea8f.AuditAction.as_str",
+          "file": "backend/src/services/audit_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "AuditAction",
+          "start": 142,
+          "end": 201,
+          "sha256": "5473ed501211fb69fb7ff8a5d7aa0ab3cf0e253e4f16c2f623fb99cb4fc1d804"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_resource_type_3ef0ea8f_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.resource_type_3ef0ea8f.ResourceType.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.resource_type_3ef0ea8f.ResourceType.as_str",
+          "file": "backend/src/services/audit_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "ResourceType",
+          "start": 220,
+          "end": 233,
+          "sha256": "c66899f77351a82e9605a740782026921cbf9a7a087008d9b99329cfffc199a2"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_noarch_kind_b8478f7b_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.noarch_kind_b8478f7b.NoarchKind.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.noarch_kind_b8478f7b.NoarchKind.as_str",
+          "file": "backend/src/services/conda_identity.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "NoarchKind",
+          "start": 176,
+          "end": 181,
+          "sha256": "bfdbf3ef48a43f0b1f9e5e7d9545155199e514d68bc58010459095ce13b845c2"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_conda_archive_type_b8478f7b_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.as_str",
+          "file": "backend/src/services/conda_identity.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "CondaArchiveType",
+          "start": 208,
+          "end": 213,
+          "sha256": "f30dc37d684beb8578f833730328ce122aa76da1822f787b42ece6dd7e386fff"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_script_kind_a04cea8b_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.script_kind_a04cea8b.ScriptKind.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.script_kind_a04cea8b.ScriptKind.as_str",
+          "file": "backend/src/services/conda_scripts.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "ScriptKind",
+          "start": 72,
+          "end": 94,
+          "sha256": "22785f3a4f687b16a25d1af55a6a7f0013436f4e9e0786cc7f51728390fae38a"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_script_kind_a04cea8b_runs_as_root_complete",
+      "generated_dependencies": [
+        "finite_catalog.script_kind_a04cea8b.ScriptKind.runs_as_root"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.script_kind_a04cea8b.ScriptKind.runs_as_root",
+          "file": "backend/src/services/conda_scripts.rs",
+          "kind": "method",
+          "name": "runs_as_root",
+          "self_ty": "ScriptKind",
+          "start": 96,
+          "end": 115,
+          "sha256": "adb5f5f777e9fe40c9c3454d378239d5d49cdd74aaa84a2ec856023f432b987d"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_candidate_confidence_8223875f_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.candidate_confidence_8223875f.CandidateConfidence.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.candidate_confidence_8223875f.CandidateConfidence.as_str",
+          "file": "backend/src/services/cpe_candidates.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "CandidateConfidence",
+          "start": 79,
+          "end": 86,
+          "sha256": "f52a82e22f10547061e73338556bf910ac75434599c1c1e1bf3ba2906753703e"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_check_b0946112_bit_complete",
+      "generated_dependencies": [
+        "finite_catalog.check_b0946112.Check.bit"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.check_b0946112.Check.bit",
+          "file": "backend/src/services/curation/attestation_verify.rs",
+          "kind": "method",
+          "name": "bit",
+          "self_ty": "Check",
+          "start": 135,
+          "end": 137,
+          "sha256": "516339c8a5c97e9f92ade43ba4232ebf9fbc59f0dcf960b03328933427ca3fd1"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_check_b0946112_reason_label_complete",
+      "generated_dependencies": [
+        "finite_catalog.check_b0946112.Check.reason_label"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.check_b0946112.Check.reason_label",
+          "file": "backend/src/services/curation/attestation_verify.rs",
+          "kind": "method",
+          "name": "reason_label",
+          "self_ty": "Check",
+          "start": 139,
+          "end": 151,
+          "sha256": "1047aafeea50b8845e373526c967078260ab3afa5858c5a49548cbf37c764bb3"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_attestation_state_b0946112_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.attestation_state_b0946112.AttestationState.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.attestation_state_b0946112.AttestationState.as_str",
+          "file": "backend/src/services/curation/attestation_verify.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "AttestationState",
+          "start": 248,
+          "end": 254,
+          "sha256": "ba10522b238801adff23d1129e663d2172659c80a4f69b4bf3dbf98d18acd9de"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_inventory_completeness_0e70a8c0_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.as_str",
+          "file": "backend/src/services/declared_dependencies.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "InventoryCompleteness",
+          "start": 57,
+          "end": 65,
+          "sha256": "72866d9a6d6aaaeac61d46fe4952acc0630af43a26c03e0dd0869a1fbb63d445"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_egress_proxy_mode_2d09e195_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.as_str",
+          "file": "backend/src/services/egress_proxy.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "EgressProxyMode",
+          "start": 99,
+          "end": 106,
+          "sha256": "459f48d88d716af8bfeed241286d915708bc7a3d3d04fdf609992467d10ed5b1"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_rate_limit_decision_2593facc_label_complete",
+      "generated_dependencies": [
+        "finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.label"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.label",
+          "file": "backend/src/services/email_rate_limiter.rs",
+          "kind": "method",
+          "name": "label",
+          "self_ty": "RateLimitDecision",
+          "start": 160,
+          "end": 167,
+          "sha256": "e348ee33ac0a4a9f0e3dd5d1f4a2c8e3ec5f5aec8f2af613488fefaa99cf87e2"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_lock_format_99735155_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.lock_format_99735155.LockFormat.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.lock_format_99735155.LockFormat.as_str",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "LockFormat",
+          "start": 153,
+          "end": 163,
+          "sha256": "71d4ec334df2c009addcff3d7610dadca4f90b5f0ae15d0597ba9ddeed7ea9c1"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_lock_format_99735155_is_per_platform_complete",
+      "generated_dependencies": [
+        "finite_catalog.lock_format_99735155.LockFormat.is_per_platform"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.lock_format_99735155.LockFormat.is_per_platform",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "is_per_platform",
+          "self_ty": "LockFormat",
+          "start": 165,
+          "end": 170,
+          "sha256": "bdfe2438619edcaf9fa5ef0dce32393e6d1d4f6b92d9428883cf343655f28117"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_ecosystem_99735155_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.ecosystem_99735155.Ecosystem.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.ecosystem_99735155.Ecosystem.as_str",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "Ecosystem",
+          "start": 191,
+          "end": 199,
+          "sha256": "65a9243d154c692b876e8886e0c8cd87beed673301b73d02dec888b990bd57ff"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_edge_kind_99735155_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.edge_kind_99735155.EdgeKind.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.edge_kind_99735155.EdgeKind.as_str",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "EdgeKind",
+          "start": 339,
+          "end": 349,
+          "sha256": "c7548a8b80b45981c5a61f37d4426c093973445a162097a0a514f8182391924f"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_unresolved_kind_99735155_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.unresolved_kind_99735155.UnresolvedKind.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.unresolved_kind_99735155.UnresolvedKind.as_str",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "UnresolvedKind",
+          "start": 404,
+          "end": 413,
+          "sha256": "73f9c311697479983ce545639d4a6a1cf77ce6488da4f91477f6984d910affe4"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_unresolved_kind_99735155_is_parse_failure_complete",
+      "generated_dependencies": [
+        "finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_parse_failure"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_parse_failure",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "is_parse_failure",
+          "self_ty": "UnresolvedKind",
+          "start": 415,
+          "end": 419,
+          "sha256": "2429a0786e38e7de039efb74a4c4698d459acd07992f2a93c3f123a9310ed7f8"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_unresolved_kind_99735155_is_graph_gap_complete",
+      "generated_dependencies": [
+        "finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_graph_gap"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_graph_gap",
+          "file": "backend/src/services/environment_lock.rs",
+          "kind": "method",
+          "name": "is_graph_gap",
+          "self_ty": "UnresolvedKind",
+          "start": 421,
+          "end": 429,
+          "sha256": "19c9cd1c0357f669824648f40ae0ede6d55175bccbb548a46c8bffa1bd8c155c"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_package_manager_7f965e35_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.package_manager_7f965e35.PackageManager.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.package_manager_7f965e35.PackageManager.as_str",
+          "file": "backend/src/services/image_build_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "PackageManager",
+          "start": 93,
+          "end": 103,
+          "sha256": "6bde593154708c4e80b7a1e1721ea688b30bcf6bebdc7056a70c8cd866529797"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_package_manager_7f965e35_is_system_complete",
+      "generated_dependencies": [
+        "finite_catalog.package_manager_7f965e35.PackageManager.is_system"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.package_manager_7f965e35.PackageManager.is_system",
+          "file": "backend/src/services/image_build_service.rs",
+          "kind": "method",
+          "name": "is_system",
+          "self_ty": "PackageManager",
+          "start": 105,
+          "end": 115,
+          "sha256": "28d9c5bc171f3987cafd151f4299073d0e3bf333a0ca4cb68e0a6b4709b80216"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_policy_type_080e6210_as_wire_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.policy_type_080e6210.PolicyType.as_wire_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.policy_type_080e6210.PolicyType.as_wire_str",
+          "file": "backend/src/services/lifecycle_service.rs",
+          "kind": "method",
+          "name": "as_wire_str",
+          "self_ty": "PolicyType",
+          "start": 544,
+          "end": 555,
+          "sha256": "352fd546a4a87b72af98acdeea83513dfc8fa8f2c646f3cfa956092974a40657"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_flat_key_write_claim_6572c2eb_needs_release_on_failure_complete",
+      "generated_dependencies": [
+        "finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.needs_release_on_failure"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.needs_release_on_failure",
+          "file": "backend/src/services/maven_flat_attribution.rs",
+          "kind": "method",
+          "name": "needs_release_on_failure",
+          "self_ty": "FlatKeyWriteClaim",
+          "start": 564,
+          "end": 568,
+          "sha256": "052870ab5306079b26e21216a537e1a2bba5d44b69fcd10a8555c3a492e3d8dc"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_source_view_73842ce1_overwrites_complete",
+      "generated_dependencies": [
+        "finite_catalog.source_view_73842ce1.SourceView.overwrites"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.source_view_73842ce1.SourceView.overwrites",
+          "file": "backend/src/services/migration_service.rs",
+          "kind": "method",
+          "name": "overwrites",
+          "self_ty": "SourceView",
+          "start": 79,
+          "end": 82,
+          "sha256": "2e5f57a33f1071621f699303493deaa92c5e7872eeac8909c966c13d7058020e"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_repository_type_73842ce1_to_artifact_keeper_complete",
+      "generated_dependencies": [
+        "finite_catalog.repository_type_73842ce1.RepositoryType.to_artifact_keeper"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.repository_type_73842ce1.RepositoryType.to_artifact_keeper",
+          "file": "backend/src/services/migration_service.rs",
+          "kind": "method",
+          "name": "to_artifact_keeper",
+          "self_ty": "RepositoryType",
+          "start": 143,
+          "end": 150,
+          "sha256": "274a7e77b5b2c67ac00f8e8d7d9f7e22b6e49be3620e55ebff19208dab9c62b2"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_advisory_scan_status_38f3e57f_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.as_str",
+          "file": "backend/src/services/package_analysis_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "AdvisoryScanStatus",
+          "start": 2237,
+          "end": 2245,
+          "sha256": "4a8b1aecb7fff6646f5158df5903ccb75a4775c113adf1907299b8085eda4f32"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_proxy_scan_action_2c5d20ab_is_fail_closed_complete",
+      "generated_dependencies": [
+        "finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.is_fail_closed"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.is_fail_closed",
+          "file": "backend/src/services/proxy_scan_service.rs",
+          "kind": "method",
+          "name": "is_fail_closed",
+          "self_ty": "ProxyScanAction",
+          "start": 170,
+          "end": 172,
+          "sha256": "a0c47678fece2c481d6814b6bb129b37a1d68f86b4f3e94899ddafcb59e78829"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_vendoring_tool_8d235a49_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.vendoring_tool_8d235a49.VendoringTool.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.vendoring_tool_8d235a49.VendoringTool.as_str",
+          "file": "backend/src/services/pypi_analysis.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "VendoringTool",
+          "start": 72,
+          "end": 79,
+          "sha256": "1f2a18d9adf0c60a8fbb673276f17b7385266b27d0a6a3eb8c5fa0a7154765c3"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_quarantine_state_63e328a6_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.quarantine_state_63e328a6.QuarantineState.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.quarantine_state_63e328a6.QuarantineState.as_str",
+          "file": "backend/src/services/quarantine_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "QuarantineState",
+          "start": 99,
+          "end": 105,
+          "sha256": "650e3c0f1ec91ce2cf53a211888b74f9ad51e93044ca42fa750cf3529cb4d58e"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_inventory_status_731e13d3_as_db_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.inventory_status_731e13d3.InventoryStatus.as_db_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.inventory_status_731e13d3.InventoryStatus.as_db_str",
+          "file": "backend/src/services/scan_result_service.rs",
+          "kind": "method",
+          "name": "as_db_str",
+          "self_ty": "InventoryStatus",
+          "start": 127,
+          "end": 133,
+          "sha256": "451b31c716d2dc64dee0ea0e1c480a6b26cc5fa429609d1390cfa948779d63dd"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_scan_state_5f365d9c_is_unscanned_complete",
+      "generated_dependencies": [
+        "finite_catalog.scan_state_5f365d9c.ScanState.is_unscanned"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.scan_state_5f365d9c.ScanState.is_unscanned",
+          "file": "backend/src/services/scan_state.rs",
+          "kind": "method",
+          "name": "is_unscanned",
+          "self_ty": "ScanState",
+          "start": 135,
+          "end": 144,
+          "sha256": "723a799fa0a0f0ef8e74917dc972b346a22c482fabbd45685682205ec81f73ba"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_scan_state_5f365d9c_reason_token_complete",
+      "generated_dependencies": [
+        "finite_catalog.scan_state_5f365d9c.ScanState.reason_token"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.scan_state_5f365d9c.ScanState.reason_token",
+          "file": "backend/src/services/scan_state.rs",
+          "kind": "method",
+          "name": "reason_token",
+          "self_ty": "ScanState",
+          "start": 146,
+          "end": 156,
+          "sha256": "cc0e3823222a3edf3b8178b599120013654448d1aa5d5e9bc09a580035e10d18"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_scan_completeness_ba4d10ac_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.as_str",
+          "file": "backend/src/services/scanner_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "ScanCompleteness",
+          "start": 3516,
+          "end": 3525,
+          "sha256": "1e2c495c09bee3029d97cf03732104ca83dec46a64468390a82777b2204fd626"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_oci_content_kind_bc817bda_path_segment_complete",
+      "generated_dependencies": [
+        "finite_catalog.oci_content_kind_bc817bda.OciContentKind.path_segment"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.oci_content_kind_bc817bda.OciContentKind.path_segment",
+          "file": "backend/src/services/source_registry.rs",
+          "kind": "method",
+          "name": "path_segment",
+          "self_ty": "OciContentKind",
+          "start": 37,
+          "end": 43,
+          "sha256": "5af6d2d15ba36a6ea471c1b4c3797bfb9ed369a1a3a080a60ab7ed97d1d35084"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_oci_cleanup_key_family_c9cc8f67_session_predicate_sql_complete",
+      "generated_dependencies": [
+        "finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.session_predicate_sql"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.session_predicate_sql",
+          "file": "backend/src/services/storage_gc_service.rs",
+          "kind": "method",
+          "name": "session_predicate_sql",
+          "self_ty": "OciCleanupKeyFamily",
+          "start": 3200,
+          "end": 3211,
+          "sha256": "4fb49b6bd885a2ce5ccf8374910cb5029ea3eee9d97c53c9cbd56c8980f1432d"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_dedup_scope_78b2cf8c_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.dedup_scope_78b2cf8c.DedupScope.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.dedup_scope_78b2cf8c.DedupScope.as_str",
+          "file": "backend/src/services/storage_stats_service.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "DedupScope",
+          "start": 203,
+          "end": 210,
+          "sha256": "3029e64ead653ef16ba4d12f1f0b0d77c86533547e68fe7a1973c304ed0b1daa"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_totp_policy_31812d2d_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str",
+          "file": "backend/src/services/totp_policy.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "TotpPolicy",
+          "start": 70,
+          "end": 77,
+          "sha256": "1179a8cf27c4f3abd8cf1afd38a4b2a155a5052d610412aec2b8424439c7a3f4"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_totp_policy_31812d2d_is_enforcing_complete",
+      "generated_dependencies": [
+        "finite_catalog.totp_policy_31812d2d.TotpPolicy.is_enforcing"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.totp_policy_31812d2d.TotpPolicy.is_enforcing",
+          "file": "backend/src/services/totp_policy.rs",
+          "kind": "method",
+          "name": "is_enforcing",
+          "self_ty": "TotpPolicy",
+          "start": 94,
+          "end": 97,
+          "sha256": "b4d21213bb6a6304cdd40baea4aa961120da3c8cef84c5a2334655e951ed0615"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_policy_activation_refusal_31812d2d_message_complete",
+      "generated_dependencies": [
+        "finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.message"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.message",
+          "file": "backend/src/services/totp_policy.rs",
+          "kind": "method",
+          "name": "message",
+          "self_ty": "PolicyActivationRefusal",
+          "start": 193,
+          "end": 207,
+          "sha256": "70043ed1cf495b9fc3b51180e96644e6daa55f6ee18b0c883956e7961c33cc24"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_storage_path_format_9d04c6bd_has_fallback_complete",
+      "generated_dependencies": [
+        "finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.has_fallback"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.has_fallback",
+          "file": "backend/src/storage/path_format.rs",
+          "kind": "method",
+          "name": "has_fallback",
+          "self_ty": "StoragePathFormat",
+          "start": 80,
+          "end": 83,
+          "sha256": "230ef173eb10680826b504b8e6cafb1e2103b6277e096fc7f6375d5763d27f36"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_log_format_f5cc6ea1_name_complete",
+      "generated_dependencies": [
+        "finite_catalog.log_format_f5cc6ea1.LogFormat.name"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.log_format_f5cc6ea1.LogFormat.name",
+          "file": "backend/src/telemetry.rs",
+          "kind": "method",
+          "name": "name",
+          "self_ty": "LogFormat",
+          "start": 52,
+          "end": 58,
+          "sha256": "a6281d56fed56e35d2c5d910e7e4a78cac2e940c240c58e9e9bb06f1d7340f6d"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_otlp_protocol_f5cc6ea1_name_complete",
+      "generated_dependencies": [
+        "finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.name"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.name",
+          "file": "backend/src/telemetry.rs",
+          "kind": "method",
+          "name": "name",
+          "self_ty": "OtlpProtocol",
+          "start": 102,
+          "end": 108,
+          "sha256": "9c07bcbd76a09db77020b2af77109ba85561a029d413139aa5f9c80f16089c17"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_sampler_choice_f5cc6ea1_name_complete",
+      "generated_dependencies": [
+        "finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name",
+          "file": "backend/src/telemetry.rs",
+          "kind": "method",
+          "name": "name",
+          "self_ty": "SamplerChoice",
+          "start": 208,
+          "end": 217,
+          "sha256": "0b909c5dca741be94955bf1e3fdb9ab8c05f1a01d1cf25232974b5b3f0cb4a8c"
+        }
+      ]
+    },
+    {
+      "name": "artifactkeeper_kernel.Properties.finite_sampler_choice_f5cc6ea1_uses_ratio_complete",
+      "generated_dependencies": [
+        "finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio",
+          "file": "backend/src/telemetry.rs",
+          "kind": "method",
+          "name": "uses_ratio",
+          "self_ty": "SamplerChoice",
+          "start": 219,
+          "end": 222,
+          "sha256": "98babbd847290f751f5cf8a51217aa3586db31017635fd9ffb48e828e218c61a"
         }
       ]
     }

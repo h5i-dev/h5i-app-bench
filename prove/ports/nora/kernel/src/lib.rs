@@ -471,3 +471,5 @@ pub mod permission_import;
 pub mod circuit_breaker;
 
 pub mod curation;
+
+pub mod finite_catalog;

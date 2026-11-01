@@ -16221,6 +16221,28 @@
         "end": 328,
         "sha256": "2750c86db999898a6eb2c09280a68b6a26472af0c473960c3a972459007d6c74"
       }
+    ],
+    "finite_catalog.index_type_edc7b397.IndexType.as_idx_str": [
+      {
+        "file": "server/lib/src/value.rs",
+        "kind": "method",
+        "name": "as_idx_str",
+        "self_ty": "IndexType",
+        "start": 197,
+        "end": 204,
+        "sha256": "a5047ee93a3dcfbfc6b18cd92a55bf8eef0f00afda5ba24c9018a32c9546546b"
+      }
+    ],
+    "finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str": [
+      {
+        "file": "server/lib/src/value.rs",
+        "kind": "method",
+        "name": "to_str",
+        "self_ty": "OauthClaimMapJoin",
+        "start": 1279,
+        "end": 1286,
+        "sha256": "87c07fd4231b838745de9cbd01621c6818bb8951369f8dfa9697ff4aae67a323"
+      }
     ]
   },
   "meaning": "Exact pinned item dependency reach from canonical theorem types; source correspondence is documented in ports/kanidm/DEVIATIONS.md. Counts source items reached by modeled operations, not behavioral equivalence or proof of omitted I/O, parsing, presentation, library internals, or other documented deviations."

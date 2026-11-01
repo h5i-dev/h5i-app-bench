@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["policies", "pathclean::clean", "defaults::default_version", "defaults::kms_key_administrator", "defaults::kms_key_user", "defaults::kms_auditor", "defaults::all_kms_keys", "defaults::kms_allow", "defaults::assume_role_allow", "defaults::default_policies", "actsets::action_count", "actsets::action_name", "actsets::s3_name", "actsets::admin_name", "actsets::sts_name", "actsets::kms_name", "actsets::contains_name", "actsets::admin_is_valid", "actsets::is_empty", "actsets::as_slice", "actsets::push_unique", "actsets::set_is_match", "actsets::action_is_match", "actsets::is_valid", "actsets::member", "actsets::eq", "valids::default_is_valid", "valids::id_is_empty", "valids::id_as_slice", "valids::id_is_valid", "valids::effect_is_valid", "valids::principal_is_valid", "valids::is_admin", "valids::is_sts", "valids::action_family", "valids::resource_is_valid", "valids::resources_is_valid", "valids::statement_is_valid", "valids::bp_statement_is_valid", "resets::is_empty", "resets::as_slice", "resets::member", "resets::push_unique", "resets::eq", "resets::is_match", "resets::set_matches", "resets::match_resource", "resets::set_match_resource", "conddata::clone_key_value", "conddata::clone_inner", "conddata::key_is", "conddata::key_names", "conddata::contains_key_name", "conddata::binary_eq", "conddata::op_name", "conddata::to_key_with_suffix", "conddata::is_negate", "conddata::condition_eq", "conddata::functions_eq", "conddata::is_empty", "conddata::base64_digit", "conddata::decode_base64", "conddata::binary_new", "conddata::binary_from_encoded_values", "conddata::binary_evaluate", "conddata::legacy_pairs", "conddata::str_op", "conddata::num_op", "conddata::condition_view", "conddata::matching_view", "conddata::has_any_key_in", "conddata::condition_evaluate", "conddata::functions_evaluate", "conddata::to_key", "dates::parse_rfc3339", "dates::compare", "dates::evaluate", "dates::parse_value", "claims::case_insensitive_eq", "claims::get_claim_case_insensitive", "claims::find", "claims::split_values", "claims::values_from_claims", "claims::get_values_from_claims", "claims::get_policies_from_claims", "claims::args_get_policies", "claims::get_role_arn", "claims::iam_policy_claim_name_sa", "claims::split_path", "claims::is_existing_object_tag_condition_key", "claims::value_uses_existing_object_tag", "unicode::lowercase_scalar", "unicode::scalar_at", "unicode::append_scalar", "unicode::lower", "unicode::whitespace", "unicode::trim", "keytables::key_count", "keytables::key_name", "keytables::contains_name", "keytables::is_server_derived", "keytables::server_derived_key_names", "keytables::is_server_derived_condition_key", "manage::statement_eq", "manage::drop_duplicate_statements", "manage::merge_policies", "manage::is_empty", "manage::match_resource", "manage::statement_view", "manage::bp_statement_view", "manage::is_valid", "manage::validate", "manage::bucket_is_valid", "manage::functions_use_existing_object_tag", "manage::policy_uses_existing_object_tag_conditions", "manage::bucket_policy_uses_existing_object_tag_conditions", "manage::policy_needs_existing_object_tag_for_args", "manage::bucket_policy_needs_existing_object_tag_for_args", "manage::statement_is_allowed", "manage::bp_statement_is_allowed", "manage::policy_is_allowed", "manage::bucket_policy_is_allowed", "extras::principal_values_into_set", "extras::lazybuf_new", "extras::is_match_as_pattern_prefix", "docdata::new_at", "docdata::update_at", "docdata::default_policy", "docdata::default_doc", "varctx::context_new", "varctx::resolver_new", "varctx::get_claim_as_strings", "varctx::resolve_username", "varctx::resolve_userid", "varctx::resolve_principal_type", "varctx::resolve_secure_transport", "varctx::resolve_account_id", "varctx::resolve_region", "varctx::resolve_source_ip", "varctx::resolve_custom_variable", "varctx::is_dynamic", "varctx::resolve", "varctx::resolve_multiple"]
+start-from = ["policies", "pathclean::clean", "defaults::default_version", "defaults::kms_key_administrator", "defaults::kms_key_user", "defaults::kms_auditor", "defaults::all_kms_keys", "defaults::kms_allow", "defaults::assume_role_allow", "defaults::default_policies", "actsets::action_count", "actsets::action_name", "actsets::s3_name", "actsets::admin_name", "actsets::sts_name", "actsets::kms_name", "actsets::contains_name", "actsets::admin_is_valid", "actsets::is_empty", "actsets::as_slice", "actsets::push_unique", "actsets::set_is_match", "actsets::action_is_match", "actsets::is_valid", "actsets::member", "actsets::eq", "valids::default_is_valid", "valids::id_is_empty", "valids::id_as_slice", "valids::id_is_valid", "valids::effect_is_valid", "valids::principal_is_valid", "valids::is_admin", "valids::is_sts", "valids::action_family", "valids::resource_is_valid", "valids::resources_is_valid", "valids::statement_is_valid", "valids::bp_statement_is_valid", "resets::is_empty", "resets::as_slice", "resets::member", "resets::push_unique", "resets::eq", "resets::is_match", "resets::set_matches", "resets::match_resource", "resets::set_match_resource", "conddata::clone_key_value", "conddata::clone_inner", "conddata::key_is", "conddata::key_names", "conddata::contains_key_name", "conddata::binary_eq", "conddata::op_name", "conddata::to_key_with_suffix", "conddata::is_negate", "conddata::condition_eq", "conddata::functions_eq", "conddata::is_empty", "conddata::base64_digit", "conddata::decode_base64", "conddata::binary_new", "conddata::binary_from_encoded_values", "conddata::binary_evaluate", "conddata::legacy_pairs", "conddata::str_op", "conddata::num_op", "conddata::condition_view", "conddata::matching_view", "conddata::has_any_key_in", "conddata::condition_evaluate", "conddata::functions_evaluate", "conddata::to_key", "dates::parse_rfc3339", "dates::compare", "dates::evaluate", "dates::parse_value", "claims::case_insensitive_eq", "claims::get_claim_case_insensitive", "claims::find", "claims::split_values", "claims::values_from_claims", "claims::get_values_from_claims", "claims::get_policies_from_claims", "claims::args_get_policies", "claims::get_role_arn", "claims::iam_policy_claim_name_sa", "claims::split_path", "claims::is_existing_object_tag_condition_key", "claims::value_uses_existing_object_tag", "unicode::lowercase_scalar", "unicode::scalar_at", "unicode::append_scalar", "unicode::lower", "unicode::whitespace", "unicode::trim", "keytables::key_count", "keytables::key_name", "keytables::contains_name", "keytables::is_server_derived", "keytables::server_derived_key_names", "keytables::is_server_derived_condition_key", "manage::statement_eq", "manage::drop_duplicate_statements", "manage::merge_policies", "manage::is_empty", "manage::match_resource", "manage::statement_view", "manage::bp_statement_view", "manage::is_valid", "manage::validate", "manage::bucket_is_valid", "manage::functions_use_existing_object_tag", "manage::policy_uses_existing_object_tag_conditions", "manage::bucket_policy_uses_existing_object_tag_conditions", "manage::policy_needs_existing_object_tag_for_args", "manage::bucket_policy_needs_existing_object_tag_for_args", "manage::statement_is_allowed", "manage::bp_statement_is_allowed", "manage::policy_is_allowed", "manage::bucket_policy_is_allowed", "extras::principal_values_into_set", "extras::lazybuf_new", "extras::is_match_as_pattern_prefix", "docdata::new_at", "docdata::update_at", "docdata::default_policy", "docdata::default_doc", "varctx::context_new", "varctx::resolver_new", "varctx::get_claim_as_strings", "varctx::resolve_username", "varctx::resolve_userid", "varctx::resolve_principal_type", "varctx::resolve_secure_transport", "varctx::resolve_account_id", "varctx::resolve_region", "varctx::resolve_source_ip", "varctx::resolve_custom_variable", "varctx::is_dynamic", "varctx::resolve", "varctx::resolve_multiple", "finite_catalog::admin_action_dfb862e5::_::is_table_resource_scoped", "finite_catalog::admin_action_dfb862e5::_::is_valid"]
 
 [check]
 theorems = [
@@ -20,7 +20,6 @@ theorems = [
   "rustfs_kernel.Properties.condition_operator_evaluation_spec",
   "rustfs_kernel.Properties.condition_evaluation_spec",
   "rustfs_kernel.Properties.functions_evaluation_spec",
-
   "rustfs_kernel.Properties.string_policy_candidates_spec",
   "rustfs_kernel.Properties.string_evaluation_spec",
   "rustfs_kernel.Properties.string_like_evaluation_spec",
@@ -63,7 +62,6 @@ theorems = [
   "rustfs_kernel.Properties.unicode_scalar_roundtrip_spec",
   "rustfs_kernel.Properties.unicode_lower_spec",
   "rustfs_kernel.Properties.unicode_trim_spec",
-
   "rustfs_kernel.Properties.ip_networks_spec",
   "rustfs_kernel.Properties.unicode_append_scalar_spec",
   "rustfs_kernel.Properties.string_like_quantifier_spec",
@@ -77,7 +75,6 @@ theorems = [
   "rustfs_kernel.Properties.numeric_conditions_spec",
   "rustfs_kernel.Properties.string_any_like_spec",
   "rustfs_kernel.Properties.unicode_lowercase_scalar_spec",
-
   "rustfs_kernel.Properties.unicode_range_output_valid",
   "rustfs_kernel.Properties.unicode_range_dispatch_table",
   "rustfs_kernel.Properties.unicode_encoding_prefix",
@@ -97,7 +94,6 @@ theorems = [
   "rustfs_kernel.Properties.unicode_range_8_table",
   "rustfs_kernel.Properties.unicode_singleton_table_structure",
   "rustfs_kernel.Properties.unicode_range_table_structure",
-
   "rustfs_kernel.Properties.date_value_preserves_instant",
   "rustfs_kernel.Properties.date_value_rejects_invalid",
   "rustfs_kernel.Properties.date_value_utc_offset",
@@ -119,7 +115,6 @@ theorems = [
   "rustfs_kernel.Properties.metadata_functions_tag",
   "rustfs_kernel.Properties.metadata_policy_tag",
   "rustfs_kernel.Properties.metadata_bucket_tag",
-
   "rustfs_kernel.Properties.condition_key_table_lookup",
   "rustfs_kernel.Properties.condition_key_table_count",
   "rustfs_kernel.Properties.condition_key_table_distinct",
@@ -129,7 +124,6 @@ theorems = [
   "rustfs_kernel.Properties.condition_common_key_table",
   "rustfs_kernel.Properties.server_derived_name_list",
   "rustfs_kernel.Properties.server_derived_condition_membership",
-
   "rustfs_kernel.Properties.claim_object_tag_traversal",
   "rustfs_kernel.Properties.claim_array_tag_traversal",
   "rustfs_kernel.Properties.principal_values_normalization",
@@ -176,7 +170,6 @@ theorems = [
   "rustfs_kernel.Properties.variable_custom_first",
   "rustfs_kernel.Properties.variable_dynamic_names",
   "rustfs_kernel.Properties.variable_resolution_exact",
-
   "rustfs_kernel.Properties.claim_string_container",
   "rustfs_kernel.Properties.claim_exact_tokens_nonempty",
   "rustfs_kernel.Properties.claim_lookup_tokens_nonempty",
@@ -184,7 +177,6 @@ theorems = [
   "rustfs_kernel.Properties.claim_policies_unique_nonempty",
   "rustfs_kernel.Properties.claim_args_policies_unique_nonempty",
   "rustfs_kernel.Properties.claim_path_split_lossless",
-
   "rustfs_kernel.Properties.claim_lookup_first",
   "rustfs_kernel.Properties.claim_role_arn_origin",
   "rustfs_kernel.Properties.claim_service_policy_name",
@@ -192,7 +184,6 @@ theorems = [
   "rustfs_kernel.Properties.claim_existing_tag_tree",
   "rustfs_kernel.Properties.claim_tokens_nonempty",
   "rustfs_kernel.Properties.claim_unique_membership",
-
   "rustfs_kernel.Properties.action_name_table_lookup",
   "rustfs_kernel.Properties.action_name_table_count",
   "rustfs_kernel.Properties.action_name_table_sizes",
@@ -200,7 +191,6 @@ theorems = [
   "rustfs_kernel.Properties.action_name_table_prefixes",
   "rustfs_kernel.Properties.action_name_table_membership",
   "rustfs_kernel.Properties.admin_action_name_validation",
-
   "rustfs_kernel.Properties.action_set_membership",
   "rustfs_kernel.Properties.action_set_containment",
   "rustfs_kernel.Properties.action_set_equality",
@@ -210,7 +200,6 @@ theorems = [
   "rustfs_kernel.Properties.action_set_validation_total",
   "rustfs_kernel.Properties.action_grant_match",
   "rustfs_kernel.Properties.action_set_grant_match",
-
   "rustfs_kernel.Properties.explicit_deny_wins",
   "rustfs_kernel.Properties.allow_needs_allow_statement",
   "rustfs_kernel.Properties.owner_allowed_unless_denied",
@@ -261,24 +250,19 @@ theorems = [
   "rustfs_kernel.Properties.condition_date_equality_iff",
   "rustfs_kernel.Properties.condition_binary_equality_iff",
   "rustfs_kernel.Properties.condition_binary_value_equality_iff",
-
   "rustfs_kernel.Properties.condition_boolean_equality_iff",
   "rustfs_kernel.Properties.condition_address_equality_iff",
   "rustfs_kernel.Properties.condition_equality_iff",
-
   "rustfs_kernel.Properties.condition_membership_iff",
   "rustfs_kernel.Properties.condition_group_coverage_iff",
   "rustfs_kernel.Properties.condition_groups_comparison_iff",
-
   "rustfs_kernel.Properties.condition_entry_copy_exact",
   "rustfs_kernel.Properties.condition_data_copy_exact",
   "rustfs_kernel.Properties.condition_legacy_pairs_exact",
   "rustfs_kernel.Properties.condition_presence_keys_exact",
-
   "rustfs_kernel.Properties.condition_matching_view_exact",
   "rustfs_kernel.Properties.condition_group_views_exact",
   "rustfs_kernel.Properties.condition_base_key_exact",
-
   "rustfs_kernel.Properties.base64_decoding_sound",
   "rustfs_kernel.Properties.base64_decoding_lengths",
   "rustfs_kernel.Properties.binary_values_construction_sound",
@@ -289,4 +273,6 @@ theorems = [
   "rustfs_kernel.Properties.condition_binary_acceptance_sound",
   "rustfs_kernel.Properties.condition_group_binary_acceptance_sound",
   "rustfs_kernel.Properties.functions_binary_acceptance_sound",
+  "rustfs_kernel.Properties.finite_admin_action_dfb862e5_is_table_resource_scoped_complete",
+  "rustfs_kernel.Properties.finite_admin_action_dfb862e5_is_valid_complete",
 ]

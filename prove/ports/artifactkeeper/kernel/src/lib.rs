@@ -199,3 +199,5 @@ pub mod token_expiry;
 pub mod totp_policy;
 
 pub mod migration_safety;
+
+pub mod finite_catalog;

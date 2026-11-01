@@ -1,0 +1,29 @@
+{
+  "accepted": false,
+  "apps": {
+    "nora": {
+      "prospective_lines": 1488,
+      "properties": 51
+    },
+    "artifactkeeper": {
+      "prospective_lines": 2080,
+      "properties": 94
+    },
+    "kanidm": {
+      "prospective_lines": 31103,
+      "properties": 545
+    },
+    "rustfs": {
+      "prospective_lines": 2000,
+      "properties": 270
+    },
+    "tuwunel": {
+      "prospective_lines": 1997,
+      "properties": 24
+    },
+    "oxicloud": {
+      "prospective_lines": 2465,
+      "properties": 146
+    }
+  }
+}

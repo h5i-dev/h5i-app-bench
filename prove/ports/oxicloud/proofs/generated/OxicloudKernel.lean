@@ -3371,6 +3371,1233 @@ def drivepolicy.refuse_external_sharing
     | model.Subject.Token _ => ok (core.result.Result.Ok ())
   else ok (core.result.Result.Ok ())
 
+/-- [oxicloud_kernel::finite_catalog::authz_denial_visibility_4079d78e::AuthzDenialVisibility]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 4:0-4:47
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility
+  where
+| Visible :
+  finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility
+| Hidden :
+  finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility
+
+/-- [oxicloud_kernel::finite_catalog::authz_denial_visibility_4079d78e::{oxicloud_kernel::finite_catalog::authz_denial_visibility_4079d78e::AuthzDenialVisibility}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 6:4-11:5
+    Visibility: public -/
+def
+  finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.as_str
+  (self :
+  finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.Visible
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        118#u8, 105#u8, 115#u8, 105#u8, 98#u8, 108#u8, 101#u8
+        ])
+  |
+    finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.Hidden
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 104#u8, 105#u8, 100#u8, 100#u8, 101#u8, 110#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::ref_level_2ec664a4::RefLevel]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 16:0-16:34
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.ref_level_2ec664a4.RefLevel where
+| Chunk : finite_catalog.ref_level_2ec664a4.RefLevel
+| Manifest : finite_catalog.ref_level_2ec664a4.RefLevel
+
+/-- [oxicloud_kernel::finite_catalog::ref_level_2ec664a4::{oxicloud_kernel::finite_catalog::ref_level_2ec664a4::RefLevel}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 19:4-24:5
+    Visibility: public -/
+def finite_catalog.ref_level_2ec664a4.RefLevel.as_str
+  (self : finite_catalog.ref_level_2ec664a4.RefLevel) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.ref_level_2ec664a4.RefLevel.Chunk =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 99#u8, 104#u8, 117#u8, 110#u8, 107#u8 ])
+  | finite_catalog.ref_level_2ec664a4.RefLevel.Manifest =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        109#u8, 97#u8, 110#u8, 105#u8, 102#u8, 101#u8, 115#u8, 116#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::checksum_alg_cf7683cd::ChecksumAlg]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 29:0-29:40
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.checksum_alg_cf7683cd.ChecksumAlg where
+| Md5 : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg
+| Sha256 : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg
+| Blake3 : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg
+
+/-- [oxicloud_kernel::finite_catalog::checksum_alg_cf7683cd::{oxicloud_kernel::finite_catalog::checksum_alg_cf7683cd::ChecksumAlg}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 31:4-37:5
+    Visibility: public -/
+def finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.as_str
+  (self : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.Md5 =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 109#u8, 100#u8, 53#u8 ])
+  | finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.Sha256 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 115#u8, 104#u8, 97#u8, 50#u8, 53#u8, 54#u8 ])
+  | finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.Blake3 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 98#u8, 108#u8, 97#u8, 107#u8, 101#u8, 51#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::ThumbnailSize]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 42:0-42:43
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.thumbnail_size_e90c1659.ThumbnailSize where
+| Icon : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize
+| Preview : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize
+| Large : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::{oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::ThumbnailSize}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 49:4-55:5
+    Visibility: public -/
+def finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.as_str
+  (self : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Icon =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 73#u8, 99#u8, 111#u8, 110#u8 ])
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Preview =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        80#u8, 114#u8, 101#u8, 118#u8, 105#u8, 101#u8, 119#u8
+        ])
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Large =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 76#u8, 97#u8, 114#u8, 103#u8, 101#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::{oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::ThumbnailSize}::max_dimension]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 57:4-63:5
+    Visibility: public -/
+def finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.max_dimension
+  (self : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+  Result Std.U32
+  := do
+  match self with
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Icon => ok 150#u32
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Preview => ok 400#u32
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Large => ok 800#u32
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::{oxicloud_kernel::finite_catalog::thumbnail_size_e90c1659::ThumbnailSize}::dir_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 65:4-71:5
+    Visibility: public -/
+def finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.dir_name
+  (self : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Icon =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 105#u8, 99#u8, 111#u8, 110#u8 ])
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Preview =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 114#u8, 101#u8, 118#u8, 105#u8, 101#u8, 119#u8
+        ])
+  | finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.Large =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 108#u8, 97#u8, 114#u8, 103#u8, 101#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::ThumbnailFormat]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 76:0-76:36
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat where
+| Webp : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat
+| Jpeg : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::{oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::ThumbnailFormat}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 80:4-85:5
+    Visibility: public -/
+def finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.as_str
+  (self : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.Webp =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 87#u8, 101#u8, 98#u8, 112#u8 ])
+  | finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.Jpeg =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 74#u8, 112#u8, 101#u8, 103#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::{oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::ThumbnailFormat}::ext]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 87:4-92:5
+    Visibility: public -/
+def finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.ext
+  (self : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.Webp =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 112#u8 ])
+  | finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.Jpeg =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 106#u8, 112#u8, 103#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::{oxicloud_kernel::finite_catalog::thumbnail_format_e90c1659::ThumbnailFormat}::mime]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 98:4-103:5
+    Visibility: public -/
+def finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.mime
+  (self : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.Webp =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8, 119#u8, 101#u8, 98#u8,
+        112#u8
+        ])
+  | finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.Jpeg =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8, 106#u8, 112#u8, 101#u8,
+        103#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::output_format_f1a5ab73::OutputFormat]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 108:0-108:28
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.output_format_f1a5ab73.OutputFormat where
+| WebP : finite_catalog.output_format_f1a5ab73.OutputFormat
+
+/-- [oxicloud_kernel::finite_catalog::output_format_f1a5ab73::{oxicloud_kernel::finite_catalog::output_format_f1a5ab73::OutputFormat}::extension]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 111:4-115:5
+    Visibility: public -/
+def finite_catalog.output_format_f1a5ab73.OutputFormat.extension
+  (self : finite_catalog.output_format_f1a5ab73.OutputFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  alloc.vec.FromVecArray.from
+    (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 112#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::output_format_f1a5ab73::{oxicloud_kernel::finite_catalog::output_format_f1a5ab73::OutputFormat}::mime_type]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 117:4-121:5
+    Visibility: public -/
+def finite_catalog.output_format_f1a5ab73.OutputFormat.mime_type
+  (self : finite_catalog.output_format_f1a5ab73.OutputFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  alloc.vec.FromVecArray.from
+    (Array.make 10#usize [
+      105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8, 119#u8, 101#u8, 98#u8,
+      112#u8
+      ])
+
+/-- [oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::DevicePollError]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 126:0-126:100
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.device_poll_error_1fb5547a.DevicePollError where
+| AuthorizationPending :
+  finite_catalog.device_poll_error_1fb5547a.DevicePollError
+| SlowDown : finite_catalog.device_poll_error_1fb5547a.DevicePollError
+| AccessDenied : finite_catalog.device_poll_error_1fb5547a.DevicePollError
+| ExpiredToken : finite_catalog.device_poll_error_1fb5547a.DevicePollError
+| InvalidDeviceCode : finite_catalog.device_poll_error_1fb5547a.DevicePollError
+
+/-- [oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::{oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::DevicePollError}::error_code]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 129:4-137:5
+    Visibility: public -/
+def finite_catalog.device_poll_error_1fb5547a.DevicePollError.error_code
+  (self : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.AuthorizationPending
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        97#u8, 117#u8, 116#u8, 104#u8, 111#u8, 114#u8, 105#u8, 122#u8, 97#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 95#u8, 112#u8, 101#u8, 110#u8, 100#u8,
+        105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.SlowDown =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        115#u8, 108#u8, 111#u8, 119#u8, 95#u8, 100#u8, 111#u8, 119#u8, 110#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.AccessDenied =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        97#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 95#u8, 100#u8, 101#u8,
+        110#u8, 105#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.ExpiredToken =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8, 95#u8, 116#u8,
+        111#u8, 107#u8, 101#u8, 110#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.InvalidDeviceCode
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        105#u8, 110#u8, 118#u8, 97#u8, 108#u8, 105#u8, 100#u8, 95#u8, 103#u8,
+        114#u8, 97#u8, 110#u8, 116#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::{oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::DevicePollError}::description]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 138:4-150:5
+    Visibility: public -/
+def finite_catalog.device_poll_error_1fb5547a.DevicePollError.description
+  (self : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.AuthorizationPending
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 61#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 111#u8,
+        114#u8, 105#u8, 122#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8,
+        114#u8, 101#u8, 113#u8, 117#u8, 101#u8, 115#u8, 116#u8, 32#u8, 105#u8,
+        115#u8, 32#u8, 115#u8, 116#u8, 105#u8, 108#u8, 108#u8, 32#u8, 112#u8,
+        101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8, 46#u8, 32#u8, 67#u8,
+        111#u8, 110#u8, 116#u8, 105#u8, 110#u8, 117#u8, 101#u8, 32#u8, 112#u8,
+        111#u8, 108#u8, 108#u8, 105#u8, 110#u8, 103#u8, 46#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.SlowDown =>
+    alloc.vec.FromVecArray.from
+      (Array.make 49#usize [
+        89#u8, 111#u8, 117#u8, 32#u8, 97#u8, 114#u8, 101#u8, 32#u8, 112#u8,
+        111#u8, 108#u8, 108#u8, 105#u8, 110#u8, 103#u8, 32#u8, 116#u8, 111#u8,
+        111#u8, 32#u8, 102#u8, 114#u8, 101#u8, 113#u8, 117#u8, 101#u8, 110#u8,
+        116#u8, 108#u8, 121#u8, 46#u8, 32#u8, 80#u8, 108#u8, 101#u8, 97#u8,
+        115#u8, 101#u8, 32#u8, 115#u8, 108#u8, 111#u8, 119#u8, 32#u8, 100#u8,
+        111#u8, 119#u8, 110#u8, 46#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.AccessDenied =>
+    alloc.vec.FromVecArray.from
+      (Array.make 42#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 117#u8, 115#u8, 101#u8, 114#u8, 32#u8,
+        100#u8, 101#u8, 110#u8, 105#u8, 101#u8, 100#u8, 32#u8, 116#u8, 104#u8,
+        101#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 111#u8, 114#u8, 105#u8,
+        122#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 114#u8, 101#u8,
+        113#u8, 117#u8, 101#u8, 115#u8, 116#u8, 46#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.ExpiredToken =>
+    alloc.vec.FromVecArray.from
+      (Array.make 67#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 101#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 99#u8, 111#u8, 100#u8, 101#u8, 32#u8, 104#u8, 97#u8,
+        115#u8, 32#u8, 101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8,
+        46#u8, 32#u8, 80#u8, 108#u8, 101#u8, 97#u8, 115#u8, 101#u8, 32#u8,
+        115#u8, 116#u8, 97#u8, 114#u8, 116#u8, 32#u8, 97#u8, 32#u8, 110#u8,
+        101#u8, 119#u8, 32#u8, 97#u8, 117#u8, 116#u8, 104#u8, 111#u8, 114#u8,
+        105#u8, 122#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 32#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 46#u8
+        ])
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.InvalidDeviceCode
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 100#u8, 101#u8, 118#u8, 105#u8, 99#u8,
+        101#u8, 95#u8, 99#u8, 111#u8, 100#u8, 101#u8, 32#u8, 105#u8, 115#u8,
+        32#u8, 110#u8, 111#u8, 116#u8, 32#u8, 114#u8, 101#u8, 99#u8, 111#u8,
+        103#u8, 110#u8, 105#u8, 122#u8, 101#u8, 100#u8, 46#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::{oxicloud_kernel::finite_catalog::device_poll_error_1fb5547a::DevicePollError}::http_status]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 155:4-161:5
+    Visibility: public -/
+def finite_catalog.device_poll_error_1fb5547a.DevicePollError.http_status
+  (self : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+  Result Std.U16
+  := do
+  match self with
+  |
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.AuthorizationPending
+    =>
+    ok 400#u16
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.SlowDown =>
+    ok 400#u16
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.AccessDenied =>
+    ok 403#u16
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.ExpiredToken =>
+    ok 400#u16
+  | finite_catalog.device_poll_error_1fb5547a.DevicePollError.InvalidDeviceCode
+    =>
+    ok 400#u16
+
+/-- [oxicloud_kernel::finite_catalog::notify_trigger_5dfe5802::NotifyTrigger]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 166:0-166:50
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.notify_trigger_5dfe5802.NotifyTrigger where
+| GrantCreated : finite_catalog.notify_trigger_5dfe5802.NotifyTrigger
+| ManualResend : finite_catalog.notify_trigger_5dfe5802.NotifyTrigger
+
+/-- [oxicloud_kernel::finite_catalog::notify_trigger_5dfe5802::{oxicloud_kernel::finite_catalog::notify_trigger_5dfe5802::NotifyTrigger}::audit_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 168:4-173:5
+    Visibility: public -/
+def finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.audit_str
+  (self : finite_catalog.notify_trigger_5dfe5802.NotifyTrigger) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.GrantCreated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        103#u8, 114#u8, 97#u8, 110#u8, 116#u8, 95#u8, 99#u8, 114#u8, 101#u8,
+        97#u8, 116#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.ManualResend =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        109#u8, 97#u8, 110#u8, 117#u8, 97#u8, 108#u8, 95#u8, 114#u8, 101#u8,
+        115#u8, 101#u8, 110#u8, 100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::notify_kind_5dfe5802::NotifyKind]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 178:0-178:49
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.notify_kind_5dfe5802.NotifyKind where
+| MagicLink : finite_catalog.notify_kind_5dfe5802.NotifyKind
+| PlainNotification : finite_catalog.notify_kind_5dfe5802.NotifyKind
+
+/-- [oxicloud_kernel::finite_catalog::notify_kind_5dfe5802::{oxicloud_kernel::finite_catalog::notify_kind_5dfe5802::NotifyKind}::audit_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 180:4-185:5
+    Visibility: public -/
+def finite_catalog.notify_kind_5dfe5802.NotifyKind.audit_str
+  (self : finite_catalog.notify_kind_5dfe5802.NotifyKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.notify_kind_5dfe5802.NotifyKind.MagicLink =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+        107#u8
+        ])
+  | finite_catalog.notify_kind_5dfe5802.NotifyKind.PlainNotification =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        112#u8, 108#u8, 97#u8, 105#u8, 110#u8, 95#u8, 110#u8, 111#u8, 116#u8,
+        105#u8, 102#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::cipher_kind_a4fe67b2::CipherKind]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 190:0-190:36
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.cipher_kind_a4fe67b2.CipherKind where
+| AesGcm256 : finite_catalog.cipher_kind_a4fe67b2.CipherKind
+| None : finite_catalog.cipher_kind_a4fe67b2.CipherKind
+
+/-- [oxicloud_kernel::finite_catalog::cipher_kind_a4fe67b2::{oxicloud_kernel::finite_catalog::cipher_kind_a4fe67b2::CipherKind}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 194:4-199:5
+    Visibility: public -/
+def finite_catalog.cipher_kind_a4fe67b2.CipherKind.as_str
+  (self : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.cipher_kind_a4fe67b2.CipherKind.AesGcm256 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        97#u8, 101#u8, 115#u8, 45#u8, 50#u8, 53#u8, 54#u8, 45#u8, 103#u8,
+        99#u8, 109#u8
+        ])
+  | finite_catalog.cipher_kind_a4fe67b2.CipherKind.None =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 110#u8, 111#u8, 110#u8, 101#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::cipher_kind_a4fe67b2::{oxicloud_kernel::finite_catalog::cipher_kind_a4fe67b2::CipherKind}::needs_key]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 204:4-206:5
+    Visibility: public -/
+def finite_catalog.cipher_kind_a4fe67b2.CipherKind.needs_key
+  (self : finite_catalog.cipher_kind_a4fe67b2.CipherKind) : Result Bool := do
+  match self with
+  | finite_catalog.cipher_kind_a4fe67b2.CipherKind.AesGcm256 => ok true
+  | finite_catalog.cipher_kind_a4fe67b2.CipherKind.None => ok false
+
+/-- [oxicloud_kernel::finite_catalog::device_code_status_fb933849::DeviceCodeStatus]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 211:0-211:61
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.device_code_status_fb933849.DeviceCodeStatus where
+| Pending : finite_catalog.device_code_status_fb933849.DeviceCodeStatus
+| Authorized : finite_catalog.device_code_status_fb933849.DeviceCodeStatus
+| Denied : finite_catalog.device_code_status_fb933849.DeviceCodeStatus
+| Expired : finite_catalog.device_code_status_fb933849.DeviceCodeStatus
+
+/-- [oxicloud_kernel::finite_catalog::device_code_status_fb933849::{oxicloud_kernel::finite_catalog::device_code_status_fb933849::DeviceCodeStatus}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 213:4-220:5
+    Visibility: public -/
+def finite_catalog.device_code_status_fb933849.DeviceCodeStatus.as_str
+  (self : finite_catalog.device_code_status_fb933849.DeviceCodeStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.device_code_status_fb933849.DeviceCodeStatus.Pending =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.device_code_status_fb933849.DeviceCodeStatus.Authorized =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        97#u8, 117#u8, 116#u8, 104#u8, 111#u8, 114#u8, 105#u8, 122#u8, 101#u8,
+        100#u8
+        ])
+  | finite_catalog.device_code_status_fb933849.DeviceCodeStatus.Denied =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 100#u8, 101#u8, 110#u8, 105#u8, 101#u8, 100#u8 ])
+  | finite_catalog.device_code_status_fb933849.DeviceCodeStatus.Expired =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::drive_kind_bf867fda::DriveKind]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 225:0-225:36
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.drive_kind_bf867fda.DriveKind where
+| Personal : finite_catalog.drive_kind_bf867fda.DriveKind
+| Shared : finite_catalog.drive_kind_bf867fda.DriveKind
+
+/-- [oxicloud_kernel::finite_catalog::drive_kind_bf867fda::{oxicloud_kernel::finite_catalog::drive_kind_bf867fda::DriveKind}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 227:4-232:5
+    Visibility: public -/
+def finite_catalog.drive_kind_bf867fda.DriveKind.as_str
+  (self : finite_catalog.drive_kind_bf867fda.DriveKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.drive_kind_bf867fda.DriveKind.Personal =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        112#u8, 101#u8, 114#u8, 115#u8, 111#u8, 110#u8, 97#u8, 108#u8
+        ])
+  | finite_catalog.drive_kind_bf867fda.DriveKind.Shared =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 115#u8, 104#u8, 97#u8, 114#u8, 101#u8, 100#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::magic_link_status_023c994e::MagicLinkStatus]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 237:0-237:47
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.magic_link_status_023c994e.MagicLinkStatus where
+| Pending : finite_catalog.magic_link_status_023c994e.MagicLinkStatus
+| Used : finite_catalog.magic_link_status_023c994e.MagicLinkStatus
+| Expired : finite_catalog.magic_link_status_023c994e.MagicLinkStatus
+
+/-- [oxicloud_kernel::finite_catalog::magic_link_status_023c994e::{oxicloud_kernel::finite_catalog::magic_link_status_023c994e::MagicLinkStatus}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 239:4-245:5
+    Visibility: public -/
+def finite_catalog.magic_link_status_023c994e.MagicLinkStatus.as_str
+  (self : finite_catalog.magic_link_status_023c994e.MagicLinkStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.magic_link_status_023c994e.MagicLinkStatus.Pending =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.magic_link_status_023c994e.MagicLinkStatus.Used =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 100#u8 ])
+  | finite_catalog.magic_link_status_023c994e.MagicLinkStatus.Expired =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        101#u8, 120#u8, 112#u8, 105#u8, 114#u8, 101#u8, 100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::session_origin_086d7c6c::SessionOrigin]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 250:0-250:70
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.session_origin_086d7c6c.SessionOrigin where
+| Password : finite_catalog.session_origin_086d7c6c.SessionOrigin
+| Opaque : finite_catalog.session_origin_086d7c6c.SessionOrigin
+| MagicLink : finite_catalog.session_origin_086d7c6c.SessionOrigin
+| Oidc : finite_catalog.session_origin_086d7c6c.SessionOrigin
+| Device : finite_catalog.session_origin_086d7c6c.SessionOrigin
+| Unknown : finite_catalog.session_origin_086d7c6c.SessionOrigin
+
+/-- [oxicloud_kernel::finite_catalog::session_origin_086d7c6c::{oxicloud_kernel::finite_catalog::session_origin_086d7c6c::SessionOrigin}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 254:4-263:5
+    Visibility: public -/
+def finite_catalog.session_origin_086d7c6c.SessionOrigin.as_str
+  (self : finite_catalog.session_origin_086d7c6c.SessionOrigin) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.session_origin_086d7c6c.SessionOrigin.Password =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        112#u8, 97#u8, 115#u8, 115#u8, 119#u8, 111#u8, 114#u8, 100#u8
+        ])
+  | finite_catalog.session_origin_086d7c6c.SessionOrigin.Opaque =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8 ])
+  | finite_catalog.session_origin_086d7c6c.SessionOrigin.MagicLink =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+        107#u8
+        ])
+  | finite_catalog.session_origin_086d7c6c.SessionOrigin.Oidc =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ])
+  | finite_catalog.session_origin_086d7c6c.SessionOrigin.Device =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 100#u8, 101#u8, 118#u8, 105#u8, 99#u8, 101#u8 ])
+  | finite_catalog.session_origin_086d7c6c.SessionOrigin.Unknown =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        117#u8, 110#u8, 107#u8, 110#u8, 111#u8, 119#u8, 110#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::user_role_d47f77bc::UserRole]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 268:0-268:46
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.user_role_d47f77bc.UserRole where
+| Owner : finite_catalog.user_role_d47f77bc.UserRole
+| Admin : finite_catalog.user_role_d47f77bc.UserRole
+| User : finite_catalog.user_role_d47f77bc.UserRole
+| Anonymous : finite_catalog.user_role_d47f77bc.UserRole
+
+/-- [oxicloud_kernel::finite_catalog::user_role_d47f77bc::{oxicloud_kernel::finite_catalog::user_role_d47f77bc::UserRole}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 272:4-279:5
+    Visibility: public -/
+def finite_catalog.user_role_d47f77bc.UserRole.as_str
+  (self : finite_catalog.user_role_d47f77bc.UserRole) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.user_role_d47f77bc.UserRole.Owner =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ])
+  | finite_catalog.user_role_d47f77bc.UserRole.Admin =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 97#u8, 100#u8, 109#u8, 105#u8, 110#u8 ])
+  | finite_catalog.user_role_d47f77bc.UserRole.User =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ])
+  | finite_catalog.user_role_d47f77bc.UserRole.Anonymous =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        97#u8, 110#u8, 111#u8, 110#u8, 121#u8, 109#u8, 111#u8, 117#u8, 115#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::user_role_d47f77bc::{oxicloud_kernel::finite_catalog::user_role_d47f77bc::UserRole}::rank]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 289:4-296:5
+    Visibility: public -/
+def finite_catalog.user_role_d47f77bc.UserRole.rank
+  (self : finite_catalog.user_role_d47f77bc.UserRole) : Result Std.U8 := do
+  match self with
+  | finite_catalog.user_role_d47f77bc.UserRole.Owner => ok 3#u8
+  | finite_catalog.user_role_d47f77bc.UserRole.Admin => ok 2#u8
+  | finite_catalog.user_role_d47f77bc.UserRole.User => ok 1#u8
+  | finite_catalog.user_role_d47f77bc.UserRole.Anonymous => ok 0#u8
+
+/-- [oxicloud_kernel::finite_catalog::user_role_d47f77bc::{oxicloud_kernel::finite_catalog::user_role_d47f77bc::UserRole}::is_anonymous]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 298:4-300:5
+    Visibility: public -/
+def finite_catalog.user_role_d47f77bc.UserRole.is_anonymous
+  (self : finite_catalog.user_role_d47f77bc.UserRole) : Result Bool := do
+  match self with
+  | finite_catalog.user_role_d47f77bc.UserRole.Owner => ok false
+  | finite_catalog.user_role_d47f77bc.UserRole.Admin => ok false
+  | finite_catalog.user_role_d47f77bc.UserRole.User => ok false
+  | finite_catalog.user_role_d47f77bc.UserRole.Anonymous => ok true
+
+/-- [oxicloud_kernel::finite_catalog::user_role_d47f77bc::{oxicloud_kernel::finite_catalog::user_role_d47f77bc::UserRole}::is_privileged]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 314:4-316:5
+    Visibility: public -/
+def finite_catalog.user_role_d47f77bc.UserRole.is_privileged
+  (self : finite_catalog.user_role_d47f77bc.UserRole) : Result Bool := do
+  let i ← finite_catalog.user_role_d47f77bc.UserRole.rank self
+  let i1 ←
+    finite_catalog.user_role_d47f77bc.UserRole.rank
+      finite_catalog.user_role_d47f77bc.UserRole.User
+  ok (i > i1)
+
+/-- [oxicloud_kernel::finite_catalog::federation_kind_d47f77bc::FederationKind]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 321:0-321:44
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.federation_kind_d47f77bc.FederationKind where
+| MagicLink : finite_catalog.federation_kind_d47f77bc.FederationKind
+| Ocm : finite_catalog.federation_kind_d47f77bc.FederationKind
+| Oidc : finite_catalog.federation_kind_d47f77bc.FederationKind
+
+/-- [oxicloud_kernel::finite_catalog::federation_kind_d47f77bc::{oxicloud_kernel::finite_catalog::federation_kind_d47f77bc::FederationKind}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 325:4-331:5
+    Visibility: public -/
+def finite_catalog.federation_kind_d47f77bc.FederationKind.as_str
+  (self : finite_catalog.federation_kind_d47f77bc.FederationKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.federation_kind_d47f77bc.FederationKind.MagicLink =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        109#u8, 97#u8, 103#u8, 105#u8, 99#u8, 95#u8, 108#u8, 105#u8, 110#u8,
+        107#u8
+        ])
+  | finite_catalog.federation_kind_d47f77bc.FederationKind.Ocm =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 111#u8, 99#u8, 109#u8 ])
+  | finite_catalog.federation_kind_d47f77bc.FederationKind.Oidc =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 111#u8, 105#u8, 100#u8, 99#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::error_kind_59712eff::ErrorKind]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 336:0-336:200
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.error_kind_59712eff.ErrorKind where
+| NotFound : finite_catalog.error_kind_59712eff.ErrorKind
+| AlreadyExists : finite_catalog.error_kind_59712eff.ErrorKind
+| InvalidInput : finite_catalog.error_kind_59712eff.ErrorKind
+| AccessDenied : finite_catalog.error_kind_59712eff.ErrorKind
+| Timeout : finite_catalog.error_kind_59712eff.ErrorKind
+| TransientBackend : finite_catalog.error_kind_59712eff.ErrorKind
+| InternalError : finite_catalog.error_kind_59712eff.ErrorKind
+| NotImplemented : finite_catalog.error_kind_59712eff.ErrorKind
+| UnsupportedOperation : finite_catalog.error_kind_59712eff.ErrorKind
+| DatabaseError : finite_catalog.error_kind_59712eff.ErrorKind
+| QuotaExceeded : finite_catalog.error_kind_59712eff.ErrorKind
+| Conflict : finite_catalog.error_kind_59712eff.ErrorKind
+| PreconditionFailed : finite_catalog.error_kind_59712eff.ErrorKind
+
+/-- [oxicloud_kernel::finite_catalog::error_kind_59712eff::{oxicloud_kernel::finite_catalog::error_kind_59712eff::ErrorKind}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 341:4-360:5
+    Visibility: public -/
+def finite_catalog.error_kind_59712eff.ErrorKind.as_str
+  (self : finite_catalog.error_kind_59712eff.ErrorKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.error_kind_59712eff.ErrorKind.NotFound =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        78#u8, 111#u8, 116#u8, 32#u8, 70#u8, 111#u8, 117#u8, 110#u8, 100#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.AlreadyExists =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        65#u8, 108#u8, 114#u8, 101#u8, 97#u8, 100#u8, 121#u8, 32#u8, 69#u8,
+        120#u8, 105#u8, 115#u8, 116#u8, 115#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.InvalidInput =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        73#u8, 110#u8, 118#u8, 97#u8, 108#u8, 105#u8, 100#u8, 32#u8, 73#u8,
+        110#u8, 112#u8, 117#u8, 116#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.AccessDenied =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        65#u8, 99#u8, 99#u8, 101#u8, 115#u8, 115#u8, 32#u8, 68#u8, 101#u8,
+        110#u8, 105#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.Timeout =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        84#u8, 105#u8, 109#u8, 101#u8, 111#u8, 117#u8, 116#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.TransientBackend =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        84#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 66#u8, 97#u8, 99#u8, 107#u8, 101#u8, 110#u8, 100#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.InternalError =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        73#u8, 110#u8, 116#u8, 101#u8, 114#u8, 110#u8, 97#u8, 108#u8, 32#u8,
+        69#u8, 114#u8, 114#u8, 111#u8, 114#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.NotImplemented =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        78#u8, 111#u8, 116#u8, 32#u8, 73#u8, 109#u8, 112#u8, 108#u8, 101#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.UnsupportedOperation =>
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        85#u8, 110#u8, 115#u8, 117#u8, 112#u8, 112#u8, 111#u8, 114#u8, 116#u8,
+        101#u8, 100#u8, 32#u8, 79#u8, 112#u8, 101#u8, 114#u8, 97#u8, 116#u8,
+        105#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.DatabaseError =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        68#u8, 97#u8, 116#u8, 97#u8, 98#u8, 97#u8, 115#u8, 101#u8, 32#u8,
+        69#u8, 114#u8, 114#u8, 111#u8, 114#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.QuotaExceeded =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        81#u8, 117#u8, 111#u8, 116#u8, 97#u8, 32#u8, 69#u8, 120#u8, 99#u8,
+        101#u8, 101#u8, 100#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.Conflict =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        67#u8, 111#u8, 110#u8, 102#u8, 108#u8, 105#u8, 99#u8, 116#u8
+        ])
+  | finite_catalog.error_kind_59712eff.ErrorKind.PreconditionFailed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        80#u8, 114#u8, 101#u8, 99#u8, 111#u8, 110#u8, 100#u8, 105#u8, 116#u8,
+        105#u8, 111#u8, 110#u8, 32#u8, 70#u8, 97#u8, 105#u8, 108#u8, 101#u8,
+        100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::permission_5d9dca62::Permission]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 365:0-365:68
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.permission_5d9dca62.Permission where
+| Read : finite_catalog.permission_5d9dca62.Permission
+| Create : finite_catalog.permission_5d9dca62.Permission
+| Share : finite_catalog.permission_5d9dca62.Permission
+| Comment : finite_catalog.permission_5d9dca62.Permission
+| Delete : finite_catalog.permission_5d9dca62.Permission
+| Update : finite_catalog.permission_5d9dca62.Permission
+| Manage : finite_catalog.permission_5d9dca62.Permission
+
+/-- [oxicloud_kernel::finite_catalog::permission_5d9dca62::{oxicloud_kernel::finite_catalog::permission_5d9dca62::Permission}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 367:4-377:5
+    Visibility: public -/
+def finite_catalog.permission_5d9dca62.Permission.as_str
+  (self : finite_catalog.permission_5d9dca62.Permission) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.permission_5d9dca62.Permission.Read =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 114#u8, 101#u8, 97#u8, 100#u8 ])
+  | finite_catalog.permission_5d9dca62.Permission.Create =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8 ])
+  | finite_catalog.permission_5d9dca62.Permission.Share =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 115#u8, 104#u8, 97#u8, 114#u8, 101#u8 ])
+  | finite_catalog.permission_5d9dca62.Permission.Comment =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+        ])
+  | finite_catalog.permission_5d9dca62.Permission.Delete =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8 ])
+  | finite_catalog.permission_5d9dca62.Permission.Update =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8 ])
+  | finite_catalog.permission_5d9dca62.Permission.Manage =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 109#u8, 97#u8, 110#u8, 97#u8, 103#u8, 101#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::role_5d9dca62::Role]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 382:0-382:57
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.role_5d9dca62.Role where
+| Viewer : finite_catalog.role_5d9dca62.Role
+| Commenter : finite_catalog.role_5d9dca62.Role
+| Contributor : finite_catalog.role_5d9dca62.Role
+| Editor : finite_catalog.role_5d9dca62.Role
+| Owner : finite_catalog.role_5d9dca62.Role
+
+/-- [oxicloud_kernel::finite_catalog::role_5d9dca62::{oxicloud_kernel::finite_catalog::role_5d9dca62::Role}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 386:4-394:5
+    Visibility: public -/
+def finite_catalog.role_5d9dca62.Role.as_str
+  (self : finite_catalog.role_5d9dca62.Role) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.role_5d9dca62.Role.Viewer =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 118#u8, 105#u8, 101#u8, 119#u8, 101#u8, 114#u8 ])
+  | finite_catalog.role_5d9dca62.Role.Commenter =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8
+        ])
+  | finite_catalog.role_5d9dca62.Role.Contributor =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        99#u8, 111#u8, 110#u8, 116#u8, 114#u8, 105#u8, 98#u8, 117#u8, 116#u8,
+        111#u8, 114#u8
+        ])
+  | finite_catalog.role_5d9dca62.Role.Editor =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 101#u8, 100#u8, 105#u8, 116#u8, 111#u8, 114#u8 ])
+  | finite_catalog.role_5d9dca62.Role.Owner =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 111#u8, 119#u8, 110#u8, 101#u8, 114#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::run_status_dbd87cc3::RunStatus]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 399:0-399:78
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.run_status_dbd87cc3.RunStatus where
+| Running : finite_catalog.run_status_dbd87cc3.RunStatus
+| Paused : finite_catalog.run_status_dbd87cc3.RunStatus
+| CancelRequested : finite_catalog.run_status_dbd87cc3.RunStatus
+| Completed : finite_catalog.run_status_dbd87cc3.RunStatus
+| Failed : finite_catalog.run_status_dbd87cc3.RunStatus
+| Cancelled : finite_catalog.run_status_dbd87cc3.RunStatus
+
+/-- [oxicloud_kernel::finite_catalog::run_status_dbd87cc3::{oxicloud_kernel::finite_catalog::run_status_dbd87cc3::RunStatus}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 402:4-411:5
+    Visibility: public -/
+def finite_catalog.run_status_dbd87cc3.RunStatus.as_str
+  (self : finite_catalog.run_status_dbd87cc3.RunStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Running =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        82#u8, 117#u8, 110#u8, 110#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Paused =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 80#u8, 97#u8, 117#u8, 115#u8, 101#u8, 100#u8 ])
+  | finite_catalog.run_status_dbd87cc3.RunStatus.CancelRequested =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        67#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8, 82#u8, 101#u8, 113#u8,
+        117#u8, 101#u8, 115#u8, 116#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Completed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        67#u8, 111#u8, 109#u8, 112#u8, 108#u8, 101#u8, 116#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Failed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 70#u8, 97#u8, 105#u8, 108#u8, 101#u8, 100#u8 ])
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Cancelled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        67#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8, 108#u8, 101#u8, 100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::run_status_dbd87cc3::{oxicloud_kernel::finite_catalog::run_status_dbd87cc3::RunStatus}::is_non_terminal]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 414:4-419:5
+    Visibility: public -/
+def finite_catalog.run_status_dbd87cc3.RunStatus.is_non_terminal
+  (self : finite_catalog.run_status_dbd87cc3.RunStatus) : Result Bool := do
+  match self with
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Running => ok true
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Paused => ok true
+  | finite_catalog.run_status_dbd87cc3.RunStatus.CancelRequested => ok true
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Completed => ok false
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Failed => ok false
+  | finite_catalog.run_status_dbd87cc3.RunStatus.Cancelled => ok false
+
+/-- [oxicloud_kernel::finite_catalog::progress_kind_dbd87cc3::ProgressKind]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 424:0-424:41
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.progress_kind_dbd87cc3.ProgressKind where
+| Count : finite_catalog.progress_kind_dbd87cc3.ProgressKind
+| Approximate : finite_catalog.progress_kind_dbd87cc3.ProgressKind
+
+/-- [oxicloud_kernel::finite_catalog::progress_kind_dbd87cc3::{oxicloud_kernel::finite_catalog::progress_kind_dbd87cc3::ProgressKind}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 426:4-431:5
+    Visibility: public -/
+def finite_catalog.progress_kind_dbd87cc3.ProgressKind.as_str
+  (self : finite_catalog.progress_kind_dbd87cc3.ProgressKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.progress_kind_dbd87cc3.ProgressKind.Count =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 99#u8, 111#u8, 117#u8, 110#u8, 116#u8 ])
+  | finite_catalog.progress_kind_dbd87cc3.ProgressKind.Approximate =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        97#u8, 112#u8, 112#u8, 114#u8, 111#u8, 120#u8, 105#u8, 109#u8, 97#u8,
+        116#u8, 101#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::err_cause_75575f17::ErrCause]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 436:0-436:44
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.err_cause_75575f17.ErrCause where
+| Handler : finite_catalog.err_cause_75575f17.ErrCause
+| Timeout : finite_catalog.err_cause_75575f17.ErrCause
+| Panicked : finite_catalog.err_cause_75575f17.ErrCause
+
+/-- [oxicloud_kernel::finite_catalog::err_cause_75575f17::{oxicloud_kernel::finite_catalog::err_cause_75575f17::ErrCause}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 441:4-447:5
+    Visibility: public -/
+def finite_catalog.err_cause_75575f17.ErrCause.as_str
+  (self : finite_catalog.err_cause_75575f17.ErrCause) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.err_cause_75575f17.ErrCause.Handler =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        104#u8, 97#u8, 110#u8, 100#u8, 108#u8, 101#u8, 114#u8
+        ])
+  | finite_catalog.err_cause_75575f17.ErrCause.Timeout =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        116#u8, 105#u8, 109#u8, 101#u8, 111#u8, 117#u8, 116#u8
+        ])
+  | finite_catalog.err_cause_75575f17.ErrCause.Panicked =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        112#u8, 97#u8, 110#u8, 105#u8, 99#u8, 107#u8, 101#u8, 100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::dpop_verify_error_8219bbef::DpopVerifyError]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 452:0-452:147
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError where
+| Malformed : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| WrongTyp : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| WrongAlg : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| WrongJwk : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| SignatureInvalid : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| WrongHtm : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| WrongHtu : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| IatMissing : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| IatOutOfWindow : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| JtiMissing : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+| JktMismatch : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError
+
+/-- [oxicloud_kernel::finite_catalog::dpop_verify_error_8219bbef::{oxicloud_kernel::finite_catalog::dpop_verify_error_8219bbef::DpopVerifyError}::reason]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 455:4-469:5
+    Visibility: public -/
+def finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.reason
+  (self : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.Malformed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        109#u8, 97#u8, 108#u8, 102#u8, 111#u8, 114#u8, 109#u8, 101#u8, 100#u8,
+        95#u8, 106#u8, 119#u8, 115#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.WrongTyp =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        119#u8, 114#u8, 111#u8, 110#u8, 103#u8, 95#u8, 116#u8, 121#u8, 112#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.WrongAlg =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        119#u8, 114#u8, 111#u8, 110#u8, 103#u8, 95#u8, 97#u8, 108#u8, 103#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.WrongJwk =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        119#u8, 114#u8, 111#u8, 110#u8, 103#u8, 95#u8, 106#u8, 119#u8, 107#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.SignatureInvalid
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        115#u8, 105#u8, 103#u8, 110#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8,
+        95#u8, 105#u8, 110#u8, 118#u8, 97#u8, 108#u8, 105#u8, 100#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.WrongHtm =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        119#u8, 114#u8, 111#u8, 110#u8, 103#u8, 95#u8, 104#u8, 116#u8, 109#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.WrongHtu =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        119#u8, 114#u8, 111#u8, 110#u8, 103#u8, 95#u8, 104#u8, 116#u8, 117#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.IatMissing =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        105#u8, 97#u8, 116#u8, 95#u8, 109#u8, 105#u8, 115#u8, 115#u8, 105#u8,
+        110#u8, 103#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.IatOutOfWindow =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        105#u8, 97#u8, 116#u8, 95#u8, 111#u8, 117#u8, 116#u8, 95#u8, 111#u8,
+        102#u8, 95#u8, 119#u8, 105#u8, 110#u8, 100#u8, 111#u8, 119#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.JtiMissing =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        106#u8, 116#u8, 105#u8, 95#u8, 109#u8, 105#u8, 115#u8, 115#u8, 105#u8,
+        110#u8, 103#u8
+        ])
+  | finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.JktMismatch =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        106#u8, 107#u8, 116#u8, 95#u8, 109#u8, 105#u8, 115#u8, 109#u8, 97#u8,
+        116#u8, 99#u8, 104#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::output_format_a83b795c::OutputFormat]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 474:0-474:28
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.output_format_a83b795c.OutputFormat where
+| WebP : finite_catalog.output_format_a83b795c.OutputFormat
+
+/-- [oxicloud_kernel::finite_catalog::output_format_a83b795c::{oxicloud_kernel::finite_catalog::output_format_a83b795c::OutputFormat}::extension]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 476:4-480:5
+    Visibility: public -/
+def finite_catalog.output_format_a83b795c.OutputFormat.extension
+  (self : finite_catalog.output_format_a83b795c.OutputFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  alloc.vec.FromVecArray.from
+    (Array.make 4#usize [ 119#u8, 101#u8, 98#u8, 112#u8 ])
+
+/-- [oxicloud_kernel::finite_catalog::output_format_a83b795c::{oxicloud_kernel::finite_catalog::output_format_a83b795c::OutputFormat}::mime_type]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 481:4-485:5
+    Visibility: public -/
+def finite_catalog.output_format_a83b795c.OutputFormat.mime_type
+  (self : finite_catalog.output_format_a83b795c.OutputFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  alloc.vec.FromVecArray.from
+    (Array.make 10#usize [
+      105#u8, 109#u8, 97#u8, 103#u8, 101#u8, 47#u8, 119#u8, 101#u8, 98#u8,
+      112#u8
+      ])
+
+/-- [oxicloud_kernel::finite_catalog::opaque_mode_b0957357::OpaqueMode]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 490:0-490:44
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.opaque_mode_b0957357.OpaqueMode where
+| Off : finite_catalog.opaque_mode_b0957357.OpaqueMode
+| Migrate : finite_catalog.opaque_mode_b0957357.OpaqueMode
+| OpaqueOnly : finite_catalog.opaque_mode_b0957357.OpaqueMode
+
+/-- [oxicloud_kernel::finite_catalog::opaque_mode_b0957357::{oxicloud_kernel::finite_catalog::opaque_mode_b0957357::OpaqueMode}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 496:4-502:5
+    Visibility: public -/
+def finite_catalog.opaque_mode_b0957357.OpaqueMode.as_str
+  (self : finite_catalog.opaque_mode_b0957357.OpaqueMode) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.opaque_mode_b0957357.OpaqueMode.Off =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 111#u8, 102#u8, 102#u8 ])
+  | finite_catalog.opaque_mode_b0957357.OpaqueMode.Migrate =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        109#u8, 105#u8, 103#u8, 114#u8, 97#u8, 116#u8, 101#u8
+        ])
+  | finite_catalog.opaque_mode_b0957357.OpaqueMode.OpaqueOnly =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        111#u8, 112#u8, 97#u8, 113#u8, 117#u8, 101#u8, 95#u8, 111#u8, 110#u8,
+        108#u8, 121#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::phase_ce65bf5b::Phase]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 507:0-507:33
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.phase_ce65bf5b.Phase where
+| Derived : finite_catalog.phase_ce65bf5b.Phase
+| Attached : finite_catalog.phase_ce65bf5b.Phase
+
+/-- [oxicloud_kernel::finite_catalog::phase_ce65bf5b::{oxicloud_kernel::finite_catalog::phase_ce65bf5b::Phase}::as_str]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 509:4-514:5
+    Visibility: public -/
+def finite_catalog.phase_ce65bf5b.Phase.as_str
+  (self : finite_catalog.phase_ce65bf5b.Phase) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.phase_ce65bf5b.Phase.Derived =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        100#u8, 101#u8, 114#u8, 105#u8, 118#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.phase_ce65bf5b.Phase.Attached =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        97#u8, 116#u8, 116#u8, 97#u8, 99#u8, 104#u8, 101#u8, 100#u8
+        ])
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_4088a69a::ThumbnailSize]
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 519:0-519:43
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.thumbnail_size_4088a69a.ThumbnailSize where
+| Icon : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize
+| Preview : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize
+| Large : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_4088a69a::{oxicloud_kernel::finite_catalog::thumbnail_size_4088a69a::ThumbnailSize}::max_dimension]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 522:4-528:5
+    Visibility: public -/
+def finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension
+  (self : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
+  Result Std.U32
+  := do
+  match self with
+  | finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.Icon => ok 150#u32
+  | finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.Preview => ok 400#u32
+  | finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.Large => ok 800#u32
+
+/-- [oxicloud_kernel::finite_catalog::thumbnail_size_4088a69a::{oxicloud_kernel::finite_catalog::thumbnail_size_4088a69a::ThumbnailSize}::dir_name]:
+    Source: 'prove/ports/oxicloud/kernel/src/finite_catalog.rs', lines 530:4-536:5
+    Visibility: public -/
+def finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name
+  (self : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.Icon =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 105#u8, 99#u8, 111#u8, 110#u8 ])
+  | finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.Preview =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 114#u8, 101#u8, 118#u8, 105#u8, 101#u8, 119#u8
+        ])
+  | finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.Large =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 108#u8, 97#u8, 114#u8, 103#u8, 101#u8 ])
+
 /-- [oxicloud_kernel::grantapi::Env]
     Source: 'prove/ports/oxicloud/kernel/src/grantapi.rs', lines 11:0-16:1
     Visibility: public -/

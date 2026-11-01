@@ -470,3 +470,5 @@ pub fn contains_u64(v: &[u64], x: u64) -> bool {
 }
 
 pub mod proxy_policy;
+
+pub mod finite_catalog;

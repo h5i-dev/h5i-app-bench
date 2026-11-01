@@ -290,3 +290,20 @@ the substituted text (`Pending::resume`) and nested resolution stops at depth
 `difftest/src/resolver_backport.rs` runs upstream's regression tests for that
 commit; on other inputs the randomized comparison against the pinned crate is
 unchanged.
+
+## Exhaustive finite enum decisions (2026-11-01)
+
+`finite_catalog` retains the pinned unit variants, explicit discriminants,
+method branches and supported callees. Returned UTF-8 strings become their
+exact byte vectors; scalar and boolean results retain their original types.
+Derive implementations, visibility and module paths are carrier changes.
+Methods needing unresolved external dependencies are excluded. Each accepted
+method has a complete output theorem over every enum variant, and differential
+tests compare every input against unchanged pinned method bodies.
+
+`difftest/finite_catalog/plan.json` records the upstream revision, exact source
+spans and hashes, all reference outputs, excluded candidates, and extraction
+roots. Regenerate with `python3 harness/finite_catalog.py generate --app rustfs`
+from `prove/`. Integration is a separate one-time action; standard extraction,
+project gates and source-reach validation are still required for credit.
+Enum declarations, test data and generated code add no upstream line credit.

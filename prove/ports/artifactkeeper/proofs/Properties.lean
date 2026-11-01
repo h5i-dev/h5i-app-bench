@@ -1,3 +1,4 @@
+import Verified.FiniteCatalog
 import Verified.TokenScope
 import Verified.TotpPolicy
 import Verified.TokenExpiry
@@ -273,5 +274,198 @@ theorem scope_mint_spec (e : AuthExtension) (requested : Slice (alloc.vec.Vec U8
 theorem scope_repo_mint_spec (e : AuthExtension) (requested : Bool) :
     token_scope.check_repo_ceiling e requested = ok (Verified.TokenScope.repoMint e requested) :=
   Verified.TokenScope.repo_mint_spec e requested
+
+end artifactkeeper_kernel.Properties
+
+namespace artifactkeeper_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_repodata_encoding_df7b79f6_content_type_complete (v : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding) :
+    finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.content_type v ⦃r => r.val = repodata_encoding_df7b79f6_content_type_model v⦄ := Verified.FiniteCatalog.repodata_encoding_df7b79f6_content_type_complete v
+
+theorem finite_repodata_encoding_df7b79f6_upstream_filename_complete (v : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding) :
+    finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.upstream_filename v ⦃r => r.val = repodata_encoding_df7b79f6_upstream_filename_model v⦄ := Verified.FiniteCatalog.repodata_encoding_df7b79f6_upstream_filename_complete v
+
+theorem finite_signed_release_variant_007f0cf5_as_str_complete (v : finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant) :
+    finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.as_str v ⦃r => r.val = signed_release_variant_007f0cf5_as_str_model v⦄ := Verified.FiniteCatalog.signed_release_variant_007f0cf5_as_str_complete v
+
+theorem finite_upload_session_state_a43ea4df_as_str_complete (v : finite_catalog.upload_session_state_a43ea4df.UploadSessionState) :
+    finite_catalog.upload_session_state_a43ea4df.UploadSessionState.as_str v ⦃r => r.val = upload_session_state_a43ea4df_as_str_model v⦄ := Verified.FiniteCatalog.upload_session_state_a43ea4df_as_str_complete v
+
+theorem finite_cached_object_verdict_b87a78e2_may_serve_stored_object_complete (v : finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict) :
+    finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.may_serve_stored_object v ⦃r => r = cached_object_verdict_b87a78e2_may_serve_stored_object_model v⦄ := Verified.FiniteCatalog.cached_object_verdict_b87a78e2_may_serve_stored_object_complete v
+
+theorem finite_outbound_url_context_dd3b7559_env_var_complete (v : finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext) :
+    finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.env_var v ⦃r => r.val = outbound_url_context_dd3b7559_env_var_model v⦄ := Verified.FiniteCatalog.outbound_url_context_dd3b7559_env_var_complete v
+
+theorem finite_jwt_secret_warning_4946346a_message_complete (v : finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning) :
+    finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.message v ⦃r => r.val = jwt_secret_warning_4946346a_message_model v⦄ := Verified.FiniteCatalog.jwt_secret_warning_4946346a_message_complete v
+
+theorem finite_incus_file_type_eee7eb85_as_str_complete (v : finite_catalog.incus_file_type_eee7eb85.IncusFileType) :
+    finite_catalog.incus_file_type_eee7eb85.IncusFileType.as_str v ⦃r => r.val = incus_file_type_eee7eb85_as_str_model v⦄ := Verified.FiniteCatalog.incus_file_type_eee7eb85_as_str_complete v
+
+theorem finite_incus_file_type_eee7eb85_is_tarball_complete (v : finite_catalog.incus_file_type_eee7eb85.IncusFileType) :
+    finite_catalog.incus_file_type_eee7eb85.IncusFileType.is_tarball v ⦃r => r = incus_file_type_eee7eb85_is_tarball_model v⦄ := Verified.FiniteCatalog.incus_file_type_eee7eb85_is_tarball_complete v
+
+theorem finite_sbom_format_104be95e_as_str_complete (v : finite_catalog.sbom_format_104be95e.SbomFormat) :
+    finite_catalog.sbom_format_104be95e.SbomFormat.as_str v ⦃r => r.val = sbom_format_104be95e_as_str_model v⦄ := Verified.FiniteCatalog.sbom_format_104be95e_as_str_complete v
+
+theorem finite_sbom_format_104be95e_content_type_complete (v : finite_catalog.sbom_format_104be95e.SbomFormat) :
+    finite_catalog.sbom_format_104be95e.SbomFormat.content_type v ⦃r => r.val = sbom_format_104be95e_content_type_model v⦄ := Verified.FiniteCatalog.sbom_format_104be95e_content_type_complete v
+
+theorem finite_cve_status_104be95e_as_str_complete (v : finite_catalog.cve_status_104be95e.CveStatus) :
+    finite_catalog.cve_status_104be95e.CveStatus.as_str v ⦃r => r.val = cve_status_104be95e_as_str_model v⦄ := Verified.FiniteCatalog.cve_status_104be95e_as_str_complete v
+
+theorem finite_policy_action_104be95e_as_str_complete (v : finite_catalog.policy_action_104be95e.PolicyAction) :
+    finite_catalog.policy_action_104be95e.PolicyAction.as_str v ⦃r => r.val = policy_action_104be95e_as_str_model v⦄ := Verified.FiniteCatalog.policy_action_104be95e_as_str_complete v
+
+theorem finite_severity_1259a9af_penalty_weight_complete (v : finite_catalog.severity_1259a9af.Severity) :
+    finite_catalog.severity_1259a9af.Severity.penalty_weight v ⦃r => r = severity_1259a9af_penalty_weight_model v⦄ := Verified.FiniteCatalog.severity_1259a9af_penalty_weight_complete v
+
+theorem finite_severity_1259a9af_as_str_complete (v : finite_catalog.severity_1259a9af.Severity) :
+    finite_catalog.severity_1259a9af.Severity.as_str v ⦃r => r.val = severity_1259a9af_as_str_model v⦄ := Verified.FiniteCatalog.severity_1259a9af_as_str_complete v
+
+theorem finite_age_gate_mode_3fdb45b7_as_str_complete (v : finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode) :
+    finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.as_str v ⦃r => r.val = age_gate_mode_3fdb45b7_as_str_model v⦄ := Verified.FiniteCatalog.age_gate_mode_3fdb45b7_as_str_complete v
+
+theorem finite_age_gate_review_status_3fdb45b7_as_str_complete (v : finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus) :
+    finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.as_str v ⦃r => r.val = age_gate_review_status_3fdb45b7_as_str_model v⦄ := Verified.FiniteCatalog.age_gate_review_status_3fdb45b7_as_str_complete v
+
+theorem finite_audit_stream_mode_8053ef47_name_complete (v : finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode) :
+    finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.name v ⦃r => r.val = audit_stream_mode_8053ef47_name_model v⦄ := Verified.FiniteCatalog.audit_stream_mode_8053ef47_name_complete v
+
+theorem finite_audit_action_3ef0ea8f_as_str_complete (v : finite_catalog.audit_action_3ef0ea8f.AuditAction) :
+    finite_catalog.audit_action_3ef0ea8f.AuditAction.as_str v ⦃r => r.val = audit_action_3ef0ea8f_as_str_model v⦄ := Verified.FiniteCatalog.audit_action_3ef0ea8f_as_str_complete v
+
+theorem finite_resource_type_3ef0ea8f_as_str_complete (v : finite_catalog.resource_type_3ef0ea8f.ResourceType) :
+    finite_catalog.resource_type_3ef0ea8f.ResourceType.as_str v ⦃r => r.val = resource_type_3ef0ea8f_as_str_model v⦄ := Verified.FiniteCatalog.resource_type_3ef0ea8f_as_str_complete v
+
+theorem finite_noarch_kind_b8478f7b_as_str_complete (v : finite_catalog.noarch_kind_b8478f7b.NoarchKind) :
+    finite_catalog.noarch_kind_b8478f7b.NoarchKind.as_str v ⦃r => r.val = noarch_kind_b8478f7b_as_str_model v⦄ := Verified.FiniteCatalog.noarch_kind_b8478f7b_as_str_complete v
+
+theorem finite_conda_archive_type_b8478f7b_as_str_complete (v : finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType) :
+    finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.as_str v ⦃r => r.val = conda_archive_type_b8478f7b_as_str_model v⦄ := Verified.FiniteCatalog.conda_archive_type_b8478f7b_as_str_complete v
+
+theorem finite_script_kind_a04cea8b_as_str_complete (v : finite_catalog.script_kind_a04cea8b.ScriptKind) :
+    finite_catalog.script_kind_a04cea8b.ScriptKind.as_str v ⦃r => r.val = script_kind_a04cea8b_as_str_model v⦄ := Verified.FiniteCatalog.script_kind_a04cea8b_as_str_complete v
+
+theorem finite_script_kind_a04cea8b_runs_as_root_complete (v : finite_catalog.script_kind_a04cea8b.ScriptKind) :
+    finite_catalog.script_kind_a04cea8b.ScriptKind.runs_as_root v ⦃r => r = script_kind_a04cea8b_runs_as_root_model v⦄ := Verified.FiniteCatalog.script_kind_a04cea8b_runs_as_root_complete v
+
+theorem finite_candidate_confidence_8223875f_as_str_complete (v : finite_catalog.candidate_confidence_8223875f.CandidateConfidence) :
+    finite_catalog.candidate_confidence_8223875f.CandidateConfidence.as_str v ⦃r => r.val = candidate_confidence_8223875f_as_str_model v⦄ := Verified.FiniteCatalog.candidate_confidence_8223875f_as_str_complete v
+
+theorem finite_check_b0946112_bit_complete (v : finite_catalog.check_b0946112.Check) :
+    finite_catalog.check_b0946112.Check.bit v ⦃r => r = check_b0946112_bit_model v⦄ := Verified.FiniteCatalog.check_b0946112_bit_complete v
+
+theorem finite_check_b0946112_reason_label_complete (v : finite_catalog.check_b0946112.Check) :
+    finite_catalog.check_b0946112.Check.reason_label v ⦃r => r.val = check_b0946112_reason_label_model v⦄ := Verified.FiniteCatalog.check_b0946112_reason_label_complete v
+
+theorem finite_attestation_state_b0946112_as_str_complete (v : finite_catalog.attestation_state_b0946112.AttestationState) :
+    finite_catalog.attestation_state_b0946112.AttestationState.as_str v ⦃r => r.val = attestation_state_b0946112_as_str_model v⦄ := Verified.FiniteCatalog.attestation_state_b0946112_as_str_complete v
+
+theorem finite_inventory_completeness_0e70a8c0_as_str_complete (v : finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness) :
+    finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.as_str v ⦃r => r.val = inventory_completeness_0e70a8c0_as_str_model v⦄ := Verified.FiniteCatalog.inventory_completeness_0e70a8c0_as_str_complete v
+
+theorem finite_egress_proxy_mode_2d09e195_as_str_complete (v : finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode) :
+    finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.as_str v ⦃r => r.val = egress_proxy_mode_2d09e195_as_str_model v⦄ := Verified.FiniteCatalog.egress_proxy_mode_2d09e195_as_str_complete v
+
+theorem finite_rate_limit_decision_2593facc_label_complete (v : finite_catalog.rate_limit_decision_2593facc.RateLimitDecision) :
+    finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.label v ⦃r => r.val = rate_limit_decision_2593facc_label_model v⦄ := Verified.FiniteCatalog.rate_limit_decision_2593facc_label_complete v
+
+theorem finite_lock_format_99735155_as_str_complete (v : finite_catalog.lock_format_99735155.LockFormat) :
+    finite_catalog.lock_format_99735155.LockFormat.as_str v ⦃r => r.val = lock_format_99735155_as_str_model v⦄ := Verified.FiniteCatalog.lock_format_99735155_as_str_complete v
+
+theorem finite_lock_format_99735155_is_per_platform_complete (v : finite_catalog.lock_format_99735155.LockFormat) :
+    finite_catalog.lock_format_99735155.LockFormat.is_per_platform v ⦃r => r = lock_format_99735155_is_per_platform_model v⦄ := Verified.FiniteCatalog.lock_format_99735155_is_per_platform_complete v
+
+theorem finite_ecosystem_99735155_as_str_complete (v : finite_catalog.ecosystem_99735155.Ecosystem) :
+    finite_catalog.ecosystem_99735155.Ecosystem.as_str v ⦃r => r.val = ecosystem_99735155_as_str_model v⦄ := Verified.FiniteCatalog.ecosystem_99735155_as_str_complete v
+
+theorem finite_edge_kind_99735155_as_str_complete (v : finite_catalog.edge_kind_99735155.EdgeKind) :
+    finite_catalog.edge_kind_99735155.EdgeKind.as_str v ⦃r => r.val = edge_kind_99735155_as_str_model v⦄ := Verified.FiniteCatalog.edge_kind_99735155_as_str_complete v
+
+theorem finite_unresolved_kind_99735155_as_str_complete (v : finite_catalog.unresolved_kind_99735155.UnresolvedKind) :
+    finite_catalog.unresolved_kind_99735155.UnresolvedKind.as_str v ⦃r => r.val = unresolved_kind_99735155_as_str_model v⦄ := Verified.FiniteCatalog.unresolved_kind_99735155_as_str_complete v
+
+theorem finite_unresolved_kind_99735155_is_parse_failure_complete (v : finite_catalog.unresolved_kind_99735155.UnresolvedKind) :
+    finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_parse_failure v ⦃r => r = unresolved_kind_99735155_is_parse_failure_model v⦄ := Verified.FiniteCatalog.unresolved_kind_99735155_is_parse_failure_complete v
+
+theorem finite_unresolved_kind_99735155_is_graph_gap_complete (v : finite_catalog.unresolved_kind_99735155.UnresolvedKind) :
+    finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_graph_gap v ⦃r => r = unresolved_kind_99735155_is_graph_gap_model v⦄ := Verified.FiniteCatalog.unresolved_kind_99735155_is_graph_gap_complete v
+
+theorem finite_package_manager_7f965e35_as_str_complete (v : finite_catalog.package_manager_7f965e35.PackageManager) :
+    finite_catalog.package_manager_7f965e35.PackageManager.as_str v ⦃r => r.val = package_manager_7f965e35_as_str_model v⦄ := Verified.FiniteCatalog.package_manager_7f965e35_as_str_complete v
+
+theorem finite_package_manager_7f965e35_is_system_complete (v : finite_catalog.package_manager_7f965e35.PackageManager) :
+    finite_catalog.package_manager_7f965e35.PackageManager.is_system v ⦃r => r = package_manager_7f965e35_is_system_model v⦄ := Verified.FiniteCatalog.package_manager_7f965e35_is_system_complete v
+
+theorem finite_policy_type_080e6210_as_wire_str_complete (v : finite_catalog.policy_type_080e6210.PolicyType) :
+    finite_catalog.policy_type_080e6210.PolicyType.as_wire_str v ⦃r => r.val = policy_type_080e6210_as_wire_str_model v⦄ := Verified.FiniteCatalog.policy_type_080e6210_as_wire_str_complete v
+
+theorem finite_flat_key_write_claim_6572c2eb_needs_release_on_failure_complete (v : finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim) :
+    finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.needs_release_on_failure v ⦃r => r = flat_key_write_claim_6572c2eb_needs_release_on_failure_model v⦄ := Verified.FiniteCatalog.flat_key_write_claim_6572c2eb_needs_release_on_failure_complete v
+
+theorem finite_source_view_73842ce1_overwrites_complete (v : finite_catalog.source_view_73842ce1.SourceView) :
+    finite_catalog.source_view_73842ce1.SourceView.overwrites v ⦃r => r = source_view_73842ce1_overwrites_model v⦄ := Verified.FiniteCatalog.source_view_73842ce1_overwrites_complete v
+
+theorem finite_repository_type_73842ce1_to_artifact_keeper_complete (v : finite_catalog.repository_type_73842ce1.RepositoryType) :
+    finite_catalog.repository_type_73842ce1.RepositoryType.to_artifact_keeper v ⦃r => r.val = repository_type_73842ce1_to_artifact_keeper_model v⦄ := Verified.FiniteCatalog.repository_type_73842ce1_to_artifact_keeper_complete v
+
+theorem finite_advisory_scan_status_38f3e57f_as_str_complete (v : finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus) :
+    finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.as_str v ⦃r => r.val = advisory_scan_status_38f3e57f_as_str_model v⦄ := Verified.FiniteCatalog.advisory_scan_status_38f3e57f_as_str_complete v
+
+theorem finite_proxy_scan_action_2c5d20ab_is_fail_closed_complete (v : finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction) :
+    finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.is_fail_closed v ⦃r => r = proxy_scan_action_2c5d20ab_is_fail_closed_model v⦄ := Verified.FiniteCatalog.proxy_scan_action_2c5d20ab_is_fail_closed_complete v
+
+theorem finite_vendoring_tool_8d235a49_as_str_complete (v : finite_catalog.vendoring_tool_8d235a49.VendoringTool) :
+    finite_catalog.vendoring_tool_8d235a49.VendoringTool.as_str v ⦃r => r.val = vendoring_tool_8d235a49_as_str_model v⦄ := Verified.FiniteCatalog.vendoring_tool_8d235a49_as_str_complete v
+
+theorem finite_quarantine_state_63e328a6_as_str_complete (v : finite_catalog.quarantine_state_63e328a6.QuarantineState) :
+    finite_catalog.quarantine_state_63e328a6.QuarantineState.as_str v ⦃r => r.val = quarantine_state_63e328a6_as_str_model v⦄ := Verified.FiniteCatalog.quarantine_state_63e328a6_as_str_complete v
+
+theorem finite_inventory_status_731e13d3_as_db_str_complete (v : finite_catalog.inventory_status_731e13d3.InventoryStatus) :
+    finite_catalog.inventory_status_731e13d3.InventoryStatus.as_db_str v ⦃r => r.val = inventory_status_731e13d3_as_db_str_model v⦄ := Verified.FiniteCatalog.inventory_status_731e13d3_as_db_str_complete v
+
+theorem finite_scan_state_5f365d9c_is_unscanned_complete (v : finite_catalog.scan_state_5f365d9c.ScanState) :
+    finite_catalog.scan_state_5f365d9c.ScanState.is_unscanned v ⦃r => r = scan_state_5f365d9c_is_unscanned_model v⦄ := Verified.FiniteCatalog.scan_state_5f365d9c_is_unscanned_complete v
+
+theorem finite_scan_state_5f365d9c_reason_token_complete (v : finite_catalog.scan_state_5f365d9c.ScanState) :
+    finite_catalog.scan_state_5f365d9c.ScanState.reason_token v ⦃r => r.val = scan_state_5f365d9c_reason_token_model v⦄ := Verified.FiniteCatalog.scan_state_5f365d9c_reason_token_complete v
+
+theorem finite_scan_completeness_ba4d10ac_as_str_complete (v : finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness) :
+    finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.as_str v ⦃r => r.val = scan_completeness_ba4d10ac_as_str_model v⦄ := Verified.FiniteCatalog.scan_completeness_ba4d10ac_as_str_complete v
+
+theorem finite_oci_content_kind_bc817bda_path_segment_complete (v : finite_catalog.oci_content_kind_bc817bda.OciContentKind) :
+    finite_catalog.oci_content_kind_bc817bda.OciContentKind.path_segment v ⦃r => r.val = oci_content_kind_bc817bda_path_segment_model v⦄ := Verified.FiniteCatalog.oci_content_kind_bc817bda_path_segment_complete v
+
+theorem finite_oci_cleanup_key_family_c9cc8f67_session_predicate_sql_complete (v : finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily) :
+    finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.session_predicate_sql v ⦃r => r.val = oci_cleanup_key_family_c9cc8f67_session_predicate_sql_model v⦄ := Verified.FiniteCatalog.oci_cleanup_key_family_c9cc8f67_session_predicate_sql_complete v
+
+theorem finite_dedup_scope_78b2cf8c_as_str_complete (v : finite_catalog.dedup_scope_78b2cf8c.DedupScope) :
+    finite_catalog.dedup_scope_78b2cf8c.DedupScope.as_str v ⦃r => r.val = dedup_scope_78b2cf8c_as_str_model v⦄ := Verified.FiniteCatalog.dedup_scope_78b2cf8c_as_str_complete v
+
+theorem finite_totp_policy_31812d2d_as_str_complete (v : finite_catalog.totp_policy_31812d2d.TotpPolicy) :
+    finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str v ⦃r => r.val = totp_policy_31812d2d_as_str_model v⦄ := Verified.FiniteCatalog.totp_policy_31812d2d_as_str_complete v
+
+theorem finite_totp_policy_31812d2d_is_enforcing_complete (v : finite_catalog.totp_policy_31812d2d.TotpPolicy) :
+    finite_catalog.totp_policy_31812d2d.TotpPolicy.is_enforcing v ⦃r => r = totp_policy_31812d2d_is_enforcing_model v⦄ := Verified.FiniteCatalog.totp_policy_31812d2d_is_enforcing_complete v
+
+theorem finite_policy_activation_refusal_31812d2d_message_complete (v : finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal) :
+    finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.message v ⦃r => r.val = policy_activation_refusal_31812d2d_message_model v⦄ := Verified.FiniteCatalog.policy_activation_refusal_31812d2d_message_complete v
+
+theorem finite_storage_path_format_9d04c6bd_has_fallback_complete (v : finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat) :
+    finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.has_fallback v ⦃r => r = storage_path_format_9d04c6bd_has_fallback_model v⦄ := Verified.FiniteCatalog.storage_path_format_9d04c6bd_has_fallback_complete v
+
+theorem finite_log_format_f5cc6ea1_name_complete (v : finite_catalog.log_format_f5cc6ea1.LogFormat) :
+    finite_catalog.log_format_f5cc6ea1.LogFormat.name v ⦃r => r.val = log_format_f5cc6ea1_name_model v⦄ := Verified.FiniteCatalog.log_format_f5cc6ea1_name_complete v
+
+theorem finite_otlp_protocol_f5cc6ea1_name_complete (v : finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol) :
+    finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.name v ⦃r => r.val = otlp_protocol_f5cc6ea1_name_model v⦄ := Verified.FiniteCatalog.otlp_protocol_f5cc6ea1_name_complete v
+
+theorem finite_sampler_choice_f5cc6ea1_name_complete (v : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice) :
+    finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name v ⦃r => r.val = sampler_choice_f5cc6ea1_name_model v⦄ := Verified.FiniteCatalog.sampler_choice_f5cc6ea1_name_complete v
+
+theorem finite_sampler_choice_f5cc6ea1_uses_ratio_complete (v : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice) :
+    finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio v ⦃r => r = sampler_choice_f5cc6ea1_uses_ratio_model v⦄ := Verified.FiniteCatalog.sampler_choice_f5cc6ea1_uses_ratio_complete v
 
 end artifactkeeper_kernel.Properties

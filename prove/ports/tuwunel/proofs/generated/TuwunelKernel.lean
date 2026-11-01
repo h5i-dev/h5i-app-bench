@@ -8478,6 +8478,260 @@ def api_threads.get_threads_route
     else ok (core.result.Result.Err Error.Forbidden)
   else ok (core.result.Result.Err Error.Forbidden)
 
+/-- [tuwunel_kernel::finite_catalog::field_bea9b175::Field]
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 4:0-4:38
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.field_bea9b175.Field where
+| Name : finite_catalog.field_bea9b175.Field
+| Version : finite_catalog.field_bea9b175.Field
+| Compiler : finite_catalog.field_bea9b175.Field
+
+/-- [tuwunel_kernel::finite_catalog::field_bea9b175::{tuwunel_kernel::finite_catalog::field_bea9b175::Field}::label]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 6:4-12:5
+    Visibility: public -/
+def finite_catalog.field_bea9b175.Field.label
+  (self : finite_catalog.field_bea9b175.Field) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.field_bea9b175.Field.Name =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ])
+  | finite_catalog.field_bea9b175.Field.Version =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        118#u8, 101#u8, 114#u8, 115#u8, 105#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.field_bea9b175.Field.Compiler =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 105#u8, 108#u8, 101#u8, 114#u8
+        ])
+
+/-- [tuwunel_kernel::finite_catalog::state_after_c4e3af58::StateAfter]
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 17:0-17:41
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.state_after_c4e3af58.StateAfter where
+| Off : finite_catalog.state_after_c4e3af58.StateAfter
+| Stable : finite_catalog.state_after_c4e3af58.StateAfter
+| Unstable : finite_catalog.state_after_c4e3af58.StateAfter
+
+/-- [tuwunel_kernel::finite_catalog::state_after_c4e3af58::{tuwunel_kernel::finite_catalog::state_after_c4e3af58::StateAfter}::requested]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 19:4-19:65
+    Visibility: public -/
+def finite_catalog.state_after_c4e3af58.StateAfter.requested
+  (self : finite_catalog.state_after_c4e3af58.StateAfter) : Result Bool := do
+  let b ←
+    match self with
+    | finite_catalog.state_after_c4e3af58.StateAfter.Off => ok true
+    | finite_catalog.state_after_c4e3af58.StateAfter.Stable => ok false
+    | finite_catalog.state_after_c4e3af58.StateAfter.Unstable => ok false
+  ok (¬ b)
+
+/-- [tuwunel_kernel::finite_catalog::fallback_08cb57a8::Fallback]
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 24:0-24:107
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.fallback_08cb57a8.Fallback where
+| Absent : finite_catalog.fallback_08cb57a8.Fallback
+| Ceiling : finite_catalog.fallback_08cb57a8.Fallback
+| AuthMissing : finite_catalog.fallback_08cb57a8.Fallback
+| AllCommitted : finite_catalog.fallback_08cb57a8.Fallback
+| Entries : finite_catalog.fallback_08cb57a8.Fallback
+| Canary : finite_catalog.fallback_08cb57a8.Fallback
+| CreateMismatch : finite_catalog.fallback_08cb57a8.Fallback
+| Unevaluable : finite_catalog.fallback_08cb57a8.Fallback
+| Error : finite_catalog.fallback_08cb57a8.Fallback
+
+/-- [tuwunel_kernel::finite_catalog::fallback_08cb57a8::{tuwunel_kernel::finite_catalog::fallback_08cb57a8::Fallback}::name]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 26:4-38:5
+    Visibility: public -/
+def finite_catalog.fallback_08cb57a8.Fallback.name
+  (self : finite_catalog.fallback_08cb57a8.Fallback) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.fallback_08cb57a8.Fallback.Absent =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 97#u8, 98#u8, 115#u8, 101#u8, 110#u8, 116#u8 ])
+  | finite_catalog.fallback_08cb57a8.Fallback.Ceiling =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        99#u8, 101#u8, 105#u8, 108#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.fallback_08cb57a8.Fallback.AuthMissing =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        97#u8, 117#u8, 116#u8, 104#u8, 95#u8, 109#u8, 105#u8, 115#u8, 115#u8,
+        105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.fallback_08cb57a8.Fallback.AllCommitted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        97#u8, 108#u8, 108#u8, 95#u8, 99#u8, 111#u8, 109#u8, 109#u8, 105#u8,
+        116#u8, 116#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.fallback_08cb57a8.Fallback.Entries =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        101#u8, 110#u8, 116#u8, 114#u8, 105#u8, 101#u8, 115#u8
+        ])
+  | finite_catalog.fallback_08cb57a8.Fallback.Canary =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 97#u8, 114#u8, 121#u8 ])
+  | finite_catalog.fallback_08cb57a8.Fallback.CreateMismatch =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        99#u8, 114#u8, 101#u8, 97#u8, 116#u8, 101#u8, 95#u8, 109#u8, 105#u8,
+        115#u8, 109#u8, 97#u8, 116#u8, 99#u8, 104#u8
+        ])
+  | finite_catalog.fallback_08cb57a8.Fallback.Unevaluable =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        117#u8, 110#u8, 101#u8, 118#u8, 97#u8, 108#u8, 117#u8, 97#u8, 98#u8,
+        108#u8, 101#u8
+        ])
+  | finite_catalog.fallback_08cb57a8.Fallback.Error =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 101#u8, 114#u8, 114#u8, 111#u8, 114#u8 ])
+
+/-- [tuwunel_kernel::finite_catalog::room_power_levels_int_field_b809be58::RoomPowerLevelsIntField]
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 43:0-43:97
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+  where
+| UsersDefault :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+| EventsDefault :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+| StateDefault :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+| Ban :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+| Redact :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+| Kick :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+| Invite :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField
+
+/-- [tuwunel_kernel::finite_catalog::room_power_levels_int_field_b809be58::{tuwunel_kernel::finite_catalog::room_power_levels_int_field_b809be58::RoomPowerLevelsIntField}::as_ref]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 50:4-60:5
+    Visibility: public -/
+def
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref
+  (self :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField)
+  :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.UsersDefault
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        117#u8, 115#u8, 101#u8, 114#u8, 115#u8, 95#u8, 100#u8, 101#u8, 102#u8,
+        97#u8, 117#u8, 108#u8, 116#u8
+        ])
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.EventsDefault
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        101#u8, 118#u8, 101#u8, 110#u8, 116#u8, 115#u8, 95#u8, 100#u8, 101#u8,
+        102#u8, 97#u8, 117#u8, 108#u8, 116#u8
+        ])
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.StateDefault
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        115#u8, 116#u8, 97#u8, 116#u8, 101#u8, 95#u8, 100#u8, 101#u8, 102#u8,
+        97#u8, 117#u8, 108#u8, 116#u8
+        ])
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.Ban
+    =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 98#u8, 97#u8, 110#u8 ])
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.Redact
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 114#u8, 101#u8, 100#u8, 97#u8, 99#u8, 116#u8 ])
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.Kick
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 107#u8, 105#u8, 99#u8, 107#u8 ])
+  |
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.Invite
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 105#u8, 110#u8, 118#u8, 105#u8, 116#u8, 101#u8 ])
+
+/-- [tuwunel_kernel::finite_catalog::room_power_levels_int_field_b809be58::{tuwunel_kernel::finite_catalog::room_power_levels_int_field_b809be58::RoomPowerLevelsIntField}::as_str]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 48:4-48:53
+    Visibility: public -/
+def
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str
+  (self :
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField)
+  :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref
+    self
+
+/-- [tuwunel_kernel::finite_catalog::status_4004009f::Status]
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 65:0-65:50
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.status_4004009f.Status where
+| Scheduled : finite_catalog.status_4004009f.Status
+| Active : finite_catalog.status_4004009f.Status
+| Complete : finite_catalog.status_4004009f.Status
+| Failed : finite_catalog.status_4004009f.Status
+
+/-- [tuwunel_kernel::finite_catalog::status_4004009f::{tuwunel_kernel::finite_catalog::status_4004009f::Status}::is_terminal]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 72:4-72:86
+    Visibility: public -/
+def finite_catalog.status_4004009f.Status.is_terminal
+  (self : finite_catalog.status_4004009f.Status) : Result Bool := do
+  match self with
+  | finite_catalog.status_4004009f.Status.Scheduled => ok false
+  | finite_catalog.status_4004009f.Status.Active => ok false
+  | finite_catalog.status_4004009f.Status.Complete => ok true
+  | finite_catalog.status_4004009f.Status.Failed => ok true
+
+/-- [tuwunel_kernel::finite_catalog::status_4004009f::{tuwunel_kernel::finite_catalog::status_4004009f::Status}::as_str]:
+    Source: 'prove/ports/tuwunel/kernel/src/finite_catalog.rs', lines 78:4-85:5
+    Visibility: public -/
+def finite_catalog.status_4004009f.Status.as_str
+  (self : finite_catalog.status_4004009f.Status) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.status_4004009f.Status.Scheduled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        115#u8, 99#u8, 104#u8, 101#u8, 100#u8, 117#u8, 108#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.status_4004009f.Status.Active =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 97#u8, 99#u8, 116#u8, 105#u8, 118#u8, 101#u8 ])
+  | finite_catalog.status_4004009f.Status.Complete =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 108#u8, 101#u8, 116#u8, 101#u8
+        ])
+  | finite_catalog.status_4004009f.Status.Failed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 102#u8, 97#u8, 105#u8, 108#u8, 101#u8, 100#u8 ])
+
 /-- [tuwunel_kernel::Op]
     Source: 'prove/ports/tuwunel/kernel/src/lib.rs', lines 350:0-383:1
     Visibility: public -/

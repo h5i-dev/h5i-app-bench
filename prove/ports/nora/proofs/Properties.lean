@@ -1,3 +1,4 @@
+import Verified.FiniteCatalog
 import Verified.Curation
 import Verified.CircuitBreaker
 import Verified.PermissionImport
@@ -368,5 +369,24 @@ theorem curation_namespace_active_spec (ns : Option curation.Filter) :
 theorem curation_active_spec (mode : curation.Mode) :
     curation.is_active mode ⦃ r => r = !Verified.Curation.isOff mode ⦄ :=
   Verified.Curation.active_spec mode
+
+end nora_kernel.Properties
+
+namespace nora_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_breaker_state_f11f5e92_as_gauge_complete (v : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+    finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge v ⦃r => r = breaker_state_f11f5e92_as_gauge_model v⦄ := Verified.FiniteCatalog.breaker_state_f11f5e92_as_gauge_complete v
+
+theorem finite_breaker_state_f11f5e92_as_health_str_complete (v : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+    finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str v ⦃r => r.val = breaker_state_f11f5e92_as_health_str_model v⦄ := Verified.FiniteCatalog.breaker_state_f11f5e92_as_health_str_complete v
+
+theorem finite_role_a890c86c_can_write_complete (v : finite_catalog.role_a890c86c.Role) :
+    finite_catalog.role_a890c86c.Role.can_write v ⦃r => r = role_a890c86c_can_write_model v⦄ := Verified.FiniteCatalog.role_a890c86c_can_write_complete v
+
+theorem finite_role_a890c86c_can_admin_complete (v : finite_catalog.role_a890c86c.Role) :
+    finite_catalog.role_a890c86c.Role.can_admin v ⦃r => r = role_a890c86c_can_admin_model v⦄ := Verified.FiniteCatalog.role_a890c86c_can_admin_complete v
+
+theorem finite_lang_986f59b4_code_complete (v : finite_catalog.lang_986f59b4.Lang) :
+    finite_catalog.lang_986f59b4.Lang.code v ⦃r => r.val = lang_986f59b4_code_model v⦄ := Verified.FiniteCatalog.lang_986f59b4_code_complete v
 
 end nora_kernel.Properties

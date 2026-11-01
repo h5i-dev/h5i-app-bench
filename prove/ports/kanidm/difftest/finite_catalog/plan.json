@@ -1,0 +1,149 @@
+{
+  "revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
+  "accepted": [
+    {
+      "enum": {
+        "file": "server/lib/src/value.rs",
+        "kind": "enum",
+        "name": "IndexType",
+        "self_ty": "",
+        "start": 157,
+        "end": 177,
+        "sha256": "52a9706a3c0c4db7d1c55d6011c68e5068bd68351d580171ec2ad301c4ca118b"
+      },
+      "variants": [
+        "Equality",
+        "Presence",
+        "SubString",
+        "Ordering"
+      ],
+      "source": "#[allow(non_camel_case_types)]\n#[derive(\n    Debug,\n    Clone,\n    Copy,\n    PartialEq,\n    Eq,\n    PartialOrd,\n    Ord,\n    Deserialize,\n    Serialize,\n    Hash,\n    TryFromPrimitive,\n)]\n#[repr(u16)]\npub enum IndexType {\n    Equality,\n    Presence,\n    SubString,\n    Ordering,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "server/lib/src/value.rs",
+            "kind": "method",
+            "name": "as_idx_str",
+            "self_ty": "IndexType",
+            "start": 197,
+            "end": 204,
+            "sha256": "a5047ee93a3dcfbfc6b18cd92a55bf8eef0f00afda5ba24c9018a32c9546546b"
+          },
+          "source": "    pub fn as_idx_str(&self) -> &str {\n        match self {\n            IndexType::Equality => \"eq\",\n            IndexType::Presence => \"pres\",\n            IndexType::SubString => \"sub\",\n            IndexType::Ordering => \"ord\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "index_type_edc7b397",
+      "outputs": {
+        "as_idx_str/Equality": [
+          101,
+          113
+        ],
+        "as_idx_str/Presence": [
+          112,
+          114,
+          101,
+          115
+        ],
+        "as_idx_str/SubString": [
+          115,
+          117,
+          98
+        ],
+        "as_idx_str/Ordering": [
+          111,
+          114,
+          100
+        ]
+      },
+      "reference_sha256": "4b87d5cca3ba050309d2cc1b1c4e2771125a4bf787ddb9f5200c00e0d10fd706"
+    },
+    {
+      "enum": {
+        "file": "server/lib/src/value.rs",
+        "kind": "enum",
+        "name": "OauthClaimMapJoin",
+        "self_ty": "",
+        "start": 1242,
+        "end": 1248,
+        "sha256": "c143fcb7008c33696a5931a1e1650afb45ef24b79842fda8daa89cfcd08b444f"
+      },
+      "variants": [
+        "CommaSeparatedValue",
+        "SpaceSeparatedValue",
+        "JsonArray"
+      ],
+      "source": "#[derive(Debug, Copy, Clone, PartialEq, Eq, Default)]\npub enum OauthClaimMapJoin {\n    CommaSeparatedValue,\n    SpaceSeparatedValue,\n    #[default]\n    JsonArray,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "server/lib/src/value.rs",
+            "kind": "method",
+            "name": "to_str",
+            "self_ty": "OauthClaimMapJoin",
+            "start": 1279,
+            "end": 1286,
+            "sha256": "87c07fd4231b838745de9cbd01621c6818bb8951369f8dfa9697ff4aae67a323"
+          },
+          "source": "    pub(crate) fn to_str(self) -> &'static str {\n        match self {\n            OauthClaimMapJoin::CommaSeparatedValue => \",\",\n            OauthClaimMapJoin::SpaceSeparatedValue => \" \",\n            // Should this be something else?\n            OauthClaimMapJoin::JsonArray => \";\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "oauth_claim_map_join_edc7b397",
+      "outputs": {
+        "to_str/CommaSeparatedValue": [
+          44
+        ],
+        "to_str/SpaceSeparatedValue": [
+          32
+        ],
+        "to_str/JsonArray": [
+          59
+        ]
+      },
+      "reference_sha256": "8e59e64e6b5b11c287d7e321d987e6deea4e06218993dfad0a330b2d8f030136"
+    }
+  ],
+  "rejected": [],
+  "properties": [
+    {
+      "name": "index_type_edc7b397_as_idx_str_complete",
+      "statement": "(v : finite_catalog.index_type_edc7b397.IndexType) :\n    finite_catalog.index_type_edc7b397.IndexType.as_idx_str v \u2983r => r.val = index_type_edc7b397_as_idx_str_model v\u2984",
+      "index": 0
+    },
+    {
+      "name": "oauth_claim_map_join_edc7b397_to_str_complete",
+      "statement": "(v : finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin) :\n    finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str v \u2983r => r.val = oauth_claim_map_join_edc7b397_to_str_model v\u2984",
+      "index": 1
+    }
+  ],
+  "declarations": {
+    "finite_catalog.index_type_edc7b397.IndexType.as_idx_str": [
+      {
+        "file": "server/lib/src/value.rs",
+        "kind": "method",
+        "name": "as_idx_str",
+        "self_ty": "IndexType",
+        "start": 197,
+        "end": 204,
+        "sha256": "a5047ee93a3dcfbfc6b18cd92a55bf8eef0f00afda5ba24c9018a32c9546546b"
+      }
+    ],
+    "finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str": [
+      {
+        "file": "server/lib/src/value.rs",
+        "kind": "method",
+        "name": "to_str",
+        "self_ty": "OauthClaimMapJoin",
+        "start": 1279,
+        "end": 1286,
+        "sha256": "87c07fd4231b838745de9cbd01621c6818bb8951369f8dfa9697ff4aae67a323"
+      }
+    ]
+  },
+  "roots": [
+    "finite_catalog::index_type_edc7b397::_::as_idx_str",
+    "finite_catalog::oauth_claim_map_join_edc7b397::_::to_str"
+  ],
+  "comparisons": 7
+}

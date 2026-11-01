@@ -1,3 +1,4 @@
+import Verified.FiniteCatalog
 import Verified.RustfsDateEvaluate
 import Verified.RustfsDateOffset
 import Verified.RustfsDateFraction
@@ -1910,5 +1911,15 @@ theorem date_conditions_spec (inner : conddata.InnerFunc conddata.DateFuncValue)
     b=true ↔ DateConditionsHold (inner.entries.val.map (fun e=>(e.key,e.values.unix_nanos.val)))
       op (RequestValueLists values.val) :=
   Verified.RustfsDateEvaluate.evaluate_ok inner op values b h
+
+end rustfs_kernel.Properties
+
+namespace rustfs_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_admin_action_dfb862e5_is_table_resource_scoped_complete (v : finite_catalog.admin_action_dfb862e5.AdminAction) :
+    finite_catalog.admin_action_dfb862e5.AdminAction.is_table_resource_scoped v ⦃r => r = admin_action_dfb862e5_is_table_resource_scoped_model v⦄ := Verified.FiniteCatalog.admin_action_dfb862e5_is_table_resource_scoped_complete v
+
+theorem finite_admin_action_dfb862e5_is_valid_complete (v : finite_catalog.admin_action_dfb862e5.AdminAction) :
+    finite_catalog.admin_action_dfb862e5.AdminAction.is_valid v ⦃r => r = admin_action_dfb862e5_is_valid_model v⦄ := Verified.FiniteCatalog.admin_action_dfb862e5_is_valid_complete v
 
 end rustfs_kernel.Properties

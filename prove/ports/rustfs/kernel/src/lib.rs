@@ -30,3 +30,5 @@ pub mod extras;
 pub mod docdata;
 
 pub mod varctx;
+
+pub mod finite_catalog;

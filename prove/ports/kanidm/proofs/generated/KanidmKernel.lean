@@ -15931,6 +15931,64 @@ def entry_validation.validate
             invalid))
   else ok (core.result.Result.Err entry_validation.Error.NoClassFound)
 
+/-- [kanidm_kernel::finite_catalog::index_type_edc7b397::IndexType]
+    Source: 'prove/ports/kanidm/kernel/src/finite_catalog.rs', lines 4:0-4:57
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.index_type_edc7b397.IndexType where
+| Equality : finite_catalog.index_type_edc7b397.IndexType
+| Presence : finite_catalog.index_type_edc7b397.IndexType
+| SubString : finite_catalog.index_type_edc7b397.IndexType
+| Ordering : finite_catalog.index_type_edc7b397.IndexType
+
+/-- [kanidm_kernel::finite_catalog::index_type_edc7b397::{kanidm_kernel::finite_catalog::index_type_edc7b397::IndexType}::as_idx_str]:
+    Source: 'prove/ports/kanidm/kernel/src/finite_catalog.rs', lines 6:4-13:5
+    Visibility: public -/
+def finite_catalog.index_type_edc7b397.IndexType.as_idx_str
+  (self : finite_catalog.index_type_edc7b397.IndexType) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.index_type_edc7b397.IndexType.Equality =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 101#u8, 113#u8 ])
+  | finite_catalog.index_type_edc7b397.IndexType.Presence =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 112#u8, 114#u8, 101#u8, 115#u8 ])
+  | finite_catalog.index_type_edc7b397.IndexType.SubString =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 115#u8, 117#u8, 98#u8 ])
+  | finite_catalog.index_type_edc7b397.IndexType.Ordering =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 111#u8, 114#u8, 100#u8 ])
+
+/-- [kanidm_kernel::finite_catalog::oauth_claim_map_join_edc7b397::OauthClaimMapJoin]
+    Source: 'prove/ports/kanidm/kernel/src/finite_catalog.rs', lines 18:0-18:78
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin where
+| CommaSeparatedValue :
+  finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin
+| SpaceSeparatedValue :
+  finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin
+| JsonArray : finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin
+
+/-- [kanidm_kernel::finite_catalog::oauth_claim_map_join_edc7b397::{kanidm_kernel::finite_catalog::oauth_claim_map_join_edc7b397::OauthClaimMapJoin}::to_str]:
+    Source: 'prove/ports/kanidm/kernel/src/finite_catalog.rs', lines 20:4-27:5
+    Visibility: public -/
+def finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str
+  (self : finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.CommaSeparatedValue
+    =>
+    alloc.vec.FromVecArray.from (Array.make 1#usize [ 44#u8 ])
+  |
+    finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.SpaceSeparatedValue
+    =>
+    alloc.vec.FromVecArray.from (Array.make 1#usize [ 32#u8 ])
+  | finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.JsonArray =>
+    alloc.vec.FromVecArray.from (Array.make 1#usize [ 59#u8 ])
+
 /-- [kanidm_kernel::group_catalog::GroupRecord]
     Source: 'prove/ports/kanidm/kernel/src/group_catalog.rs', lines 3:0-14:1
     Visibility: public -/

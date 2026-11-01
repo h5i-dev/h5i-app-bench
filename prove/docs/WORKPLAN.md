@@ -183,3 +183,31 @@ Evidence and the 100k+ candidate plan are in
 Reaching 100k+ will require further executable validation, parsing and policy
 logic as well as complete data construction. Candidate estimates are not counted
 as accepted source reach.
+
+
+## Accepted finite enum checkpoint toward 100k (2026-11-01)
+
+The accepted source reach is now **41,133 deduplicated pinned executable lines
+and 1,130 canonical project properties**, up 816 lines and 120 properties from
+`c793a05`. The 100,000-line target has not been reached; 58,867 lines remain.
+
+The reusable finite catalog importer covers 88 closed unit enums across all six
+apps. It preserves pinned method bodies and enum discriminants, compares every
+valid input against independent Rust reference execution (712 comparisons), and
+proves complete outputs for those finite domains. Enum declarations, tests and
+generated code receive no upstream line credit. All 1,010 earlier canonical
+property statements are unchanged. These results do not establish complete
+application behavior or external-effect equivalence.
+
+All six standard project/axiom gates and matching extraction checks pass with
+unchanged inputs. All 133 Rust tests, isolated byte-for-byte artifact regeneration,
+pinned-reference audits and 13 dashboard/accounting/detail tests pass. Nora's
+first gate timed out after waiting approximately 24 minutes for the shared
+package lock; the longer rerun passed without changing its proof inputs.
+The dashboard snapshot is refreshed while preserving historical benchmark runs;
+deployment has not been performed.
+
+Exact acceptance evidence, reproducible checks and the next substantive candidates
+are in `results/campaigns/coverage-100k-20261101/{accepted-checkpoint.json,STATUS.md,NEXT.md}`.
+Finite enum methods supply only a small part of the remaining target; broader
+value-set, parsing, policy and exact-output transformations are still needed.

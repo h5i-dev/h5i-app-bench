@@ -1,0 +1,257 @@
+
+[earlier output omitted]
+n linter.unusedSimpArgs false`
+warning: Verified/RustfsDefaults.lean:179:6: This simp argument is unused:
+  kmsAdministratorNames
+
+Hint: Omit it from the simp argument list.
+  simp_all [nats, Array.make, readonlyNames, writeonlyNames,
+  ̲  ̲ ̲ ̲ ̲ ̲diagnosticsNames, k̵m̵s̵A̵d̵m̵i̵n̵i̵s̵t̵r̵a̵t̵o̵r̵N̵a̵m̵e̵s̵,̵ ̵kmsUserNames, kmsAuditorNames]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDefaults.lean:179:29: This simp argument is unused:
+  kmsUserNames
+
+Hint: Omit it from the simp argument list.
+  simp_all [nats, Array.make, readonlyNames, writeonlyNames,
+  ̲  ̲ ̲ ̲ ̲ ̲diagnosticsNames, kmsAdministratorNames, k̵m̵s̵U̵s̵e̵r̵N̵a̵m̵e̵s̵,̵ ̵kmsAuditorNames]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDefaults.lean:179:43: This simp argument is unused:
+  kmsAuditorNames
+
+Hint: Omit it from the simp argument list.
+  simp_all [nats, Array.make, readonlyNames, writeonlyNames,
+  ̲  ̲ ̲ ̲ ̲ ̲diagnosticsNames, kmsAdministratorNames, k̵m̵s̵U̵s̵e̵r̵N̵a̵m̵e̵s̵,̵ ̵k̵m̵s̵A̵u̵d̵i̵t̵o̵r̵N̵a̵m̵e̵s̵]̵k̲m̲s̲U̲s̲e̲r̲N̲a̲m̲e̲s̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1881/1896] Built Verified.RustfsActionSets (11s)
+warning: Verified/RustfsActionSets.lean:141:34: This simp argument is unused:
+  hstar
+
+Hint: Omit it from the simp argument list.
+  simp_all [ActionGrantMatches, h̵s̵t̵a̵r,̵ ̵r̵ustfs_kernel.Verified.RustfsForceDelete.deref_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsActionSets.lean:146:34: This simp argument is unused:
+  hstar
+
+Hint: Omit it from the simp argument list.
+  simp_all [ActionGrantMatches, h̵s̵t̵a̵r,̵ ̵r̵ustfs_kernel.Verified.RustfsForceDelete.deref_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1882/1896] Built Verified.RustfsResourceSets (9.2s)
+⚠ [1883/1896] Built Verified.RustfsStatementActions (10s)
+warning: Verified/RustfsStatementActions.lean:16:15: This simp argument is unused:
+  Bool.true_eq_false
+
+Hint: Omit it from the simp argument list.
+  simp only [̵B̵o̵o̵l̵.̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵B̵o̵o̵l̵.̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵,̵↓̵r̵e̵d̵u̵c̵e̵I̵t̵e̵]̵[̲B̲o̲o̲l̲.̲f̲a̲l̲s̲e̲_̲e̲q̲_̲t̲r̲u̲e̲,̲ ̲↓̲r̲e̲d̲u̲c̲e̲I̲t̲e̲]̲ at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsStatementActions.lean:16:34: This simp argument is unused:
+  Bool.false_eq_true
+
+Hint: Omit it from the simp argument list.
+  simp only [̵B̵o̵o̵l̵.̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵B̵o̵o̵l̵.̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵,̵↓̵r̵e̵d̵u̵c̵e̵I̵t̵e̵]̵[̲B̲o̲o̲l̲.̲t̲r̲u̲e̲_̲e̲q̲_̲f̲a̲l̲s̲e̲,̲ ̲↓̲r̲e̲d̲u̲c̲e̲I̲t̲e̲]̲ at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1884/1896] Built Verified.RustfsManagementDecisions (10s)
+✔ [1885/1896] Built Verified.RustfsManagementQueries (9.3s)
+✔ [1886/1896] Built Verified.RustfsManagementEquality (11s)
+⚠ [1887/1896] Built Verified.RustfsStatementRetention (9.1s)
+warning: Verified/RustfsStatementRetention.lean:72:50: This simp argument is unused:
+  Prod.snd
+
+Hint: Omit it from the simp argument list.
+  simp only [List.filter_cons, ̲List.filter_nil,P̵r̵o̵d̵.̵s̵n̵d̵,̵ ̲hin, ̲decide_false, ̲Bool.not_false, ̲ite_true,
+  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲List.map_cons, ̲List.map_nil, ̲Prod.fst, ̲List.append_nil, ̲he]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsStatementRetention.lean:72:127: This simp argument is unused:
+  Prod.fst
+
+Hint: Omit it from the simp argument list.
+  simp only [List.filter_cons, ̲List.filter_nil, ̲Prod.snd, ̲hin, ̲decide_false, ̲Bool.not_false,
+  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ite_true, ̲List.map_cons, ̲List.map_nil,P̵r̵o̵d̵.̵f̵s̵t̵,̵ ̲List.append_nil, ̲he]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsStatementRetention.lean:72:136: This simp argument is unused:
+  List.append_nil
+
+Hint: Omit it from the simp argument list.
+  simp only [̵L̵i̵s̵t̵.̵f̵i̵l̵t̵e̵r̵_̵c̵o̵n̵s̵,̵L̵i̵s̵t̵.̵f̵i̵l̵t̵e̵r̵_̵n̵i̵l̵,̵P̵r̵o̵d̵.̵s̵n̵d̵,̵h̵i̵n̵,̵d̵e̵c̵i̵d̵e̵_̵f̵a̵l̵s̵e̵,̵B̵o̵o̵l̵.̵n̵o̵t̵_̵f̵a̵l̵s̵e̵,̵i̵t̵e̵_̵t̵r̵u̵e̵,̵L̵i̵s̵t̵.̵m̵a̵p̵_̵c̵o̵n̵s̵,̵L̵i̵s̵t̵.̵m̵a̵p̵_̵n̵i̵l̵,̵P̵r̵o̵d̵.̵f̵s̵t̵,̵L̵i̵s̵t̵.̵a̵p̵p̵e̵n̵d̵_̵n̵i̵l̵,̵h̵e̵]̵[̲L̲i̲s̲t̲.̲f̲i̲l̲t̲e̲r̲_̲c̲o̲n̲s̲,̲ ̲L̲i̲s̲t̲.̲f̲i̲l̲t̲e̲r̲_̲n̲i̲l̲,̲ ̲P̲r̲o̲d̲.̲s̲n̲d̲,̲ ̲h̲i̲n̲,̲ ̲d̲e̲c̲i̲d̲e̲_̲f̲a̲l̲s̲e̲,̲ ̲B̲o̲o̲l̲.̲n̲o̲t̲_̲f̲a̲l̲s̲e̲,̲
+  ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲ ̲i̲t̲e̲_̲t̲r̲u̲e̲,̲ ̲L̲i̲s̲t̲.̲m̲a̲p̲_̲c̲o̲n̲s̲,̲ ̲L̲i̲s̲t̲.̲m̲a̲p̲_̲n̲i̲l̲,̲ ̲P̲r̲o̲d̲.̲f̲s̲t̲,̲ ̲h̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1888/1896] Built Verified.RustfsDuplicateMarks (10s)
+⚠ [1889/1896] Built Verified.RustfsDuplicateSelection (9.3s)
+warning: Verified/RustfsDuplicateSelection.lean:44:31: This simp argument is unused:
+  MarkedThrough
+
+Hint: Omit it from the simp argument list.
+  simp [̵M̵a̵r̵k̵e̵d̵T̵h̵r̵o̵u̵g̵h̵,̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵]̵[̲a̲l̲l̲o̲c̲.̲v̲e̲c̲.̲V̲e̲c̲.̲n̲e̲w̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1890/1896] Built Verified.RustfsPolicyMerge (9.0s)
+warning: Verified/RustfsPolicyMerge.lean:27:25: This simp argument is unused:
+  bind_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [u8vec_clone,̵b̵i̵n̵d̵_̵o̵k̵] at hr
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1891/1896] Built Verified.RustfsBPMeaning (49s)
+warning: Verified/RustfsBPMeaning.lean:51:27: This simp argument is unused:
+  decide_eq_true_eq
+
+Hint: Omit it from the simp argument list.
+  simp_all only [̵d̵e̵c̵i̵d̵e̵_̵e̵q̵_̵t̵r̵u̵e̵_̵e̵q̵,̵B̵o̵o̵l̵.̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵B̵o̵o̵l̵.̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵,̵t̵r̵u̵e̵_̵i̵f̵f̵,̵f̵a̵l̵s̵e̵_̵i̵f̵f̵,̵n̵o̵t̵_̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵n̵o̵t̵_̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵]̵[̲B̲o̲o̲l̲.̲t̲r̲u̲e̲_̲e̲q̲_̲f̲a̲l̲s̲e̲,̲ ̲B̲o̲o̲l̲.̲f̲a̲l̲s̲e̲_̲e̲q̲_̲t̲r̲u̲e̲,̲ ̲t̲r̲u̲e̲_̲i̲f̲f̲,̲ ̲f̲a̲l̲s̲e̲_̲i̲f̲f̲,̲
+  ̲ ̲ ̲ ̲ ̲n̲o̲t̲_̲t̲r̲u̲e̲_̲e̲q̲_̲f̲a̲l̲s̲e̲,̲ ̲n̲o̲t̲_̲f̲a̲l̲s̲e̲_̲e̲q̲_̲t̲r̲u̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsBPMeaning.lean:51:45: This simp argument is unused:
+  Bool.true_eq_false
+
+Hint: Omit it from the simp argument list.
+  simp_all only [̵d̵e̵c̵i̵d̵e̵_̵e̵q̵_̵t̵r̵u̵e̵_̵e̵q̵,̵B̵o̵o̵l̵.̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵B̵o̵o̵l̵.̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵,̵t̵r̵u̵e̵_̵i̵f̵f̵,̵f̵a̵l̵s̵e̵_̵i̵f̵f̵,̵n̵o̵t̵_̵t̵r̵u̵e̵_̵e̵q̵_̵f̵a̵l̵s̵e̵,̵n̵o̵t̵_̵f̵a̵l̵s̵e̵_̵e̵q̵_̵t̵r̵u̵e̵]̵[̲d̲e̲c̲i̲d̲e̲_̲e̲q̲_̲t̲r̲u̲e̲_̲e̲q̲,̲ ̲B̲o̲o̲l̲.̲f̲a̲l̲s̲e̲_̲e̲q̲_̲t̲r̲u̲e̲,̲ ̲t̲r̲u̲e̲_̲i̲f̲f̲,̲ ̲f̲a̲l̲s̲e̲_̲i̲f̲f̲,̲
+  ̲ ̲ ̲ ̲ ̲n̲o̲t̲_̲t̲r̲u̲e̲_̲e̲q̲_̲f̲a̲l̲s̲e̲,̲ ̲n̲o̲t̲_̲f̲a̲l̲s̲e̲_̲e̲q̲_̲t̲r̲u̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsBPMeaning.lean:52:99: This simp argument is unused:
+  forall_const
+
+Hint: Omit it from the simp argument list.
+  simp_all only [̵n̵e̵_̵e̵q̵,̵L̵i̵s̵t̵.̵e̵q̵_̵n̵i̵l̵_̵i̵f̵f̵_̵l̵e̵n̵g̵t̵h̵_̵e̵q̵_̵z̵e̵r̵o̵,̵ ̵z̵e̵r̵o̵_̵n̵o̵t̵_̵p̵o̵s̵,̵n̵o̵t̵_̵n̵o̵t̵,̵i̵m̵p̵l̵i̵e̵s̵_̵t̵r̵u̵e̵,̵f̵o̵r̵a̵l̵l̵_̵c̵o̵n̵s̵t̵]̵[̲n̲e̲_̲e̲q̲,̲ ̲L̲i̲s̲t̲.̲e̲q̲_̲n̲i̲l̲_̲i̲f̲f̲_̲l̲e̲n̲g̲t̲h̲_̲e̲q̲_̲z̲e̲r̲o̲,̲ ̲z̲e̲r̲o̲_̲n̲o̲t̲_̲p̲o̲s̲,̲ ̲n̲o̲t̲_̲n̲o̲t̲,̲
+  ̲ ̲ ̲ ̲ ̲i̲m̲p̲l̲i̲e̲s̲_̲t̲r̲u̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1892/1896] Built Verified.RustfsDateParser (264s)
+warning: Verified/RustfsDateParser.lean:33:100: This simp argument is unused:
+  RustfsScalarOperators.unsigned_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [̵S̵l̵i̵c̵e̵.̵l̵e̵n̵_̵v̵a̵l̵,̵U̵S̵c̵a̵l̵a̵r̵.̵l̵t̵_̵e̵q̵u̵i̵v̵,̵U̵S̵c̵a̵l̵a̵r̵.̵o̵f̵N̵a̵t̵C̵o̵r̵e̵_̵v̵a̵l̵_̵e̵q̵,̵I̵S̵c̵a̵l̵a̵r̵.̵o̵f̵I̵n̵t̵_̵v̵a̵l̵_̵e̵q̵,̵R̵u̵s̵t̵f̵s̵S̵c̵a̵l̵a̵r̵O̵p̵e̵r̵a̵t̵o̵r̵s̵.̵u̵n̵s̵i̵g̵n̵e̵d̵_̵e̵q̵,̵R̵u̵s̵t̵f̵s̵D̵a̵t̵e̵M̵e̵a̵n̵i̵n̵g̵.̵s̵c̵a̵l̵a̵r̵_̵e̵q̵,̵O̵p̵t̵i̵o̵n̵.̵m̵a̵p̵_̵n̵o̵n̵e̵,̵O̵p̵t̵i̵o̵n̵.̵m̵a̵p̵_̵s̵o̵m̵e̵]̵[̲S̲l̲i̲c̲e̲.̲l̲e̲n̲_̲v̲a̲l̲,̲ ̲U̲S̲c̲a̲l̲a̲r̲.̲l̲t̲_̲e̲q̲u̲i̲v̲,̲ ̲U̲S̲c̲a̲l̲a̲r̲.̲o̲f̲N̲a̲t̲C̲o̲r̲e̲_̲v̲a̲l̲_̲e̲q̲,̲
+  ̲ ̲ ̲ ̲ ̲I̲S̲c̲a̲l̲a̲r̲.̲o̲f̲I̲n̲t̲_̲v̲a̲l̲_̲e̲q̲,̲ ̲R̲u̲s̲t̲f̲s̲D̲a̲t̲e̲M̲e̲a̲n̲i̲n̲g̲.̲s̲c̲a̲l̲a̲r̲_̲e̲q̲,̲ ̲O̲p̲t̲i̲o̲n̲.̲m̲a̲p̲_̲n̲o̲n̲e̲,̲ ̲O̲p̲t̲i̲o̲n̲.̲m̲a̲p̲_̲s̲o̲m̲e̲]̲ at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateParser.lean:38:27: This simp argument is unused:
+  Option.bind
+
+Hint: Omit it from the simp argument list.
+  simp only ̵[̵O̵p̵t̵i̵o̵n̵.̵b̵i̵n̵d̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateParser.lean:40:27: This simp argument is unused:
+  Option.bind
+
+Hint: Omit it from the simp argument list.
+  simp only ̵[̵O̵p̵t̵i̵o̵n̵.̵b̵i̵n̵d̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateParser.lean:42:27: This simp argument is unused:
+  Option.bind
+
+Hint: Omit it from the simp argument list.
+  simp only ̵[̵O̵p̵t̵i̵o̵n̵.̵b̵i̵n̵d̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateParser.lean:44:27: This simp argument is unused:
+  Option.bind
+
+Hint: Omit it from the simp argument list.
+  simp only ̵[̵O̵p̵t̵i̵o̵n̵.̵b̵i̵n̵d̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1893/1896] Built Verified.RustfsDateEvaluate (14s)
+warning: Verified/RustfsDateEvaluate.lean:38:54: This simp argument is unused:
+  and_false
+
+Hint: Omit it from the simp argument list.
+  simp only [hf, ̲reduceCtorEq, ̲false_and, ̲exists_false,a̵n̵d̵_̵ ̲false,̵f̵a̵l̵s̵e̵_iff] at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:38:64: This simp argument is unused:
+  false_iff
+
+Hint: Omit it from the simp argument list.
+  simp only [hf, ̲reduceCtorEq, ̲false_and, ̲exists_false, ̲and_false,̵f̵a̵l̵s̵e̵_̵i̵f̵f̵] at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:42:54: This simp argument is unused:
+  and_false
+
+Hint: Omit it from the simp argument list.
+  simp only [hf, ̲reduceCtorEq, ̲false_and, ̲exists_false,a̵n̵d̵_̵ ̲false,̵f̵a̵l̵s̵e̵_iff] at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:42:64: This simp argument is unused:
+  false_iff
+
+Hint: Omit it from the simp argument list.
+  simp only [hf, ̲reduceCtorEq, ̲false_and, ̲exists_false, ̲and_false,̵f̵a̵l̵s̵e̵_̵i̵f̵f̵] at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:53:52: This simp argument is unused:
+  exists_eq_left
+
+Hint: Omit it from the simp argument list.
+  simp only [̵h̵f̵,̵O̵p̵t̵i̵o̵n̵.̵s̵o̵m̵e̵.̵i̵n̵j̵E̵q̵,̵e̵x̵i̵s̵t̵s̵_̵a̵n̵d̵_̵l̵e̵f̵t̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵'̵]̵[̲h̲f̲,̲ ̲O̲p̲t̲i̲o̲n̲.̲s̲o̲m̲e̲.̲i̲n̲j̲E̲q̲,̲ ̲e̲x̲i̲s̲t̲s̲_̲a̲n̲d̲_̲l̲e̲f̲t̲,̲ ̲e̲x̲i̲s̲t̲s̲_̲e̲q̲_̲l̲e̲f̲t̲'̲]̲ at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:57:33: This simp argument is unused:
+  exists_eq_left
+
+Hint: Omit it from the simp argument list.
+  simp only [̵O̵p̵t̵i̵o̵n̵.̵s̵o̵m̵e̵.̵i̵n̵j̵E̵q̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵'̵,̵h̵n̵,̵t̵r̵u̵e̵_̵a̵n̵d̵]̵[̲O̲p̲t̲i̲o̲n̲.̲s̲o̲m̲e̲.̲i̲n̲j̲E̲q̲,̲ ̲e̲x̲i̲s̲t̲s̲_̲e̲q̲_̲l̲e̲f̲t̲'̲,̲ ̲h̲n̲,̲ ̲t̲r̲u̲e̲_̲a̲n̲d̲]̲ at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:65:33: This simp argument is unused:
+  exists_eq_left
+
+Hint: Omit it from the simp argument list.
+  simp only [̵O̵p̵t̵i̵o̵n̵.̵s̵o̵m̵e̵.̵i̵n̵j̵E̵q̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵'̵,̵h̵n̵,̵f̵a̵l̵s̵e̵_̵a̵n̵d̵,̵a̵n̵d̵_̵f̵a̵l̵s̵e̵]̵[̲O̲p̲t̲i̲o̲n̲.̲s̲o̲m̲e̲.̲i̲n̲j̲E̲q̲,̲ ̲e̲x̲i̲s̲t̲s̲_̲e̲q̲_̲l̲e̲f̲t̲'̲,̲ ̲h̲n̲,̲ ̲f̲a̲l̲s̲e̲_̲a̲n̲d̲,̲ ̲a̲n̲d̲_̲f̲a̲l̲s̲e̲]̲ at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/RustfsDateEvaluate.lean:65:77: This simp argument is unused:
+  and_false
+
+Hint: Omit it from the simp argument list.
+  simp only [̵O̵p̵t̵i̵o̵n̵.̵s̵o̵m̵e̵.̵i̵n̵j̵E̵q̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵,̵e̵x̵i̵s̵t̵s̵_̵e̵q̵_̵l̵e̵f̵t̵'̵,̵h̵n̵,̵f̵a̵l̵s̵e̵_̵a̵n̵d̵,̵a̵n̵d̵_̵f̵a̵l̵s̵e̵]̵[̲O̲p̲t̲i̲o̲n̲.̲s̲o̲m̲e̲.̲i̲n̲j̲E̲q̲,̲ ̲e̲x̲i̲s̲t̲s̲_̲e̲q̲_̲l̲e̲f̲t̲,̲ ̲e̲x̲i̲s̲t̲s̲_̲e̲q̲_̲l̲e̲f̲t̲'̲,̲ ̲h̲n̲,̲ ̲f̲a̲l̲s̲e̲_̲a̲n̲d̲]̲ at hm
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1894/1896] Built Verified.RustfsStatementMeaning (142s)
+warning: Verified/RustfsStatementMeaning.lean:44:2: 'all_goals try rw [← ha]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/RustfsStatementMeaning.lean:45:2: 'all_goals try rw [← hk]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+⚠ [1895/1896] Built Properties (14s)
+warning: Properties.lean:192:67: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:192:67: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:214:65: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:214:65: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:225:80: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:259:56: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+Build completed successfully (1896 jobs).
+
+note: solutions.rustfs-get-object-version.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.rustfs-not-action-force-delete.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.rustfs-parse-i64.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/rustfs/proofs/.lake/h5i/Gate.lean
+gate: 2195 theorems in 165 modules checked against propext, Classical.choice, Quot.sound
+
+ports/rustfs: proofs ok

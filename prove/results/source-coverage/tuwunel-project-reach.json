@@ -1,7 +1,16 @@
 {
   "upstream_revision": "7801b8ec6f7773d90b1bbfeeb352012d6e004e96",
-  "mapping_sha256": "66295817dceb303f136fe1abbbf461c48571325cf15578d5479ee2cbcfc7d3b7",
+  "mapping_sha256": "3e62a0fab5bf4f95099ae49d2096583f4d3c57511ebb03bc82dbf44fbba3acb5",
   "lines": {
+    "src/admin/query/feds/version.rs": [
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49
+    ],
     "src/api/client/context.rs": [
       53,
       54,
@@ -1030,6 +1039,9 @@
       169,
       170
     ],
+    "src/api/client/sync/v3.rs": [
+      177
+    ],
     "src/api/client/threads.rs": [
       28,
       29,
@@ -1247,6 +1259,21 @@
       163,
       164,
       165
+    ],
+    "src/service/rooms/event_handler/state_local_build.rs": [
+      1100,
+      1101,
+      1102,
+      1103,
+      1104,
+      1105,
+      1106,
+      1107,
+      1108,
+      1109,
+      1110,
+      1111,
+      1112
     ],
     "src/service/rooms/metadata/mod.rs": [
       56,
@@ -1775,6 +1802,20 @@
       993,
       994
     ],
+    "src/service/rooms/state_res/events/power_levels.rs": [
+      364,
+      379,
+      380,
+      381,
+      382,
+      383,
+      384,
+      385,
+      386,
+      387,
+      388,
+      389
+    ],
     "src/service/rooms/threads/mod.rs": [
       270,
       271,
@@ -1999,6 +2040,17 @@
       213,
       214
     ],
+    "src/service/tasks/mod.rs": [
+      279,
+      286,
+      287,
+      288,
+      289,
+      290,
+      291,
+      292,
+      293
+    ],
     "src/service/users/mod.rs": [
       135,
       136,
@@ -2012,7 +2064,7 @@
       144
     ]
   },
-  "upstream_reached": 1955,
+  "upstream_reached": 1997,
   "properties": [
     {
       "name": "tuwunel_kernel.Properties.messages_visible",
@@ -21867,6 +21919,143 @@
           "start": 716,
           "end": 733,
           "sha256": "c89f1e222c56e29a34e9c9c50e071619f42f4e6174dccacd99eb5e14d5cb006f"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_field_bea9b175_label_complete",
+      "generated_dependencies": [
+        "finite_catalog.field_bea9b175.Field.label"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.field_bea9b175.Field.label",
+          "file": "src/admin/query/feds/version.rs",
+          "kind": "method",
+          "name": "label",
+          "self_ty": "Field",
+          "start": 43,
+          "end": 49,
+          "sha256": "14403cb4db9486d9318ef3ebcfc88f575fb2ce032fde43fbe090cef8a998f649"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_state_after_c4e3af58_requested_complete",
+      "generated_dependencies": [
+        "finite_catalog.state_after_c4e3af58.StateAfter.requested"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.state_after_c4e3af58.StateAfter.requested",
+          "file": "src/api/client/sync/v3.rs",
+          "kind": "method",
+          "name": "requested",
+          "self_ty": "StateAfter",
+          "start": 177,
+          "end": 177,
+          "sha256": "42b0b7eac0269e265859bb410abdcf73f5c46529734f1db178987e8eeab123e0"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_fallback_08cb57a8_name_complete",
+      "generated_dependencies": [
+        "finite_catalog.fallback_08cb57a8.Fallback.name"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.fallback_08cb57a8.Fallback.name",
+          "file": "src/service/rooms/event_handler/state_local_build.rs",
+          "kind": "method",
+          "name": "name",
+          "self_ty": "Fallback",
+          "start": 1100,
+          "end": 1112,
+          "sha256": "19163d94cc9c43a28f10251a19ed9ebb5f6e7b27b89da62aaa175780131549b9"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_room_power_levels_int_field_b809be58_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref",
+        "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref",
+          "file": "src/service/rooms/state_res/events/power_levels.rs",
+          "kind": "method",
+          "name": "as_ref",
+          "self_ty": "RoomPowerLevelsIntField",
+          "start": 378,
+          "end": 389,
+          "sha256": "6a4e2c7725203924d61b11c14e28fd714ddcc2b726430ee0862a2063026edfc0"
+        },
+        {
+          "declaration": "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str",
+          "file": "src/service/rooms/state_res/events/power_levels.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "RoomPowerLevelsIntField",
+          "start": 361,
+          "end": 364,
+          "sha256": "f93699864132d428eb697c20fa98834a4d6149625129d5ce83dbdc66bbba85dc"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_room_power_levels_int_field_b809be58_as_ref_complete",
+      "generated_dependencies": [
+        "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref",
+          "file": "src/service/rooms/state_res/events/power_levels.rs",
+          "kind": "method",
+          "name": "as_ref",
+          "self_ty": "RoomPowerLevelsIntField",
+          "start": 378,
+          "end": 389,
+          "sha256": "6a4e2c7725203924d61b11c14e28fd714ddcc2b726430ee0862a2063026edfc0"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_status_4004009f_is_terminal_complete",
+      "generated_dependencies": [
+        "finite_catalog.status_4004009f.Status.is_terminal"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.status_4004009f.Status.is_terminal",
+          "file": "src/service/tasks/mod.rs",
+          "kind": "method",
+          "name": "is_terminal",
+          "self_ty": "Status",
+          "start": 274,
+          "end": 279,
+          "sha256": "ee6f6e2b2ea006b5cdfa189d9c19b9232d859f06698feac1fc179cfc00e35f55"
+        }
+      ]
+    },
+    {
+      "name": "tuwunel_kernel.Properties.finite_status_4004009f_as_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.status_4004009f.Status.as_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.status_4004009f.Status.as_str",
+          "file": "src/service/tasks/mod.rs",
+          "kind": "method",
+          "name": "as_str",
+          "self_ty": "Status",
+          "start": 281,
+          "end": 293,
+          "sha256": "cee80c3f78bc2a108c059b92392386d7b7cfe57b01ce78ed814f5907a5b765bd"
         }
       ]
     }

@@ -1,6 +1,6 @@
 {
   "upstream_revision": "f608c4fe14dfd8d5df8edeed470bf1fb92060abd",
-  "mapping_sha256": "319d3c8befa5c35d61cb3b1d441fb39d16462ea937866ab8ed642ccb0c38fac7",
+  "mapping_sha256": "3031047ac770bd7479490911b3d37dd52700e9504387b25fdfa4af72a2ea8c98",
   "lines": {
     "server/lib/src/credential/softlock.rs": [
       77,
@@ -30476,6 +30476,14 @@
       371
     ],
     "server/lib/src/value.rs": [
+      197,
+      198,
+      199,
+      200,
+      201,
+      202,
+      203,
+      204,
       292,
       293,
       294,
@@ -30719,6 +30727,13 @@
       957,
       958,
       959,
+      1279,
+      1280,
+      1281,
+      1282,
+      1284,
+      1285,
+      1286,
       1609,
       1610,
       1611,
@@ -31221,7 +31236,7 @@
       412
     ]
   },
-  "upstream_reached": 31088,
+  "upstream_reached": 31103,
   "properties": [
     {
       "name": "kanidm_kernel.Properties.acp_defaults_dl11_oauth2_manage_complete",
@@ -121988,6 +122003,42 @@
           "start": 258,
           "end": 328,
           "sha256": "2750c86db999898a6eb2c09280a68b6a26472af0c473960c3a972459007d6c74"
+        }
+      ]
+    },
+    {
+      "name": "kanidm_kernel.Properties.finite_index_type_edc7b397_as_idx_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.index_type_edc7b397.IndexType.as_idx_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.index_type_edc7b397.IndexType.as_idx_str",
+          "file": "server/lib/src/value.rs",
+          "kind": "method",
+          "name": "as_idx_str",
+          "self_ty": "IndexType",
+          "start": 197,
+          "end": 204,
+          "sha256": "a5047ee93a3dcfbfc6b18cd92a55bf8eef0f00afda5ba24c9018a32c9546546b"
+        }
+      ]
+    },
+    {
+      "name": "kanidm_kernel.Properties.finite_oauth_claim_map_join_edc7b397_to_str_complete",
+      "generated_dependencies": [
+        "finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.oauth_claim_map_join_edc7b397.OauthClaimMapJoin.to_str",
+          "file": "server/lib/src/value.rs",
+          "kind": "method",
+          "name": "to_str",
+          "self_ty": "OauthClaimMapJoin",
+          "start": 1279,
+          "end": 1286,
+          "sha256": "87c07fd4231b838745de9cbd01621c6818bb8951369f8dfa9697ff4aae67a323"
         }
       ]
     }

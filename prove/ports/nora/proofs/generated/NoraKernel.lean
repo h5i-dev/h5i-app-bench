@@ -600,6 +600,100 @@ def curation.verify_integrity_by_hash
     curation.integrity_response result
   else ok none
 
+/-- [nora_kernel::finite_catalog::breaker_state_f11f5e92::BreakerState]
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 4:0-4:44
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.breaker_state_f11f5e92.BreakerState where
+| Closed : finite_catalog.breaker_state_f11f5e92.BreakerState
+| Open : finite_catalog.breaker_state_f11f5e92.BreakerState
+| HalfOpen : finite_catalog.breaker_state_f11f5e92.BreakerState
+
+/-- [nora_kernel::finite_catalog::breaker_state_f11f5e92::{nora_kernel::finite_catalog::breaker_state_f11f5e92::BreakerState}::as_gauge]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 6:4-12:5
+    Visibility: public -/
+def finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge
+  (self : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+  Result Std.I64
+  := do
+  match self with
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Closed => ok 0#i64
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Open => ok 1#i64
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.HalfOpen => ok 2#i64
+
+/-- [nora_kernel::finite_catalog::breaker_state_f11f5e92::{nora_kernel::finite_catalog::breaker_state_f11f5e92::BreakerState}::as_health_str]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 16:4-22:5
+    Visibility: public -/
+def finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str
+  (self : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Closed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 99#u8, 108#u8, 111#u8, 115#u8, 101#u8, 100#u8 ])
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Open =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 111#u8, 112#u8, 101#u8, 110#u8 ])
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.HalfOpen =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        104#u8, 97#u8, 108#u8, 102#u8, 95#u8, 111#u8, 112#u8, 101#u8, 110#u8
+        ])
+
+/-- [nora_kernel::finite_catalog::role_a890c86c::Role]
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 27:0-27:32
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.role_a890c86c.Role where
+| Read : finite_catalog.role_a890c86c.Role
+| Write : finite_catalog.role_a890c86c.Role
+| Admin : finite_catalog.role_a890c86c.Role
+
+/-- [nora_kernel::finite_catalog::role_a890c86c::{nora_kernel::finite_catalog::role_a890c86c::Role}::can_write]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 29:4-31:5
+    Visibility: public -/
+def finite_catalog.role_a890c86c.Role.can_write
+  (self : finite_catalog.role_a890c86c.Role) : Result Bool := do
+  match self with
+  | finite_catalog.role_a890c86c.Role.Read => ok false
+  | finite_catalog.role_a890c86c.Role.Write => ok true
+  | finite_catalog.role_a890c86c.Role.Admin => ok true
+
+/-- [nora_kernel::finite_catalog::role_a890c86c::{nora_kernel::finite_catalog::role_a890c86c::Role}::can_admin]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 32:4-34:5
+    Visibility: public -/
+def finite_catalog.role_a890c86c.Role.can_admin
+  (self : finite_catalog.role_a890c86c.Role) : Result Bool := do
+  match self with
+  | finite_catalog.role_a890c86c.Role.Read => ok false
+  | finite_catalog.role_a890c86c.Role.Write => ok false
+  | finite_catalog.role_a890c86c.Role.Admin => ok true
+
+/-- [nora_kernel::finite_catalog::lang_986f59b4::Lang]
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 39:0-39:24
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.lang_986f59b4.Lang where
+| En : finite_catalog.lang_986f59b4.Lang
+| Ru : finite_catalog.lang_986f59b4.Lang
+| Zh : finite_catalog.lang_986f59b4.Lang
+
+/-- [nora_kernel::finite_catalog::lang_986f59b4::{nora_kernel::finite_catalog::lang_986f59b4::Lang}::code]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 41:4-47:5
+    Visibility: public -/
+def finite_catalog.lang_986f59b4.Lang.code
+  (self : finite_catalog.lang_986f59b4.Lang) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.lang_986f59b4.Lang.En =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 101#u8, 110#u8 ])
+  | finite_catalog.lang_986f59b4.Lang.Ru =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 114#u8, 117#u8 ])
+  | finite_catalog.lang_986f59b4.Lang.Zh =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 122#u8, 104#u8 ])
+
 /-- [nora_kernel::Role]
     Source: 'prove/ports/nora/kernel/src/lib.rs', lines 15:0-19:1
     Visibility: public -/

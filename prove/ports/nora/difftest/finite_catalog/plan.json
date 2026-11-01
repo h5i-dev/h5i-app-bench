@@ -1,0 +1,278 @@
+{
+  "revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+  "accepted": [
+    {
+      "enum": {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "kind": "enum",
+        "name": "BreakerState",
+        "self_ty": "",
+        "start": 20,
+        "end": 25,
+        "sha256": "3efd8815595403d5cdc6a4d2b77c6d445c274273b6d0b2fcf3f9e61a748271f7"
+      },
+      "variants": [
+        "Closed",
+        "Open",
+        "HalfOpen"
+      ],
+      "source": "#[derive(Debug, Clone, Copy, PartialEq, Eq)]\nenum BreakerState {\n    Closed,\n    Open,\n    HalfOpen,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "nora-registry/src/circuit_breaker.rs",
+            "kind": "method",
+            "name": "as_gauge",
+            "self_ty": "BreakerState",
+            "start": 28,
+            "end": 34,
+            "sha256": "0c26b63b4f3b91c4cee4dc1bb4215accfc3be179d196d5f78f595986600d577c"
+          },
+          "source": "    fn as_gauge(self) -> i64 {\n        match self {\n            BreakerState::Closed => 0,\n            BreakerState::Open => 1,\n            BreakerState::HalfOpen => 2,\n        }\n    }",
+          "type": "i64"
+        },
+        {
+          "meta": {
+            "file": "nora-registry/src/circuit_breaker.rs",
+            "kind": "method",
+            "name": "as_health_str",
+            "self_ty": "BreakerState",
+            "start": 36,
+            "end": 45,
+            "sha256": "72dca8cf36dd31403890ad06065fd62256e1ef32e75823ff88b668142ac6e056"
+          },
+          "source": "    /// Stable string used in the `/health` API. Mirrors the\n    /// `nora_circuit_breaker_state` gauge semantics (0=closed, 1=open,\n    /// 2=half_open) so operators see the same labels in both places.\n    fn as_health_str(self) -> &'static str {\n        match self {\n            BreakerState::Closed => \"closed\",\n            BreakerState::Open => \"open\",\n            BreakerState::HalfOpen => \"half_open\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "breaker_state_f11f5e92",
+      "outputs": {
+        "as_gauge/Closed": 0,
+        "as_gauge/Open": 1,
+        "as_gauge/HalfOpen": 2,
+        "as_health_str/Closed": [
+          99,
+          108,
+          111,
+          115,
+          101,
+          100
+        ],
+        "as_health_str/Open": [
+          111,
+          112,
+          101,
+          110
+        ],
+        "as_health_str/HalfOpen": [
+          104,
+          97,
+          108,
+          102,
+          95,
+          111,
+          112,
+          101,
+          110
+        ]
+      },
+      "reference_sha256": "7fec582ec0531f4d69b59fe61b8102bf3dbca8a277833d66d83de1626428c63f"
+    },
+    {
+      "enum": {
+        "file": "nora-registry/src/tokens.rs",
+        "kind": "enum",
+        "name": "Role",
+        "self_ty": "",
+        "start": 38,
+        "end": 46,
+        "sha256": "edd6089615910400874df11914f43e6e412b021adce54b1da2f345e0984237f0"
+      },
+      "variants": [
+        "Read",
+        "Write",
+        "Admin"
+      ],
+      "source": "/// Access role for API tokens\n#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]\n#[serde(rename_all = \"lowercase\")]\n#[non_exhaustive]\npub enum Role {\n    Read,\n    Write,\n    Admin,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "nora-registry/src/tokens.rs",
+            "kind": "method",
+            "name": "can_write",
+            "self_ty": "Role",
+            "start": 59,
+            "end": 61,
+            "sha256": "b8e8ed719728f8413b4fecb4117c25de0384465fe252f1214a06563d95a7a071"
+          },
+          "source": "    pub fn can_write(&self) -> bool {\n        matches!(self, Role::Write | Role::Admin)\n    }",
+          "type": "bool"
+        },
+        {
+          "meta": {
+            "file": "nora-registry/src/tokens.rs",
+            "kind": "method",
+            "name": "can_admin",
+            "self_ty": "Role",
+            "start": 63,
+            "end": 65,
+            "sha256": "eb6a0eeab7cbba72c4af6c9782a4c78b26e7f0b686f791a99111386b28836e36"
+          },
+          "source": "    pub fn can_admin(&self) -> bool {\n        matches!(self, Role::Admin)\n    }",
+          "type": "bool"
+        }
+      ],
+      "module": "role_a890c86c",
+      "outputs": {
+        "can_write/Read": false,
+        "can_write/Write": true,
+        "can_write/Admin": true,
+        "can_admin/Read": false,
+        "can_admin/Write": false,
+        "can_admin/Admin": true
+      },
+      "reference_sha256": "333f47e56f5cf5be239edb4776a2d2978367c4a6371b391c6cf439c92b4a9677"
+    },
+    {
+      "enum": {
+        "file": "nora-registry/src/ui/i18n.rs",
+        "kind": "enum",
+        "name": "Lang",
+        "self_ty": "",
+        "start": 7,
+        "end": 14,
+        "sha256": "c5c40db41330c3db7df1934f1f949e6587b89e597a09e13191154a4b97d962e9"
+      },
+      "variants": [
+        "En",
+        "Ru",
+        "Zh"
+      ],
+      "source": "#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]\n#[serde(rename_all = \"lowercase\")]\npub enum Lang {\n    #[default]\n    En,\n    Ru,\n    Zh,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "nora-registry/src/ui/i18n.rs",
+            "kind": "method",
+            "name": "code",
+            "self_ty": "Lang",
+            "start": 34,
+            "end": 40,
+            "sha256": "0010642a0a02917b18b473a72bcd8f952d8b19499da99af6d193cf436afc41d2"
+          },
+          "source": "    pub fn code(&self) -> &'static str {\n        match self {\n            Lang::En => \"en\",\n            Lang::Ru => \"ru\",\n            Lang::Zh => \"zh\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "lang_986f59b4",
+      "outputs": {
+        "code/En": [
+          101,
+          110
+        ],
+        "code/Ru": [
+          114,
+          117
+        ],
+        "code/Zh": [
+          122,
+          104
+        ]
+      },
+      "reference_sha256": "1ccc815f8e093a077355c11f4715744f691fb3b245c444faccc136c7003f1a08"
+    }
+  ],
+  "rejected": [],
+  "properties": [
+    {
+      "name": "breaker_state_f11f5e92_as_gauge_complete",
+      "statement": "(v : finite_catalog.breaker_state_f11f5e92.BreakerState) :\n    finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge v \u2983r => r = breaker_state_f11f5e92_as_gauge_model v\u2984",
+      "index": 0
+    },
+    {
+      "name": "breaker_state_f11f5e92_as_health_str_complete",
+      "statement": "(v : finite_catalog.breaker_state_f11f5e92.BreakerState) :\n    finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str v \u2983r => r.val = breaker_state_f11f5e92_as_health_str_model v\u2984",
+      "index": 1
+    },
+    {
+      "name": "role_a890c86c_can_write_complete",
+      "statement": "(v : finite_catalog.role_a890c86c.Role) :\n    finite_catalog.role_a890c86c.Role.can_write v \u2983r => r = role_a890c86c_can_write_model v\u2984",
+      "index": 2
+    },
+    {
+      "name": "role_a890c86c_can_admin_complete",
+      "statement": "(v : finite_catalog.role_a890c86c.Role) :\n    finite_catalog.role_a890c86c.Role.can_admin v \u2983r => r = role_a890c86c_can_admin_model v\u2984",
+      "index": 3
+    },
+    {
+      "name": "lang_986f59b4_code_complete",
+      "statement": "(v : finite_catalog.lang_986f59b4.Lang) :\n    finite_catalog.lang_986f59b4.Lang.code v \u2983r => r.val = lang_986f59b4_code_model v\u2984",
+      "index": 4
+    }
+  ],
+  "declarations": {
+    "finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "kind": "method",
+        "name": "as_gauge",
+        "self_ty": "BreakerState",
+        "start": 28,
+        "end": 34,
+        "sha256": "0c26b63b4f3b91c4cee4dc1bb4215accfc3be179d196d5f78f595986600d577c"
+      }
+    ],
+    "finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "kind": "method",
+        "name": "as_health_str",
+        "self_ty": "BreakerState",
+        "start": 36,
+        "end": 45,
+        "sha256": "72dca8cf36dd31403890ad06065fd62256e1ef32e75823ff88b668142ac6e056"
+      }
+    ],
+    "finite_catalog.role_a890c86c.Role.can_write": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "kind": "method",
+        "name": "can_write",
+        "self_ty": "Role",
+        "start": 59,
+        "end": 61,
+        "sha256": "b8e8ed719728f8413b4fecb4117c25de0384465fe252f1214a06563d95a7a071"
+      }
+    ],
+    "finite_catalog.role_a890c86c.Role.can_admin": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "kind": "method",
+        "name": "can_admin",
+        "self_ty": "Role",
+        "start": 63,
+        "end": 65,
+        "sha256": "eb6a0eeab7cbba72c4af6c9782a4c78b26e7f0b686f791a99111386b28836e36"
+      }
+    ],
+    "finite_catalog.lang_986f59b4.Lang.code": [
+      {
+        "file": "nora-registry/src/ui/i18n.rs",
+        "kind": "method",
+        "name": "code",
+        "self_ty": "Lang",
+        "start": 34,
+        "end": 40,
+        "sha256": "0010642a0a02917b18b473a72bcd8f952d8b19499da99af6d193cf436afc41d2"
+      }
+    ]
+  },
+  "roots": [
+    "finite_catalog::breaker_state_f11f5e92::_::as_gauge",
+    "finite_catalog::breaker_state_f11f5e92::_::as_health_str",
+    "finite_catalog::role_a890c86c::_::can_write",
+    "finite_catalog::role_a890c86c::_::can_admin",
+    "finite_catalog::lang_986f59b4::_::code"
+  ],
+  "comparisons": 15
+}

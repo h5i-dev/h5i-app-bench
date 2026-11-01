@@ -22,3 +22,5 @@ pub mod admin;
 pub mod liveauth;
 pub mod policydefaults;
 pub mod davstate;
+
+pub mod finite_catalog;

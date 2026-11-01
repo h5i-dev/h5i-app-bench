@@ -19,6 +19,2596 @@ set_option maxRecDepth 2048
 
 namespace artifactkeeper_kernel
 
+/-- [artifactkeeper_kernel::finite_catalog::repodata_encoding_df7b79f6::RepodataEncoding]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 4:0-4:40
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding where
+| Json : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding
+| Bz2 : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding
+| Zst : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding
+
+/-- [artifactkeeper_kernel::finite_catalog::repodata_encoding_df7b79f6::{artifactkeeper_kernel::finite_catalog::repodata_encoding_df7b79f6::RepodataEncoding}::content_type]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 6:4-12:5
+    Visibility: public -/
+def finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.content_type
+  (self : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.Json =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 106#u8, 115#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.Bz2 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 120#u8, 45#u8, 98#u8, 122#u8, 105#u8, 112#u8,
+        50#u8
+        ])
+  | finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.Zst =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 122#u8, 115#u8, 116#u8, 100#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::repodata_encoding_df7b79f6::{artifactkeeper_kernel::finite_catalog::repodata_encoding_df7b79f6::RepodataEncoding}::upstream_filename]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 13:4-19:5
+    Visibility: public -/
+def
+  finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.upstream_filename
+  (self : finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.Json =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        114#u8, 101#u8, 112#u8, 111#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8,
+        106#u8, 115#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.Bz2 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        114#u8, 101#u8, 112#u8, 111#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8,
+        106#u8, 115#u8, 111#u8, 110#u8, 46#u8, 98#u8, 122#u8, 50#u8
+        ])
+  | finite_catalog.repodata_encoding_df7b79f6.RepodataEncoding.Zst =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        114#u8, 101#u8, 112#u8, 111#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8,
+        106#u8, 115#u8, 111#u8, 110#u8, 46#u8, 122#u8, 115#u8, 116#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::signed_release_variant_007f0cf5::SignedReleaseVariant]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 24:0-24:52
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant
+  where
+| InRelease :
+  finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant
+| ReleaseGpg :
+  finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant
+
+/-- [artifactkeeper_kernel::finite_catalog::signed_release_variant_007f0cf5::{artifactkeeper_kernel::finite_catalog::signed_release_variant_007f0cf5::SignedReleaseVariant}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 26:4-31:5
+    Visibility: public -/
+def finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.as_str
+  (self : finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant)
+  :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.InRelease
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        73#u8, 110#u8, 82#u8, 101#u8, 108#u8, 101#u8, 97#u8, 115#u8, 101#u8
+        ])
+  |
+    finite_catalog.signed_release_variant_007f0cf5.SignedReleaseVariant.ReleaseGpg
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        82#u8, 101#u8, 108#u8, 101#u8, 97#u8, 115#u8, 101#u8, 46#u8, 103#u8,
+        112#u8, 103#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::upload_session_state_a43ea4df::UploadSessionState]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 36:0-36:45
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.upload_session_state_a43ea4df.UploadSessionState where
+| Open : finite_catalog.upload_session_state_a43ea4df.UploadSessionState
+| Committing : finite_catalog.upload_session_state_a43ea4df.UploadSessionState
+
+/-- [artifactkeeper_kernel::finite_catalog::upload_session_state_a43ea4df::{artifactkeeper_kernel::finite_catalog::upload_session_state_a43ea4df::UploadSessionState}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 38:4-43:5
+    Visibility: public -/
+def finite_catalog.upload_session_state_a43ea4df.UploadSessionState.as_str
+  (self : finite_catalog.upload_session_state_a43ea4df.UploadSessionState) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.upload_session_state_a43ea4df.UploadSessionState.Open =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 111#u8, 112#u8, 101#u8, 110#u8 ])
+  | finite_catalog.upload_session_state_a43ea4df.UploadSessionState.Committing
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        99#u8, 111#u8, 109#u8, 109#u8, 105#u8, 116#u8, 116#u8, 105#u8, 110#u8,
+        103#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::cached_object_verdict_b87a78e2::CachedObjectVerdict]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 48:0-48:67
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict
+  where
+| NotProxyCache :
+  finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict
+| Vouched : finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict
+| Unvouched : finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict
+| Held : finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict
+
+/-- [artifactkeeper_kernel::finite_catalog::cached_object_verdict_b87a78e2::{artifactkeeper_kernel::finite_catalog::cached_object_verdict_b87a78e2::CachedObjectVerdict}::may_serve_stored_object]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 50:4-52:5
+    Visibility: public -/
+def
+  finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.may_serve_stored_object
+  (self : finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict) :
+  Result Bool
+  := do
+  match self with
+  |
+    finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.NotProxyCache
+    =>
+    ok true
+  | finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.Vouched
+    =>
+    ok true
+  | finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.Unvouched
+    =>
+    ok false
+  | finite_catalog.cached_object_verdict_b87a78e2.CachedObjectVerdict.Held =>
+    ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::outbound_url_context_dd3b7559::OutboundUrlContext]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 57:0-57:75
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext where
+| Upstream : finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext
+| Webhook : finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext
+| SsoDiscovery :
+  finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext
+| TrustedInternal :
+  finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext
+
+/-- [artifactkeeper_kernel::finite_catalog::outbound_url_context_dd3b7559::{artifactkeeper_kernel::finite_catalog::outbound_url_context_dd3b7559::OutboundUrlContext}::env_var]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 61:4-73:5
+    Visibility: public -/
+def finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.env_var
+  (self : finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.Upstream =>
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        85#u8, 80#u8, 83#u8, 84#u8, 82#u8, 69#u8, 65#u8, 77#u8, 95#u8, 65#u8,
+        76#u8, 76#u8, 79#u8, 87#u8, 95#u8, 80#u8, 82#u8, 73#u8, 86#u8, 65#u8,
+        84#u8, 69#u8, 95#u8, 73#u8, 80#u8, 83#u8
+        ])
+  | finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.Webhook =>
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        87#u8, 69#u8, 66#u8, 72#u8, 79#u8, 79#u8, 75#u8, 95#u8, 65#u8, 76#u8,
+        76#u8, 79#u8, 87#u8, 95#u8, 80#u8, 82#u8, 73#u8, 86#u8, 65#u8, 84#u8,
+        69#u8, 95#u8, 73#u8, 80#u8, 83#u8
+        ])
+  |
+    finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.SsoDiscovery
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        83#u8, 83#u8, 79#u8, 95#u8, 65#u8, 76#u8, 76#u8, 79#u8, 87#u8, 95#u8,
+        80#u8, 82#u8, 73#u8, 86#u8, 65#u8, 84#u8, 69#u8, 95#u8, 73#u8, 80#u8,
+        83#u8
+        ])
+  |
+    finite_catalog.outbound_url_context_dd3b7559.OutboundUrlContext.TrustedInternal
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 37#usize [
+        65#u8, 75#u8, 95#u8, 84#u8, 82#u8, 85#u8, 83#u8, 84#u8, 69#u8, 68#u8,
+        95#u8, 73#u8, 78#u8, 84#u8, 69#u8, 82#u8, 78#u8, 65#u8, 76#u8, 95#u8,
+        65#u8, 76#u8, 76#u8, 79#u8, 87#u8, 95#u8, 80#u8, 82#u8, 73#u8, 86#u8,
+        65#u8, 84#u8, 69#u8, 95#u8, 73#u8, 80#u8, 83#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::jwt_secret_warning_4946346a::JwtSecretWarning]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 78:0-78:64
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning where
+| TooShort : finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning
+| KnownPlaceholder :
+  finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning
+| LowEntropy : finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning
+
+/-- [artifactkeeper_kernel::finite_catalog::jwt_secret_warning_4946346a::{artifactkeeper_kernel::finite_catalog::jwt_secret_warning_4946346a::JwtSecretWarning}::message]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 80:4-88:5
+    Visibility: public -/
+def finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.message
+  (self : finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.TooShort =>
+    alloc.vec.FromVecArray.from
+      (Array.make 33#usize [
+        105#u8, 116#u8, 32#u8, 105#u8, 115#u8, 32#u8, 115#u8, 104#u8, 111#u8,
+        114#u8, 116#u8, 101#u8, 114#u8, 32#u8, 116#u8, 104#u8, 97#u8, 110#u8,
+        32#u8, 51#u8, 50#u8, 32#u8, 99#u8, 104#u8, 97#u8, 114#u8, 97#u8, 99#u8,
+        116#u8, 101#u8, 114#u8, 115#u8, 46#u8
+        ])
+  |
+    finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.KnownPlaceholder
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 40#usize [
+        105#u8, 116#u8, 32#u8, 105#u8, 115#u8, 32#u8, 97#u8, 32#u8, 107#u8,
+        110#u8, 111#u8, 119#u8, 110#u8, 32#u8, 112#u8, 108#u8, 97#u8, 99#u8,
+        101#u8, 104#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 47#u8, 100#u8,
+        101#u8, 102#u8, 97#u8, 117#u8, 108#u8, 116#u8, 32#u8, 118#u8, 97#u8,
+        108#u8, 117#u8, 101#u8, 46#u8
+        ])
+  | finite_catalog.jwt_secret_warning_4946346a.JwtSecretWarning.LowEntropy =>
+    alloc.vec.FromVecArray.from
+      (Array.make 80#usize [
+        105#u8, 116#u8, 32#u8, 104#u8, 97#u8, 115#u8, 32#u8, 108#u8, 111#u8,
+        119#u8, 32#u8, 101#u8, 110#u8, 116#u8, 114#u8, 111#u8, 112#u8, 121#u8,
+        32#u8, 40#u8, 117#u8, 110#u8, 100#u8, 101#u8, 114#u8, 32#u8, 49#u8,
+        50#u8, 56#u8, 32#u8, 101#u8, 115#u8, 116#u8, 105#u8, 109#u8, 97#u8,
+        116#u8, 101#u8, 100#u8, 32#u8, 98#u8, 105#u8, 116#u8, 115#u8, 44#u8,
+        32#u8, 111#u8, 114#u8, 32#u8, 97#u8, 110#u8, 32#u8, 111#u8, 98#u8,
+        118#u8, 105#u8, 111#u8, 117#u8, 115#u8, 32#u8, 114#u8, 101#u8, 112#u8,
+        101#u8, 97#u8, 116#u8, 32#u8, 111#u8, 114#u8, 32#u8, 115#u8, 101#u8,
+        113#u8, 117#u8, 101#u8, 110#u8, 99#u8, 101#u8, 41#u8, 46#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::incus_file_type_eee7eb85::IncusFileType]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 93:0-93:95
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.incus_file_type_eee7eb85.IncusFileType where
+| UnifiedTarball : finite_catalog.incus_file_type_eee7eb85.IncusFileType
+| MetadataTarball : finite_catalog.incus_file_type_eee7eb85.IncusFileType
+| RootfsSquashfs : finite_catalog.incus_file_type_eee7eb85.IncusFileType
+| RootfsQcow2 : finite_catalog.incus_file_type_eee7eb85.IncusFileType
+| StreamsIndex : finite_catalog.incus_file_type_eee7eb85.IncusFileType
+
+/-- [artifactkeeper_kernel::finite_catalog::incus_file_type_eee7eb85::{artifactkeeper_kernel::finite_catalog::incus_file_type_eee7eb85::IncusFileType}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 95:4-103:5
+    Visibility: public -/
+def finite_catalog.incus_file_type_eee7eb85.IncusFileType.as_str
+  (self : finite_catalog.incus_file_type_eee7eb85.IncusFileType) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.UnifiedTarball =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        117#u8, 110#u8, 105#u8, 102#u8, 105#u8, 101#u8, 100#u8, 95#u8, 116#u8,
+        97#u8, 114#u8, 98#u8, 97#u8, 108#u8, 108#u8
+        ])
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.MetadataTarball =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        109#u8, 101#u8, 116#u8, 97#u8, 100#u8, 97#u8, 116#u8, 97#u8, 95#u8,
+        116#u8, 97#u8, 114#u8, 98#u8, 97#u8, 108#u8, 108#u8
+        ])
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.RootfsSquashfs =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        114#u8, 111#u8, 111#u8, 116#u8, 102#u8, 115#u8, 95#u8, 115#u8, 113#u8,
+        117#u8, 97#u8, 115#u8, 104#u8, 102#u8, 115#u8
+        ])
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.RootfsQcow2 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        114#u8, 111#u8, 111#u8, 116#u8, 102#u8, 115#u8, 95#u8, 113#u8, 99#u8,
+        111#u8, 119#u8, 50#u8
+        ])
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.StreamsIndex =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        115#u8, 116#u8, 114#u8, 101#u8, 97#u8, 109#u8, 115#u8, 95#u8, 105#u8,
+        110#u8, 100#u8, 101#u8, 120#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::incus_file_type_eee7eb85::{artifactkeeper_kernel::finite_catalog::incus_file_type_eee7eb85::IncusFileType}::is_tarball]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 104:4-106:5
+    Visibility: public -/
+def finite_catalog.incus_file_type_eee7eb85.IncusFileType.is_tarball
+  (self : finite_catalog.incus_file_type_eee7eb85.IncusFileType) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.UnifiedTarball =>
+    ok true
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.MetadataTarball =>
+    ok true
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.RootfsSquashfs =>
+    ok false
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.RootfsQcow2 =>
+    ok false
+  | finite_catalog.incus_file_type_eee7eb85.IncusFileType.StreamsIndex =>
+    ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::sbom_format_104be95e::SbomFormat]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 111:0-111:36
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.sbom_format_104be95e.SbomFormat where
+| CycloneDX : finite_catalog.sbom_format_104be95e.SbomFormat
+| SPDX : finite_catalog.sbom_format_104be95e.SbomFormat
+
+/-- [artifactkeeper_kernel::finite_catalog::sbom_format_104be95e::{artifactkeeper_kernel::finite_catalog::sbom_format_104be95e::SbomFormat}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 113:4-118:5
+    Visibility: public -/
+def finite_catalog.sbom_format_104be95e.SbomFormat.as_str
+  (self : finite_catalog.sbom_format_104be95e.SbomFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.sbom_format_104be95e.SbomFormat.CycloneDX =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        99#u8, 121#u8, 99#u8, 108#u8, 111#u8, 110#u8, 101#u8, 100#u8, 120#u8
+        ])
+  | finite_catalog.sbom_format_104be95e.SbomFormat.SPDX =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 115#u8, 112#u8, 100#u8, 120#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::sbom_format_104be95e::{artifactkeeper_kernel::finite_catalog::sbom_format_104be95e::SbomFormat}::content_type]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 119:4-124:5
+    Visibility: public -/
+def finite_catalog.sbom_format_104be95e.SbomFormat.content_type
+  (self : finite_catalog.sbom_format_104be95e.SbomFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.sbom_format_104be95e.SbomFormat.CycloneDX =>
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 118#u8, 110#u8, 100#u8, 46#u8, 99#u8, 121#u8,
+        99#u8, 108#u8, 111#u8, 110#u8, 101#u8, 100#u8, 120#u8, 43#u8, 106#u8,
+        115#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.sbom_format_104be95e.SbomFormat.SPDX =>
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        97#u8, 112#u8, 112#u8, 108#u8, 105#u8, 99#u8, 97#u8, 116#u8, 105#u8,
+        111#u8, 110#u8, 47#u8, 115#u8, 112#u8, 100#u8, 120#u8, 43#u8, 106#u8,
+        115#u8, 111#u8, 110#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::cve_status_104be95e::CveStatus]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 129:0-129:58
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.cve_status_104be95e.CveStatus where
+| Open : finite_catalog.cve_status_104be95e.CveStatus
+| Fixed : finite_catalog.cve_status_104be95e.CveStatus
+| Acknowledged : finite_catalog.cve_status_104be95e.CveStatus
+| FalsePositive : finite_catalog.cve_status_104be95e.CveStatus
+
+/-- [artifactkeeper_kernel::finite_catalog::cve_status_104be95e::{artifactkeeper_kernel::finite_catalog::cve_status_104be95e::CveStatus}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 131:4-138:5
+    Visibility: public -/
+def finite_catalog.cve_status_104be95e.CveStatus.as_str
+  (self : finite_catalog.cve_status_104be95e.CveStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.cve_status_104be95e.CveStatus.Open =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 111#u8, 112#u8, 101#u8, 110#u8 ])
+  | finite_catalog.cve_status_104be95e.CveStatus.Fixed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 102#u8, 105#u8, 120#u8, 101#u8, 100#u8 ])
+  | finite_catalog.cve_status_104be95e.CveStatus.Acknowledged =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        97#u8, 99#u8, 107#u8, 110#u8, 111#u8, 119#u8, 108#u8, 101#u8, 100#u8,
+        103#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.cve_status_104be95e.CveStatus.FalsePositive =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        102#u8, 97#u8, 108#u8, 115#u8, 101#u8, 95#u8, 112#u8, 111#u8, 115#u8,
+        105#u8, 116#u8, 105#u8, 118#u8, 101#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::policy_action_104be95e::PolicyAction]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 143:0-143:40
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.policy_action_104be95e.PolicyAction where
+| Allow : finite_catalog.policy_action_104be95e.PolicyAction
+| Warn : finite_catalog.policy_action_104be95e.PolicyAction
+| Block : finite_catalog.policy_action_104be95e.PolicyAction
+
+/-- [artifactkeeper_kernel::finite_catalog::policy_action_104be95e::{artifactkeeper_kernel::finite_catalog::policy_action_104be95e::PolicyAction}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 145:4-151:5
+    Visibility: public -/
+def finite_catalog.policy_action_104be95e.PolicyAction.as_str
+  (self : finite_catalog.policy_action_104be95e.PolicyAction) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.policy_action_104be95e.PolicyAction.Allow =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 97#u8, 108#u8, 108#u8, 111#u8, 119#u8 ])
+  | finite_catalog.policy_action_104be95e.PolicyAction.Warn =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 119#u8, 97#u8, 114#u8, 110#u8 ])
+  | finite_catalog.policy_action_104be95e.PolicyAction.Block =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 98#u8, 108#u8, 111#u8, 99#u8, 107#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::severity_1259a9af::Severity]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 156:0-156:69
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.severity_1259a9af.Severity where
+| Critical : finite_catalog.severity_1259a9af.Severity
+| High : finite_catalog.severity_1259a9af.Severity
+| Medium : finite_catalog.severity_1259a9af.Severity
+| Low : finite_catalog.severity_1259a9af.Severity
+| Info : finite_catalog.severity_1259a9af.Severity
+
+/-- [artifactkeeper_kernel::finite_catalog::severity_1259a9af::{artifactkeeper_kernel::finite_catalog::severity_1259a9af::Severity}::penalty_weight]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 159:4-167:5
+    Visibility: public -/
+def finite_catalog.severity_1259a9af.Severity.penalty_weight
+  (self : finite_catalog.severity_1259a9af.Severity) : Result Std.I32 := do
+  match self with
+  | finite_catalog.severity_1259a9af.Severity.Critical => ok 25#i32
+  | finite_catalog.severity_1259a9af.Severity.High => ok 10#i32
+  | finite_catalog.severity_1259a9af.Severity.Medium => ok 3#i32
+  | finite_catalog.severity_1259a9af.Severity.Low => ok 1#i32
+  | finite_catalog.severity_1259a9af.Severity.Info => ok 0#i32
+
+/-- [artifactkeeper_kernel::finite_catalog::severity_1259a9af::{artifactkeeper_kernel::finite_catalog::severity_1259a9af::Severity}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 172:4-180:5
+    Visibility: public -/
+def finite_catalog.severity_1259a9af.Severity.as_str
+  (self : finite_catalog.severity_1259a9af.Severity) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.severity_1259a9af.Severity.Critical =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 114#u8, 105#u8, 116#u8, 105#u8, 99#u8, 97#u8, 108#u8
+        ])
+  | finite_catalog.severity_1259a9af.Severity.High =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 104#u8, 105#u8, 103#u8, 104#u8 ])
+  | finite_catalog.severity_1259a9af.Severity.Medium =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 109#u8, 101#u8, 100#u8, 105#u8, 117#u8, 109#u8 ])
+  | finite_catalog.severity_1259a9af.Severity.Low =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 108#u8, 111#u8, 119#u8 ])
+  | finite_catalog.severity_1259a9af.Severity.Info =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 105#u8, 110#u8, 102#u8, 111#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::age_gate_mode_3fdb45b7::AgeGateMode]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 185:0-185:52
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode where
+| UpstreamPublishTime : finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode
+| FirstSeen : finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode
+
+/-- [artifactkeeper_kernel::finite_catalog::age_gate_mode_3fdb45b7::{artifactkeeper_kernel::finite_catalog::age_gate_mode_3fdb45b7::AgeGateMode}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 187:4-192:5
+    Visibility: public -/
+def finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.as_str
+  (self : finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.UpstreamPublishTime =>
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        117#u8, 112#u8, 115#u8, 116#u8, 114#u8, 101#u8, 97#u8, 109#u8, 95#u8,
+        112#u8, 117#u8, 98#u8, 108#u8, 105#u8, 115#u8, 104#u8, 95#u8, 116#u8,
+        105#u8, 109#u8, 101#u8
+        ])
+  | finite_catalog.age_gate_mode_3fdb45b7.AgeGateMode.FirstSeen =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        102#u8, 105#u8, 114#u8, 115#u8, 116#u8, 95#u8, 115#u8, 101#u8, 101#u8,
+        110#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::age_gate_review_status_3fdb45b7::AgeGateReviewStatus]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 197:0-197:56
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus
+  where
+| Pending : finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus
+| Approved : finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus
+| Rejected : finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus
+
+/-- [artifactkeeper_kernel::finite_catalog::age_gate_review_status_3fdb45b7::{artifactkeeper_kernel::finite_catalog::age_gate_review_status_3fdb45b7::AgeGateReviewStatus}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 199:4-205:5
+    Visibility: public -/
+def finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.as_str
+  (self : finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.Pending
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 101#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.Approved
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        97#u8, 112#u8, 112#u8, 114#u8, 111#u8, 118#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.age_gate_review_status_3fdb45b7.AgeGateReviewStatus.Rejected
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        114#u8, 101#u8, 106#u8, 101#u8, 99#u8, 116#u8, 101#u8, 100#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::audit_stream_mode_8053ef47::AuditStreamMode]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 210:0-210:37
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode where
+| Off : finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode
+| Stdout : finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode
+
+/-- [artifactkeeper_kernel::finite_catalog::audit_stream_mode_8053ef47::{artifactkeeper_kernel::finite_catalog::audit_stream_mode_8053ef47::AuditStreamMode}::name]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 213:4-218:5
+    Visibility: public -/
+def finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.name
+  (self : finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.Off =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 111#u8, 102#u8, 102#u8 ])
+  | finite_catalog.audit_stream_mode_8053ef47.AuditStreamMode.Stdout =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 115#u8, 116#u8, 100#u8, 111#u8, 117#u8, 116#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::audit_action_3ef0ea8f::AuditAction]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 223:0-223:954
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.audit_action_3ef0ea8f.AuditAction where
+| Login : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| Logout : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| LoginFailed : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PasswordChanged : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ApiTokenCreated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ApiTokenRevoked : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| UserCreated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| UserUpdated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| UserDeleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| UserDisabled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RoleAssigned : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RoleRevoked : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RepositoryCreated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RepositoryUpdated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RepositoryDeleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RepositoryPermissionChanged :
+  finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ArtifactUploaded : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ArtifactDownloaded : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ArtifactDeleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ArtifactMetadataUpdated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| BackupStarted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| BackupCompleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| BackupFailed : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RestoreStarted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RestoreCompleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| RestoreFailed : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PeerRegistered : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PeerUnregistered : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PeerSyncStarted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PeerSyncCompleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| SettingChanged : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PluginInstalled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PluginUninstalled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PluginEnabled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PluginDisabled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| EmailSubscriptionCreated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| EmailSubscriptionDeleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| SbomGenerated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| SbomRead : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ScanReaped : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| TotpEnabled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| TotpDisabled : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| SessionsInvalidated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| TotpEnrollmentRequired : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| TotpPolicyChanged : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ApiTokenPolicyChanged : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| AgeGateQueued : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| AgeGateApproved : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| AgeGateRejected : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| AgeGateReopened : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| PermissionDenied : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| CurationSyncTriggered : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| CurationVersionCreated : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| CurationVersionPublished : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| ProxyScanVerdictDeleted : finite_catalog.audit_action_3ef0ea8f.AuditAction
+| CiOidcGroupBindingReconciled :
+  finite_catalog.audit_action_3ef0ea8f.AuditAction
+
+/-- [artifactkeeper_kernel::finite_catalog::audit_action_3ef0ea8f::{artifactkeeper_kernel::finite_catalog::audit_action_3ef0ea8f::AuditAction}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 225:4-284:5
+    Visibility: public -/
+def finite_catalog.audit_action_3ef0ea8f.AuditAction.as_str
+  (self : finite_catalog.audit_action_3ef0ea8f.AuditAction) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.Login =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 76#u8, 79#u8, 71#u8, 73#u8, 78#u8 ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.Logout =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 76#u8, 79#u8, 71#u8, 79#u8, 85#u8, 84#u8 ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.LoginFailed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        76#u8, 79#u8, 71#u8, 73#u8, 78#u8, 95#u8, 70#u8, 65#u8, 73#u8, 76#u8,
+        69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PasswordChanged =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        80#u8, 65#u8, 83#u8, 83#u8, 87#u8, 79#u8, 82#u8, 68#u8, 95#u8, 67#u8,
+        72#u8, 65#u8, 78#u8, 71#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ApiTokenCreated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        65#u8, 80#u8, 73#u8, 95#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8, 95#u8,
+        67#u8, 82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ApiTokenRevoked =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        65#u8, 80#u8, 73#u8, 95#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8, 95#u8,
+        82#u8, 69#u8, 86#u8, 79#u8, 75#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.UserCreated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        85#u8, 83#u8, 69#u8, 82#u8, 95#u8, 67#u8, 82#u8, 69#u8, 65#u8, 84#u8,
+        69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.UserUpdated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        85#u8, 83#u8, 69#u8, 82#u8, 95#u8, 85#u8, 80#u8, 68#u8, 65#u8, 84#u8,
+        69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.UserDeleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        85#u8, 83#u8, 69#u8, 82#u8, 95#u8, 68#u8, 69#u8, 76#u8, 69#u8, 84#u8,
+        69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.UserDisabled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        85#u8, 83#u8, 69#u8, 82#u8, 95#u8, 68#u8, 73#u8, 83#u8, 65#u8, 66#u8,
+        76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RoleAssigned =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        82#u8, 79#u8, 76#u8, 69#u8, 95#u8, 65#u8, 83#u8, 83#u8, 73#u8, 71#u8,
+        78#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RoleRevoked =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        82#u8, 79#u8, 76#u8, 69#u8, 95#u8, 82#u8, 69#u8, 86#u8, 79#u8, 75#u8,
+        69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RepositoryCreated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        82#u8, 69#u8, 80#u8, 79#u8, 83#u8, 73#u8, 84#u8, 79#u8, 82#u8, 89#u8,
+        95#u8, 67#u8, 82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RepositoryUpdated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        82#u8, 69#u8, 80#u8, 79#u8, 83#u8, 73#u8, 84#u8, 79#u8, 82#u8, 89#u8,
+        95#u8, 85#u8, 80#u8, 68#u8, 65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RepositoryDeleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        82#u8, 69#u8, 80#u8, 79#u8, 83#u8, 73#u8, 84#u8, 79#u8, 82#u8, 89#u8,
+        95#u8, 68#u8, 69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  |
+    finite_catalog.audit_action_3ef0ea8f.AuditAction.RepositoryPermissionChanged
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 29#usize [
+        82#u8, 69#u8, 80#u8, 79#u8, 83#u8, 73#u8, 84#u8, 79#u8, 82#u8, 89#u8,
+        95#u8, 80#u8, 69#u8, 82#u8, 77#u8, 73#u8, 83#u8, 83#u8, 73#u8, 79#u8,
+        78#u8, 95#u8, 67#u8, 72#u8, 65#u8, 78#u8, 71#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ArtifactUploaded =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        65#u8, 82#u8, 84#u8, 73#u8, 70#u8, 65#u8, 67#u8, 84#u8, 95#u8, 85#u8,
+        80#u8, 76#u8, 79#u8, 65#u8, 68#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ArtifactDownloaded =>
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        65#u8, 82#u8, 84#u8, 73#u8, 70#u8, 65#u8, 67#u8, 84#u8, 95#u8, 68#u8,
+        79#u8, 87#u8, 78#u8, 76#u8, 79#u8, 65#u8, 68#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ArtifactDeleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        65#u8, 82#u8, 84#u8, 73#u8, 70#u8, 65#u8, 67#u8, 84#u8, 95#u8, 68#u8,
+        69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ArtifactMetadataUpdated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        65#u8, 82#u8, 84#u8, 73#u8, 70#u8, 65#u8, 67#u8, 84#u8, 95#u8, 77#u8,
+        69#u8, 84#u8, 65#u8, 68#u8, 65#u8, 84#u8, 65#u8, 95#u8, 85#u8, 80#u8,
+        68#u8, 65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.BackupStarted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        66#u8, 65#u8, 67#u8, 75#u8, 85#u8, 80#u8, 95#u8, 83#u8, 84#u8, 65#u8,
+        82#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.BackupCompleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        66#u8, 65#u8, 67#u8, 75#u8, 85#u8, 80#u8, 95#u8, 67#u8, 79#u8, 77#u8,
+        80#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.BackupFailed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        66#u8, 65#u8, 67#u8, 75#u8, 85#u8, 80#u8, 95#u8, 70#u8, 65#u8, 73#u8,
+        76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RestoreStarted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        82#u8, 69#u8, 83#u8, 84#u8, 79#u8, 82#u8, 69#u8, 95#u8, 83#u8, 84#u8,
+        65#u8, 82#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RestoreCompleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        82#u8, 69#u8, 83#u8, 84#u8, 79#u8, 82#u8, 69#u8, 95#u8, 67#u8, 79#u8,
+        77#u8, 80#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.RestoreFailed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        82#u8, 69#u8, 83#u8, 84#u8, 79#u8, 82#u8, 69#u8, 95#u8, 70#u8, 65#u8,
+        73#u8, 76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PeerRegistered =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        80#u8, 69#u8, 69#u8, 82#u8, 95#u8, 82#u8, 69#u8, 71#u8, 73#u8, 83#u8,
+        84#u8, 69#u8, 82#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PeerUnregistered =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        80#u8, 69#u8, 69#u8, 82#u8, 95#u8, 85#u8, 78#u8, 82#u8, 69#u8, 71#u8,
+        73#u8, 83#u8, 84#u8, 69#u8, 82#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PeerSyncStarted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        80#u8, 69#u8, 69#u8, 82#u8, 95#u8, 83#u8, 89#u8, 78#u8, 67#u8, 95#u8,
+        83#u8, 84#u8, 65#u8, 82#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PeerSyncCompleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        80#u8, 69#u8, 69#u8, 82#u8, 95#u8, 83#u8, 89#u8, 78#u8, 67#u8, 95#u8,
+        67#u8, 79#u8, 77#u8, 80#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.SettingChanged =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        83#u8, 69#u8, 84#u8, 84#u8, 73#u8, 78#u8, 71#u8, 95#u8, 67#u8, 72#u8,
+        65#u8, 78#u8, 71#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PluginInstalled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        80#u8, 76#u8, 85#u8, 71#u8, 73#u8, 78#u8, 95#u8, 73#u8, 78#u8, 83#u8,
+        84#u8, 65#u8, 76#u8, 76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PluginUninstalled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        80#u8, 76#u8, 85#u8, 71#u8, 73#u8, 78#u8, 95#u8, 85#u8, 78#u8, 73#u8,
+        78#u8, 83#u8, 84#u8, 65#u8, 76#u8, 76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PluginEnabled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        80#u8, 76#u8, 85#u8, 71#u8, 73#u8, 78#u8, 95#u8, 69#u8, 78#u8, 65#u8,
+        66#u8, 76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PluginDisabled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        80#u8, 76#u8, 85#u8, 71#u8, 73#u8, 78#u8, 95#u8, 68#u8, 73#u8, 83#u8,
+        65#u8, 66#u8, 76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.EmailSubscriptionCreated
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        69#u8, 77#u8, 65#u8, 73#u8, 76#u8, 95#u8, 83#u8, 85#u8, 66#u8, 83#u8,
+        67#u8, 82#u8, 73#u8, 80#u8, 84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 67#u8,
+        82#u8, 69#u8, 65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.EmailSubscriptionDeleted
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        69#u8, 77#u8, 65#u8, 73#u8, 76#u8, 95#u8, 83#u8, 85#u8, 66#u8, 83#u8,
+        67#u8, 82#u8, 73#u8, 80#u8, 84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 68#u8,
+        69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.SbomGenerated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        83#u8, 66#u8, 79#u8, 77#u8, 95#u8, 71#u8, 69#u8, 78#u8, 69#u8, 82#u8,
+        65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.SbomRead =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        83#u8, 66#u8, 79#u8, 77#u8, 95#u8, 82#u8, 69#u8, 65#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ScanReaped =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        83#u8, 67#u8, 65#u8, 78#u8, 95#u8, 82#u8, 69#u8, 65#u8, 80#u8, 69#u8,
+        68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.TotpEnabled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        84#u8, 79#u8, 84#u8, 80#u8, 95#u8, 69#u8, 78#u8, 65#u8, 66#u8, 76#u8,
+        69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.TotpDisabled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        84#u8, 79#u8, 84#u8, 80#u8, 95#u8, 68#u8, 73#u8, 83#u8, 65#u8, 66#u8,
+        76#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.SessionsInvalidated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 20#usize [
+        83#u8, 69#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8, 83#u8, 95#u8, 73#u8,
+        78#u8, 86#u8, 65#u8, 76#u8, 73#u8, 68#u8, 65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.TotpEnrollmentRequired =>
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        84#u8, 79#u8, 84#u8, 80#u8, 95#u8, 69#u8, 78#u8, 82#u8, 79#u8, 76#u8,
+        76#u8, 77#u8, 69#u8, 78#u8, 84#u8, 95#u8, 82#u8, 69#u8, 81#u8, 85#u8,
+        73#u8, 82#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.TotpPolicyChanged =>
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        84#u8, 79#u8, 84#u8, 80#u8, 95#u8, 80#u8, 79#u8, 76#u8, 73#u8, 67#u8,
+        89#u8, 95#u8, 67#u8, 72#u8, 65#u8, 78#u8, 71#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ApiTokenPolicyChanged =>
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        65#u8, 80#u8, 73#u8, 95#u8, 84#u8, 79#u8, 75#u8, 69#u8, 78#u8, 95#u8,
+        80#u8, 79#u8, 76#u8, 73#u8, 67#u8, 89#u8, 95#u8, 67#u8, 72#u8, 65#u8,
+        78#u8, 71#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.AgeGateQueued =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        65#u8, 71#u8, 69#u8, 95#u8, 71#u8, 65#u8, 84#u8, 69#u8, 95#u8, 81#u8,
+        85#u8, 69#u8, 85#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.AgeGateApproved =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        65#u8, 71#u8, 69#u8, 95#u8, 71#u8, 65#u8, 84#u8, 69#u8, 95#u8, 65#u8,
+        80#u8, 80#u8, 82#u8, 79#u8, 86#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.AgeGateRejected =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        65#u8, 71#u8, 69#u8, 95#u8, 71#u8, 65#u8, 84#u8, 69#u8, 95#u8, 82#u8,
+        69#u8, 74#u8, 69#u8, 67#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.AgeGateReopened =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        65#u8, 71#u8, 69#u8, 95#u8, 71#u8, 65#u8, 84#u8, 69#u8, 95#u8, 82#u8,
+        69#u8, 79#u8, 80#u8, 69#u8, 78#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.PermissionDenied =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        80#u8, 69#u8, 82#u8, 77#u8, 73#u8, 83#u8, 83#u8, 73#u8, 79#u8, 78#u8,
+        95#u8, 68#u8, 69#u8, 78#u8, 73#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.CurationSyncTriggered =>
+    alloc.vec.FromVecArray.from
+      (Array.make 23#usize [
+        67#u8, 85#u8, 82#u8, 65#u8, 84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 83#u8,
+        89#u8, 78#u8, 67#u8, 95#u8, 84#u8, 82#u8, 73#u8, 71#u8, 71#u8, 69#u8,
+        82#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.CurationVersionCreated =>
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        67#u8, 85#u8, 82#u8, 65#u8, 84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 86#u8,
+        69#u8, 82#u8, 83#u8, 73#u8, 79#u8, 78#u8, 95#u8, 67#u8, 82#u8, 69#u8,
+        65#u8, 84#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.CurationVersionPublished
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        67#u8, 85#u8, 82#u8, 65#u8, 84#u8, 73#u8, 79#u8, 78#u8, 95#u8, 86#u8,
+        69#u8, 82#u8, 83#u8, 73#u8, 79#u8, 78#u8, 95#u8, 80#u8, 85#u8, 66#u8,
+        76#u8, 73#u8, 83#u8, 72#u8, 69#u8, 68#u8
+        ])
+  | finite_catalog.audit_action_3ef0ea8f.AuditAction.ProxyScanVerdictDeleted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 26#usize [
+        80#u8, 82#u8, 79#u8, 88#u8, 89#u8, 95#u8, 83#u8, 67#u8, 65#u8, 78#u8,
+        95#u8, 86#u8, 69#u8, 82#u8, 68#u8, 73#u8, 67#u8, 84#u8, 95#u8, 68#u8,
+        69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 68#u8
+        ])
+  |
+    finite_catalog.audit_action_3ef0ea8f.AuditAction.CiOidcGroupBindingReconciled
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 32#usize [
+        67#u8, 73#u8, 95#u8, 79#u8, 73#u8, 68#u8, 67#u8, 95#u8, 71#u8, 82#u8,
+        79#u8, 85#u8, 80#u8, 95#u8, 66#u8, 73#u8, 78#u8, 68#u8, 73#u8, 78#u8,
+        71#u8, 95#u8, 82#u8, 69#u8, 67#u8, 79#u8, 78#u8, 67#u8, 73#u8, 76#u8,
+        69#u8, 68#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::resource_type_3ef0ea8f::ResourceType]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 289:0-289:108
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.resource_type_3ef0ea8f.ResourceType where
+| User : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| Repository : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| Artifact : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| Role : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| ApiToken : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| PeerInstance : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| Backup : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| Setting : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| Plugin : finite_catalog.resource_type_3ef0ea8f.ResourceType
+| ScanResult : finite_catalog.resource_type_3ef0ea8f.ResourceType
+
+/-- [artifactkeeper_kernel::finite_catalog::resource_type_3ef0ea8f::{artifactkeeper_kernel::finite_catalog::resource_type_3ef0ea8f::ResourceType}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 291:4-304:5
+    Visibility: public -/
+def finite_catalog.resource_type_3ef0ea8f.ResourceType.as_str
+  (self : finite_catalog.resource_type_3ef0ea8f.ResourceType) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.User =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.Repository =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        114#u8, 101#u8, 112#u8, 111#u8, 115#u8, 105#u8, 116#u8, 111#u8, 114#u8,
+        121#u8
+        ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.Artifact =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        97#u8, 114#u8, 116#u8, 105#u8, 102#u8, 97#u8, 99#u8, 116#u8
+        ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.Role =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 114#u8, 111#u8, 108#u8, 101#u8 ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.ApiToken =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        97#u8, 112#u8, 105#u8, 95#u8, 116#u8, 111#u8, 107#u8, 101#u8, 110#u8
+        ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.PeerInstance =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        112#u8, 101#u8, 101#u8, 114#u8, 95#u8, 105#u8, 110#u8, 115#u8, 116#u8,
+        97#u8, 110#u8, 99#u8, 101#u8
+        ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.Backup =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 98#u8, 97#u8, 99#u8, 107#u8, 117#u8, 112#u8 ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.Setting =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        115#u8, 101#u8, 116#u8, 116#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.Plugin =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 108#u8, 117#u8, 103#u8, 105#u8, 110#u8 ])
+  | finite_catalog.resource_type_3ef0ea8f.ResourceType.ScanResult =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        115#u8, 99#u8, 97#u8, 110#u8, 95#u8, 114#u8, 101#u8, 115#u8, 117#u8,
+        108#u8, 116#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::noarch_kind_b8478f7b::NoarchKind]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 309:0-309:36
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.noarch_kind_b8478f7b.NoarchKind where
+| Python : finite_catalog.noarch_kind_b8478f7b.NoarchKind
+| Generic : finite_catalog.noarch_kind_b8478f7b.NoarchKind
+
+/-- [artifactkeeper_kernel::finite_catalog::noarch_kind_b8478f7b::{artifactkeeper_kernel::finite_catalog::noarch_kind_b8478f7b::NoarchKind}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 311:4-316:5
+    Visibility: public -/
+def finite_catalog.noarch_kind_b8478f7b.NoarchKind.as_str
+  (self : finite_catalog.noarch_kind_b8478f7b.NoarchKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.noarch_kind_b8478f7b.NoarchKind.Python =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 121#u8, 116#u8, 104#u8, 111#u8, 110#u8 ])
+  | finite_catalog.noarch_kind_b8478f7b.NoarchKind.Generic =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        103#u8, 101#u8, 110#u8, 101#u8, 114#u8, 105#u8, 99#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::conda_archive_type_b8478f7b::CondaArchiveType]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 321:0-321:42
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType where
+| CondaV2 : finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType
+| TarBz2 : finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType
+
+/-- [artifactkeeper_kernel::finite_catalog::conda_archive_type_b8478f7b::{artifactkeeper_kernel::finite_catalog::conda_archive_type_b8478f7b::CondaArchiveType}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 323:4-328:5
+    Visibility: public -/
+def finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.as_str
+  (self : finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.CondaV2 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 99#u8, 111#u8, 110#u8, 100#u8, 97#u8 ])
+  | finite_catalog.conda_archive_type_b8478f7b.CondaArchiveType.TarBz2 =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        116#u8, 97#u8, 114#u8, 46#u8, 98#u8, 122#u8, 50#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::script_kind_a04cea8b::ScriptKind]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 333:0-333:206
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.script_kind_a04cea8b.ScriptKind where
+| PostLink : finite_catalog.script_kind_a04cea8b.ScriptKind
+| PreLink : finite_catalog.script_kind_a04cea8b.ScriptKind
+| PreUnlink : finite_catalog.script_kind_a04cea8b.ScriptKind
+| PreInstall : finite_catalog.script_kind_a04cea8b.ScriptKind
+| Install : finite_catalog.script_kind_a04cea8b.ScriptKind
+| PostInstall : finite_catalog.script_kind_a04cea8b.ScriptKind
+| Prepare : finite_catalog.script_kind_a04cea8b.ScriptKind
+| RpmPre : finite_catalog.script_kind_a04cea8b.ScriptKind
+| RpmPost : finite_catalog.script_kind_a04cea8b.ScriptKind
+| RpmPreUn : finite_catalog.script_kind_a04cea8b.ScriptKind
+| RpmPostUn : finite_catalog.script_kind_a04cea8b.ScriptKind
+| DebPreInst : finite_catalog.script_kind_a04cea8b.ScriptKind
+| DebPostInst : finite_catalog.script_kind_a04cea8b.ScriptKind
+| DebPreRm : finite_catalog.script_kind_a04cea8b.ScriptKind
+| DebPostRm : finite_catalog.script_kind_a04cea8b.ScriptKind
+| ApkPreInstall : finite_catalog.script_kind_a04cea8b.ScriptKind
+| ApkPostInstall : finite_catalog.script_kind_a04cea8b.ScriptKind
+| PythonSetupPy : finite_catalog.script_kind_a04cea8b.ScriptKind
+
+/-- [artifactkeeper_kernel::finite_catalog::script_kind_a04cea8b::{artifactkeeper_kernel::finite_catalog::script_kind_a04cea8b::ScriptKind}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 336:4-357:5
+    Visibility: public -/
+def finite_catalog.script_kind_a04cea8b.ScriptKind.as_str
+  (self : finite_catalog.script_kind_a04cea8b.ScriptKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PostLink =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        112#u8, 111#u8, 115#u8, 116#u8, 45#u8, 108#u8, 105#u8, 110#u8, 107#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PreLink =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        112#u8, 114#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 107#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PreUnlink =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        112#u8, 114#u8, 101#u8, 45#u8, 117#u8, 110#u8, 108#u8, 105#u8, 110#u8,
+        107#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PreInstall =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        112#u8, 114#u8, 101#u8, 105#u8, 110#u8, 115#u8, 116#u8, 97#u8, 108#u8,
+        108#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.Install =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        105#u8, 110#u8, 115#u8, 116#u8, 97#u8, 108#u8, 108#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PostInstall =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        112#u8, 111#u8, 115#u8, 116#u8, 105#u8, 110#u8, 115#u8, 116#u8, 97#u8,
+        108#u8, 108#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.Prepare =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 114#u8, 101#u8, 112#u8, 97#u8, 114#u8, 101#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPre =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        114#u8, 112#u8, 109#u8, 45#u8, 112#u8, 114#u8, 101#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPost =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        114#u8, 112#u8, 109#u8, 45#u8, 112#u8, 111#u8, 115#u8, 116#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPreUn =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        114#u8, 112#u8, 109#u8, 45#u8, 112#u8, 114#u8, 101#u8, 117#u8, 110#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPostUn =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        114#u8, 112#u8, 109#u8, 45#u8, 112#u8, 111#u8, 115#u8, 116#u8, 117#u8,
+        110#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPreInst =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        100#u8, 101#u8, 98#u8, 45#u8, 112#u8, 114#u8, 101#u8, 105#u8, 110#u8,
+        115#u8, 116#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPostInst =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        100#u8, 101#u8, 98#u8, 45#u8, 112#u8, 111#u8, 115#u8, 116#u8, 105#u8,
+        110#u8, 115#u8, 116#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPreRm =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        100#u8, 101#u8, 98#u8, 45#u8, 112#u8, 114#u8, 101#u8, 114#u8, 109#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPostRm =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        100#u8, 101#u8, 98#u8, 45#u8, 112#u8, 111#u8, 115#u8, 116#u8, 114#u8,
+        109#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.ApkPreInstall =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        97#u8, 112#u8, 107#u8, 45#u8, 112#u8, 114#u8, 101#u8, 45#u8, 105#u8,
+        110#u8, 115#u8, 116#u8, 97#u8, 108#u8, 108#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.ApkPostInstall =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        97#u8, 112#u8, 107#u8, 45#u8, 112#u8, 111#u8, 115#u8, 116#u8, 45#u8,
+        105#u8, 110#u8, 115#u8, 116#u8, 97#u8, 108#u8, 108#u8
+        ])
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PythonSetupPy =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        112#u8, 121#u8, 116#u8, 104#u8, 111#u8, 110#u8, 45#u8, 115#u8, 101#u8,
+        116#u8, 117#u8, 112#u8, 45#u8, 112#u8, 121#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::script_kind_a04cea8b::{artifactkeeper_kernel::finite_catalog::script_kind_a04cea8b::ScriptKind}::runs_as_root]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 363:4-377:5
+    Visibility: public -/
+def finite_catalog.script_kind_a04cea8b.ScriptKind.runs_as_root
+  (self : finite_catalog.script_kind_a04cea8b.ScriptKind) : Result Bool := do
+  match self with
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PostLink => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PreLink => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PreUnlink => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PreInstall => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.Install => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PostInstall => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.Prepare => ok false
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPre => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPost => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPreUn => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.RpmPostUn => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPreInst => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPostInst => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPreRm => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.DebPostRm => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.ApkPreInstall => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.ApkPostInstall => ok true
+  | finite_catalog.script_kind_a04cea8b.ScriptKind.PythonSetupPy => ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::candidate_confidence_8223875f::CandidateConfidence]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 382:0-382:46
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.candidate_confidence_8223875f.CandidateConfidence
+  where
+| Low : finite_catalog.candidate_confidence_8223875f.CandidateConfidence
+| Medium : finite_catalog.candidate_confidence_8223875f.CandidateConfidence
+| High : finite_catalog.candidate_confidence_8223875f.CandidateConfidence
+
+/-- [artifactkeeper_kernel::finite_catalog::candidate_confidence_8223875f::{artifactkeeper_kernel::finite_catalog::candidate_confidence_8223875f::CandidateConfidence}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 385:4-391:5
+    Visibility: public -/
+def finite_catalog.candidate_confidence_8223875f.CandidateConfidence.as_str
+  (self : finite_catalog.candidate_confidence_8223875f.CandidateConfidence) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.candidate_confidence_8223875f.CandidateConfidence.Low =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 108#u8, 111#u8, 119#u8 ])
+  | finite_catalog.candidate_confidence_8223875f.CandidateConfidence.Medium =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 109#u8, 101#u8, 100#u8, 105#u8, 117#u8, 109#u8 ])
+  | finite_catalog.candidate_confidence_8223875f.CandidateConfidence.High =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 104#u8, 105#u8, 103#u8, 104#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::check_b0946112::Check]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 396:0-396:199
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.check_b0946112.Check where
+| BundleWellFormed : finite_catalog.check_b0946112.Check
+| SubjectDigestBound : finite_catalog.check_b0946112.Check
+| CryptoAndChain : finite_catalog.check_b0946112.Check
+| RekorInclusion : finite_catalog.check_b0946112.Check
+| IdentityExtracted : finite_catalog.check_b0946112.Check
+| IssuerAllowlisted : finite_catalog.check_b0946112.Check
+| PublisherOwnerBound : finite_catalog.check_b0946112.Check
+| RekorSet : finite_catalog.check_b0946112.Check
+| StatementPolicy : finite_catalog.check_b0946112.Check
+
+/-- [artifactkeeper_kernel::finite_catalog::check_b0946112::{artifactkeeper_kernel::finite_catalog::check_b0946112::Check}::bit]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 398:4-400:5
+    Visibility: public -/
+def finite_catalog.check_b0946112.Check.bit
+  (self : finite_catalog.check_b0946112.Check) : Result Std.U16 := do
+  let self1 := read_discriminant self
+  let i ← lift (IScalar.hcast .U16 self1)
+  1#u16 <<< i
+
+/-- [artifactkeeper_kernel::finite_catalog::check_b0946112::{artifactkeeper_kernel::finite_catalog::check_b0946112::Check}::reason_label]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 401:4-413:5
+    Visibility: public -/
+def finite_catalog.check_b0946112.Check.reason_label
+  (self : finite_catalog.check_b0946112.Check) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.check_b0946112.Check.BundleWellFormed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 98#u8, 117#u8, 110#u8, 100#u8, 108#u8, 101#u8 ])
+  | finite_catalog.check_b0946112.Check.SubjectDigestBound =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        115#u8, 117#u8, 98#u8, 106#u8, 101#u8, 99#u8, 116#u8, 32#u8, 98#u8,
+        105#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.check_b0946112.Check.CryptoAndChain =>
+    alloc.vec.FromVecArray.from
+      (Array.make 27#usize [
+        115#u8, 105#u8, 103#u8, 110#u8, 97#u8, 116#u8, 117#u8, 114#u8, 101#u8,
+        47#u8, 99#u8, 101#u8, 114#u8, 116#u8, 105#u8, 102#u8, 105#u8, 99#u8,
+        97#u8, 116#u8, 101#u8, 32#u8, 99#u8, 104#u8, 97#u8, 105#u8, 110#u8
+        ])
+  | finite_catalog.check_b0946112.Check.RekorInclusion =>
+    alloc.vec.FromVecArray.from
+      (Array.make 30#usize [
+        116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 112#u8, 97#u8, 114#u8, 101#u8,
+        110#u8, 99#u8, 121#u8, 32#u8, 40#u8, 82#u8, 101#u8, 107#u8, 111#u8,
+        114#u8, 32#u8, 105#u8, 110#u8, 99#u8, 108#u8, 117#u8, 115#u8, 105#u8,
+        111#u8, 110#u8, 41#u8
+        ])
+  | finite_catalog.check_b0946112.Check.IdentityExtracted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 116#u8, 121#u8
+        ])
+  | finite_catalog.check_b0946112.Check.IssuerAllowlisted =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 105#u8, 115#u8, 115#u8, 117#u8, 101#u8, 114#u8 ])
+  | finite_catalog.check_b0946112.Check.PublisherOwnerBound =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 105#u8, 116#u8, 121#u8, 32#u8,
+        98#u8, 105#u8, 110#u8, 100#u8, 105#u8, 110#u8, 103#u8
+        ])
+  | finite_catalog.check_b0946112.Check.RekorSet =>
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 112#u8, 97#u8, 114#u8, 101#u8,
+        110#u8, 99#u8, 121#u8, 32#u8, 40#u8, 82#u8, 101#u8, 107#u8, 111#u8,
+        114#u8, 32#u8, 83#u8, 69#u8, 84#u8, 41#u8
+        ])
+  | finite_catalog.check_b0946112.Check.StatementPolicy =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        115#u8, 116#u8, 97#u8, 116#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::attestation_state_b0946112::AttestationState]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 418:0-418:54
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.attestation_state_b0946112.AttestationState where
+| Unverified : finite_catalog.attestation_state_b0946112.AttestationState
+| Verified : finite_catalog.attestation_state_b0946112.AttestationState
+| Failed : finite_catalog.attestation_state_b0946112.AttestationState
+
+/-- [artifactkeeper_kernel::finite_catalog::attestation_state_b0946112::{artifactkeeper_kernel::finite_catalog::attestation_state_b0946112::AttestationState}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 420:4-426:5
+    Visibility: public -/
+def finite_catalog.attestation_state_b0946112.AttestationState.as_str
+  (self : finite_catalog.attestation_state_b0946112.AttestationState) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.attestation_state_b0946112.AttestationState.Unverified =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        117#u8, 110#u8, 118#u8, 101#u8, 114#u8, 105#u8, 102#u8, 105#u8, 101#u8,
+        100#u8
+        ])
+  | finite_catalog.attestation_state_b0946112.AttestationState.Verified =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        118#u8, 101#u8, 114#u8, 105#u8, 102#u8, 105#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.attestation_state_b0946112.AttestationState.Failed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 102#u8, 97#u8, 105#u8, 108#u8, 101#u8, 100#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::inventory_completeness_0e70a8c0::InventoryCompleteness]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 431:0-431:63
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness
+  where
+| Complete :
+  finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness
+| Declared :
+  finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness
+| Partial :
+  finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness
+| None : finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness
+
+/-- [artifactkeeper_kernel::finite_catalog::inventory_completeness_0e70a8c0::{artifactkeeper_kernel::finite_catalog::inventory_completeness_0e70a8c0::InventoryCompleteness}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 434:4-441:5
+    Visibility: public -/
+def finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.as_str
+  (self : finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness)
+  :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.Complete
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 108#u8, 101#u8, 116#u8, 101#u8
+        ])
+  |
+    finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.Declared
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        100#u8, 101#u8, 99#u8, 108#u8, 97#u8, 114#u8, 101#u8, 100#u8
+        ])
+  |
+    finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.Partial
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 97#u8, 114#u8, 116#u8, 105#u8, 97#u8, 108#u8
+        ])
+  | finite_catalog.inventory_completeness_0e70a8c0.InventoryCompleteness.None
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 110#u8, 111#u8, 110#u8, 101#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::egress_proxy_mode_2d09e195::EgressProxyMode]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 446:0-446:50
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode where
+| Inherit : finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode
+| Direct : finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode
+| Explicit : finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode
+
+/-- [artifactkeeper_kernel::finite_catalog::egress_proxy_mode_2d09e195::{artifactkeeper_kernel::finite_catalog::egress_proxy_mode_2d09e195::EgressProxyMode}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 449:4-455:5
+    Visibility: public -/
+def finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.as_str
+  (self : finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.Inherit =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        105#u8, 110#u8, 104#u8, 101#u8, 114#u8, 105#u8, 116#u8
+        ])
+  | finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.Direct =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 100#u8, 105#u8, 114#u8, 101#u8, 99#u8, 116#u8 ])
+  | finite_catalog.egress_proxy_mode_2d09e195.EgressProxyMode.Explicit =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        101#u8, 120#u8, 112#u8, 108#u8, 105#u8, 99#u8, 105#u8, 116#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::rate_limit_decision_2593facc::RateLimitDecision]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 460:0-460:67
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.rate_limit_decision_2593facc.RateLimitDecision where
+| Allowed : finite_catalog.rate_limit_decision_2593facc.RateLimitDecision
+| RecipientLimited :
+  finite_catalog.rate_limit_decision_2593facc.RateLimitDecision
+| DomainLimited : finite_catalog.rate_limit_decision_2593facc.RateLimitDecision
+
+/-- [artifactkeeper_kernel::finite_catalog::rate_limit_decision_2593facc::{artifactkeeper_kernel::finite_catalog::rate_limit_decision_2593facc::RateLimitDecision}::label]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 463:4-469:5
+    Visibility: public -/
+def finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.label
+  (self : finite_catalog.rate_limit_decision_2593facc.RateLimitDecision) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.Allowed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        97#u8, 108#u8, 108#u8, 111#u8, 119#u8, 101#u8, 100#u8
+        ])
+  |
+    finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.RecipientLimited
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        114#u8, 101#u8, 99#u8, 105#u8, 112#u8, 105#u8, 101#u8, 110#u8, 116#u8
+        ])
+  | finite_catalog.rate_limit_decision_2593facc.RateLimitDecision.DomainLimited
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 100#u8, 111#u8, 109#u8, 97#u8, 105#u8, 110#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::lock_format_99735155::LockFormat]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 474:0-474:83
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.lock_format_99735155.LockFormat where
+| PixiLock : finite_catalog.lock_format_99735155.LockFormat
+| CondaLock : finite_catalog.lock_format_99735155.LockFormat
+| NpmPackageLock : finite_catalog.lock_format_99735155.LockFormat
+| CargoLock : finite_catalog.lock_format_99735155.LockFormat
+| PoetryLock : finite_catalog.lock_format_99735155.LockFormat
+| UvLock : finite_catalog.lock_format_99735155.LockFormat
+
+/-- [artifactkeeper_kernel::finite_catalog::lock_format_99735155::{artifactkeeper_kernel::finite_catalog::lock_format_99735155::LockFormat}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 477:4-486:5
+    Visibility: public -/
+def finite_catalog.lock_format_99735155.LockFormat.as_str
+  (self : finite_catalog.lock_format_99735155.LockFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.lock_format_99735155.LockFormat.PixiLock =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        112#u8, 105#u8, 120#u8, 105#u8, 46#u8, 108#u8, 111#u8, 99#u8, 107#u8
+        ])
+  | finite_catalog.lock_format_99735155.LockFormat.CondaLock =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        99#u8, 111#u8, 110#u8, 100#u8, 97#u8, 45#u8, 108#u8, 111#u8, 99#u8,
+        107#u8
+        ])
+  | finite_catalog.lock_format_99735155.LockFormat.NpmPackageLock =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        112#u8, 97#u8, 99#u8, 107#u8, 97#u8, 103#u8, 101#u8, 45#u8, 108#u8,
+        111#u8, 99#u8, 107#u8, 46#u8, 106#u8, 115#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.lock_format_99735155.LockFormat.CargoLock =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        67#u8, 97#u8, 114#u8, 103#u8, 111#u8, 46#u8, 108#u8, 111#u8, 99#u8,
+        107#u8
+        ])
+  | finite_catalog.lock_format_99735155.LockFormat.PoetryLock =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        112#u8, 111#u8, 101#u8, 116#u8, 114#u8, 121#u8, 46#u8, 108#u8, 111#u8,
+        99#u8, 107#u8
+        ])
+  | finite_catalog.lock_format_99735155.LockFormat.UvLock =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        117#u8, 118#u8, 46#u8, 108#u8, 111#u8, 99#u8, 107#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::lock_format_99735155::{artifactkeeper_kernel::finite_catalog::lock_format_99735155::LockFormat}::is_per_platform]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 490:4-492:5
+    Visibility: public -/
+def finite_catalog.lock_format_99735155.LockFormat.is_per_platform
+  (self : finite_catalog.lock_format_99735155.LockFormat) : Result Bool := do
+  match self with
+  | finite_catalog.lock_format_99735155.LockFormat.PixiLock => ok true
+  | finite_catalog.lock_format_99735155.LockFormat.CondaLock => ok true
+  | finite_catalog.lock_format_99735155.LockFormat.NpmPackageLock => ok false
+  | finite_catalog.lock_format_99735155.LockFormat.CargoLock => ok false
+  | finite_catalog.lock_format_99735155.LockFormat.PoetryLock => ok false
+  | finite_catalog.lock_format_99735155.LockFormat.UvLock => ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::ecosystem_99735155::Ecosystem]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 497:0-497:41
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.ecosystem_99735155.Ecosystem where
+| Conda : finite_catalog.ecosystem_99735155.Ecosystem
+| PyPi : finite_catalog.ecosystem_99735155.Ecosystem
+| Npm : finite_catalog.ecosystem_99735155.Ecosystem
+| Cargo : finite_catalog.ecosystem_99735155.Ecosystem
+
+/-- [artifactkeeper_kernel::finite_catalog::ecosystem_99735155::{artifactkeeper_kernel::finite_catalog::ecosystem_99735155::Ecosystem}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 500:4-507:5
+    Visibility: public -/
+def finite_catalog.ecosystem_99735155.Ecosystem.as_str
+  (self : finite_catalog.ecosystem_99735155.Ecosystem) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.ecosystem_99735155.Ecosystem.Conda =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 99#u8, 111#u8, 110#u8, 100#u8, 97#u8 ])
+  | finite_catalog.ecosystem_99735155.Ecosystem.PyPi =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 112#u8, 121#u8, 112#u8, 105#u8 ])
+  | finite_catalog.ecosystem_99735155.Ecosystem.Npm =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 110#u8, 112#u8, 109#u8 ])
+  | finite_catalog.ecosystem_99735155.Ecosystem.Cargo =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 99#u8, 97#u8, 114#u8, 103#u8, 111#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::edge_kind_99735155::EdgeKind]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 512:0-512:62
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.edge_kind_99735155.EdgeKind where
+| Runtime : finite_catalog.edge_kind_99735155.EdgeKind
+| Build : finite_catalog.edge_kind_99735155.EdgeKind
+| Dev : finite_catalog.edge_kind_99735155.EdgeKind
+| Optional : finite_catalog.edge_kind_99735155.EdgeKind
+| Peer : finite_catalog.edge_kind_99735155.EdgeKind
+| Constrains : finite_catalog.edge_kind_99735155.EdgeKind
+
+/-- [artifactkeeper_kernel::finite_catalog::edge_kind_99735155::{artifactkeeper_kernel::finite_catalog::edge_kind_99735155::EdgeKind}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 515:4-524:5
+    Visibility: public -/
+def finite_catalog.edge_kind_99735155.EdgeKind.as_str
+  (self : finite_catalog.edge_kind_99735155.EdgeKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.edge_kind_99735155.EdgeKind.Runtime =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        114#u8, 117#u8, 110#u8, 116#u8, 105#u8, 109#u8, 101#u8
+        ])
+  | finite_catalog.edge_kind_99735155.EdgeKind.Build =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 98#u8, 117#u8, 105#u8, 108#u8, 100#u8 ])
+  | finite_catalog.edge_kind_99735155.EdgeKind.Dev =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 100#u8, 101#u8, 118#u8 ])
+  | finite_catalog.edge_kind_99735155.EdgeKind.Optional =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        111#u8, 112#u8, 116#u8, 105#u8, 111#u8, 110#u8, 97#u8, 108#u8
+        ])
+  | finite_catalog.edge_kind_99735155.EdgeKind.Peer =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 112#u8, 101#u8, 101#u8, 114#u8 ])
+  | finite_catalog.edge_kind_99735155.EdgeKind.Constrains =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        99#u8, 111#u8, 110#u8, 115#u8, 116#u8, 114#u8, 97#u8, 105#u8, 110#u8,
+        115#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::UnresolvedKind]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 529:0-529:101
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.unresolved_kind_99735155.UnresolvedKind where
+| Unparsed : finite_catalog.unresolved_kind_99735155.UnresolvedKind
+| MissingDependency : finite_catalog.unresolved_kind_99735155.UnresolvedKind
+| ConditionalNotInstalled :
+  finite_catalog.unresolved_kind_99735155.UnresolvedKind
+| VirtualPackage : finite_catalog.unresolved_kind_99735155.UnresolvedKind
+| Ambiguous : finite_catalog.unresolved_kind_99735155.UnresolvedKind
+
+/-- [artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::{artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::UnresolvedKind}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 532:4-540:5
+    Visibility: public -/
+def finite_catalog.unresolved_kind_99735155.UnresolvedKind.as_str
+  (self : finite_catalog.unresolved_kind_99735155.UnresolvedKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.Unparsed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        117#u8, 110#u8, 112#u8, 97#u8, 114#u8, 115#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.MissingDependency =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        109#u8, 105#u8, 115#u8, 115#u8, 105#u8, 110#u8, 103#u8, 95#u8, 100#u8,
+        101#u8, 112#u8, 101#u8, 110#u8, 100#u8, 101#u8, 110#u8, 99#u8, 121#u8
+        ])
+  |
+    finite_catalog.unresolved_kind_99735155.UnresolvedKind.ConditionalNotInstalled
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 25#usize [
+        99#u8, 111#u8, 110#u8, 100#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8,
+        97#u8, 108#u8, 95#u8, 110#u8, 111#u8, 116#u8, 95#u8, 105#u8, 110#u8,
+        115#u8, 116#u8, 97#u8, 108#u8, 108#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.VirtualPackage =>
+    alloc.vec.FromVecArray.from
+      (Array.make 15#usize [
+        118#u8, 105#u8, 114#u8, 116#u8, 117#u8, 97#u8, 108#u8, 95#u8, 112#u8,
+        97#u8, 99#u8, 107#u8, 97#u8, 103#u8, 101#u8
+        ])
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.Ambiguous =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        97#u8, 109#u8, 98#u8, 105#u8, 103#u8, 117#u8, 111#u8, 117#u8, 115#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::{artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::UnresolvedKind}::is_parse_failure]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 543:4-545:5
+    Visibility: public -/
+def finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_parse_failure
+  (self : finite_catalog.unresolved_kind_99735155.UnresolvedKind) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.Unparsed => ok true
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.MissingDependency =>
+    ok false
+  |
+    finite_catalog.unresolved_kind_99735155.UnresolvedKind.ConditionalNotInstalled
+    =>
+    ok false
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.VirtualPackage =>
+    ok false
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.Ambiguous =>
+    ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::{artifactkeeper_kernel::finite_catalog::unresolved_kind_99735155::UnresolvedKind}::is_graph_gap]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 547:4-554:5
+    Visibility: public -/
+def finite_catalog.unresolved_kind_99735155.UnresolvedKind.is_graph_gap
+  (self : finite_catalog.unresolved_kind_99735155.UnresolvedKind) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.Unparsed => ok true
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.MissingDependency =>
+    ok true
+  |
+    finite_catalog.unresolved_kind_99735155.UnresolvedKind.ConditionalNotInstalled
+    =>
+    ok false
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.VirtualPackage =>
+    ok false
+  | finite_catalog.unresolved_kind_99735155.UnresolvedKind.Ambiguous => ok true
+
+/-- [artifactkeeper_kernel::finite_catalog::package_manager_7f965e35::PackageManager]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 559:0-559:60
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.package_manager_7f965e35.PackageManager where
+| Apt : finite_catalog.package_manager_7f965e35.PackageManager
+| Dnf : finite_catalog.package_manager_7f965e35.PackageManager
+| Microdnf : finite_catalog.package_manager_7f965e35.PackageManager
+| Yum : finite_catalog.package_manager_7f965e35.PackageManager
+| Apk : finite_catalog.package_manager_7f965e35.PackageManager
+| Pip : finite_catalog.package_manager_7f965e35.PackageManager
+| Conda : finite_catalog.package_manager_7f965e35.PackageManager
+
+/-- [artifactkeeper_kernel::finite_catalog::package_manager_7f965e35::{artifactkeeper_kernel::finite_catalog::package_manager_7f965e35::PackageManager}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 561:4-571:5
+    Visibility: public -/
+def finite_catalog.package_manager_7f965e35.PackageManager.as_str
+  (self : finite_catalog.package_manager_7f965e35.PackageManager) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.package_manager_7f965e35.PackageManager.Apt =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 97#u8, 112#u8, 116#u8 ])
+  | finite_catalog.package_manager_7f965e35.PackageManager.Dnf =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 100#u8, 110#u8, 102#u8 ])
+  | finite_catalog.package_manager_7f965e35.PackageManager.Microdnf =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        109#u8, 105#u8, 99#u8, 114#u8, 111#u8, 100#u8, 110#u8, 102#u8
+        ])
+  | finite_catalog.package_manager_7f965e35.PackageManager.Yum =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 121#u8, 117#u8, 109#u8 ])
+  | finite_catalog.package_manager_7f965e35.PackageManager.Apk =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 97#u8, 112#u8, 107#u8 ])
+  | finite_catalog.package_manager_7f965e35.PackageManager.Pip =>
+    alloc.vec.FromVecArray.from (Array.make 3#usize [ 112#u8, 105#u8, 112#u8 ])
+  | finite_catalog.package_manager_7f965e35.PackageManager.Conda =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 99#u8, 111#u8, 110#u8, 100#u8, 97#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::package_manager_7f965e35::{artifactkeeper_kernel::finite_catalog::package_manager_7f965e35::PackageManager}::is_system]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 573:4-582:5
+    Visibility: public -/
+def finite_catalog.package_manager_7f965e35.PackageManager.is_system
+  (self : finite_catalog.package_manager_7f965e35.PackageManager) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.package_manager_7f965e35.PackageManager.Apt => ok true
+  | finite_catalog.package_manager_7f965e35.PackageManager.Dnf => ok true
+  | finite_catalog.package_manager_7f965e35.PackageManager.Microdnf => ok true
+  | finite_catalog.package_manager_7f965e35.PackageManager.Yum => ok true
+  | finite_catalog.package_manager_7f965e35.PackageManager.Apk => ok true
+  | finite_catalog.package_manager_7f965e35.PackageManager.Pip => ok false
+  | finite_catalog.package_manager_7f965e35.PackageManager.Conda => ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::policy_type_080e6210::PolicyType]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 587:0-587:107
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.policy_type_080e6210.PolicyType where
+| MaxAgeDays : finite_catalog.policy_type_080e6210.PolicyType
+| MaxVersions : finite_catalog.policy_type_080e6210.PolicyType
+| NoDownloadsDays : finite_catalog.policy_type_080e6210.PolicyType
+| TagPatternKeep : finite_catalog.policy_type_080e6210.PolicyType
+| TagPatternDelete : finite_catalog.policy_type_080e6210.PolicyType
+| SizeQuotaBytes : finite_catalog.policy_type_080e6210.PolicyType
+
+/-- [artifactkeeper_kernel::finite_catalog::policy_type_080e6210::{artifactkeeper_kernel::finite_catalog::policy_type_080e6210::PolicyType}::as_wire_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 591:4-600:5
+    Visibility: public -/
+def finite_catalog.policy_type_080e6210.PolicyType.as_wire_str
+  (self : finite_catalog.policy_type_080e6210.PolicyType) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.policy_type_080e6210.PolicyType.MaxAgeDays =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        109#u8, 97#u8, 120#u8, 95#u8, 97#u8, 103#u8, 101#u8, 95#u8, 100#u8,
+        97#u8, 121#u8, 115#u8
+        ])
+  | finite_catalog.policy_type_080e6210.PolicyType.MaxVersions =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        109#u8, 97#u8, 120#u8, 95#u8, 118#u8, 101#u8, 114#u8, 115#u8, 105#u8,
+        111#u8, 110#u8, 115#u8
+        ])
+  | finite_catalog.policy_type_080e6210.PolicyType.NoDownloadsDays =>
+    alloc.vec.FromVecArray.from
+      (Array.make 17#usize [
+        110#u8, 111#u8, 95#u8, 100#u8, 111#u8, 119#u8, 110#u8, 108#u8, 111#u8,
+        97#u8, 100#u8, 115#u8, 95#u8, 100#u8, 97#u8, 121#u8, 115#u8
+        ])
+  | finite_catalog.policy_type_080e6210.PolicyType.TagPatternKeep =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        116#u8, 97#u8, 103#u8, 95#u8, 112#u8, 97#u8, 116#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 95#u8, 107#u8, 101#u8, 101#u8, 112#u8
+        ])
+  | finite_catalog.policy_type_080e6210.PolicyType.TagPatternDelete =>
+    alloc.vec.FromVecArray.from
+      (Array.make 18#usize [
+        116#u8, 97#u8, 103#u8, 95#u8, 112#u8, 97#u8, 116#u8, 116#u8, 101#u8,
+        114#u8, 110#u8, 95#u8, 100#u8, 101#u8, 108#u8, 101#u8, 116#u8, 101#u8
+        ])
+  | finite_catalog.policy_type_080e6210.PolicyType.SizeQuotaBytes =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        115#u8, 105#u8, 122#u8, 101#u8, 95#u8, 113#u8, 117#u8, 111#u8, 116#u8,
+        97#u8, 95#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::flat_key_write_claim_6572c2eb::FlatKeyWriteClaim]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 605:0-605:63
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim where
+| NotApplicable :
+  finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim
+| Claimed : finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim
+| AlreadyOwned : finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim
+
+/-- [artifactkeeper_kernel::finite_catalog::flat_key_write_claim_6572c2eb::{artifactkeeper_kernel::finite_catalog::flat_key_write_claim_6572c2eb::FlatKeyWriteClaim}::needs_release_on_failure]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 609:4-611:5
+    Visibility: public -/
+def
+  finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.needs_release_on_failure
+  (self : finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim) :
+  Result Bool
+  := do
+  match self with
+  |
+    finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.NotApplicable
+    =>
+    ok false
+  | finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.Claimed =>
+    ok true
+  | finite_catalog.flat_key_write_claim_6572c2eb.FlatKeyWriteClaim.AlreadyOwned
+    =>
+    ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::source_view_73842ce1::SourceView]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 616:0-616:38
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.source_view_73842ce1.SourceView where
+| Partial : finite_catalog.source_view_73842ce1.SourceView
+| Complete : finite_catalog.source_view_73842ce1.SourceView
+
+/-- [artifactkeeper_kernel::finite_catalog::source_view_73842ce1::{artifactkeeper_kernel::finite_catalog::source_view_73842ce1::SourceView}::overwrites]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 619:4-621:5
+    Visibility: public -/
+def finite_catalog.source_view_73842ce1.SourceView.overwrites
+  (self : finite_catalog.source_view_73842ce1.SourceView) : Result Bool := do
+  match self with
+  | finite_catalog.source_view_73842ce1.SourceView.Partial => ok false
+  | finite_catalog.source_view_73842ce1.SourceView.Complete => ok true
+
+/-- [artifactkeeper_kernel::finite_catalog::repository_type_73842ce1::RepositoryType]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 626:0-626:46
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.repository_type_73842ce1.RepositoryType where
+| Local : finite_catalog.repository_type_73842ce1.RepositoryType
+| Remote : finite_catalog.repository_type_73842ce1.RepositoryType
+| Virtual : finite_catalog.repository_type_73842ce1.RepositoryType
+
+/-- [artifactkeeper_kernel::finite_catalog::repository_type_73842ce1::{artifactkeeper_kernel::finite_catalog::repository_type_73842ce1::RepositoryType}::to_artifact_keeper]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 629:4-635:5
+    Visibility: public -/
+def finite_catalog.repository_type_73842ce1.RepositoryType.to_artifact_keeper
+  (self : finite_catalog.repository_type_73842ce1.RepositoryType) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.repository_type_73842ce1.RepositoryType.Local =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 108#u8, 111#u8, 99#u8, 97#u8, 108#u8 ])
+  | finite_catalog.repository_type_73842ce1.RepositoryType.Remote =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 114#u8, 101#u8, 109#u8, 111#u8, 116#u8, 101#u8 ])
+  | finite_catalog.repository_type_73842ce1.RepositoryType.Virtual =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        118#u8, 105#u8, 114#u8, 116#u8, 117#u8, 97#u8, 108#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::advisory_scan_status_38f3e57f::AdvisoryScanStatus]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 640:0-640:47
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus where
+| Ok : finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus
+| NotRun : finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus
+| Partial : finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus
+
+/-- [artifactkeeper_kernel::finite_catalog::advisory_scan_status_38f3e57f::{artifactkeeper_kernel::finite_catalog::advisory_scan_status_38f3e57f::AdvisoryScanStatus}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 644:4-650:5
+    Visibility: public -/
+def finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.as_str
+  (self : finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.Ok =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 111#u8, 107#u8 ])
+  | finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.NotRun =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        110#u8, 111#u8, 116#u8, 95#u8, 114#u8, 117#u8, 110#u8
+        ])
+  | finite_catalog.advisory_scan_status_38f3e57f.AdvisoryScanStatus.Partial =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 97#u8, 114#u8, 116#u8, 105#u8, 97#u8, 108#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::proxy_scan_action_2c5d20ab::ProxyScanAction]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 655:0-655:46
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction where
+| FailOpen : finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction
+| FailClosed : finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction
+
+/-- [artifactkeeper_kernel::finite_catalog::proxy_scan_action_2c5d20ab::{artifactkeeper_kernel::finite_catalog::proxy_scan_action_2c5d20ab::ProxyScanAction}::is_fail_closed]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 657:4-659:5
+    Visibility: public -/
+def finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.is_fail_closed
+  (self : finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.FailOpen =>
+    ok false
+  | finite_catalog.proxy_scan_action_2c5d20ab.ProxyScanAction.FailClosed =>
+    ok true
+
+/-- [artifactkeeper_kernel::finite_catalog::vendoring_tool_8d235a49::VendoringTool]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 664:0-664:55
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.vendoring_tool_8d235a49.VendoringTool where
+| AuditWheel : finite_catalog.vendoring_tool_8d235a49.VendoringTool
+| Delocate : finite_catalog.vendoring_tool_8d235a49.VendoringTool
+| DelvEWheel : finite_catalog.vendoring_tool_8d235a49.VendoringTool
+
+/-- [artifactkeeper_kernel::finite_catalog::vendoring_tool_8d235a49::{artifactkeeper_kernel::finite_catalog::vendoring_tool_8d235a49::VendoringTool}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 667:4-673:5
+    Visibility: public -/
+def finite_catalog.vendoring_tool_8d235a49.VendoringTool.as_str
+  (self : finite_catalog.vendoring_tool_8d235a49.VendoringTool) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.vendoring_tool_8d235a49.VendoringTool.AuditWheel =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        97#u8, 117#u8, 100#u8, 105#u8, 116#u8, 119#u8, 104#u8, 101#u8, 101#u8,
+        108#u8
+        ])
+  | finite_catalog.vendoring_tool_8d235a49.VendoringTool.Delocate =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        100#u8, 101#u8, 108#u8, 111#u8, 99#u8, 97#u8, 116#u8, 101#u8
+        ])
+  | finite_catalog.vendoring_tool_8d235a49.VendoringTool.DelvEWheel =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        100#u8, 101#u8, 108#u8, 118#u8, 101#u8, 119#u8, 104#u8, 101#u8, 101#u8,
+        108#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::quarantine_state_63e328a6::QuarantineState]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 678:0-678:56
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.quarantine_state_63e328a6.QuarantineState where
+| Quarantined : finite_catalog.quarantine_state_63e328a6.QuarantineState
+| Released : finite_catalog.quarantine_state_63e328a6.QuarantineState
+| Rejected : finite_catalog.quarantine_state_63e328a6.QuarantineState
+
+/-- [artifactkeeper_kernel::finite_catalog::quarantine_state_63e328a6::{artifactkeeper_kernel::finite_catalog::quarantine_state_63e328a6::QuarantineState}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 680:4-686:5
+    Visibility: public -/
+def finite_catalog.quarantine_state_63e328a6.QuarantineState.as_str
+  (self : finite_catalog.quarantine_state_63e328a6.QuarantineState) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.quarantine_state_63e328a6.QuarantineState.Quarantined =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        113#u8, 117#u8, 97#u8, 114#u8, 97#u8, 110#u8, 116#u8, 105#u8, 110#u8,
+        101#u8, 100#u8
+        ])
+  | finite_catalog.quarantine_state_63e328a6.QuarantineState.Released =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        114#u8, 101#u8, 108#u8, 101#u8, 97#u8, 115#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.quarantine_state_63e328a6.QuarantineState.Rejected =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        114#u8, 101#u8, 106#u8, 101#u8, 99#u8, 116#u8, 101#u8, 100#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::inventory_status_731e13d3::InventoryStatus]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 691:0-691:50
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.inventory_status_731e13d3.InventoryStatus where
+| Complete : finite_catalog.inventory_status_731e13d3.InventoryStatus
+| Partial : finite_catalog.inventory_status_731e13d3.InventoryStatus
+| Failed : finite_catalog.inventory_status_731e13d3.InventoryStatus
+
+/-- [artifactkeeper_kernel::finite_catalog::inventory_status_731e13d3::{artifactkeeper_kernel::finite_catalog::inventory_status_731e13d3::InventoryStatus}::as_db_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 693:4-699:5
+    Visibility: public -/
+def finite_catalog.inventory_status_731e13d3.InventoryStatus.as_db_str
+  (self : finite_catalog.inventory_status_731e13d3.InventoryStatus) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.inventory_status_731e13d3.InventoryStatus.Complete =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 108#u8, 101#u8, 116#u8, 101#u8
+        ])
+  | finite_catalog.inventory_status_731e13d3.InventoryStatus.Partial =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 97#u8, 114#u8, 116#u8, 105#u8, 97#u8, 108#u8
+        ])
+  | finite_catalog.inventory_status_731e13d3.InventoryStatus.Failed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 102#u8, 97#u8, 105#u8, 108#u8, 101#u8, 100#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::scan_state_5f365d9c::ScanState]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 704:0-704:75
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.scan_state_5f365d9c.ScanState where
+| Completed : finite_catalog.scan_state_5f365d9c.ScanState
+| InProgress : finite_catalog.scan_state_5f365d9c.ScanState
+| Failed : finite_catalog.scan_state_5f365d9c.ScanState
+| NeverScanned : finite_catalog.scan_state_5f365d9c.ScanState
+| NotApplicable : finite_catalog.scan_state_5f365d9c.ScanState
+
+/-- [artifactkeeper_kernel::finite_catalog::scan_state_5f365d9c::{artifactkeeper_kernel::finite_catalog::scan_state_5f365d9c::ScanState}::is_unscanned]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 710:4-715:5
+    Visibility: public -/
+def finite_catalog.scan_state_5f365d9c.ScanState.is_unscanned
+  (self : finite_catalog.scan_state_5f365d9c.ScanState) : Result Bool := do
+  match self with
+  | finite_catalog.scan_state_5f365d9c.ScanState.Completed => ok false
+  | finite_catalog.scan_state_5f365d9c.ScanState.InProgress => ok true
+  | finite_catalog.scan_state_5f365d9c.ScanState.Failed => ok true
+  | finite_catalog.scan_state_5f365d9c.ScanState.NeverScanned => ok true
+  | finite_catalog.scan_state_5f365d9c.ScanState.NotApplicable => ok false
+
+/-- [artifactkeeper_kernel::finite_catalog::scan_state_5f365d9c::{artifactkeeper_kernel::finite_catalog::scan_state_5f365d9c::ScanState}::reason_token]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 718:4-726:5
+    Visibility: public -/
+def finite_catalog.scan_state_5f365d9c.ScanState.reason_token
+  (self : finite_catalog.scan_state_5f365d9c.ScanState) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.scan_state_5f365d9c.ScanState.Completed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 108#u8, 101#u8, 116#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.scan_state_5f365d9c.ScanState.InProgress =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        115#u8, 99#u8, 97#u8, 110#u8, 95#u8, 105#u8, 110#u8, 95#u8, 112#u8,
+        114#u8, 111#u8, 103#u8, 114#u8, 101#u8, 115#u8, 115#u8
+        ])
+  | finite_catalog.scan_state_5f365d9c.ScanState.Failed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 11#usize [
+        115#u8, 99#u8, 97#u8, 110#u8, 95#u8, 102#u8, 97#u8, 105#u8, 108#u8,
+        101#u8, 100#u8
+        ])
+  | finite_catalog.scan_state_5f365d9c.ScanState.NeverScanned =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        110#u8, 101#u8, 118#u8, 101#u8, 114#u8, 95#u8, 115#u8, 99#u8, 97#u8,
+        110#u8, 110#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.scan_state_5f365d9c.ScanState.NotApplicable =>
+    alloc.vec.FromVecArray.from
+      (Array.make 14#usize [
+        110#u8, 111#u8, 116#u8, 95#u8, 97#u8, 112#u8, 112#u8, 108#u8, 105#u8,
+        99#u8, 97#u8, 98#u8, 108#u8, 101#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::scan_completeness_ba4d10ac::ScanCompleteness]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 731:0-731:57
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness where
+| Complete : finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness
+| Partial : finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness
+| NotCataloged : finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness
+
+/-- [artifactkeeper_kernel::finite_catalog::scan_completeness_ba4d10ac::{artifactkeeper_kernel::finite_catalog::scan_completeness_ba4d10ac::ScanCompleteness}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 736:4-742:5
+    Visibility: public -/
+def finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.as_str
+  (self : finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.Complete =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        99#u8, 111#u8, 109#u8, 112#u8, 108#u8, 101#u8, 116#u8, 101#u8
+        ])
+  | finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.Partial =>
+    alloc.vec.FromVecArray.from
+      (Array.make 7#usize [
+        112#u8, 97#u8, 114#u8, 116#u8, 105#u8, 97#u8, 108#u8
+        ])
+  | finite_catalog.scan_completeness_ba4d10ac.ScanCompleteness.NotCataloged =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        110#u8, 111#u8, 116#u8, 95#u8, 99#u8, 97#u8, 116#u8, 97#u8, 108#u8,
+        111#u8, 103#u8, 101#u8, 100#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::oci_content_kind_bc817bda::OciContentKind]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 747:0-747:39
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.oci_content_kind_bc817bda.OciContentKind where
+| Blob : finite_catalog.oci_content_kind_bc817bda.OciContentKind
+| Manifest : finite_catalog.oci_content_kind_bc817bda.OciContentKind
+
+/-- [artifactkeeper_kernel::finite_catalog::oci_content_kind_bc817bda::{artifactkeeper_kernel::finite_catalog::oci_content_kind_bc817bda::OciContentKind}::path_segment]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 750:4-755:5
+    Visibility: public -/
+def finite_catalog.oci_content_kind_bc817bda.OciContentKind.path_segment
+  (self : finite_catalog.oci_content_kind_bc817bda.OciContentKind) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.oci_content_kind_bc817bda.OciContentKind.Blob =>
+    alloc.vec.FromVecArray.from
+      (Array.make 5#usize [ 98#u8, 108#u8, 111#u8, 98#u8, 115#u8 ])
+  | finite_catalog.oci_content_kind_bc817bda.OciContentKind.Manifest =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        109#u8, 97#u8, 110#u8, 105#u8, 102#u8, 101#u8, 115#u8, 116#u8, 115#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::oci_cleanup_key_family_c9cc8f67::OciCleanupKeyFamily]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 760:0-760:51
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily
+  where
+| Pending : finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily
+| Unreferenced :
+  finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily
+
+/-- [artifactkeeper_kernel::finite_catalog::oci_cleanup_key_family_c9cc8f67::{artifactkeeper_kernel::finite_catalog::oci_cleanup_key_family_c9cc8f67::OciCleanupKeyFamily}::session_predicate_sql]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 766:4-773:5
+    Visibility: public -/
+def
+  finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.session_predicate_sql
+  (self : finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.Pending
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 87#usize [
+        115#u8, 46#u8, 105#u8, 100#u8, 32#u8, 61#u8, 32#u8, 99#u8, 46#u8,
+        117#u8, 112#u8, 108#u8, 111#u8, 97#u8, 100#u8, 95#u8, 115#u8, 101#u8,
+        115#u8, 115#u8, 105#u8, 111#u8, 110#u8, 95#u8, 105#u8, 100#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 79#u8, 82#u8, 32#u8, 115#u8, 46#u8, 115#u8,
+        116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8, 95#u8, 116#u8, 101#u8,
+        109#u8, 112#u8, 95#u8, 107#u8, 101#u8, 121#u8, 32#u8, 61#u8, 32#u8,
+        99#u8, 46#u8, 115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8,
+        95#u8, 107#u8, 101#u8, 121#u8
+        ])
+  |
+    finite_catalog.oci_cleanup_key_family_c9cc8f67.OciCleanupKeyFamily.Unreferenced
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 34#usize [
+        115#u8, 46#u8, 115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8,
+        95#u8, 116#u8, 101#u8, 109#u8, 112#u8, 95#u8, 107#u8, 101#u8, 121#u8,
+        32#u8, 61#u8, 32#u8, 99#u8, 46#u8, 115#u8, 116#u8, 111#u8, 114#u8,
+        97#u8, 103#u8, 101#u8, 95#u8, 107#u8, 101#u8, 121#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::dedup_scope_78b2cf8c::DedupScope]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 778:0-778:38
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.dedup_scope_78b2cf8c.DedupScope where
+| PerRepo : finite_catalog.dedup_scope_78b2cf8c.DedupScope
+| Instance : finite_catalog.dedup_scope_78b2cf8c.DedupScope
+
+/-- [artifactkeeper_kernel::finite_catalog::dedup_scope_78b2cf8c::{artifactkeeper_kernel::finite_catalog::dedup_scope_78b2cf8c::DedupScope}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 782:4-787:5
+    Visibility: public -/
+def finite_catalog.dedup_scope_78b2cf8c.DedupScope.as_str
+  (self : finite_catalog.dedup_scope_78b2cf8c.DedupScope) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.dedup_scope_78b2cf8c.DedupScope.PerRepo =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        112#u8, 101#u8, 114#u8, 95#u8, 114#u8, 101#u8, 112#u8, 111#u8
+        ])
+  | finite_catalog.dedup_scope_78b2cf8c.DedupScope.Instance =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        105#u8, 110#u8, 115#u8, 116#u8, 97#u8, 110#u8, 99#u8, 101#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::totp_policy_31812d2d::TotpPolicy]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 792:0-792:63
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.totp_policy_31812d2d.TotpPolicy where
+| Disabled : finite_catalog.totp_policy_31812d2d.TotpPolicy
+| RequiredForAdmins : finite_catalog.totp_policy_31812d2d.TotpPolicy
+| RequiredForAll : finite_catalog.totp_policy_31812d2d.TotpPolicy
+
+/-- [artifactkeeper_kernel::finite_catalog::totp_policy_31812d2d::{artifactkeeper_kernel::finite_catalog::totp_policy_31812d2d::TotpPolicy}::as_str]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 795:4-801:5
+    Visibility: public -/
+def finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str
+  (self : finite_catalog.totp_policy_31812d2d.TotpPolicy) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.totp_policy_31812d2d.TotpPolicy.Disabled =>
+    alloc.vec.FromVecArray.from
+      (Array.make 8#usize [
+        100#u8, 105#u8, 115#u8, 97#u8, 98#u8, 108#u8, 101#u8, 100#u8
+        ])
+  | finite_catalog.totp_policy_31812d2d.TotpPolicy.RequiredForAdmins =>
+    alloc.vec.FromVecArray.from
+      (Array.make 19#usize [
+        114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 95#u8,
+        102#u8, 111#u8, 114#u8, 95#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8,
+        115#u8
+        ])
+  | finite_catalog.totp_policy_31812d2d.TotpPolicy.RequiredForAll =>
+    alloc.vec.FromVecArray.from
+      (Array.make 16#usize [
+        114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8, 101#u8, 100#u8, 95#u8,
+        102#u8, 111#u8, 114#u8, 95#u8, 97#u8, 108#u8, 108#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::totp_policy_31812d2d::{artifactkeeper_kernel::finite_catalog::totp_policy_31812d2d::TotpPolicy}::is_enforcing]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 803:4-805:5
+    Visibility: public -/
+def finite_catalog.totp_policy_31812d2d.TotpPolicy.is_enforcing
+  (self : finite_catalog.totp_policy_31812d2d.TotpPolicy) : Result Bool := do
+  let b ←
+    match self with
+    | finite_catalog.totp_policy_31812d2d.TotpPolicy.Disabled => ok true
+    | finite_catalog.totp_policy_31812d2d.TotpPolicy.RequiredForAdmins =>
+      ok false
+    | finite_catalog.totp_policy_31812d2d.TotpPolicy.RequiredForAll => ok false
+  ok (¬ b)
+
+/-- [artifactkeeper_kernel::finite_catalog::policy_activation_refusal_31812d2d::PolicyActivationRefusal]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 810:0-810:71
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal
+  where
+| PinnedByEnvironment :
+  finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal
+| ActorNotEnrolled :
+  finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal
+
+/-- [artifactkeeper_kernel::finite_catalog::policy_activation_refusal_31812d2d::{artifactkeeper_kernel::finite_catalog::policy_activation_refusal_31812d2d::PolicyActivationRefusal}::message]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 813:4-822:5
+    Visibility: public -/
+def
+  finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.message
+  (self :
+  finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  |
+    finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.PinnedByEnvironment
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 165#usize [
+        84#u8, 104#u8, 101#u8, 32#u8, 84#u8, 79#u8, 84#u8, 80#u8, 32#u8,
+        101#u8, 110#u8, 102#u8, 111#u8, 114#u8, 99#u8, 101#u8, 109#u8, 101#u8,
+        110#u8, 116#u8, 32#u8, 112#u8, 111#u8, 108#u8, 105#u8, 99#u8, 121#u8,
+        32#u8, 105#u8, 115#u8, 32#u8, 112#u8, 105#u8, 110#u8, 110#u8, 101#u8,
+        100#u8, 32#u8, 98#u8, 121#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8,
+        84#u8, 79#u8, 84#u8, 80#u8, 95#u8, 80#u8, 79#u8, 76#u8, 73#u8, 67#u8,
+        89#u8, 32#u8, 101#u8, 110#u8, 118#u8, 105#u8, 114#u8, 111#u8, 110#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 118#u8, 97#u8, 114#u8, 105#u8,
+        97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 97#u8, 110#u8, 100#u8, 32#u8,
+        99#u8, 97#u8, 110#u8, 110#u8, 111#u8, 116#u8, 32#u8, 98#u8, 101#u8,
+        32#u8, 99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8, 100#u8, 32#u8,
+        116#u8, 104#u8, 114#u8, 111#u8, 117#u8, 103#u8, 104#u8, 32#u8, 116#u8,
+        104#u8, 101#u8, 32#u8, 65#u8, 80#u8, 73#u8, 46#u8, 32#u8, 85#u8,
+        110#u8, 115#u8, 101#u8, 116#u8, 32#u8, 84#u8, 79#u8, 84#u8, 80#u8,
+        95#u8, 80#u8, 79#u8, 76#u8, 73#u8, 67#u8, 89#u8, 32#u8, 97#u8, 110#u8,
+        100#u8, 32#u8, 114#u8, 101#u8, 115#u8, 116#u8, 97#u8, 114#u8, 116#u8,
+        32#u8, 116#u8, 111#u8, 32#u8, 109#u8, 97#u8, 110#u8, 97#u8, 103#u8,
+        101#u8, 32#u8, 105#u8, 116#u8, 32#u8, 104#u8, 101#u8, 114#u8, 101#u8,
+        46#u8
+        ])
+  |
+    finite_catalog.policy_activation_refusal_31812d2d.PolicyActivationRefusal.ActorNotEnrolled
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 182#usize [
+        69#u8, 110#u8, 97#u8, 98#u8, 108#u8, 101#u8, 32#u8, 84#u8, 79#u8,
+        84#u8, 80#u8, 32#u8, 111#u8, 110#u8, 32#u8, 121#u8, 111#u8, 117#u8,
+        114#u8, 32#u8, 111#u8, 119#u8, 110#u8, 32#u8, 97#u8, 99#u8, 99#u8,
+        111#u8, 117#u8, 110#u8, 116#u8, 32#u8, 98#u8, 101#u8, 102#u8, 111#u8,
+        114#u8, 101#u8, 32#u8, 114#u8, 101#u8, 113#u8, 117#u8, 105#u8, 114#u8,
+        105#u8, 110#u8, 103#u8, 32#u8, 105#u8, 116#u8, 32#u8, 102#u8, 111#u8,
+        114#u8, 32#u8, 111#u8, 116#u8, 104#u8, 101#u8, 114#u8, 115#u8, 46#u8,
+        32#u8, 84#u8, 104#u8, 105#u8, 115#u8, 32#u8, 103#u8, 117#u8, 97#u8,
+        114#u8, 97#u8, 110#u8, 116#u8, 101#u8, 101#u8, 115#u8, 32#u8, 97#u8,
+        116#u8, 32#u8, 108#u8, 101#u8, 97#u8, 115#u8, 116#u8, 32#u8, 111#u8,
+        110#u8, 101#u8, 32#u8, 97#u8, 100#u8, 109#u8, 105#u8, 110#u8, 105#u8,
+        115#u8, 116#u8, 114#u8, 97#u8, 116#u8, 111#u8, 114#u8, 32#u8, 99#u8,
+        97#u8, 110#u8, 32#u8, 115#u8, 116#u8, 105#u8, 108#u8, 108#u8, 32#u8,
+        115#u8, 105#u8, 103#u8, 110#u8, 32#u8, 105#u8, 110#u8, 32#u8, 105#u8,
+        102#u8, 32#u8, 116#u8, 104#u8, 101#u8, 32#u8, 101#u8, 110#u8, 114#u8,
+        111#u8, 108#u8, 108#u8, 109#u8, 101#u8, 110#u8, 116#u8, 32#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 32#u8, 100#u8, 111#u8, 101#u8, 115#u8, 32#u8,
+        110#u8, 111#u8, 116#u8, 32#u8, 119#u8, 111#u8, 114#u8, 107#u8, 32#u8,
+        105#u8, 110#u8, 32#u8, 121#u8, 111#u8, 117#u8, 114#u8, 32#u8, 101#u8,
+        110#u8, 118#u8, 105#u8, 114#u8, 111#u8, 110#u8, 109#u8, 101#u8, 110#u8,
+        116#u8, 46#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::storage_path_format_9d04c6bd::StoragePathFormat]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 827:0-827:57
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat where
+| Native : finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat
+| Artifactory : finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat
+| Migration : finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat
+
+/-- [artifactkeeper_kernel::finite_catalog::storage_path_format_9d04c6bd::{artifactkeeper_kernel::finite_catalog::storage_path_format_9d04c6bd::StoragePathFormat}::has_fallback]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 830:4-832:5
+    Visibility: public -/
+def finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.has_fallback
+  (self : finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.Native =>
+    ok false
+  | finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.Artifactory
+    =>
+    ok false
+  | finite_catalog.storage_path_format_9d04c6bd.StoragePathFormat.Migration =>
+    ok true
+
+/-- [artifactkeeper_kernel::finite_catalog::log_format_f5cc6ea1::LogFormat]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 837:0-837:32
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.log_format_f5cc6ea1.LogFormat where
+| Pretty : finite_catalog.log_format_f5cc6ea1.LogFormat
+| Json : finite_catalog.log_format_f5cc6ea1.LogFormat
+
+/-- [artifactkeeper_kernel::finite_catalog::log_format_f5cc6ea1::{artifactkeeper_kernel::finite_catalog::log_format_f5cc6ea1::LogFormat}::name]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 840:4-845:5
+    Visibility: public -/
+def finite_catalog.log_format_f5cc6ea1.LogFormat.name
+  (self : finite_catalog.log_format_f5cc6ea1.LogFormat) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.log_format_f5cc6ea1.LogFormat.Pretty =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 112#u8, 114#u8, 101#u8, 116#u8, 116#u8, 121#u8 ])
+  | finite_catalog.log_format_f5cc6ea1.LogFormat.Json =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 106#u8, 115#u8, 111#u8, 110#u8 ])
+
+/-- [artifactkeeper_kernel::finite_catalog::otlp_protocol_f5cc6ea1::OtlpProtocol]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 850:0-850:41
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol where
+| Grpc : finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol
+| HttpProtobuf : finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol
+
+/-- [artifactkeeper_kernel::finite_catalog::otlp_protocol_f5cc6ea1::{artifactkeeper_kernel::finite_catalog::otlp_protocol_f5cc6ea1::OtlpProtocol}::name]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 853:4-858:5
+    Visibility: public -/
+def finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.name
+  (self : finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.Grpc =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 103#u8, 114#u8, 112#u8, 99#u8 ])
+  | finite_catalog.otlp_protocol_f5cc6ea1.OtlpProtocol.HttpProtobuf =>
+    alloc.vec.FromVecArray.from
+      (Array.make 13#usize [
+        104#u8, 116#u8, 116#u8, 112#u8, 47#u8, 112#u8, 114#u8, 111#u8, 116#u8,
+        111#u8, 98#u8, 117#u8, 102#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::sampler_choice_f5cc6ea1::SamplerChoice]
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 863:0-863:121
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice where
+| AlwaysOn : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice
+| AlwaysOff : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice
+| TraceIdRatio : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice
+| ParentBasedAlwaysOn : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice
+| ParentBasedAlwaysOff : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice
+| ParentBasedTraceIdRatio :
+  finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice
+
+/-- [artifactkeeper_kernel::finite_catalog::sampler_choice_f5cc6ea1::{artifactkeeper_kernel::finite_catalog::sampler_choice_f5cc6ea1::SamplerChoice}::name]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 865:4-874:5
+    Visibility: public -/
+def finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name
+  (self : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.AlwaysOn =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8, 95#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.AlwaysOff =>
+    alloc.vec.FromVecArray.from
+      (Array.make 10#usize [
+        97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8, 95#u8, 111#u8, 102#u8,
+        102#u8
+        ])
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.TraceIdRatio =>
+    alloc.vec.FromVecArray.from
+      (Array.make 12#usize [
+        116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 105#u8, 100#u8, 114#u8, 97#u8,
+        116#u8, 105#u8, 111#u8
+        ])
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.ParentBasedAlwaysOn =>
+    alloc.vec.FromVecArray.from
+      (Array.make 21#usize [
+        112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8, 98#u8, 97#u8, 115#u8,
+        101#u8, 100#u8, 95#u8, 97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8,
+        95#u8, 111#u8, 110#u8
+        ])
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.ParentBasedAlwaysOff
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 22#usize [
+        112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8, 98#u8, 97#u8, 115#u8,
+        101#u8, 100#u8, 95#u8, 97#u8, 108#u8, 119#u8, 97#u8, 121#u8, 115#u8,
+        95#u8, 111#u8, 102#u8, 102#u8
+        ])
+  |
+    finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.ParentBasedTraceIdRatio
+    =>
+    alloc.vec.FromVecArray.from
+      (Array.make 24#usize [
+        112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8, 98#u8, 97#u8, 115#u8,
+        101#u8, 100#u8, 95#u8, 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 105#u8,
+        100#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8
+        ])
+
+/-- [artifactkeeper_kernel::finite_catalog::sampler_choice_f5cc6ea1::{artifactkeeper_kernel::finite_catalog::sampler_choice_f5cc6ea1::SamplerChoice}::uses_ratio]:
+    Source: 'prove/ports/artifactkeeper/kernel/src/finite_catalog.rs', lines 876:4-878:5
+    Visibility: public -/
+def finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio
+  (self : finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice) :
+  Result Bool
+  := do
+  match self with
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.AlwaysOn => ok false
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.AlwaysOff => ok false
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.TraceIdRatio =>
+    ok true
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.ParentBasedAlwaysOn =>
+    ok false
+  | finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.ParentBasedAlwaysOff
+    =>
+    ok false
+  |
+    finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.ParentBasedTraceIdRatio
+    =>
+    ok true
+
 /-- [artifactkeeper_kernel::handlers::GateError]
     Source: 'prove/ports/artifactkeeper/kernel/src/handlers.rs', lines 14:0-19:1
     Visibility: public -/

@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["curation::evaluate","curation::is_active","curation::check_download","curation::verify_integrity","curation::verify_integrity_by_hash","curation::check_namespace_isolation","curation::is_internal_namespace","curation::namespace_filter_active","transition","validation","middleware::auth_middleware","tokens::revoke_token","tokens::revoke_all_for_user","permission_import::map_to_proposal","circuit_breaker::check","circuit_breaker::record_success","circuit_breaker::record_alive","circuit_breaker::record_failure","circuit_breaker::new","circuit_breaker::threshold","circuit_breaker::reset_timeout"]
+start-from = ["curation::evaluate", "curation::is_active", "curation::check_download", "curation::verify_integrity", "curation::verify_integrity_by_hash", "curation::check_namespace_isolation", "curation::is_internal_namespace", "curation::namespace_filter_active", "transition", "validation", "middleware::auth_middleware", "tokens::revoke_token", "tokens::revoke_all_for_user", "permission_import::map_to_proposal", "circuit_breaker::check", "circuit_breaker::record_success", "circuit_breaker::record_alive", "circuit_breaker::record_failure", "circuit_breaker::new", "circuit_breaker::threshold", "circuit_breaker::reset_timeout", "finite_catalog::breaker_state_f11f5e92::_::as_gauge", "finite_catalog::breaker_state_f11f5e92::_::as_health_str", "finite_catalog::role_a890c86c::_::can_write", "finite_catalog::role_a890c86c::_::can_admin", "finite_catalog::lang_986f59b4::_::code"]
 
 [check]
 theorems = [
@@ -13,7 +13,6 @@ theorems = [
   "nora_kernel.Properties.curation_internal_spec",
   "nora_kernel.Properties.curation_namespace_active_spec",
   "nora_kernel.Properties.curation_active_spec",
-
   "nora_kernel.Properties.read_only_cannot_write",
   "nora_kernel.Properties.provider_ceiling",
   "nora_kernel.Properties.rule_narrows",
@@ -52,4 +51,9 @@ theorems = [
   "nora_kernel.Properties.circuit_breaker_new_spec",
   "nora_kernel.Properties.circuit_breaker_threshold_spec",
   "nora_kernel.Properties.circuit_breaker_reset_spec",
+  "nora_kernel.Properties.finite_breaker_state_f11f5e92_as_gauge_complete",
+  "nora_kernel.Properties.finite_breaker_state_f11f5e92_as_health_str_complete",
+  "nora_kernel.Properties.finite_role_a890c86c_can_write_complete",
+  "nora_kernel.Properties.finite_role_a890c86c_can_admin_complete",
+  "nora_kernel.Properties.finite_lang_986f59b4_code_complete",
 ]

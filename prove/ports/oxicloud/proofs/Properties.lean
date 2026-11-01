@@ -1,3 +1,4 @@
+import Verified.FiniteCatalog
 import Verified.OxicloudDavState
 import Verified.OxicloudUserRole
 import Verified.OxicloudAuthWire
@@ -836,5 +837,132 @@ theorem trasheditem_restoration (snapshot : davstate.TrashedItem) :
     davstate.TrashedItem.impl.trashed_at (snapshot) = ok snapshot.trashed_at ∧
     davstate.TrashedItem.impl.deletion_date (snapshot) = ok snapshot.deletion_date := by
   exact Verified.OxicloudDavState.trasheditem_restoration snapshot
+
+end oxicloud_kernel.Properties
+
+namespace oxicloud_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_authz_denial_visibility_4079d78e_as_str_complete (v : finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility) :
+    finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.as_str v ⦃r => r.val = authz_denial_visibility_4079d78e_as_str_model v⦄ := Verified.FiniteCatalog.authz_denial_visibility_4079d78e_as_str_complete v
+
+theorem finite_ref_level_2ec664a4_as_str_complete (v : finite_catalog.ref_level_2ec664a4.RefLevel) :
+    finite_catalog.ref_level_2ec664a4.RefLevel.as_str v ⦃r => r.val = ref_level_2ec664a4_as_str_model v⦄ := Verified.FiniteCatalog.ref_level_2ec664a4_as_str_complete v
+
+theorem finite_checksum_alg_cf7683cd_as_str_complete (v : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg) :
+    finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.as_str v ⦃r => r.val = checksum_alg_cf7683cd_as_str_model v⦄ := Verified.FiniteCatalog.checksum_alg_cf7683cd_as_str_complete v
+
+theorem finite_thumbnail_size_e90c1659_as_str_complete (v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.as_str v ⦃r => r.val = thumbnail_size_e90c1659_as_str_model v⦄ := Verified.FiniteCatalog.thumbnail_size_e90c1659_as_str_complete v
+
+theorem finite_thumbnail_size_e90c1659_max_dimension_complete (v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.max_dimension v ⦃r => r = thumbnail_size_e90c1659_max_dimension_model v⦄ := Verified.FiniteCatalog.thumbnail_size_e90c1659_max_dimension_complete v
+
+theorem finite_thumbnail_size_e90c1659_dir_name_complete (v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.dir_name v ⦃r => r.val = thumbnail_size_e90c1659_dir_name_model v⦄ := Verified.FiniteCatalog.thumbnail_size_e90c1659_dir_name_complete v
+
+theorem finite_thumbnail_format_e90c1659_as_str_complete (v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.as_str v ⦃r => r.val = thumbnail_format_e90c1659_as_str_model v⦄ := Verified.FiniteCatalog.thumbnail_format_e90c1659_as_str_complete v
+
+theorem finite_thumbnail_format_e90c1659_ext_complete (v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.ext v ⦃r => r.val = thumbnail_format_e90c1659_ext_model v⦄ := Verified.FiniteCatalog.thumbnail_format_e90c1659_ext_complete v
+
+theorem finite_thumbnail_format_e90c1659_mime_complete (v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.mime v ⦃r => r.val = thumbnail_format_e90c1659_mime_model v⦄ := Verified.FiniteCatalog.thumbnail_format_e90c1659_mime_complete v
+
+theorem finite_output_format_f1a5ab73_extension_complete (v : finite_catalog.output_format_f1a5ab73.OutputFormat) :
+    finite_catalog.output_format_f1a5ab73.OutputFormat.extension v ⦃r => r.val = output_format_f1a5ab73_extension_model v⦄ := Verified.FiniteCatalog.output_format_f1a5ab73_extension_complete v
+
+theorem finite_output_format_f1a5ab73_mime_type_complete (v : finite_catalog.output_format_f1a5ab73.OutputFormat) :
+    finite_catalog.output_format_f1a5ab73.OutputFormat.mime_type v ⦃r => r.val = output_format_f1a5ab73_mime_type_model v⦄ := Verified.FiniteCatalog.output_format_f1a5ab73_mime_type_complete v
+
+theorem finite_device_poll_error_1fb5547a_error_code_complete (v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.error_code v ⦃r => r.val = device_poll_error_1fb5547a_error_code_model v⦄ := Verified.FiniteCatalog.device_poll_error_1fb5547a_error_code_complete v
+
+theorem finite_device_poll_error_1fb5547a_description_complete (v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.description v ⦃r => r.val = device_poll_error_1fb5547a_description_model v⦄ := Verified.FiniteCatalog.device_poll_error_1fb5547a_description_complete v
+
+theorem finite_device_poll_error_1fb5547a_http_status_complete (v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.http_status v ⦃r => r = device_poll_error_1fb5547a_http_status_model v⦄ := Verified.FiniteCatalog.device_poll_error_1fb5547a_http_status_complete v
+
+theorem finite_notify_trigger_5dfe5802_audit_str_complete (v : finite_catalog.notify_trigger_5dfe5802.NotifyTrigger) :
+    finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.audit_str v ⦃r => r.val = notify_trigger_5dfe5802_audit_str_model v⦄ := Verified.FiniteCatalog.notify_trigger_5dfe5802_audit_str_complete v
+
+theorem finite_notify_kind_5dfe5802_audit_str_complete (v : finite_catalog.notify_kind_5dfe5802.NotifyKind) :
+    finite_catalog.notify_kind_5dfe5802.NotifyKind.audit_str v ⦃r => r.val = notify_kind_5dfe5802_audit_str_model v⦄ := Verified.FiniteCatalog.notify_kind_5dfe5802_audit_str_complete v
+
+theorem finite_cipher_kind_a4fe67b2_as_str_complete (v : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :
+    finite_catalog.cipher_kind_a4fe67b2.CipherKind.as_str v ⦃r => r.val = cipher_kind_a4fe67b2_as_str_model v⦄ := Verified.FiniteCatalog.cipher_kind_a4fe67b2_as_str_complete v
+
+theorem finite_cipher_kind_a4fe67b2_needs_key_complete (v : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :
+    finite_catalog.cipher_kind_a4fe67b2.CipherKind.needs_key v ⦃r => r = cipher_kind_a4fe67b2_needs_key_model v⦄ := Verified.FiniteCatalog.cipher_kind_a4fe67b2_needs_key_complete v
+
+theorem finite_device_code_status_fb933849_as_str_complete (v : finite_catalog.device_code_status_fb933849.DeviceCodeStatus) :
+    finite_catalog.device_code_status_fb933849.DeviceCodeStatus.as_str v ⦃r => r.val = device_code_status_fb933849_as_str_model v⦄ := Verified.FiniteCatalog.device_code_status_fb933849_as_str_complete v
+
+theorem finite_drive_kind_bf867fda_as_str_complete (v : finite_catalog.drive_kind_bf867fda.DriveKind) :
+    finite_catalog.drive_kind_bf867fda.DriveKind.as_str v ⦃r => r.val = drive_kind_bf867fda_as_str_model v⦄ := Verified.FiniteCatalog.drive_kind_bf867fda_as_str_complete v
+
+theorem finite_magic_link_status_023c994e_as_str_complete (v : finite_catalog.magic_link_status_023c994e.MagicLinkStatus) :
+    finite_catalog.magic_link_status_023c994e.MagicLinkStatus.as_str v ⦃r => r.val = magic_link_status_023c994e_as_str_model v⦄ := Verified.FiniteCatalog.magic_link_status_023c994e_as_str_complete v
+
+theorem finite_session_origin_086d7c6c_as_str_complete (v : finite_catalog.session_origin_086d7c6c.SessionOrigin) :
+    finite_catalog.session_origin_086d7c6c.SessionOrigin.as_str v ⦃r => r.val = session_origin_086d7c6c_as_str_model v⦄ := Verified.FiniteCatalog.session_origin_086d7c6c_as_str_complete v
+
+theorem finite_user_role_d47f77bc_as_str_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.as_str v ⦃r => r.val = user_role_d47f77bc_as_str_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_as_str_complete v
+
+theorem finite_user_role_d47f77bc_rank_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.rank v ⦃r => r = user_role_d47f77bc_rank_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_rank_complete v
+
+theorem finite_user_role_d47f77bc_is_anonymous_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.is_anonymous v ⦃r => r = user_role_d47f77bc_is_anonymous_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_is_anonymous_complete v
+
+theorem finite_user_role_d47f77bc_is_privileged_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.is_privileged v ⦃r => r = user_role_d47f77bc_is_privileged_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_is_privileged_complete v
+
+theorem finite_federation_kind_d47f77bc_as_str_complete (v : finite_catalog.federation_kind_d47f77bc.FederationKind) :
+    finite_catalog.federation_kind_d47f77bc.FederationKind.as_str v ⦃r => r.val = federation_kind_d47f77bc_as_str_model v⦄ := Verified.FiniteCatalog.federation_kind_d47f77bc_as_str_complete v
+
+theorem finite_error_kind_59712eff_as_str_complete (v : finite_catalog.error_kind_59712eff.ErrorKind) :
+    finite_catalog.error_kind_59712eff.ErrorKind.as_str v ⦃r => r.val = error_kind_59712eff_as_str_model v⦄ := Verified.FiniteCatalog.error_kind_59712eff_as_str_complete v
+
+theorem finite_permission_5d9dca62_as_str_complete (v : finite_catalog.permission_5d9dca62.Permission) :
+    finite_catalog.permission_5d9dca62.Permission.as_str v ⦃r => r.val = permission_5d9dca62_as_str_model v⦄ := Verified.FiniteCatalog.permission_5d9dca62_as_str_complete v
+
+theorem finite_role_5d9dca62_as_str_complete (v : finite_catalog.role_5d9dca62.Role) :
+    finite_catalog.role_5d9dca62.Role.as_str v ⦃r => r.val = role_5d9dca62_as_str_model v⦄ := Verified.FiniteCatalog.role_5d9dca62_as_str_complete v
+
+theorem finite_run_status_dbd87cc3_as_str_complete (v : finite_catalog.run_status_dbd87cc3.RunStatus) :
+    finite_catalog.run_status_dbd87cc3.RunStatus.as_str v ⦃r => r.val = run_status_dbd87cc3_as_str_model v⦄ := Verified.FiniteCatalog.run_status_dbd87cc3_as_str_complete v
+
+theorem finite_run_status_dbd87cc3_is_non_terminal_complete (v : finite_catalog.run_status_dbd87cc3.RunStatus) :
+    finite_catalog.run_status_dbd87cc3.RunStatus.is_non_terminal v ⦃r => r = run_status_dbd87cc3_is_non_terminal_model v⦄ := Verified.FiniteCatalog.run_status_dbd87cc3_is_non_terminal_complete v
+
+theorem finite_progress_kind_dbd87cc3_as_str_complete (v : finite_catalog.progress_kind_dbd87cc3.ProgressKind) :
+    finite_catalog.progress_kind_dbd87cc3.ProgressKind.as_str v ⦃r => r.val = progress_kind_dbd87cc3_as_str_model v⦄ := Verified.FiniteCatalog.progress_kind_dbd87cc3_as_str_complete v
+
+theorem finite_err_cause_75575f17_as_str_complete (v : finite_catalog.err_cause_75575f17.ErrCause) :
+    finite_catalog.err_cause_75575f17.ErrCause.as_str v ⦃r => r.val = err_cause_75575f17_as_str_model v⦄ := Verified.FiniteCatalog.err_cause_75575f17_as_str_complete v
+
+theorem finite_dpop_verify_error_8219bbef_reason_complete (v : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError) :
+    finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.reason v ⦃r => r.val = dpop_verify_error_8219bbef_reason_model v⦄ := Verified.FiniteCatalog.dpop_verify_error_8219bbef_reason_complete v
+
+theorem finite_output_format_a83b795c_extension_complete (v : finite_catalog.output_format_a83b795c.OutputFormat) :
+    finite_catalog.output_format_a83b795c.OutputFormat.extension v ⦃r => r.val = output_format_a83b795c_extension_model v⦄ := Verified.FiniteCatalog.output_format_a83b795c_extension_complete v
+
+theorem finite_output_format_a83b795c_mime_type_complete (v : finite_catalog.output_format_a83b795c.OutputFormat) :
+    finite_catalog.output_format_a83b795c.OutputFormat.mime_type v ⦃r => r.val = output_format_a83b795c_mime_type_model v⦄ := Verified.FiniteCatalog.output_format_a83b795c_mime_type_complete v
+
+theorem finite_opaque_mode_b0957357_as_str_complete (v : finite_catalog.opaque_mode_b0957357.OpaqueMode) :
+    finite_catalog.opaque_mode_b0957357.OpaqueMode.as_str v ⦃r => r.val = opaque_mode_b0957357_as_str_model v⦄ := Verified.FiniteCatalog.opaque_mode_b0957357_as_str_complete v
+
+theorem finite_phase_ce65bf5b_as_str_complete (v : finite_catalog.phase_ce65bf5b.Phase) :
+    finite_catalog.phase_ce65bf5b.Phase.as_str v ⦃r => r.val = phase_ce65bf5b_as_str_model v⦄ := Verified.FiniteCatalog.phase_ce65bf5b_as_str_complete v
+
+theorem finite_thumbnail_size_4088a69a_max_dimension_complete (v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
+    finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension v ⦃r => r = thumbnail_size_4088a69a_max_dimension_model v⦄ := Verified.FiniteCatalog.thumbnail_size_4088a69a_max_dimension_complete v
+
+theorem finite_thumbnail_size_4088a69a_dir_name_complete (v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
+    finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name v ⦃r => r.val = thumbnail_size_4088a69a_dir_name_model v⦄ := Verified.FiniteCatalog.thumbnail_size_4088a69a_dir_name_complete v
 
 end oxicloud_kernel.Properties

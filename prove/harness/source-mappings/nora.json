@@ -529,6 +529,61 @@
         "end": 595,
         "sha256": "516c241c9eecf4cd0dc929437e0aa21a90ce4e123bbbefeaa9b50c0f2689ee90"
       }
+    ],
+    "finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "kind": "method",
+        "name": "as_gauge",
+        "self_ty": "BreakerState",
+        "start": 28,
+        "end": 34,
+        "sha256": "0c26b63b4f3b91c4cee4dc1bb4215accfc3be179d196d5f78f595986600d577c"
+      }
+    ],
+    "finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str": [
+      {
+        "file": "nora-registry/src/circuit_breaker.rs",
+        "kind": "method",
+        "name": "as_health_str",
+        "self_ty": "BreakerState",
+        "start": 36,
+        "end": 45,
+        "sha256": "72dca8cf36dd31403890ad06065fd62256e1ef32e75823ff88b668142ac6e056"
+      }
+    ],
+    "finite_catalog.role_a890c86c.Role.can_write": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "kind": "method",
+        "name": "can_write",
+        "self_ty": "Role",
+        "start": 59,
+        "end": 61,
+        "sha256": "b8e8ed719728f8413b4fecb4117c25de0384465fe252f1214a06563d95a7a071"
+      }
+    ],
+    "finite_catalog.role_a890c86c.Role.can_admin": [
+      {
+        "file": "nora-registry/src/tokens.rs",
+        "kind": "method",
+        "name": "can_admin",
+        "self_ty": "Role",
+        "start": 63,
+        "end": 65,
+        "sha256": "eb6a0eeab7cbba72c4af6c9782a4c78b26e7f0b686f791a99111386b28836e36"
+      }
+    ],
+    "finite_catalog.lang_986f59b4.Lang.code": [
+      {
+        "file": "nora-registry/src/ui/i18n.rs",
+        "kind": "method",
+        "name": "code",
+        "self_ty": "Lang",
+        "start": 34,
+        "end": 40,
+        "sha256": "0010642a0a02917b18b473a72bcd8f952d8b19499da99af6d193cf436afc41d2"
+      }
     ]
   }
 }

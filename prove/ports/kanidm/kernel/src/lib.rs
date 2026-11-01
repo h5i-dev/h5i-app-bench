@@ -317,3 +317,5 @@ pub mod group_catalog;
 pub mod entry_catalog;
 
 pub mod migration_catalog;
+
+pub mod finite_catalog;
