@@ -54,7 +54,7 @@ assert.ok(!detail.includes('NaN') && !detail.includes('Infinity'));
 assert.equal((detail.match(/class="sub"/g) || []).length, 6);
 assert.deepEqual(Object.keys(input.data), ['apps']);
 const controls = Object.fromEntries(['#overview-tables', '#app-detail', '#f-app', '#f-conc', '#f-detail-conc', '#comparison'].map(id =>
-  [id, {innerHTML: '', value: id === '#f-app' ? 'realworld' : '16', handlers: {},
+  [id, {innerHTML: '', value: '', disabled: true, handlers: {},
     addEventListener(name, handler) { this.handlers[name] = handler; },
     scrollIntoView() { this.scrolled = true; }}]));
 const events = {};
@@ -70,6 +70,14 @@ context.history = {replaceState: (_, __, hash) => context.location.hash = hash};
 context.window = {addEventListener: (name, handler) => events[name] = handler};
 context.fetch = async () => ({ok: true, json: async () => input.data});
 vm.runInContext('main()', context).then(() => {
+  assert.equal(controls['#f-app'].value, 'realworld');
+  assert.ok(controls['#f-app'].innerHTML.includes('value="realworld" selected'));
+  for (const id of ['#f-conc', '#f-detail-conc']) {
+    assert.equal(controls[id].value, '16');
+    assert.ok(controls[id].innerHTML.includes('value="16" selected'));
+  }
+  for (const id of ['#f-app', '#f-conc', '#f-detail-conc']) assert.equal(controls[id].disabled, false);
+  assert.ok(controls['#app-detail'].innerHTML.includes('data-app="realworld"'));
   controls['#f-app'].value = 'django-cart';
   controls['#f-app'].handlers.change();
   assert.ok(controls['#app-detail'].innerHTML.includes('total_4096'));

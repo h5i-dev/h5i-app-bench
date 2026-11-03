@@ -61,7 +61,7 @@
           <p>Requests/s at <span class="conc-label">16</span> clients. Longer bars mean higher throughput within a row. – = unmeasured.</p>
         </div>
         <div class="filters">
-          <label class="field"><span>Concurrency</span><select id="f-conc"></select></label>
+          <label class="field"><span>Concurrency</span><select id="f-conc" disabled><option value="16" selected>16 clients</option></select></label>
         </div>
         <div id="overview-tables" aria-live="polite"></div>
         <noscript><p>Enable JavaScript to compare results, or <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">read the benchmark reports</a>.</p></noscript>
@@ -73,8 +73,8 @@
           <p>Choose an application and scenario to compare throughput, latency and resource use.</p>
         </div>
         <div class="filters">
-          <label class="field"><span>Application</span><select id="f-app"></select></label>
-          <label class="field"><span>Concurrency</span><select id="f-detail-conc"></select></label>
+          <label class="field"><span>Application</span><select id="f-app" disabled><option value="realworld" selected>RealWorld (Conduit)</option></select></label>
+          <label class="field"><span>Concurrency</span><select id="f-detail-conc" disabled><option value="16" selected>16 clients</option></select></label>
         </div>
         <div id="app-detail"></div>
       </section>
