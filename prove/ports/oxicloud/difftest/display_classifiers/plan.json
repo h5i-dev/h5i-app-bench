@@ -1,0 +1,5450 @@
+{
+  "revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "file": "src/application/dtos/display_helpers.rs",
+  "records": [
+    {
+      "name": "icon_class_with_ext",
+      "source": "fn icon_class_with_ext(mime: &str, ext: Option<&str>) -> &'static str {\n    // 1. Try specific MIME matches first\n    match mime {\n        \"application/pdf\" => return \"fas fa-file-pdf\",\n        // MS Office & OpenDocument \u2013 Word\n        \"application/msword\"\n        | \"application/vnd.openxmlformats-officedocument.wordprocessingml.document\"\n        | \"application/vnd.oasis.opendocument.text\" => return \"fas fa-file-word\",\n        // Excel\n        \"application/vnd.ms-excel\"\n        | \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\"\n        | \"application/vnd.oasis.opendocument.spreadsheet\"\n        | \"text/csv\" => return \"fas fa-file-excel\",\n        // PowerPoint\n        \"application/vnd.ms-powerpoint\"\n        | \"application/vnd.openxmlformats-officedocument.presentationml.presentation\"\n        | \"application/vnd.oasis.opendocument.presentation\" => return \"fas fa-file-powerpoint\",\n        // Archives\n        \"application/zip\"\n        | \"application/x-rar-compressed\"\n        | \"application/vnd.rar\"\n        | \"application/x-7z-compressed\"\n        | \"application/gzip\"\n        | \"application/x-gzip\"\n        | \"application/x-tar\"\n        | \"application/x-bzip2\"\n        | \"application/x-xz\"\n        | \"application/x-compress\" => return \"fas fa-file-archive\",\n        // JSON / JavaScript / code transported as application/*\n        \"application/json\"\n        | \"application/ld+json\"\n        | \"application/javascript\"\n        | \"application/typescript\"\n        | \"application/x-httpd-php\"\n        | \"application/xml\"\n        | \"application/xhtml+xml\"\n        | \"application/sql\"\n        | \"application/x-yaml\"\n        | \"application/toml\"\n        | \"application/x-sh\"\n        | \"application/x-shellscript\"\n        | \"application/x-csh\" => return \"fas fa-file-code\",\n        // Installers / disk images\n        \"application/x-apple-diskimage\"\n        | \"application/x-ms-dos-executable\"\n        | \"application/x-msdownload\"\n        | \"application/x-msi\"\n        | \"application/vnd.debian.binary-package\"\n        | \"application/x-rpm\"\n        | \"application/vnd.appimage\" => return \"fas fa-hdd\",\n        _ => {}\n    }\n\n    // 2. MIME prefix matches\n    if mime.starts_with(\"image/\") {\n        return \"fas fa-file-image\";\n    } else if mime.starts_with(\"video/\") {\n        return \"fas fa-file-video\";\n    } else if mime.starts_with(\"audio/\") {\n        return \"fas fa-file-audio\";\n    } else if mime.starts_with(\"text/x-script\")\n        || mime.starts_with(\"text/x-python\")\n        || mime.starts_with(\"text/x-java\")\n        || mime.starts_with(\"text/x-c\")\n        || mime.starts_with(\"text/x-rust\")\n        || mime.starts_with(\"text/x-go\")\n        || mime.starts_with(\"text/x-ruby\")\n        || mime.starts_with(\"text/x-shellscript\")\n        || mime.starts_with(\"text/x-php\")\n        || mime.contains(\"javascript\")\n        || mime.contains(\"typescript\")\n    {\n        return \"fas fa-file-code\";\n    } else if mime.starts_with(\"text/\") {\n        return \"fas fa-file-alt\";\n    }\n\n    // 3. Extension-based fallback (for application/octet-stream, empty, etc.)\n    if let Some(ext) = ext {\n        return match ext {\n            \"pdf\" => \"fas fa-file-pdf\",\n            \"doc\" | \"docx\" | \"odt\" | \"rtf\" => \"fas fa-file-word\",\n            \"xls\" | \"xlsx\" | \"ods\" | \"csv\" => \"fas fa-file-excel\",\n            \"ppt\" | \"pptx\" | \"odp\" | \"key\" => \"fas fa-file-powerpoint\",\n            \"jpg\" | \"jpeg\" | \"png\" | \"gif\" | \"bmp\" | \"svg\" | \"webp\" | \"ico\" | \"tiff\" | \"tif\"\n            | \"heic\" | \"heif\" | \"avif\" => \"fas fa-file-image\",\n            \"mp4\" | \"avi\" | \"mkv\" | \"mov\" | \"wmv\" | \"flv\" | \"webm\" | \"m4v\" => \"fas fa-file-video\",\n            \"mp3\" | \"wav\" | \"ogg\" | \"flac\" | \"aac\" | \"wma\" | \"m4a\" | \"opus\" => \"fas fa-file-audio\",\n            \"zip\" | \"rar\" | \"7z\" | \"tar\" | \"gz\" | \"bz2\" | \"xz\" | \"zst\" | \"lz4\" => {\n                \"fas fa-file-archive\"\n            }\n            \"exe\" | \"msi\" | \"dmg\" | \"deb\" | \"rpm\" | \"appimage\" | \"pkg\" | \"snap\" | \"flatpak\" => {\n                \"fas fa-hdd\"\n            }\n            \"js\" | \"jsx\" | \"mjs\" | \"cjs\" | \"ts\" | \"tsx\" | \"py\" | \"pyw\" | \"rs\" | \"go\" | \"java\"\n            | \"kt\" | \"kts\" | \"scala\" | \"c\" | \"h\" | \"cpp\" | \"hpp\" | \"cc\" | \"cxx\" | \"cs\" | \"rb\"\n            | \"php\" | \"swift\" | \"r\" | \"lua\" | \"pl\" | \"pm\" | \"html\" | \"htm\" | \"css\" | \"scss\"\n            | \"sass\" | \"less\" | \"json\" | \"xml\" | \"yaml\" | \"yml\" | \"toml\" | \"ini\" | \"cfg\"\n            | \"conf\" | \"sql\" | \"graphql\" | \"proto\" | \"vue\" | \"svelte\" => \"fas fa-file-code\",\n            \"sh\" | \"bash\" | \"zsh\" | \"fish\" | \"ps1\" | \"bat\" | \"cmd\" => \"fas fa-terminal\",\n            \"md\" | \"markdown\" | \"rst\" | \"txt\" => \"fas fa-file-alt\",\n            _ => \"fas fa-file\",\n        };\n    }\n\n    \"fas fa-file\"\n}",
+      "exact": [
+        [
+          "eq",
+          "application/pdf",
+          "fas fa-file-pdf"
+        ],
+        [
+          "eq",
+          "application/msword",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.text",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-excel",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "text/csv",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-powerpoint",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.presentation",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "application/zip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-rar-compressed",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/vnd.rar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-7z-compressed",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/gzip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-gzip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-tar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-bzip2",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-xz",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-compress",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/json",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/ld+json",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/javascript",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/typescript",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-httpd-php",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/xml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/xhtml+xml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/sql",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-yaml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/toml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-sh",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-shellscript",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-csh",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-apple-diskimage",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-ms-dos-executable",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-msdownload",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-msi",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/vnd.debian.binary-package",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-rpm",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/vnd.appimage",
+          "fas fa-hdd"
+        ]
+      ],
+      "mime": [
+        [
+          "prefix",
+          "image/",
+          "fas fa-file-image"
+        ],
+        [
+          "prefix",
+          "video/",
+          "fas fa-file-video"
+        ],
+        [
+          "prefix",
+          "audio/",
+          "fas fa-file-audio"
+        ],
+        [
+          "prefix",
+          "text/x-script",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-python",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-java",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-c",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-rust",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-go",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-ruby",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-shellscript",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-php",
+          "fas fa-file-code"
+        ],
+        [
+          "contains",
+          "javascript",
+          "fas fa-file-code"
+        ],
+        [
+          "contains",
+          "typescript",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/",
+          "fas fa-file-alt"
+        ]
+      ],
+      "ext": [
+        [
+          "eq",
+          "pdf",
+          "fas fa-file-pdf"
+        ],
+        [
+          "eq",
+          "doc",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "docx",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "odt",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "rtf",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "xls",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "xlsx",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "ods",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "csv",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "ppt",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "pptx",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "odp",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "key",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "jpg",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "jpeg",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "png",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "gif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "bmp",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "svg",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "webp",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "ico",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "tiff",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "tif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "heic",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "heif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "avif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "mp4",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "avi",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "mkv",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "mov",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "wmv",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "flv",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "webm",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "m4v",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "mp3",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "wav",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "ogg",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "flac",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "aac",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "wma",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "m4a",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "opus",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "zip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "rar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "7z",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "tar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "gz",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "bz2",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "xz",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "zst",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "lz4",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "exe",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "msi",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "dmg",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "deb",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "rpm",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "appimage",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "pkg",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "snap",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "flatpak",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "js",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "jsx",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "mjs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cjs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "ts",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "tsx",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "py",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "pyw",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "rs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "go",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "java",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "kt",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "kts",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "scala",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "c",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "h",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cpp",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "hpp",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cc",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cxx",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "rb",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "php",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "swift",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "r",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "lua",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "pl",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "pm",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "html",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "htm",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "css",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "scss",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "sass",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "less",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "json",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "xml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "yaml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "yml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "toml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "ini",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cfg",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "conf",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "sql",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "graphql",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "proto",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "vue",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "svelte",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "sh",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "bash",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "zsh",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "fish",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "ps1",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "bat",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "cmd",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "md",
+          "fas fa-file-alt"
+        ],
+        [
+          "eq",
+          "markdown",
+          "fas fa-file-alt"
+        ],
+        [
+          "eq",
+          "rst",
+          "fas fa-file-alt"
+        ],
+        [
+          "eq",
+          "txt",
+          "fas fa-file-alt"
+        ]
+      ],
+      "default": "fas fa-file",
+      "meta": {
+        "file": "src/application/dtos/display_helpers.rs",
+        "kind": "fn",
+        "name": "icon_class_with_ext",
+        "self_ty": "",
+        "start": 248,
+        "end": 354,
+        "sha256": "694d5a78865e422efd86bde34bd9dc9bf31216627b7efa4fbe1ee98424d062b2"
+      },
+      "exact_chunks": [
+        "icon_class_with_ext_exact_0",
+        "icon_class_with_ext_exact_1",
+        "icon_class_with_ext_exact_2",
+        "icon_class_with_ext_exact_3",
+        "icon_class_with_ext_exact_4",
+        "icon_class_with_ext_exact_5",
+        "icon_class_with_ext_exact_6"
+      ],
+      "mime_chunks": [
+        "icon_class_with_ext_mime_0",
+        "icon_class_with_ext_mime_1",
+        "icon_class_with_ext_mime_2"
+      ],
+      "ext_chunks": [
+        "icon_class_with_ext_ext_0",
+        "icon_class_with_ext_ext_1",
+        "icon_class_with_ext_ext_2",
+        "icon_class_with_ext_ext_3",
+        "icon_class_with_ext_ext_4",
+        "icon_class_with_ext_ext_5",
+        "icon_class_with_ext_ext_6",
+        "icon_class_with_ext_ext_7",
+        "icon_class_with_ext_ext_8",
+        "icon_class_with_ext_ext_9",
+        "icon_class_with_ext_ext_10",
+        "icon_class_with_ext_ext_11",
+        "icon_class_with_ext_ext_12",
+        "icon_class_with_ext_ext_13",
+        "icon_class_with_ext_ext_14",
+        "icon_class_with_ext_ext_15",
+        "icon_class_with_ext_ext_16",
+        "icon_class_with_ext_ext_17",
+        "icon_class_with_ext_ext_18",
+        "icon_class_with_ext_ext_19"
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext",
+      "source": "fn icon_special_class_with_ext(mime: &str, ext: Option<&str>) -> &'static str {\n    // 1. Specific MIME matches\n    match mime {\n        \"application/pdf\" => return \"pdf-icon\",\n        \"application/msword\"\n        | \"application/vnd.openxmlformats-officedocument.wordprocessingml.document\"\n        | \"application/vnd.oasis.opendocument.text\" => return \"doc-icon\",\n        \"application/vnd.ms-excel\"\n        | \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\"\n        | \"application/vnd.oasis.opendocument.spreadsheet\"\n        | \"text/csv\" => return \"spreadsheet-icon\",\n        \"application/vnd.ms-powerpoint\"\n        | \"application/vnd.openxmlformats-officedocument.presentationml.presentation\"\n        | \"application/vnd.oasis.opendocument.presentation\" => return \"presentation-icon\",\n        \"application/zip\"\n        | \"application/x-rar-compressed\"\n        | \"application/vnd.rar\"\n        | \"application/x-7z-compressed\"\n        | \"application/gzip\"\n        | \"application/x-gzip\"\n        | \"application/x-tar\"\n        | \"application/x-bzip2\"\n        | \"application/x-xz\"\n        | \"application/x-compress\" => return \"archive-icon\",\n        \"application/json\" | \"application/ld+json\" => return \"code-icon json-icon\",\n        \"application/javascript\" => return \"code-icon js-icon\",\n        \"application/typescript\" => return \"code-icon ts-icon\",\n        \"application/xml\" | \"application/xhtml+xml\" => return \"code-icon html-icon\",\n        \"application/sql\" => return \"code-icon sql-icon\",\n        \"application/x-yaml\" | \"application/toml\" => return \"code-icon config-icon\",\n        \"application/x-httpd-php\" => return \"code-icon php-icon\",\n        \"application/x-sh\" | \"application/x-shellscript\" | \"application/x-csh\" => {\n            return \"script-icon\";\n        }\n        \"application/x-apple-diskimage\"\n        | \"application/x-ms-dos-executable\"\n        | \"application/x-msdownload\"\n        | \"application/x-msi\"\n        | \"application/vnd.debian.binary-package\"\n        | \"application/x-rpm\"\n        | \"application/vnd.appimage\" => return \"installer-icon\",\n        _ => {}\n    }\n\n    // 2. MIME prefix matches\n    if mime.starts_with(\"image/\") {\n        return \"image-icon\";\n    } else if mime.starts_with(\"video/\") {\n        return \"video-icon\";\n    } else if mime.starts_with(\"audio/\") {\n        return \"audio-icon\";\n    } else if mime.starts_with(\"text/x-python\") {\n        return \"code-icon py-icon\";\n    } else if mime.starts_with(\"text/x-rust\") {\n        return \"code-icon rust-icon\";\n    } else if mime.starts_with(\"text/x-java\") || mime.starts_with(\"text/x-c\") {\n        return \"code-icon\";\n    } else if mime.starts_with(\"text/x-go\") {\n        return \"code-icon go-icon\";\n    } else if mime.starts_with(\"text/x-ruby\") {\n        return \"code-icon ruby-icon\";\n    } else if mime.starts_with(\"text/x-shellscript\") {\n        return \"script-icon\";\n    } else if mime.starts_with(\"text/x-script\") || mime.starts_with(\"text/x-php\") {\n        return \"code-icon\";\n    } else if mime.starts_with(\"text/markdown\") {\n        return \"code-icon md-icon\";\n    } else if mime.starts_with(\"text/html\") {\n        return \"code-icon html-icon\";\n    } else if mime.starts_with(\"text/css\") {\n        return \"code-icon css-icon\";\n    } else if mime.contains(\"javascript\") {\n        return \"code-icon js-icon\";\n    } else if mime.contains(\"typescript\") {\n        return \"code-icon ts-icon\";\n    } else if mime.starts_with(\"text/\") {\n        return \"doc-icon\";\n    }\n\n    // 3. Extension-based fallback\n    if let Some(ext) = ext {\n        return match ext {\n            \"pdf\" => \"pdf-icon\",\n            \"doc\" | \"docx\" | \"odt\" | \"rtf\" => \"doc-icon\",\n            \"xls\" | \"xlsx\" | \"ods\" | \"csv\" => \"spreadsheet-icon\",\n            \"ppt\" | \"pptx\" | \"odp\" | \"key\" => \"presentation-icon\",\n            \"jpg\" | \"jpeg\" | \"png\" | \"gif\" | \"bmp\" | \"svg\" | \"webp\" | \"ico\" | \"tiff\" | \"tif\"\n            | \"heic\" | \"heif\" | \"avif\" => \"image-icon\",\n            \"mp4\" | \"avi\" | \"mkv\" | \"mov\" | \"wmv\" | \"flv\" | \"webm\" | \"m4v\" => \"video-icon\",\n            \"mp3\" | \"wav\" | \"ogg\" | \"flac\" | \"aac\" | \"wma\" | \"m4a\" | \"opus\" => \"audio-icon\",\n            \"zip\" | \"rar\" | \"7z\" | \"tar\" | \"gz\" | \"bz2\" | \"xz\" | \"zst\" | \"lz4\" => \"archive-icon\",\n            \"exe\" | \"msi\" | \"dmg\" | \"deb\" | \"rpm\" | \"appimage\" | \"pkg\" | \"snap\" | \"flatpak\" => {\n                \"installer-icon\"\n            }\n            \"py\" | \"pyw\" => \"code-icon py-icon\",\n            \"rs\" => \"code-icon rust-icon\",\n            \"go\" => \"code-icon go-icon\",\n            \"java\" | \"kt\" | \"kts\" | \"scala\" => \"code-icon java-icon\",\n            \"js\" | \"jsx\" | \"mjs\" | \"cjs\" => \"code-icon js-icon\",\n            \"ts\" | \"tsx\" => \"code-icon ts-icon\",\n            \"c\" | \"h\" | \"cpp\" | \"hpp\" | \"cc\" | \"cxx\" => \"code-icon c-icon\",\n            \"cs\" => \"code-icon cs-icon\",\n            \"rb\" => \"code-icon ruby-icon\",\n            \"php\" => \"code-icon php-icon\",\n            \"swift\" => \"code-icon swift-icon\",\n            \"r\" | \"lua\" | \"pl\" | \"pm\" => \"code-icon\",\n            \"html\" | \"htm\" => \"code-icon html-icon\",\n            \"css\" | \"scss\" | \"sass\" | \"less\" => \"code-icon css-icon\",\n            \"json\" => \"code-icon json-icon\",\n            \"xml\" => \"code-icon html-icon\",\n            \"yaml\" | \"yml\" | \"toml\" | \"ini\" | \"cfg\" | \"conf\" => \"code-icon config-icon\",\n            \"sql\" | \"graphql\" | \"proto\" => \"code-icon sql-icon\",\n            \"vue\" | \"svelte\" => \"code-icon js-icon\",\n            \"sh\" | \"bash\" | \"zsh\" | \"fish\" | \"ps1\" | \"bat\" | \"cmd\" => \"script-icon\",\n            \"md\" | \"markdown\" | \"rst\" => \"code-icon md-icon\",\n            \"txt\" => \"doc-icon\",\n            _ => \"\",\n        };\n    }\n\n    \"\"\n}",
+      "exact": [
+        [
+          "eq",
+          "application/pdf",
+          "pdf-icon"
+        ],
+        [
+          "eq",
+          "application/msword",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.text",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-excel",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "text/csv",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-powerpoint",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.presentation",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "application/zip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-rar-compressed",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.rar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-7z-compressed",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/gzip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-gzip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-tar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-bzip2",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-xz",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-compress",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/json",
+          "code-icon json-icon"
+        ],
+        [
+          "eq",
+          "application/ld+json",
+          "code-icon json-icon"
+        ],
+        [
+          "eq",
+          "application/javascript",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "application/typescript",
+          "code-icon ts-icon"
+        ],
+        [
+          "eq",
+          "application/xml",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "application/xhtml+xml",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "application/sql",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "application/x-yaml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "application/toml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "application/x-httpd-php",
+          "code-icon php-icon"
+        ],
+        [
+          "eq",
+          "application/x-sh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "application/x-shellscript",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "application/x-csh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "application/x-apple-diskimage",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-ms-dos-executable",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-msdownload",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-msi",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.debian.binary-package",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-rpm",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.appimage",
+          "installer-icon"
+        ]
+      ],
+      "mime": [
+        [
+          "prefix",
+          "image/",
+          "image-icon"
+        ],
+        [
+          "prefix",
+          "video/",
+          "video-icon"
+        ],
+        [
+          "prefix",
+          "audio/",
+          "audio-icon"
+        ],
+        [
+          "prefix",
+          "text/x-python",
+          "code-icon py-icon"
+        ],
+        [
+          "prefix",
+          "text/x-rust",
+          "code-icon rust-icon"
+        ],
+        [
+          "prefix",
+          "text/x-java",
+          "code-icon"
+        ],
+        [
+          "prefix",
+          "text/x-c",
+          "code-icon"
+        ],
+        [
+          "prefix",
+          "text/x-go",
+          "code-icon go-icon"
+        ],
+        [
+          "prefix",
+          "text/x-ruby",
+          "code-icon ruby-icon"
+        ],
+        [
+          "prefix",
+          "text/x-shellscript",
+          "script-icon"
+        ],
+        [
+          "prefix",
+          "text/x-script",
+          "code-icon"
+        ],
+        [
+          "prefix",
+          "text/x-php",
+          "code-icon"
+        ],
+        [
+          "prefix",
+          "text/markdown",
+          "code-icon md-icon"
+        ],
+        [
+          "prefix",
+          "text/html",
+          "code-icon html-icon"
+        ],
+        [
+          "prefix",
+          "text/css",
+          "code-icon css-icon"
+        ],
+        [
+          "contains",
+          "javascript",
+          "code-icon js-icon"
+        ],
+        [
+          "contains",
+          "typescript",
+          "code-icon ts-icon"
+        ],
+        [
+          "prefix",
+          "text/",
+          "doc-icon"
+        ]
+      ],
+      "ext": [
+        [
+          "eq",
+          "pdf",
+          "pdf-icon"
+        ],
+        [
+          "eq",
+          "doc",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "docx",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "odt",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "rtf",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "xls",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "xlsx",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "ods",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "csv",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "ppt",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "pptx",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "odp",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "key",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "jpg",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "jpeg",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "png",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "gif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "bmp",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "svg",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "webp",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "ico",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "tiff",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "tif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "heic",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "heif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "avif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "mp4",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "avi",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "mkv",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "mov",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "wmv",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "flv",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "webm",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "m4v",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "mp3",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "wav",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "ogg",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "flac",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "aac",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "wma",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "m4a",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "opus",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "zip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "rar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "7z",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "tar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "gz",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "bz2",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "xz",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "zst",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "lz4",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "exe",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "msi",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "dmg",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "deb",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "rpm",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "appimage",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "pkg",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "snap",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "flatpak",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "py",
+          "code-icon py-icon"
+        ],
+        [
+          "eq",
+          "pyw",
+          "code-icon py-icon"
+        ],
+        [
+          "eq",
+          "rs",
+          "code-icon rust-icon"
+        ],
+        [
+          "eq",
+          "go",
+          "code-icon go-icon"
+        ],
+        [
+          "eq",
+          "java",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "kt",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "kts",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "scala",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "js",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "jsx",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "mjs",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "cjs",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "ts",
+          "code-icon ts-icon"
+        ],
+        [
+          "eq",
+          "tsx",
+          "code-icon ts-icon"
+        ],
+        [
+          "eq",
+          "c",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "h",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cpp",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "hpp",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cc",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cxx",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cs",
+          "code-icon cs-icon"
+        ],
+        [
+          "eq",
+          "rb",
+          "code-icon ruby-icon"
+        ],
+        [
+          "eq",
+          "php",
+          "code-icon php-icon"
+        ],
+        [
+          "eq",
+          "swift",
+          "code-icon swift-icon"
+        ],
+        [
+          "eq",
+          "r",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "lua",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "pl",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "pm",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "html",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "htm",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "css",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "scss",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "sass",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "less",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "json",
+          "code-icon json-icon"
+        ],
+        [
+          "eq",
+          "xml",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "yaml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "yml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "toml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "ini",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "cfg",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "conf",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "sql",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "graphql",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "proto",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "vue",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "svelte",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "sh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "bash",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "zsh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "fish",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "ps1",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "bat",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "cmd",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "md",
+          "code-icon md-icon"
+        ],
+        [
+          "eq",
+          "markdown",
+          "code-icon md-icon"
+        ],
+        [
+          "eq",
+          "rst",
+          "code-icon md-icon"
+        ],
+        [
+          "eq",
+          "txt",
+          "doc-icon"
+        ]
+      ],
+      "default": "",
+      "meta": {
+        "file": "src/application/dtos/display_helpers.rs",
+        "kind": "fn",
+        "name": "icon_special_class_with_ext",
+        "self_ty": "",
+        "start": 369,
+        "end": 490,
+        "sha256": "076a5a4fd51c4f08157f4a78f25cba81e29f9f07f0b945b05f36691128dfd36a"
+      },
+      "exact_chunks": [
+        "icon_special_class_with_ext_exact_0",
+        "icon_special_class_with_ext_exact_1",
+        "icon_special_class_with_ext_exact_2",
+        "icon_special_class_with_ext_exact_3",
+        "icon_special_class_with_ext_exact_4",
+        "icon_special_class_with_ext_exact_5",
+        "icon_special_class_with_ext_exact_6"
+      ],
+      "mime_chunks": [
+        "icon_special_class_with_ext_mime_0",
+        "icon_special_class_with_ext_mime_1",
+        "icon_special_class_with_ext_mime_2"
+      ],
+      "ext_chunks": [
+        "icon_special_class_with_ext_ext_0",
+        "icon_special_class_with_ext_ext_1",
+        "icon_special_class_with_ext_ext_2",
+        "icon_special_class_with_ext_ext_3",
+        "icon_special_class_with_ext_ext_4",
+        "icon_special_class_with_ext_ext_5",
+        "icon_special_class_with_ext_ext_6",
+        "icon_special_class_with_ext_ext_7",
+        "icon_special_class_with_ext_ext_8",
+        "icon_special_class_with_ext_ext_9",
+        "icon_special_class_with_ext_ext_10",
+        "icon_special_class_with_ext_ext_11",
+        "icon_special_class_with_ext_ext_12",
+        "icon_special_class_with_ext_ext_13",
+        "icon_special_class_with_ext_ext_14",
+        "icon_special_class_with_ext_ext_15",
+        "icon_special_class_with_ext_ext_16",
+        "icon_special_class_with_ext_ext_17",
+        "icon_special_class_with_ext_ext_18",
+        "icon_special_class_with_ext_ext_19"
+      ]
+    },
+    {
+      "name": "category_with_ext",
+      "source": "fn category_with_ext(mime: &str, ext: Option<&str>) -> &'static str {\n    // 1. Specific MIME matches\n    match mime {\n        \"application/pdf\" => return \"PDF\",\n        \"application/msword\"\n        | \"application/vnd.openxmlformats-officedocument.wordprocessingml.document\"\n        | \"application/vnd.oasis.opendocument.text\" => return \"Document\",\n        \"application/vnd.ms-excel\"\n        | \"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\"\n        | \"application/vnd.oasis.opendocument.spreadsheet\"\n        | \"text/csv\" => return \"Spreadsheet\",\n        \"application/vnd.ms-powerpoint\"\n        | \"application/vnd.openxmlformats-officedocument.presentationml.presentation\"\n        | \"application/vnd.oasis.opendocument.presentation\" => return \"Presentation\",\n        \"application/zip\"\n        | \"application/x-rar-compressed\"\n        | \"application/vnd.rar\"\n        | \"application/x-7z-compressed\"\n        | \"application/gzip\"\n        | \"application/x-tar\" => return \"Archive\",\n        \"application/json\"\n        | \"application/javascript\"\n        | \"application/typescript\"\n        | \"application/xml\"\n        | \"application/sql\"\n        | \"application/x-sh\"\n        | \"application/x-shellscript\" => return \"Code\",\n        \"application/x-apple-diskimage\"\n        | \"application/x-ms-dos-executable\"\n        | \"application/x-msdownload\"\n        | \"application/x-msi\" => return \"Installer\",\n        _ => {}\n    }\n\n    // 2. MIME prefix\n    if mime.starts_with(\"image/\") {\n        return \"Image\";\n    } else if mime.starts_with(\"video/\") {\n        return \"Video\";\n    } else if mime.starts_with(\"audio/\") {\n        return \"Audio\";\n    } else if mime.starts_with(\"text/x-\") || mime.contains(\"script\") || mime.contains(\"javascript\")\n    {\n        return \"Code\";\n    } else if mime.starts_with(\"text/markdown\") {\n        return \"Markdown\";\n    } else if mime.starts_with(\"text/html\") || mime.starts_with(\"text/css\") {\n        return \"Code\";\n    } else if mime.starts_with(\"text/\") {\n        return \"Text\";\n    }\n\n    // 3. Extension fallback\n    if let Some(ext) = ext {\n        return match ext {\n            \"pdf\" => \"PDF\",\n            \"doc\" | \"docx\" | \"odt\" | \"rtf\" | \"txt\" => \"Document\",\n            \"xls\" | \"xlsx\" | \"ods\" | \"csv\" => \"Spreadsheet\",\n            \"ppt\" | \"pptx\" | \"odp\" | \"key\" => \"Presentation\",\n            \"jpg\" | \"jpeg\" | \"png\" | \"gif\" | \"bmp\" | \"svg\" | \"webp\" | \"ico\" | \"tiff\" | \"heic\"\n            | \"avif\" => \"Image\",\n            \"mp4\" | \"avi\" | \"mkv\" | \"mov\" | \"wmv\" | \"flv\" | \"webm\" | \"m4v\" => \"Video\",\n            \"mp3\" | \"wav\" | \"ogg\" | \"flac\" | \"aac\" | \"wma\" | \"m4a\" | \"opus\" => \"Audio\",\n            \"zip\" | \"rar\" | \"7z\" | \"tar\" | \"gz\" | \"bz2\" | \"xz\" => \"Archive\",\n            \"exe\" | \"msi\" | \"dmg\" | \"deb\" | \"rpm\" | \"appimage\" => \"Installer\",\n            \"js\" | \"jsx\" | \"ts\" | \"tsx\" | \"py\" | \"rs\" | \"go\" | \"java\" | \"c\" | \"cpp\" | \"cs\"\n            | \"rb\" | \"php\" | \"swift\" | \"kt\" | \"scala\" | \"r\" | \"lua\" | \"pl\" | \"html\" | \"htm\"\n            | \"css\" | \"scss\" | \"json\" | \"xml\" | \"yaml\" | \"yml\" | \"toml\" | \"sql\" | \"sh\" | \"bash\"\n            | \"bat\" | \"ps1\" | \"vue\" | \"svelte\" => \"Code\",\n            \"md\" | \"markdown\" | \"rst\" => \"Markdown\",\n            _ => \"Document\",\n        };\n    }\n\n    \"Document\"\n}",
+      "exact": [
+        [
+          "eq",
+          "application/pdf",
+          "PDF"
+        ],
+        [
+          "eq",
+          "application/msword",
+          "Document"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "Document"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.text",
+          "Document"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-excel",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "text/csv",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-powerpoint",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.presentation",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "application/zip",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/x-rar-compressed",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/vnd.rar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/x-7z-compressed",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/gzip",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/x-tar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/json",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/javascript",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/typescript",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/xml",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/sql",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/x-sh",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/x-shellscript",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/x-apple-diskimage",
+          "Installer"
+        ],
+        [
+          "eq",
+          "application/x-ms-dos-executable",
+          "Installer"
+        ],
+        [
+          "eq",
+          "application/x-msdownload",
+          "Installer"
+        ],
+        [
+          "eq",
+          "application/x-msi",
+          "Installer"
+        ]
+      ],
+      "mime": [
+        [
+          "prefix",
+          "image/",
+          "Image"
+        ],
+        [
+          "prefix",
+          "video/",
+          "Video"
+        ],
+        [
+          "prefix",
+          "audio/",
+          "Audio"
+        ],
+        [
+          "prefix",
+          "text/x-",
+          "Code"
+        ],
+        [
+          "contains",
+          "script",
+          "Code"
+        ],
+        [
+          "contains",
+          "javascript",
+          "Code"
+        ],
+        [
+          "prefix",
+          "text/markdown",
+          "Markdown"
+        ],
+        [
+          "prefix",
+          "text/html",
+          "Code"
+        ],
+        [
+          "prefix",
+          "text/css",
+          "Code"
+        ],
+        [
+          "prefix",
+          "text/",
+          "Text"
+        ]
+      ],
+      "ext": [
+        [
+          "eq",
+          "pdf",
+          "PDF"
+        ],
+        [
+          "eq",
+          "doc",
+          "Document"
+        ],
+        [
+          "eq",
+          "docx",
+          "Document"
+        ],
+        [
+          "eq",
+          "odt",
+          "Document"
+        ],
+        [
+          "eq",
+          "rtf",
+          "Document"
+        ],
+        [
+          "eq",
+          "txt",
+          "Document"
+        ],
+        [
+          "eq",
+          "xls",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "xlsx",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "ods",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "csv",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "ppt",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "pptx",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "odp",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "key",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "jpg",
+          "Image"
+        ],
+        [
+          "eq",
+          "jpeg",
+          "Image"
+        ],
+        [
+          "eq",
+          "png",
+          "Image"
+        ],
+        [
+          "eq",
+          "gif",
+          "Image"
+        ],
+        [
+          "eq",
+          "bmp",
+          "Image"
+        ],
+        [
+          "eq",
+          "svg",
+          "Image"
+        ],
+        [
+          "eq",
+          "webp",
+          "Image"
+        ],
+        [
+          "eq",
+          "ico",
+          "Image"
+        ],
+        [
+          "eq",
+          "tiff",
+          "Image"
+        ],
+        [
+          "eq",
+          "heic",
+          "Image"
+        ],
+        [
+          "eq",
+          "avif",
+          "Image"
+        ],
+        [
+          "eq",
+          "mp4",
+          "Video"
+        ],
+        [
+          "eq",
+          "avi",
+          "Video"
+        ],
+        [
+          "eq",
+          "mkv",
+          "Video"
+        ],
+        [
+          "eq",
+          "mov",
+          "Video"
+        ],
+        [
+          "eq",
+          "wmv",
+          "Video"
+        ],
+        [
+          "eq",
+          "flv",
+          "Video"
+        ],
+        [
+          "eq",
+          "webm",
+          "Video"
+        ],
+        [
+          "eq",
+          "m4v",
+          "Video"
+        ],
+        [
+          "eq",
+          "mp3",
+          "Audio"
+        ],
+        [
+          "eq",
+          "wav",
+          "Audio"
+        ],
+        [
+          "eq",
+          "ogg",
+          "Audio"
+        ],
+        [
+          "eq",
+          "flac",
+          "Audio"
+        ],
+        [
+          "eq",
+          "aac",
+          "Audio"
+        ],
+        [
+          "eq",
+          "wma",
+          "Audio"
+        ],
+        [
+          "eq",
+          "m4a",
+          "Audio"
+        ],
+        [
+          "eq",
+          "opus",
+          "Audio"
+        ],
+        [
+          "eq",
+          "zip",
+          "Archive"
+        ],
+        [
+          "eq",
+          "rar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "7z",
+          "Archive"
+        ],
+        [
+          "eq",
+          "tar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "gz",
+          "Archive"
+        ],
+        [
+          "eq",
+          "bz2",
+          "Archive"
+        ],
+        [
+          "eq",
+          "xz",
+          "Archive"
+        ],
+        [
+          "eq",
+          "exe",
+          "Installer"
+        ],
+        [
+          "eq",
+          "msi",
+          "Installer"
+        ],
+        [
+          "eq",
+          "dmg",
+          "Installer"
+        ],
+        [
+          "eq",
+          "deb",
+          "Installer"
+        ],
+        [
+          "eq",
+          "rpm",
+          "Installer"
+        ],
+        [
+          "eq",
+          "appimage",
+          "Installer"
+        ],
+        [
+          "eq",
+          "js",
+          "Code"
+        ],
+        [
+          "eq",
+          "jsx",
+          "Code"
+        ],
+        [
+          "eq",
+          "ts",
+          "Code"
+        ],
+        [
+          "eq",
+          "tsx",
+          "Code"
+        ],
+        [
+          "eq",
+          "py",
+          "Code"
+        ],
+        [
+          "eq",
+          "rs",
+          "Code"
+        ],
+        [
+          "eq",
+          "go",
+          "Code"
+        ],
+        [
+          "eq",
+          "java",
+          "Code"
+        ],
+        [
+          "eq",
+          "c",
+          "Code"
+        ],
+        [
+          "eq",
+          "cpp",
+          "Code"
+        ],
+        [
+          "eq",
+          "cs",
+          "Code"
+        ],
+        [
+          "eq",
+          "rb",
+          "Code"
+        ],
+        [
+          "eq",
+          "php",
+          "Code"
+        ],
+        [
+          "eq",
+          "swift",
+          "Code"
+        ],
+        [
+          "eq",
+          "kt",
+          "Code"
+        ],
+        [
+          "eq",
+          "scala",
+          "Code"
+        ],
+        [
+          "eq",
+          "r",
+          "Code"
+        ],
+        [
+          "eq",
+          "lua",
+          "Code"
+        ],
+        [
+          "eq",
+          "pl",
+          "Code"
+        ],
+        [
+          "eq",
+          "html",
+          "Code"
+        ],
+        [
+          "eq",
+          "htm",
+          "Code"
+        ],
+        [
+          "eq",
+          "css",
+          "Code"
+        ],
+        [
+          "eq",
+          "scss",
+          "Code"
+        ],
+        [
+          "eq",
+          "json",
+          "Code"
+        ],
+        [
+          "eq",
+          "xml",
+          "Code"
+        ],
+        [
+          "eq",
+          "yaml",
+          "Code"
+        ],
+        [
+          "eq",
+          "yml",
+          "Code"
+        ],
+        [
+          "eq",
+          "toml",
+          "Code"
+        ],
+        [
+          "eq",
+          "sql",
+          "Code"
+        ],
+        [
+          "eq",
+          "sh",
+          "Code"
+        ],
+        [
+          "eq",
+          "bash",
+          "Code"
+        ],
+        [
+          "eq",
+          "bat",
+          "Code"
+        ],
+        [
+          "eq",
+          "ps1",
+          "Code"
+        ],
+        [
+          "eq",
+          "vue",
+          "Code"
+        ],
+        [
+          "eq",
+          "svelte",
+          "Code"
+        ],
+        [
+          "eq",
+          "md",
+          "Markdown"
+        ],
+        [
+          "eq",
+          "markdown",
+          "Markdown"
+        ],
+        [
+          "eq",
+          "rst",
+          "Markdown"
+        ]
+      ],
+      "default": "Document",
+      "meta": {
+        "file": "src/application/dtos/display_helpers.rs",
+        "kind": "fn",
+        "name": "category_with_ext",
+        "self_ty": "",
+        "start": 501,
+        "end": 576,
+        "sha256": "40fc078ade247088ffff6b9583dcca6c06565e88caf16820e7cc290711a8001c"
+      },
+      "exact_chunks": [
+        "category_with_ext_exact_0",
+        "category_with_ext_exact_1",
+        "category_with_ext_exact_2",
+        "category_with_ext_exact_3",
+        "category_with_ext_exact_4"
+      ],
+      "mime_chunks": [
+        "category_with_ext_mime_0",
+        "category_with_ext_mime_1"
+      ],
+      "ext_chunks": [
+        "category_with_ext_ext_0",
+        "category_with_ext_ext_1",
+        "category_with_ext_ext_2",
+        "category_with_ext_ext_3",
+        "category_with_ext_ext_4",
+        "category_with_ext_ext_5",
+        "category_with_ext_ext_6",
+        "category_with_ext_ext_7",
+        "category_with_ext_ext_8",
+        "category_with_ext_ext_9",
+        "category_with_ext_ext_10",
+        "category_with_ext_ext_11",
+        "category_with_ext_ext_12",
+        "category_with_ext_ext_13",
+        "category_with_ext_ext_14",
+        "category_with_ext_ext_15"
+      ]
+    }
+  ],
+  "outputs": [
+    "",
+    "Archive",
+    "Audio",
+    "Code",
+    "Document",
+    "Image",
+    "Installer",
+    "Markdown",
+    "PDF",
+    "Presentation",
+    "Spreadsheet",
+    "Text",
+    "Video",
+    "archive-icon",
+    "audio-icon",
+    "code-icon",
+    "code-icon c-icon",
+    "code-icon config-icon",
+    "code-icon cs-icon",
+    "code-icon css-icon",
+    "code-icon go-icon",
+    "code-icon html-icon",
+    "code-icon java-icon",
+    "code-icon js-icon",
+    "code-icon json-icon",
+    "code-icon md-icon",
+    "code-icon php-icon",
+    "code-icon py-icon",
+    "code-icon ruby-icon",
+    "code-icon rust-icon",
+    "code-icon sql-icon",
+    "code-icon swift-icon",
+    "code-icon ts-icon",
+    "doc-icon",
+    "fas fa-file",
+    "fas fa-file-alt",
+    "fas fa-file-archive",
+    "fas fa-file-audio",
+    "fas fa-file-code",
+    "fas fa-file-excel",
+    "fas fa-file-image",
+    "fas fa-file-pdf",
+    "fas fa-file-powerpoint",
+    "fas fa-file-video",
+    "fas fa-file-word",
+    "fas fa-hdd",
+    "fas fa-terminal",
+    "image-icon",
+    "installer-icon",
+    "pdf-icon",
+    "presentation-icon",
+    "script-icon",
+    "spreadsheet-icon",
+    "video-icon"
+  ],
+  "chunks": [
+    {
+      "name": "icon_class_with_ext_exact_0",
+      "rules": [
+        [
+          "eq",
+          "application/pdf",
+          "fas fa-file-pdf"
+        ],
+        [
+          "eq",
+          "application/msword",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.text",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-excel",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "fas fa-file-excel"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_exact_1",
+      "rules": [
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "text/csv",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-powerpoint",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.presentation",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "application/zip",
+          "fas fa-file-archive"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_exact_2",
+      "rules": [
+        [
+          "eq",
+          "application/x-rar-compressed",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/vnd.rar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-7z-compressed",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/gzip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-gzip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-tar",
+          "fas fa-file-archive"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_exact_3",
+      "rules": [
+        [
+          "eq",
+          "application/x-bzip2",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-xz",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/x-compress",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "application/json",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/ld+json",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/javascript",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_exact_4",
+      "rules": [
+        [
+          "eq",
+          "application/typescript",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-httpd-php",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/xml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/xhtml+xml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/sql",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-yaml",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_exact_5",
+      "rules": [
+        [
+          "eq",
+          "application/toml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-sh",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-shellscript",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-csh",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "application/x-apple-diskimage",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-ms-dos-executable",
+          "fas fa-hdd"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_exact_6",
+      "rules": [
+        [
+          "eq",
+          "application/x-msdownload",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-msi",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/vnd.debian.binary-package",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/x-rpm",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "application/vnd.appimage",
+          "fas fa-hdd"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_mime_0",
+      "rules": [
+        [
+          "prefix",
+          "image/",
+          "fas fa-file-image"
+        ],
+        [
+          "prefix",
+          "video/",
+          "fas fa-file-video"
+        ],
+        [
+          "prefix",
+          "audio/",
+          "fas fa-file-audio"
+        ],
+        [
+          "prefix",
+          "text/x-script",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-python",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-java",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_mime_1",
+      "rules": [
+        [
+          "prefix",
+          "text/x-c",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-rust",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-go",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-ruby",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-shellscript",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/x-php",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_mime_2",
+      "rules": [
+        [
+          "contains",
+          "javascript",
+          "fas fa-file-code"
+        ],
+        [
+          "contains",
+          "typescript",
+          "fas fa-file-code"
+        ],
+        [
+          "prefix",
+          "text/",
+          "fas fa-file-alt"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_0",
+      "rules": [
+        [
+          "eq",
+          "pdf",
+          "fas fa-file-pdf"
+        ],
+        [
+          "eq",
+          "doc",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "docx",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "odt",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "rtf",
+          "fas fa-file-word"
+        ],
+        [
+          "eq",
+          "xls",
+          "fas fa-file-excel"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_1",
+      "rules": [
+        [
+          "eq",
+          "xlsx",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "ods",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "csv",
+          "fas fa-file-excel"
+        ],
+        [
+          "eq",
+          "ppt",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "pptx",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "odp",
+          "fas fa-file-powerpoint"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_2",
+      "rules": [
+        [
+          "eq",
+          "key",
+          "fas fa-file-powerpoint"
+        ],
+        [
+          "eq",
+          "jpg",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "jpeg",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "png",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "gif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "bmp",
+          "fas fa-file-image"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_3",
+      "rules": [
+        [
+          "eq",
+          "svg",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "webp",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "ico",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "tiff",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "tif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "heic",
+          "fas fa-file-image"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_4",
+      "rules": [
+        [
+          "eq",
+          "heif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "avif",
+          "fas fa-file-image"
+        ],
+        [
+          "eq",
+          "mp4",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "avi",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "mkv",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "mov",
+          "fas fa-file-video"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_5",
+      "rules": [
+        [
+          "eq",
+          "wmv",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "flv",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "webm",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "m4v",
+          "fas fa-file-video"
+        ],
+        [
+          "eq",
+          "mp3",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "wav",
+          "fas fa-file-audio"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_6",
+      "rules": [
+        [
+          "eq",
+          "ogg",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "flac",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "aac",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "wma",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "m4a",
+          "fas fa-file-audio"
+        ],
+        [
+          "eq",
+          "opus",
+          "fas fa-file-audio"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_7",
+      "rules": [
+        [
+          "eq",
+          "zip",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "rar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "7z",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "tar",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "gz",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "bz2",
+          "fas fa-file-archive"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_8",
+      "rules": [
+        [
+          "eq",
+          "xz",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "zst",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "lz4",
+          "fas fa-file-archive"
+        ],
+        [
+          "eq",
+          "exe",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "msi",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "dmg",
+          "fas fa-hdd"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_9",
+      "rules": [
+        [
+          "eq",
+          "deb",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "rpm",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "appimage",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "pkg",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "snap",
+          "fas fa-hdd"
+        ],
+        [
+          "eq",
+          "flatpak",
+          "fas fa-hdd"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_10",
+      "rules": [
+        [
+          "eq",
+          "js",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "jsx",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "mjs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cjs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "ts",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "tsx",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_11",
+      "rules": [
+        [
+          "eq",
+          "py",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "pyw",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "rs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "go",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "java",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "kt",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_12",
+      "rules": [
+        [
+          "eq",
+          "kts",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "scala",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "c",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "h",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cpp",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "hpp",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_13",
+      "rules": [
+        [
+          "eq",
+          "cc",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cxx",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cs",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "rb",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "php",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "swift",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_14",
+      "rules": [
+        [
+          "eq",
+          "r",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "lua",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "pl",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "pm",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "html",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "htm",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_15",
+      "rules": [
+        [
+          "eq",
+          "css",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "scss",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "sass",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "less",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "json",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "xml",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_16",
+      "rules": [
+        [
+          "eq",
+          "yaml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "yml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "toml",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "ini",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "cfg",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "conf",
+          "fas fa-file-code"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_17",
+      "rules": [
+        [
+          "eq",
+          "sql",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "graphql",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "proto",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "vue",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "svelte",
+          "fas fa-file-code"
+        ],
+        [
+          "eq",
+          "sh",
+          "fas fa-terminal"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_18",
+      "rules": [
+        [
+          "eq",
+          "bash",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "zsh",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "fish",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "ps1",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "bat",
+          "fas fa-terminal"
+        ],
+        [
+          "eq",
+          "cmd",
+          "fas fa-terminal"
+        ]
+      ]
+    },
+    {
+      "name": "icon_class_with_ext_ext_19",
+      "rules": [
+        [
+          "eq",
+          "md",
+          "fas fa-file-alt"
+        ],
+        [
+          "eq",
+          "markdown",
+          "fas fa-file-alt"
+        ],
+        [
+          "eq",
+          "rst",
+          "fas fa-file-alt"
+        ],
+        [
+          "eq",
+          "txt",
+          "fas fa-file-alt"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_0",
+      "rules": [
+        [
+          "eq",
+          "application/pdf",
+          "pdf-icon"
+        ],
+        [
+          "eq",
+          "application/msword",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.text",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-excel",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "spreadsheet-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_1",
+      "rules": [
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "text/csv",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-powerpoint",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.presentation",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "application/zip",
+          "archive-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_2",
+      "rules": [
+        [
+          "eq",
+          "application/x-rar-compressed",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.rar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-7z-compressed",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/gzip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-gzip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-tar",
+          "archive-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_3",
+      "rules": [
+        [
+          "eq",
+          "application/x-bzip2",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-xz",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/x-compress",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "application/json",
+          "code-icon json-icon"
+        ],
+        [
+          "eq",
+          "application/ld+json",
+          "code-icon json-icon"
+        ],
+        [
+          "eq",
+          "application/javascript",
+          "code-icon js-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_4",
+      "rules": [
+        [
+          "eq",
+          "application/typescript",
+          "code-icon ts-icon"
+        ],
+        [
+          "eq",
+          "application/xml",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "application/xhtml+xml",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "application/sql",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "application/x-yaml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "application/toml",
+          "code-icon config-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_5",
+      "rules": [
+        [
+          "eq",
+          "application/x-httpd-php",
+          "code-icon php-icon"
+        ],
+        [
+          "eq",
+          "application/x-sh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "application/x-shellscript",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "application/x-csh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "application/x-apple-diskimage",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-ms-dos-executable",
+          "installer-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_exact_6",
+      "rules": [
+        [
+          "eq",
+          "application/x-msdownload",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-msi",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.debian.binary-package",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/x-rpm",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "application/vnd.appimage",
+          "installer-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_mime_0",
+      "rules": [
+        [
+          "prefix",
+          "image/",
+          "image-icon"
+        ],
+        [
+          "prefix",
+          "video/",
+          "video-icon"
+        ],
+        [
+          "prefix",
+          "audio/",
+          "audio-icon"
+        ],
+        [
+          "prefix",
+          "text/x-python",
+          "code-icon py-icon"
+        ],
+        [
+          "prefix",
+          "text/x-rust",
+          "code-icon rust-icon"
+        ],
+        [
+          "prefix",
+          "text/x-java",
+          "code-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_mime_1",
+      "rules": [
+        [
+          "prefix",
+          "text/x-c",
+          "code-icon"
+        ],
+        [
+          "prefix",
+          "text/x-go",
+          "code-icon go-icon"
+        ],
+        [
+          "prefix",
+          "text/x-ruby",
+          "code-icon ruby-icon"
+        ],
+        [
+          "prefix",
+          "text/x-shellscript",
+          "script-icon"
+        ],
+        [
+          "prefix",
+          "text/x-script",
+          "code-icon"
+        ],
+        [
+          "prefix",
+          "text/x-php",
+          "code-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_mime_2",
+      "rules": [
+        [
+          "prefix",
+          "text/markdown",
+          "code-icon md-icon"
+        ],
+        [
+          "prefix",
+          "text/html",
+          "code-icon html-icon"
+        ],
+        [
+          "prefix",
+          "text/css",
+          "code-icon css-icon"
+        ],
+        [
+          "contains",
+          "javascript",
+          "code-icon js-icon"
+        ],
+        [
+          "contains",
+          "typescript",
+          "code-icon ts-icon"
+        ],
+        [
+          "prefix",
+          "text/",
+          "doc-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_0",
+      "rules": [
+        [
+          "eq",
+          "pdf",
+          "pdf-icon"
+        ],
+        [
+          "eq",
+          "doc",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "docx",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "odt",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "rtf",
+          "doc-icon"
+        ],
+        [
+          "eq",
+          "xls",
+          "spreadsheet-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_1",
+      "rules": [
+        [
+          "eq",
+          "xlsx",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "ods",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "csv",
+          "spreadsheet-icon"
+        ],
+        [
+          "eq",
+          "ppt",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "pptx",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "odp",
+          "presentation-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_2",
+      "rules": [
+        [
+          "eq",
+          "key",
+          "presentation-icon"
+        ],
+        [
+          "eq",
+          "jpg",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "jpeg",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "png",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "gif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "bmp",
+          "image-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_3",
+      "rules": [
+        [
+          "eq",
+          "svg",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "webp",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "ico",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "tiff",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "tif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "heic",
+          "image-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_4",
+      "rules": [
+        [
+          "eq",
+          "heif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "avif",
+          "image-icon"
+        ],
+        [
+          "eq",
+          "mp4",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "avi",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "mkv",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "mov",
+          "video-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_5",
+      "rules": [
+        [
+          "eq",
+          "wmv",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "flv",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "webm",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "m4v",
+          "video-icon"
+        ],
+        [
+          "eq",
+          "mp3",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "wav",
+          "audio-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_6",
+      "rules": [
+        [
+          "eq",
+          "ogg",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "flac",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "aac",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "wma",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "m4a",
+          "audio-icon"
+        ],
+        [
+          "eq",
+          "opus",
+          "audio-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_7",
+      "rules": [
+        [
+          "eq",
+          "zip",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "rar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "7z",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "tar",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "gz",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "bz2",
+          "archive-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_8",
+      "rules": [
+        [
+          "eq",
+          "xz",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "zst",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "lz4",
+          "archive-icon"
+        ],
+        [
+          "eq",
+          "exe",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "msi",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "dmg",
+          "installer-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_9",
+      "rules": [
+        [
+          "eq",
+          "deb",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "rpm",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "appimage",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "pkg",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "snap",
+          "installer-icon"
+        ],
+        [
+          "eq",
+          "flatpak",
+          "installer-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_10",
+      "rules": [
+        [
+          "eq",
+          "py",
+          "code-icon py-icon"
+        ],
+        [
+          "eq",
+          "pyw",
+          "code-icon py-icon"
+        ],
+        [
+          "eq",
+          "rs",
+          "code-icon rust-icon"
+        ],
+        [
+          "eq",
+          "go",
+          "code-icon go-icon"
+        ],
+        [
+          "eq",
+          "java",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "kt",
+          "code-icon java-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_11",
+      "rules": [
+        [
+          "eq",
+          "kts",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "scala",
+          "code-icon java-icon"
+        ],
+        [
+          "eq",
+          "js",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "jsx",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "mjs",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "cjs",
+          "code-icon js-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_12",
+      "rules": [
+        [
+          "eq",
+          "ts",
+          "code-icon ts-icon"
+        ],
+        [
+          "eq",
+          "tsx",
+          "code-icon ts-icon"
+        ],
+        [
+          "eq",
+          "c",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "h",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cpp",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "hpp",
+          "code-icon c-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_13",
+      "rules": [
+        [
+          "eq",
+          "cc",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cxx",
+          "code-icon c-icon"
+        ],
+        [
+          "eq",
+          "cs",
+          "code-icon cs-icon"
+        ],
+        [
+          "eq",
+          "rb",
+          "code-icon ruby-icon"
+        ],
+        [
+          "eq",
+          "php",
+          "code-icon php-icon"
+        ],
+        [
+          "eq",
+          "swift",
+          "code-icon swift-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_14",
+      "rules": [
+        [
+          "eq",
+          "r",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "lua",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "pl",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "pm",
+          "code-icon"
+        ],
+        [
+          "eq",
+          "html",
+          "code-icon html-icon"
+        ],
+        [
+          "eq",
+          "htm",
+          "code-icon html-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_15",
+      "rules": [
+        [
+          "eq",
+          "css",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "scss",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "sass",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "less",
+          "code-icon css-icon"
+        ],
+        [
+          "eq",
+          "json",
+          "code-icon json-icon"
+        ],
+        [
+          "eq",
+          "xml",
+          "code-icon html-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_16",
+      "rules": [
+        [
+          "eq",
+          "yaml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "yml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "toml",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "ini",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "cfg",
+          "code-icon config-icon"
+        ],
+        [
+          "eq",
+          "conf",
+          "code-icon config-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_17",
+      "rules": [
+        [
+          "eq",
+          "sql",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "graphql",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "proto",
+          "code-icon sql-icon"
+        ],
+        [
+          "eq",
+          "vue",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "svelte",
+          "code-icon js-icon"
+        ],
+        [
+          "eq",
+          "sh",
+          "script-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_18",
+      "rules": [
+        [
+          "eq",
+          "bash",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "zsh",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "fish",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "ps1",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "bat",
+          "script-icon"
+        ],
+        [
+          "eq",
+          "cmd",
+          "script-icon"
+        ]
+      ]
+    },
+    {
+      "name": "icon_special_class_with_ext_ext_19",
+      "rules": [
+        [
+          "eq",
+          "md",
+          "code-icon md-icon"
+        ],
+        [
+          "eq",
+          "markdown",
+          "code-icon md-icon"
+        ],
+        [
+          "eq",
+          "rst",
+          "code-icon md-icon"
+        ],
+        [
+          "eq",
+          "txt",
+          "doc-icon"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_exact_0",
+      "rules": [
+        [
+          "eq",
+          "application/pdf",
+          "PDF"
+        ],
+        [
+          "eq",
+          "application/msword",
+          "Document"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+          "Document"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.text",
+          "Document"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-excel",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "Spreadsheet"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_exact_1",
+      "rules": [
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.spreadsheet",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "text/csv",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "application/vnd.ms-powerpoint",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "application/vnd.oasis.opendocument.presentation",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "application/zip",
+          "Archive"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_exact_2",
+      "rules": [
+        [
+          "eq",
+          "application/x-rar-compressed",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/vnd.rar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/x-7z-compressed",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/gzip",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/x-tar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "application/json",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_exact_3",
+      "rules": [
+        [
+          "eq",
+          "application/javascript",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/typescript",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/xml",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/sql",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/x-sh",
+          "Code"
+        ],
+        [
+          "eq",
+          "application/x-shellscript",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_exact_4",
+      "rules": [
+        [
+          "eq",
+          "application/x-apple-diskimage",
+          "Installer"
+        ],
+        [
+          "eq",
+          "application/x-ms-dos-executable",
+          "Installer"
+        ],
+        [
+          "eq",
+          "application/x-msdownload",
+          "Installer"
+        ],
+        [
+          "eq",
+          "application/x-msi",
+          "Installer"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_mime_0",
+      "rules": [
+        [
+          "prefix",
+          "image/",
+          "Image"
+        ],
+        [
+          "prefix",
+          "video/",
+          "Video"
+        ],
+        [
+          "prefix",
+          "audio/",
+          "Audio"
+        ],
+        [
+          "prefix",
+          "text/x-",
+          "Code"
+        ],
+        [
+          "contains",
+          "script",
+          "Code"
+        ],
+        [
+          "contains",
+          "javascript",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_mime_1",
+      "rules": [
+        [
+          "prefix",
+          "text/markdown",
+          "Markdown"
+        ],
+        [
+          "prefix",
+          "text/html",
+          "Code"
+        ],
+        [
+          "prefix",
+          "text/css",
+          "Code"
+        ],
+        [
+          "prefix",
+          "text/",
+          "Text"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_0",
+      "rules": [
+        [
+          "eq",
+          "pdf",
+          "PDF"
+        ],
+        [
+          "eq",
+          "doc",
+          "Document"
+        ],
+        [
+          "eq",
+          "docx",
+          "Document"
+        ],
+        [
+          "eq",
+          "odt",
+          "Document"
+        ],
+        [
+          "eq",
+          "rtf",
+          "Document"
+        ],
+        [
+          "eq",
+          "txt",
+          "Document"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_1",
+      "rules": [
+        [
+          "eq",
+          "xls",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "xlsx",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "ods",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "csv",
+          "Spreadsheet"
+        ],
+        [
+          "eq",
+          "ppt",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "pptx",
+          "Presentation"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_2",
+      "rules": [
+        [
+          "eq",
+          "odp",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "key",
+          "Presentation"
+        ],
+        [
+          "eq",
+          "jpg",
+          "Image"
+        ],
+        [
+          "eq",
+          "jpeg",
+          "Image"
+        ],
+        [
+          "eq",
+          "png",
+          "Image"
+        ],
+        [
+          "eq",
+          "gif",
+          "Image"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_3",
+      "rules": [
+        [
+          "eq",
+          "bmp",
+          "Image"
+        ],
+        [
+          "eq",
+          "svg",
+          "Image"
+        ],
+        [
+          "eq",
+          "webp",
+          "Image"
+        ],
+        [
+          "eq",
+          "ico",
+          "Image"
+        ],
+        [
+          "eq",
+          "tiff",
+          "Image"
+        ],
+        [
+          "eq",
+          "heic",
+          "Image"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_4",
+      "rules": [
+        [
+          "eq",
+          "avif",
+          "Image"
+        ],
+        [
+          "eq",
+          "mp4",
+          "Video"
+        ],
+        [
+          "eq",
+          "avi",
+          "Video"
+        ],
+        [
+          "eq",
+          "mkv",
+          "Video"
+        ],
+        [
+          "eq",
+          "mov",
+          "Video"
+        ],
+        [
+          "eq",
+          "wmv",
+          "Video"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_5",
+      "rules": [
+        [
+          "eq",
+          "flv",
+          "Video"
+        ],
+        [
+          "eq",
+          "webm",
+          "Video"
+        ],
+        [
+          "eq",
+          "m4v",
+          "Video"
+        ],
+        [
+          "eq",
+          "mp3",
+          "Audio"
+        ],
+        [
+          "eq",
+          "wav",
+          "Audio"
+        ],
+        [
+          "eq",
+          "ogg",
+          "Audio"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_6",
+      "rules": [
+        [
+          "eq",
+          "flac",
+          "Audio"
+        ],
+        [
+          "eq",
+          "aac",
+          "Audio"
+        ],
+        [
+          "eq",
+          "wma",
+          "Audio"
+        ],
+        [
+          "eq",
+          "m4a",
+          "Audio"
+        ],
+        [
+          "eq",
+          "opus",
+          "Audio"
+        ],
+        [
+          "eq",
+          "zip",
+          "Archive"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_7",
+      "rules": [
+        [
+          "eq",
+          "rar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "7z",
+          "Archive"
+        ],
+        [
+          "eq",
+          "tar",
+          "Archive"
+        ],
+        [
+          "eq",
+          "gz",
+          "Archive"
+        ],
+        [
+          "eq",
+          "bz2",
+          "Archive"
+        ],
+        [
+          "eq",
+          "xz",
+          "Archive"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_8",
+      "rules": [
+        [
+          "eq",
+          "exe",
+          "Installer"
+        ],
+        [
+          "eq",
+          "msi",
+          "Installer"
+        ],
+        [
+          "eq",
+          "dmg",
+          "Installer"
+        ],
+        [
+          "eq",
+          "deb",
+          "Installer"
+        ],
+        [
+          "eq",
+          "rpm",
+          "Installer"
+        ],
+        [
+          "eq",
+          "appimage",
+          "Installer"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_9",
+      "rules": [
+        [
+          "eq",
+          "js",
+          "Code"
+        ],
+        [
+          "eq",
+          "jsx",
+          "Code"
+        ],
+        [
+          "eq",
+          "ts",
+          "Code"
+        ],
+        [
+          "eq",
+          "tsx",
+          "Code"
+        ],
+        [
+          "eq",
+          "py",
+          "Code"
+        ],
+        [
+          "eq",
+          "rs",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_10",
+      "rules": [
+        [
+          "eq",
+          "go",
+          "Code"
+        ],
+        [
+          "eq",
+          "java",
+          "Code"
+        ],
+        [
+          "eq",
+          "c",
+          "Code"
+        ],
+        [
+          "eq",
+          "cpp",
+          "Code"
+        ],
+        [
+          "eq",
+          "cs",
+          "Code"
+        ],
+        [
+          "eq",
+          "rb",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_11",
+      "rules": [
+        [
+          "eq",
+          "php",
+          "Code"
+        ],
+        [
+          "eq",
+          "swift",
+          "Code"
+        ],
+        [
+          "eq",
+          "kt",
+          "Code"
+        ],
+        [
+          "eq",
+          "scala",
+          "Code"
+        ],
+        [
+          "eq",
+          "r",
+          "Code"
+        ],
+        [
+          "eq",
+          "lua",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_12",
+      "rules": [
+        [
+          "eq",
+          "pl",
+          "Code"
+        ],
+        [
+          "eq",
+          "html",
+          "Code"
+        ],
+        [
+          "eq",
+          "htm",
+          "Code"
+        ],
+        [
+          "eq",
+          "css",
+          "Code"
+        ],
+        [
+          "eq",
+          "scss",
+          "Code"
+        ],
+        [
+          "eq",
+          "json",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_13",
+      "rules": [
+        [
+          "eq",
+          "xml",
+          "Code"
+        ],
+        [
+          "eq",
+          "yaml",
+          "Code"
+        ],
+        [
+          "eq",
+          "yml",
+          "Code"
+        ],
+        [
+          "eq",
+          "toml",
+          "Code"
+        ],
+        [
+          "eq",
+          "sql",
+          "Code"
+        ],
+        [
+          "eq",
+          "sh",
+          "Code"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_14",
+      "rules": [
+        [
+          "eq",
+          "bash",
+          "Code"
+        ],
+        [
+          "eq",
+          "bat",
+          "Code"
+        ],
+        [
+          "eq",
+          "ps1",
+          "Code"
+        ],
+        [
+          "eq",
+          "vue",
+          "Code"
+        ],
+        [
+          "eq",
+          "svelte",
+          "Code"
+        ],
+        [
+          "eq",
+          "md",
+          "Markdown"
+        ]
+      ]
+    },
+    {
+      "name": "category_with_ext_ext_15",
+      "rules": [
+        [
+          "eq",
+          "markdown",
+          "Markdown"
+        ],
+        [
+          "eq",
+          "rst",
+          "Markdown"
+        ]
+      ]
+    }
+  ]
+}

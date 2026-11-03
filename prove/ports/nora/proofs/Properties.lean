@@ -1,3 +1,7 @@
+import Verified.ClosedRecords
+import Verified.Sidebar
+import Verified.Rendering
+import Verified.FiniteCatalog
 import Verified.Curation
 import Verified.CircuitBreaker
 import Verified.PermissionImport
@@ -368,5 +372,92 @@ theorem curation_namespace_active_spec (ns : Option curation.Filter) :
 theorem curation_active_spec (mode : curation.Mode) :
     curation.is_active mode ⦃ r => r = !Verified.Curation.isOff mode ⦄ :=
   Verified.Curation.active_spec mode
+
+end nora_kernel.Properties
+
+namespace nora_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_breaker_state_f11f5e92_as_gauge_complete (v : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+    finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge v ⦃r => r = breaker_state_f11f5e92_as_gauge_model v⦄ := Verified.FiniteCatalog.breaker_state_f11f5e92_as_gauge_complete v
+
+theorem finite_breaker_state_f11f5e92_as_health_str_complete (v : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+    finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str v ⦃r => r.val = breaker_state_f11f5e92_as_health_str_model v⦄ := Verified.FiniteCatalog.breaker_state_f11f5e92_as_health_str_complete v
+
+theorem finite_role_a890c86c_can_write_complete (v : finite_catalog.role_a890c86c.Role) :
+    finite_catalog.role_a890c86c.Role.can_write v ⦃r => r = role_a890c86c_can_write_model v⦄ := Verified.FiniteCatalog.role_a890c86c_can_write_complete v
+
+theorem finite_role_a890c86c_can_admin_complete (v : finite_catalog.role_a890c86c.Role) :
+    finite_catalog.role_a890c86c.Role.can_admin v ⦃r => r = role_a890c86c_can_admin_model v⦄ := Verified.FiniteCatalog.role_a890c86c_can_admin_complete v
+
+theorem finite_lang_986f59b4_code_complete (v : finite_catalog.lang_986f59b4.Lang) :
+    finite_catalog.lang_986f59b4.Lang.code v ⦃r => r.val = lang_986f59b4_code_model v⦄ := Verified.FiniteCatalog.lang_986f59b4_code_complete v
+
+end nora_kernel.Properties
+-- Complete pinned Nora rendering outputs.
+namespace nora_kernel.Properties
+open Verified.Rendering
+
+theorem rendering_html_escape_complete (s : Slice U8)
+    (hbound : (replacements_model s.val).length ≤ Usize.max) :
+    rendering.html_escape s ⦃r => r.val = replacements_model s.val⦄ :=
+  by
+  have hb : (html_model s.val).length ≤ Usize.max := by
+    simpa only [html_model_replacements] using hbound
+  apply WP.spec_mono (Verified.Rendering.html_escape_complete s hb)
+  intro r hr
+  exact hr.trans (html_model_replacements s.val)
+
+theorem rendering_render_activity_row_complete (timestamp action artifact registry source : Slice U8)
+    (hbound : (render_activity_row_model timestamp.val action.val artifact.val registry.val source.val).length ≤ Usize.max) :
+    rendering.render_activity_row timestamp action artifact registry source ⦃r => r.val = render_activity_row_model timestamp.val action.val artifact.val registry.val source.val⦄ :=
+  Verified.Rendering.render_activity_row_complete timestamp action artifact registry source hbound
+
+theorem rendering_render_activity_log_complete (rows : Slice U8) (t : rendering.Translations)
+    (hbound : (render_activity_log_model rows.val t).length ≤ Usize.max) :
+    rendering.render_activity_log rows t ⦃r => r.val = render_activity_log_model rows.val t⦄ :=
+  Verified.Rendering.render_activity_log_complete rows t hbound
+
+theorem rendering_render_polling_script_complete
+    (hbound : (render_polling_script_model ).length ≤ Usize.max) :
+    rendering.render_polling_script  ⦃r => r.val = render_polling_script_model ⦄ :=
+  Verified.Rendering.render_polling_script_complete  hbound
+
+theorem rendering_header_dark_complete (lang : rendering.Lang)
+    (hbound : (header_dark_model lang).length ≤ Usize.max) :
+    rendering.header_dark lang ⦃r => r.val = header_dark_model lang⦄ :=
+  Verified.Rendering.header_dark_complete lang hbound
+
+theorem rendering_encode_uri_component_complete (s : Slice U8)
+    (hbound : (uri_model s.val).length ≤ Usize.max) :
+    rendering.encode_uri_component s ⦃r => r.val = uri_model s.val⦄ :=
+  Verified.Rendering.encode_uri_component_complete s hbound
+
+theorem rendering_registry_search_bar_complete (registry placeholder : Slice U8)
+    (hbound : (registry_search_bar_model registry.val placeholder.val).length ≤ Usize.max) :
+    rendering.registry_search_bar registry placeholder ⦃r => r.val = registry_search_bar_model registry.val placeholder.val⦄ :=
+  Verified.Rendering.registry_search_bar_complete registry placeholder hbound
+
+end nora_kernel.Properties
+
+namespace nora_kernel.Properties
+
+theorem sidebar_complete (active : Slice U8) (t : sidebar.Translations)
+    (auth : Bool) (e : sidebar.Enabled) (version : Slice U8) :
+    sidebar.sidebar active t auth e version ⦃r =>
+      Verified.Sidebar.decode r = Verified.Sidebar.sidebar_model active.val t auth e version.val⦄ :=
+  Verified.Sidebar.sidebar_complete active t auth e version
+
+end nora_kernel.Properties
+-- Complete pinned closed record constructors.
+namespace nora_kernel.Properties
+
+theorem closed_records_signing_config_default_942b3541_complete :
+    closed_records.signing_config_default_942b3541.make ⦃r => r.enabled = true ∧
+      r.key_path.val = []⦄ :=
+  Verified.ClosedRecords.signing_config_default_942b3541_complete
+
+theorem closed_records_env_provider_new_23e18cff_complete :
+    closed_records.env_provider_new_23e18cff.make ⦃r => r.clear_after_read = false⦄ :=
+  Verified.ClosedRecords.env_provider_new_23e18cff_complete
 
 end nora_kernel.Properties

@@ -1,0 +1,686 @@
+{
+  "revision": "7801b8ec6f7773d90b1bbfeeb352012d6e004e96",
+  "accepted": [
+    {
+      "enum": {
+        "file": "src/admin/query/feds/version.rs",
+        "kind": "enum",
+        "name": "Field",
+        "self_ty": "",
+        "start": 35,
+        "end": 40,
+        "sha256": "e2d4bcb51bda207ae4eda585dedd2f14bfbc96d941c57daae5dd4b61d9227d1f"
+      },
+      "variants": [
+        "Name",
+        "Version",
+        "Compiler"
+      ],
+      "source": "#[derive(Clone, Copy, Debug, Eq, Ord, PartialEq, PartialOrd, ValueEnum)]\npub(crate) enum Field {\n\tName,\n\tVersion,\n\tCompiler,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/admin/query/feds/version.rs",
+            "kind": "method",
+            "name": "label",
+            "self_ty": "Field",
+            "start": 43,
+            "end": 49,
+            "sha256": "14403cb4db9486d9318ef3ebcfc88f575fb2ce032fde43fbe090cef8a998f649"
+          },
+          "source": "\tfn label(self) -> &'static str {\n\t\tmatch self {\n\t\t\t| Self::Name => \"name\",\n\t\t\t| Self::Version => \"version\",\n\t\t\t| Self::Compiler => \"compiler\",\n\t\t}\n\t}",
+          "type": "bytes"
+        }
+      ],
+      "module": "field_bea9b175",
+      "outputs": {
+        "label/Name": [
+          110,
+          97,
+          109,
+          101
+        ],
+        "label/Version": [
+          118,
+          101,
+          114,
+          115,
+          105,
+          111,
+          110
+        ],
+        "label/Compiler": [
+          99,
+          111,
+          109,
+          112,
+          105,
+          108,
+          101,
+          114
+        ]
+      },
+      "reference_sha256": "c2061211138e6ac210e1f9ffd9e866c5dc4985829b7902ae6e122dccedb8c3a4"
+    },
+    {
+      "enum": {
+        "file": "src/api/client/sync/v3.rs",
+        "kind": "enum",
+        "name": "StateAfter",
+        "self_ty": "",
+        "start": 165,
+        "end": 171,
+        "sha256": "9bc906c563f737750364d1d4ebf0338b00d4e8b8532e1c09447f2317c160b7f4"
+      },
+      "variants": [
+        "Off",
+        "Stable",
+        "Unstable"
+      ],
+      "source": "/// MSC4222 `state_after` opt-in: which room-state field the response carries.\n#[derive(Clone, Copy, Debug)]\nenum StateAfter {\n\tOff,\n\tStable,\n\tUnstable,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/api/client/sync/v3.rs",
+            "kind": "method",
+            "name": "requested",
+            "self_ty": "StateAfter",
+            "start": 177,
+            "end": 177,
+            "sha256": "42b0b7eac0269e265859bb410abdcf73f5c46529734f1db178987e8eeab123e0"
+          },
+          "source": "\tfn requested(self) -> bool { !matches!(self, Self::Off) }",
+          "type": "bool"
+        }
+      ],
+      "module": "state_after_c4e3af58",
+      "outputs": {
+        "requested/Off": false,
+        "requested/Stable": true,
+        "requested/Unstable": true
+      },
+      "reference_sha256": "6f35ecd2d70091d0a6ed7bf1cccf9741c94e85a0f8dcb8f9668c71c04a042780"
+    },
+    {
+      "enum": {
+        "file": "src/service/rooms/event_handler/state_local_build.rs",
+        "kind": "enum",
+        "name": "Fallback",
+        "self_ty": "",
+        "start": 249,
+        "end": 261,
+        "sha256": "2bb972addb188386ddadd3675317ed5707417c3f637f4c17e1566d53882da790"
+      },
+      "variants": [
+        "Absent",
+        "Ceiling",
+        "AuthMissing",
+        "AllCommitted",
+        "Entries",
+        "Canary",
+        "CreateMismatch",
+        "Unevaluable",
+        "Error"
+      ],
+      "source": "/// Why a walk gave up; every reason falls back to the federation fetch.\n#[derive(Clone, Copy)]\nenum Fallback {\n\tAbsent,\n\tCeiling,\n\tAuthMissing,\n\tAllCommitted,\n\tEntries,\n\tCanary,\n\tCreateMismatch,\n\tUnevaluable,\n\tError,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/service/rooms/event_handler/state_local_build.rs",
+            "kind": "method",
+            "name": "name",
+            "self_ty": "Fallback",
+            "start": 1100,
+            "end": 1112,
+            "sha256": "19163d94cc9c43a28f10251a19ed9ebb5f6e7b27b89da62aaa175780131549b9"
+          },
+          "source": "\tfn name(self) -> &'static str {\n\t\tmatch self {\n\t\t\t| Self::Absent => \"absent\",\n\t\t\t| Self::Ceiling => \"ceiling\",\n\t\t\t| Self::AuthMissing => \"auth_missing\",\n\t\t\t| Self::AllCommitted => \"all_committed\",\n\t\t\t| Self::Entries => \"entries\",\n\t\t\t| Self::Canary => \"canary\",\n\t\t\t| Self::CreateMismatch => \"create_mismatch\",\n\t\t\t| Self::Unevaluable => \"unevaluable\",\n\t\t\t| Self::Error => \"error\",\n\t\t}\n\t}",
+          "type": "bytes"
+        }
+      ],
+      "module": "fallback_08cb57a8",
+      "outputs": {
+        "name/Absent": [
+          97,
+          98,
+          115,
+          101,
+          110,
+          116
+        ],
+        "name/Ceiling": [
+          99,
+          101,
+          105,
+          108,
+          105,
+          110,
+          103
+        ],
+        "name/AuthMissing": [
+          97,
+          117,
+          116,
+          104,
+          95,
+          109,
+          105,
+          115,
+          115,
+          105,
+          110,
+          103
+        ],
+        "name/AllCommitted": [
+          97,
+          108,
+          108,
+          95,
+          99,
+          111,
+          109,
+          109,
+          105,
+          116,
+          116,
+          101,
+          100
+        ],
+        "name/Entries": [
+          101,
+          110,
+          116,
+          114,
+          105,
+          101,
+          115
+        ],
+        "name/Canary": [
+          99,
+          97,
+          110,
+          97,
+          114,
+          121
+        ],
+        "name/CreateMismatch": [
+          99,
+          114,
+          101,
+          97,
+          116,
+          101,
+          95,
+          109,
+          105,
+          115,
+          109,
+          97,
+          116,
+          99,
+          104
+        ],
+        "name/Unevaluable": [
+          117,
+          110,
+          101,
+          118,
+          97,
+          108,
+          117,
+          97,
+          98,
+          108,
+          101
+        ],
+        "name/Error": [
+          101,
+          114,
+          114,
+          111,
+          114
+        ]
+      },
+      "reference_sha256": "50c7337c057bfe754d43be587f29f0eb99d08d5871dfccae0ac61f784fb66c14"
+    },
+    {
+      "enum": {
+        "file": "src/service/rooms/state_res/events/power_levels.rs",
+        "kind": "enum",
+        "name": "RoomPowerLevelsIntField",
+        "self_ty": "",
+        "start": 322,
+        "end": 347,
+        "sha256": "29415752d01ef3359afcc2f306089620779daa314ea8131c1ee2b63eb7f4a648"
+      },
+      "variants": [
+        "UsersDefault",
+        "EventsDefault",
+        "StateDefault",
+        "Ban",
+        "Redact",
+        "Kick",
+        "Invite"
+      ],
+      "source": "/// Fields in the `content` of an `m.room.power_levels` event with an integer\n/// value.\n#[derive(DebugAsRefStr, Clone, Copy, DisplayAsRefStr, PartialEq, Eq, OrdAsRefStr)]\n#[non_exhaustive]\npub enum RoomPowerLevelsIntField {\n\t/// `users_default`\n\tUsersDefault,\n\n\t/// `events_default`\n\tEventsDefault,\n\n\t/// `state_default`\n\tStateDefault,\n\n\t/// `ban`\n\tBan,\n\n\t/// `redact`\n\tRedact,\n\n\t/// `kick`\n\tKick,\n\n\t/// `invite`\n\tInvite,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/service/rooms/state_res/events/power_levels.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "RoomPowerLevelsIntField",
+            "start": 361,
+            "end": 364,
+            "sha256": "f93699864132d428eb697c20fa98834a4d6149625129d5ce83dbdc66bbba85dc"
+          },
+          "source": "\t/// The string representation of this field.\n\t#[inline]\n\t#[must_use]\n\tpub fn as_str(&self) -> &str { self.as_ref() }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/service/rooms/state_res/events/power_levels.rs",
+            "kind": "method",
+            "name": "as_ref",
+            "self_ty": "RoomPowerLevelsIntField",
+            "start": 378,
+            "end": 389,
+            "sha256": "6a4e2c7725203924d61b11c14e28fd714ddcc2b726430ee0862a2063026edfc0"
+          },
+          "source": "\t#[inline]\n\tfn as_ref(&self) -> &'static str {\n\t\tmatch self {\n\t\t\t| Self::UsersDefault => \"users_default\",\n\t\t\t| Self::EventsDefault => \"events_default\",\n\t\t\t| Self::StateDefault => \"state_default\",\n\t\t\t| Self::Ban => \"ban\",\n\t\t\t| Self::Redact => \"redact\",\n\t\t\t| Self::Kick => \"kick\",\n\t\t\t| Self::Invite => \"invite\",\n\t\t}\n\t}",
+          "type": "bytes"
+        }
+      ],
+      "module": "room_power_levels_int_field_b809be58",
+      "outputs": {
+        "as_str/UsersDefault": [
+          117,
+          115,
+          101,
+          114,
+          115,
+          95,
+          100,
+          101,
+          102,
+          97,
+          117,
+          108,
+          116
+        ],
+        "as_str/EventsDefault": [
+          101,
+          118,
+          101,
+          110,
+          116,
+          115,
+          95,
+          100,
+          101,
+          102,
+          97,
+          117,
+          108,
+          116
+        ],
+        "as_str/StateDefault": [
+          115,
+          116,
+          97,
+          116,
+          101,
+          95,
+          100,
+          101,
+          102,
+          97,
+          117,
+          108,
+          116
+        ],
+        "as_str/Ban": [
+          98,
+          97,
+          110
+        ],
+        "as_str/Redact": [
+          114,
+          101,
+          100,
+          97,
+          99,
+          116
+        ],
+        "as_str/Kick": [
+          107,
+          105,
+          99,
+          107
+        ],
+        "as_str/Invite": [
+          105,
+          110,
+          118,
+          105,
+          116,
+          101
+        ],
+        "as_ref/UsersDefault": [
+          117,
+          115,
+          101,
+          114,
+          115,
+          95,
+          100,
+          101,
+          102,
+          97,
+          117,
+          108,
+          116
+        ],
+        "as_ref/EventsDefault": [
+          101,
+          118,
+          101,
+          110,
+          116,
+          115,
+          95,
+          100,
+          101,
+          102,
+          97,
+          117,
+          108,
+          116
+        ],
+        "as_ref/StateDefault": [
+          115,
+          116,
+          97,
+          116,
+          101,
+          95,
+          100,
+          101,
+          102,
+          97,
+          117,
+          108,
+          116
+        ],
+        "as_ref/Ban": [
+          98,
+          97,
+          110
+        ],
+        "as_ref/Redact": [
+          114,
+          101,
+          100,
+          97,
+          99,
+          116
+        ],
+        "as_ref/Kick": [
+          107,
+          105,
+          99,
+          107
+        ],
+        "as_ref/Invite": [
+          105,
+          110,
+          118,
+          105,
+          116,
+          101
+        ]
+      },
+      "reference_sha256": "55367b9c3659f7b219e128dba2342298cc808147e44d83d08ca7603e5c8f722b"
+    },
+    {
+      "enum": {
+        "file": "src/service/tasks/mod.rs",
+        "kind": "enum",
+        "name": "Status",
+        "self_ty": "",
+        "start": 50,
+        "end": 69,
+        "sha256": "d69ad378befb06b562a02315e7ab46d72edd287c0eb27229df4ae2723d5a9a4c"
+      },
+      "variants": [
+        "Scheduled",
+        "Active",
+        "Complete",
+        "Failed"
+      ],
+      "source": "/// Execution state of a tracked administrative task.\n///\n/// Tasks normally progress from [`Self::Scheduled`] to [`Self::Active`] and\n/// finish as either [`Self::Complete`] or [`Self::Failed`]. A panic or abort can\n/// leave the last recorded state nonterminal. Terminal records remain available\n/// until the service's retention policy prunes them.\n#[derive(Clone, Copy, Debug, Eq, PartialEq)]\npub enum Status {\n\t/// The task is recorded but its future has not begun running.\n\tScheduled,\n\n\t/// The task future has begun running and has not completed.\n\tActive,\n\n\t/// The task future completed with a result value.\n\tComplete,\n\n\t/// The task future completed with an error.\n\tFailed,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/service/tasks/mod.rs",
+            "kind": "method",
+            "name": "is_terminal",
+            "self_ty": "Status",
+            "start": 274,
+            "end": 279,
+            "sha256": "ee6f6e2b2ea006b5cdfa189d9c19b9232d859f06698feac1fc179cfc00e35f55"
+          },
+          "source": "\t/// Tests whether no further execution transition is expected.\n\t///\n\t/// Complete and failed tasks are terminal. Scheduled and active tasks can\n\t/// still transition as their futures run.\n\t#[must_use]\n\tpub fn is_terminal(self) -> bool { matches!(self, Self::Complete | Self::Failed) }",
+          "type": "bool"
+        },
+        {
+          "meta": {
+            "file": "src/service/tasks/mod.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "Status",
+            "start": 281,
+            "end": 293,
+            "sha256": "cee80c3f78bc2a108c059b92392386d7b7cfe57b01ce78ed814f5907a5b765bd"
+          },
+          "source": "\t/// Returns the lowercase status spelling used by administrative responses.\n\t///\n\t/// The returned string is static and allocation-free. Each enum variant has\n\t/// one stable spelling.\n\t#[must_use]\n\tpub fn as_str(self) -> &'static str {\n\t\tmatch self {\n\t\t\t| Self::Scheduled => \"scheduled\",\n\t\t\t| Self::Active => \"active\",\n\t\t\t| Self::Complete => \"complete\",\n\t\t\t| Self::Failed => \"failed\",\n\t\t}\n\t}",
+          "type": "bytes"
+        }
+      ],
+      "module": "status_4004009f",
+      "outputs": {
+        "is_terminal/Scheduled": false,
+        "is_terminal/Active": false,
+        "is_terminal/Complete": true,
+        "is_terminal/Failed": true,
+        "as_str/Scheduled": [
+          115,
+          99,
+          104,
+          101,
+          100,
+          117,
+          108,
+          101,
+          100
+        ],
+        "as_str/Active": [
+          97,
+          99,
+          116,
+          105,
+          118,
+          101
+        ],
+        "as_str/Complete": [
+          99,
+          111,
+          109,
+          112,
+          108,
+          101,
+          116,
+          101
+        ],
+        "as_str/Failed": [
+          102,
+          97,
+          105,
+          108,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "ea3a53d857568c43a25485ad099d614d24edb8cc92142407c40224a2295b3e37"
+    }
+  ],
+  "rejected": [
+    {
+      "enum": {
+        "file": "src/service/rooms/event_handler/backoff.rs",
+        "kind": "enum",
+        "name": "Suppression",
+        "self_ty": "",
+        "start": 60,
+        "end": 64,
+        "sha256": "876f43cbc0c37a930b01433f77fff9ce2103a1e5bcd470affcb4a75956788fa6"
+      },
+      "method": {
+        "file": "src/service/rooms/event_handler/backoff.rs",
+        "kind": "method",
+        "name": "is_deny",
+        "self_ty": "Suppression",
+        "start": 97,
+        "end": 98,
+        "sha256": "b6b9c4bbb5c540f8a9a2f80141917364a44cc7a7cd87b23b397630be89a83301"
+      },
+      "reason": "error[E0433]: too many leading `super` keywords within `crate`\n --> <scratch>/main.rs:6:6\n  |\n6 |     pub(super) fn is_deny(&self) -> bool { matches!(self, Self::Deny) }\n  |         ^^^^^ this `super` would go above the crate root\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0433`.\n"
+    }
+  ],
+  "properties": [
+    {
+      "name": "field_bea9b175_label_complete",
+      "statement": "(v : finite_catalog.field_bea9b175.Field) :\n    finite_catalog.field_bea9b175.Field.label v \u2983r => r.val = field_bea9b175_label_model v\u2984",
+      "index": 0
+    },
+    {
+      "name": "state_after_c4e3af58_requested_complete",
+      "statement": "(v : finite_catalog.state_after_c4e3af58.StateAfter) :\n    finite_catalog.state_after_c4e3af58.StateAfter.requested v \u2983r => r = state_after_c4e3af58_requested_model v\u2984",
+      "index": 1
+    },
+    {
+      "name": "fallback_08cb57a8_name_complete",
+      "statement": "(v : finite_catalog.fallback_08cb57a8.Fallback) :\n    finite_catalog.fallback_08cb57a8.Fallback.name v \u2983r => r.val = fallback_08cb57a8_name_model v\u2984",
+      "index": 2
+    },
+    {
+      "name": "room_power_levels_int_field_b809be58_as_str_complete",
+      "statement": "(v : finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField) :\n    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str v \u2983r => r.val = room_power_levels_int_field_b809be58_as_str_model v\u2984",
+      "index": 3
+    },
+    {
+      "name": "room_power_levels_int_field_b809be58_as_ref_complete",
+      "statement": "(v : finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField) :\n    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref v \u2983r => r.val = room_power_levels_int_field_b809be58_as_ref_model v\u2984",
+      "index": 4
+    },
+    {
+      "name": "status_4004009f_is_terminal_complete",
+      "statement": "(v : finite_catalog.status_4004009f.Status) :\n    finite_catalog.status_4004009f.Status.is_terminal v \u2983r => r = status_4004009f_is_terminal_model v\u2984",
+      "index": 5
+    },
+    {
+      "name": "status_4004009f_as_str_complete",
+      "statement": "(v : finite_catalog.status_4004009f.Status) :\n    finite_catalog.status_4004009f.Status.as_str v \u2983r => r.val = status_4004009f_as_str_model v\u2984",
+      "index": 6
+    }
+  ],
+  "declarations": {
+    "finite_catalog.field_bea9b175.Field.label": [
+      {
+        "file": "src/admin/query/feds/version.rs",
+        "kind": "method",
+        "name": "label",
+        "self_ty": "Field",
+        "start": 43,
+        "end": 49,
+        "sha256": "14403cb4db9486d9318ef3ebcfc88f575fb2ce032fde43fbe090cef8a998f649"
+      }
+    ],
+    "finite_catalog.state_after_c4e3af58.StateAfter.requested": [
+      {
+        "file": "src/api/client/sync/v3.rs",
+        "kind": "method",
+        "name": "requested",
+        "self_ty": "StateAfter",
+        "start": 177,
+        "end": 177,
+        "sha256": "42b0b7eac0269e265859bb410abdcf73f5c46529734f1db178987e8eeab123e0"
+      }
+    ],
+    "finite_catalog.fallback_08cb57a8.Fallback.name": [
+      {
+        "file": "src/service/rooms/event_handler/state_local_build.rs",
+        "kind": "method",
+        "name": "name",
+        "self_ty": "Fallback",
+        "start": 1100,
+        "end": 1112,
+        "sha256": "19163d94cc9c43a28f10251a19ed9ebb5f6e7b27b89da62aaa175780131549b9"
+      }
+    ],
+    "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str": [
+      {
+        "file": "src/service/rooms/state_res/events/power_levels.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "RoomPowerLevelsIntField",
+        "start": 361,
+        "end": 364,
+        "sha256": "f93699864132d428eb697c20fa98834a4d6149625129d5ce83dbdc66bbba85dc"
+      }
+    ],
+    "finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref": [
+      {
+        "file": "src/service/rooms/state_res/events/power_levels.rs",
+        "kind": "method",
+        "name": "as_ref",
+        "self_ty": "RoomPowerLevelsIntField",
+        "start": 378,
+        "end": 389,
+        "sha256": "6a4e2c7725203924d61b11c14e28fd714ddcc2b726430ee0862a2063026edfc0"
+      }
+    ],
+    "finite_catalog.status_4004009f.Status.is_terminal": [
+      {
+        "file": "src/service/tasks/mod.rs",
+        "kind": "method",
+        "name": "is_terminal",
+        "self_ty": "Status",
+        "start": 274,
+        "end": 279,
+        "sha256": "ee6f6e2b2ea006b5cdfa189d9c19b9232d859f06698feac1fc179cfc00e35f55"
+      }
+    ],
+    "finite_catalog.status_4004009f.Status.as_str": [
+      {
+        "file": "src/service/tasks/mod.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Status",
+        "start": 281,
+        "end": 293,
+        "sha256": "cee80c3f78bc2a108c059b92392386d7b7cfe57b01ce78ed814f5907a5b765bd"
+      }
+    ]
+  },
+  "roots": [
+    "finite_catalog::field_bea9b175::_::label",
+    "finite_catalog::state_after_c4e3af58::_::requested",
+    "finite_catalog::fallback_08cb57a8::_::name",
+    "finite_catalog::room_power_levels_int_field_b809be58::_::as_str",
+    "finite_catalog::room_power_levels_int_field_b809be58::_::as_ref",
+    "finite_catalog::status_4004009f::_::is_terminal",
+    "finite_catalog::status_4004009f::_::as_str"
+  ],
+  "comparisons": 37
+}

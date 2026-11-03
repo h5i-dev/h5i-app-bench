@@ -1,0 +1,1470 @@
+{
+  "app": "artifactkeeper",
+  "revision": "7c42891cd64f144df6197b8801c9cca4f0e0f5a7",
+  "records": [
+    {
+      "name": "PluginResourceLimits",
+      "id": "plugin_resource_limits_default_a005c35c",
+      "source": "    fn default() -> Self {\n        Self {\n            memory_mb: 64,\n            timeout_secs: 5,\n            fuel: 500_000_000,\n        }\n    }",
+      "meta": {
+        "file": "backend/src/models/plugin.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "PluginResourceLimits",
+        "start": 96,
+        "end": 102,
+        "sha256": "60e773cb17b1602b3bf539df8e942165f14d97dc73fa0a0cb94f6d694f8170e3"
+      },
+      "carrier_source": "/// Resource limits for WASM plugin execution.\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct PluginResourceLimits {\n    /// Maximum memory in megabytes (default: 64)\n    pub memory_mb: u32,\n    /// Execution timeout in seconds (default: 5)\n    pub timeout_secs: u32,\n    /// Fuel units for computation limiting (default: 500_000_000)\n    pub fuel: u64,\n}",
+      "fields": [
+        [
+          "memory_mb",
+          "u32"
+        ],
+        [
+          "timeout_secs",
+          "u32"
+        ],
+        [
+          "fuel",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "memory_mb",
+          "64"
+        ],
+        [
+          "timeout_secs",
+          "5"
+        ],
+        [
+          "fuel",
+          "500_000_000"
+        ]
+      ],
+      "values": {
+        "memory_mb": 64,
+        "timeout_secs": 5,
+        "fuel": 500000000
+      }
+    },
+    {
+      "name": "PluginCapabilities",
+      "id": "plugin_capabilities_default_a005c35c",
+      "source": "    fn default() -> Self {\n        Self {\n            parse_metadata: true,\n            generate_index: false,\n            validate_artifact: true,\n            handle_request: false,\n        }\n    }",
+      "meta": {
+        "file": "backend/src/models/plugin.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "PluginCapabilities",
+        "start": 120,
+        "end": 127,
+        "sha256": "0ebf5b54939c8e31d8cb04845f4464d66610f43e0e9859dc684ae1d2b02ffb8b"
+      },
+      "carrier_source": "/// Plugin capabilities indicating what operations the plugin supports.\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct PluginCapabilities {\n    /// Plugin can parse artifact metadata\n    pub parse_metadata: bool,\n    /// Plugin can generate index/metadata files\n    pub generate_index: bool,\n    /// Plugin can validate artifacts\n    pub validate_artifact: bool,\n    /// Plugin can handle native protocol HTTP requests (v2 WIT)\n    #[serde(default)]\n    pub handle_request: bool,\n}",
+      "fields": [
+        [
+          "parse_metadata",
+          "bool"
+        ],
+        [
+          "generate_index",
+          "bool"
+        ],
+        [
+          "validate_artifact",
+          "bool"
+        ],
+        [
+          "handle_request",
+          "bool"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "parse_metadata",
+          "true"
+        ],
+        [
+          "generate_index",
+          "false"
+        ],
+        [
+          "validate_artifact",
+          "true"
+        ],
+        [
+          "handle_request",
+          "false"
+        ]
+      ],
+      "values": {
+        "parse_metadata": true,
+        "generate_index": false,
+        "validate_artifact": true,
+        "handle_request": false
+      }
+    },
+    {
+      "name": "CapabilitiesConfig",
+      "id": "capabilities_config_default_75c080e9",
+      "source": "    fn default() -> Self {\n        Self {\n            parse_metadata: true,\n            generate_index: false,\n            validate_artifact: true,\n            handle_request: false,\n        }\n    }",
+      "meta": {
+        "file": "backend/src/models/plugin_manifest.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "CapabilitiesConfig",
+        "start": 71,
+        "end": 78,
+        "sha256": "0ebf5b54939c8e31d8cb04845f4464d66610f43e0e9859dc684ae1d2b02ffb8b"
+      },
+      "carrier_source": "/// Capabilities configuration from [capabilities] section.\n#[derive(Debug, Clone, Serialize, Deserialize)]\npub struct CapabilitiesConfig {\n    /// Plugin can parse artifact metadata\n    #[serde(default = \"default_true\")]\n    pub parse_metadata: bool,\n    /// Plugin can generate index/metadata files\n    #[serde(default)]\n    pub generate_index: bool,\n    /// Plugin can validate artifacts before storage\n    #[serde(default = \"default_true\")]\n    pub validate_artifact: bool,\n    /// Plugin can handle native protocol HTTP requests (v2 WIT)\n    #[serde(default)]\n    pub handle_request: bool,\n}",
+      "fields": [
+        [
+          "parse_metadata",
+          "bool"
+        ],
+        [
+          "generate_index",
+          "bool"
+        ],
+        [
+          "validate_artifact",
+          "bool"
+        ],
+        [
+          "handle_request",
+          "bool"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "parse_metadata",
+          "true"
+        ],
+        [
+          "generate_index",
+          "false"
+        ],
+        [
+          "validate_artifact",
+          "true"
+        ],
+        [
+          "handle_request",
+          "false"
+        ]
+      ],
+      "values": {
+        "parse_metadata": true,
+        "generate_index": false,
+        "validate_artifact": true,
+        "handle_request": false
+      }
+    },
+    {
+      "name": "TelemetrySettings",
+      "id": "telemetry_settings_default_453927f4",
+      "source": "    fn default() -> Self {\n        Self {\n            enabled: false,\n            review_before_send: true,\n            scrub_level: \"standard\".to_string(),\n            include_logs: false,\n        }\n    }",
+      "meta": {
+        "file": "backend/src/services/crash_reporting_service.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "TelemetrySettings",
+        "start": 379,
+        "end": 386,
+        "sha256": "18cb22dc2c5cf6086801efdc1cec462998e6cb719289426aadde40850c5516e9"
+      },
+      "carrier_source": "/// Telemetry configuration.\n#[derive(Debug, Serialize, Deserialize, ToSchema)]\npub struct TelemetrySettings {\n    pub enabled: bool,\n    pub review_before_send: bool,\n    pub scrub_level: String,\n    pub include_logs: bool,\n}",
+      "fields": [
+        [
+          "enabled",
+          "bool"
+        ],
+        [
+          "review_before_send",
+          "bool"
+        ],
+        [
+          "scrub_level",
+          "String"
+        ],
+        [
+          "include_logs",
+          "bool"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "enabled",
+          "false"
+        ],
+        [
+          "review_before_send",
+          "true"
+        ],
+        [
+          "scrub_level",
+          "b\"standard\".to_vec()"
+        ],
+        [
+          "include_logs",
+          "false"
+        ]
+      ],
+      "values": {
+        "enabled": false,
+        "review_before_send": true,
+        "scrub_level": [
+          115,
+          116,
+          97,
+          110,
+          100,
+          97,
+          114,
+          100
+        ],
+        "include_logs": false
+      }
+    },
+    {
+      "name": "PasswordPolicyConfig",
+      "id": "password_policy_config_default_97110402",
+      "source": "    fn default() -> Self {\n        Self {\n            min_length: 8,\n            max_length: 128,\n            require_uppercase: false,\n            require_lowercase: false,\n            require_digit: false,\n            require_special: false,\n            min_strength: 0,\n        }\n    }",
+      "meta": {
+        "file": "backend/src/services/password_policy.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "PasswordPolicyConfig",
+        "start": 21,
+        "end": 31,
+        "sha256": "52468ce74949bfb240d8c825946f5cc4633b7ce760af0f5bbc9667317d424384"
+      },
+      "carrier_source": "/// Configuration for password policy checks, extracted from [`crate::config::Config`].\n#[derive(Debug, Clone)]\npub struct PasswordPolicyConfig {\n    pub min_length: usize,\n    pub max_length: usize,\n    pub require_uppercase: bool,\n    pub require_lowercase: bool,\n    pub require_digit: bool,\n    pub require_special: bool,\n    /// 0 = disabled, 1-4 maps to zxcvbn scores.\n    pub min_strength: u8,\n}",
+      "fields": [
+        [
+          "min_length",
+          "usize"
+        ],
+        [
+          "max_length",
+          "usize"
+        ],
+        [
+          "require_uppercase",
+          "bool"
+        ],
+        [
+          "require_lowercase",
+          "bool"
+        ],
+        [
+          "require_digit",
+          "bool"
+        ],
+        [
+          "require_special",
+          "bool"
+        ],
+        [
+          "min_strength",
+          "u8"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "min_length",
+          "8"
+        ],
+        [
+          "max_length",
+          "128"
+        ],
+        [
+          "require_uppercase",
+          "false"
+        ],
+        [
+          "require_lowercase",
+          "false"
+        ],
+        [
+          "require_digit",
+          "false"
+        ],
+        [
+          "require_special",
+          "false"
+        ],
+        [
+          "min_strength",
+          "0"
+        ]
+      ],
+      "values": {
+        "min_length": 8,
+        "max_length": 128,
+        "require_uppercase": false,
+        "require_lowercase": false,
+        "require_digit": false,
+        "require_special": false,
+        "min_strength": 0
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "file": "backend/src/api/handlers/incus.rs",
+      "type": "StagedTempFile",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/api/handlers/npm.rs",
+      "type": "PackumentScope",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/api/handlers/npm.rs",
+      "type": "NpmVirtualMemberMissKey",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/api/handlers/oci_v2.rs",
+      "type": "VirtualResolveKey",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/api/handlers/proxy_helpers.rs",
+      "type": "ProxyMetadataBudget",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/api/handlers/proxy_helpers.rs",
+      "type": "DownloadResponseOpts",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/api/handlers/rubygems.rs",
+      "type": "SpecsBuildError",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/api/handlers/rubygems.rs",
+      "type": "SpecsMerge",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/api/middleware/rate_limit.rs",
+      "type": "RateLimitExemptions",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/api/middleware/rate_limit.rs",
+      "type": "RateLimiter",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/api/middleware/tracing.rs",
+      "type": "CorrelationId",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/api/mod.rs",
+      "type": "AppState",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/config.rs",
+      "type": "Config",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/formats/alpine.rs",
+      "type": "AlpineHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/alpine.rs",
+      "type": "AlpineHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/ansible.rs",
+      "type": "AnsibleHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/ansible.rs",
+      "type": "AnsibleHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/bazel.rs",
+      "type": "BazelHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/bazel.rs",
+      "type": "BazelHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/cargo.rs",
+      "type": "CargoHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/cargo.rs",
+      "type": "CargoHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/chef.rs",
+      "type": "ChefHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/chef.rs",
+      "type": "ChefHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/cocoapods.rs",
+      "type": "CdnMetadata",
+      "reason": "non-closed expression 'CDN_MIN_COCOAPODS_VERSION.to_string()' : String"
+    },
+    {
+      "file": "backend/src/formats/cocoapods.rs",
+      "type": "CocoaPodsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/cocoapods.rs",
+      "type": "CocoaPodsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/composer.rs",
+      "type": "ComposerHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/composer.rs",
+      "type": "ComposerHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/conan.rs",
+      "type": "ConanHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/conan.rs",
+      "type": "ConanHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/conda_native.rs",
+      "type": "CondaNativeHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/conda_native.rs",
+      "type": "CondaNativeHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/cran.rs",
+      "type": "CranHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/cran.rs",
+      "type": "CranHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/debian.rs",
+      "type": "DebianHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/debian.rs",
+      "type": "DebianHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/generic.rs",
+      "type": "GenericHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/generic.rs",
+      "type": "GenericHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/gitlfs.rs",
+      "type": "GitLfsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/gitlfs.rs",
+      "type": "GitLfsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/go.rs",
+      "type": "GoHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/go.rs",
+      "type": "GoHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/helm.rs",
+      "type": "HelmHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/helm.rs",
+      "type": "HelmHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/hex.rs",
+      "type": "HexHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/hex.rs",
+      "type": "HexHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/huggingface.rs",
+      "type": "HuggingFaceHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/huggingface.rs",
+      "type": "HuggingFaceHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/incus.rs",
+      "type": "IncusHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/incus.rs",
+      "type": "IncusHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/jetbrains_plugins.rs",
+      "type": "JetbrainsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/jetbrains_plugins.rs",
+      "type": "JetbrainsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/maven.rs",
+      "type": "MavenHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/maven.rs",
+      "type": "MavenHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/mlmodel.rs",
+      "type": "MlModelHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/mlmodel.rs",
+      "type": "MlModelHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/npm.rs",
+      "type": "NpmHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/npm.rs",
+      "type": "NpmHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/nuget.rs",
+      "type": "NugetHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/nuget.rs",
+      "type": "NugetHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/oci.rs",
+      "type": "OciHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/oci.rs",
+      "type": "OciHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/opkg.rs",
+      "type": "OpkgHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/opkg.rs",
+      "type": "OpkgHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/p2.rs",
+      "type": "P2Handler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/p2.rs",
+      "type": "P2Handler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/protobuf.rs",
+      "type": "ProtobufHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/protobuf.rs",
+      "type": "ProtobufHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/pub.rs",
+      "type": "PubHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/pub.rs",
+      "type": "PubHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/puppet.rs",
+      "type": "PuppetHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/puppet.rs",
+      "type": "PuppetHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/pypi.rs",
+      "type": "PypiHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/pypi.rs",
+      "type": "PypiHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/rpm.rs",
+      "type": "RpmHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/rpm.rs",
+      "type": "RpmHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/rubygems.rs",
+      "type": "RubygemsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/rubygems.rs",
+      "type": "RubygemsHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/rubygems.rs",
+      "type": "MarshalWriter",
+      "reason": "non-explicit field"
+    },
+    {
+      "file": "backend/src/formats/rubygems.rs",
+      "type": "MarshalReader",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/sbt.rs",
+      "type": "SbtHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/sbt.rs",
+      "type": "SbtHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/swift.rs",
+      "type": "SwiftHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/swift.rs",
+      "type": "SwiftHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/terraform.rs",
+      "type": "TerraformHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/terraform.rs",
+      "type": "TerraformHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/vagrant.rs",
+      "type": "VagrantHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/vagrant.rs",
+      "type": "VagrantHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/vscode_extensions.rs",
+      "type": "VscodeHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/vscode_extensions.rs",
+      "type": "VscodeHandler",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/formats/wasm.rs",
+      "type": "WasmFormatHandler",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/formats/wasm.rs",
+      "type": "WasmFormatHandlerFactory",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/grpc/auth_interceptor.rs",
+      "type": "AuthInterceptor",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/grpc/sbom_server.rs",
+      "type": "SbomGrpcServer",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/grpc/sbom_server.rs",
+      "type": "CveHistoryGrpcServer",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/grpc/sbom_server.rs",
+      "type": "SecurityPolicyGrpcServer",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/models/access_scope.rs",
+      "type": "AccessScope",
+      "reason": "not enough values to unpack (expected 1, got 0)"
+    },
+    {
+      "file": "backend/src/models/plugin_manifest.rs",
+      "type": "RequirementsConfig",
+      "reason": "non-closed expression 'default_min_memory()' : u32"
+    },
+    {
+      "file": "backend/src/services/age_gate_service.rs",
+      "type": "AgeGateService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/analytics_service.rs",
+      "type": "AnalyticsService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/artifact_label_service.rs",
+      "type": "ArtifactLabelService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/artifact_service.rs",
+      "type": "MultiHasher",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/artifact_service.rs",
+      "type": "ArtifactService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/artifactory_client.rs",
+      "type": "RetryConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/artifactory_client.rs",
+      "type": "ArtifactoryClientConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/artifactory_client.rs",
+      "type": "ArtifactoryClient",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/artifactory_import.rs",
+      "type": "PermXmlState",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/audit_export.rs",
+      "type": "TokenDetails",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "backend/src/services/audit_service.rs",
+      "type": "AuditEntry",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/audit_service.rs",
+      "type": "AuditService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/auth_config_service.rs",
+      "type": "SsoProviderInfo",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/auth_service.rs",
+      "type": "AuthService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/backup_service.rs",
+      "type": "BackupService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/build_service.rs",
+      "type": "BuildService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/ci_oidc_service.rs",
+      "type": "CiOidcMappingResponse",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/ci_oidc_service.rs",
+      "type": "CiOidcService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/cluster_lock.rs",
+      "type": "PgAdvisoryLock",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/cpe_candidates.rs",
+      "type": "NvdCpeMatch",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "backend/src/services/crash_reporting_service.rs",
+      "type": "CrashReportingService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/curation/popularity_source.rs",
+      "type": "HttpPopularitySource",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/curation/popularity_source.rs",
+      "type": "HttpPopularitySource",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/curation/popularity_source.rs",
+      "type": "CachedPopularitySource",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/curation/popularity_source.rs",
+      "type": "FakePopularitySource",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/curation_service.rs",
+      "type": "CurationService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/dependency_track_service.rs",
+      "type": "DependencyTrackService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/email_rate_limiter.rs",
+      "type": "EmailRateLimiter",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/encryption.rs",
+      "type": "CredentialEncryption",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/environment_lock.rs",
+      "type": "Builder",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/environment_reeval.rs",
+      "type": "DbAdvisoryDeltaSink",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/environment_reeval.rs",
+      "type": "EnvironmentReevalService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/environment_service.rs",
+      "type": "EnvironmentService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/event_bus.rs",
+      "type": "EventBus",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/grype_scanner.rs",
+      "type": "GrypeScanner",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/health_monitor_service.rs",
+      "type": "MonitorConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/health_monitor_service.rs",
+      "type": "HealthMonitorService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/image_build_service.rs",
+      "type": "ImageBuildStore",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/image_scanner.rs",
+      "type": "ImageScanner",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/incus_scanner.rs",
+      "type": "IncusScanner",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/ldap_service.rs",
+      "type": "LdapService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/lifecycle_service.rs",
+      "type": "LifecycleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/manifest_blob_refs_backfill.rs",
+      "type": "BackfillCandidate",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/migration_service.rs",
+      "type": "MigrationService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/migration_worker.rs",
+      "type": "WorkerConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/migration_worker.rs",
+      "type": "MigrationWorker",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/nexus_client.rs",
+      "type": "NexusClientConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/nexus_client.rs",
+      "type": "NexusClient",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/npm_attestation_cache.rs",
+      "type": "CachedMetaResponse",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/npm_attestation_cache.rs",
+      "type": "NpmAttestationCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/npm_packument_cache.rs",
+      "type": "InProcessPackumentCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/npm_packument_cache.rs",
+      "type": "RedisPackumentCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/npm_packument_cache.rs",
+      "type": "LayeredPackumentCache",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/npm_packument_cache.rs",
+      "type": "NpmPackumentCache",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/oci_referenced_content.rs",
+      "type": "WalkCaps",
+      "reason": "non-explicit field"
+    },
+    {
+      "file": "backend/src/services/oidc_service.rs",
+      "type": "OidcService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/openscap_scanner.rs",
+      "type": "OpenScapScanner",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/opensearch_service.rs",
+      "type": "OpenSearchService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/package_service.rs",
+      "type": "PackageService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/peer_instance_label_service.rs",
+      "type": "PeerInstanceLabelService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/peer_instance_service.rs",
+      "type": "PeerInstanceService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/peer_service.rs",
+      "type": "PeerService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/permission_service.rs",
+      "type": "CacheKey",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/permission_service.rs",
+      "type": "RulesCacheKey",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/permission_service.rs",
+      "type": "PermissionService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/plugin_registry.rs",
+      "type": "PluginRegistry",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/plugin_registry.rs",
+      "type": "PluginRegistry",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/policy_service.rs",
+      "type": "PolicyService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/promotion_policy_service.rs",
+      "type": "PromotionPolicyService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/promotion_rule_service.rs",
+      "type": "PromotionRuleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/proxy_hydration.rs",
+      "type": "BufferedCoordinator",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/proxy_hydration.rs",
+      "type": "AdvisoryLockCoordinator",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/proxy_scan_service.rs",
+      "type": "ProxyScanService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/proxy_service.rs",
+      "type": "CacheStore",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/proxy_service.rs",
+      "type": "CachePersister",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/proxy_service.rs",
+      "type": "UpstreamClient",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/proxy_service.rs",
+      "type": "ProxyService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/pypi_analysis.rs",
+      "type": "PypiAnalysis",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/quality_check_service.rs",
+      "type": "QualityCheckService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/quarantine_service.rs",
+      "type": "QuarantineConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/repo_selector_service.rs",
+      "type": "RepoSelectorService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/repository_label_service.rs",
+      "type": "RepositoryLabelService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/repository_service.rs",
+      "type": "RepositoryService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/rpm_repodata_cache.rs",
+      "type": "RpmRepodataCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/rpm_repodata_cache.rs",
+      "type": "RpmRepodataCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/saml_service.rs",
+      "type": "SamlResponseParser",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/saml_service.rs",
+      "type": "SamlService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/sbom_service.rs",
+      "type": "SbomService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/scan_config_service.rs",
+      "type": "ScanConfigService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/scan_result_service.rs",
+      "type": "ScanResultService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/scanner_adapter_client.rs",
+      "type": "ScannerAdapterFsClient",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "WorkspaceGuard",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "ExtractionBudget",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "ExpectedComponent",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "VersionCache",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "AdvisoryLookup",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "AdvisoryClient",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "DependencyScanner",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/scanner_service.rs",
+      "type": "ScannerService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/search_service.rs",
+      "type": "SearchService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/service_account_service.rs",
+      "type": "ServiceAccountService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/signing_service.rs",
+      "type": "SigningService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/smtp_service.rs",
+      "type": "SmtpService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/ssrf_dns.rs",
+      "type": "SsrfGuardResolver",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/storage_gc_service.rs",
+      "type": "StorageGcService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/storage_service.rs",
+      "type": "FilesystemBackend",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/storage_service.rs",
+      "type": "StorageService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/storage_stats_service.rs",
+      "type": "StorageStatsService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/sync_policy_service.rs",
+      "type": "SyncPolicyService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/token_service.rs",
+      "type": "TokenService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/transfer_service.rs",
+      "type": "TransferService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/trivy_fs_scanner.rs",
+      "type": "TrivyFsScanner",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/upstream_feed.rs",
+      "type": "NpmReplicationFeedAdapter",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/upstream_feed.rs",
+      "type": "PackumentInvalidationAction",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/upstream_feed.rs",
+      "type": "PgFeedStateStore",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/upstream_feed.rs",
+      "type": "FeedConsumer",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/upstream_metadata.rs",
+      "type": "UpstreamMetadataCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/services/wasm_plugin_service.rs",
+      "type": "WasmPluginService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/wasm_runtime.rs",
+      "type": "PluginContext",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/wasm_runtime.rs",
+      "type": "WasmRuntime",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/wasm_runtime.rs",
+      "type": "WasmRuntime",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/services/wasm_runtime.rs",
+      "type": "ExecutionCleanup",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/storage/azure.rs",
+      "type": "AzureBackend",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/storage/filesystem.rs",
+      "type": "FilesystemStorage",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/storage/gcs.rs",
+      "type": "GcsTokenProvider",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/storage/gcs.rs",
+      "type": "GcsBackend",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/storage/registry.rs",
+      "type": "StorageRegistry",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/storage/s3.rs",
+      "type": "MultipartAbortGuard",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/storage/s3.rs",
+      "type": "S3Config",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "backend/src/storage/s3.rs",
+      "type": "S3Backend",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "backend/src/util/bounded_archive.rs",
+      "type": "BudgetReader",
+      "reason": "non-simple carrier"
+    }
+  ]
+}

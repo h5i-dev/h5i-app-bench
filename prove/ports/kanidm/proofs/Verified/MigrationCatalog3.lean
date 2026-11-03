@@ -1,0 +1,59 @@
+import Verified.SchemaCatalog172
+import Verified.SchemaCatalog173
+import Verified.SchemaCatalog174
+import Verified.SchemaCatalog175
+import Verified.SchemaCatalog176
+import Verified.SchemaCatalog177
+import Verified.SchemaCatalog178
+import Verified.SchemaCatalog179
+import Verified.SchemaCatalog180
+import Verified.SchemaCatalog181
+import Verified.SchemaCatalog182
+import Verified.SchemaCatalog183
+import Verified.SchemaCatalog184
+import Verified.SchemaCatalog185
+import Verified.SchemaCatalog186
+import Verified.SchemaCatalog187
+import Verified.SchemaCatalog188
+import Verified.SchemaCatalog189
+import Verified.SchemaCatalog190
+import Verified.SchemaCatalog191
+import Verified.SchemaCatalog192
+import Verified.SchemaCatalog193
+import Verified.SchemaCatalog194
+import Verified.SchemaCatalog195
+open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
+open H5iAppLib hiding lit
+namespace kanidm_kernel.Verified.MigrationCatalog
+set_option maxRecDepth 32768
+set_option maxHeartbeats 16000000
+def expected_dl11_phase_2_schema_classes : List SchemaCatalog.ClassModel := [SchemaCatalog.expected_dl11_class_dyngroup,
+SchemaCatalog.expected_dl11_class_orgperson,
+SchemaCatalog.expected_dl11_class_posixaccount,
+SchemaCatalog.expected_dl11_class_posixgroup,
+SchemaCatalog.expected_dl11_class_system_config,
+SchemaCatalog.expected_dl11_class_oauth2_rs_public_dl4,
+SchemaCatalog.expected_dl11_class_account_dl5,
+SchemaCatalog.expected_dl11_class_oauth2_rs_basic_dl5,
+SchemaCatalog.expected_dl11_class_group_dl6,
+SchemaCatalog.expected_dl11_class_key_provider_dl6,
+SchemaCatalog.expected_dl11_class_key_provider_internal_dl6,
+SchemaCatalog.expected_dl11_class_key_object_dl6,
+SchemaCatalog.expected_dl11_class_key_object_jwt_es256_dl6,
+SchemaCatalog.expected_dl11_class_key_object_jwe_a128gcm_dl6,
+SchemaCatalog.expected_dl11_class_key_object_internal_dl6,
+SchemaCatalog.expected_dl11_class_service_account_dl7,
+SchemaCatalog.expected_dl11_class_sync_account_dl7,
+SchemaCatalog.expected_dl11_class_client_certificate_dl7,
+SchemaCatalog.expected_dl11_class_account_policy_dl8,
+SchemaCatalog.expected_dl11_class_person_dl8,
+SchemaCatalog.expected_dl11_class_oauth2_rs_dl9,
+SchemaCatalog.expected_dl11_class_domain_info_dl10,
+SchemaCatalog.expected_dl11_class_key_object_jwt_rs256,
+SchemaCatalog.expected_dl11_class_application]
+@[step] theorem dl11_phase_2_schema_classes_complete : migration_catalog.dl11_phase_2_schema_classes ⦃r => r.val.map SchemaCatalog.viewClass = expected_dl11_phase_2_schema_classes⦄ := by
+  unfold migration_catalog.dl11_phase_2_schema_classes
+  h5i_steps
+  all_goals simp_all [expected_dl11_phase_2_schema_classes, Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val, alloc.vec.FromVecArray.from, Std.Array.empty]
+  all_goals scalar_tac
+end kanidm_kernel.Verified.MigrationCatalog

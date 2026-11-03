@@ -1,0 +1,2658 @@
+{
+  "revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "records": [
+    {
+      "name": "channels",
+      "source": "fn channels() -> Value {\n    json!({\n        \"Folder\": {\n            \"address\": \"folder:{folderId}\",\n            \"description\": \"A folder's mutation stream — file/subfolder created events fire here. AuthZ: caller must hold `Read` on the folder.\",\n            \"parameters\": {\n                \"folderId\": { \"description\": \"Folder UUID\" }\n            },\n            \"messages\": {\n                \"SubscribeRequest\":   { \"$ref\": \"#/components/messages/RtSubscribeRequest\" },\n                \"UnsubscribeRequest\": { \"$ref\": \"#/components/messages/RtUnsubscribeRequest\" },\n                \"PingRequest\":        { \"$ref\": \"#/components/messages/RtPingRequest\" },\n                \"PongResponse\":       { \"$ref\": \"#/components/messages/RtPongResponse\" },\n                \"SubscribedResponse\": { \"$ref\": \"#/components/messages/RtSubscribedResponse\" },\n                \"ErrorResponse\":      { \"$ref\": \"#/components/messages/RtErrorResponse\" },\n                \"FolderEvent\":        { \"$ref\": \"#/components/messages/RtFolderEventNotification\" },\n                \"RevokedNotification\": { \"$ref\": \"#/components/messages/RtRevokedNotification\" },\n            }\n        },\n        \"UserAuthz\": {\n            \"address\": \"user:{userId}:authz\",\n            \"description\": \"A user's private AuthZ-change channel. Identity-scoped: caller_id must equal userId (no admin bypass).\",\n            \"parameters\": {\n                \"userId\": { \"description\": \"User UUID — must match the authenticated caller\" }\n            },\n            \"messages\": {\n                \"SubscribeRequest\":   { \"$ref\": \"#/components/messages/RtSubscribeRequest\" },\n                \"UnsubscribeRequest\": { \"$ref\": \"#/components/messages/RtUnsubscribeRequest\" },\n            }\n        },\n        \"UserNotifications\": {\n            \"address\": \"user:{userId}:notifications\",\n            \"description\": \"A user's private notifications channel. Identity-scoped: caller_id must equal userId (no admin bypass). Auto-subscribed at session open; the FE bell refetches `GET /api/notifications` when a `notification_received` event fires. The DB row is authoritative — a missed push recovers on the next mount.\",\n            \"parameters\": {\n                \"userId\": { \"description\": \"User UUID — must match the authenticated caller\" }\n            },\n            \"messages\": {\n                \"SubscribeRequest\":   { \"$ref\": \"#/components/messages/RtSubscribeRequest\" },\n                \"UnsubscribeRequest\": { \"$ref\": \"#/components/messages/RtUnsubscribeRequest\" },\n            }\n        },\n        \"Job\": {\n            \"address\": \"job:{jobName}\",\n            \"description\": \"A named background job's run lifecycle — Started / Progress / Ended. Consumed by the admin dashboard so operators who trigger a long-running job (backend migration, thumb import…) can navigate off the admin page and come back without losing progress. AuthZ: admin-only (Class 3 role-scoped) — non-admin gets `topic_forbidden`, indistinguishable on the wire from an unknown topic.\",\n            \"parameters\": {\n                \"jobName\": { \"description\": \"Scheduler-registered short slug (e.g. `backend_migration`); `[a-z0-9_-]` chars only\" }\n            },\n            \"messages\": {\n                \"SubscribeRequest\":   { \"$ref\": \"#/components/messages/RtSubscribeRequest\" },\n                \"UnsubscribeRequest\": { \"$ref\": \"#/components/messages/RtUnsubscribeRequest\" },\n                \"SubscribedResponse\": { \"$ref\": \"#/components/messages/RtSubscribedResponse\" },\n                \"ErrorResponse\":      { \"$ref\": \"#/components/messages/RtErrorResponse\" },\n                \"JobEvent\":           { \"$ref\": \"#/components/messages/RtFolderEventNotification\" },\n                \"RevokedNotification\": { \"$ref\": \"#/components/messages/RtRevokedNotification\" },\n            }\n        },\n        \"Collab\": {\n            \"address\": \"collab:{fileId}\",\n            \"description\": \"Collaborative `.md` editing over Yjs. Two frame families ride the same channel:\\n\\n  * **JSON-RPC control plane** (`rt.subscribe` / `rt.unsubscribe` / `rt.collab_flush`) — same text-frame shape as every other channel.\\n  * **Binary data plane** — Yjs sync protocol as raw bytes: `[1 byte kind][16 bytes file_id BE][payload]`. Kinds: `0x01` UPDATE (Yjs update blob), `0x02` AWARENESS (presence, not persisted), `0x03` SYNC (state vector c→s / diff s→c).\\n\\nAuthZ: `Read` on the file for subscribe (JSON) and for `0x03 SYNC` (defense-in-depth vs the subscribe gate). `Update` on the file for `0x01 UPDATE` and `rt.collab_flush`. AWARENESS is presence-only and rides the subscribe-time Read gate.\\n\\nSee `docs/plan/markdown-collab.md` and `src/application/services/collab_wire.rs`.\",\n            \"parameters\": {\n                \"fileId\": { \"description\": \"File UUID — the target `.md` file\" }\n            },\n            \"messages\": {\n                \"SubscribeRequest\":     { \"$ref\": \"#/components/messages/RtSubscribeRequest\" },\n                \"UnsubscribeRequest\":   { \"$ref\": \"#/components/messages/RtUnsubscribeRequest\" },\n                \"CollabFlushRequest\":   { \"$ref\": \"#/components/messages/RtCollabFlushRequest\" },\n                \"CollabFlushResponse\":  { \"$ref\": \"#/components/messages/RtCollabFlushResponse\" },\n                \"SubscribedResponse\":   { \"$ref\": \"#/components/messages/RtSubscribedResponse\" },\n                \"ErrorResponse\":        { \"$ref\": \"#/components/messages/RtErrorResponse\" },\n                \"RevokedNotification\":  { \"$ref\": \"#/components/messages/RtRevokedNotification\" },\n                \"CollabSyncFrame\":      { \"$ref\": \"#/components/messages/CollabSyncFrame\" },\n                \"CollabUpdateFrame\":    { \"$ref\": \"#/components/messages/CollabUpdateFrame\" },\n                \"CollabAwarenessFrame\": { \"$ref\": \"#/components/messages/CollabAwarenessFrame\" },\n            }\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "channels",
+        "self_ty": "",
+        "start": 137,
+        "end": 213,
+        "sha256": "207c9bb115690358317dfe56a7c1441ada7d75ff9f44ab613b5331736765a3f6"
+      },
+      "closed": true
+    },
+    {
+      "name": "operations",
+      "source": "fn operations() -> Value {\n    json!({\n        \"subscribeFolder\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Folder\" },\n            \"title\": \"rt.subscribe — join a folder's mutation stream\",\n            \"summary\": \"**`rt.subscribe`** → client joins a folder's mutation stream. Reply is `rt.subscribed` (ok) or `rt.error` (permission denied, unknown topic, etc.).\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Folder/messages/SubscribeRequest\" }\n            ],\n            \"reply\": {\n                \"channel\": { \"$ref\": \"#/channels/Folder\" },\n                \"messages\": [\n                    { \"$ref\": \"#/channels/Folder/messages/SubscribedResponse\" },\n                    { \"$ref\": \"#/channels/Folder/messages/ErrorResponse\" },\n                ]\n            }\n        },\n        \"unsubscribeFolder\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Folder\" },\n            \"title\": \"rt.unsubscribe — leave a folder's mutation stream\",\n            \"summary\": \"**`rt.unsubscribe`** → client leaves a previously-joined folder. Server acks with `rt.subscribed` (`result.ok = true`) — the ack message is shared with subscribe.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Folder/messages/UnsubscribeRequest\" }\n            ],\n            // The wire DOES send `rt.subscribed` back on unsubscribe too\n            // (the ack message is shared with subscribe — see\n            // `RtSubscribedResponse`'s title). Declaring the reply here\n            // makes the AsyncAPI-HTML template render this as REQUEST\n            // (matching `subscribeFolder`), not fire-and-forget SEND,\n            // and surfaces the ack payload in the operation panel.\n            \"reply\": {\n                \"channel\": { \"$ref\": \"#/channels/Folder\" },\n                \"messages\": [\n                    { \"$ref\": \"#/channels/Folder/messages/SubscribedResponse\" },\n                    { \"$ref\": \"#/channels/Folder/messages/ErrorResponse\" },\n                ]\n            }\n        },\n        \"receiveFolderEvent\": {\n            \"action\": \"receive\",\n            \"channel\": { \"$ref\": \"#/channels/Folder\" },\n            \"title\": \"rt.event — folder mutation notification\",\n            \"summary\": \"**`rt.event`** → server pushes a mutation notice (file/subfolder created, renamed, deleted). Client updates its live view. Delivered only to subscribers holding `Read` on the folder.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Folder/messages/FolderEvent\" }\n            ]\n        },\n        \"receiveRevoked\": {\n            \"action\": \"receive\",\n            \"channel\": { \"$ref\": \"#/channels/Folder\" },\n            \"title\": \"rt.revoked — subscription evicted\",\n            \"summary\": \"**`rt.revoked`** → server evicts the client's subscription (grant revoked, resource deleted, session expired). Client stops rendering the topic and drops any local state.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Folder/messages/RevokedNotification\" }\n            ]\n        },\n        // Application-layer keepalive. Separate from the RFC 6455 Ping\n        // control frame the server sends on `OXICLOUD_MESSAGEBUS_KEEPALIVE_SECONDS`\n        // (which is transport-level and not modelled in AsyncAPI). This\n        // operation lets a client actively confirm the socket is\n        // end-to-end alive when transport-level Pings alone can't rule\n        // out a proxy black-hole.\n        \"ping\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Folder\" },\n            \"title\": \"rt.ping — application-level keepalive\",\n            \"summary\": \"**`rt.ping`** → application-level liveness probe. Reply is `rt.pong` with `result.pong = true`. Distinct from RFC 6455 transport-level Ping; useful when a proxy black-holes traffic without dropping the socket.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Folder/messages/PingRequest\" }\n            ],\n            \"reply\": {\n                \"channel\": { \"$ref\": \"#/channels/Folder\" },\n                \"messages\": [\n                    { \"$ref\": \"#/channels/Folder/messages/PongResponse\" }\n                ]\n            }\n        },\n        // ── Collab operations ────────────────────────────────────\n        \"subscribeCollab\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"rt.subscribe — join a collab session (AuthZ gate: Read)\",\n            \"summary\": \"Subscribe to a file's collab channel. Clears the server-side `Permission::Read` gate on the file so the binary data-plane frames start flowing. Without this, the server drops binary frames from this socket. Same JSON-RPC shape as the folder subscribe; only the topic prefix differs.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/SubscribeRequest\" }\n            ],\n            \"reply\": {\n                \"channel\": { \"$ref\": \"#/channels/Collab\" },\n                \"messages\": [\n                    { \"$ref\": \"#/channels/Collab/messages/SubscribedResponse\" },\n                    { \"$ref\": \"#/channels/Collab/messages/ErrorResponse\" },\n                ]\n            }\n        },\n        \"collabFlush\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"rt.collab_flush — force flush CRDT text to blob (on tab close / save)\",\n            \"summary\": \"**`rt.collab_flush`** → the FE editor's explicit-save path. Server checks `Permission::Update` on the file, calls `CollabSession::flush_to_blob` (idempotent, short-circuits on unchanged content hash), returns `{ flushed: bool }`. Denials use `no_edit`. See `src/interfaces/api/handlers/rt_ws.rs::handle_collab_flush`.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/CollabFlushRequest\" }\n            ],\n            \"reply\": {\n                \"channel\": { \"$ref\": \"#/channels/Collab\" },\n                \"messages\": [\n                    { \"$ref\": \"#/channels/Collab/messages/CollabFlushResponse\" },\n                    { \"$ref\": \"#/channels/Collab/messages/ErrorResponse\" },\n                ]\n            }\n        },\n        \"sendCollabSync\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"0x03 SYNC (c→s, sync-step-1) — send client state vector\",\n            \"summary\": \"Client sends its Yjs state vector so the server can compute the diff needed to catch it up. Payload is `Y.encodeStateVector(doc)` bytes; the empty state vector is a single `0x00` byte (varint 0 clients) — NOT zero-length. Server replies with a `0x03 SYNC` frame carrying the Yjs update bytes.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/CollabSyncFrame\" }\n            ],\n            \"reply\": {\n                \"channel\": { \"$ref\": \"#/channels/Collab\" },\n                \"messages\": [\n                    { \"$ref\": \"#/channels/Collab/messages/CollabSyncFrame\" }\n                ]\n            }\n        },\n        \"sendCollabUpdate\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"0x01 UPDATE (c→s) — apply Yjs update to the shared doc\",\n            \"summary\": \"Client emits a Yjs update blob describing local edits. Server applies to the per-file actor's `yrs::Doc`, broadcasts to every other subscribed socket on the same file, and arms the debouncer for eventual flush-to-blob. AuthZ: server checks `Permission::Update` per frame — a Viewer's frame gets `collab.write_denied` audit and the socket closes.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/CollabUpdateFrame\" }\n            ]\n        },\n        \"receiveCollabUpdate\": {\n            \"action\": \"receive\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"0x01 UPDATE (s→c) — fan-out from another editor\",\n            \"summary\": \"Server broadcasts a Yjs update it applied for another editor on the same file. The originating client also receives its own update back — Yjs's `applyUpdate` is idempotent so this is a no-op locally.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/CollabUpdateFrame\" }\n            ]\n        },\n        \"sendCollabAwareness\": {\n            \"action\": \"send\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"0x02 AWARENESS (c→s) — presence / cursor position\",\n            \"summary\": \"Presence-only (cursor position, user handle, colour). Not applied to the CRDT, not persisted. AuthZ: the subscribe-time Read gate is sufficient — a Viewer's cursor is legitimate.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/CollabAwarenessFrame\" }\n            ]\n        },\n        \"receiveCollabAwareness\": {\n            \"action\": \"receive\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"0x02 AWARENESS (s→c) — peer presence\",\n            \"summary\": \"Server broadcasts another editor's presence bytes. Fan-out policy is same as UPDATE — every subscriber including origin.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/CollabAwarenessFrame\" }\n            ]\n        },\n        \"receiveCollabRevoked\": {\n            \"action\": \"receive\",\n            \"channel\": { \"$ref\": \"#/channels/Collab\" },\n            \"title\": \"rt.revoked — collab session evicted\",\n            \"summary\": \"Grant revoked, file deleted, or admin kicked. Client tears down the editor UI.\",\n            \"messages\": [\n                { \"$ref\": \"#/channels/Collab/messages/RevokedNotification\" }\n            ]\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "operations",
+        "self_ty": "",
+        "start": 215,
+        "end": 388,
+        "sha256": "53263d4f19b15e20c9be9078b1660fcc4e3b811b5ceac5163647b9a364754683"
+      },
+      "closed": true
+    },
+    {
+      "name": "components",
+      "source": "fn components() -> Value {\n    // Placeholder UUID used across every example — same shape as the\n    // topic-parameter examples further down. Keeping it in one const\n    // means all rendered examples refer to the same imaginary folder,\n    // so a reader can trace a subscribe → event → unsubscribe flow\n    // without having to reconcile changing IDs mid-page.\n    let example_folder_id = \"00000000-0000-0000-0000-000000000000\";\n    let example_folder_topic = format!(\"folder:{example_folder_id}\");\n\n    let mut components = json!({\n        \"messages\": {\n            // ── Requests ────────────────────────────────────────────\n            \"RtSubscribeRequest\": {\n                \"name\": \"rt.subscribe\",\n                \"title\": \"Subscribe to a topic\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtSubscribeRequestBody\" },\n                \"examples\": [{\n                    \"name\": \"subscribe-folder\",\n                    \"summary\": \"Client → server: subscribe to a folder's mutation stream\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 1,\n                        \"method\": \"rt.subscribe\",\n                        \"params\": { \"topic\": example_folder_topic },\n                    },\n                }],\n            },\n            \"RtUnsubscribeRequest\": {\n                \"name\": \"rt.unsubscribe\",\n                \"title\": \"Unsubscribe from a topic\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtUnsubscribeRequestBody\" },\n                \"examples\": [{\n                    \"name\": \"unsubscribe-folder\",\n                    \"summary\": \"Client → server: unsubscribe from a previously-joined folder\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 2,\n                        \"method\": \"rt.unsubscribe\",\n                        \"params\": { \"topic\": example_folder_topic },\n                    },\n                }],\n            },\n            \"RtPingRequest\": {\n                \"name\": \"rt.ping\",\n                \"title\": \"Keepalive ping\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtPingRequestBody\" },\n                \"examples\": [{\n                    \"name\": \"ping\",\n                    \"summary\": \"Client → server: liveness probe (reply is rt.pong)\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 42,\n                        \"method\": \"rt.ping\",\n                    },\n                }],\n            },\n            // ── Responses ───────────────────────────────────────────\n            \"RtSubscribedResponse\": {\n                \"name\": \"rt.subscribed\",\n                \"title\": \"Subscribe / unsubscribe ack\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtSuccessResponseBody\" },\n                \"examples\": [{\n                    \"name\": \"subscribed-ok\",\n                    \"summary\": \"Server → client: successful rt.subscribe / rt.unsubscribe ack\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 1,\n                        \"result\": { \"ok\": true },\n                    },\n                }],\n            },\n            \"RtErrorResponse\": {\n                \"name\": \"rt.error\",\n                \"title\": \"JSON-RPC error object\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtErrorResponseBody\" },\n                \"examples\": [{\n                    \"name\": \"error-no-read\",\n                    \"summary\": \"Server → client: rt.subscribe refused because caller lacks Read on the folder\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 1,\n                        \"error\": {\n                            \"code\": error_code::NO_READ,\n                            \"message\": \"no_read\",\n                            \"data\": { \"topic\": example_folder_topic },\n                        },\n                    },\n                }],\n            },\n            \"RtPongResponse\": {\n                \"name\": \"rt.pong\",\n                \"title\": \"Reply to rt.ping — `result.pong == true`\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtPongResponseBody\" },\n                \"examples\": [{\n                    \"name\": \"pong\",\n                    \"summary\": \"Server → client: reply to a client rt.ping\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 42,\n                        \"result\": { \"pong\": true },\n                    },\n                }],\n            },\n            // ── Notifications (server → client) ─────────────────────\n            \"RtFolderEventNotification\": {\n                \"name\": \"rt.event\",\n                \"title\": \"Folder mutation event\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtFolderEventBody\" },\n                \"examples\": [{\n                    \"name\": \"event-file-created\",\n                    \"summary\": \"Server → client: a file was created inside a subscribed folder\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"method\": \"rt.event\",\n                        \"params\": {\n                            \"topic\": example_folder_topic,\n                            \"kind\": \"file.created\",\n                            \"seq\": 17,\n                            \"data\": {\n                                \"id\": \"11111111-1111-1111-1111-111111111111\",\n                                \"name\": \"report.pdf\",\n                                \"size\": 12345,\n                                \"content_hash\": \"b3-…\",\n                                \"created_at\": \"2026-09-13T18:04:00Z\",\n                            },\n                        },\n                    },\n                }],\n            },\n            \"RtRevokedNotification\": {\n                \"name\": \"rt.revoked\",\n                \"title\": \"Subscription evicted\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtRevokedBody\" },\n                \"examples\": [{\n                    \"name\": \"revoked-permission-lost\",\n                    \"summary\": \"Server → client: subscription evicted because the caller lost Read on the folder\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"method\": \"rt.revoked\",\n                        \"params\": {\n                            \"topic\": example_folder_topic,\n                            \"reason\": \"permission_lost\",\n                        },\n                    },\n                }],\n            },\n            // ── Collab: control-plane (JSON) ────────────────────────\n            \"RtCollabFlushRequest\": {\n                \"name\": \"rt.collab_flush\",\n                \"title\": \"Force flush of the CRDT text to the file's blob\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtCollabFlushRequestBody\" },\n                \"examples\": [{\n                    \"name\": \"collab-flush\",\n                    \"summary\": \"Client → server: on tab close / explicit save\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 7,\n                        \"method\": \"rt.collab_flush\",\n                        \"params\": { \"file_id\": \"00000000-0000-0000-0000-000000000000\" },\n                    },\n                }],\n            },\n            \"RtCollabFlushResponse\": {\n                \"name\": \"rt.collab_flush.reply\",\n                \"title\": \"Collab flush ack — `result.flushed`\",\n                \"contentType\": \"application/json\",\n                \"payload\": { \"$ref\": \"#/components/schemas/RtCollabFlushResponseBody\" },\n                \"examples\": [{\n                    \"name\": \"collab-flush-ok-wrote\",\n                    \"summary\": \"Server → client: a blob write happened\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 7,\n                        \"result\": { \"flushed\": true },\n                    },\n                }, {\n                    \"name\": \"collab-flush-ok-noop\",\n                    \"summary\": \"Server → client: unchanged content, short-circuited\",\n                    \"payload\": {\n                        \"jsonrpc\": \"2.0\",\n                        \"id\": 7,\n                        \"result\": { \"flushed\": false },\n                    },\n                }],\n            },\n            // ── Collab: data-plane (binary) ─────────────────────────\n            //\n            // Payload schemas are `format: \"binary\"` — AsyncAPI's JSON\n            // Schema can't describe byte-fielded layouts natively; the\n            // full layout is in the `description`. All three messages\n            // share the 17-byte header prefix.\n            \"CollabSyncFrame\": {\n                \"name\": \"collab.sync\",\n                \"title\": \"0x03 SYNC — Yjs state vector (c→s) / update diff (s→c)\",\n                \"contentType\": \"application/octet-stream\",\n                \"payload\": { \"$ref\": \"#/components/schemas/CollabBinaryFrame\" },\n            },\n            \"CollabUpdateFrame\": {\n                \"name\": \"collab.update\",\n                \"title\": \"0x01 UPDATE — Yjs update blob (bidirectional)\",\n                \"contentType\": \"application/octet-stream\",\n                \"payload\": { \"$ref\": \"#/components/schemas/CollabBinaryFrame\" },\n            },\n            \"CollabAwarenessFrame\": {\n                \"name\": \"collab.awareness\",\n                \"title\": \"0x02 AWARENESS — presence (bidirectional, not persisted)\",\n                \"contentType\": \"application/octet-stream\",\n                \"payload\": { \"$ref\": \"#/components/schemas/CollabBinaryFrame\" },\n            }\n        },\n        \"schemas\": {\n            // Top-level JSON-RPC frame bodies.\n            \"RtSubscribeRequestBody\": rpc_request_schema(\"rt.subscribe\", Some(ref_schema(\"RtSubscribeParams\"))),\n            \"RtUnsubscribeRequestBody\": rpc_request_schema(\"rt.unsubscribe\", Some(ref_schema(\"RtUnsubscribeParams\"))),\n            \"RtPingRequestBody\": rpc_request_schema(\"rt.ping\", None),\n            \"RtSuccessResponseBody\": rpc_success_response_schema(),\n            \"RtPongResponseBody\": rpc_pong_response_schema(),\n            \"RtErrorResponseBody\": rpc_error_response_schema(),\n            \"RtFolderEventBody\": folder_event_notification_schema(),\n            \"RtRevokedBody\": revoked_notification_schema(),\n\n            // Hoisted nested schemas — pulled out from inline `params`,\n            // inner `error`, `result`, and enum arrays so Modelina (and\n            // any other spec-driven codegen) gets real names instead of\n            // `AnonymousSchema_N`. Keep names in sync with the shape:\n            // renaming here silently breaks the generated FE types, so\n            // the CI dirty-tree check catches drift.\n            \"RtSubscribeParams\":   topic_params_schema(),\n            \"RtUnsubscribeParams\": topic_params_schema(),\n            \"RtEventParams\":       event_params_schema(),\n            \"RtEventDataUnion\":    event_data_union_schema(),\n            \"RtEventKind\":         event_kind_schema(),\n            \"RtRevokedParams\":     revoked_params_schema(),\n            \"RtRevokedReason\":     revoked_reason_schema(),\n            \"RtErrorObject\":       rpc_error_object_schema(),\n            \"RtErrorCode\":         rpc_error_code_schema(),\n            \"RtErrorMessage\":      rpc_error_message_schema(),\n            \"RtPongResult\":        rpc_pong_result_schema(),\n\n            // Per-event data payloads (one per `event` discriminator).\n            \"FileCreatedData\": file_created_schema(),\n            \"FileRenamedData\": file_renamed_schema(),\n            \"FileMovedData\": file_moved_schema(),\n            \"FileDeletedData\": file_deleted_schema(),\n            \"FolderCreatedData\": folder_created_schema(),\n            \"FolderRenamedData\": folder_renamed_schema(),\n            \"FolderMovedData\": folder_moved_schema(),\n            \"FolderDeletedData\": folder_deleted_schema(),\n            \"NotificationReceivedData\": notification_received_schema(),\n            \"JobRunStartedData\": job_run_started_schema(),\n            \"JobRunProgressData\": job_run_progress_schema(),\n            \"JobRunEndedData\": job_run_ended_schema(),\n\n            // ── Collab ─────────────────────────────────────────────\n            \"RtCollabFlushRequestBody\":  rpc_request_schema(\"rt.collab_flush\", Some(ref_schema(\"RtCollabFlushParams\"))),\n            \"RtCollabFlushResponseBody\": rpc_typed_response_schema(ref_schema(\"RtCollabFlushResult\")),\n            \"RtCollabFlushParams\":       collab_flush_params_schema(),\n            \"RtCollabFlushResult\":       collab_flush_result_schema(),\n            \"CollabBinaryFrame\":         collab_binary_frame_schema(),\n        },\n        // How the client authenticates. Handler side is `auth_middleware`\n        // — the same middleware every `/api/*` request goes through, so\n        // any JWT valid for REST is valid for WS.\n        \"securitySchemes\": {\n            \"bearerAuth\": {\n                \"type\": \"http\",\n                \"scheme\": \"bearer\",\n                \"bearerFormat\": \"JWT\",\n                \"description\": \"OxiCloud JWT — same access_token minted by `POST /api/auth/login` (or the OPAQUE handshake). Programmatic clients set `Authorization: Bearer <jwt>` on the WS upgrade request. DPoP-bound tokens are refused on this path (the WS handshake cannot carry a DPoP proof); browsers use `ticketAuth` instead.\",\n            },\n            // `httpApiKey` (not bare `apiKey`) — AsyncAPI 3.0 reserves\n            // `apiKey` for server-variable-based schemes; a header-\n            // scoped key is `httpApiKey` with `in: header`.\n            \"ticketAuth\": {\n                \"type\": \"httpApiKey\",\n                \"in\": \"header\",\n                \"name\": \"Sec-WebSocket-Protocol\",\n                \"description\": \"Browser path — the FE first calls `POST /api/rt/ticket` under the full REST middleware stack (auth + DPoP-proofed request), receives an opaque one-shot UUID with a 30 s TTL, then sets `Sec-WebSocket-Protocol: oxi.ticket.<uuid>` on the WS upgrade. The server redeems the ticket (single-use — a second attempt fails) and treats the WS session as authenticated for the caller who issued it. See `docs/architecture/message-bus-and-notifications.md § F` and `handlers/rt_ticket_handler.rs`.\",\n            }\n        }\n    });\n\n    // Close every top-level object schema in components.schemas —\n    // the Rust wire (`serde` on named struct fields) never emits\n    // extras, so `additionalProperties: false` is honest, and it\n    // removes the `additionalProperties?: Record<string, unknown>`\n    // escape-hatch field Modelina would otherwise generate on every\n    // TS interface. One-shot post-process instead of 19 individual\n    // `\"additionalProperties\": false` lines sprinkled through the\n    // schema builders.\n    //\n    // Deliberately NOT recursive: we only close the named top-level\n    // schemas. Recursing into `properties` closes anonymous inline\n    // sub-objects, which then triggers Modelina to name them (and\n    // fail our AnonymousSchema guard). If a nested object needs a\n    // real name AND `additionalProperties: false`, hoist it explicitly\n    // to `components.schemas` and reference via `$ref`.\n    if let Some(schemas) = components.get_mut(\"schemas\").and_then(Value::as_object_mut) {\n        for schema in schemas.values_mut() {\n            close_object_schema_shallow(schema);\n        }\n    }\n\n    components\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "components",
+        "self_ty": "",
+        "start": 390,
+        "end": 703,
+        "sha256": "32452a78540f59ee1e5c17432c7e96ba940cad252a2f5a8a03ef28e0174bbf77"
+      },
+      "closed": true
+    },
+    {
+      "name": "close_object_schema_shallow",
+      "source": "/// Add `additionalProperties: false` to a top-level object schema if\n/// it declares `type: \"object\"` and doesn't already set the field.\n/// Non-object schemas (`enum`, `oneOf`, `type: \"integer\"`, string\n/// types, etc.) are untouched. Never descends — see `components()`.\nfn close_object_schema_shallow(schema: &mut Value) {\n    let Value::Object(map) = schema else { return };\n    let is_object = matches!(map.get(\"type\"), Some(Value::String(s)) if s == \"object\");\n    if is_object && !map.contains_key(\"additionalProperties\") {\n        map.insert(\"additionalProperties\".to_string(), Value::Bool(false));\n    }\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "close_object_schema_shallow",
+        "self_ty": "",
+        "start": 705,
+        "end": 715,
+        "sha256": "0cd40c8b0d23458fc393945fdaa6cae9cdbd7e5fd5ee46dd4b8a5b6050abe34f"
+      },
+      "closed": false
+    },
+    {
+      "name": "ref_schema",
+      "source": "/// `$ref` shorthand — every hoisted inline schema below is referenced\n/// through this so consumers of the spec (Modelina, AsyncAPI Studio, any\n/// SDK generator) see named types instead of `AnonymousSchema_N`.\nfn ref_schema(name: &str) -> Value {\n    json!({ \"$ref\": format!(\"#/components/schemas/{name}\") })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "ref_schema",
+        "self_ty": "",
+        "start": 719,
+        "end": 724,
+        "sha256": "c378c7bd6798afb44c778435cdb262bcd997c4a4ced8d0ab18cc5459a1f75676"
+      },
+      "closed": false
+    },
+    {
+      "name": "rpc_request_schema",
+      "source": "/// JSON-RPC 2.0 request envelope. `params_schema` is `Some(...)` for\n/// methods that take arguments (`rt.subscribe`, `rt.unsubscribe`) and\n/// `None` for methods that don't (`rt.ping`). Omitting `params` from\n/// the properties entirely — rather than declaring it as\n/// `{\"type\": \"null\"}` — keeps Modelina from emitting `params?: any`\n/// on the generated TS: no property in the schema → no property in\n/// the interface, which is what JSON-RPC 2.0 allows anyway (`params`\n/// is optional per spec).\nfn rpc_request_schema(method: &str, params_schema: Option<Value>) -> Value {\n    let mut properties = json!({\n        \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n        \"id\":      { \"type\": [\"integer\", \"string\", \"null\"] },\n        \"method\":  { \"type\": \"string\", \"const\": method },\n    });\n    if let Some(params) = params_schema {\n        properties[\"params\"] = params;\n    }\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"jsonrpc\", \"id\", \"method\"],\n        \"properties\": properties,\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_request_schema",
+        "self_ty": "",
+        "start": 726,
+        "end": 748,
+        "sha256": "7882b714ffe78ff4b8c2e46c7aec4df4b63b22f4a43a031581578c769a5afb2f"
+      },
+      "closed": false
+    },
+    {
+      "name": "topic_params_schema",
+      "source": "fn topic_params_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"topic\"],\n        \"properties\": {\n            \"topic\": {\n                \"type\": \"string\",\n                \"description\": \"Wire form: `folder:<uuid>` or `user:<uuid>:authz`\",\n                \"examples\": [\"folder:00000000-0000-0000-0000-000000000000\"],\n            }\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "topic_params_schema",
+        "self_ty": "",
+        "start": 750,
+        "end": 762,
+        "sha256": "08683e08d42e4f2814a4793c259780d31743dcd0ba4c8217d9e3e7ed278bcdaf"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_success_response_schema",
+      "source": "fn rpc_success_response_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"jsonrpc\", \"id\", \"result\"],\n        \"properties\": {\n            \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n            \"id\":      { \"type\": [\"integer\", \"string\", \"null\"] },\n            // Generic base shape — every specific method has its own\n            // typed result schema (RtPongResult, subscribed ack, etc.).\n            // Declaring every JSON type explicitly nudges Modelina\n            // toward a real union rather than the bare `any` it emits\n            // for a purely descriptive schema — matches the JSON-RPC\n            // spec's \"any JSON value\" phrasing while giving downstream\n            // codegens something to project.\n            \"result\": {\n                \"description\": \"Method-specific result payload. See the concrete response schema for each `method`.\",\n                \"type\": [\"object\", \"array\", \"string\", \"number\", \"integer\", \"boolean\", \"null\"],\n            },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_success_response_schema",
+        "self_ty": "",
+        "start": 764,
+        "end": 784,
+        "sha256": "9dfad32710824c37f4dbf69269dfcf205ac3510122550639f7a7a276cd62fe41"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_pong_response_schema",
+      "source": "/// Reply to `rt.ping` — the shape pins `result.pong == true` so\n/// contract tests can assert on it directly. `result` is hoisted to\n/// [`RtPongResult`] so Modelina gets a named type.\nfn rpc_pong_response_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"jsonrpc\", \"id\", \"result\"],\n        \"properties\": {\n            \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n            \"id\":      { \"type\": [\"integer\", \"string\", \"null\"] },\n            \"result\":  ref_schema(\"RtPongResult\"),\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_pong_response_schema",
+        "self_ty": "",
+        "start": 786,
+        "end": 799,
+        "sha256": "7b3741a9605214a5b9bce62c8656b41c337729b63bc46f20d14125dd698cf78e"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_pong_result_schema",
+      "source": "fn rpc_pong_result_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"pong\"],\n        \"properties\": {\n            \"pong\": { \"type\": \"boolean\", \"const\": true }\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_pong_result_schema",
+        "self_ty": "",
+        "start": 801,
+        "end": 809,
+        "sha256": "9a6abaa98ffcf68a25e50b12478531e35dd8811fefd0e30b494d8637c777043c"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_error_response_schema",
+      "source": "fn rpc_error_response_schema() -> Value {\n    // The `code`/`message` catalog is the stable public vocabulary —\n    // any change here IS a wire break. Every entry mirrors\n    // `application/ports/message_bus_ports.rs::error_code`. The inner\n    // error object is hoisted to `RtErrorObject` so Modelina emits a\n    // named type instead of `AnonymousSchema_N`.\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"jsonrpc\", \"id\", \"error\"],\n        \"properties\": {\n            \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n            \"id\":      { \"type\": [\"integer\", \"string\", \"null\"] },\n            \"error\":   ref_schema(\"RtErrorObject\"),\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_error_response_schema",
+        "self_ty": "",
+        "start": 811,
+        "end": 826,
+        "sha256": "1f030e9a91115aa19b259c33d558043d8098941da351ce9c03a04824ff6f2a89"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_error_object_schema",
+      "source": "fn rpc_error_object_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"JSON-RPC 2.0 error object. `code` + `message` form a stable pair; `data` optionally carries caller-visible context (e.g. offending topic).\",\n        \"required\": [\"code\", \"message\"],\n        \"properties\": {\n            \"code\":    ref_schema(\"RtErrorCode\"),\n            \"message\": ref_schema(\"RtErrorMessage\"),\n            // Per JSON-RPC 2.0: \"A Primitive or Structured value that\n            // contains additional information about the error.\" The\n            // union covers every JSON type so Modelina emits a real\n            // TS union rather than a bare `any`. Client MUST check\n            // `code` before assuming `data`'s shape.\n            \"data\": {\n                \"description\": \"Optional caller-facing context; shape depends on the specific `code`.\",\n                \"type\": [\"object\", \"array\", \"string\", \"number\", \"integer\", \"boolean\", \"null\"],\n            }\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_error_object_schema",
+        "self_ty": "",
+        "start": 828,
+        "end": 847,
+        "sha256": "920b678e2ec4d0e2ebdd1be0fa5f2cfe9ab19d6a6f9ffd6e44bed3bfced4b1a1"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_error_code_schema",
+      "source": "fn rpc_error_code_schema() -> Value {\n    // Kept as plain `integer` — Modelina projects a JSON-Schema `enum` of\n    // numeric values into a TS enum with mangled member names\n    // (`MINUS_32001 = -32001`), which is worse than no enum at all. The\n    // Rust `error_code` module is the source of truth for named\n    // constants; the FE mirrors it in `frontend/src/lib/message-bus/\n    // error-codes.ts` (hand-written, 11 lines, sits alongside the\n    // generated DTOs). Description enumerates the full set inline so the\n    // AsyncAPI spec is still self-documenting.\n    let full_description = format!(\n        \"Stable integer error code. Values are frozen across releases — a \\\n         new denial cause gets a new value, never repurposes an existing \\\n         one. Application-defined codes ({}..={}):\\n\\\n         · {} NO_READ — resource-scoped topic, caller lacks Read (or \\\n         resource doesn't exist — indistinguishable by design)\\n\\\n         · {} NO_SHARE — resource requires Share, caller has Read but not Share\\n\\\n         · {} NO_COMMENT — resource requires Comment\\n\\\n         · {} TOPIC_FORBIDDEN — identity-scoped mismatch or unknown/malformed topic\\n\\\n         · {} SUB_LIMIT — per-connection subscription cap hit\\n\\\n         · {} RATE_LIMITED — subscribe-frame token bucket exhausted\\n\\\n         · {} NO_EDIT — CRDT edit frame from a caller without Edit\\n\\\n         Standard JSON-RPC 2.0 codes:\\n\\\n         · {} INTERNAL_ERROR · {} INVALID_REQUEST · {} METHOD_NOT_FOUND · {} INVALID_PARAMS\",\n        -32099,\n        -32000,\n        error_code::NO_READ,\n        error_code::NO_SHARE,\n        error_code::NO_COMMENT,\n        error_code::TOPIC_FORBIDDEN,\n        error_code::SUB_LIMIT,\n        error_code::RATE_LIMITED,\n        error_code::NO_EDIT,\n        error_code::INTERNAL_ERROR,\n        error_code::INVALID_REQUEST,\n        error_code::METHOD_NOT_FOUND,\n        error_code::INVALID_PARAMS,\n    );\n    json!({\n        \"type\": \"integer\",\n        \"description\": full_description,\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_error_code_schema",
+        "self_ty": "",
+        "start": 849,
+        "end": 890,
+        "sha256": "74c964f4447dc31024930393a169bc3bb5066e95ab26d22644206fa73b8bcdc5"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_error_message_schema",
+      "source": "fn rpc_error_message_schema() -> Value {\n    json!({\n        \"type\": \"string\",\n        \"description\": \"Stable wire vocabulary; matches the corresponding `code`.\",\n        \"enum\": [\n            \"no_read\", \"no_share\", \"no_comment\", \"topic_forbidden\",\n            \"sub_limit\", \"rate_limited\", \"no_edit\",\n            \"internal_error\", \"invalid_request\",\n            \"method_not_found\", \"invalid_params\",\n        ],\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_error_message_schema",
+        "self_ty": "",
+        "start": 892,
+        "end": 903,
+        "sha256": "598ba88ac6b7d60e39ab87462e483c6f2dd2674e283691369c5b105f7afd7ea3"
+      },
+      "closed": true
+    },
+    {
+      "name": "folder_event_notification_schema",
+      "source": "fn folder_event_notification_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"JSON-RPC notification (no `id`). `method = \\\"rt.event\\\"`. `params` is hoisted to `RtEventParams`.\",\n        \"required\": [\"jsonrpc\", \"method\", \"params\"],\n        \"properties\": {\n            \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n            \"method\":  { \"type\": \"string\", \"const\": \"rt.event\" },\n            \"params\":  ref_schema(\"RtEventParams\"),\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "folder_event_notification_schema",
+        "self_ty": "",
+        "start": 905,
+        "end": 916,
+        "sha256": "2bdb763737bade5245646d999533b77415dbf817f239d21d4d61fd6eed816460"
+      },
+      "closed": true
+    },
+    {
+      "name": "event_params_schema",
+      "source": "fn event_params_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"topic\", \"event\", \"data\"],\n        \"properties\": {\n            \"topic\": { \"type\": \"string\" },\n            \"event\": ref_schema(\"RtEventKind\"),\n            \"data\":  ref_schema(\"RtEventDataUnion\"),\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "event_params_schema",
+        "self_ty": "",
+        "start": 918,
+        "end": 928,
+        "sha256": "ccd85585f9ace174d1cdd12314eb5129b88dd95da23c10cfeb65fdb41570ac8e"
+      },
+      "closed": true
+    },
+    {
+      "name": "event_kind_schema",
+      "source": "fn event_kind_schema() -> Value {\n    json!({\n        \"type\": \"string\",\n        \"description\": \"Discriminator for the `data` payload. Mirrors the `#[serde(tag = \\\"event\\\", rename_all = \\\"snake_case\\\")]` variants of the Rust `MessageBusEvent` enum — a new event kind is a new enum variant on both sides.\",\n        \"enum\": [\n            \"file_created\", \"file_renamed\", \"file_moved\", \"file_deleted\",\n            \"folder_created\", \"folder_renamed\", \"folder_moved\", \"folder_deleted\",\n            \"notification_received\",\n            \"job_run_started\", \"job_run_progress\", \"job_run_ended\",\n        ],\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "event_kind_schema",
+        "self_ty": "",
+        "start": 930,
+        "end": 941,
+        "sha256": "b38c84575e083a1af37ca71393a621a732ac048a74f30be9a168a5486bdcd2aa"
+      },
+      "closed": true
+    },
+    {
+      "name": "event_data_union_schema",
+      "source": "fn event_data_union_schema() -> Value {\n    json!({\n        \"description\": \"Tagged union of every possible `rt.event` payload. Discriminated by the sibling `event` field (see `RtEventKind`).\",\n        \"oneOf\": [\n            ref_schema(\"FileCreatedData\"),\n            ref_schema(\"FileRenamedData\"),\n            ref_schema(\"FileMovedData\"),\n            ref_schema(\"FileDeletedData\"),\n            ref_schema(\"FolderCreatedData\"),\n            ref_schema(\"FolderRenamedData\"),\n            ref_schema(\"FolderMovedData\"),\n            ref_schema(\"FolderDeletedData\"),\n            ref_schema(\"NotificationReceivedData\"),\n            ref_schema(\"JobRunStartedData\"),\n            ref_schema(\"JobRunProgressData\"),\n            ref_schema(\"JobRunEndedData\"),\n        ]\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "event_data_union_schema",
+        "self_ty": "",
+        "start": 943,
+        "end": 961,
+        "sha256": "c85cb744296ed55974c48822549bce03cc3fa3958ee6910f64e62dc1001dfe11"
+      },
+      "closed": true
+    },
+    {
+      "name": "file_created_schema",
+      "source": "fn file_created_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"file_id\", \"name\", \"parent_id\", \"actor\"],\n        \"properties\": {\n            \"file_id\":   { \"type\": \"string\", \"format\": \"uuid\" },\n            \"name\":      { \"type\": \"string\" },\n            \"parent_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "file_created_schema",
+        "self_ty": "",
+        "start": 963,
+        "end": 974,
+        "sha256": "3aa2cf39a5503600e9cd202b85be9e4d6e2d094d474f8b613cbb06fb5c72e459"
+      },
+      "closed": true
+    },
+    {
+      "name": "file_renamed_schema",
+      "source": "fn file_renamed_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"file_id\", \"old_name\", \"new_name\", \"parent_id\", \"actor\"],\n        \"properties\": {\n            \"file_id\":   { \"type\": \"string\", \"format\": \"uuid\" },\n            \"old_name\":  { \"type\": \"string\" },\n            \"new_name\":  { \"type\": \"string\" },\n            \"parent_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "file_renamed_schema",
+        "self_ty": "",
+        "start": 976,
+        "end": 988,
+        "sha256": "63825ca83820c490f88c1441cc38342f8572b3963dc908a9a41c0d1c2902f13f"
+      },
+      "closed": true
+    },
+    {
+      "name": "file_moved_schema",
+      "source": "fn file_moved_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"Emitted on BOTH the source (`from`) and destination (`to`) folder topics. Subscribers to either see the event exactly once because they're subscribed to only one of the two.\",\n        \"required\": [\"file_id\", \"name\", \"from\", \"to\", \"actor\"],\n        \"properties\": {\n            \"file_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"name\":    { \"type\": \"string\" },\n            \"from\":    { \"type\": \"string\", \"format\": \"uuid\" },\n            \"to\":      { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":   { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "file_moved_schema",
+        "self_ty": "",
+        "start": 990,
+        "end": 1003,
+        "sha256": "2d38f0911fce7dfa765dffc17264ed37129daa23f0616f4ac3540520ed2ffe9f"
+      },
+      "closed": true
+    },
+    {
+      "name": "file_deleted_schema",
+      "source": "fn file_deleted_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"The wire doesn't distinguish soft (trash) vs. permanent delete — clients treat both as \\\"disappears from the folder view\\\". `parent_id` is the folder the file used to live in.\",\n        \"required\": [\"file_id\", \"parent_id\", \"actor\"],\n        \"properties\": {\n            \"file_id\":   { \"type\": \"string\", \"format\": \"uuid\" },\n            \"parent_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "file_deleted_schema",
+        "self_ty": "",
+        "start": 1005,
+        "end": 1016,
+        "sha256": "eacc58b1a1213d9dee98e22778ac34acf910be1a0c2efad7c9d6da33fe4c796f"
+      },
+      "closed": true
+    },
+    {
+      "name": "folder_created_schema",
+      "source": "fn folder_created_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"folder_id\", \"name\", \"parent_id\", \"actor\"],\n        \"properties\": {\n            \"folder_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"name\":      { \"type\": \"string\" },\n            \"parent_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "folder_created_schema",
+        "self_ty": "",
+        "start": 1018,
+        "end": 1029,
+        "sha256": "87c47097839e06ba470a664bcf45b577ac86deffae0beeb5ea970b9c76eaa2ac"
+      },
+      "closed": true
+    },
+    {
+      "name": "folder_renamed_schema",
+      "source": "fn folder_renamed_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"folder_id\", \"old_name\", \"new_name\", \"parent_id\", \"actor\"],\n        \"properties\": {\n            \"folder_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"old_name\":  { \"type\": \"string\" },\n            \"new_name\":  { \"type\": \"string\" },\n            \"parent_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "folder_renamed_schema",
+        "self_ty": "",
+        "start": 1031,
+        "end": 1043,
+        "sha256": "93d582bbfb4d10107227a6f50aceb4826f336a6d7ee7d33b4a5c8e3d01aabd9a"
+      },
+      "closed": true
+    },
+    {
+      "name": "folder_moved_schema",
+      "source": "fn folder_moved_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"Emitted on BOTH the source (`from`) and destination (`to`) folder topics — same shape as `FileMoved`.\",\n        \"required\": [\"folder_id\", \"name\", \"from\", \"to\", \"actor\"],\n        \"properties\": {\n            \"folder_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"name\":      { \"type\": \"string\" },\n            \"from\":      { \"type\": \"string\", \"format\": \"uuid\" },\n            \"to\":        { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "folder_moved_schema",
+        "self_ty": "",
+        "start": 1045,
+        "end": 1058,
+        "sha256": "1f696651c96ec86350187fe6c9565631d0ff9ce9d2839f456fd785ed9e7b4dd5"
+      },
+      "closed": true
+    },
+    {
+      "name": "folder_deleted_schema",
+      "source": "fn folder_deleted_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"Soft vs. permanent delete are indistinguishable on the wire.\",\n        \"required\": [\"folder_id\", \"parent_id\", \"actor\"],\n        \"properties\": {\n            \"folder_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"parent_id\": { \"type\": \"string\", \"format\": \"uuid\" },\n            \"actor\":     { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "folder_deleted_schema",
+        "self_ty": "",
+        "start": 1060,
+        "end": 1071,
+        "sha256": "0db694f1050bf726561c68579dda6ebe03a858b0cfb4cd97bde11777a5f1502f"
+      },
+      "closed": true
+    },
+    {
+      "name": "notification_received_schema",
+      "source": "fn notification_received_schema() -> Value {\n    // Pure cache-invalidation event — no fields on the wire.\n    // The topic (`user:{u}:notifications`) signals the semantic;\n    // the FE responds by refetching `GET /api/notifications`\n    // (or a delta via `?after=<cursor>`). All payload data lives\n    // in the REST DTO (OpenAPI), not here. See\n    // `docs/plan/templated-messages.md § Schema ownership`.\n    json!({\n        \"type\": \"object\",\n        \"description\": \"A new notification was created for the caller. Pure cache-invalidation event — no fields on the wire. The FE refetches `GET /api/notifications` on receipt and reads the payload from the REST DTO (see `openapi.json`). Zero schema overlap between the bus wire (this file) and the REST wire — the strict form of the AsyncAPI-defines-envelope / OpenAPI-defines-payload split.\",\n        \"additionalProperties\": false,\n        \"properties\": {}\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "notification_received_schema",
+        "self_ty": "",
+        "start": 1081,
+        "end": 1094,
+        "sha256": "025d545be23b2a66ba9f029b4a02a52a421d258e6c746016df6b3f3f3c9da0cf"
+      },
+      "closed": true
+    },
+    {
+      "name": "job_run_started_schema",
+      "source": "fn job_run_started_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"A background job's run started. `name` matches the scheduler-registered job name (e.g. `backend_migration`). `actor` is `00000000-0000-0000-0000-000000000000` today — the scheduler doesn't yet thread the trigger caller through.\",\n        \"required\": [\"name\", \"started_at\", \"actor\"],\n        \"properties\": {\n            \"name\":       { \"type\": \"string\" },\n            \"started_at\": { \"type\": \"string\", \"format\": \"date-time\" },\n            \"actor\":      { \"type\": \"string\", \"format\": \"uuid\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "job_run_started_schema",
+        "self_ty": "",
+        "start": 1101,
+        "end": 1112,
+        "sha256": "3f906257abda8216dff2ab872c662752822ecf8e0447977efceb8d5528dfe412"
+      },
+      "closed": true
+    },
+    {
+      "name": "job_run_progress_schema",
+      "source": "fn job_run_progress_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"A background job made progress. Throttled at the publish site to at most one per 3 s per job (see scheduler engine). `step` / `total` populate a progress bar; all three fields are optional because different jobs report different granularities.\",\n        \"required\": [\"name\"],\n        \"properties\": {\n            \"name\":    { \"type\": \"string\" },\n            \"step\":    { \"type\": [\"integer\", \"null\"], \"minimum\": 0 },\n            \"total\":   { \"type\": [\"integer\", \"null\"], \"minimum\": 0 },\n            \"message\": { \"type\": [\"string\", \"null\"] },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "job_run_progress_schema",
+        "self_ty": "",
+        "start": 1114,
+        "end": 1126,
+        "sha256": "634bfab10ad46742040bc5ef03d96d6e70b9e3c62be61154bd5d24e479a07cc9"
+      },
+      "closed": true
+    },
+    {
+      "name": "job_run_ended_schema",
+      "source": "fn job_run_ended_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"A background job's run ended. `success = true` for a normal completion; `false` for failure / timeout / cancelled / paused-with-unhandled-outcome. `reason` populates the toast text on the `false` branch and links to `/admin/jobs/<name>` for the full outcome. Consumer typically drops its subscription on receipt (job is done).\",\n        \"required\": [\"name\", \"success\", \"ended_at\"],\n        \"properties\": {\n            \"name\":     { \"type\": \"string\" },\n            \"success\":  { \"type\": \"boolean\" },\n            \"reason\":   { \"type\": [\"string\", \"null\"] },\n            \"ended_at\": { \"type\": \"string\", \"format\": \"date-time\" },\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "job_run_ended_schema",
+        "self_ty": "",
+        "start": 1128,
+        "end": 1140,
+        "sha256": "fec87414b73fdc56a2eabb2e1e99d999f8a417e1b40fc30bb92e1f40ab0769aa"
+      },
+      "closed": true
+    },
+    {
+      "name": "revoked_notification_schema",
+      "source": "/// `rt.revoked` notification body — server tells the client that a\n/// specific subscription has been evicted. `topic` is the wire-form\n/// string the client originally subscribed to. `reason` is the stable\n/// eviction vocabulary — never repurpose an existing value (matches\n/// the AuthZ audit-line convention).\nfn revoked_notification_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"description\": \"JSON-RPC notification (no `id`). `method = \\\"rt.revoked\\\"`. `params` hoisted to `RtRevokedParams`.\",\n        \"required\": [\"jsonrpc\", \"method\", \"params\"],\n        \"properties\": {\n            \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n            \"method\":  { \"type\": \"string\", \"const\": \"rt.revoked\" },\n            \"params\":  ref_schema(\"RtRevokedParams\"),\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "revoked_notification_schema",
+        "self_ty": "",
+        "start": 1142,
+        "end": 1158,
+        "sha256": "62c901d951956b9561c72d257956d5d6650d9a20db08ec66d312d9cddec18c66"
+      },
+      "closed": true
+    },
+    {
+      "name": "revoked_params_schema",
+      "source": "fn revoked_params_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"topic\", \"reason\"],\n        \"properties\": {\n            \"topic\":  { \"type\": \"string\" },\n            \"reason\": ref_schema(\"RtRevokedReason\"),\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "revoked_params_schema",
+        "self_ty": "",
+        "start": 1160,
+        "end": 1169,
+        "sha256": "e9e36571d435ba63d4536d319fcdfc1d0c450cf26b941fbcd090176841e843d5"
+      },
+      "closed": true
+    },
+    {
+      "name": "revoked_reason_schema",
+      "source": "fn revoked_reason_schema() -> Value {\n    json!({\n        \"type\": \"string\",\n        \"description\": \"Server-side eviction cause. Stable vocabulary; a new eviction reason is a new enum value.\",\n        \"enum\": [\n            \"grant_revoked\",\n            \"resource_deleted\",\n            \"group_membership_lost\",\n            \"admin_kick\",\n        ]\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "revoked_reason_schema",
+        "self_ty": "",
+        "start": 1171,
+        "end": 1182,
+        "sha256": "195b3aa8733dc74f3b9eba5b8aced65bea55a7902aca50e7c8c7a49591322428"
+      },
+      "closed": true
+    },
+    {
+      "name": "rpc_typed_response_schema",
+      "source": "/// Generic JSON-RPC success envelope with a typed `result` — same\n/// shape as [`rpc_pong_response_schema`] but with the result ref\n/// picked by the caller. Used by any method that has a real result\n/// object (`rt.collab_flush` today; more to come).\nfn rpc_typed_response_schema(result_schema: Value) -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"jsonrpc\", \"id\", \"result\"],\n        \"properties\": {\n            \"jsonrpc\": { \"type\": \"string\", \"const\": \"2.0\" },\n            \"id\":      { \"type\": [\"integer\", \"string\", \"null\"] },\n            \"result\":  result_schema,\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "rpc_typed_response_schema",
+        "self_ty": "",
+        "start": 1186,
+        "end": 1200,
+        "sha256": "5cb2890095fc7827485ecd3ab48d7c67191b0ab00163cb7b347ec6b782faa802"
+      },
+      "closed": false
+    },
+    {
+      "name": "collab_flush_params_schema",
+      "source": "/// `params` object for `rt.collab_flush { file_id }`.\nfn collab_flush_params_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"file_id\"],\n        \"properties\": {\n            \"file_id\": {\n                \"type\": \"string\",\n                \"format\": \"uuid\",\n                \"description\": \"Target file — dashed UUID.\",\n            }\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "collab_flush_params_schema",
+        "self_ty": "",
+        "start": 1202,
+        "end": 1215,
+        "sha256": "4592cfd0d3edfff4c24f726c9c3a7e4373a199a279d2975ab58c32f1d6c971fa"
+      },
+      "closed": true
+    },
+    {
+      "name": "collab_flush_result_schema",
+      "source": "/// `result` object for the `rt.collab_flush` reply: `{ flushed: bool }`.\n/// `true` = a blob write happened; `false` = the content hash matched\n/// the last flush, so the call was a no-op.\nfn collab_flush_result_schema() -> Value {\n    json!({\n        \"type\": \"object\",\n        \"required\": [\"flushed\"],\n        \"properties\": {\n            \"flushed\": {\n                \"type\": \"boolean\",\n                \"description\": \"`true` when a blob write happened; `false` when the CRDT text was unchanged since the last flush (short-circuit).\",\n            }\n        }\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "collab_flush_result_schema",
+        "self_ty": "",
+        "start": 1217,
+        "end": 1231,
+        "sha256": "d19467f9f36f69d5b7ae1447fc168d6800db76e7a94dd63874a52953f850e3e1"
+      },
+      "closed": true
+    },
+    {
+      "name": "collab_binary_frame_schema",
+      "source": "/// Payload schema for every collab data-plane binary message\n/// (`CollabSyncFrame`, `CollabUpdateFrame`, `CollabAwarenessFrame`).\n///\n/// AsyncAPI's JSON Schema can't describe byte-fielded layouts natively\n/// — `format: \"binary\"` is the standard escape hatch for \"opaque bytes,\n/// see the description.\" The 17-byte prefix layout is the same across\n/// all three kinds; the payload semantics differ (state vector vs\n/// Yjs update blob vs awareness bytes) and are named per-message via\n/// the message's `title`.\nfn collab_binary_frame_schema() -> Value {\n    json!({\n        \"type\": \"string\",\n        \"format\": \"binary\",\n        \"description\": \"Raw bytes of a collab wire frame. Layout: \\\n                        `[1 byte kind][16 bytes file_id BE][payload...]`. \\\n                        `kind`: `0x01` UPDATE (Yjs update blob), `0x02` \\\n                        AWARENESS (opaque presence bytes, not persisted), \\\n                        `0x03` SYNC (Yjs state vector c→s / Yjs update \\\n                        s→c). `file_id` is a UUID serialised as its 16 \\\n                        raw bytes (matches `Uuid::as_bytes()` on the \\\n                        server; `y-codemirror.next` binary handling on \\\n                        the client). Empty payloads are legal only for \\\n                        the SYNC direction that carries a state vector \\\n                        of zero clients — Yjs encodes that as a single \\\n                        `0x00` byte, NOT zero bytes.\",\n    })\n}",
+      "meta": {
+        "file": "src/bin/generate-asyncapi.rs",
+        "kind": "fn",
+        "name": "collab_binary_frame_schema",
+        "self_ty": "",
+        "start": 1233,
+        "end": 1259,
+        "sha256": "3a77636de2b1c2c24a7bd2c3d5c3145a368188ad1e31777ac53610783a86cbca"
+      },
+      "closed": true
+    }
+  ],
+  "constants": {
+    "file": "src/application/ports/message_bus_ports.rs",
+    "source": "pub mod error_code {\n    /// Resource-scoped topic, caller lacks Read (or resource doesn't exist —\n    /// indistinguishable to caller by design). Anti-enum invariant.\n    pub const NO_READ: i32 = -32001;\n\n    /// Resource-scoped topic requiring `Share`, caller has Read but not\n    /// Share. Applies to `file:{id}:shares` (Phase B).\n    pub const NO_SHARE: i32 = -32002;\n\n    /// Resource-scoped topic requiring `Comment` (`file:{id}:comments`\n    /// Phase B).\n    pub const NO_COMMENT: i32 = -32003;\n\n    /// Identity-scoped mismatch OR unknown/malformed topic. Same wire code\n    /// regardless of whether the target user exists — anti-enum.\n    pub const TOPIC_FORBIDDEN: i32 = -32004;\n\n    /// Per-connection sub cap hit.\n    pub const SUB_LIMIT: i32 = -32005;\n\n    /// Subscribe-frame token bucket exhausted.\n    pub const RATE_LIMITED: i32 = -32006;\n\n    /// CRDT edit frame from a caller without `Edit`. Emitted as an\n    /// `rt.write_denied` notification (not tied to a request `id`).\n    pub const NO_EDIT: i32 = -32007;\n\n    // ────────────────────── JSON-RPC 2.0 standard codes ─────────────────────\n    // Re-exported so the WS handler doesn't reach for two constant lists.\n\n    /// Server-side failure the client should retry.\n    pub const INTERNAL_ERROR: i32 = -32603;\n\n    /// Malformed JSON-RPC envelope (missing `method`, wrong `jsonrpc`\n    /// version).\n    pub const INVALID_REQUEST: i32 = -32600;\n\n    /// Method outside the `rt.*` allowlist.\n    pub const METHOD_NOT_FOUND: i32 = -32601;\n\n    /// Method known but `params` shape wrong (missing `topic`, unparseable).\n    pub const INVALID_PARAMS: i32 = -32602;\n}",
+    "sha256": "60a2067d3759ab92719bec2d37484789bc8463ed31d8484b7343ad8cbef49dd7"
+  },
+  "representation": "serde_json 1.0.154 compact UTF-8 JSON, sorted object keys; complete returned values",
+  "values": {
+    "channels": {
+      "Collab": {
+        "address": "collab:{fileId}",
+        "description": "Collaborative `.md` editing over Yjs. Two frame families ride the same channel:\n\n  * **JSON-RPC control plane** (`rt.subscribe` / `rt.unsubscribe` / `rt.collab_flush`) — same text-frame shape as every other channel.\n  * **Binary data plane** — Yjs sync protocol as raw bytes: `[1 byte kind][16 bytes file_id BE][payload]`. Kinds: `0x01` UPDATE (Yjs update blob), `0x02` AWARENESS (presence, not persisted), `0x03` SYNC (state vector c→s / diff s→c).\n\nAuthZ: `Read` on the file for subscribe (JSON) and for `0x03 SYNC` (defense-in-depth vs the subscribe gate). `Update` on the file for `0x01 UPDATE` and `rt.collab_flush`. AWARENESS is presence-only and rides the subscribe-time Read gate.\n\nSee `docs/plan/markdown-collab.md` and `src/application/services/collab_wire.rs`.",
+        "messages": {
+          "CollabAwarenessFrame": {
+            "$ref": "#/components/messages/CollabAwarenessFrame"
+          },
+          "CollabFlushRequest": {
+            "$ref": "#/components/messages/RtCollabFlushRequest"
+          },
+          "CollabFlushResponse": {
+            "$ref": "#/components/messages/RtCollabFlushResponse"
+          },
+          "CollabSyncFrame": {
+            "$ref": "#/components/messages/CollabSyncFrame"
+          },
+          "CollabUpdateFrame": {
+            "$ref": "#/components/messages/CollabUpdateFrame"
+          },
+          "ErrorResponse": {
+            "$ref": "#/components/messages/RtErrorResponse"
+          },
+          "RevokedNotification": {
+            "$ref": "#/components/messages/RtRevokedNotification"
+          },
+          "SubscribeRequest": {
+            "$ref": "#/components/messages/RtSubscribeRequest"
+          },
+          "SubscribedResponse": {
+            "$ref": "#/components/messages/RtSubscribedResponse"
+          },
+          "UnsubscribeRequest": {
+            "$ref": "#/components/messages/RtUnsubscribeRequest"
+          }
+        },
+        "parameters": {
+          "fileId": {
+            "description": "File UUID — the target `.md` file"
+          }
+        }
+      },
+      "Folder": {
+        "address": "folder:{folderId}",
+        "description": "A folder's mutation stream — file/subfolder created events fire here. AuthZ: caller must hold `Read` on the folder.",
+        "messages": {
+          "ErrorResponse": {
+            "$ref": "#/components/messages/RtErrorResponse"
+          },
+          "FolderEvent": {
+            "$ref": "#/components/messages/RtFolderEventNotification"
+          },
+          "PingRequest": {
+            "$ref": "#/components/messages/RtPingRequest"
+          },
+          "PongResponse": {
+            "$ref": "#/components/messages/RtPongResponse"
+          },
+          "RevokedNotification": {
+            "$ref": "#/components/messages/RtRevokedNotification"
+          },
+          "SubscribeRequest": {
+            "$ref": "#/components/messages/RtSubscribeRequest"
+          },
+          "SubscribedResponse": {
+            "$ref": "#/components/messages/RtSubscribedResponse"
+          },
+          "UnsubscribeRequest": {
+            "$ref": "#/components/messages/RtUnsubscribeRequest"
+          }
+        },
+        "parameters": {
+          "folderId": {
+            "description": "Folder UUID"
+          }
+        }
+      },
+      "Job": {
+        "address": "job:{jobName}",
+        "description": "A named background job's run lifecycle — Started / Progress / Ended. Consumed by the admin dashboard so operators who trigger a long-running job (backend migration, thumb import…) can navigate off the admin page and come back without losing progress. AuthZ: admin-only (Class 3 role-scoped) — non-admin gets `topic_forbidden`, indistinguishable on the wire from an unknown topic.",
+        "messages": {
+          "ErrorResponse": {
+            "$ref": "#/components/messages/RtErrorResponse"
+          },
+          "JobEvent": {
+            "$ref": "#/components/messages/RtFolderEventNotification"
+          },
+          "RevokedNotification": {
+            "$ref": "#/components/messages/RtRevokedNotification"
+          },
+          "SubscribeRequest": {
+            "$ref": "#/components/messages/RtSubscribeRequest"
+          },
+          "SubscribedResponse": {
+            "$ref": "#/components/messages/RtSubscribedResponse"
+          },
+          "UnsubscribeRequest": {
+            "$ref": "#/components/messages/RtUnsubscribeRequest"
+          }
+        },
+        "parameters": {
+          "jobName": {
+            "description": "Scheduler-registered short slug (e.g. `backend_migration`); `[a-z0-9_-]` chars only"
+          }
+        }
+      },
+      "UserAuthz": {
+        "address": "user:{userId}:authz",
+        "description": "A user's private AuthZ-change channel. Identity-scoped: caller_id must equal userId (no admin bypass).",
+        "messages": {
+          "SubscribeRequest": {
+            "$ref": "#/components/messages/RtSubscribeRequest"
+          },
+          "UnsubscribeRequest": {
+            "$ref": "#/components/messages/RtUnsubscribeRequest"
+          }
+        },
+        "parameters": {
+          "userId": {
+            "description": "User UUID — must match the authenticated caller"
+          }
+        }
+      },
+      "UserNotifications": {
+        "address": "user:{userId}:notifications",
+        "description": "A user's private notifications channel. Identity-scoped: caller_id must equal userId (no admin bypass). Auto-subscribed at session open; the FE bell refetches `GET /api/notifications` when a `notification_received` event fires. The DB row is authoritative — a missed push recovers on the next mount.",
+        "messages": {
+          "SubscribeRequest": {
+            "$ref": "#/components/messages/RtSubscribeRequest"
+          },
+          "UnsubscribeRequest": {
+            "$ref": "#/components/messages/RtUnsubscribeRequest"
+          }
+        },
+        "parameters": {
+          "userId": {
+            "description": "User UUID — must match the authenticated caller"
+          }
+        }
+      }
+    },
+    "collab_binary_frame_schema": {
+      "description": "Raw bytes of a collab wire frame. Layout: `[1 byte kind][16 bytes file_id BE][payload...]`. `kind`: `0x01` UPDATE (Yjs update blob), `0x02` AWARENESS (opaque presence bytes, not persisted), `0x03` SYNC (Yjs state vector c→s / Yjs update s→c). `file_id` is a UUID serialised as its 16 raw bytes (matches `Uuid::as_bytes()` on the server; `y-codemirror.next` binary handling on the client). Empty payloads are legal only for the SYNC direction that carries a state vector of zero clients — Yjs encodes that as a single `0x00` byte, NOT zero bytes.",
+      "format": "binary",
+      "type": "string"
+    },
+    "collab_flush_params_schema": {
+      "properties": {
+        "file_id": {
+          "description": "Target file — dashed UUID.",
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_id"
+      ],
+      "type": "object"
+    },
+    "collab_flush_result_schema": {
+      "properties": {
+        "flushed": {
+          "description": "`true` when a blob write happened; `false` when the CRDT text was unchanged since the last flush (short-circuit).",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "flushed"
+      ],
+      "type": "object"
+    },
+    "components": {
+      "messages": {
+        "CollabAwarenessFrame": {
+          "contentType": "application/octet-stream",
+          "name": "collab.awareness",
+          "payload": {
+            "$ref": "#/components/schemas/CollabBinaryFrame"
+          },
+          "title": "0x02 AWARENESS — presence (bidirectional, not persisted)"
+        },
+        "CollabSyncFrame": {
+          "contentType": "application/octet-stream",
+          "name": "collab.sync",
+          "payload": {
+            "$ref": "#/components/schemas/CollabBinaryFrame"
+          },
+          "title": "0x03 SYNC — Yjs state vector (c→s) / update diff (s→c)"
+        },
+        "CollabUpdateFrame": {
+          "contentType": "application/octet-stream",
+          "name": "collab.update",
+          "payload": {
+            "$ref": "#/components/schemas/CollabBinaryFrame"
+          },
+          "title": "0x01 UPDATE — Yjs update blob (bidirectional)"
+        },
+        "RtCollabFlushRequest": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "collab-flush",
+              "payload": {
+                "id": 7,
+                "jsonrpc": "2.0",
+                "method": "rt.collab_flush",
+                "params": {
+                  "file_id": "00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "summary": "Client → server: on tab close / explicit save"
+            }
+          ],
+          "name": "rt.collab_flush",
+          "payload": {
+            "$ref": "#/components/schemas/RtCollabFlushRequestBody"
+          },
+          "title": "Force flush of the CRDT text to the file's blob"
+        },
+        "RtCollabFlushResponse": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "collab-flush-ok-wrote",
+              "payload": {
+                "id": 7,
+                "jsonrpc": "2.0",
+                "result": {
+                  "flushed": true
+                }
+              },
+              "summary": "Server → client: a blob write happened"
+            },
+            {
+              "name": "collab-flush-ok-noop",
+              "payload": {
+                "id": 7,
+                "jsonrpc": "2.0",
+                "result": {
+                  "flushed": false
+                }
+              },
+              "summary": "Server → client: unchanged content, short-circuited"
+            }
+          ],
+          "name": "rt.collab_flush.reply",
+          "payload": {
+            "$ref": "#/components/schemas/RtCollabFlushResponseBody"
+          },
+          "title": "Collab flush ack — `result.flushed`"
+        },
+        "RtErrorResponse": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "error-no-read",
+              "payload": {
+                "error": {
+                  "code": -32001,
+                  "data": {
+                    "topic": "folder:00000000-0000-0000-0000-000000000000"
+                  },
+                  "message": "no_read"
+                },
+                "id": 1,
+                "jsonrpc": "2.0"
+              },
+              "summary": "Server → client: rt.subscribe refused because caller lacks Read on the folder"
+            }
+          ],
+          "name": "rt.error",
+          "payload": {
+            "$ref": "#/components/schemas/RtErrorResponseBody"
+          },
+          "title": "JSON-RPC error object"
+        },
+        "RtFolderEventNotification": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "event-file-created",
+              "payload": {
+                "jsonrpc": "2.0",
+                "method": "rt.event",
+                "params": {
+                  "data": {
+                    "content_hash": "b3-…",
+                    "created_at": "2026-09-13T18:04:00Z",
+                    "id": "11111111-1111-1111-1111-111111111111",
+                    "name": "report.pdf",
+                    "size": 12345
+                  },
+                  "kind": "file.created",
+                  "seq": 17,
+                  "topic": "folder:00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "summary": "Server → client: a file was created inside a subscribed folder"
+            }
+          ],
+          "name": "rt.event",
+          "payload": {
+            "$ref": "#/components/schemas/RtFolderEventBody"
+          },
+          "title": "Folder mutation event"
+        },
+        "RtPingRequest": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "ping",
+              "payload": {
+                "id": 42,
+                "jsonrpc": "2.0",
+                "method": "rt.ping"
+              },
+              "summary": "Client → server: liveness probe (reply is rt.pong)"
+            }
+          ],
+          "name": "rt.ping",
+          "payload": {
+            "$ref": "#/components/schemas/RtPingRequestBody"
+          },
+          "title": "Keepalive ping"
+        },
+        "RtPongResponse": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "pong",
+              "payload": {
+                "id": 42,
+                "jsonrpc": "2.0",
+                "result": {
+                  "pong": true
+                }
+              },
+              "summary": "Server → client: reply to a client rt.ping"
+            }
+          ],
+          "name": "rt.pong",
+          "payload": {
+            "$ref": "#/components/schemas/RtPongResponseBody"
+          },
+          "title": "Reply to rt.ping — `result.pong == true`"
+        },
+        "RtRevokedNotification": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "revoked-permission-lost",
+              "payload": {
+                "jsonrpc": "2.0",
+                "method": "rt.revoked",
+                "params": {
+                  "reason": "permission_lost",
+                  "topic": "folder:00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "summary": "Server → client: subscription evicted because the caller lost Read on the folder"
+            }
+          ],
+          "name": "rt.revoked",
+          "payload": {
+            "$ref": "#/components/schemas/RtRevokedBody"
+          },
+          "title": "Subscription evicted"
+        },
+        "RtSubscribeRequest": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "subscribe-folder",
+              "payload": {
+                "id": 1,
+                "jsonrpc": "2.0",
+                "method": "rt.subscribe",
+                "params": {
+                  "topic": "folder:00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "summary": "Client → server: subscribe to a folder's mutation stream"
+            }
+          ],
+          "name": "rt.subscribe",
+          "payload": {
+            "$ref": "#/components/schemas/RtSubscribeRequestBody"
+          },
+          "title": "Subscribe to a topic"
+        },
+        "RtSubscribedResponse": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "subscribed-ok",
+              "payload": {
+                "id": 1,
+                "jsonrpc": "2.0",
+                "result": {
+                  "ok": true
+                }
+              },
+              "summary": "Server → client: successful rt.subscribe / rt.unsubscribe ack"
+            }
+          ],
+          "name": "rt.subscribed",
+          "payload": {
+            "$ref": "#/components/schemas/RtSuccessResponseBody"
+          },
+          "title": "Subscribe / unsubscribe ack"
+        },
+        "RtUnsubscribeRequest": {
+          "contentType": "application/json",
+          "examples": [
+            {
+              "name": "unsubscribe-folder",
+              "payload": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "method": "rt.unsubscribe",
+                "params": {
+                  "topic": "folder:00000000-0000-0000-0000-000000000000"
+                }
+              },
+              "summary": "Client → server: unsubscribe from a previously-joined folder"
+            }
+          ],
+          "name": "rt.unsubscribe",
+          "payload": {
+            "$ref": "#/components/schemas/RtUnsubscribeRequestBody"
+          },
+          "title": "Unsubscribe from a topic"
+        }
+      },
+      "schemas": {
+        "CollabBinaryFrame": {
+          "description": "Raw bytes of a collab wire frame. Layout: `[1 byte kind][16 bytes file_id BE][payload...]`. `kind`: `0x01` UPDATE (Yjs update blob), `0x02` AWARENESS (opaque presence bytes, not persisted), `0x03` SYNC (Yjs state vector c→s / Yjs update s→c). `file_id` is a UUID serialised as its 16 raw bytes (matches `Uuid::as_bytes()` on the server; `y-codemirror.next` binary handling on the client). Empty payloads are legal only for the SYNC direction that carries a state vector of zero clients — Yjs encodes that as a single `0x00` byte, NOT zero bytes.",
+          "format": "binary",
+          "type": "string"
+        },
+        "FileCreatedData": {
+          "additionalProperties": false,
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "file_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "parent_id": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file_id",
+            "name",
+            "parent_id",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FileDeletedData": {
+          "additionalProperties": false,
+          "description": "The wire doesn't distinguish soft (trash) vs. permanent delete — clients treat both as \"disappears from the folder view\". `parent_id` is the folder the file used to live in.",
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "file_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "parent_id": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file_id",
+            "parent_id",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FileMovedData": {
+          "additionalProperties": false,
+          "description": "Emitted on BOTH the source (`from`) and destination (`to`) folder topics. Subscribers to either see the event exactly once because they're subscribed to only one of the two.",
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "file_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "from": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "to": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file_id",
+            "name",
+            "from",
+            "to",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FileRenamedData": {
+          "additionalProperties": false,
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "file_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "new_name": {
+              "type": "string"
+            },
+            "old_name": {
+              "type": "string"
+            },
+            "parent_id": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file_id",
+            "old_name",
+            "new_name",
+            "parent_id",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FolderCreatedData": {
+          "additionalProperties": false,
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "folder_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "parent_id": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "folder_id",
+            "name",
+            "parent_id",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FolderDeletedData": {
+          "additionalProperties": false,
+          "description": "Soft vs. permanent delete are indistinguishable on the wire.",
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "folder_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "parent_id": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "folder_id",
+            "parent_id",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FolderMovedData": {
+          "additionalProperties": false,
+          "description": "Emitted on BOTH the source (`from`) and destination (`to`) folder topics — same shape as `FileMoved`.",
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "folder_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "from": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "to": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "folder_id",
+            "name",
+            "from",
+            "to",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "FolderRenamedData": {
+          "additionalProperties": false,
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "folder_id": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "new_name": {
+              "type": "string"
+            },
+            "old_name": {
+              "type": "string"
+            },
+            "parent_id": {
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "folder_id",
+            "old_name",
+            "new_name",
+            "parent_id",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "JobRunEndedData": {
+          "additionalProperties": false,
+          "description": "A background job's run ended. `success = true` for a normal completion; `false` for failure / timeout / cancelled / paused-with-unhandled-outcome. `reason` populates the toast text on the `false` branch and links to `/admin/jobs/<name>` for the full outcome. Consumer typically drops its subscription on receipt (job is done).",
+          "properties": {
+            "ended_at": {
+              "format": "date-time",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "reason": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "success": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "name",
+            "success",
+            "ended_at"
+          ],
+          "type": "object"
+        },
+        "JobRunProgressData": {
+          "additionalProperties": false,
+          "description": "A background job made progress. Throttled at the publish site to at most one per 3 s per job (see scheduler engine). `step` / `total` populate a progress bar; all three fields are optional because different jobs report different granularities.",
+          "properties": {
+            "message": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "step": {
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "total": {
+              "minimum": 0,
+              "type": [
+                "integer",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ],
+          "type": "object"
+        },
+        "JobRunStartedData": {
+          "additionalProperties": false,
+          "description": "A background job's run started. `name` matches the scheduler-registered job name (e.g. `backend_migration`). `actor` is `00000000-0000-0000-0000-000000000000` today — the scheduler doesn't yet thread the trigger caller through.",
+          "properties": {
+            "actor": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "started_at": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          "required": [
+            "name",
+            "started_at",
+            "actor"
+          ],
+          "type": "object"
+        },
+        "NotificationReceivedData": {
+          "additionalProperties": false,
+          "description": "A new notification was created for the caller. Pure cache-invalidation event — no fields on the wire. The FE refetches `GET /api/notifications` on receipt and reads the payload from the REST DTO (see `openapi.json`). Zero schema overlap between the bus wire (this file) and the REST wire — the strict form of the AsyncAPI-defines-envelope / OpenAPI-defines-payload split.",
+          "properties": {},
+          "type": "object"
+        },
+        "RtCollabFlushParams": {
+          "additionalProperties": false,
+          "properties": {
+            "file_id": {
+              "description": "Target file — dashed UUID.",
+              "format": "uuid",
+              "type": "string"
+            }
+          },
+          "required": [
+            "file_id"
+          ],
+          "type": "object"
+        },
+        "RtCollabFlushRequestBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "method": {
+              "const": "rt.collab_flush",
+              "type": "string"
+            },
+            "params": {
+              "$ref": "#/components/schemas/RtCollabFlushParams"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "method"
+          ],
+          "type": "object"
+        },
+        "RtCollabFlushResponseBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "result": {
+              "$ref": "#/components/schemas/RtCollabFlushResult"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "result"
+          ],
+          "type": "object"
+        },
+        "RtCollabFlushResult": {
+          "additionalProperties": false,
+          "properties": {
+            "flushed": {
+              "description": "`true` when a blob write happened; `false` when the CRDT text was unchanged since the last flush (short-circuit).",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "flushed"
+          ],
+          "type": "object"
+        },
+        "RtErrorCode": {
+          "description": "Stable integer error code. Values are frozen across releases — a new denial cause gets a new value, never repurposes an existing one. Application-defined codes (-32099..=-32000):\n· -32001 NO_READ — resource-scoped topic, caller lacks Read (or resource doesn't exist — indistinguishable by design)\n· -32002 NO_SHARE — resource requires Share, caller has Read but not Share\n· -32003 NO_COMMENT — resource requires Comment\n· -32004 TOPIC_FORBIDDEN — identity-scoped mismatch or unknown/malformed topic\n· -32005 SUB_LIMIT — per-connection subscription cap hit\n· -32006 RATE_LIMITED — subscribe-frame token bucket exhausted\n· -32007 NO_EDIT — CRDT edit frame from a caller without Edit\nStandard JSON-RPC 2.0 codes:\n· -32603 INTERNAL_ERROR · -32600 INVALID_REQUEST · -32601 METHOD_NOT_FOUND · -32602 INVALID_PARAMS",
+          "type": "integer"
+        },
+        "RtErrorMessage": {
+          "description": "Stable wire vocabulary; matches the corresponding `code`.",
+          "enum": [
+            "no_read",
+            "no_share",
+            "no_comment",
+            "topic_forbidden",
+            "sub_limit",
+            "rate_limited",
+            "no_edit",
+            "internal_error",
+            "invalid_request",
+            "method_not_found",
+            "invalid_params"
+          ],
+          "type": "string"
+        },
+        "RtErrorObject": {
+          "additionalProperties": false,
+          "description": "JSON-RPC 2.0 error object. `code` + `message` form a stable pair; `data` optionally carries caller-visible context (e.g. offending topic).",
+          "properties": {
+            "code": {
+              "$ref": "#/components/schemas/RtErrorCode"
+            },
+            "data": {
+              "description": "Optional caller-facing context; shape depends on the specific `code`.",
+              "type": [
+                "object",
+                "array",
+                "string",
+                "number",
+                "integer",
+                "boolean",
+                "null"
+              ]
+            },
+            "message": {
+              "$ref": "#/components/schemas/RtErrorMessage"
+            }
+          },
+          "required": [
+            "code",
+            "message"
+          ],
+          "type": "object"
+        },
+        "RtErrorResponseBody": {
+          "additionalProperties": false,
+          "properties": {
+            "error": {
+              "$ref": "#/components/schemas/RtErrorObject"
+            },
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "error"
+          ],
+          "type": "object"
+        },
+        "RtEventDataUnion": {
+          "description": "Tagged union of every possible `rt.event` payload. Discriminated by the sibling `event` field (see `RtEventKind`).",
+          "oneOf": [
+            {
+              "$ref": "#/components/schemas/FileCreatedData"
+            },
+            {
+              "$ref": "#/components/schemas/FileRenamedData"
+            },
+            {
+              "$ref": "#/components/schemas/FileMovedData"
+            },
+            {
+              "$ref": "#/components/schemas/FileDeletedData"
+            },
+            {
+              "$ref": "#/components/schemas/FolderCreatedData"
+            },
+            {
+              "$ref": "#/components/schemas/FolderRenamedData"
+            },
+            {
+              "$ref": "#/components/schemas/FolderMovedData"
+            },
+            {
+              "$ref": "#/components/schemas/FolderDeletedData"
+            },
+            {
+              "$ref": "#/components/schemas/NotificationReceivedData"
+            },
+            {
+              "$ref": "#/components/schemas/JobRunStartedData"
+            },
+            {
+              "$ref": "#/components/schemas/JobRunProgressData"
+            },
+            {
+              "$ref": "#/components/schemas/JobRunEndedData"
+            }
+          ]
+        },
+        "RtEventKind": {
+          "description": "Discriminator for the `data` payload. Mirrors the `#[serde(tag = \"event\", rename_all = \"snake_case\")]` variants of the Rust `MessageBusEvent` enum — a new event kind is a new enum variant on both sides.",
+          "enum": [
+            "file_created",
+            "file_renamed",
+            "file_moved",
+            "file_deleted",
+            "folder_created",
+            "folder_renamed",
+            "folder_moved",
+            "folder_deleted",
+            "notification_received",
+            "job_run_started",
+            "job_run_progress",
+            "job_run_ended"
+          ],
+          "type": "string"
+        },
+        "RtEventParams": {
+          "additionalProperties": false,
+          "properties": {
+            "data": {
+              "$ref": "#/components/schemas/RtEventDataUnion"
+            },
+            "event": {
+              "$ref": "#/components/schemas/RtEventKind"
+            },
+            "topic": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "topic",
+            "event",
+            "data"
+          ],
+          "type": "object"
+        },
+        "RtFolderEventBody": {
+          "additionalProperties": false,
+          "description": "JSON-RPC notification (no `id`). `method = \"rt.event\"`. `params` is hoisted to `RtEventParams`.",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "method": {
+              "const": "rt.event",
+              "type": "string"
+            },
+            "params": {
+              "$ref": "#/components/schemas/RtEventParams"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ],
+          "type": "object"
+        },
+        "RtPingRequestBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "method": {
+              "const": "rt.ping",
+              "type": "string"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "method"
+          ],
+          "type": "object"
+        },
+        "RtPongResponseBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "result": {
+              "$ref": "#/components/schemas/RtPongResult"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "result"
+          ],
+          "type": "object"
+        },
+        "RtPongResult": {
+          "additionalProperties": false,
+          "properties": {
+            "pong": {
+              "const": true,
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "pong"
+          ],
+          "type": "object"
+        },
+        "RtRevokedBody": {
+          "additionalProperties": false,
+          "description": "JSON-RPC notification (no `id`). `method = \"rt.revoked\"`. `params` hoisted to `RtRevokedParams`.",
+          "properties": {
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "method": {
+              "const": "rt.revoked",
+              "type": "string"
+            },
+            "params": {
+              "$ref": "#/components/schemas/RtRevokedParams"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "method",
+            "params"
+          ],
+          "type": "object"
+        },
+        "RtRevokedParams": {
+          "additionalProperties": false,
+          "properties": {
+            "reason": {
+              "$ref": "#/components/schemas/RtRevokedReason"
+            },
+            "topic": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "topic",
+            "reason"
+          ],
+          "type": "object"
+        },
+        "RtRevokedReason": {
+          "description": "Server-side eviction cause. Stable vocabulary; a new eviction reason is a new enum value.",
+          "enum": [
+            "grant_revoked",
+            "resource_deleted",
+            "group_membership_lost",
+            "admin_kick"
+          ],
+          "type": "string"
+        },
+        "RtSubscribeParams": {
+          "additionalProperties": false,
+          "properties": {
+            "topic": {
+              "description": "Wire form: `folder:<uuid>` or `user:<uuid>:authz`",
+              "examples": [
+                "folder:00000000-0000-0000-0000-000000000000"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "topic"
+          ],
+          "type": "object"
+        },
+        "RtSubscribeRequestBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "method": {
+              "const": "rt.subscribe",
+              "type": "string"
+            },
+            "params": {
+              "$ref": "#/components/schemas/RtSubscribeParams"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "method"
+          ],
+          "type": "object"
+        },
+        "RtSuccessResponseBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "result": {
+              "description": "Method-specific result payload. See the concrete response schema for each `method`.",
+              "type": [
+                "object",
+                "array",
+                "string",
+                "number",
+                "integer",
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "result"
+          ],
+          "type": "object"
+        },
+        "RtUnsubscribeParams": {
+          "additionalProperties": false,
+          "properties": {
+            "topic": {
+              "description": "Wire form: `folder:<uuid>` or `user:<uuid>:authz`",
+              "examples": [
+                "folder:00000000-0000-0000-0000-000000000000"
+              ],
+              "type": "string"
+            }
+          },
+          "required": [
+            "topic"
+          ],
+          "type": "object"
+        },
+        "RtUnsubscribeRequestBody": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "type": [
+                "integer",
+                "string",
+                "null"
+              ]
+            },
+            "jsonrpc": {
+              "const": "2.0",
+              "type": "string"
+            },
+            "method": {
+              "const": "rt.unsubscribe",
+              "type": "string"
+            },
+            "params": {
+              "$ref": "#/components/schemas/RtUnsubscribeParams"
+            }
+          },
+          "required": [
+            "jsonrpc",
+            "id",
+            "method"
+          ],
+          "type": "object"
+        }
+      },
+      "securitySchemes": {
+        "bearerAuth": {
+          "bearerFormat": "JWT",
+          "description": "OxiCloud JWT — same access_token minted by `POST /api/auth/login` (or the OPAQUE handshake). Programmatic clients set `Authorization: Bearer <jwt>` on the WS upgrade request. DPoP-bound tokens are refused on this path (the WS handshake cannot carry a DPoP proof); browsers use `ticketAuth` instead.",
+          "scheme": "bearer",
+          "type": "http"
+        },
+        "ticketAuth": {
+          "description": "Browser path — the FE first calls `POST /api/rt/ticket` under the full REST middleware stack (auth + DPoP-proofed request), receives an opaque one-shot UUID with a 30 s TTL, then sets `Sec-WebSocket-Protocol: oxi.ticket.<uuid>` on the WS upgrade. The server redeems the ticket (single-use — a second attempt fails) and treats the WS session as authenticated for the caller who issued it. See `docs/architecture/message-bus-and-notifications.md § F` and `handlers/rt_ticket_handler.rs`.",
+          "in": "header",
+          "name": "Sec-WebSocket-Protocol",
+          "type": "httpApiKey"
+        }
+      }
+    },
+    "event_data_union_schema": {
+      "description": "Tagged union of every possible `rt.event` payload. Discriminated by the sibling `event` field (see `RtEventKind`).",
+      "oneOf": [
+        {
+          "$ref": "#/components/schemas/FileCreatedData"
+        },
+        {
+          "$ref": "#/components/schemas/FileRenamedData"
+        },
+        {
+          "$ref": "#/components/schemas/FileMovedData"
+        },
+        {
+          "$ref": "#/components/schemas/FileDeletedData"
+        },
+        {
+          "$ref": "#/components/schemas/FolderCreatedData"
+        },
+        {
+          "$ref": "#/components/schemas/FolderRenamedData"
+        },
+        {
+          "$ref": "#/components/schemas/FolderMovedData"
+        },
+        {
+          "$ref": "#/components/schemas/FolderDeletedData"
+        },
+        {
+          "$ref": "#/components/schemas/NotificationReceivedData"
+        },
+        {
+          "$ref": "#/components/schemas/JobRunStartedData"
+        },
+        {
+          "$ref": "#/components/schemas/JobRunProgressData"
+        },
+        {
+          "$ref": "#/components/schemas/JobRunEndedData"
+        }
+      ]
+    },
+    "event_kind_schema": {
+      "description": "Discriminator for the `data` payload. Mirrors the `#[serde(tag = \"event\", rename_all = \"snake_case\")]` variants of the Rust `MessageBusEvent` enum — a new event kind is a new enum variant on both sides.",
+      "enum": [
+        "file_created",
+        "file_renamed",
+        "file_moved",
+        "file_deleted",
+        "folder_created",
+        "folder_renamed",
+        "folder_moved",
+        "folder_deleted",
+        "notification_received",
+        "job_run_started",
+        "job_run_progress",
+        "job_run_ended"
+      ],
+      "type": "string"
+    },
+    "event_params_schema": {
+      "properties": {
+        "data": {
+          "$ref": "#/components/schemas/RtEventDataUnion"
+        },
+        "event": {
+          "$ref": "#/components/schemas/RtEventKind"
+        },
+        "topic": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "topic",
+        "event",
+        "data"
+      ],
+      "type": "object"
+    },
+    "file_created_schema": {
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "file_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parent_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_id",
+        "name",
+        "parent_id",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "file_deleted_schema": {
+      "description": "The wire doesn't distinguish soft (trash) vs. permanent delete — clients treat both as \"disappears from the folder view\". `parent_id` is the folder the file used to live in.",
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "file_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "parent_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_id",
+        "parent_id",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "file_moved_schema": {
+      "description": "Emitted on BOTH the source (`from`) and destination (`to`) folder topics. Subscribers to either see the event exactly once because they're subscribed to only one of the two.",
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "file_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "from": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "to": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_id",
+        "name",
+        "from",
+        "to",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "file_renamed_schema": {
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "file_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "new_name": {
+          "type": "string"
+        },
+        "old_name": {
+          "type": "string"
+        },
+        "parent_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "file_id",
+        "old_name",
+        "new_name",
+        "parent_id",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "folder_created_schema": {
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "folder_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "parent_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "folder_id",
+        "name",
+        "parent_id",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "folder_deleted_schema": {
+      "description": "Soft vs. permanent delete are indistinguishable on the wire.",
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "folder_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "parent_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "folder_id",
+        "parent_id",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "folder_event_notification_schema": {
+      "description": "JSON-RPC notification (no `id`). `method = \"rt.event\"`. `params` is hoisted to `RtEventParams`.",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0",
+          "type": "string"
+        },
+        "method": {
+          "const": "rt.event",
+          "type": "string"
+        },
+        "params": {
+          "$ref": "#/components/schemas/RtEventParams"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "method",
+        "params"
+      ],
+      "type": "object"
+    },
+    "folder_moved_schema": {
+      "description": "Emitted on BOTH the source (`from`) and destination (`to`) folder topics — same shape as `FileMoved`.",
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "folder_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "from": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "to": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "folder_id",
+        "name",
+        "from",
+        "to",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "folder_renamed_schema": {
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "folder_id": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "new_name": {
+          "type": "string"
+        },
+        "old_name": {
+          "type": "string"
+        },
+        "parent_id": {
+          "format": "uuid",
+          "type": "string"
+        }
+      },
+      "required": [
+        "folder_id",
+        "old_name",
+        "new_name",
+        "parent_id",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "job_run_ended_schema": {
+      "description": "A background job's run ended. `success = true` for a normal completion; `false` for failure / timeout / cancelled / paused-with-unhandled-outcome. `reason` populates the toast text on the `false` branch and links to `/admin/jobs/<name>` for the full outcome. Consumer typically drops its subscription on receipt (job is done).",
+      "properties": {
+        "ended_at": {
+          "format": "date-time",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "name",
+        "success",
+        "ended_at"
+      ],
+      "type": "object"
+    },
+    "job_run_progress_schema": {
+      "description": "A background job made progress. Throttled at the publish site to at most one per 3 s per job (see scheduler engine). `step` / `total` populate a progress bar; all three fields are optional because different jobs report different granularities.",
+      "properties": {
+        "message": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "step": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "total": {
+          "minimum": 0,
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "type": "object"
+    },
+    "job_run_started_schema": {
+      "description": "A background job's run started. `name` matches the scheduler-registered job name (e.g. `backend_migration`). `actor` is `00000000-0000-0000-0000-000000000000` today — the scheduler doesn't yet thread the trigger caller through.",
+      "properties": {
+        "actor": {
+          "format": "uuid",
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "started_at": {
+          "format": "date-time",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "started_at",
+        "actor"
+      ],
+      "type": "object"
+    },
+    "notification_received_schema": {
+      "additionalProperties": false,
+      "description": "A new notification was created for the caller. Pure cache-invalidation event — no fields on the wire. The FE refetches `GET /api/notifications` on receipt and reads the payload from the REST DTO (see `openapi.json`). Zero schema overlap between the bus wire (this file) and the REST wire — the strict form of the AsyncAPI-defines-envelope / OpenAPI-defines-payload split.",
+      "properties": {},
+      "type": "object"
+    },
+    "operations": {
+      "collabFlush": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/CollabFlushRequest"
+          }
+        ],
+        "reply": {
+          "channel": {
+            "$ref": "#/channels/Collab"
+          },
+          "messages": [
+            {
+              "$ref": "#/channels/Collab/messages/CollabFlushResponse"
+            },
+            {
+              "$ref": "#/channels/Collab/messages/ErrorResponse"
+            }
+          ]
+        },
+        "summary": "**`rt.collab_flush`** → the FE editor's explicit-save path. Server checks `Permission::Update` on the file, calls `CollabSession::flush_to_blob` (idempotent, short-circuits on unchanged content hash), returns `{ flushed: bool }`. Denials use `no_edit`. See `src/interfaces/api/handlers/rt_ws.rs::handle_collab_flush`.",
+        "title": "rt.collab_flush — force flush CRDT text to blob (on tab close / save)"
+      },
+      "ping": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Folder"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Folder/messages/PingRequest"
+          }
+        ],
+        "reply": {
+          "channel": {
+            "$ref": "#/channels/Folder"
+          },
+          "messages": [
+            {
+              "$ref": "#/channels/Folder/messages/PongResponse"
+            }
+          ]
+        },
+        "summary": "**`rt.ping`** → application-level liveness probe. Reply is `rt.pong` with `result.pong = true`. Distinct from RFC 6455 transport-level Ping; useful when a proxy black-holes traffic without dropping the socket.",
+        "title": "rt.ping — application-level keepalive"
+      },
+      "receiveCollabAwareness": {
+        "action": "receive",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/CollabAwarenessFrame"
+          }
+        ],
+        "summary": "Server broadcasts another editor's presence bytes. Fan-out policy is same as UPDATE — every subscriber including origin.",
+        "title": "0x02 AWARENESS (s→c) — peer presence"
+      },
+      "receiveCollabRevoked": {
+        "action": "receive",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/RevokedNotification"
+          }
+        ],
+        "summary": "Grant revoked, file deleted, or admin kicked. Client tears down the editor UI.",
+        "title": "rt.revoked — collab session evicted"
+      },
+      "receiveCollabUpdate": {
+        "action": "receive",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/CollabUpdateFrame"
+          }
+        ],
+        "summary": "Server broadcasts a Yjs update it applied for another editor on the same file. The originating client also receives its own update back — Yjs's `applyUpdate` is idempotent so this is a no-op locally.",
+        "title": "0x01 UPDATE (s→c) — fan-out from another editor"
+      },
+      "receiveFolderEvent": {
+        "action": "receive",
+        "channel": {
+          "$ref": "#/channels/Folder"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Folder/messages/FolderEvent"
+          }
+        ],
+        "summary": "**`rt.event`** → server pushes a mutation notice (file/subfolder created, renamed, deleted). Client updates its live view. Delivered only to subscribers holding `Read` on the folder.",
+        "title": "rt.event — folder mutation notification"
+      },
+      "receiveRevoked": {
+        "action": "receive",
+        "channel": {
+          "$ref": "#/channels/Folder"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Folder/messages/RevokedNotification"
+          }
+        ],
+        "summary": "**`rt.revoked`** → server evicts the client's subscription (grant revoked, resource deleted, session expired). Client stops rendering the topic and drops any local state.",
+        "title": "rt.revoked — subscription evicted"
+      },
+      "sendCollabAwareness": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/CollabAwarenessFrame"
+          }
+        ],
+        "summary": "Presence-only (cursor position, user handle, colour). Not applied to the CRDT, not persisted. AuthZ: the subscribe-time Read gate is sufficient — a Viewer's cursor is legitimate.",
+        "title": "0x02 AWARENESS (c→s) — presence / cursor position"
+      },
+      "sendCollabSync": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/CollabSyncFrame"
+          }
+        ],
+        "reply": {
+          "channel": {
+            "$ref": "#/channels/Collab"
+          },
+          "messages": [
+            {
+              "$ref": "#/channels/Collab/messages/CollabSyncFrame"
+            }
+          ]
+        },
+        "summary": "Client sends its Yjs state vector so the server can compute the diff needed to catch it up. Payload is `Y.encodeStateVector(doc)` bytes; the empty state vector is a single `0x00` byte (varint 0 clients) — NOT zero-length. Server replies with a `0x03 SYNC` frame carrying the Yjs update bytes.",
+        "title": "0x03 SYNC (c→s, sync-step-1) — send client state vector"
+      },
+      "sendCollabUpdate": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/CollabUpdateFrame"
+          }
+        ],
+        "summary": "Client emits a Yjs update blob describing local edits. Server applies to the per-file actor's `yrs::Doc`, broadcasts to every other subscribed socket on the same file, and arms the debouncer for eventual flush-to-blob. AuthZ: server checks `Permission::Update` per frame — a Viewer's frame gets `collab.write_denied` audit and the socket closes.",
+        "title": "0x01 UPDATE (c→s) — apply Yjs update to the shared doc"
+      },
+      "subscribeCollab": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Collab"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Collab/messages/SubscribeRequest"
+          }
+        ],
+        "reply": {
+          "channel": {
+            "$ref": "#/channels/Collab"
+          },
+          "messages": [
+            {
+              "$ref": "#/channels/Collab/messages/SubscribedResponse"
+            },
+            {
+              "$ref": "#/channels/Collab/messages/ErrorResponse"
+            }
+          ]
+        },
+        "summary": "Subscribe to a file's collab channel. Clears the server-side `Permission::Read` gate on the file so the binary data-plane frames start flowing. Without this, the server drops binary frames from this socket. Same JSON-RPC shape as the folder subscribe; only the topic prefix differs.",
+        "title": "rt.subscribe — join a collab session (AuthZ gate: Read)"
+      },
+      "subscribeFolder": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Folder"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Folder/messages/SubscribeRequest"
+          }
+        ],
+        "reply": {
+          "channel": {
+            "$ref": "#/channels/Folder"
+          },
+          "messages": [
+            {
+              "$ref": "#/channels/Folder/messages/SubscribedResponse"
+            },
+            {
+              "$ref": "#/channels/Folder/messages/ErrorResponse"
+            }
+          ]
+        },
+        "summary": "**`rt.subscribe`** → client joins a folder's mutation stream. Reply is `rt.subscribed` (ok) or `rt.error` (permission denied, unknown topic, etc.).",
+        "title": "rt.subscribe — join a folder's mutation stream"
+      },
+      "unsubscribeFolder": {
+        "action": "send",
+        "channel": {
+          "$ref": "#/channels/Folder"
+        },
+        "messages": [
+          {
+            "$ref": "#/channels/Folder/messages/UnsubscribeRequest"
+          }
+        ],
+        "reply": {
+          "channel": {
+            "$ref": "#/channels/Folder"
+          },
+          "messages": [
+            {
+              "$ref": "#/channels/Folder/messages/SubscribedResponse"
+            },
+            {
+              "$ref": "#/channels/Folder/messages/ErrorResponse"
+            }
+          ]
+        },
+        "summary": "**`rt.unsubscribe`** → client leaves a previously-joined folder. Server acks with `rt.subscribed` (`result.ok = true`) — the ack message is shared with subscribe.",
+        "title": "rt.unsubscribe — leave a folder's mutation stream"
+      }
+    },
+    "revoked_notification_schema": {
+      "description": "JSON-RPC notification (no `id`). `method = \"rt.revoked\"`. `params` hoisted to `RtRevokedParams`.",
+      "properties": {
+        "jsonrpc": {
+          "const": "2.0",
+          "type": "string"
+        },
+        "method": {
+          "const": "rt.revoked",
+          "type": "string"
+        },
+        "params": {
+          "$ref": "#/components/schemas/RtRevokedParams"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "method",
+        "params"
+      ],
+      "type": "object"
+    },
+    "revoked_params_schema": {
+      "properties": {
+        "reason": {
+          "$ref": "#/components/schemas/RtRevokedReason"
+        },
+        "topic": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "topic",
+        "reason"
+      ],
+      "type": "object"
+    },
+    "revoked_reason_schema": {
+      "description": "Server-side eviction cause. Stable vocabulary; a new eviction reason is a new enum value.",
+      "enum": [
+        "grant_revoked",
+        "resource_deleted",
+        "group_membership_lost",
+        "admin_kick"
+      ],
+      "type": "string"
+    },
+    "rpc_error_code_schema": {
+      "description": "Stable integer error code. Values are frozen across releases — a new denial cause gets a new value, never repurposes an existing one. Application-defined codes (-32099..=-32000):\n· -32001 NO_READ — resource-scoped topic, caller lacks Read (or resource doesn't exist — indistinguishable by design)\n· -32002 NO_SHARE — resource requires Share, caller has Read but not Share\n· -32003 NO_COMMENT — resource requires Comment\n· -32004 TOPIC_FORBIDDEN — identity-scoped mismatch or unknown/malformed topic\n· -32005 SUB_LIMIT — per-connection subscription cap hit\n· -32006 RATE_LIMITED — subscribe-frame token bucket exhausted\n· -32007 NO_EDIT — CRDT edit frame from a caller without Edit\nStandard JSON-RPC 2.0 codes:\n· -32603 INTERNAL_ERROR · -32600 INVALID_REQUEST · -32601 METHOD_NOT_FOUND · -32602 INVALID_PARAMS",
+      "type": "integer"
+    },
+    "rpc_error_message_schema": {
+      "description": "Stable wire vocabulary; matches the corresponding `code`.",
+      "enum": [
+        "no_read",
+        "no_share",
+        "no_comment",
+        "topic_forbidden",
+        "sub_limit",
+        "rate_limited",
+        "no_edit",
+        "internal_error",
+        "invalid_request",
+        "method_not_found",
+        "invalid_params"
+      ],
+      "type": "string"
+    },
+    "rpc_error_object_schema": {
+      "description": "JSON-RPC 2.0 error object. `code` + `message` form a stable pair; `data` optionally carries caller-visible context (e.g. offending topic).",
+      "properties": {
+        "code": {
+          "$ref": "#/components/schemas/RtErrorCode"
+        },
+        "data": {
+          "description": "Optional caller-facing context; shape depends on the specific `code`.",
+          "type": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "null"
+          ]
+        },
+        "message": {
+          "$ref": "#/components/schemas/RtErrorMessage"
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "type": "object"
+    },
+    "rpc_error_response_schema": {
+      "properties": {
+        "error": {
+          "$ref": "#/components/schemas/RtErrorObject"
+        },
+        "id": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "jsonrpc": {
+          "const": "2.0",
+          "type": "string"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "error"
+      ],
+      "type": "object"
+    },
+    "rpc_pong_response_schema": {
+      "properties": {
+        "id": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "jsonrpc": {
+          "const": "2.0",
+          "type": "string"
+        },
+        "result": {
+          "$ref": "#/components/schemas/RtPongResult"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "type": "object"
+    },
+    "rpc_pong_result_schema": {
+      "properties": {
+        "pong": {
+          "const": true,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "pong"
+      ],
+      "type": "object"
+    },
+    "rpc_success_response_schema": {
+      "properties": {
+        "id": {
+          "type": [
+            "integer",
+            "string",
+            "null"
+          ]
+        },
+        "jsonrpc": {
+          "const": "2.0",
+          "type": "string"
+        },
+        "result": {
+          "description": "Method-specific result payload. See the concrete response schema for each `method`.",
+          "type": [
+            "object",
+            "array",
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "result"
+      ],
+      "type": "object"
+    },
+    "topic_params_schema": {
+      "properties": {
+        "topic": {
+          "description": "Wire form: `folder:<uuid>` or `user:<uuid>:authz`",
+          "examples": [
+            "folder:00000000-0000-0000-0000-000000000000"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "topic"
+      ],
+      "type": "object"
+    }
+  }
+}

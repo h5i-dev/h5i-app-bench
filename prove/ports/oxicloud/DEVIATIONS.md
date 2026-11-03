@@ -315,3 +315,90 @@ No calendar/vCard parser, random ID generation, clock sampling, or persistence
 I/O is claimed. Exact constructors/getters are compiled in a minimal reference
 carrier using actual uuid/chrono types; all selected method bodies are verbatim.
 The unconditional proofs cover reconstruction and every selected observation.
+
+## Exhaustive finite enum decisions (2026-11-01)
+
+`finite_catalog` retains the pinned unit variants, explicit discriminants,
+method branches and supported callees. Returned UTF-8 strings become their
+exact byte vectors; scalar and boolean results retain their original types.
+Derive implementations, visibility and module paths are carrier changes.
+Methods needing unresolved external dependencies are excluded. Each accepted
+method has a complete output theorem over every enum variant, and differential
+tests compare every input against unchanged pinned method bodies.
+
+`difftest/finite_catalog/plan.json` records the upstream revision, exact source
+spans and hashes, all reference outputs, excluded candidates, and extraction
+roots. Regenerate with `python3 harness/finite_catalog.py generate --app oxicloud`
+from `prove/`. Integration is a separate one-time action; standard extraction,
+project gates and source-reach validation are still required for credit.
+Enum declarations, test data and generated code add no upstream line credit.
+
+### Display classifier decisions
+
+`display_classifiers` ports the complete ordered decisions of the pinned
+`icon_class_with_ext`, `icon_special_class_with_ext`, and `category_with_ext`
+functions in `src/application/dtos/display_helpers.rs`. MIME and optional
+extension inputs are byte slices. For UTF-8 source inputs this preserves exact
+comparison, prefix and substring semantics. The Lean statements quantify over
+all byte slices, including non-UTF-8 values, and establish successful termination
+and the complete decision result. The substring model searches every possible
+fitting byte offset; empty needles and bounds are included.
+
+The source returns one of 54 distinct static strings. `DisplayValue::V0` through
+`V53` intern these exact strings in the sorted `outputs` table in
+`difftest/display_classifiers/plan.json`; the differential test decodes every
+result to its original full string. The output representation changes, but no
+string is merged or replaced with a placeholder. Generated chunk functions and
+byte predicates receive no upstream coverage credit. Filename extension parsing,
+lowercasing, and callers outside these three functions are not mapped.
+
+Reproduce with `python3 prove/harness/display_classifiers.py` from the repository
+root. The reference functions are retained unchanged from the pinned source,
+with a separate test wrapper. The corpus crosses literal and adversarial MIME
+values with all extension literals and absence, and adds 20,000 deterministic
+random UTF-8 pairs. Formal models use plain lists and ordered mathematical
+predicates, without calling extracted kernel functions.
+
+## Complete closed AsyncAPI schema values
+
+`asyncapi` ports 33 zero-argument builders in `src/bin/generate-asyncapi.rs`
+from the pinned revision. The complete returned JSON value is represented as
+compact UTF-8 JSON bytes with sorted object keys, using serde_json 1.0.154.
+The Rust kernel returns a fixed-size array of bounded byte vectors; flattening
+that array gives the complete serialization. Lean proves successful termination
+and equality of the entire flattened output with independent reference models
+that use different fragment boundaries. Shared fragment helpers have no separate
+upstream source mapping or line credit.
+
+The retained reference crate evaluates the 37 unchanged dependency-closed
+function bodies and the unchanged `error_code` constant module. Its differential
+test compares the complete bytes of all 33 closed outputs, exhausting their unit
+input domains. `harness/oxicloud_schemas.py audit --port ports/oxicloud` (from
+`prove/`) checks pinned sources and hashes, repeats reference evaluation,
+regenerates every artifact and runs those comparisons. Four parameterized
+helpers remain in the reference closure and receive no separate coverage claim.
+`main` and `build_asyncapi` are excluded because they read filesystem or build
+environment inputs. Descriptions embedded in a schema do not establish that the
+server, client, authentication middleware or collaborative editor implements
+those descriptions. The model concerns the returned JSON values.
+
+## Complete closed record constructors
+
+The `closed_records` module ports the complete literal record initializers listed
+in `difftest/closed_records/plan.json`. Every upstream field is retained. String
+fields use their UTF-8 bytes; scalar widths, None, empty vectors, unit-enum
+variants and integer multiplication are preserved. The admission grammar rejects
+unresolved calls, environment access, clocks, randomness, floating point,
+conditional definitions, partial records and unsupported field types. Constructor
+bodies remain verbatim in the independently compiled Rust reference; carrier
+records keep the exact upstream field names and types, and visibility changes
+only let the reference driver inspect their values.
+
+The Lean properties state all fields of every returned record and successful
+termination. Reference evaluation supplies the independent field models and Rust
+tests compare each ported result with those models. `closed_records.py audit`
+recompiles the pinned bodies, recomputes every field, checks byte-identical
+regeneration, and reruns the comparisons. Only constructor bodies receive source
+mappings: carrier definitions, enum definitions and harness code receive no credit.
+These properties describe constructor defaults; they make no claim about runtime
+configuration loading or enforcement by callers.

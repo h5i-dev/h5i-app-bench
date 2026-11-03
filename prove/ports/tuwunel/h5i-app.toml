@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["transition", "proxy_policy::proxy_for", "proxy_policy::parse"]
+start-from = ["transition", "proxy_policy::proxy_for", "proxy_policy::parse", "finite_catalog::field_bea9b175::_::label", "finite_catalog::state_after_c4e3af58::_::requested", "finite_catalog::fallback_08cb57a8::_::name", "finite_catalog::room_power_levels_int_field_b809be58::_::as_str", "finite_catalog::room_power_levels_int_field_b809be58::_::as_ref", "finite_catalog::status_4004009f::_::is_terminal", "finite_catalog::status_4004009f::_::as_str"]
 
 [check]
 theorems = [
@@ -22,4 +22,11 @@ theorems = [
   "tuwunel_kernel.Properties.initial_sync_stops_at_departure",
   "tuwunel_kernel.Properties.server_sees_joined_only",
   "tuwunel_kernel.Properties.transition_total",
+  "tuwunel_kernel.Properties.finite_field_bea9b175_label_complete",
+  "tuwunel_kernel.Properties.finite_state_after_c4e3af58_requested_complete",
+  "tuwunel_kernel.Properties.finite_fallback_08cb57a8_name_complete",
+  "tuwunel_kernel.Properties.finite_room_power_levels_int_field_b809be58_as_str_complete",
+  "tuwunel_kernel.Properties.finite_room_power_levels_int_field_b809be58_as_ref_complete",
+  "tuwunel_kernel.Properties.finite_status_4004009f_is_terminal_complete",
+  "tuwunel_kernel.Properties.finite_status_4004009f_as_str_complete",
 ]

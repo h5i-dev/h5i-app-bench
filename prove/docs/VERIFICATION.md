@@ -7,6 +7,28 @@ specifications in the six local ports. Three historical tasks in
 experimental tasks in `extra.toml` also stay outside this denominator.
 Keep unsuccessful ports and proofs in the ledger.
 
+## Validated snapshot at the stopping point (2026-11-01)
+
+Coverage expansion is paused by user request after commit `1bb4102`:
+**42,975 accepted deduplicated pinned executable source lines and 1,197 canonical
+project properties**. The 100,000-line target is unfinished; 57,025 lines remain.
+All six applications have fresh passing standard proof/axiom gates and matching
+extraction evidence. The latest batch adds 202 lines and 23 complete constructor
+properties, preserving all 1,174 earlier canonical statements. Pinned source-body
+comparisons, byte-identical regeneration and all 23 harness tests pass.
+
+These are accepted source-reach counts under the mapping method below, not a
+whole-application equivalence claim. The constructor properties establish every
+returned field and termination, not runtime caller enforcement. Benchmark task
+accounting remains separate at 101 tasks / 99 accepted. Runtime performance was
+not remeasured in this batch. Dashboard assets are refreshed locally; no deployment
+was performed.
+
+See the [accepted checkpoint](../results/campaigns/coverage-closed-records-20261101/STATUS.md),
+[machine-readable evidence](../results/campaigns/coverage-closed-records-20261101/accepted-checkpoint.json)
+and [paused work plan](WORKPLAN.md). The 142 experimental forwarding constructors
+in the handoff remain uncounted pending production integration and validation.
+
 ## Coverage
 
 Track these quantities separately:

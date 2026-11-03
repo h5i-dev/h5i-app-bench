@@ -1,3 +1,4 @@
+import Verified.FiniteCatalog
 import Verified.TuwunelMessagesAfterLeaving
 import Verified.TuwunelContextVisible
 import Verified.TuwunelContextMatchesSpec
@@ -188,5 +189,30 @@ so the queue holds at most `1 + 2 (n + n^2 + n^3) + n^4 ≤ (n + 1)^4` entries. 
 theorem transition_total (s : Snapshot) (req : Request) (hr : (s.relations.length + 1) ^ 4 < Usize.max) :
     ∃ r, transition s req = ok r := by
   exact tuwunel_kernel.Verified.TuwunelTransitionTotal.transition_total s req hr
+
+end tuwunel_kernel.Properties
+
+namespace tuwunel_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_field_bea9b175_label_complete (v : finite_catalog.field_bea9b175.Field) :
+    finite_catalog.field_bea9b175.Field.label v ⦃r => r.val = field_bea9b175_label_model v⦄ := Verified.FiniteCatalog.field_bea9b175_label_complete v
+
+theorem finite_state_after_c4e3af58_requested_complete (v : finite_catalog.state_after_c4e3af58.StateAfter) :
+    finite_catalog.state_after_c4e3af58.StateAfter.requested v ⦃r => r = state_after_c4e3af58_requested_model v⦄ := Verified.FiniteCatalog.state_after_c4e3af58_requested_complete v
+
+theorem finite_fallback_08cb57a8_name_complete (v : finite_catalog.fallback_08cb57a8.Fallback) :
+    finite_catalog.fallback_08cb57a8.Fallback.name v ⦃r => r.val = fallback_08cb57a8_name_model v⦄ := Verified.FiniteCatalog.fallback_08cb57a8_name_complete v
+
+theorem finite_room_power_levels_int_field_b809be58_as_str_complete (v : finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField) :
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_str v ⦃r => r.val = room_power_levels_int_field_b809be58_as_str_model v⦄ := Verified.FiniteCatalog.room_power_levels_int_field_b809be58_as_str_complete v
+
+theorem finite_room_power_levels_int_field_b809be58_as_ref_complete (v : finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField) :
+    finite_catalog.room_power_levels_int_field_b809be58.RoomPowerLevelsIntField.as_ref v ⦃r => r.val = room_power_levels_int_field_b809be58_as_ref_model v⦄ := Verified.FiniteCatalog.room_power_levels_int_field_b809be58_as_ref_complete v
+
+theorem finite_status_4004009f_is_terminal_complete (v : finite_catalog.status_4004009f.Status) :
+    finite_catalog.status_4004009f.Status.is_terminal v ⦃r => r = status_4004009f_is_terminal_model v⦄ := Verified.FiniteCatalog.status_4004009f_is_terminal_complete v
+
+theorem finite_status_4004009f_as_str_complete (v : finite_catalog.status_4004009f.Status) :
+    finite_catalog.status_4004009f.Status.as_str v ⦃r => r.val = status_4004009f_as_str_model v⦄ := Verified.FiniteCatalog.status_4004009f_as_str_complete v
 
 end tuwunel_kernel.Properties

@@ -1,0 +1,270 @@
+#![allow(dead_code,non_upper_case_globals,non_snake_case)]
+use std::sync::LazyLock;
+#[derive(Clone,Copy,Debug,Default)]struct Uuid(u128);
+#[derive(Clone,Copy,Debug)]struct Attribute(&'static str);
+impl Attribute {
+const Class:Self=Self("class");
+const CredentialTypeMinimum:Self=Self("credential_type_minimum");
+const GrantUiHint:Self=Self("grant_ui_hint");
+}
+impl std::fmt::Display for Attribute{fn fmt(&self,f:&mut std::fmt::Formatter)->std::fmt::Result{f.write_str(self.0)}}
+#[derive(Clone,Copy,Debug)]struct EntryClass(&'static str);
+impl EntryClass{
+const Account:Self=Self("account");
+const AccountPolicy:Self=Self("account_policy");
+const Person:Self=Self("person");
+const System:Self=Self("system");
+fn to_value(self)->Value{Value::Class(self.0.to_owned())}}
+impl std::fmt::Display for EntryClass{fn fmt(&self,f:&mut std::fmt::Formatter)->std::fmt::Result{f.write_str(self.0)}}
+const UUID_ADMIN:Uuid=Uuid(0);
+const UUID_ANONYMOUS:Uuid=Uuid(281474976710655);
+const UUID_DOMAIN_ADMINS:Uuid=Uuid(32);
+const UUID_IDM_ACCESS_CONTROL_ADMINS:Uuid=Uuid(17);
+const UUID_IDM_ACCOUNT_MAIL_READ:Uuid=Uuid(57);
+const UUID_IDM_ACCOUNT_POLICY_ADMINS:Uuid=Uuid(71);
+const UUID_IDM_ADMIN:Uuid=Uuid(24);
+const UUID_IDM_ADMINS:Uuid=Uuid(1);
+const UUID_IDM_ALL_ACCOUNTS:Uuid=Uuid(54);
+const UUID_IDM_ALL_PERSONS:Uuid=Uuid(53);
+const UUID_IDM_APPLICATION_ADMINS:Uuid=Uuid(80);
+const UUID_IDM_CLIENT_CERTIFICATE_ADMINS:Uuid=Uuid(73);
+const UUID_IDM_GROUP_ADMINS:Uuid=Uuid(21);
+const UUID_IDM_HIGH_PRIVILEGE:Uuid=Uuid(4096);
+const UUID_IDM_MAIL_ADMINS:Uuid=Uuid(81);
+const UUID_IDM_MAIL_SERVERS:Uuid=Uuid(82);
+const UUID_IDM_MESSAGE_ADMINS:Uuid=Uuid(84);
+const UUID_IDM_MESSAGE_SENDERS:Uuid=Uuid(85);
+const UUID_IDM_OAUTH2_ACCOUNT_ADMINS:Uuid=Uuid(87);
+const UUID_IDM_OAUTH2_ADMINS:Uuid=Uuid(39);
+const UUID_IDM_OAUTH2_CLIENT_ADMINS:Uuid=Uuid(86);
+const UUID_IDM_PEOPLE_ADMINS:Uuid=Uuid(19);
+const UUID_IDM_PEOPLE_ON_BOARDING:Uuid=Uuid(69);
+const UUID_IDM_PEOPLE_PII_READ:Uuid=Uuid(2);
+const UUID_IDM_PEOPLE_SELF_MAIL_WRITE:Uuid=Uuid(51);
+const UUID_IDM_PEOPLE_SELF_NAME_WRITE:Uuid=Uuid(72);
+const UUID_IDM_RADIUS_ADMINS:Uuid=Uuid(67);
+const UUID_IDM_RADIUS_SERVERS:Uuid=Uuid(7);
+const UUID_IDM_RECYCLE_BIN_ADMINS:Uuid=Uuid(66);
+const UUID_IDM_SCHEMA_ADMINS:Uuid=Uuid(16);
+const UUID_IDM_SERVICE_ACCOUNT_ADMINS:Uuid=Uuid(70);
+const UUID_IDM_SERVICE_DESK:Uuid=Uuid(65);
+const UUID_IDM_UI_ENABLE_EXPERIMENTAL_FEATURES:Uuid=Uuid(56);
+const UUID_IDM_UNIX_ADMINS:Uuid=Uuid(68);
+const UUID_IDM_UNIX_AUTHENTICATION_READ:Uuid=Uuid(83);
+const UUID_SYSTEM_ADMINS:Uuid=Uuid(25);
+const NAME_IDM_ADMINS:&str="idm_admins";
+const NAME_IDM_ALL_ACCOUNTS:&str="idm_all_accounts";
+const NAME_IDM_PEOPLE_PII_READ:&str="idm_people_pii_read";
+const NAME_SYSTEM_ADMINS:&str="system_admins";
+#[derive(Clone,Debug)]enum Filter{Eq(String,String),And(Vec<Self>)}
+#[derive(Clone,Copy,Debug)]enum UiHint{ExperimentalFeatures}
+#[derive(Clone,Copy,Debug)]enum CredentialType{Mfa}
+#[derive(Clone,Debug)]enum Value{Class(String),CredentialType(CredentialType),UiHint(UiHint)}
+impl From<CredentialType> for Value{fn from(v:CredentialType)->Self{Self::CredentialType(v)}}
+#[derive(Clone,Debug,Default)]struct BuiltinGroup{
+ name:&'static str,description:&'static str,uuid:Uuid,members:Vec<Uuid>,member_create_once:Vec<Uuid>,entry_managed_by:Option<Uuid>,dyngroup:bool,dyngroup_filter:Option<Filter>,extra_attributes:Vec<(Attribute,Value)>}
+fn string_bytes(s:&str,b:&mut Vec<u8>){assert!(s.len()<=65535);b.extend_from_slice(&(s.len()as u16).to_le_bytes());b.extend_from_slice(s.as_bytes())}
+fn filter_bytes(f:&Filter,b:&mut Vec<u8>){match f {Filter::Eq(a,v)=>{b.push(0);string_bytes(a,b);string_bytes(v,b)},Filter::And(xs)=>{b.push(1);b.extend_from_slice(&(xs.len()as u16).to_le_bytes());for x in xs{filter_bytes(x,b)}}}}
+fn extras(xs:&[(Attribute,Value)])->Vec<u8>{let mut b=vec![];for (a,v) in xs{string_bytes(a.0,&mut b);match v{Value::Class(c)=>{b.push(0);string_bytes(c,&mut b)},Value::CredentialType(CredentialType::Mfa)=>{b.push(1);b.extend_from_slice(&10u16.to_le_bytes())},Value::UiHint(UiHint::ExperimentalFeatures)=>b.push(2)}}b}
+mod dl11{include!("dl11.rs");}
+mod dl12{include!("dl12.rs");}
+mod dl13{include!("dl13.rs");}
+mod dl14{include!("dl14.rs");}
+mod dl15{include!("dl15.rs");}
+mod dl_1_12{include!("dl_1_12.rs");}
+fn render(v:&BuiltinGroup)->String{let mut filter=vec![];if let Some(f)=&v.dyngroup_filter{filter_bytes(f,&mut filter);}format!("{{\"name\":{:?},\"description\":{:?},\"uuid\":{},\"members\":{:?},\"member_create_once\":{:?},\"has_entry_manager\":{},\"entry_manager\":{},\"dyngroup\":{},\"filter\":{:?},\"extra_attributes\":{:?}}}",v.name.as_bytes().to_vec(),v.description.as_bytes().to_vec(),v.uuid.0,v.members.iter().map(|x|x.0).collect::<Vec<_>>(),v.member_create_once.iter().map(|x|x.0).collect::<Vec<_>>(),v.entry_managed_by.is_some(),v.entry_managed_by.map(|u|u.0).unwrap_or(0),v.dyngroup,filter,extras(&v.extra_attributes))}
+fn main(){
+println!("{}\t{}","dl11/BUILTIN_GROUP_SYSTEM_ADMINS_V1",render(&dl11::BUILTIN_GROUP_SYSTEM_ADMINS_V1));
+println!("{}\t{}","dl11/BUILTIN_GROUP_IDM_ADMINS_V1",render(&dl11::BUILTIN_GROUP_IDM_ADMINS_V1));
+println!("{}\t{}","dl11/BUILTIN_GROUP_SERVICE_DESK",render(&dl11::BUILTIN_GROUP_SERVICE_DESK));
+println!("{}\t{}","dl11/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",render(&dl11::BUILTIN_GROUP_RECYCLE_BIN_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_DOMAIN_ADMINS",render(&dl11::BUILTIN_GROUP_DOMAIN_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_SCHEMA_ADMINS",render(&dl11::BUILTIN_GROUP_SCHEMA_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",render(&dl11::BUILTIN_GROUP_ACCESS_CONTROL_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_PEOPLE_ADMINS",render(&dl11::BUILTIN_GROUP_PEOPLE_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_PEOPLE_ON_BOARDING",render(&dl11::BUILTIN_GROUP_PEOPLE_ON_BOARDING));
+println!("{}\t{}","dl11/BUILTIN_GROUP_PEOPLE_PII_READ",render(&dl11::BUILTIN_GROUP_PEOPLE_PII_READ));
+println!("{}\t{}","dl11/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",render(&dl11::BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7));
+println!("{}\t{}","dl11/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",render(&dl11::BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_OAUTH2_ADMINS",render(&dl11::BUILTIN_GROUP_OAUTH2_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",render(&dl11::BUILTIN_GROUP_RADIUS_SERVICE_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_IDM_RADIUS_SERVERS_V1",render(&dl11::BUILTIN_IDM_RADIUS_SERVERS_V1));
+println!("{}\t{}","dl11/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",render(&dl11::BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8));
+println!("{}\t{}","dl11/BUILTIN_IDM_MAIL_SERVERS_DL8",render(&dl11::BUILTIN_IDM_MAIL_SERVERS_DL8));
+println!("{}\t{}","dl11/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",render(&dl11::BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_UNIX_ADMINS",render(&dl11::BUILTIN_GROUP_UNIX_ADMINS));
+println!("{}\t{}","dl11/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",render(&dl11::BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7));
+println!("{}\t{}","dl11/IDM_GROUP_ADMINS_V1",render(&dl11::IDM_GROUP_ADMINS_V1));
+println!("{}\t{}","dl11/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",render(&dl11::IDM_PEOPLE_SELF_MAIL_WRITE_DL7));
+println!("{}\t{}","dl11/IDM_ALL_PERSONS",render(&dl11::IDM_ALL_PERSONS));
+println!("{}\t{}","dl11/IDM_ALL_ACCOUNTS",render(&dl11::IDM_ALL_ACCOUNTS));
+println!("{}\t{}","dl11/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",render(&dl11::IDM_UI_ENABLE_EXPERIMENTAL_FEATURES));
+println!("{}\t{}","dl11/IDM_ACCOUNT_MAIL_READ",render(&dl11::IDM_ACCOUNT_MAIL_READ));
+println!("{}\t{}","dl11/IDM_HIGH_PRIVILEGE_DL8",render(&dl11::IDM_HIGH_PRIVILEGE_DL8));
+println!("{}\t{}","dl11/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",render(&dl11::BUILTIN_GROUP_APPLICATION_ADMINS_DL8));
+println!("{}\t{}","dl12/BUILTIN_GROUP_SYSTEM_ADMINS_V1",render(&dl12::BUILTIN_GROUP_SYSTEM_ADMINS_V1));
+println!("{}\t{}","dl12/BUILTIN_GROUP_IDM_ADMINS_V1",render(&dl12::BUILTIN_GROUP_IDM_ADMINS_V1));
+println!("{}\t{}","dl12/BUILTIN_GROUP_SERVICE_DESK",render(&dl12::BUILTIN_GROUP_SERVICE_DESK));
+println!("{}\t{}","dl12/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",render(&dl12::BUILTIN_GROUP_RECYCLE_BIN_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_DOMAIN_ADMINS",render(&dl12::BUILTIN_GROUP_DOMAIN_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_SCHEMA_ADMINS",render(&dl12::BUILTIN_GROUP_SCHEMA_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",render(&dl12::BUILTIN_GROUP_ACCESS_CONTROL_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_PEOPLE_ADMINS",render(&dl12::BUILTIN_GROUP_PEOPLE_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_PEOPLE_ON_BOARDING",render(&dl12::BUILTIN_GROUP_PEOPLE_ON_BOARDING));
+println!("{}\t{}","dl12/BUILTIN_GROUP_PEOPLE_PII_READ",render(&dl12::BUILTIN_GROUP_PEOPLE_PII_READ));
+println!("{}\t{}","dl12/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",render(&dl12::BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7));
+println!("{}\t{}","dl12/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",render(&dl12::BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_OAUTH2_ADMINS",render(&dl12::BUILTIN_GROUP_OAUTH2_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",render(&dl12::BUILTIN_GROUP_RADIUS_SERVICE_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_IDM_RADIUS_SERVERS_V1",render(&dl12::BUILTIN_IDM_RADIUS_SERVERS_V1));
+println!("{}\t{}","dl12/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",render(&dl12::BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8));
+println!("{}\t{}","dl12/BUILTIN_IDM_MAIL_SERVERS_DL8",render(&dl12::BUILTIN_IDM_MAIL_SERVERS_DL8));
+println!("{}\t{}","dl12/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",render(&dl12::BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_UNIX_ADMINS",render(&dl12::BUILTIN_GROUP_UNIX_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",render(&dl12::BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1));
+println!("{}\t{}","dl12/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",render(&dl12::BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7));
+println!("{}\t{}","dl12/IDM_GROUP_ADMINS_V1",render(&dl12::IDM_GROUP_ADMINS_V1));
+println!("{}\t{}","dl12/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",render(&dl12::IDM_PEOPLE_SELF_MAIL_WRITE_DL7));
+println!("{}\t{}","dl12/BUILTIN_GROUP_MESSAGE_ADMINS",render(&dl12::BUILTIN_GROUP_MESSAGE_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_MESSAGE_SENDERS",render(&dl12::BUILTIN_GROUP_MESSAGE_SENDERS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",render(&dl12::BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS));
+println!("{}\t{}","dl12/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",render(&dl12::BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS));
+println!("{}\t{}","dl12/IDM_ALL_PERSONS",render(&dl12::IDM_ALL_PERSONS));
+println!("{}\t{}","dl12/IDM_ALL_ACCOUNTS",render(&dl12::IDM_ALL_ACCOUNTS));
+println!("{}\t{}","dl12/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",render(&dl12::IDM_UI_ENABLE_EXPERIMENTAL_FEATURES));
+println!("{}\t{}","dl12/IDM_ACCOUNT_MAIL_READ",render(&dl12::IDM_ACCOUNT_MAIL_READ));
+println!("{}\t{}","dl12/IDM_HIGH_PRIVILEGE_DL8",render(&dl12::IDM_HIGH_PRIVILEGE_DL8));
+println!("{}\t{}","dl12/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",render(&dl12::BUILTIN_GROUP_APPLICATION_ADMINS_DL8));
+println!("{}\t{}","dl13/BUILTIN_GROUP_SYSTEM_ADMINS_V1",render(&dl13::BUILTIN_GROUP_SYSTEM_ADMINS_V1));
+println!("{}\t{}","dl13/BUILTIN_GROUP_IDM_ADMINS_V1",render(&dl13::BUILTIN_GROUP_IDM_ADMINS_V1));
+println!("{}\t{}","dl13/BUILTIN_GROUP_SERVICE_DESK",render(&dl13::BUILTIN_GROUP_SERVICE_DESK));
+println!("{}\t{}","dl13/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",render(&dl13::BUILTIN_GROUP_RECYCLE_BIN_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_DOMAIN_ADMINS",render(&dl13::BUILTIN_GROUP_DOMAIN_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_SCHEMA_ADMINS",render(&dl13::BUILTIN_GROUP_SCHEMA_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",render(&dl13::BUILTIN_GROUP_ACCESS_CONTROL_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_PEOPLE_ADMINS",render(&dl13::BUILTIN_GROUP_PEOPLE_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_PEOPLE_ON_BOARDING",render(&dl13::BUILTIN_GROUP_PEOPLE_ON_BOARDING));
+println!("{}\t{}","dl13/BUILTIN_GROUP_PEOPLE_PII_READ",render(&dl13::BUILTIN_GROUP_PEOPLE_PII_READ));
+println!("{}\t{}","dl13/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",render(&dl13::BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7));
+println!("{}\t{}","dl13/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",render(&dl13::BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_OAUTH2_ADMINS",render(&dl13::BUILTIN_GROUP_OAUTH2_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",render(&dl13::BUILTIN_GROUP_RADIUS_SERVICE_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_IDM_RADIUS_SERVERS_V1",render(&dl13::BUILTIN_IDM_RADIUS_SERVERS_V1));
+println!("{}\t{}","dl13/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",render(&dl13::BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8));
+println!("{}\t{}","dl13/BUILTIN_IDM_MAIL_SERVERS_DL8",render(&dl13::BUILTIN_IDM_MAIL_SERVERS_DL8));
+println!("{}\t{}","dl13/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",render(&dl13::BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_UNIX_ADMINS",render(&dl13::BUILTIN_GROUP_UNIX_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",render(&dl13::BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1));
+println!("{}\t{}","dl13/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",render(&dl13::BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7));
+println!("{}\t{}","dl13/IDM_GROUP_ADMINS_V1",render(&dl13::IDM_GROUP_ADMINS_V1));
+println!("{}\t{}","dl13/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",render(&dl13::IDM_PEOPLE_SELF_MAIL_WRITE_DL7));
+println!("{}\t{}","dl13/BUILTIN_GROUP_MESSAGE_ADMINS",render(&dl13::BUILTIN_GROUP_MESSAGE_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_MESSAGE_SENDERS",render(&dl13::BUILTIN_GROUP_MESSAGE_SENDERS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",render(&dl13::BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS));
+println!("{}\t{}","dl13/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",render(&dl13::BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS));
+println!("{}\t{}","dl13/IDM_ALL_PERSONS",render(&dl13::IDM_ALL_PERSONS));
+println!("{}\t{}","dl13/IDM_ALL_ACCOUNTS",render(&dl13::IDM_ALL_ACCOUNTS));
+println!("{}\t{}","dl13/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",render(&dl13::IDM_UI_ENABLE_EXPERIMENTAL_FEATURES));
+println!("{}\t{}","dl13/IDM_ACCOUNT_MAIL_READ",render(&dl13::IDM_ACCOUNT_MAIL_READ));
+println!("{}\t{}","dl13/IDM_HIGH_PRIVILEGE_DL8",render(&dl13::IDM_HIGH_PRIVILEGE_DL8));
+println!("{}\t{}","dl13/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",render(&dl13::BUILTIN_GROUP_APPLICATION_ADMINS_DL8));
+println!("{}\t{}","dl14/BUILTIN_GROUP_SYSTEM_ADMINS_V1",render(&dl14::BUILTIN_GROUP_SYSTEM_ADMINS_V1));
+println!("{}\t{}","dl14/BUILTIN_GROUP_IDM_ADMINS_V1",render(&dl14::BUILTIN_GROUP_IDM_ADMINS_V1));
+println!("{}\t{}","dl14/BUILTIN_GROUP_SERVICE_DESK",render(&dl14::BUILTIN_GROUP_SERVICE_DESK));
+println!("{}\t{}","dl14/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",render(&dl14::BUILTIN_GROUP_RECYCLE_BIN_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_DOMAIN_ADMINS",render(&dl14::BUILTIN_GROUP_DOMAIN_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_SCHEMA_ADMINS",render(&dl14::BUILTIN_GROUP_SCHEMA_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",render(&dl14::BUILTIN_GROUP_ACCESS_CONTROL_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_PEOPLE_ADMINS",render(&dl14::BUILTIN_GROUP_PEOPLE_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_PEOPLE_ON_BOARDING",render(&dl14::BUILTIN_GROUP_PEOPLE_ON_BOARDING));
+println!("{}\t{}","dl14/BUILTIN_GROUP_PEOPLE_PII_READ",render(&dl14::BUILTIN_GROUP_PEOPLE_PII_READ));
+println!("{}\t{}","dl14/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",render(&dl14::BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7));
+println!("{}\t{}","dl14/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",render(&dl14::BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_OAUTH2_ADMINS",render(&dl14::BUILTIN_GROUP_OAUTH2_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",render(&dl14::BUILTIN_GROUP_RADIUS_SERVICE_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_IDM_RADIUS_SERVERS_V1",render(&dl14::BUILTIN_IDM_RADIUS_SERVERS_V1));
+println!("{}\t{}","dl14/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",render(&dl14::BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8));
+println!("{}\t{}","dl14/BUILTIN_IDM_MAIL_SERVERS_DL8",render(&dl14::BUILTIN_IDM_MAIL_SERVERS_DL8));
+println!("{}\t{}","dl14/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",render(&dl14::BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_UNIX_ADMINS",render(&dl14::BUILTIN_GROUP_UNIX_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",render(&dl14::BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1));
+println!("{}\t{}","dl14/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",render(&dl14::BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7));
+println!("{}\t{}","dl14/IDM_GROUP_ADMINS_V1",render(&dl14::IDM_GROUP_ADMINS_V1));
+println!("{}\t{}","dl14/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",render(&dl14::IDM_PEOPLE_SELF_MAIL_WRITE_DL7));
+println!("{}\t{}","dl14/BUILTIN_GROUP_MESSAGE_ADMINS",render(&dl14::BUILTIN_GROUP_MESSAGE_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_MESSAGE_SENDERS",render(&dl14::BUILTIN_GROUP_MESSAGE_SENDERS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",render(&dl14::BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS));
+println!("{}\t{}","dl14/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",render(&dl14::BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS));
+println!("{}\t{}","dl14/IDM_ALL_PERSONS",render(&dl14::IDM_ALL_PERSONS));
+println!("{}\t{}","dl14/IDM_ALL_ACCOUNTS",render(&dl14::IDM_ALL_ACCOUNTS));
+println!("{}\t{}","dl14/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",render(&dl14::IDM_UI_ENABLE_EXPERIMENTAL_FEATURES));
+println!("{}\t{}","dl14/IDM_ACCOUNT_MAIL_READ",render(&dl14::IDM_ACCOUNT_MAIL_READ));
+println!("{}\t{}","dl14/IDM_HIGH_PRIVILEGE_DL8",render(&dl14::IDM_HIGH_PRIVILEGE_DL8));
+println!("{}\t{}","dl14/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",render(&dl14::BUILTIN_GROUP_APPLICATION_ADMINS_DL8));
+println!("{}\t{}","dl15/BUILTIN_GROUP_SYSTEM_ADMINS_V1",render(&dl15::BUILTIN_GROUP_SYSTEM_ADMINS_V1));
+println!("{}\t{}","dl15/BUILTIN_GROUP_IDM_ADMINS_V1",render(&dl15::BUILTIN_GROUP_IDM_ADMINS_V1));
+println!("{}\t{}","dl15/BUILTIN_GROUP_SERVICE_DESK",render(&dl15::BUILTIN_GROUP_SERVICE_DESK));
+println!("{}\t{}","dl15/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",render(&dl15::BUILTIN_GROUP_RECYCLE_BIN_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_DOMAIN_ADMINS",render(&dl15::BUILTIN_GROUP_DOMAIN_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_SCHEMA_ADMINS",render(&dl15::BUILTIN_GROUP_SCHEMA_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",render(&dl15::BUILTIN_GROUP_ACCESS_CONTROL_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_PEOPLE_ADMINS",render(&dl15::BUILTIN_GROUP_PEOPLE_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_PEOPLE_ON_BOARDING",render(&dl15::BUILTIN_GROUP_PEOPLE_ON_BOARDING));
+println!("{}\t{}","dl15/BUILTIN_GROUP_PEOPLE_PII_READ",render(&dl15::BUILTIN_GROUP_PEOPLE_PII_READ));
+println!("{}\t{}","dl15/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",render(&dl15::BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7));
+println!("{}\t{}","dl15/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",render(&dl15::BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_OAUTH2_ADMINS",render(&dl15::BUILTIN_GROUP_OAUTH2_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",render(&dl15::BUILTIN_GROUP_RADIUS_SERVICE_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_IDM_RADIUS_SERVERS_V1",render(&dl15::BUILTIN_IDM_RADIUS_SERVERS_V1));
+println!("{}\t{}","dl15/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",render(&dl15::BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8));
+println!("{}\t{}","dl15/BUILTIN_IDM_MAIL_SERVERS_DL8",render(&dl15::BUILTIN_IDM_MAIL_SERVERS_DL8));
+println!("{}\t{}","dl15/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",render(&dl15::BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_UNIX_ADMINS",render(&dl15::BUILTIN_GROUP_UNIX_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",render(&dl15::BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1));
+println!("{}\t{}","dl15/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",render(&dl15::BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7));
+println!("{}\t{}","dl15/IDM_GROUP_ADMINS_V1",render(&dl15::IDM_GROUP_ADMINS_V1));
+println!("{}\t{}","dl15/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",render(&dl15::IDM_PEOPLE_SELF_MAIL_WRITE_DL7));
+println!("{}\t{}","dl15/BUILTIN_GROUP_MESSAGE_ADMINS",render(&dl15::BUILTIN_GROUP_MESSAGE_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_MESSAGE_SENDERS",render(&dl15::BUILTIN_GROUP_MESSAGE_SENDERS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",render(&dl15::BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS));
+println!("{}\t{}","dl15/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",render(&dl15::BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS));
+println!("{}\t{}","dl15/IDM_ALL_PERSONS",render(&dl15::IDM_ALL_PERSONS));
+println!("{}\t{}","dl15/IDM_ALL_ACCOUNTS",render(&dl15::IDM_ALL_ACCOUNTS));
+println!("{}\t{}","dl15/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",render(&dl15::IDM_UI_ENABLE_EXPERIMENTAL_FEATURES));
+println!("{}\t{}","dl15/IDM_ACCOUNT_MAIL_READ",render(&dl15::IDM_ACCOUNT_MAIL_READ));
+println!("{}\t{}","dl15/IDM_HIGH_PRIVILEGE_DL8",render(&dl15::IDM_HIGH_PRIVILEGE_DL8));
+println!("{}\t{}","dl15/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",render(&dl15::BUILTIN_GROUP_APPLICATION_ADMINS_DL8));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_SYSTEM_ADMINS_V1",render(&dl_1_12::BUILTIN_GROUP_SYSTEM_ADMINS_V1));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_IDM_ADMINS_V1",render(&dl_1_12::BUILTIN_GROUP_IDM_ADMINS_V1));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_SERVICE_DESK",render(&dl_1_12::BUILTIN_GROUP_SERVICE_DESK));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_RECYCLE_BIN_ADMINS",render(&dl_1_12::BUILTIN_GROUP_RECYCLE_BIN_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_DOMAIN_ADMINS",render(&dl_1_12::BUILTIN_GROUP_DOMAIN_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_SCHEMA_ADMINS",render(&dl_1_12::BUILTIN_GROUP_SCHEMA_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_ACCESS_CONTROL_ADMINS",render(&dl_1_12::BUILTIN_GROUP_ACCESS_CONTROL_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_PEOPLE_ADMINS",render(&dl_1_12::BUILTIN_GROUP_PEOPLE_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_PEOPLE_ON_BOARDING",render(&dl_1_12::BUILTIN_GROUP_PEOPLE_ON_BOARDING));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_PEOPLE_PII_READ",render(&dl_1_12::BUILTIN_GROUP_PEOPLE_PII_READ));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7",render(&dl_1_12::BUILTIN_GROUP_PEOPLE_SELF_NAME_WRITE_DL7));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS",render(&dl_1_12::BUILTIN_GROUP_SERVICE_ACCOUNT_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_OAUTH2_ADMINS",render(&dl_1_12::BUILTIN_GROUP_OAUTH2_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_RADIUS_SERVICE_ADMINS",render(&dl_1_12::BUILTIN_GROUP_RADIUS_SERVICE_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_IDM_RADIUS_SERVERS_V1",render(&dl_1_12::BUILTIN_IDM_RADIUS_SERVERS_V1));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8",render(&dl_1_12::BUILTIN_GROUP_MAIL_SERVICE_ADMINS_DL8));
+println!("{}\t{}","dl_1_12/BUILTIN_IDM_MAIL_SERVERS_DL8",render(&dl_1_12::BUILTIN_IDM_MAIL_SERVERS_DL8));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS",render(&dl_1_12::BUILTIN_GROUP_ACCOUNT_POLICY_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_UNIX_ADMINS",render(&dl_1_12::BUILTIN_GROUP_UNIX_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1",render(&dl_1_12::BUILTIN_GROUP_IDM_UNIX_AUTHENTICATION_READ_V1));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7",render(&dl_1_12::BUILTIN_GROUP_CLIENT_CERTIFICATE_ADMINS_DL7));
+println!("{}\t{}","dl_1_12/IDM_GROUP_ADMINS_V1",render(&dl_1_12::IDM_GROUP_ADMINS_V1));
+println!("{}\t{}","dl_1_12/IDM_PEOPLE_SELF_MAIL_WRITE_DL7",render(&dl_1_12::IDM_PEOPLE_SELF_MAIL_WRITE_DL7));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_MESSAGE_ADMINS",render(&dl_1_12::BUILTIN_GROUP_MESSAGE_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_MESSAGE_SENDERS",render(&dl_1_12::BUILTIN_GROUP_MESSAGE_SENDERS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS",render(&dl_1_12::BUILTIN_GROUP_OAUTH2_CLIENT_ADMINS));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS",render(&dl_1_12::BUILTIN_GROUP_OAUTH2_ACCOUNT_ADMINS));
+println!("{}\t{}","dl_1_12/IDM_ALL_PERSONS",render(&dl_1_12::IDM_ALL_PERSONS));
+println!("{}\t{}","dl_1_12/IDM_ALL_ACCOUNTS",render(&dl_1_12::IDM_ALL_ACCOUNTS));
+println!("{}\t{}","dl_1_12/IDM_UI_ENABLE_EXPERIMENTAL_FEATURES",render(&dl_1_12::IDM_UI_ENABLE_EXPERIMENTAL_FEATURES));
+println!("{}\t{}","dl_1_12/IDM_ACCOUNT_MAIL_READ",render(&dl_1_12::IDM_ACCOUNT_MAIL_READ));
+println!("{}\t{}","dl_1_12/IDM_HIGH_PRIVILEGE_DL8",render(&dl_1_12::IDM_HIGH_PRIVILEGE_DL8));
+println!("{}\t{}","dl_1_12/BUILTIN_GROUP_APPLICATION_ADMINS_DL8",render(&dl_1_12::BUILTIN_GROUP_APPLICATION_ADMINS_DL8));
+}

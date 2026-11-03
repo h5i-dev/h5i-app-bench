@@ -1,0 +1,18 @@
+nora 3 enums 5 methods 15 exhaustive comparisons; 0 unresolved candidates excluded
+nora pinned reference audit passed; 15 comparisons
+nora all generated files reproduce byte for byte
+artifactkeeper 50 enums 63 methods 324 exhaustive comparisons; 1 unresolved candidates excluded
+artifactkeeper pinned reference audit passed; 324 comparisons
+artifactkeeper all generated files reproduce byte for byte
+kanidm 2 enums 2 methods 7 exhaustive comparisons; 0 unresolved candidates excluded
+kanidm pinned reference audit passed; 7 comparisons
+kanidm all generated files reproduce byte for byte
+rustfs 1 enums 2 methods 182 exhaustive comparisons; 0 unresolved candidates excluded
+rustfs pinned reference audit passed; 182 comparisons
+rustfs all generated files reproduce byte for byte
+tuwunel 5 enums 7 methods 37 exhaustive comparisons; 1 unresolved candidates excluded
+tuwunel pinned reference audit passed; 37 comparisons
+tuwunel all generated files reproduce byte for byte
+oxicloud 27 enums 41 methods 147 exhaustive comparisons; 0 unresolved candidates excluded
+oxicloud pinned reference audit passed; 147 comparisons
+oxicloud all generated files reproduce byte for byte

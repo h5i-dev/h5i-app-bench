@@ -1,0 +1,3341 @@
+{
+  "revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "accepted": [
+    {
+      "enum": {
+        "file": "src/application/ports/authorization_ports.rs",
+        "kind": "enum",
+        "name": "AuthzDenialVisibility",
+        "self_ty": "",
+        "start": 20,
+        "end": 31,
+        "sha256": "ea7c3e076355c6c61ab52cefb13c1fefac57ffbda775c41acac54283cdb168e1"
+      },
+      "variants": [
+        "Visible",
+        "Hidden"
+      ],
+      "source": "/// Discriminates the two denial shapes surfaced by\n/// [`AuthorizationEngine::require_visible`] in the `authz.denied` audit line.\n/// Log-aggregation consumers key off the string form via `as_str`; keep the\n/// values stable \u2014 a new denial shape means a new variant, never a renamed\n/// existing one.\n#[derive(Debug, Copy, Clone, PartialEq, Eq)]\npub enum AuthzDenialVisibility {\n    /// Caller has `Read` on the resource \u2014 403 Forbidden.\n    Visible,\n    /// Caller has no `Read` \u2014 404 anti-enum.\n    Hidden,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/ports/authorization_ports.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "AuthzDenialVisibility",
+            "start": 52,
+            "end": 57,
+            "sha256": "d17bafd9753190ae1ca3d16ba3bb424a53b07fae381d1262889700f3c7b814f1"
+          },
+          "source": "    pub fn as_str(self) -> &'static str {\n        match self {\n            Self::Visible => \"visible\",\n            Self::Hidden => \"hidden\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "authz_denial_visibility_4079d78e",
+      "outputs": {
+        "as_str/Visible": [
+          118,
+          105,
+          115,
+          105,
+          98,
+          108,
+          101
+        ],
+        "as_str/Hidden": [
+          104,
+          105,
+          100,
+          100,
+          101,
+          110
+        ]
+      },
+      "reference_sha256": "069de509e0fd08e1d5fb9f0a40ab022a6f67ad5c737a49b3732e4dbf62faa6e7"
+    },
+    {
+      "enum": {
+        "file": "src/application/ports/blob_reference_ports.rs",
+        "kind": "enum",
+        "name": "RefLevel",
+        "self_ty": "",
+        "start": 49,
+        "end": 60,
+        "sha256": "44164379ca4d73791d27f59a954f991c874088600721457586baa95af18e40e1"
+      },
+      "variants": [
+        "Chunk",
+        "Manifest"
+      ],
+      "source": "/// Which counter a source's references land on.\n///\n/// Not a property of the source \u2014 see the module docs; the same source may\n/// contribute at both levels.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]\npub enum RefLevel {\n    /// References a physical chunk. Feeds `storage.blobs.ref_count`.\n    Chunk,\n    /// References a Blob via its manifest. Feeds\n    /// `chunk_manifests.ref_count`.\n    Manifest,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/ports/blob_reference_ports.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "RefLevel",
+            "start": 66,
+            "end": 72,
+            "sha256": "74a5dbe3f5b14323688d0cb7cb771b814513163741a68c077990cb2b8a04983c"
+          },
+          "source": "    /// Stable name for logs and consistency-finding fields.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            RefLevel::Chunk => \"chunk\",\n            RefLevel::Manifest => \"manifest\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "ref_level_2ec664a4",
+      "outputs": {
+        "as_str/Chunk": [
+          99,
+          104,
+          117,
+          110,
+          107
+        ],
+        "as_str/Manifest": [
+          109,
+          97,
+          110,
+          105,
+          102,
+          101,
+          115,
+          116
+        ]
+      },
+      "reference_sha256": "1729fc44aac1d5dfdb5eaa9e27315aaffd2001395acf7e3bf931ce819801549b"
+    },
+    {
+      "enum": {
+        "file": "src/application/ports/chunked_upload_ports.rs",
+        "kind": "enum",
+        "name": "ChecksumAlg",
+        "self_ty": "",
+        "start": 20,
+        "end": 44,
+        "sha256": "5a535a66feb681f3ec4a01dfba36a714fa9d394f490fa3e14b846946d7827d37"
+      },
+      "variants": [
+        "Md5",
+        "Sha256",
+        "Blake3"
+      ],
+      "source": "/// Algorithm used by the client-side chunk checksum.\n///\n/// The wire format is `?checksum=<hex>&checksumalg=<name>` (or the\n/// equivalent header pair for older clients that send only `Content-MD5`).\n/// Clients that omit `checksumalg` are assumed to mean MD5 \u2014 that's the\n/// algorithm baked into the legacy `Content-MD5` header (RFC 1864), TUS-\n/// like upload protocols, and S3 multipart ETags.\n///\n/// Three supported variants, all from already-declared dependencies:\n/// - `Md5` \u2014 legacy default; weak cryptographically but fine for\n///   transport-integrity checks under TLS.\n/// - `Sha256` \u2014 industry-standard, FIPS-compliant, widely supported by\n///   sync clients (AWS S3 also accepts SHA-256 trailers).\n/// - `Blake3` \u2014 fastest of the three; already used by the blob-storage\n///   layer, so the chunk-level integrity check and the assembled-file\n///   dedup hash use the same algorithm when clients opt in.\n///\n/// Skipped intentionally: SHA-1 (deprecated, broken), CRC32 (too weak for\n/// integrity claims). Both can be added if a real client need appears.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum ChecksumAlg {\n    Md5,\n    Sha256,\n    Blake3,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/ports/chunked_upload_ports.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "ChecksumAlg",
+            "start": 60,
+            "end": 66,
+            "sha256": "365dc320ef42cdc9d80b36b7761d8474b68ccc882b71a4c8820ba44690ba3a28"
+          },
+          "source": "    pub fn as_str(self) -> &'static str {\n        match self {\n            Self::Md5 => \"md5\",\n            Self::Sha256 => \"sha256\",\n            Self::Blake3 => \"blake3\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "checksum_alg_cf7683cd",
+      "outputs": {
+        "as_str/Md5": [
+          109,
+          100,
+          53
+        ],
+        "as_str/Sha256": [
+          115,
+          104,
+          97,
+          50,
+          53,
+          54
+        ],
+        "as_str/Blake3": [
+          98,
+          108,
+          97,
+          107,
+          101,
+          51
+        ]
+      },
+      "reference_sha256": "7868ed374c1925ff6dd82c48d6af92022d28758f8f1eef1688c133ce992f870f"
+    },
+    {
+      "enum": {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "enum",
+        "name": "ThumbnailSize",
+        "self_ty": "",
+        "start": 12,
+        "end": 21,
+        "sha256": "86b9b875f7f7eae6e82f0255f7062f4bda73c259a8c2c3473342139c20e6433d"
+      },
+      "variants": [
+        "Icon",
+        "Preview",
+        "Large"
+      ],
+      "source": "/// Thumbnail sizes supported by the system.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]\npub enum ThumbnailSize {\n    /// Small icon for file listings (150\u00d7150)\n    Icon,\n    /// Medium preview for gallery view (400\u00d7400)\n    Preview,\n    /// Large preview for detail view (800\u00d7800)\n    Large,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/ports/thumbnail_ports.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "ThumbnailSize",
+            "start": 24,
+            "end": 35,
+            "sha256": "1f646f7ed8d6ef9f46e7468440b702a70fd9077dfbee9cae2e228d44ccccf4a0"
+          },
+          "source": "    /// Stable name, byte-identical to the derived `Debug` output. Used by\n    /// the thumbnail/preview ETags on the hottest revalidation path \u2014 a\n    /// `&'static str` push beats routing through the `Debug` machinery\n    /// (benches/ROUND11.md \u00a77) while keeping every already-cached client\n    /// ETag valid.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            ThumbnailSize::Icon => \"Icon\",\n            ThumbnailSize::Preview => \"Preview\",\n            ThumbnailSize::Large => \"Large\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/application/ports/thumbnail_ports.rs",
+            "kind": "method",
+            "name": "max_dimension",
+            "self_ty": "ThumbnailSize",
+            "start": 37,
+            "end": 44,
+            "sha256": "d9b23f801ef37c789671114895907b22a3c2648a7220880c3785e0280b92f72d"
+          },
+          "source": "    /// Get the maximum dimension for this size.\n    pub fn max_dimension(&self) -> u32 {\n        match self {\n            ThumbnailSize::Icon => 150,\n            ThumbnailSize::Preview => 400,\n            ThumbnailSize::Large => 800,\n        }\n    }",
+          "type": "u32"
+        },
+        {
+          "meta": {
+            "file": "src/application/ports/thumbnail_ports.rs",
+            "kind": "method",
+            "name": "dir_name",
+            "self_ty": "ThumbnailSize",
+            "start": 46,
+            "end": 53,
+            "sha256": "7c6ea3f78a994b612c0983bec8c0390b37286683a78063e9ebfed5c178f855ab"
+          },
+          "source": "    /// Get the directory name for this size.\n    pub fn dir_name(&self) -> &'static str {\n        match self {\n            ThumbnailSize::Icon => \"icon\",\n            ThumbnailSize::Preview => \"preview\",\n            ThumbnailSize::Large => \"large\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "thumbnail_size_e90c1659",
+      "outputs": {
+        "as_str/Icon": [
+          73,
+          99,
+          111,
+          110
+        ],
+        "as_str/Preview": [
+          80,
+          114,
+          101,
+          118,
+          105,
+          101,
+          119
+        ],
+        "as_str/Large": [
+          76,
+          97,
+          114,
+          103,
+          101
+        ],
+        "max_dimension/Icon": 150,
+        "max_dimension/Preview": 400,
+        "max_dimension/Large": 800,
+        "dir_name/Icon": [
+          105,
+          99,
+          111,
+          110
+        ],
+        "dir_name/Preview": [
+          112,
+          114,
+          101,
+          118,
+          105,
+          101,
+          119
+        ],
+        "dir_name/Large": [
+          108,
+          97,
+          114,
+          103,
+          101
+        ]
+      },
+      "reference_sha256": "74e3fc40619afd4c8f44ad53d72343be3b170024dcf51410060b6f002f29b912"
+    },
+    {
+      "enum": {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "enum",
+        "name": "ThumbnailFormat",
+        "self_ty": "",
+        "start": 65,
+        "end": 77,
+        "sha256": "2f94673ba9bdd37f8c06fcc780e00c2ce857b07930606adf6a6d03ed4c8e41a3"
+      },
+      "variants": [
+        "Webp",
+        "Jpeg"
+      ],
+      "source": "/// Output encoding of a generated thumbnail.\n///\n/// WebP (lossy) is the primary format \u2014 ~25-30% smaller than JPEG at equal\n/// quality \u2014 generated eagerly on upload and served to the ~97% of clients that\n/// advertise `Accept: image/webp`. JPEG is the fallback for older clients and\n/// NextCloud, generated lazily on first request and then cached like WebP.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]\npub enum ThumbnailFormat {\n    /// Lossy WebP \u2014 primary, eager.\n    Webp,\n    /// Baseline JPEG \u2014 fallback for non-WebP clients, lazy.\n    Jpeg,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/ports/thumbnail_ports.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "ThumbnailFormat",
+            "start": 86,
+            "end": 93,
+            "sha256": "6af8699abee2a966969ff34eb05523af286eb953f3300353de8fc688fa43981a"
+          },
+          "source": "    /// Stable name, byte-identical to the derived `Debug` output (see\n    /// [`ThumbnailSize::as_str`] \u2014 same ETag-stability contract).\n    pub fn as_str(self) -> &'static str {\n        match self {\n            ThumbnailFormat::Webp => \"Webp\",\n            ThumbnailFormat::Jpeg => \"Jpeg\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/application/ports/thumbnail_ports.rs",
+            "kind": "method",
+            "name": "ext",
+            "self_ty": "ThumbnailFormat",
+            "start": 95,
+            "end": 101,
+            "sha256": "b8d1b67240214784ccc29b50e5885f20f976a90cebf86d7d167393deb5f8666b"
+          },
+          "source": "    /// On-disk file extension for this format (no dot).\n    pub fn ext(self) -> &'static str {\n        match self {\n            ThumbnailFormat::Webp => \"webp\",\n            ThumbnailFormat::Jpeg => \"jpg\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/application/ports/thumbnail_ports.rs",
+            "kind": "method",
+            "name": "mime",
+            "self_ty": "ThumbnailFormat",
+            "start": 103,
+            "end": 113,
+            "sha256": "612cb4753204ad28fb55458d47b89a8adf5aaae6370e4f68356fce56045aa9a7"
+          },
+          "source": "    /// Media type, for `content_derived_blobs.content_type` and for any\n    /// response serving these bytes.\n    ///\n    /// Beside `ext` deliberately: the two must agree, and an extension\n    /// without a matching media type is how a WebP ends up labelled JPEG.\n    pub fn mime(self) -> &'static str {\n        match self {\n            ThumbnailFormat::Webp => \"image/webp\",\n            ThumbnailFormat::Jpeg => \"image/jpeg\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "thumbnail_format_e90c1659",
+      "outputs": {
+        "as_str/Webp": [
+          87,
+          101,
+          98,
+          112
+        ],
+        "as_str/Jpeg": [
+          74,
+          112,
+          101,
+          103
+        ],
+        "ext/Webp": [
+          119,
+          101,
+          98,
+          112
+        ],
+        "ext/Jpeg": [
+          106,
+          112,
+          103
+        ],
+        "mime/Webp": [
+          105,
+          109,
+          97,
+          103,
+          101,
+          47,
+          119,
+          101,
+          98,
+          112
+        ],
+        "mime/Jpeg": [
+          105,
+          109,
+          97,
+          103,
+          101,
+          47,
+          106,
+          112,
+          101,
+          103
+        ]
+      },
+      "reference_sha256": "3d92a0f2a0636f69657ff1e0bc849f1a4971f04b912835a9be74415a946e901b"
+    },
+    {
+      "enum": {
+        "file": "src/application/ports/transcode_ports.rs",
+        "kind": "enum",
+        "name": "OutputFormat",
+        "self_ty": "",
+        "start": 10,
+        "end": 16,
+        "sha256": "27a0591a9bb6dbf762e088a1ec0859a4004a157ad2001c0a135d7bce40521475"
+      },
+      "variants": [
+        "WebP"
+      ],
+      "source": "/// Supported output formats for image transcoding.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]\npub enum OutputFormat {\n    /// WebP format \u2014 best current browser support with good compression.\n    WebP,\n    // Future: Avif, JpegXl\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/ports/transcode_ports.rs",
+            "kind": "method",
+            "name": "extension",
+            "self_ty": "OutputFormat",
+            "start": 19,
+            "end": 24,
+            "sha256": "436266711cf75fed126e3bfc58caf59c2d0943b5cf0e3f5cc574cd22e2ea0113"
+          },
+          "source": "    /// Get the file extension for this format.\n    pub fn extension(&self) -> &'static str {\n        match self {\n            OutputFormat::WebP => \"webp\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/application/ports/transcode_ports.rs",
+            "kind": "method",
+            "name": "mime_type",
+            "self_ty": "OutputFormat",
+            "start": 26,
+            "end": 31,
+            "sha256": "59f0ec3815f09204843f10c120d77a83bbf8f8cf9eaf7b70229fbf9747f192b2"
+          },
+          "source": "    /// Get the MIME type for this format.\n    pub fn mime_type(&self) -> &'static str {\n        match self {\n            OutputFormat::WebP => \"image/webp\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "output_format_f1a5ab73",
+      "outputs": {
+        "extension/WebP": [
+          119,
+          101,
+          98,
+          112
+        ],
+        "mime_type/WebP": [
+          105,
+          109,
+          97,
+          103,
+          101,
+          47,
+          119,
+          101,
+          98,
+          112
+        ]
+      },
+      "reference_sha256": "f1c2af77888ea236b6d043e9b01ed5f158bc4abeee4802de7472d77ba8ce37a0"
+    },
+    {
+      "enum": {
+        "file": "src/application/services/device_auth_service.rs",
+        "kind": "enum",
+        "name": "DevicePollError",
+        "self_ty": "",
+        "start": 352,
+        "end": 365,
+        "sha256": "e379461ece38c6ba0cac314cabdff39ead4255636fec1f750b0b12ac41bb7036"
+      },
+      "variants": [
+        "AuthorizationPending",
+        "SlowDown",
+        "AccessDenied",
+        "ExpiredToken",
+        "InvalidDeviceCode"
+      ],
+      "source": "/// Typed errors for the device token polling endpoint (RFC 8628 \u00a73.5).\n#[derive(Debug)]\npub enum DevicePollError {\n    /// The authorization request is still pending (user hasn't acted yet).\n    AuthorizationPending,\n    /// The client is polling too fast; increase the interval.\n    SlowDown,\n    /// The user denied the authorization request.\n    AccessDenied,\n    /// The device_code has expired.\n    ExpiredToken,\n    /// The device_code is not recognized.\n    InvalidDeviceCode,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/services/device_auth_service.rs",
+            "kind": "method",
+            "name": "error_code",
+            "self_ty": "DevicePollError",
+            "start": 368,
+            "end": 377,
+            "sha256": "9576fc2c8b7487308ce6c3bd401040b957e5a67c6959661d68f8663e169f7f2a"
+          },
+          "source": "    /// RFC 8628 error string for the JSON response.\n    pub fn error_code(&self) -> &'static str {\n        match self {\n            Self::AuthorizationPending => \"authorization_pending\",\n            Self::SlowDown => \"slow_down\",\n            Self::AccessDenied => \"access_denied\",\n            Self::ExpiredToken => \"expired_token\",\n            Self::InvalidDeviceCode => \"invalid_grant\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/application/services/device_auth_service.rs",
+            "kind": "method",
+            "name": "description",
+            "self_ty": "DevicePollError",
+            "start": 379,
+            "end": 391,
+            "sha256": "f11fdd2b53e8774d0db33e8d12b3a19cb7b9b4504fcbe18fa43dd70897cd7835"
+          },
+          "source": "    pub fn description(&self) -> &'static str {\n        match self {\n            Self::AuthorizationPending => {\n                \"The authorization request is still pending. Continue polling.\"\n            }\n            Self::SlowDown => \"You are polling too frequently. Please slow down.\",\n            Self::AccessDenied => \"The user denied the authorization request.\",\n            Self::ExpiredToken => {\n                \"The device_code has expired. Please start a new authorization flow.\"\n            }\n            Self::InvalidDeviceCode => \"The device_code is not recognized.\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/application/services/device_auth_service.rs",
+            "kind": "method",
+            "name": "http_status",
+            "self_ty": "DevicePollError",
+            "start": 393,
+            "end": 403,
+            "sha256": "6f8d461028fdf30e0df9183d4ef8be401d3c96aaac8ab37fcea025eb8fa9dffe"
+          },
+          "source": "    /// HTTP status code per RFC 8628 \u00a73.5:\n    /// - authorization_pending and slow_down: 400\n    /// - access_denied: 403\n    /// - expired_token: 400\n    pub fn http_status(&self) -> u16 {\n        match self {\n            Self::AuthorizationPending | Self::SlowDown | Self::ExpiredToken => 400,\n            Self::AccessDenied => 403,\n            Self::InvalidDeviceCode => 400,\n        }\n    }",
+          "type": "u16"
+        }
+      ],
+      "module": "device_poll_error_1fb5547a",
+      "outputs": {
+        "error_code/AuthorizationPending": [
+          97,
+          117,
+          116,
+          104,
+          111,
+          114,
+          105,
+          122,
+          97,
+          116,
+          105,
+          111,
+          110,
+          95,
+          112,
+          101,
+          110,
+          100,
+          105,
+          110,
+          103
+        ],
+        "error_code/SlowDown": [
+          115,
+          108,
+          111,
+          119,
+          95,
+          100,
+          111,
+          119,
+          110
+        ],
+        "error_code/AccessDenied": [
+          97,
+          99,
+          99,
+          101,
+          115,
+          115,
+          95,
+          100,
+          101,
+          110,
+          105,
+          101,
+          100
+        ],
+        "error_code/ExpiredToken": [
+          101,
+          120,
+          112,
+          105,
+          114,
+          101,
+          100,
+          95,
+          116,
+          111,
+          107,
+          101,
+          110
+        ],
+        "error_code/InvalidDeviceCode": [
+          105,
+          110,
+          118,
+          97,
+          108,
+          105,
+          100,
+          95,
+          103,
+          114,
+          97,
+          110,
+          116
+        ],
+        "description/AuthorizationPending": [
+          84,
+          104,
+          101,
+          32,
+          97,
+          117,
+          116,
+          104,
+          111,
+          114,
+          105,
+          122,
+          97,
+          116,
+          105,
+          111,
+          110,
+          32,
+          114,
+          101,
+          113,
+          117,
+          101,
+          115,
+          116,
+          32,
+          105,
+          115,
+          32,
+          115,
+          116,
+          105,
+          108,
+          108,
+          32,
+          112,
+          101,
+          110,
+          100,
+          105,
+          110,
+          103,
+          46,
+          32,
+          67,
+          111,
+          110,
+          116,
+          105,
+          110,
+          117,
+          101,
+          32,
+          112,
+          111,
+          108,
+          108,
+          105,
+          110,
+          103,
+          46
+        ],
+        "description/SlowDown": [
+          89,
+          111,
+          117,
+          32,
+          97,
+          114,
+          101,
+          32,
+          112,
+          111,
+          108,
+          108,
+          105,
+          110,
+          103,
+          32,
+          116,
+          111,
+          111,
+          32,
+          102,
+          114,
+          101,
+          113,
+          117,
+          101,
+          110,
+          116,
+          108,
+          121,
+          46,
+          32,
+          80,
+          108,
+          101,
+          97,
+          115,
+          101,
+          32,
+          115,
+          108,
+          111,
+          119,
+          32,
+          100,
+          111,
+          119,
+          110,
+          46
+        ],
+        "description/AccessDenied": [
+          84,
+          104,
+          101,
+          32,
+          117,
+          115,
+          101,
+          114,
+          32,
+          100,
+          101,
+          110,
+          105,
+          101,
+          100,
+          32,
+          116,
+          104,
+          101,
+          32,
+          97,
+          117,
+          116,
+          104,
+          111,
+          114,
+          105,
+          122,
+          97,
+          116,
+          105,
+          111,
+          110,
+          32,
+          114,
+          101,
+          113,
+          117,
+          101,
+          115,
+          116,
+          46
+        ],
+        "description/ExpiredToken": [
+          84,
+          104,
+          101,
+          32,
+          100,
+          101,
+          118,
+          105,
+          99,
+          101,
+          95,
+          99,
+          111,
+          100,
+          101,
+          32,
+          104,
+          97,
+          115,
+          32,
+          101,
+          120,
+          112,
+          105,
+          114,
+          101,
+          100,
+          46,
+          32,
+          80,
+          108,
+          101,
+          97,
+          115,
+          101,
+          32,
+          115,
+          116,
+          97,
+          114,
+          116,
+          32,
+          97,
+          32,
+          110,
+          101,
+          119,
+          32,
+          97,
+          117,
+          116,
+          104,
+          111,
+          114,
+          105,
+          122,
+          97,
+          116,
+          105,
+          111,
+          110,
+          32,
+          102,
+          108,
+          111,
+          119,
+          46
+        ],
+        "description/InvalidDeviceCode": [
+          84,
+          104,
+          101,
+          32,
+          100,
+          101,
+          118,
+          105,
+          99,
+          101,
+          95,
+          99,
+          111,
+          100,
+          101,
+          32,
+          105,
+          115,
+          32,
+          110,
+          111,
+          116,
+          32,
+          114,
+          101,
+          99,
+          111,
+          103,
+          110,
+          105,
+          122,
+          101,
+          100,
+          46
+        ],
+        "http_status/AuthorizationPending": 400,
+        "http_status/SlowDown": 400,
+        "http_status/AccessDenied": 403,
+        "http_status/ExpiredToken": 400,
+        "http_status/InvalidDeviceCode": 400
+      },
+      "reference_sha256": "ae4859ee8fe9d60377b095699005fc6bf45854e714bd4061fcd794c77dc5ae1a"
+    },
+    {
+      "enum": {
+        "file": "src/application/services/recipient_notification_service.rs",
+        "kind": "enum",
+        "name": "NotifyTrigger",
+        "self_ty": "",
+        "start": 78,
+        "end": 85,
+        "sha256": "0c81ef8f3bd557b3af553b69ab17d5f23eaffde1013ee95040af7f17a231cac0"
+      },
+      "variants": [
+        "GrantCreated",
+        "ManualResend"
+      ],
+      "source": "/// What triggered the notification \u2014 purely an audit discriminator.\n/// `GrantCreated` \u2192 fired implicitly when a grant lands; `ManualResend`\n/// \u2192 granter explicitly clicked \"Notify by email\" in My Shares.\n#[derive(Debug, Clone, Copy)]\npub enum NotifyTrigger {\n    GrantCreated,\n    ManualResend,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/services/recipient_notification_service.rs",
+            "kind": "method",
+            "name": "audit_str",
+            "self_ty": "NotifyTrigger",
+            "start": 88,
+            "end": 93,
+            "sha256": "d3d698e86c1beee5134a9fedf53e34f5478878dbc04ccbc6e08c99dcaf214af5"
+          },
+          "source": "    fn audit_str(self) -> &'static str {\n        match self {\n            NotifyTrigger::GrantCreated => \"grant_created\",\n            NotifyTrigger::ManualResend => \"manual_resend\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "notify_trigger_5dfe5802",
+      "outputs": {
+        "audit_str/GrantCreated": [
+          103,
+          114,
+          97,
+          110,
+          116,
+          95,
+          99,
+          114,
+          101,
+          97,
+          116,
+          101,
+          100
+        ],
+        "audit_str/ManualResend": [
+          109,
+          97,
+          110,
+          117,
+          97,
+          108,
+          95,
+          114,
+          101,
+          115,
+          101,
+          110,
+          100
+        ]
+      },
+      "reference_sha256": "f6f6339d022ad7d742a31cce87decd36fd096814fe9ccdd7299ced438529cc3d"
+    },
+    {
+      "enum": {
+        "file": "src/application/services/recipient_notification_service.rs",
+        "kind": "enum",
+        "name": "NotifyKind",
+        "self_ty": "",
+        "start": 96,
+        "end": 102,
+        "sha256": "977f6257ff48c7782561533c449045e8778e2e6b1fb0a70582c36d0e035a7491"
+      },
+      "variants": [
+        "MagicLink",
+        "PlainNotification"
+      ],
+      "source": "/// Which email arm dispatched. `MagicLink` carries a one-shot token in\n/// the URL; `PlainNotification` carries only a `/login` deep link.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum NotifyKind {\n    MagicLink,\n    PlainNotification,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/application/services/recipient_notification_service.rs",
+            "kind": "method",
+            "name": "audit_str",
+            "self_ty": "NotifyKind",
+            "start": 105,
+            "end": 110,
+            "sha256": "26c31c4523d8b6204775e412756064a424ade75f5a65ea7e6a2d00976c62defe"
+          },
+          "source": "    fn audit_str(self) -> &'static str {\n        match self {\n            NotifyKind::MagicLink => \"magic_link\",\n            NotifyKind::PlainNotification => \"plain_notification\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "notify_kind_5dfe5802",
+      "outputs": {
+        "audit_str/MagicLink": [
+          109,
+          97,
+          103,
+          105,
+          99,
+          95,
+          108,
+          105,
+          110,
+          107
+        ],
+        "audit_str/PlainNotification": [
+          112,
+          108,
+          97,
+          105,
+          110,
+          95,
+          110,
+          111,
+          116,
+          105,
+          102,
+          105,
+          99,
+          97,
+          116,
+          105,
+          111,
+          110
+        ]
+      },
+      "reference_sha256": "b3e1e916e7522cefdebcdfbb3b51bc1a72e9362622fa87b4807c719544c04a6b"
+    },
+    {
+      "enum": {
+        "file": "src/common/config.rs",
+        "kind": "enum",
+        "name": "CipherKind",
+        "self_ty": "",
+        "start": 407,
+        "end": 436,
+        "sha256": "94858c299f25b92c32b28400c063a6b5f954a9b4273882509401740d07b3c1f9"
+      },
+      "variants": [
+        "AesGcm256",
+        "None"
+      ],
+      "source": "/// The AEAD (or absence of one) used by a single [`KeyPair`].\n///\n/// * `AesGcm256` \u2014 the only real AEAD OxiCloud ships today. On the\n///   wire (v1 header): `[12-byte nonce] [ciphertext] [16-byte tag]`.\n/// * `None` \u2014 no cipher. A pair with `CipherKind::None` says\n///   \"writes routed to this pair produce raw plaintext\". This is\n///   what makes the encrypt-a-plaintext-deployment and\n///   decrypt-an-encrypted-deployment recipes expressible without a\n///   second storage entry \u2014 see `docs/plan/storage-key-rotation.md`\n///   \u00a7\"Encrypting a previously-plaintext deployment\" and the\n///   symmetric decrypt recipe.\n///\n/// The type is carried by the v1 on-disk header's cipher field\n/// (indirectly via `<version>` in v1, but explicitly if a future\n/// v2 adds a cipher byte to the header \u2014 the enum grows without\n/// touching call sites).\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum CipherKind {\n    /// AES-256 in Galois/Counter Mode. 96-bit nonce + 128-bit tag.\n    /// The only real AEAD OxiCloud ships today. On the wire (v1\n    /// header): `[12-byte nonce] [ciphertext] [16-byte tag]`.\n    AesGcm256,\n    /// No cipher. Writes produce raw plaintext; reads return raw\n    /// bytes. Used as the head pair for a plaintext-target rotation\n    /// (`aes:K,none:`) or as a non-head legacy pair while an\n    /// encrypt-in-place rotation is still upgrading old plaintext\n    /// blobs (`none:,aes:K`). At most one `none` pair may appear in\n    /// a list (parser-enforced).\n    None,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/common/config.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "CipherKind",
+            "start": 450,
+            "end": 457,
+            "sha256": "9cdf44de49b43cf25c29310634e3e5c98fb60c71c298a4f0da63a817580db995"
+          },
+          "source": "    /// Stable env-var-friendly name \u2014 the exact string the parser\n    /// accepts back and the string admin surfaces render.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            CipherKind::AesGcm256 => \"aes-256-gcm\",\n            CipherKind::None => \"none\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/common/config.rs",
+            "kind": "method",
+            "name": "needs_key",
+            "self_ty": "CipherKind",
+            "start": 459,
+            "end": 465,
+            "sha256": "d451d3dc86ddd407e6429c51e65f35834ffd971c93caa751e0efaa719481b349"
+          },
+          "source": "    /// `true` iff this cipher carries key material. `false` for\n    /// `CipherKind::None`. Used by the parser to enforce\n    /// \"no key after `none:`\" and by K2's write path to skip the\n    /// AEAD call.\n    pub fn needs_key(self) -> bool {\n        matches!(self, CipherKind::AesGcm256)\n    }",
+          "type": "bool"
+        }
+      ],
+      "module": "cipher_kind_a4fe67b2",
+      "outputs": {
+        "as_str/AesGcm256": [
+          97,
+          101,
+          115,
+          45,
+          50,
+          53,
+          54,
+          45,
+          103,
+          99,
+          109
+        ],
+        "as_str/None": [
+          110,
+          111,
+          110,
+          101
+        ],
+        "needs_key/AesGcm256": true,
+        "needs_key/None": false
+      },
+      "reference_sha256": "7239d670e9ff8982cfe455954ad8b161fba7ce551cb1683cf57313ff9becdad5"
+    },
+    {
+      "enum": {
+        "file": "src/domain/entities/device_code.rs",
+        "kind": "enum",
+        "name": "DeviceCodeStatus",
+        "self_ty": "",
+        "start": 8,
+        "end": 19,
+        "sha256": "fcd67f0bea16f6fe5ade13a1581250cdf782dddeec788e8bbd5c3207c70e0bee"
+      },
+      "variants": [
+        "Pending",
+        "Authorized",
+        "Denied",
+        "Expired"
+      ],
+      "source": "/// Status of a device authorization flow.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum DeviceCodeStatus {\n    /// Waiting for the user to authorize on the verification page.\n    Pending,\n    /// User approved \u2014 tokens are ready for the polling client.\n    Authorized,\n    /// User explicitly denied the request.\n    Denied,\n    /// The code expired before the user acted.\n    Expired,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/entities/device_code.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "DeviceCodeStatus",
+            "start": 22,
+            "end": 29,
+            "sha256": "c6ab6071a56bc8e4c0b6a2bf041bc11aa4a508d32d95de21acd0aa661d65dcc9"
+          },
+          "source": "    pub fn as_str(&self) -> &'static str {\n        match self {\n            Self::Pending => \"pending\",\n            Self::Authorized => \"authorized\",\n            Self::Denied => \"denied\",\n            Self::Expired => \"expired\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "device_code_status_fb933849",
+      "outputs": {
+        "as_str/Pending": [
+          112,
+          101,
+          110,
+          100,
+          105,
+          110,
+          103
+        ],
+        "as_str/Authorized": [
+          97,
+          117,
+          116,
+          104,
+          111,
+          114,
+          105,
+          122,
+          101,
+          100
+        ],
+        "as_str/Denied": [
+          100,
+          101,
+          110,
+          105,
+          101,
+          100
+        ],
+        "as_str/Expired": [
+          101,
+          120,
+          112,
+          105,
+          114,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "4b1a70a3aaa617b4fc174f332b871c7b7e8bb0c34a9056f2661bc091047b409e"
+    },
+    {
+      "enum": {
+        "file": "src/domain/entities/drive.rs",
+        "kind": "enum",
+        "name": "DriveKind",
+        "self_ty": "",
+        "start": 49,
+        "end": 61,
+        "sha256": "fa60d53fbd71e858f2201aa9bc62ceaf17c63b68fbce6a17479faac70297ad1d"
+      },
+      "variants": [
+        "Personal",
+        "Shared"
+      ],
+      "source": "/// Drive kind discriminant. Mirrors the `storage.drives.kind` CHECK\n/// constraint values.\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]\n#[serde(rename_all = \"lowercase\")]\npub enum DriveKind {\n    /// Single-owner storage compartment. Cannot have members added or\n    /// removed via the membership API; the owner is fixed for the drive's\n    /// lifetime.\n    Personal,\n    /// Multi-member drive supporting the full role roster. Membership is\n    /// open to admin/owner-driven changes through the membership API.\n    Shared,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/entities/drive.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "DriveKind",
+            "start": 64,
+            "end": 69,
+            "sha256": "69fd8cf2567de81a07cc52eb3820100abd21ea6424e88f65e23a514a7b339acc"
+          },
+          "source": "    pub fn as_str(self) -> &'static str {\n        match self {\n            DriveKind::Personal => \"personal\",\n            DriveKind::Shared => \"shared\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "drive_kind_bf867fda",
+      "outputs": {
+        "as_str/Personal": [
+          112,
+          101,
+          114,
+          115,
+          111,
+          110,
+          97,
+          108
+        ],
+        "as_str/Shared": [
+          115,
+          104,
+          97,
+          114,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "506123cfbfc0845a8156599b716457a02425cc0520505e164502b2502a0d4a7e"
+    },
+    {
+      "enum": {
+        "file": "src/domain/entities/magic_link_token.rs",
+        "kind": "enum",
+        "name": "MagicLinkStatus",
+        "self_ty": "",
+        "start": 58,
+        "end": 66,
+        "sha256": "41201cbb3bc762d6f2e545c3fb896d282e003478736ec712e512cacda7be0c95"
+      },
+      "variants": [
+        "Pending",
+        "Used",
+        "Expired"
+      ],
+      "source": "/// Lifecycle state of a magic-link token. Strict one-way transitions:\n/// `Pending \u2192 Used` (successful redemption) or `Pending \u2192 Expired`\n/// (background sweep after `expires_at`).\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum MagicLinkStatus {\n    Pending,\n    Used,\n    Expired,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/entities/magic_link_token.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "MagicLinkStatus",
+            "start": 69,
+            "end": 75,
+            "sha256": "8367806846ab7d4f09b98cd831a6905d7f2e74dbf4da392fa754248c931ae0d1"
+          },
+          "source": "    pub fn as_str(&self) -> &'static str {\n        match self {\n            Self::Pending => \"pending\",\n            Self::Used => \"used\",\n            Self::Expired => \"expired\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "magic_link_status_023c994e",
+      "outputs": {
+        "as_str/Pending": [
+          112,
+          101,
+          110,
+          100,
+          105,
+          110,
+          103
+        ],
+        "as_str/Used": [
+          117,
+          115,
+          101,
+          100
+        ],
+        "as_str/Expired": [
+          101,
+          120,
+          112,
+          105,
+          114,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "68f43700ea1872faaa6ce7e653567e46df93c887d46f811499865e00806f8a63"
+    },
+    {
+      "enum": {
+        "file": "src/domain/entities/session.rs",
+        "kind": "enum",
+        "name": "SessionOrigin",
+        "self_ty": "",
+        "start": 4,
+        "end": 29,
+        "sha256": "385e95c6089b39d8f5f8cd486b03cc294aae9ea304881f6b359e49ebde0da9d4"
+      },
+      "variants": [
+        "Password",
+        "Opaque",
+        "MagicLink",
+        "Oidc",
+        "Device",
+        "Unknown"
+      ],
+      "source": "/// How a session was originally minted. Set at INSERT by the login\n/// handler; carried over on refresh (a rotation doesn't change how the\n/// user first authenticated). Stored as `text` server-side with a CHECK\n/// constraint \u2014 see `migrations/20261013000000_sessions_origin.sql`.\n///\n/// `serde(rename_all = \"snake_case\")` so the wire values match the\n/// column values one-to-one: `password | opaque | magic_link | oidc |\n/// unknown`. `Unknown` is the fallback for pre-migration rows and any\n/// future login path that hasn't been taught to stamp an origin yet.\n#[derive(\n    Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize, utoipa::ToSchema,\n)]\n#[serde(rename_all = \"snake_case\")]\npub enum SessionOrigin {\n    Password,\n    Opaque,\n    MagicLink,\n    Oidc,\n    /// RFC 8628 device authorization grant \u2014 CLI, TV apps, headless\n    /// clients that can't run a WebCrypto keypair. Always unbound at\n    /// the DPoP middleware. Distinct origin because admin operators\n    /// want to know \"this login came from a headless device flow\", not\n    /// conflate it with browser password entry.\n    Device,\n    Unknown,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/entities/session.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "SessionOrigin",
+            "start": 32,
+            "end": 43,
+            "sha256": "6dae90916330e1f6d643fa12451b3bcc266b829bd2f6c72dee6198f99752b862"
+          },
+          "source": "    /// Wire / column string form. Kept out of `Display` to avoid\n    /// accidental use in log lines where the Debug form is fine.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            Self::Password => \"password\",\n            Self::Opaque => \"opaque\",\n            Self::MagicLink => \"magic_link\",\n            Self::Oidc => \"oidc\",\n            Self::Device => \"device\",\n            Self::Unknown => \"unknown\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "session_origin_086d7c6c",
+      "outputs": {
+        "as_str/Password": [
+          112,
+          97,
+          115,
+          115,
+          119,
+          111,
+          114,
+          100
+        ],
+        "as_str/Opaque": [
+          111,
+          112,
+          97,
+          113,
+          117,
+          101
+        ],
+        "as_str/MagicLink": [
+          109,
+          97,
+          103,
+          105,
+          99,
+          95,
+          108,
+          105,
+          110,
+          107
+        ],
+        "as_str/Oidc": [
+          111,
+          105,
+          100,
+          99
+        ],
+        "as_str/Device": [
+          100,
+          101,
+          118,
+          105,
+          99,
+          101
+        ],
+        "as_str/Unknown": [
+          117,
+          110,
+          107,
+          110,
+          111,
+          119,
+          110
+        ]
+      },
+      "reference_sha256": "6437302429a486bf562d3114795492e44e590aea13c75b12396765d4b904fdf5"
+    },
+    {
+      "enum": {
+        "file": "src/domain/entities/user.rs",
+        "kind": "enum",
+        "name": "UserRole",
+        "self_ty": "",
+        "start": 7,
+        "end": 25,
+        "sha256": "cf46d29fea1a5f0bbd92f66059d3c42b41b59e48e151e1aca8713255ae1e1a98"
+      },
+      "variants": [
+        "Owner",
+        "Admin",
+        "User",
+        "Anonymous"
+      ],
+      "source": "#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n// We'll handle conversion manually for now until the type is properly set up in the database\npub enum UserRole {\n    /// The server owner: an administrator that other administrators cannot\n    /// act on. Outranks [`Self::Admin`], so it satisfies every admin gate\n    /// without those gates naming it.\n    ///\n    /// At most one row may hold it today (`idx_users_single_owner`), but\n    /// that is policy rather than something this type assumes \u2014 nothing\n    /// here would need to change to allow several. See\n    /// `docs/plan/role-hierarchy-owner.md`.\n    Owner,\n    Admin,\n    User,\n    /// A public-share visitor. **Never stored in `auth.users`** \u2014 it exists\n    /// only on a session and its JWT, and `from_stored` deliberately cannot\n    /// produce it. See `docs/plan/rationalize-publicshare.md`.\n    Anonymous,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/entities/user.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "UserRole",
+            "start": 28,
+            "end": 37,
+            "sha256": "3dec7bb246d28beeb2bc1d9ee1a2e955a3d9e4666f39d469a4aa64785875a393"
+          },
+          "source": "    /// Canonical wire/DB spelling \u2014 the single source the `Display` impl\n    /// and every hot-path role render go through (no format machinery).\n    pub fn as_str(self) -> &'static str {\n        match self {\n            UserRole::Owner => \"owner\",\n            UserRole::Admin => \"admin\",\n            UserRole::User => \"user\",\n            UserRole::Anonymous => \"anonymous\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/domain/entities/user.rs",
+            "kind": "method",
+            "name": "rank",
+            "self_ty": "UserRole",
+            "start": 64,
+            "end": 80,
+            "sha256": "77adf54307e2548300c49ab090add72252582aea5efc7d74a80c660695fa443d"
+          },
+          "source": "    /// Privilege order: `Anonymous` < `User` < `Admin` < `Owner`.\n    ///\n    /// Deliberately an explicit rank rather than a derived `Ord` \u2014 a derive\n    /// follows declaration order, so reordering the variants would silently\n    /// invert every comparison.\n    ///\n    /// Contiguous on purpose. Gaps \"reserved for future roles\" buy nothing:\n    /// adding a variant means revisiting every `match` on this enum anyway,\n    /// and the integers appear in no wire format.\n    pub fn rank(self) -> u8 {\n        match self {\n            UserRole::Anonymous => 0,\n            UserRole::User => 1,\n            UserRole::Admin => 2,\n            UserRole::Owner => 3,\n        }\n    }",
+          "type": "u8"
+        },
+        {
+          "meta": {
+            "file": "src/domain/entities/user.rs",
+            "kind": "method",
+            "name": "is_anonymous",
+            "self_ty": "UserRole",
+            "start": 101,
+            "end": 104,
+            "sha256": "33247ed751d9a5b17861aa5b4b64053029f5a3bbb69bab772653a6c47f2c5493"
+          },
+          "source": "    /// True for a principal with no `auth.users` row behind it.\n    pub fn is_anonymous(self) -> bool {\n        matches!(self, UserRole::Anonymous)\n    }",
+          "type": "bool"
+        },
+        {
+          "meta": {
+            "file": "src/domain/entities/user.rs",
+            "kind": "method",
+            "name": "is_privileged",
+            "self_ty": "UserRole",
+            "start": 123,
+            "end": 138,
+            "sha256": "7648f7098491543e1cf9d0c5c5ffb404741a923a2f371b963450877d9ed8bef9"
+          },
+          "source": "    /// True for any role carrying more authority than a regular user.\n    ///\n    /// The external-identity guards ask this question \u2014 \"may an\n    /// IdP-provisioned account hold this role?\" \u2014 and they MUST ask it\n    /// this way rather than comparing against `Admin`. `Admin` was\n    /// historically the only privileged role, so the guards were written\n    /// as `role == Admin`; a role added *above* Admin would then walk\n    /// straight through them, letting a federated identity hold the most\n    /// privileged account on the instance.\n    ///\n    /// Phrased as a negative (\"more than a plain user\") this stays correct\n    /// for roles that do not exist yet. Do not respell it as a list.\n    /// See `docs/plan/role-hierarchy-owner.md`.\n    pub fn is_privileged(self) -> bool {\n        self.rank() > UserRole::User.rank()\n    }",
+          "type": "bool"
+        }
+      ],
+      "module": "user_role_d47f77bc",
+      "outputs": {
+        "as_str/Owner": [
+          111,
+          119,
+          110,
+          101,
+          114
+        ],
+        "as_str/Admin": [
+          97,
+          100,
+          109,
+          105,
+          110
+        ],
+        "as_str/User": [
+          117,
+          115,
+          101,
+          114
+        ],
+        "as_str/Anonymous": [
+          97,
+          110,
+          111,
+          110,
+          121,
+          109,
+          111,
+          117,
+          115
+        ],
+        "rank/Owner": 3,
+        "rank/Admin": 2,
+        "rank/User": 1,
+        "rank/Anonymous": 0,
+        "is_anonymous/Owner": false,
+        "is_anonymous/Admin": false,
+        "is_anonymous/User": false,
+        "is_anonymous/Anonymous": true,
+        "is_privileged/Owner": true,
+        "is_privileged/Admin": true,
+        "is_privileged/User": false,
+        "is_privileged/Anonymous": false
+      },
+      "reference_sha256": "2ad3929a8a712202122a52a22a57db2b670411d03b894e440defcbc3eec2599e"
+    },
+    {
+      "enum": {
+        "file": "src/domain/entities/user.rs",
+        "kind": "enum",
+        "name": "FederationKind",
+        "self_ty": "",
+        "start": 147,
+        "end": 171,
+        "sha256": "bf0d9870922f3effe4c5ec376df79208d099d5f862978c458542a62267cfcfb7"
+      },
+      "variants": [
+        "MagicLink",
+        "Ocm",
+        "Oidc"
+      ],
+      "source": "/// The trust chain that owns a user's identity. NULL on `auth.users`\n/// means \"pure local user, no external federation\" \u2014 the common case for\n/// password/OPAQUE accounts.\n///\n/// See `docs/plan/ocm.md \u00a7 Identity & auth model` for the full model\n/// including the `(federation_kind, federation_issuer, federation_subject)`\n/// composite identity key.\n///\n/// - `Oidc`: authenticated via an OIDC provider; `federation_issuer` =\n///   the id_token `iss` claim, `federation_subject` = the `sub` claim.\n///   Note: legacy rows may still hold the OXICLOUD_OIDC_PROVIDER_NAME\n///   display label as `federation_issuer` until Phase B of the rename\n///   backfills them to real issuer URLs.\n/// - `Ocm`: OCM 1.1 federated principal (future \u2014 `docs/plan/ocm.md`).\n///   `federation_issuer` = peer domain, `federation_subject` = federated\n///   address (e.g. `alice@remote.example.com`).\n/// - `MagicLink`: external invitee whose only auth is mailbox\n///   possession. Both `federation_issuer` and `federation_subject`\n///   remain NULL for this kind \u2014 the identity is the local `email`.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum FederationKind {\n    MagicLink,\n    Ocm,\n    Oidc,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/entities/user.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "FederationKind",
+            "start": 174,
+            "end": 182,
+            "sha256": "6429cae4193dcc1f7f8cc6b79e9861ba89cb6a35aab6acf81055e126bfa477b4"
+          },
+          "source": "    /// Canonical DB / wire spelling \u2014 matches the CHECK constraint on\n    /// `auth.users.federation_kind`.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            FederationKind::MagicLink => \"magic_link\",\n            FederationKind::Ocm => \"ocm\",\n            FederationKind::Oidc => \"oidc\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "federation_kind_d47f77bc",
+      "outputs": {
+        "as_str/MagicLink": [
+          109,
+          97,
+          103,
+          105,
+          99,
+          95,
+          108,
+          105,
+          110,
+          107
+        ],
+        "as_str/Ocm": [
+          111,
+          99,
+          109
+        ],
+        "as_str/Oidc": [
+          111,
+          105,
+          100,
+          99
+        ]
+      },
+      "reference_sha256": "8ce581eb243a39703dd622dd3259366182c73924fd7f90c2dfa81536053b70fc"
+    },
+    {
+      "enum": {
+        "file": "src/domain/errors.rs",
+        "kind": "enum",
+        "name": "ErrorKind",
+        "self_ty": "",
+        "start": 13,
+        "end": 72,
+        "sha256": "8aa3a80ab9354551fac73df6289fe13d68ac70a9f2b8574ca6f6e86e363e9068"
+      },
+      "variants": [
+        "NotFound",
+        "AlreadyExists",
+        "InvalidInput",
+        "AccessDenied",
+        "Timeout",
+        "TransientBackend",
+        "InternalError",
+        "NotImplemented",
+        "UnsupportedOperation",
+        "DatabaseError",
+        "QuotaExceeded",
+        "Conflict",
+        "PreconditionFailed"
+      ],
+      "source": "/// Domain error types\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum ErrorKind {\n    /// Entity not found\n    NotFound,\n    /// Entity already exists\n    AlreadyExists,\n    /// Invalid input or failed validation\n    InvalidInput,\n    /// Access or permissions error\n    AccessDenied,\n    /// Timeout expired\n    Timeout,\n    /// A dependency failed in a way that may clear on its own \u2014 an HTTP\n    /// 5xx or 429 from object storage, a connection reset, a DNS\n    /// failure.\n    ///\n    /// Distinct from [`ErrorKind::InternalError`] because the engine has\n    /// to tell \"the provider is down\" from \"this data is wrong\": the\n    /// first is worth retrying and then pausing so an operator can\n    /// resume, the second is terminal. Flattening both into\n    /// `InternalError` is what forced `RetryBlobBackend` to classify by\n    /// string-matching `Display` output \u2014 fragile in exactly the way\n    /// that turns an SDK's cosmetic reformat into a silent behaviour\n    /// change.\n    ///\n    /// **Set it deliberately, at the point where the status code is\n    /// still visible** \u2014 the port wrapping the SDK error. By the time an\n    /// error reaches the engine, the code survives only inside a\n    /// formatted string.\n    ///\n    /// Not a promise that a retry succeeds. A deterministic 500 (Azurite\n    /// answering the CRC64 ranged GET) is a permanent fault wearing a\n    /// retryable status code, which no status-based taxonomy can get\n    /// right \u2014 the bounded attempt cap is the safety net for exactly\n    /// that. See `docs/plan/jobs-handling-recoverable-error.md`.\n    TransientBackend,\n    /// Internal system error\n    InternalError,\n    /// Functionality not implemented\n    NotImplemented,\n    /// Unsupported operation\n    UnsupportedOperation,\n    /// Database error\n    DatabaseError,\n    /// Storage quota exceeded\n    QuotaExceeded,\n    /// State conflict \u2014 the request is well-formed and permitted, but\n    /// the resource is in a state that refuses it (e.g. \"drive must\n    /// be empty before delete\"). Maps to HTTP 409. Distinct from\n    /// `AlreadyExists` (which is a uniqueness violation) so audit\n    /// readers can tell them apart.\n    Conflict,\n    /// RFC 7232 precondition failure \u2014 a caller-supplied conditional\n    /// (If-Match, or an internal compare-and-swap standing in for one)\n    /// did not hold against the resource's current state. Maps to\n    /// HTTP 412. Distinct from `Conflict` (409): this is specifically\n    /// \"the state you thought you were writing against has moved.\"\n    PreconditionFailed,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/errors.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "ErrorKind",
+            "start": 75,
+            "end": 97,
+            "sha256": "79dedefa9a0b092996f2a1d3b1136cbffb2ca2f083f9132707086b535996d901"
+          },
+          "source": "    /// Stable human-readable name; `Display` delegates here so the two can\n    /// never drift. Being `&'static` it lets the HTTP error path borrow the\n    /// value instead of allocating per response (benches/ROUND11.md \u00a79).\n    pub fn as_str(&self) -> &'static str {\n        match self {\n            ErrorKind::NotFound => \"Not Found\",\n            ErrorKind::AlreadyExists => \"Already Exists\",\n            ErrorKind::InvalidInput => \"Invalid Input\",\n            ErrorKind::AccessDenied => \"Access Denied\",\n            ErrorKind::Timeout => \"Timeout\",\n            // Wire value \u2014 the SPA switches on `error_type`, so this\n            // string is a contract. Additive here; nothing keys off it\n            // yet.\n            ErrorKind::TransientBackend => \"Transient Backend\",\n            ErrorKind::InternalError => \"Internal Error\",\n            ErrorKind::NotImplemented => \"Not Implemented\",\n            ErrorKind::UnsupportedOperation => \"Unsupported Operation\",\n            ErrorKind::DatabaseError => \"Database Error\",\n            ErrorKind::QuotaExceeded => \"Quota Exceeded\",\n            ErrorKind::Conflict => \"Conflict\",\n            ErrorKind::PreconditionFailed => \"Precondition Failed\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "error_kind_59712eff",
+      "outputs": {
+        "as_str/NotFound": [
+          78,
+          111,
+          116,
+          32,
+          70,
+          111,
+          117,
+          110,
+          100
+        ],
+        "as_str/AlreadyExists": [
+          65,
+          108,
+          114,
+          101,
+          97,
+          100,
+          121,
+          32,
+          69,
+          120,
+          105,
+          115,
+          116,
+          115
+        ],
+        "as_str/InvalidInput": [
+          73,
+          110,
+          118,
+          97,
+          108,
+          105,
+          100,
+          32,
+          73,
+          110,
+          112,
+          117,
+          116
+        ],
+        "as_str/AccessDenied": [
+          65,
+          99,
+          99,
+          101,
+          115,
+          115,
+          32,
+          68,
+          101,
+          110,
+          105,
+          101,
+          100
+        ],
+        "as_str/Timeout": [
+          84,
+          105,
+          109,
+          101,
+          111,
+          117,
+          116
+        ],
+        "as_str/TransientBackend": [
+          84,
+          114,
+          97,
+          110,
+          115,
+          105,
+          101,
+          110,
+          116,
+          32,
+          66,
+          97,
+          99,
+          107,
+          101,
+          110,
+          100
+        ],
+        "as_str/InternalError": [
+          73,
+          110,
+          116,
+          101,
+          114,
+          110,
+          97,
+          108,
+          32,
+          69,
+          114,
+          114,
+          111,
+          114
+        ],
+        "as_str/NotImplemented": [
+          78,
+          111,
+          116,
+          32,
+          73,
+          109,
+          112,
+          108,
+          101,
+          109,
+          101,
+          110,
+          116,
+          101,
+          100
+        ],
+        "as_str/UnsupportedOperation": [
+          85,
+          110,
+          115,
+          117,
+          112,
+          112,
+          111,
+          114,
+          116,
+          101,
+          100,
+          32,
+          79,
+          112,
+          101,
+          114,
+          97,
+          116,
+          105,
+          111,
+          110
+        ],
+        "as_str/DatabaseError": [
+          68,
+          97,
+          116,
+          97,
+          98,
+          97,
+          115,
+          101,
+          32,
+          69,
+          114,
+          114,
+          111,
+          114
+        ],
+        "as_str/QuotaExceeded": [
+          81,
+          117,
+          111,
+          116,
+          97,
+          32,
+          69,
+          120,
+          99,
+          101,
+          101,
+          100,
+          101,
+          100
+        ],
+        "as_str/Conflict": [
+          67,
+          111,
+          110,
+          102,
+          108,
+          105,
+          99,
+          116
+        ],
+        "as_str/PreconditionFailed": [
+          80,
+          114,
+          101,
+          99,
+          111,
+          110,
+          100,
+          105,
+          116,
+          105,
+          111,
+          110,
+          32,
+          70,
+          97,
+          105,
+          108,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "1edcfb014c1b59695e1a0677b04788a5399db77d783f6cabfba839f9d2c3346d"
+    },
+    {
+      "enum": {
+        "file": "src/domain/services/authorization.rs",
+        "kind": "enum",
+        "name": "Permission",
+        "self_ty": "",
+        "start": 202,
+        "end": 226,
+        "sha256": "db9062b3c8c2b24fcfe9e728f0e78e8a77b3e1dbb0dcd91a1988ab54dc4c5f8b"
+      },
+      "variants": [
+        "Read",
+        "Create",
+        "Share",
+        "Comment",
+        "Delete",
+        "Update",
+        "Manage"
+      ],
+      "source": "#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]\npub enum Permission {\n    /// View resource content / list folder contents.\n    Read,\n    /// Create child resources inside (only meaningful on folders).\n    Create,\n    /// Grant permissions to other subjects.\n    Share,\n    /// Add comments (reserved \u2014 comments feature not implemented yet).\n    Comment,\n    /// Delete the resource.\n    Delete,\n    /// Modify the resource (rename, move, edit content).\n    Update,\n    /// Configure the resource's settings, add/remove members, change role\n    /// assignments. Used by:\n    /// - Drive owners managing drive membership and policies.\n    /// - Group owners managing the group itself (Group-as-Resource, future).\n    ///\n    /// Folder and file resources do not currently surface a `Manage` check;\n    /// the permission lives in the enum because the role bundle (`Owner`)\n    /// includes it, and the resource types that DO check it (`Drive`,\n    /// `Group`) are added in subsequent PRs (see `docs/plan/drive.md`).\n    Manage,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/services/authorization.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "Permission",
+            "start": 241,
+            "end": 251,
+            "sha256": "c31060847b41229086e8c78c9421f2626ec01348fabd4e2256b3972341070667"
+          },
+          "source": "    pub fn as_str(&self) -> &'static str {\n        match self {\n            Permission::Read => \"read\",\n            Permission::Create => \"create\",\n            Permission::Share => \"share\",\n            Permission::Comment => \"comment\",\n            Permission::Delete => \"delete\",\n            Permission::Update => \"update\",\n            Permission::Manage => \"manage\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "permission_5d9dca62",
+      "outputs": {
+        "as_str/Read": [
+          114,
+          101,
+          97,
+          100
+        ],
+        "as_str/Create": [
+          99,
+          114,
+          101,
+          97,
+          116,
+          101
+        ],
+        "as_str/Share": [
+          115,
+          104,
+          97,
+          114,
+          101
+        ],
+        "as_str/Comment": [
+          99,
+          111,
+          109,
+          109,
+          101,
+          110,
+          116
+        ],
+        "as_str/Delete": [
+          100,
+          101,
+          108,
+          101,
+          116,
+          101
+        ],
+        "as_str/Update": [
+          117,
+          112,
+          100,
+          97,
+          116,
+          101
+        ],
+        "as_str/Manage": [
+          109,
+          97,
+          110,
+          97,
+          103,
+          101
+        ]
+      },
+      "reference_sha256": "43ed61aca9d40b0fbccca9e0a32d8f984128798a5af289857841dabe98517ba2"
+    },
+    {
+      "enum": {
+        "file": "src/domain/services/authorization.rs",
+        "kind": "enum",
+        "name": "Role",
+        "self_ty": "",
+        "start": 307,
+        "end": 314,
+        "sha256": "e1e66d5133fe0e486fc4c6d754b7f203bc8ba77e45361a3ef8634a837ef5653e"
+      },
+      "variants": [
+        "Viewer",
+        "Commenter",
+        "Contributor",
+        "Editor",
+        "Owner"
+      ],
+      "source": "#[derive(Clone, Copy, PartialEq, Eq, Hash, Debug)]\npub enum Role {\n    Viewer,\n    Commenter,\n    Contributor,\n    Editor,\n    Owner,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/domain/services/authorization.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "Role",
+            "start": 343,
+            "end": 353,
+            "sha256": "f1efb22832ce722ca486b91adc02f483a6cb34668b96cc948f2d67c54ac49fce"
+          },
+          "source": "    /// Lowercase discriminator \u2014 matches the SQL `role` ENUM values in\n    /// `storage.role_grants` (after the `::text` cast).\n    pub fn as_str(self) -> &'static str {\n        match self {\n            Role::Viewer => \"viewer\",\n            Role::Commenter => \"commenter\",\n            Role::Contributor => \"contributor\",\n            Role::Editor => \"editor\",\n            Role::Owner => \"owner\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "role_5d9dca62",
+      "outputs": {
+        "as_str/Viewer": [
+          118,
+          105,
+          101,
+          119,
+          101,
+          114
+        ],
+        "as_str/Commenter": [
+          99,
+          111,
+          109,
+          109,
+          101,
+          110,
+          116,
+          101,
+          114
+        ],
+        "as_str/Contributor": [
+          99,
+          111,
+          110,
+          116,
+          114,
+          105,
+          98,
+          117,
+          116,
+          111,
+          114
+        ],
+        "as_str/Editor": [
+          101,
+          100,
+          105,
+          116,
+          111,
+          114
+        ],
+        "as_str/Owner": [
+          111,
+          119,
+          110,
+          101,
+          114
+        ]
+      },
+      "reference_sha256": "0b17f86758d97e23a14931910fa408ab828d488fe51d17e7113f746db45ddb7b"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/scheduler/recoverable.rs",
+        "kind": "enum",
+        "name": "RunStatus",
+        "self_ty": "",
+        "start": 55,
+        "end": 80,
+        "sha256": "e0f844f8bb24820fc5a5a07f3b3cd5e2263244cce3ecd737a6ad15cd698eeab2"
+      },
+      "variants": [
+        "Running",
+        "Paused",
+        "CancelRequested",
+        "Completed",
+        "Failed",
+        "Cancelled"
+      ],
+      "source": "/// Mirror of the `TEXT` values allowed in `jobs.recoverable_runs.status`.\n///\n/// Terminal set = `{Completed, Failed, Cancelled}`. Non-terminal set\n/// (the one the exclusivity partial unique index scopes) =\n/// `{Running, Paused, CancelRequested}`.\n///\n/// `CancelRequested` IS non-terminal \u2014 the run is still shutting down.\n/// A second trigger arriving during cancel MUST NOT spawn a parallel\n/// run; the trigger endpoint returns the surviving row instead.\n///\n/// `Cancelled` IS terminal \u2014 admin explicitly abandoned the run. Distinct\n/// from `Failed` because it's user-driven, not a handler error. Distinct\n/// from `Paused` because it's not resumable. Runs land in `Cancelled` via\n/// two paths: (1) admin cancel on a Running row (sets\n/// `params.cancel_intent = \"terminate\"` alongside the CancelRequested\n/// flip; engine post-processes handler's Paused return \u2192 Cancelled), or\n/// (2) admin cancel on an already-Paused row (direct DB flip).\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]\npub enum RunStatus {\n    Running,\n    Paused,\n    CancelRequested,\n    Completed,\n    Failed,\n    Cancelled,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/scheduler/recoverable.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "RunStatus",
+            "start": 83,
+            "end": 93,
+            "sha256": "83c22d7da658ffc18d9f2073eca7ae0dbae737f9f3594ab30a2a2cd4a0c73339"
+          },
+          "source": "    /// Stable label matching the SQL storage form.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            RunStatus::Running => \"Running\",\n            RunStatus::Paused => \"Paused\",\n            RunStatus::CancelRequested => \"CancelRequested\",\n            RunStatus::Completed => \"Completed\",\n            RunStatus::Failed => \"Failed\",\n            RunStatus::Cancelled => \"Cancelled\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/infrastructure/scheduler/recoverable.rs",
+            "kind": "method",
+            "name": "is_non_terminal",
+            "self_ty": "RunStatus",
+            "start": 109,
+            "end": 116,
+            "sha256": "25c10406e4e1cd93d9cdf657994d02a3458f73b170fc97a26276ee5414ee17fe"
+          },
+          "source": "    /// The set the exclusivity partial index scopes. Read: \"a run in\n    /// this state blocks a fresh dispatch.\"\n    pub fn is_non_terminal(self) -> bool {\n        matches!(\n            self,\n            RunStatus::Running | RunStatus::Paused | RunStatus::CancelRequested\n        )\n    }",
+          "type": "bool"
+        }
+      ],
+      "module": "run_status_dbd87cc3",
+      "outputs": {
+        "as_str/Running": [
+          82,
+          117,
+          110,
+          110,
+          105,
+          110,
+          103
+        ],
+        "as_str/Paused": [
+          80,
+          97,
+          117,
+          115,
+          101,
+          100
+        ],
+        "as_str/CancelRequested": [
+          67,
+          97,
+          110,
+          99,
+          101,
+          108,
+          82,
+          101,
+          113,
+          117,
+          101,
+          115,
+          116,
+          101,
+          100
+        ],
+        "as_str/Completed": [
+          67,
+          111,
+          109,
+          112,
+          108,
+          101,
+          116,
+          101,
+          100
+        ],
+        "as_str/Failed": [
+          70,
+          97,
+          105,
+          108,
+          101,
+          100
+        ],
+        "as_str/Cancelled": [
+          67,
+          97,
+          110,
+          99,
+          101,
+          108,
+          108,
+          101,
+          100
+        ],
+        "is_non_terminal/Running": true,
+        "is_non_terminal/Paused": true,
+        "is_non_terminal/CancelRequested": true,
+        "is_non_terminal/Completed": false,
+        "is_non_terminal/Failed": false,
+        "is_non_terminal/Cancelled": false
+      },
+      "reference_sha256": "c997ca8c0d69205d2ccaec7634b39a5c9635dde134cf9a9a30c51ce3f26bb660"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/scheduler/recoverable.rs",
+        "kind": "enum",
+        "name": "ProgressKind",
+        "self_ty": "",
+        "start": 827,
+        "end": 847,
+        "sha256": "c08db7da43de1932dc4b9146ae94675e0c9c97bb33b9e323e1bede9d2b3ad905"
+      },
+      "variants": [
+        "Count",
+        "Approximate"
+      ],
+      "source": "/// How a `RunProgress` fraction was derived. Lets the UI communicate\n/// confidence to the operator \u2014 a `count`-derived 47% is authoritative,\n/// an `approximate`-derived 47% is a proxy (e.g. `storage_consistency`\n/// using DB blob count as a stand-in for backend object count).\n///\n/// A future `cursor` variant will cover UUID-cursor-position-derived\n/// fractions (`cursor_position / 2^128`) \u2014 useful when `COUNT(*)` on\n/// the subject table is too expensive to run at start. Not implemented\n/// yet; all shipped tenants override [`RecoverableJobHandler::count_total`].\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]\n#[serde(rename_all = \"lowercase\")]\npub enum ProgressKind {\n    /// `scanned_count / total_rows` where `total_rows` came from a\n    /// definitive `COUNT(*)` on the tenant's subject table.\n    Count,\n    /// `scanned_count / total_rows` where `total_rows` is a proxy\n    /// (e.g. DB blob count for a backend enumeration). The fraction\n    /// deviating from 1.0 at run end IS informative \u2014 it quantifies\n    /// the drift the check is looking for.\n    Approximate,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/scheduler/recoverable.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "ProgressKind",
+            "start": 850,
+            "end": 855,
+            "sha256": "bd67224a856ee75dc34b9629732a6e4cb3ea12f15b6a239e61f2c6a71bc67b32"
+          },
+          "source": "    pub fn as_str(self) -> &'static str {\n        match self {\n            ProgressKind::Count => \"count\",\n            ProgressKind::Approximate => \"approximate\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "progress_kind_dbd87cc3",
+      "outputs": {
+        "as_str/Count": [
+          99,
+          111,
+          117,
+          110,
+          116
+        ],
+        "as_str/Approximate": [
+          97,
+          112,
+          112,
+          114,
+          111,
+          120,
+          105,
+          109,
+          97,
+          116,
+          101
+        ]
+      },
+      "reference_sha256": "2ef13e37f8f071d3d5030efdcf2a20cfe9eb8a7c904054e0591adcae3ccf7447"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/scheduler/types.rs",
+        "kind": "enum",
+        "name": "ErrCause",
+        "self_ty": "",
+        "start": 228,
+        "end": 243,
+        "sha256": "17cc33bd95b22b54a3e6a0d6861206a2a225c198327770179b871f516f5a5652"
+      },
+      "variants": [
+        "Handler",
+        "Timeout",
+        "Panicked"
+      ],
+      "source": "/// Diagnostic reason the supervisor attaches to the `cause` tracing\n/// field when a job's outcome is [`JobOutcome::Err`]. Never persisted\n/// as a first-class column \u2014 it's a log field only.\n///\n/// Handlers never construct this; the supervisor derives it from\n/// which failure path fired:\n/// - [`ErrCause::Handler`] \u2014 the handler returned `Err(_)` itself.\n/// - [`ErrCause::Timeout`] \u2014 `tokio::time::timeout` tripped on the\n///   registered `ScheduledJob.timeout` wall-clock cap.\n/// - [`ErrCause::Panicked`] \u2014 `JoinHandle` returned a panic error.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum ErrCause {\n    Handler,\n    Timeout,\n    Panicked,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/scheduler/types.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "ErrCause",
+            "start": 246,
+            "end": 255,
+            "sha256": "959af1f3952c5904137b977263a2aee9c0415aaf6e5dd4e6f59f9db533b5e890"
+          },
+          "source": "    /// Stable label for the `cause` tracing field. Log aggregators key\n    /// on these \u2014 renaming here IS a breaking change to any dashboard\n    /// filtering on `cause = \"handler\"`.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            ErrCause::Handler => \"handler\",\n            ErrCause::Timeout => \"timeout\",\n            ErrCause::Panicked => \"panicked\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "err_cause_75575f17",
+      "outputs": {
+        "as_str/Handler": [
+          104,
+          97,
+          110,
+          100,
+          108,
+          101,
+          114
+        ],
+        "as_str/Timeout": [
+          116,
+          105,
+          109,
+          101,
+          111,
+          117,
+          116
+        ],
+        "as_str/Panicked": [
+          112,
+          97,
+          110,
+          105,
+          99,
+          107,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "8b354a27b78b462fc05f2e0bda39592bb16b4d14b8b5a24ae6a0c0d0744ab4e5"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/services/dpop_verifier.rs",
+        "kind": "enum",
+        "name": "DpopVerifyError",
+        "self_ty": "",
+        "start": 63,
+        "end": 91,
+        "sha256": "a263c7e5ea0c25b783837188247dff0ca26ff1d6322aab2bb46120f9269f25df"
+      },
+      "variants": [
+        "Malformed",
+        "WrongTyp",
+        "WrongAlg",
+        "WrongJwk",
+        "SignatureInvalid",
+        "WrongHtm",
+        "WrongHtu",
+        "IatMissing",
+        "IatOutOfWindow",
+        "JtiMissing",
+        "JktMismatch"
+      ],
+      "source": "/// Machine-readable failure reasons. Stringly matched by the middleware\n/// for the audit `reason=` field \u2014 DO NOT rename variants without\n/// coordinating with dashboards.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum DpopVerifyError {\n    /// JWS isn't three base64url segments, or a segment fails to\n    /// decode, or the JSON header/claims fail to parse.\n    Malformed,\n    /// `typ` header field is not `\"dpop+jwt\"`.\n    WrongTyp,\n    /// `alg` header field is not `\"ES256\"`.\n    WrongAlg,\n    /// `jwk` header member is missing or not an EC/P-256 public key.\n    WrongJwk,\n    /// ECDSA signature does not verify over `header.payload`.\n    SignatureInvalid,\n    /// `htm` claim doesn't match the request method.\n    WrongHtm,\n    /// `htu` claim doesn't match the canonical request URL.\n    WrongHtu,\n    /// `iat` claim is missing / non-numeric.\n    IatMissing,\n    /// `iat` claim is outside the \u00b130s bootstrap window (no nonce yet).\n    IatOutOfWindow,\n    /// `jti` claim is missing / empty.\n    JtiMissing,\n    /// Proof's JWK thumbprint doesn't match `expected_jkt`.\n    JktMismatch,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/services/dpop_verifier.rs",
+            "kind": "method",
+            "name": "reason",
+            "self_ty": "DpopVerifyError",
+            "start": 94,
+            "end": 109,
+            "sha256": "26ad9f0a482d442b292e7384925685f306c496be188dad107a7ff633cbd571f8"
+          },
+          "source": "    /// Stable machine-readable reason string for audit lines.\n    pub fn reason(&self) -> &'static str {\n        match self {\n            Self::Malformed => \"malformed_jws\",\n            Self::WrongTyp => \"wrong_typ\",\n            Self::WrongAlg => \"wrong_alg\",\n            Self::WrongJwk => \"wrong_jwk\",\n            Self::SignatureInvalid => \"signature_invalid\",\n            Self::WrongHtm => \"wrong_htm\",\n            Self::WrongHtu => \"wrong_htu\",\n            Self::IatMissing => \"iat_missing\",\n            Self::IatOutOfWindow => \"iat_out_of_window\",\n            Self::JtiMissing => \"jti_missing\",\n            Self::JktMismatch => \"jkt_mismatch\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "dpop_verify_error_8219bbef",
+      "outputs": {
+        "reason/Malformed": [
+          109,
+          97,
+          108,
+          102,
+          111,
+          114,
+          109,
+          101,
+          100,
+          95,
+          106,
+          119,
+          115
+        ],
+        "reason/WrongTyp": [
+          119,
+          114,
+          111,
+          110,
+          103,
+          95,
+          116,
+          121,
+          112
+        ],
+        "reason/WrongAlg": [
+          119,
+          114,
+          111,
+          110,
+          103,
+          95,
+          97,
+          108,
+          103
+        ],
+        "reason/WrongJwk": [
+          119,
+          114,
+          111,
+          110,
+          103,
+          95,
+          106,
+          119,
+          107
+        ],
+        "reason/SignatureInvalid": [
+          115,
+          105,
+          103,
+          110,
+          97,
+          116,
+          117,
+          114,
+          101,
+          95,
+          105,
+          110,
+          118,
+          97,
+          108,
+          105,
+          100
+        ],
+        "reason/WrongHtm": [
+          119,
+          114,
+          111,
+          110,
+          103,
+          95,
+          104,
+          116,
+          109
+        ],
+        "reason/WrongHtu": [
+          119,
+          114,
+          111,
+          110,
+          103,
+          95,
+          104,
+          116,
+          117
+        ],
+        "reason/IatMissing": [
+          105,
+          97,
+          116,
+          95,
+          109,
+          105,
+          115,
+          115,
+          105,
+          110,
+          103
+        ],
+        "reason/IatOutOfWindow": [
+          105,
+          97,
+          116,
+          95,
+          111,
+          117,
+          116,
+          95,
+          111,
+          102,
+          95,
+          119,
+          105,
+          110,
+          100,
+          111,
+          119
+        ],
+        "reason/JtiMissing": [
+          106,
+          116,
+          105,
+          95,
+          109,
+          105,
+          115,
+          115,
+          105,
+          110,
+          103
+        ],
+        "reason/JktMismatch": [
+          106,
+          107,
+          116,
+          95,
+          109,
+          105,
+          115,
+          109,
+          97,
+          116,
+          99,
+          104
+        ]
+      },
+      "reference_sha256": "ea4162828f6b24efca3544c8de74663e368a4f355be137eff5e296e4893a937d"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/services/image_transcode_service.rs",
+        "kind": "enum",
+        "name": "OutputFormat",
+        "self_ty": "",
+        "start": 59,
+        "end": 64,
+        "sha256": "f59690ce9127520c70d6bbd564853177f522906e890da84dc0ba4a06fcb7ed6b"
+      },
+      "variants": [
+        "WebP"
+      ],
+      "source": "/// Supported output formats\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]\npub enum OutputFormat {\n    WebP,\n    // Future: AVIF, JPEG-XL\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/services/image_transcode_service.rs",
+            "kind": "method",
+            "name": "extension",
+            "self_ty": "OutputFormat",
+            "start": 67,
+            "end": 71,
+            "sha256": "b88ea3271a167d6a116c5ca13c5e8e910303cfeac493803e39d078c55b5625ee"
+          },
+          "source": "    pub fn extension(&self) -> &'static str {\n        match self {\n            OutputFormat::WebP => \"webp\",\n        }\n    }",
+          "type": "bytes"
+        },
+        {
+          "meta": {
+            "file": "src/infrastructure/services/image_transcode_service.rs",
+            "kind": "method",
+            "name": "mime_type",
+            "self_ty": "OutputFormat",
+            "start": 73,
+            "end": 77,
+            "sha256": "26fe9c2cc5967001ecef44140ee691b94c4ce81c36a95f3d7aedc8899b6ef62f"
+          },
+          "source": "    pub fn mime_type(&self) -> &'static str {\n        match self {\n            OutputFormat::WebP => \"image/webp\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "output_format_a83b795c",
+      "outputs": {
+        "extension/WebP": [
+          119,
+          101,
+          98,
+          112
+        ],
+        "mime_type/WebP": [
+          105,
+          109,
+          97,
+          103,
+          101,
+          47,
+          119,
+          101,
+          98,
+          112
+        ]
+      },
+      "reference_sha256": "2f883160f232252ca1358afdb7dc2a1e51332cfe898b816cfbcc7e2b2e0ed05a"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/services/opaque_service.rs",
+        "kind": "enum",
+        "name": "OpaqueMode",
+        "self_ty": "",
+        "start": 178,
+        "end": 193,
+        "sha256": "ebb51f10344f55f9e1086d0cd6ab36e70003159cdd0e17afddb79c1b93a95589"
+      },
+      "variants": [
+        "Off",
+        "Migrate",
+        "OpaqueOnly"
+      ],
+      "source": "/// Runtime OPAQUE mode. Drives whether the endpoints exist at all\n/// (`Off`), run alongside the legacy password path (`Migrate`), or are\n/// the only accepted mechanism for users with an envelope (`OpaqueOnly`).\n///\n/// Progression matches the phase plan \u2014 see `docs/plan/opaque.md`.\n#[derive(Debug, Clone, Copy, PartialEq, Eq)]\npub enum OpaqueMode {\n    /// Endpoints 404; no OPAQUE state ever mints. Default. Phase 0-1.\n    Off,\n    /// Endpoints live. Legacy login also accepted; successful legacy login\n    /// silently mints an envelope. Phase 2-3.\n    Migrate,\n    /// Endpoints live. Legacy login refused for users with\n    /// `opaque_migrated_at IS NOT NULL`. Phase 4+.\n    OpaqueOnly,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/services/opaque_service.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "OpaqueMode",
+            "start": 207,
+            "end": 217,
+            "sha256": "f61483fc41dd82d4c292677d2421d97d8a4e9bf9522da94db43b8348f95e40a0"
+          },
+          "source": "    /// Canonical wire spelling \u2014 the token the operator sets in\n    /// `OXICLOUD_AUTH_OPAQUE_MODE` and the value published on\n    /// `GET /api/config`. Kept in sync with `parse()` on the primary\n    /// spellings.\n    pub fn as_str(self) -> &'static str {\n        match self {\n            Self::Off => \"off\",\n            Self::Migrate => \"migrate\",\n            Self::OpaqueOnly => \"opaque_only\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "opaque_mode_b0957357",
+      "outputs": {
+        "as_str/Off": [
+          111,
+          102,
+          102
+        ],
+        "as_str/Migrate": [
+          109,
+          105,
+          103,
+          114,
+          97,
+          116,
+          101
+        ],
+        "as_str/OpaqueOnly": [
+          111,
+          112,
+          97,
+          113,
+          117,
+          101,
+          95,
+          111,
+          110,
+          108,
+          121
+        ]
+      },
+      "reference_sha256": "7339d27c659f3107073187709a1c37a4c6cb3922cddcef61902357217c2f52a9"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/services/satellites_consistency_service.rs",
+        "kind": "enum",
+        "name": "Phase",
+        "self_ty": "",
+        "start": 168,
+        "end": 179,
+        "sha256": "ab368565e5bc90b2cec58f16e0f43d244cb496df67797b7df4e721601015bacc"
+      },
+      "variants": [
+        "Derived",
+        "Attached"
+      ],
+      "source": "/// Cursor is `{phase}\\n{a}\\n{b}\\n{c}`.\n///\n/// The phase is what lets one job walk two tables and still resume exactly:\n/// without it, a cursor from the attached pass would be replayed against the\n/// derived table and silently re-scan or skip. Newline is a safe delimiter \u2014\n/// hashes are hex, uuids are uuids, `kind` comes from a CHECK constraint, and\n/// `variant` is a size/format token.\n#[derive(Debug, PartialEq, Clone, Copy)]\nenum Phase {\n    Derived,\n    Attached,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/services/satellites_consistency_service.rs",
+            "kind": "method",
+            "name": "as_str",
+            "self_ty": "Phase",
+            "start": 182,
+            "end": 187,
+            "sha256": "9c046abd99c9f0d3d9e39713f4e64c6107d1c351034b8bce5730920e20b27791"
+          },
+          "source": "    fn as_str(self) -> &'static str {\n        match self {\n            Phase::Derived => \"derived\",\n            Phase::Attached => \"attached\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "phase_ce65bf5b",
+      "outputs": {
+        "as_str/Derived": [
+          100,
+          101,
+          114,
+          105,
+          118,
+          101,
+          100
+        ],
+        "as_str/Attached": [
+          97,
+          116,
+          116,
+          97,
+          99,
+          104,
+          101,
+          100
+        ]
+      },
+      "reference_sha256": "90a3fbd63a398e4186ea2ef6548fe042a3a92f82620ea9b2b3832544b0b675be"
+    },
+    {
+      "enum": {
+        "file": "src/infrastructure/services/thumbnail_service.rs",
+        "kind": "enum",
+        "name": "ThumbnailSize",
+        "self_ty": "",
+        "start": 33,
+        "end": 42,
+        "sha256": "f9e3ac3100ac4298cc0c8d1b8550a9ade7942335ee433cf00af39f57400bd48e"
+      },
+      "variants": [
+        "Icon",
+        "Preview",
+        "Large"
+      ],
+      "source": "/// Thumbnail sizes supported by the system\n#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]\npub enum ThumbnailSize {\n    /// Small icon for file listings (150x150)\n    Icon,\n    /// Medium preview for gallery view (400x400)\n    Preview,\n    /// Large preview for detail view (800x800)\n    Large,\n}",
+      "methods": [
+        {
+          "meta": {
+            "file": "src/infrastructure/services/thumbnail_service.rs",
+            "kind": "method",
+            "name": "max_dimension",
+            "self_ty": "ThumbnailSize",
+            "start": 45,
+            "end": 52,
+            "sha256": "5e4a018979fb7bd243e8cfc540eb63c46727503c790df4b39c1acafaf7dc30ca"
+          },
+          "source": "    /// Get the maximum dimension for this size\n    pub fn max_dimension(&self) -> u32 {\n        match self {\n            ThumbnailSize::Icon => 150,\n            ThumbnailSize::Preview => 400,\n            ThumbnailSize::Large => 800,\n        }\n    }",
+          "type": "u32"
+        },
+        {
+          "meta": {
+            "file": "src/infrastructure/services/thumbnail_service.rs",
+            "kind": "method",
+            "name": "dir_name",
+            "self_ty": "ThumbnailSize",
+            "start": 54,
+            "end": 61,
+            "sha256": "873cd9303a7ebd46ca1a9d8561e7774a283e1645853cc8ace3ffc8d5ca5a1ef7"
+          },
+          "source": "    /// Get the directory name for this size\n    pub fn dir_name(&self) -> &'static str {\n        match self {\n            ThumbnailSize::Icon => \"icon\",\n            ThumbnailSize::Preview => \"preview\",\n            ThumbnailSize::Large => \"large\",\n        }\n    }",
+          "type": "bytes"
+        }
+      ],
+      "module": "thumbnail_size_4088a69a",
+      "outputs": {
+        "max_dimension/Icon": 150,
+        "max_dimension/Preview": 400,
+        "max_dimension/Large": 800,
+        "dir_name/Icon": [
+          105,
+          99,
+          111,
+          110
+        ],
+        "dir_name/Preview": [
+          112,
+          114,
+          101,
+          118,
+          105,
+          101,
+          119
+        ],
+        "dir_name/Large": [
+          108,
+          97,
+          114,
+          103,
+          101
+        ]
+      },
+      "reference_sha256": "c7411736f3696a3ed1d83d3d40452ac885190f0ed40c7194be849d20d5943f16"
+    }
+  ],
+  "rejected": [],
+  "properties": [
+    {
+      "name": "authz_denial_visibility_4079d78e_as_str_complete",
+      "statement": "(v : finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility) :\n    finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.as_str v \u2983r => r.val = authz_denial_visibility_4079d78e_as_str_model v\u2984",
+      "index": 0
+    },
+    {
+      "name": "ref_level_2ec664a4_as_str_complete",
+      "statement": "(v : finite_catalog.ref_level_2ec664a4.RefLevel) :\n    finite_catalog.ref_level_2ec664a4.RefLevel.as_str v \u2983r => r.val = ref_level_2ec664a4_as_str_model v\u2984",
+      "index": 1
+    },
+    {
+      "name": "checksum_alg_cf7683cd_as_str_complete",
+      "statement": "(v : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg) :\n    finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.as_str v \u2983r => r.val = checksum_alg_cf7683cd_as_str_model v\u2984",
+      "index": 2
+    },
+    {
+      "name": "thumbnail_size_e90c1659_as_str_complete",
+      "statement": "(v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :\n    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.as_str v \u2983r => r.val = thumbnail_size_e90c1659_as_str_model v\u2984",
+      "index": 3
+    },
+    {
+      "name": "thumbnail_size_e90c1659_max_dimension_complete",
+      "statement": "(v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :\n    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.max_dimension v \u2983r => r = thumbnail_size_e90c1659_max_dimension_model v\u2984",
+      "index": 4
+    },
+    {
+      "name": "thumbnail_size_e90c1659_dir_name_complete",
+      "statement": "(v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :\n    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.dir_name v \u2983r => r.val = thumbnail_size_e90c1659_dir_name_model v\u2984",
+      "index": 5
+    },
+    {
+      "name": "thumbnail_format_e90c1659_as_str_complete",
+      "statement": "(v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :\n    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.as_str v \u2983r => r.val = thumbnail_format_e90c1659_as_str_model v\u2984",
+      "index": 6
+    },
+    {
+      "name": "thumbnail_format_e90c1659_ext_complete",
+      "statement": "(v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :\n    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.ext v \u2983r => r.val = thumbnail_format_e90c1659_ext_model v\u2984",
+      "index": 7
+    },
+    {
+      "name": "thumbnail_format_e90c1659_mime_complete",
+      "statement": "(v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :\n    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.mime v \u2983r => r.val = thumbnail_format_e90c1659_mime_model v\u2984",
+      "index": 8
+    },
+    {
+      "name": "output_format_f1a5ab73_extension_complete",
+      "statement": "(v : finite_catalog.output_format_f1a5ab73.OutputFormat) :\n    finite_catalog.output_format_f1a5ab73.OutputFormat.extension v \u2983r => r.val = output_format_f1a5ab73_extension_model v\u2984",
+      "index": 9
+    },
+    {
+      "name": "output_format_f1a5ab73_mime_type_complete",
+      "statement": "(v : finite_catalog.output_format_f1a5ab73.OutputFormat) :\n    finite_catalog.output_format_f1a5ab73.OutputFormat.mime_type v \u2983r => r.val = output_format_f1a5ab73_mime_type_model v\u2984",
+      "index": 10
+    },
+    {
+      "name": "device_poll_error_1fb5547a_error_code_complete",
+      "statement": "(v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :\n    finite_catalog.device_poll_error_1fb5547a.DevicePollError.error_code v \u2983r => r.val = device_poll_error_1fb5547a_error_code_model v\u2984",
+      "index": 11
+    },
+    {
+      "name": "device_poll_error_1fb5547a_description_complete",
+      "statement": "(v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :\n    finite_catalog.device_poll_error_1fb5547a.DevicePollError.description v \u2983r => r.val = device_poll_error_1fb5547a_description_model v\u2984",
+      "index": 12
+    },
+    {
+      "name": "device_poll_error_1fb5547a_http_status_complete",
+      "statement": "(v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :\n    finite_catalog.device_poll_error_1fb5547a.DevicePollError.http_status v \u2983r => r = device_poll_error_1fb5547a_http_status_model v\u2984",
+      "index": 13
+    },
+    {
+      "name": "notify_trigger_5dfe5802_audit_str_complete",
+      "statement": "(v : finite_catalog.notify_trigger_5dfe5802.NotifyTrigger) :\n    finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.audit_str v \u2983r => r.val = notify_trigger_5dfe5802_audit_str_model v\u2984",
+      "index": 14
+    },
+    {
+      "name": "notify_kind_5dfe5802_audit_str_complete",
+      "statement": "(v : finite_catalog.notify_kind_5dfe5802.NotifyKind) :\n    finite_catalog.notify_kind_5dfe5802.NotifyKind.audit_str v \u2983r => r.val = notify_kind_5dfe5802_audit_str_model v\u2984",
+      "index": 15
+    },
+    {
+      "name": "cipher_kind_a4fe67b2_as_str_complete",
+      "statement": "(v : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :\n    finite_catalog.cipher_kind_a4fe67b2.CipherKind.as_str v \u2983r => r.val = cipher_kind_a4fe67b2_as_str_model v\u2984",
+      "index": 16
+    },
+    {
+      "name": "cipher_kind_a4fe67b2_needs_key_complete",
+      "statement": "(v : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :\n    finite_catalog.cipher_kind_a4fe67b2.CipherKind.needs_key v \u2983r => r = cipher_kind_a4fe67b2_needs_key_model v\u2984",
+      "index": 17
+    },
+    {
+      "name": "device_code_status_fb933849_as_str_complete",
+      "statement": "(v : finite_catalog.device_code_status_fb933849.DeviceCodeStatus) :\n    finite_catalog.device_code_status_fb933849.DeviceCodeStatus.as_str v \u2983r => r.val = device_code_status_fb933849_as_str_model v\u2984",
+      "index": 18
+    },
+    {
+      "name": "drive_kind_bf867fda_as_str_complete",
+      "statement": "(v : finite_catalog.drive_kind_bf867fda.DriveKind) :\n    finite_catalog.drive_kind_bf867fda.DriveKind.as_str v \u2983r => r.val = drive_kind_bf867fda_as_str_model v\u2984",
+      "index": 19
+    },
+    {
+      "name": "magic_link_status_023c994e_as_str_complete",
+      "statement": "(v : finite_catalog.magic_link_status_023c994e.MagicLinkStatus) :\n    finite_catalog.magic_link_status_023c994e.MagicLinkStatus.as_str v \u2983r => r.val = magic_link_status_023c994e_as_str_model v\u2984",
+      "index": 20
+    },
+    {
+      "name": "session_origin_086d7c6c_as_str_complete",
+      "statement": "(v : finite_catalog.session_origin_086d7c6c.SessionOrigin) :\n    finite_catalog.session_origin_086d7c6c.SessionOrigin.as_str v \u2983r => r.val = session_origin_086d7c6c_as_str_model v\u2984",
+      "index": 21
+    },
+    {
+      "name": "user_role_d47f77bc_as_str_complete",
+      "statement": "(v : finite_catalog.user_role_d47f77bc.UserRole) :\n    finite_catalog.user_role_d47f77bc.UserRole.as_str v \u2983r => r.val = user_role_d47f77bc_as_str_model v\u2984",
+      "index": 22
+    },
+    {
+      "name": "user_role_d47f77bc_rank_complete",
+      "statement": "(v : finite_catalog.user_role_d47f77bc.UserRole) :\n    finite_catalog.user_role_d47f77bc.UserRole.rank v \u2983r => r = user_role_d47f77bc_rank_model v\u2984",
+      "index": 23
+    },
+    {
+      "name": "user_role_d47f77bc_is_anonymous_complete",
+      "statement": "(v : finite_catalog.user_role_d47f77bc.UserRole) :\n    finite_catalog.user_role_d47f77bc.UserRole.is_anonymous v \u2983r => r = user_role_d47f77bc_is_anonymous_model v\u2984",
+      "index": 24
+    },
+    {
+      "name": "user_role_d47f77bc_is_privileged_complete",
+      "statement": "(v : finite_catalog.user_role_d47f77bc.UserRole) :\n    finite_catalog.user_role_d47f77bc.UserRole.is_privileged v \u2983r => r = user_role_d47f77bc_is_privileged_model v\u2984",
+      "index": 25
+    },
+    {
+      "name": "federation_kind_d47f77bc_as_str_complete",
+      "statement": "(v : finite_catalog.federation_kind_d47f77bc.FederationKind) :\n    finite_catalog.federation_kind_d47f77bc.FederationKind.as_str v \u2983r => r.val = federation_kind_d47f77bc_as_str_model v\u2984",
+      "index": 26
+    },
+    {
+      "name": "error_kind_59712eff_as_str_complete",
+      "statement": "(v : finite_catalog.error_kind_59712eff.ErrorKind) :\n    finite_catalog.error_kind_59712eff.ErrorKind.as_str v \u2983r => r.val = error_kind_59712eff_as_str_model v\u2984",
+      "index": 27
+    },
+    {
+      "name": "permission_5d9dca62_as_str_complete",
+      "statement": "(v : finite_catalog.permission_5d9dca62.Permission) :\n    finite_catalog.permission_5d9dca62.Permission.as_str v \u2983r => r.val = permission_5d9dca62_as_str_model v\u2984",
+      "index": 28
+    },
+    {
+      "name": "role_5d9dca62_as_str_complete",
+      "statement": "(v : finite_catalog.role_5d9dca62.Role) :\n    finite_catalog.role_5d9dca62.Role.as_str v \u2983r => r.val = role_5d9dca62_as_str_model v\u2984",
+      "index": 29
+    },
+    {
+      "name": "run_status_dbd87cc3_as_str_complete",
+      "statement": "(v : finite_catalog.run_status_dbd87cc3.RunStatus) :\n    finite_catalog.run_status_dbd87cc3.RunStatus.as_str v \u2983r => r.val = run_status_dbd87cc3_as_str_model v\u2984",
+      "index": 30
+    },
+    {
+      "name": "run_status_dbd87cc3_is_non_terminal_complete",
+      "statement": "(v : finite_catalog.run_status_dbd87cc3.RunStatus) :\n    finite_catalog.run_status_dbd87cc3.RunStatus.is_non_terminal v \u2983r => r = run_status_dbd87cc3_is_non_terminal_model v\u2984",
+      "index": 31
+    },
+    {
+      "name": "progress_kind_dbd87cc3_as_str_complete",
+      "statement": "(v : finite_catalog.progress_kind_dbd87cc3.ProgressKind) :\n    finite_catalog.progress_kind_dbd87cc3.ProgressKind.as_str v \u2983r => r.val = progress_kind_dbd87cc3_as_str_model v\u2984",
+      "index": 32
+    },
+    {
+      "name": "err_cause_75575f17_as_str_complete",
+      "statement": "(v : finite_catalog.err_cause_75575f17.ErrCause) :\n    finite_catalog.err_cause_75575f17.ErrCause.as_str v \u2983r => r.val = err_cause_75575f17_as_str_model v\u2984",
+      "index": 33
+    },
+    {
+      "name": "dpop_verify_error_8219bbef_reason_complete",
+      "statement": "(v : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError) :\n    finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.reason v \u2983r => r.val = dpop_verify_error_8219bbef_reason_model v\u2984",
+      "index": 34
+    },
+    {
+      "name": "output_format_a83b795c_extension_complete",
+      "statement": "(v : finite_catalog.output_format_a83b795c.OutputFormat) :\n    finite_catalog.output_format_a83b795c.OutputFormat.extension v \u2983r => r.val = output_format_a83b795c_extension_model v\u2984",
+      "index": 35
+    },
+    {
+      "name": "output_format_a83b795c_mime_type_complete",
+      "statement": "(v : finite_catalog.output_format_a83b795c.OutputFormat) :\n    finite_catalog.output_format_a83b795c.OutputFormat.mime_type v \u2983r => r.val = output_format_a83b795c_mime_type_model v\u2984",
+      "index": 36
+    },
+    {
+      "name": "opaque_mode_b0957357_as_str_complete",
+      "statement": "(v : finite_catalog.opaque_mode_b0957357.OpaqueMode) :\n    finite_catalog.opaque_mode_b0957357.OpaqueMode.as_str v \u2983r => r.val = opaque_mode_b0957357_as_str_model v\u2984",
+      "index": 37
+    },
+    {
+      "name": "phase_ce65bf5b_as_str_complete",
+      "statement": "(v : finite_catalog.phase_ce65bf5b.Phase) :\n    finite_catalog.phase_ce65bf5b.Phase.as_str v \u2983r => r.val = phase_ce65bf5b_as_str_model v\u2984",
+      "index": 38
+    },
+    {
+      "name": "thumbnail_size_4088a69a_max_dimension_complete",
+      "statement": "(v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :\n    finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension v \u2983r => r = thumbnail_size_4088a69a_max_dimension_model v\u2984",
+      "index": 39
+    },
+    {
+      "name": "thumbnail_size_4088a69a_dir_name_complete",
+      "statement": "(v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :\n    finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name v \u2983r => r.val = thumbnail_size_4088a69a_dir_name_model v\u2984",
+      "index": 40
+    }
+  ],
+  "declarations": {
+    "finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.as_str": [
+      {
+        "file": "src/application/ports/authorization_ports.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "AuthzDenialVisibility",
+        "start": 52,
+        "end": 57,
+        "sha256": "d17bafd9753190ae1ca3d16ba3bb424a53b07fae381d1262889700f3c7b814f1"
+      }
+    ],
+    "finite_catalog.ref_level_2ec664a4.RefLevel.as_str": [
+      {
+        "file": "src/application/ports/blob_reference_ports.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "RefLevel",
+        "start": 66,
+        "end": 72,
+        "sha256": "74a5dbe3f5b14323688d0cb7cb771b814513163741a68c077990cb2b8a04983c"
+      }
+    ],
+    "finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.as_str": [
+      {
+        "file": "src/application/ports/chunked_upload_ports.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ChecksumAlg",
+        "start": 60,
+        "end": 66,
+        "sha256": "365dc320ef42cdc9d80b36b7761d8474b68ccc882b71a4c8820ba44690ba3a28"
+      }
+    ],
+    "finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.as_str": [
+      {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ThumbnailSize",
+        "start": 24,
+        "end": 35,
+        "sha256": "1f646f7ed8d6ef9f46e7468440b702a70fd9077dfbee9cae2e228d44ccccf4a0"
+      }
+    ],
+    "finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.max_dimension": [
+      {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "method",
+        "name": "max_dimension",
+        "self_ty": "ThumbnailSize",
+        "start": 37,
+        "end": 44,
+        "sha256": "d9b23f801ef37c789671114895907b22a3c2648a7220880c3785e0280b92f72d"
+      }
+    ],
+    "finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.dir_name": [
+      {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "method",
+        "name": "dir_name",
+        "self_ty": "ThumbnailSize",
+        "start": 46,
+        "end": 53,
+        "sha256": "7c6ea3f78a994b612c0983bec8c0390b37286683a78063e9ebfed5c178f855ab"
+      }
+    ],
+    "finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.as_str": [
+      {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ThumbnailFormat",
+        "start": 86,
+        "end": 93,
+        "sha256": "6af8699abee2a966969ff34eb05523af286eb953f3300353de8fc688fa43981a"
+      }
+    ],
+    "finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.ext": [
+      {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "method",
+        "name": "ext",
+        "self_ty": "ThumbnailFormat",
+        "start": 95,
+        "end": 101,
+        "sha256": "b8d1b67240214784ccc29b50e5885f20f976a90cebf86d7d167393deb5f8666b"
+      }
+    ],
+    "finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.mime": [
+      {
+        "file": "src/application/ports/thumbnail_ports.rs",
+        "kind": "method",
+        "name": "mime",
+        "self_ty": "ThumbnailFormat",
+        "start": 103,
+        "end": 113,
+        "sha256": "612cb4753204ad28fb55458d47b89a8adf5aaae6370e4f68356fce56045aa9a7"
+      }
+    ],
+    "finite_catalog.output_format_f1a5ab73.OutputFormat.extension": [
+      {
+        "file": "src/application/ports/transcode_ports.rs",
+        "kind": "method",
+        "name": "extension",
+        "self_ty": "OutputFormat",
+        "start": 19,
+        "end": 24,
+        "sha256": "436266711cf75fed126e3bfc58caf59c2d0943b5cf0e3f5cc574cd22e2ea0113"
+      }
+    ],
+    "finite_catalog.output_format_f1a5ab73.OutputFormat.mime_type": [
+      {
+        "file": "src/application/ports/transcode_ports.rs",
+        "kind": "method",
+        "name": "mime_type",
+        "self_ty": "OutputFormat",
+        "start": 26,
+        "end": 31,
+        "sha256": "59f0ec3815f09204843f10c120d77a83bbf8f8cf9eaf7b70229fbf9747f192b2"
+      }
+    ],
+    "finite_catalog.device_poll_error_1fb5547a.DevicePollError.error_code": [
+      {
+        "file": "src/application/services/device_auth_service.rs",
+        "kind": "method",
+        "name": "error_code",
+        "self_ty": "DevicePollError",
+        "start": 368,
+        "end": 377,
+        "sha256": "9576fc2c8b7487308ce6c3bd401040b957e5a67c6959661d68f8663e169f7f2a"
+      }
+    ],
+    "finite_catalog.device_poll_error_1fb5547a.DevicePollError.description": [
+      {
+        "file": "src/application/services/device_auth_service.rs",
+        "kind": "method",
+        "name": "description",
+        "self_ty": "DevicePollError",
+        "start": 379,
+        "end": 391,
+        "sha256": "f11fdd2b53e8774d0db33e8d12b3a19cb7b9b4504fcbe18fa43dd70897cd7835"
+      }
+    ],
+    "finite_catalog.device_poll_error_1fb5547a.DevicePollError.http_status": [
+      {
+        "file": "src/application/services/device_auth_service.rs",
+        "kind": "method",
+        "name": "http_status",
+        "self_ty": "DevicePollError",
+        "start": 393,
+        "end": 403,
+        "sha256": "6f8d461028fdf30e0df9183d4ef8be401d3c96aaac8ab37fcea025eb8fa9dffe"
+      }
+    ],
+    "finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.audit_str": [
+      {
+        "file": "src/application/services/recipient_notification_service.rs",
+        "kind": "method",
+        "name": "audit_str",
+        "self_ty": "NotifyTrigger",
+        "start": 88,
+        "end": 93,
+        "sha256": "d3d698e86c1beee5134a9fedf53e34f5478878dbc04ccbc6e08c99dcaf214af5"
+      }
+    ],
+    "finite_catalog.notify_kind_5dfe5802.NotifyKind.audit_str": [
+      {
+        "file": "src/application/services/recipient_notification_service.rs",
+        "kind": "method",
+        "name": "audit_str",
+        "self_ty": "NotifyKind",
+        "start": 105,
+        "end": 110,
+        "sha256": "26c31c4523d8b6204775e412756064a424ade75f5a65ea7e6a2d00976c62defe"
+      }
+    ],
+    "finite_catalog.cipher_kind_a4fe67b2.CipherKind.as_str": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "CipherKind",
+        "start": 450,
+        "end": 457,
+        "sha256": "9cdf44de49b43cf25c29310634e3e5c98fb60c71c298a4f0da63a817580db995"
+      }
+    ],
+    "finite_catalog.cipher_kind_a4fe67b2.CipherKind.needs_key": [
+      {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "needs_key",
+        "self_ty": "CipherKind",
+        "start": 459,
+        "end": 465,
+        "sha256": "d451d3dc86ddd407e6429c51e65f35834ffd971c93caa751e0efaa719481b349"
+      }
+    ],
+    "finite_catalog.device_code_status_fb933849.DeviceCodeStatus.as_str": [
+      {
+        "file": "src/domain/entities/device_code.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "DeviceCodeStatus",
+        "start": 22,
+        "end": 29,
+        "sha256": "c6ab6071a56bc8e4c0b6a2bf041bc11aa4a508d32d95de21acd0aa661d65dcc9"
+      }
+    ],
+    "finite_catalog.drive_kind_bf867fda.DriveKind.as_str": [
+      {
+        "file": "src/domain/entities/drive.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "DriveKind",
+        "start": 64,
+        "end": 69,
+        "sha256": "69fd8cf2567de81a07cc52eb3820100abd21ea6424e88f65e23a514a7b339acc"
+      }
+    ],
+    "finite_catalog.magic_link_status_023c994e.MagicLinkStatus.as_str": [
+      {
+        "file": "src/domain/entities/magic_link_token.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "MagicLinkStatus",
+        "start": 69,
+        "end": 75,
+        "sha256": "8367806846ab7d4f09b98cd831a6905d7f2e74dbf4da392fa754248c931ae0d1"
+      }
+    ],
+    "finite_catalog.session_origin_086d7c6c.SessionOrigin.as_str": [
+      {
+        "file": "src/domain/entities/session.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "SessionOrigin",
+        "start": 32,
+        "end": 43,
+        "sha256": "6dae90916330e1f6d643fa12451b3bcc266b829bd2f6c72dee6198f99752b862"
+      }
+    ],
+    "finite_catalog.user_role_d47f77bc.UserRole.as_str": [
+      {
+        "file": "src/domain/entities/user.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "UserRole",
+        "start": 28,
+        "end": 37,
+        "sha256": "3dec7bb246d28beeb2bc1d9ee1a2e955a3d9e4666f39d469a4aa64785875a393"
+      }
+    ],
+    "finite_catalog.user_role_d47f77bc.UserRole.rank": [
+      {
+        "file": "src/domain/entities/user.rs",
+        "kind": "method",
+        "name": "rank",
+        "self_ty": "UserRole",
+        "start": 64,
+        "end": 80,
+        "sha256": "77adf54307e2548300c49ab090add72252582aea5efc7d74a80c660695fa443d"
+      }
+    ],
+    "finite_catalog.user_role_d47f77bc.UserRole.is_anonymous": [
+      {
+        "file": "src/domain/entities/user.rs",
+        "kind": "method",
+        "name": "is_anonymous",
+        "self_ty": "UserRole",
+        "start": 101,
+        "end": 104,
+        "sha256": "33247ed751d9a5b17861aa5b4b64053029f5a3bbb69bab772653a6c47f2c5493"
+      }
+    ],
+    "finite_catalog.user_role_d47f77bc.UserRole.is_privileged": [
+      {
+        "file": "src/domain/entities/user.rs",
+        "kind": "method",
+        "name": "is_privileged",
+        "self_ty": "UserRole",
+        "start": 123,
+        "end": 138,
+        "sha256": "7648f7098491543e1cf9d0c5c5ffb404741a923a2f371b963450877d9ed8bef9"
+      }
+    ],
+    "finite_catalog.federation_kind_d47f77bc.FederationKind.as_str": [
+      {
+        "file": "src/domain/entities/user.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "FederationKind",
+        "start": 174,
+        "end": 182,
+        "sha256": "6429cae4193dcc1f7f8cc6b79e9861ba89cb6a35aab6acf81055e126bfa477b4"
+      }
+    ],
+    "finite_catalog.error_kind_59712eff.ErrorKind.as_str": [
+      {
+        "file": "src/domain/errors.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ErrorKind",
+        "start": 75,
+        "end": 97,
+        "sha256": "79dedefa9a0b092996f2a1d3b1136cbffb2ca2f083f9132707086b535996d901"
+      }
+    ],
+    "finite_catalog.permission_5d9dca62.Permission.as_str": [
+      {
+        "file": "src/domain/services/authorization.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Permission",
+        "start": 241,
+        "end": 251,
+        "sha256": "c31060847b41229086e8c78c9421f2626ec01348fabd4e2256b3972341070667"
+      }
+    ],
+    "finite_catalog.role_5d9dca62.Role.as_str": [
+      {
+        "file": "src/domain/services/authorization.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Role",
+        "start": 343,
+        "end": 353,
+        "sha256": "f1efb22832ce722ca486b91adc02f483a6cb34668b96cc948f2d67c54ac49fce"
+      }
+    ],
+    "finite_catalog.run_status_dbd87cc3.RunStatus.as_str": [
+      {
+        "file": "src/infrastructure/scheduler/recoverable.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "RunStatus",
+        "start": 83,
+        "end": 93,
+        "sha256": "83c22d7da658ffc18d9f2073eca7ae0dbae737f9f3594ab30a2a2cd4a0c73339"
+      }
+    ],
+    "finite_catalog.run_status_dbd87cc3.RunStatus.is_non_terminal": [
+      {
+        "file": "src/infrastructure/scheduler/recoverable.rs",
+        "kind": "method",
+        "name": "is_non_terminal",
+        "self_ty": "RunStatus",
+        "start": 109,
+        "end": 116,
+        "sha256": "25c10406e4e1cd93d9cdf657994d02a3458f73b170fc97a26276ee5414ee17fe"
+      }
+    ],
+    "finite_catalog.progress_kind_dbd87cc3.ProgressKind.as_str": [
+      {
+        "file": "src/infrastructure/scheduler/recoverable.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ProgressKind",
+        "start": 850,
+        "end": 855,
+        "sha256": "bd67224a856ee75dc34b9629732a6e4cb3ea12f15b6a239e61f2c6a71bc67b32"
+      }
+    ],
+    "finite_catalog.err_cause_75575f17.ErrCause.as_str": [
+      {
+        "file": "src/infrastructure/scheduler/types.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "ErrCause",
+        "start": 246,
+        "end": 255,
+        "sha256": "959af1f3952c5904137b977263a2aee9c0415aaf6e5dd4e6f59f9db533b5e890"
+      }
+    ],
+    "finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.reason": [
+      {
+        "file": "src/infrastructure/services/dpop_verifier.rs",
+        "kind": "method",
+        "name": "reason",
+        "self_ty": "DpopVerifyError",
+        "start": 94,
+        "end": 109,
+        "sha256": "26ad9f0a482d442b292e7384925685f306c496be188dad107a7ff633cbd571f8"
+      }
+    ],
+    "finite_catalog.output_format_a83b795c.OutputFormat.extension": [
+      {
+        "file": "src/infrastructure/services/image_transcode_service.rs",
+        "kind": "method",
+        "name": "extension",
+        "self_ty": "OutputFormat",
+        "start": 67,
+        "end": 71,
+        "sha256": "b88ea3271a167d6a116c5ca13c5e8e910303cfeac493803e39d078c55b5625ee"
+      }
+    ],
+    "finite_catalog.output_format_a83b795c.OutputFormat.mime_type": [
+      {
+        "file": "src/infrastructure/services/image_transcode_service.rs",
+        "kind": "method",
+        "name": "mime_type",
+        "self_ty": "OutputFormat",
+        "start": 73,
+        "end": 77,
+        "sha256": "26fe9c2cc5967001ecef44140ee691b94c4ce81c36a95f3d7aedc8899b6ef62f"
+      }
+    ],
+    "finite_catalog.opaque_mode_b0957357.OpaqueMode.as_str": [
+      {
+        "file": "src/infrastructure/services/opaque_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "OpaqueMode",
+        "start": 207,
+        "end": 217,
+        "sha256": "f61483fc41dd82d4c292677d2421d97d8a4e9bf9522da94db43b8348f95e40a0"
+      }
+    ],
+    "finite_catalog.phase_ce65bf5b.Phase.as_str": [
+      {
+        "file": "src/infrastructure/services/satellites_consistency_service.rs",
+        "kind": "method",
+        "name": "as_str",
+        "self_ty": "Phase",
+        "start": 182,
+        "end": 187,
+        "sha256": "9c046abd99c9f0d3d9e39713f4e64c6107d1c351034b8bce5730920e20b27791"
+      }
+    ],
+    "finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension": [
+      {
+        "file": "src/infrastructure/services/thumbnail_service.rs",
+        "kind": "method",
+        "name": "max_dimension",
+        "self_ty": "ThumbnailSize",
+        "start": 45,
+        "end": 52,
+        "sha256": "5e4a018979fb7bd243e8cfc540eb63c46727503c790df4b39c1acafaf7dc30ca"
+      }
+    ],
+    "finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name": [
+      {
+        "file": "src/infrastructure/services/thumbnail_service.rs",
+        "kind": "method",
+        "name": "dir_name",
+        "self_ty": "ThumbnailSize",
+        "start": 54,
+        "end": 61,
+        "sha256": "873cd9303a7ebd46ca1a9d8561e7774a283e1645853cc8ace3ffc8d5ca5a1ef7"
+      }
+    ]
+  },
+  "roots": [
+    "finite_catalog::authz_denial_visibility_4079d78e::_::as_str",
+    "finite_catalog::ref_level_2ec664a4::_::as_str",
+    "finite_catalog::checksum_alg_cf7683cd::_::as_str",
+    "finite_catalog::thumbnail_size_e90c1659::_::as_str",
+    "finite_catalog::thumbnail_size_e90c1659::_::max_dimension",
+    "finite_catalog::thumbnail_size_e90c1659::_::dir_name",
+    "finite_catalog::thumbnail_format_e90c1659::_::as_str",
+    "finite_catalog::thumbnail_format_e90c1659::_::ext",
+    "finite_catalog::thumbnail_format_e90c1659::_::mime",
+    "finite_catalog::output_format_f1a5ab73::_::extension",
+    "finite_catalog::output_format_f1a5ab73::_::mime_type",
+    "finite_catalog::device_poll_error_1fb5547a::_::error_code",
+    "finite_catalog::device_poll_error_1fb5547a::_::description",
+    "finite_catalog::device_poll_error_1fb5547a::_::http_status",
+    "finite_catalog::notify_trigger_5dfe5802::_::audit_str",
+    "finite_catalog::notify_kind_5dfe5802::_::audit_str",
+    "finite_catalog::cipher_kind_a4fe67b2::_::as_str",
+    "finite_catalog::cipher_kind_a4fe67b2::_::needs_key",
+    "finite_catalog::device_code_status_fb933849::_::as_str",
+    "finite_catalog::drive_kind_bf867fda::_::as_str",
+    "finite_catalog::magic_link_status_023c994e::_::as_str",
+    "finite_catalog::session_origin_086d7c6c::_::as_str",
+    "finite_catalog::user_role_d47f77bc::_::as_str",
+    "finite_catalog::user_role_d47f77bc::_::rank",
+    "finite_catalog::user_role_d47f77bc::_::is_anonymous",
+    "finite_catalog::user_role_d47f77bc::_::is_privileged",
+    "finite_catalog::federation_kind_d47f77bc::_::as_str",
+    "finite_catalog::error_kind_59712eff::_::as_str",
+    "finite_catalog::permission_5d9dca62::_::as_str",
+    "finite_catalog::role_5d9dca62::_::as_str",
+    "finite_catalog::run_status_dbd87cc3::_::as_str",
+    "finite_catalog::run_status_dbd87cc3::_::is_non_terminal",
+    "finite_catalog::progress_kind_dbd87cc3::_::as_str",
+    "finite_catalog::err_cause_75575f17::_::as_str",
+    "finite_catalog::dpop_verify_error_8219bbef::_::reason",
+    "finite_catalog::output_format_a83b795c::_::extension",
+    "finite_catalog::output_format_a83b795c::_::mime_type",
+    "finite_catalog::opaque_mode_b0957357::_::as_str",
+    "finite_catalog::phase_ce65bf5b::_::as_str",
+    "finite_catalog::thumbnail_size_4088a69a::_::max_dimension",
+    "finite_catalog::thumbnail_size_4088a69a::_::dir_name"
+  ],
+  "comparisons": 147
+}

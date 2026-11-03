@@ -1,0 +1,69 @@
+{
+  "recorded_at": "2026-11-01T16:31:16.334326+00:00",
+  "branch": "prove-20k-expansion",
+  "baseline_commit": "78b23b8",
+  "baseline": {
+    "lines": 41414,
+    "properties": 1133
+  },
+  "accepted": {
+    "lines": 41603,
+    "properties": 1140
+  },
+  "new_deduplicated_lines": 189,
+  "target_lines": 100000,
+  "target_reached": false,
+  "remaining_lines": 58397,
+  "apps": {
+    "artifactkeeper": {
+      "lines": 2080,
+      "properties": 94,
+      "gate_log": "results/project-checks/20261101T070903862033Z/artifactkeeper.log",
+      "extraction_log": "results/project-checks/20261101T070905046715Z/artifactkeeper.log",
+      "gate_finished_at": "2026-11-01T07:33:31.302971+00:00",
+      "extraction_finished_at": "2026-11-01T07:10:01.934983+00:00"
+    },
+    "kanidm": {
+      "lines": 31103,
+      "properties": 545,
+      "gate_log": "results/project-checks/20261101T064422467823Z/kanidm.log",
+      "extraction_log": "results/project-checks/20261101T064423672903Z/kanidm.log",
+      "gate_finished_at": "2026-11-01T07:08:14.415071+00:00",
+      "extraction_finished_at": "2026-11-01T06:46:14.229994+00:00"
+    },
+    "nora": {
+      "lines": 1677,
+      "properties": 58,
+      "gate_log": "results/project-checks/20261101T161850938594Z/nora.log",
+      "extraction_log": "results/project-checks/20261101T161852131573Z/nora.log",
+      "gate_finished_at": "2026-11-01T16:29:33.828405+00:00",
+      "extraction_finished_at": "2026-11-01T16:22:02.834230+00:00"
+    },
+    "oxicloud": {
+      "lines": 2746,
+      "properties": 149,
+      "gate_log": "results/project-checks/20261101T135725055447Z/oxicloud.log",
+      "extraction_log": "results/project-checks/20261101T135645002898Z/oxicloud.log",
+      "gate_finished_at": "2026-11-01T14:00:43.612690+00:00",
+      "extraction_finished_at": "2026-11-01T13:56:58.284862+00:00"
+    },
+    "rustfs": {
+      "lines": 2000,
+      "properties": 270,
+      "gate_log": "results/project-checks/20261101T064422467823Z/rustfs.log",
+      "extraction_log": "results/project-checks/20261101T064423672903Z/rustfs.log",
+      "gate_finished_at": "2026-11-01T07:31:56.834335+00:00",
+      "extraction_finished_at": "2026-11-01T06:46:58.515537+00:00"
+    },
+    "tuwunel": {
+      "lines": 1997,
+      "properties": 24,
+      "gate_log": "results/project-checks/20261101T064532180572Z/tuwunel.log",
+      "extraction_log": "results/project-checks/20261101T064533351983Z/tuwunel.log",
+      "gate_finished_at": "2026-11-01T07:11:27.206202+00:00",
+      "extraction_finished_at": "2026-11-01T06:46:37.135515+00:00"
+    }
+  },
+  "meaning": "Deduplicated pinned executable source reached from theorem types and extracted dependencies. New renderers have complete byte-output and termination proofs under output capacity bounds; this does not establish whole-application equivalence.",
+  "published": false
+}

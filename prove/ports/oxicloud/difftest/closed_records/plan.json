@@ -1,0 +1,2531 @@
+{
+  "app": "oxicloud",
+  "revision": "8c0dd334cf065ad11f60f9be24e2aafd5dda7550",
+  "records": [
+    {
+      "name": "CacheConfig",
+      "id": "cache_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            file_ttl_ms: 60_000,       // 1 minute\n            directory_ttl_ms: 120_000, // 2 minutes\n            max_entries: 10_000,       // 10,000 entries\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "CacheConfig",
+        "start": 19,
+        "end": 25,
+        "sha256": "dd6e9f1efd71fe86f930c4629b4acae226efe7165d2a783e3d227316270c1f1b"
+      },
+      "carrier_source": "/// Cache configuration\n#[derive(Debug, Clone)]\npub struct CacheConfig {\n    /// TTL for file cache entries (ms)\n    pub file_ttl_ms: u64,\n    /// TTL for directory cache entries (ms)\n    pub directory_ttl_ms: u64,\n    /// Maximum number of cache entries\n    pub max_entries: usize,\n}",
+      "fields": [
+        [
+          "file_ttl_ms",
+          "u64"
+        ],
+        [
+          "directory_ttl_ms",
+          "u64"
+        ],
+        [
+          "max_entries",
+          "usize"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "file_ttl_ms",
+          "60_000"
+        ],
+        [
+          "directory_ttl_ms",
+          "120_000"
+        ],
+        [
+          "max_entries",
+          "10_000"
+        ]
+      ],
+      "values": {
+        "file_ttl_ms": 60000,
+        "directory_ttl_ms": 120000,
+        "max_entries": 10000
+      }
+    },
+    {
+      "name": "TimeoutConfig",
+      "id": "timeout_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            file_operation_ms: 10000,       // 10 seconds\n            dir_operation_ms: 30000,        // 30 seconds\n            lock_acquisition_ms: 5000,      // 5 seconds\n            network_operation_ms: 15000,    // 15 seconds\n            thumbnail_generation_ms: 30000, // 30 seconds\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "TimeoutConfig",
+        "start": 44,
+        "end": 52,
+        "sha256": "2460f64ab74c66b9147f88bd57a103d833d2a2304bd5c9cbcda8a97807314a58"
+      },
+      "carrier_source": "/// Timeout configuration for different operations\n#[derive(Debug, Clone)]\npub struct TimeoutConfig {\n    /// Timeout for file operations (ms)\n    pub file_operation_ms: u64,\n    /// Timeout for directory operations (ms)\n    pub dir_operation_ms: u64,\n    /// Timeout for lock acquisition (ms)\n    pub lock_acquisition_ms: u64,\n    /// Timeout for network operations (ms)\n    pub network_operation_ms: u64,\n    /// Timeout for thumbnail generation (ms)\n    pub thumbnail_generation_ms: u64,\n}",
+      "fields": [
+        [
+          "file_operation_ms",
+          "u64"
+        ],
+        [
+          "dir_operation_ms",
+          "u64"
+        ],
+        [
+          "lock_acquisition_ms",
+          "u64"
+        ],
+        [
+          "network_operation_ms",
+          "u64"
+        ],
+        [
+          "thumbnail_generation_ms",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "file_operation_ms",
+          "10000"
+        ],
+        [
+          "dir_operation_ms",
+          "30000"
+        ],
+        [
+          "lock_acquisition_ms",
+          "5000"
+        ],
+        [
+          "network_operation_ms",
+          "15000"
+        ],
+        [
+          "thumbnail_generation_ms",
+          "30000"
+        ]
+      ],
+      "values": {
+        "file_operation_ms": 10000,
+        "dir_operation_ms": 30000,
+        "lock_acquisition_ms": 5000,
+        "network_operation_ms": 15000,
+        "thumbnail_generation_ms": 30000
+      }
+    },
+    {
+      "name": "ResourceConfig",
+      "id": "resource_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            large_file_threshold_mb: 100,      // 100 MB\n            large_dir_threshold_entries: 1000, // 1000 entries\n            chunk_size_bytes: 1024 * 1024,     // 1 MB\n            max_in_memory_file_size_mb: 50,    // 50 MB\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "ResourceConfig",
+        "start": 111,
+        "end": 118,
+        "sha256": "e5b89fee79da7c8d52b6b4ad507d44f7e8a6e1c94cc6dd309fb5ef7069ed1c52"
+      },
+      "carrier_source": "/// Configuration for large resource handling\n#[derive(Debug, Clone)]\npub struct ResourceConfig {\n    /// Threshold in MB to consider a file as large\n    pub large_file_threshold_mb: u64,\n    /// Entry threshold to consider a directory as large\n    pub large_dir_threshold_entries: usize,\n    /// Chunk size for large file processing (bytes)\n    pub chunk_size_bytes: usize,\n    /// File size limit for loading into memory (MB)\n    pub max_in_memory_file_size_mb: u64,\n}",
+      "fields": [
+        [
+          "large_file_threshold_mb",
+          "u64"
+        ],
+        [
+          "large_dir_threshold_entries",
+          "usize"
+        ],
+        [
+          "chunk_size_bytes",
+          "usize"
+        ],
+        [
+          "max_in_memory_file_size_mb",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "large_file_threshold_mb",
+          "100"
+        ],
+        [
+          "large_dir_threshold_entries",
+          "1000"
+        ],
+        [
+          "chunk_size_bytes",
+          "1024 * 1024"
+        ],
+        [
+          "max_in_memory_file_size_mb",
+          "50"
+        ]
+      ],
+      "values": {
+        "large_file_threshold_mb": 100,
+        "large_dir_threshold_entries": 1000,
+        "chunk_size_bytes": 1048576,
+        "max_in_memory_file_size_mb": 50
+      }
+    },
+    {
+      "name": "ConcurrencyConfig",
+      "id": "concurrency_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            max_concurrent_files: 10,\n            max_concurrent_dirs: 5,\n            max_concurrent_io: 20,\n            max_parallel_chunks: 8,\n            min_size_for_parallel_chunks_mb: 200,       // 200 MB\n            parallel_chunk_size_bytes: 8 * 1024 * 1024, // 8 MB\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "ConcurrencyConfig",
+        "start": 190,
+        "end": 199,
+        "sha256": "fe5ee43a2b7c0fb528317b970e2f80bd6f4df003c66cbd1df6698eb1cc42ea68"
+      },
+      "carrier_source": "/// Configuration for concurrent operations\n#[derive(Debug, Clone)]\npub struct ConcurrencyConfig {\n    /// Maximum concurrent file tasks\n    pub max_concurrent_files: usize,\n    /// Maximum concurrent directory tasks\n    pub max_concurrent_dirs: usize,\n    /// Maximum concurrent IO operations\n    pub max_concurrent_io: usize,\n    /// Maximum chunks to process in parallel per file\n    pub max_parallel_chunks: usize,\n    /// Minimum file size (MB) to apply parallel chunk processing\n    pub min_size_for_parallel_chunks_mb: u64,\n    /// Chunk size for parallel processing (bytes)\n    pub parallel_chunk_size_bytes: usize,\n}",
+      "fields": [
+        [
+          "max_concurrent_files",
+          "usize"
+        ],
+        [
+          "max_concurrent_dirs",
+          "usize"
+        ],
+        [
+          "max_concurrent_io",
+          "usize"
+        ],
+        [
+          "max_parallel_chunks",
+          "usize"
+        ],
+        [
+          "min_size_for_parallel_chunks_mb",
+          "u64"
+        ],
+        [
+          "parallel_chunk_size_bytes",
+          "usize"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "max_concurrent_files",
+          "10"
+        ],
+        [
+          "max_concurrent_dirs",
+          "5"
+        ],
+        [
+          "max_concurrent_io",
+          "20"
+        ],
+        [
+          "max_parallel_chunks",
+          "8"
+        ],
+        [
+          "min_size_for_parallel_chunks_mb",
+          "200"
+        ],
+        [
+          "parallel_chunk_size_bytes",
+          "8 * 1024 * 1024"
+        ]
+      ],
+      "values": {
+        "max_concurrent_files": 10,
+        "max_concurrent_dirs": 5,
+        "max_concurrent_io": 20,
+        "max_parallel_chunks": 8,
+        "min_size_for_parallel_chunks_mb": 200,
+        "parallel_chunk_size_bytes": 8388608
+      }
+    },
+    {
+      "name": "BlobCacheConfig",
+      "id": "blob_cache_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            enabled: false,\n            max_size_bytes: 50 * 1024 * 1024 * 1024, // 50 GB\n            cache_path: None,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "BlobCacheConfig",
+        "start": 336,
+        "end": 342,
+        "sha256": "791ef212697437af7beba0ab6b33a8d4a93e053bc378f98a67112964ed23723a"
+      },
+      "carrier_source": "/// LRU local disk cache configuration for remote blob backends.\n#[derive(Debug, Clone)]\npub struct BlobCacheConfig {\n    /// Enable the LRU disk cache (only useful for remote backends).\n    pub enabled: bool,\n    /// Maximum cache size in bytes (default: 50 GB).\n    pub max_size_bytes: u64,\n    /// Cache directory path (default: `{root_dir}/.blob-cache`).\n    pub cache_path: Option<String>,\n}",
+      "fields": [
+        [
+          "enabled",
+          "bool"
+        ],
+        [
+          "max_size_bytes",
+          "u64"
+        ],
+        [
+          "cache_path",
+          "Option<String>"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "enabled",
+          "false"
+        ],
+        [
+          "max_size_bytes",
+          "50 * 1024 * 1024 * 1024"
+        ],
+        [
+          "cache_path",
+          "None"
+        ]
+      ],
+      "values": {
+        "enabled": false,
+        "max_size_bytes": 53687091200,
+        "cache_path": null
+      }
+    },
+    {
+      "name": "EncryptionConfig",
+      "id": "encryption_config_default_a4fe67b2",
+      "source": "    #[allow(clippy::derivable_impls)]\n    fn default() -> Self {\n        Self {\n            enabled: false,\n            key_base64: None,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "EncryptionConfig",
+        "start": 355,
+        "end": 361,
+        "sha256": "efcd1a3e31674b606444e92256b893be7be9870c433c52c48b0e6f330af4041c"
+      },
+      "carrier_source": "/// Client-side encryption configuration.\n#[derive(Debug, Clone)]\npub struct EncryptionConfig {\n    /// Enable AES-256-GCM encryption for blobs at rest.\n    pub enabled: bool,\n    /// Base64-encoded 32-byte encryption key.\n    pub key_base64: Option<String>,\n}",
+      "fields": [
+        [
+          "enabled",
+          "bool"
+        ],
+        [
+          "key_base64",
+          "Option<String>"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "enabled",
+          "false"
+        ],
+        [
+          "key_base64",
+          "None"
+        ]
+      ],
+      "values": {
+        "enabled": false,
+        "key_base64": null
+      }
+    },
+    {
+      "name": "DatabaseConfig",
+      "id": "database_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            // Updated connection string with default credentials that PostgreSQL often uses\n            connection_string: \"postgres://postgres:postgres@localhost:5432/oxicloud\".to_string(),\n            max_connections: 20,\n            min_connections: 5,\n            connect_timeout_secs: 10,\n            idle_timeout_secs: 300,\n            max_lifetime_secs: 1800,\n            maintenance_max_connections: 5,\n            maintenance_min_connections: 1,\n            statement_timeout_secs: 30,\n            pool_monitor_interval_secs: 30,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "DatabaseConfig",
+        "start": 1338,
+        "end": 1352,
+        "sha256": "84dc952f57b18025c3578730a5420e54f227a591a7d61278351e90c6c18b9286"
+      },
+      "carrier_source": "/// Database configuration\n#[derive(Debug, Clone)]\npub struct DatabaseConfig {\n    pub connection_string: String,\n    pub max_connections: u32,\n    pub min_connections: u32,\n    pub connect_timeout_secs: u64,\n    pub idle_timeout_secs: u64,\n    pub max_lifetime_secs: u64,\n    /// Maximum connections for the maintenance pool (background/batch tasks).\n    /// Defaults to 25% of `max_connections` (minimum 2).\n    pub maintenance_max_connections: u32,\n    /// Minimum connections for the maintenance pool.\n    /// Defaults to 1.\n    pub maintenance_min_connections: u32,\n    /// Per-statement timeout (seconds) applied to the **primary** pool via\n    /// `SET statement_timeout` on every connection. Bounds the worst-case query\n    /// so a single runaway statement can't pin a pool slot and starve\n    /// interactive requests (correlated tail-latency cliff). `0` disables it.\n    /// The maintenance pool is always exempt \u2014 its batch jobs (integrity scans,\n    /// GC) may legitimately run long. Env: `OXICLOUD_DB_STATEMENT_TIMEOUT_SECS`.\n    pub statement_timeout_secs: u64,\n    /// Interval (seconds) of the background watchdog that samples primary-pool\n    /// saturation and logs a WARN when connections are near exhaustion (the\n    /// signal to raise `max_connections` or hunt slow queries). `0` disables\n    /// it. Default: 30. Env: `OXICLOUD_DB_POOL_MONITOR_INTERVAL_SECS`.\n    pub pool_monitor_interval_secs: u64,\n}",
+      "fields": [
+        [
+          "connection_string",
+          "String"
+        ],
+        [
+          "max_connections",
+          "u32"
+        ],
+        [
+          "min_connections",
+          "u32"
+        ],
+        [
+          "connect_timeout_secs",
+          "u64"
+        ],
+        [
+          "idle_timeout_secs",
+          "u64"
+        ],
+        [
+          "max_lifetime_secs",
+          "u64"
+        ],
+        [
+          "maintenance_max_connections",
+          "u32"
+        ],
+        [
+          "maintenance_min_connections",
+          "u32"
+        ],
+        [
+          "statement_timeout_secs",
+          "u64"
+        ],
+        [
+          "pool_monitor_interval_secs",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "connection_string",
+          "b\"postgres://postgres:postgres@localhost:5432/oxicloud\".to_vec()"
+        ],
+        [
+          "max_connections",
+          "20"
+        ],
+        [
+          "min_connections",
+          "5"
+        ],
+        [
+          "connect_timeout_secs",
+          "10"
+        ],
+        [
+          "idle_timeout_secs",
+          "300"
+        ],
+        [
+          "max_lifetime_secs",
+          "1800"
+        ],
+        [
+          "maintenance_max_connections",
+          "5"
+        ],
+        [
+          "maintenance_min_connections",
+          "1"
+        ],
+        [
+          "statement_timeout_secs",
+          "30"
+        ],
+        [
+          "pool_monitor_interval_secs",
+          "30"
+        ]
+      ],
+      "values": {
+        "connection_string": [
+          112,
+          111,
+          115,
+          116,
+          103,
+          114,
+          101,
+          115,
+          58,
+          47,
+          47,
+          112,
+          111,
+          115,
+          116,
+          103,
+          114,
+          101,
+          115,
+          58,
+          112,
+          111,
+          115,
+          116,
+          103,
+          114,
+          101,
+          115,
+          64,
+          108,
+          111,
+          99,
+          97,
+          108,
+          104,
+          111,
+          115,
+          116,
+          58,
+          53,
+          52,
+          51,
+          50,
+          47,
+          111,
+          120,
+          105,
+          99,
+          108,
+          111,
+          117,
+          100
+        ],
+        "max_connections": 20,
+        "min_connections": 5,
+        "connect_timeout_secs": 10,
+        "idle_timeout_secs": 300,
+        "max_lifetime_secs": 1800,
+        "maintenance_max_connections": 5,
+        "maintenance_min_connections": 1,
+        "statement_timeout_secs": 30,
+        "pool_monitor_interval_secs": 30
+      }
+    },
+    {
+      "name": "RateLimitConfig",
+      "id": "rate_limit_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            login_max_requests: 10,\n            login_window_secs: 60,\n            register_max_requests: 5,\n            register_window_secs: 3600,\n            refresh_max_requests: 20,\n            refresh_window_secs: 60,\n            lockout_max_failures: 5,\n            lockout_duration_secs: 900,\n            // Unchanged from the literals these replaced in `di.rs`, so\n            // an operator who sets nothing sees no behaviour change.\n            user_profile_max_requests: 60,\n            user_profile_window_secs: 60,\n            delta_upload_max_requests: 240,\n            delta_upload_window_secs: 60,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "RateLimitConfig",
+        "start": 1678,
+        "end": 1695,
+        "sha256": "80a7c8f7af29274ebe3034f2762f66ab09630b36b8da6aa8b59bdbf4eff423ae"
+      },
+      "carrier_source": "/// Rate limiting and brute-force protection configuration.\n#[derive(Debug, Clone)]\npub struct RateLimitConfig {\n    /// Max login attempts per IP per window (default: 10)\n    pub login_max_requests: u32,\n    /// Login rate-limit window in seconds (default: 60)\n    pub login_window_secs: u64,\n    /// Max registration attempts per IP per window (default: 5)\n    pub register_max_requests: u32,\n    /// Registration rate-limit window in seconds (default: 3600)\n    pub register_window_secs: u64,\n    /// Max token refresh attempts per IP per window (default: 20)\n    pub refresh_max_requests: u32,\n    /// Refresh rate-limit window in seconds (default: 60)\n    pub refresh_window_secs: u64,\n    /// Consecutive failed logins before account lockout (default: 5)\n    pub lockout_max_failures: u32,\n    /// Account lockout duration in seconds (default: 900 = 15 min)\n    pub lockout_duration_secs: u64,\n\n    // \u2500\u2500 Per-caller limits \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\n    //\n    // Keyed on `caller_id`, not IP: these guard an authenticated user\n    // against exhausting a shared resource, whereas the three above\n    // guard the unauthenticated front door against an attacker.\n    //\n    // The distinction matters when several actors share one identity \u2014\n    // an automated test suite, a CI job, an integration bot. They then\n    // share one bucket, and a ceiling that is generous for one human\n    // is easily exceeded. That is exactly what made the e2e suite emit\n    // 81 \u00d7 429 in a single run, all as the same `admin`.\n    /// Max user-profile lookups per caller per window (default: 60).\n    ///\n    /// Guards the visibility query behind `GET /api/users/{id}`, which\n    /// touches `access_grants` \u2014 the rate check runs BEFORE it so an\n    /// attacker cannot exhaust it by hammering random UUIDs.\n    pub user_profile_max_requests: u32,\n    /// User-profile lookup window in seconds (default: 60).\n    pub user_profile_window_secs: u64,\n    /// Max delta-upload requests per caller per window (default: 240).\n    ///\n    /// Generous for a real client \u2014 chunk PUTs carry up to 100 MB each\n    /// \u2014 while stopping pin/negotiate floods.\n    pub delta_upload_max_requests: u32,\n    /// Delta-upload window in seconds (default: 60).\n    pub delta_upload_window_secs: u64,\n}",
+      "fields": [
+        [
+          "login_max_requests",
+          "u32"
+        ],
+        [
+          "login_window_secs",
+          "u64"
+        ],
+        [
+          "register_max_requests",
+          "u32"
+        ],
+        [
+          "register_window_secs",
+          "u64"
+        ],
+        [
+          "refresh_max_requests",
+          "u32"
+        ],
+        [
+          "refresh_window_secs",
+          "u64"
+        ],
+        [
+          "lockout_max_failures",
+          "u32"
+        ],
+        [
+          "lockout_duration_secs",
+          "u64"
+        ],
+        [
+          "user_profile_max_requests",
+          "u32"
+        ],
+        [
+          "user_profile_window_secs",
+          "u64"
+        ],
+        [
+          "delta_upload_max_requests",
+          "u32"
+        ],
+        [
+          "delta_upload_window_secs",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "login_max_requests",
+          "10"
+        ],
+        [
+          "login_window_secs",
+          "60"
+        ],
+        [
+          "register_max_requests",
+          "5"
+        ],
+        [
+          "register_window_secs",
+          "3600"
+        ],
+        [
+          "refresh_max_requests",
+          "20"
+        ],
+        [
+          "refresh_window_secs",
+          "60"
+        ],
+        [
+          "lockout_max_failures",
+          "5"
+        ],
+        [
+          "lockout_duration_secs",
+          "900"
+        ],
+        [
+          "user_profile_max_requests",
+          "60"
+        ],
+        [
+          "user_profile_window_secs",
+          "60"
+        ],
+        [
+          "delta_upload_max_requests",
+          "240"
+        ],
+        [
+          "delta_upload_window_secs",
+          "60"
+        ]
+      ],
+      "values": {
+        "login_max_requests": 10,
+        "login_window_secs": 60,
+        "register_max_requests": 5,
+        "register_window_secs": 3600,
+        "refresh_max_requests": 20,
+        "refresh_window_secs": 60,
+        "lockout_max_failures": 5,
+        "lockout_duration_secs": 900,
+        "user_profile_max_requests": 60,
+        "user_profile_window_secs": 60,
+        "delta_upload_max_requests": 240,
+        "delta_upload_window_secs": 60
+      }
+    },
+    {
+      "name": "OidcConfig",
+      "id": "oidc_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            enabled: false,\n            issuer_url: String::new(),\n            client_id: String::new(),\n            client_secret: String::new(),\n            redirect_uri: \"http://localhost:8086/api/auth/oidc/callback\".to_string(),\n            scopes: \"openid profile email\".to_string(),\n            frontend_url: \"http://localhost:8086\".to_string(),\n            auto_provision: true,\n            admin_groups: String::new(),\n            disable_password_login: false,\n            provider_name: \"SSO\".to_string(),\n            auto_link_email_match: true,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "OidcConfig",
+        "start": 1779,
+        "end": 1794,
+        "sha256": "9b66ef832d98d25cab153525606348d4e0f59799b628917b8390dd2bfdeeaaba"
+      },
+      "carrier_source": "/// OpenID Connect (OIDC) configuration\n#[derive(Debug, Clone)]\npub struct OidcConfig {\n    /// Whether OIDC authentication is enabled\n    pub enabled: bool,\n    /// OIDC Issuer URL (e.g. https://authentik.example.com/application/o/oxicloud/)\n    pub issuer_url: String,\n    /// OIDC Client ID\n    pub client_id: String,\n    /// OIDC Client Secret\n    pub client_secret: String,\n    /// Redirect URI after OIDC authentication (must match IdP config)\n    pub redirect_uri: String,\n    /// OIDC scopes to request\n    pub scopes: String,\n    /// Frontend URL to redirect after successful OIDC login (tokens appended as fragment)\n    pub frontend_url: String,\n    /// Whether to auto-create users on first OIDC login (JIT provisioning)\n    pub auto_provision: bool,\n    /// Comma-separated list of OIDC groups that map to admin role\n    pub admin_groups: String,\n    /// Whether to disable password-based login entirely\n    pub disable_password_login: bool,\n    /// OIDC provider display name (shown in UI)\n    pub provider_name: String,\n    /// When TRUE (default), an OIDC login whose subject doesn't match\n    /// any existing user AUTO-LINKS to the local user with the same\n    /// verified email address (if any). Requires `email_verified=true`\n    /// from the IdP. See docs/plan/oidc-account-linking.md \u00a7 Auto-link.\n    ///\n    /// Set FALSE for compliance postures that require explicit consent\n    /// for every OIDC linkage. Self-service link flow still works\n    /// regardless of this flag.\n    pub auto_link_email_match: bool,\n}",
+      "fields": [
+        [
+          "enabled",
+          "bool"
+        ],
+        [
+          "issuer_url",
+          "String"
+        ],
+        [
+          "client_id",
+          "String"
+        ],
+        [
+          "client_secret",
+          "String"
+        ],
+        [
+          "redirect_uri",
+          "String"
+        ],
+        [
+          "scopes",
+          "String"
+        ],
+        [
+          "frontend_url",
+          "String"
+        ],
+        [
+          "auto_provision",
+          "bool"
+        ],
+        [
+          "admin_groups",
+          "String"
+        ],
+        [
+          "disable_password_login",
+          "bool"
+        ],
+        [
+          "provider_name",
+          "String"
+        ],
+        [
+          "auto_link_email_match",
+          "bool"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "enabled",
+          "false"
+        ],
+        [
+          "issuer_url",
+          "Vec::new()"
+        ],
+        [
+          "client_id",
+          "Vec::new()"
+        ],
+        [
+          "client_secret",
+          "Vec::new()"
+        ],
+        [
+          "redirect_uri",
+          "b\"http://localhost:8086/api/auth/oidc/callback\".to_vec()"
+        ],
+        [
+          "scopes",
+          "b\"openid profile email\".to_vec()"
+        ],
+        [
+          "frontend_url",
+          "b\"http://localhost:8086\".to_vec()"
+        ],
+        [
+          "auto_provision",
+          "true"
+        ],
+        [
+          "admin_groups",
+          "Vec::new()"
+        ],
+        [
+          "disable_password_login",
+          "false"
+        ],
+        [
+          "provider_name",
+          "b\"SSO\".to_vec()"
+        ],
+        [
+          "auto_link_email_match",
+          "true"
+        ]
+      ],
+      "values": {
+        "enabled": false,
+        "issuer_url": [],
+        "client_id": [],
+        "client_secret": [],
+        "redirect_uri": [
+          104,
+          116,
+          116,
+          112,
+          58,
+          47,
+          47,
+          108,
+          111,
+          99,
+          97,
+          108,
+          104,
+          111,
+          115,
+          116,
+          58,
+          56,
+          48,
+          56,
+          54,
+          47,
+          97,
+          112,
+          105,
+          47,
+          97,
+          117,
+          116,
+          104,
+          47,
+          111,
+          105,
+          100,
+          99,
+          47,
+          99,
+          97,
+          108,
+          108,
+          98,
+          97,
+          99,
+          107
+        ],
+        "scopes": [
+          111,
+          112,
+          101,
+          110,
+          105,
+          100,
+          32,
+          112,
+          114,
+          111,
+          102,
+          105,
+          108,
+          101,
+          32,
+          101,
+          109,
+          97,
+          105,
+          108
+        ],
+        "frontend_url": [
+          104,
+          116,
+          116,
+          112,
+          58,
+          47,
+          47,
+          108,
+          111,
+          99,
+          97,
+          108,
+          104,
+          111,
+          115,
+          116,
+          58,
+          56,
+          48,
+          56,
+          54
+        ],
+        "auto_provision": true,
+        "admin_groups": [],
+        "disable_password_login": false,
+        "provider_name": [
+          83,
+          83,
+          79
+        ],
+        "auto_link_email_match": true
+      }
+    },
+    {
+      "name": "SmtpConfig",
+      "id": "smtp_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            host: String::new(),\n            port: 587,\n            user: String::new(),\n            pass: String::new(),\n            from: String::new(),\n            tls: SmtpTlsMode::Starttls,\n            mock: false,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "SmtpConfig",
+        "start": 2145,
+        "end": 2155,
+        "sha256": "41ded3553d9346ef160a60444a02b7bf5ecea224eab62a1b403e48e017bb7a0f"
+      },
+      "carrier_source": "/// Outbound SMTP transport configuration. Sourced exclusively from\n/// `OXICLOUD_SMTP_*` env vars. `host` empty means the feature is\n/// disabled \u2014 every endpoint that needs email returns 503 in that\n/// state so admins notice misconfiguration immediately rather than\n/// silently dropping mail.\n#[derive(Debug, Clone)]\npub struct SmtpConfig {\n    /// SMTP server hostname or IP. Empty string disables the feature.\n    pub host: String,\n    /// Submission port (typically 587 for STARTTLS, 465 for implicit\n    /// TLS, 25 for relay-to-relay).\n    pub port: u16,\n    /// SASL username. Empty = no authentication (anonymous relay).\n    pub user: String,\n    /// SASL password. Logged as `***` redacted in startup banner.\n    pub pass: String,\n    /// `From:` mailbox. Either a bare address (`noreply@example.com`)\n    /// or RFC 5322 name-address (`OxiCloud <noreply@example.com>`).\n    pub from: String,\n    /// Transport encryption mode. See [`SmtpTlsMode`].\n    pub tls: SmtpTlsMode,\n    /// `OXICLOUD_SMTP_MOCK=true` \u2014 capture outbound mail in-process\n    /// instead of sending it. Test harness only, never in production.\n    pub mock: bool,\n}",
+      "fields": [
+        [
+          "host",
+          "String"
+        ],
+        [
+          "port",
+          "u16"
+        ],
+        [
+          "user",
+          "String"
+        ],
+        [
+          "pass",
+          "String"
+        ],
+        [
+          "from",
+          "String"
+        ],
+        [
+          "tls",
+          "SmtpTlsMode"
+        ],
+        [
+          "mock",
+          "bool"
+        ]
+      ],
+      "enums": {
+        "SmtpTlsMode": [
+          "Starttls",
+          "Tls",
+          "None"
+        ]
+      },
+      "initializers": [
+        [
+          "host",
+          "Vec::new()"
+        ],
+        [
+          "port",
+          "587"
+        ],
+        [
+          "user",
+          "Vec::new()"
+        ],
+        [
+          "pass",
+          "Vec::new()"
+        ],
+        [
+          "from",
+          "Vec::new()"
+        ],
+        [
+          "tls",
+          "SmtpTlsMode::Starttls"
+        ],
+        [
+          "mock",
+          "false"
+        ]
+      ],
+      "values": {
+        "host": [],
+        "port": 587,
+        "user": [],
+        "pass": [],
+        "from": [],
+        "tls": "Starttls",
+        "mock": false
+      }
+    },
+    {
+      "name": "MagicLinkConfig",
+      "id": "magic_link_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            login_ttl_minutes: 10,\n            invite_ttl_hours: 24,\n            allow_external_users: true,\n            allowed_email_domains: Vec::new(),\n            invite_per_caller_per_hour: 50,\n            send_per_email_per_hour: 5,\n            send_per_ip_per_hour: 200,\n            open_to_password_users: false,\n            notify_internal_users_on_share: true,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "MagicLinkConfig",
+        "start": 2260,
+        "end": 2272,
+        "sha256": "7d08b4d2527ff22c2cbc85066cbbb30aaac2bad5f3dcd16530643fa88ea6789f"
+      },
+      "carrier_source": "/// Magic-link authentication configuration. Knobs that are specific to\n/// the invite-by-email / login-via-email flow.\n#[derive(Debug, Clone)]\npub struct MagicLinkConfig {\n    /// TTL for **login-via-email** tokens (the ones a user requests\n    /// themselves from their own browser). Short by design \u2014 the user\n    /// just clicked the button moments before; if they take >10 minutes\n    /// to click the link, something's wrong. Combined with the per-\n    /// request challenge cookie (PR 22), this bounds the window for\n    /// mailbox compromise to turn into a session.\n    ///\n    /// Default: 10 minutes.\n    pub login_ttl_minutes: u64,\n    /// TTL for **invitation** tokens (the ones a sharer mints via\n    /// `POST /api/grants` for a recipient who has no prior browser\n    /// context with the server). Long because the recipient may not\n    /// check their email for hours or days. Cross-device by design;\n    /// no challenge cookie.\n    ///\n    /// Default: 24 hours. The legacy `OXICLOUD_MAGIC_LINK_TTL_HOURS`\n    /// env var is a deprecated alias that writes here.\n    pub invite_ttl_hours: u64,\n    /// Kill switch for the whole magic-link flow. When `false`:\n    /// - `POST /api/grants` rejects `subject.type = \"email\"` for unknown\n    ///   email addresses (no lazy external-user creation).\n    /// - `POST /api/auth/magic-link/send` returns the uniform stub\n    ///   response without actually issuing a token.\n    ///\n    /// This is the coarser \"turn it all off\" switch; the fine-grained\n    /// version is [`allowed_email_domains`] below.\n    pub allow_external_users: bool,\n    /// Allowlist of email domains accepted when minting a new external\n    /// user. Empty = no restriction (any domain is allowed, subject to\n    /// [`allow_external_users`]). Entries are lowercased and trimmed\n    /// at load time; matching is case-insensitive exact-match on the\n    /// post-`@` part of the address.\n    ///\n    /// Example: `[\"partner-a.com\", \"partner-b.io\"]` \u2014 only addresses\n    /// `<anything>@partner-a.com` or `<anything>@partner-b.io` can be\n    /// invited; everything else is rejected with 403.\n    ///\n    /// Wildcards / subdomain semantics are intentionally out of scope:\n    /// `partner.com` does NOT match `eng.partner.com`. List every\n    /// subdomain explicitly.\n    pub allowed_email_domains: Vec<String>,\n    /// Per-sharer ceiling on email-typed grant invitations from\n    /// `POST /api/grants`. Keyed on `caller_id`. Exceeding the ceiling\n    /// returns 429. Default: 50/hour.\n    pub invite_per_caller_per_hour: u32,\n    /// Per-target-email ceiling on `POST /api/auth/magic-link/send`,\n    /// keyed on the normalised recipient address. Anti-bombing.\n    /// Exceeding the ceiling is silently absorbed (uniform 200) so\n    /// the response shape can't be used as an enumeration oracle.\n    /// Default: 5/hour.\n    pub send_per_email_per_hour: u32,\n    /// Per-source-IP backstop on `POST /api/auth/magic-link/send`,\n    /// keyed on the trusted client IP. Bounds the cost of an attacker\n    /// spreading low per-email volume across many target addresses.\n    /// Default: 200/hour.\n    pub send_per_ip_per_hour: u32,\n    /// Policy switch: whether magic-link is offered to users who\n    /// already have a password configured.\n    ///\n    /// - `false` (default, strict): users with a password get\n    ///   audit-logged `has_password` and no mail. Their password is\n    ///   the only authentication path; magic-link would weaken it to\n    ///   \"mailbox compromise = account compromise\".\n    /// - `true` (lenient): users with a password can also request a\n    ///   magic-link as a sign-in path. Aligns with modern SaaS UX\n    ///   (Slack, Notion, etc.) \u2014 operators who treat email as the\n    ///   canonical recovery channel anyway pick this.\n    ///\n    /// OIDC-linked users are **always** rejected from magic-link\n    /// regardless of this flag \u2014 the IdP is the security boundary and\n    /// may enforce MFA we shouldn't bypass. See\n    /// `magic_link_eligibility()` for the precedence ladder.\n    pub open_to_password_users: bool,\n    /// Operator-level kill switch for plain-notification emails to\n    /// internal users (PR N1). When `true` (default), users who can't\n    /// receive a magic link (password users, OIDC users) get a \"Hey,\n    /// you got a new grant\" mail with a `/login` deep link on every\n    /// share. When `false`, the plain-notification arm is suppressed\n    /// entirely \u2014 internal users discover shares only on next login.\n    ///\n    /// This is a coarser knob than the per-user\n    /// `auth.users.notify_on_share` column: when this is `false`, the\n    /// user-level opt-in does not matter. External-user magic-link\n    /// invitations are NOT affected by this flag \u2014 those always send,\n    /// because the link is the only way the recipient can claim the\n    /// share for the first time.\n    pub notify_internal_users_on_share: bool,\n}",
+      "fields": [
+        [
+          "login_ttl_minutes",
+          "u64"
+        ],
+        [
+          "invite_ttl_hours",
+          "u64"
+        ],
+        [
+          "allow_external_users",
+          "bool"
+        ],
+        [
+          "allowed_email_domains",
+          "Vec<String>"
+        ],
+        [
+          "invite_per_caller_per_hour",
+          "u32"
+        ],
+        [
+          "send_per_email_per_hour",
+          "u32"
+        ],
+        [
+          "send_per_ip_per_hour",
+          "u32"
+        ],
+        [
+          "open_to_password_users",
+          "bool"
+        ],
+        [
+          "notify_internal_users_on_share",
+          "bool"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "login_ttl_minutes",
+          "10"
+        ],
+        [
+          "invite_ttl_hours",
+          "24"
+        ],
+        [
+          "allow_external_users",
+          "true"
+        ],
+        [
+          "allowed_email_domains",
+          "Vec::new()"
+        ],
+        [
+          "invite_per_caller_per_hour",
+          "50"
+        ],
+        [
+          "send_per_email_per_hour",
+          "5"
+        ],
+        [
+          "send_per_ip_per_hour",
+          "200"
+        ],
+        [
+          "open_to_password_users",
+          "false"
+        ],
+        [
+          "notify_internal_users_on_share",
+          "true"
+        ]
+      ],
+      "values": {
+        "login_ttl_minutes": 10,
+        "invite_ttl_hours": 24,
+        "allow_external_users": true,
+        "allowed_email_domains": [],
+        "invite_per_caller_per_hour": 50,
+        "send_per_email_per_hour": 5,
+        "send_per_ip_per_hour": 200,
+        "open_to_password_users": false,
+        "notify_internal_users_on_share": true
+      }
+    },
+    {
+      "name": "GrantCleanupConfig",
+      "id": "grant_cleanup_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            enabled: true,\n            grace_days: 15,\n            interval_hours: 24,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "GrantCleanupConfig",
+        "start": 2617,
+        "end": 2623,
+        "sha256": "3e97409c39ad0dae6ae829b10f546ac2627ca1cd6c007b83e4c1da6bb711e061"
+      },
+      "carrier_source": "/// Config for the daily expired-grant purge (see\n/// [`FeaturesConfig::grant_cleanup`]).\n#[derive(Debug, Clone)]\npub struct GrantCleanupConfig {\n    /// Master switch. Env: `OXICLOUD_GRANT_CLEANUP_ENABLED`\n    /// (default `true`).\n    pub enabled: bool,\n    /// Days past a grant's `expires_at` before the row is eligible\n    /// for deletion. Env: `OXICLOUD_GRANT_CLEANUP_GRACE_DAYS`\n    /// (default `15`).\n    ///\n    /// The recommendation is `> 15` \u2014 enough to answer\n    /// support/audit questions about recently-lapsed grants without\n    /// keeping dead rows forever.\n    pub grace_days: u32,\n    /// How often the daemon fires, in hours. Env:\n    /// `OXICLOUD_GRANT_CLEANUP_INTERVAL_HOURS` (default `24`).\n    pub interval_hours: u64,\n}",
+      "fields": [
+        [
+          "enabled",
+          "bool"
+        ],
+        [
+          "grace_days",
+          "u32"
+        ],
+        [
+          "interval_hours",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "enabled",
+          "true"
+        ],
+        [
+          "grace_days",
+          "15"
+        ],
+        [
+          "interval_hours",
+          "24"
+        ]
+      ],
+      "values": {
+        "enabled": true,
+        "grace_days": 15,
+        "interval_hours": 24
+      }
+    },
+    {
+      "name": "SearchCacheConfig",
+      "id": "search_cache_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            max_bytes: 32 * 1024 * 1024,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "SearchCacheConfig",
+        "start": 2765,
+        "end": 2769,
+        "sha256": "0211bdf7cce3caac54f4bad3e5624dc059e78a9267c8029ea296c9247c38a22b"
+      },
+      "carrier_source": "/// Search-results cache configuration \u2014 the per-user results-page cache\n/// inside `SearchService`, not the Tantivy content index above.\n///\n/// The cache is **byte-bounded**: each entry is weighed by the approximate\n/// heap size of its result page (see `search_results_entry_weight`) and moka\n/// evicts once the summed weight exceeds `max_bytes` \u2014 the same byte-budget\n/// pattern the file-content cache and the dedup manifest cache use. This\n/// replaced an entry-count capacity: with cache keys spanning\n/// user \u00d7 query \u00d7 offset \u00d7 limit and up to 500 enriched rows per page, an\n/// entry count said nothing about resident memory (1000 entries could pin\n/// ~300 MB for the TTL). No entry-count knob is kept \u2014 bytes are the only\n/// dimension that matters here.\n#[derive(Debug, Clone)]\npub struct SearchCacheConfig {\n    /// Byte budget for cached search-result pages. Default: 32 MiB.\n    /// Env: `OXICLOUD_SEARCH_CACHE_MAX_BYTES`.\n    pub max_bytes: u64,\n}",
+      "fields": [
+        [
+          "max_bytes",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "max_bytes",
+          "32 * 1024 * 1024"
+        ]
+      ],
+      "values": {
+        "max_bytes": 33554432
+      }
+    },
+    {
+      "name": "I18nConfig",
+      "id": "i18n_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            default_locale: \"en\".to_string(),\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "I18nConfig",
+        "start": 3010,
+        "end": 3014,
+        "sha256": "1cd16877d01b5722c899895d7c486ed578d74b051175de9ad3dd603f2c69b752"
+      },
+      "carrier_source": "/// Server-side i18n knobs.\n///\n/// Locale discovery itself is driven by `static/locales/*.json` at boot\n/// (see [`crate::common::locale::LocaleRegistry`]) \u2014 no hardcoded list,\n/// no `build.rs`. This struct only carries the configurable defaults\n/// around that discovery.\n#[derive(Debug, Clone)]\npub struct I18nConfig {\n    /// Fallback locale used when:\n    /// - an anonymous request's `Accept-Language` matches nothing in\n    ///   the registry,\n    /// - a user's `preferred_locale` is `NULL`,\n    /// - an OIDC `locale` claim doesn't resolve.\n    ///\n    /// Must be present in `static/locales/`; the registry-build step\n    /// errors at startup if this is set to a locale we don't ship.\n    /// Defaults to `\"en\"`. Override via `OXICLOUD_DEFAULT_LOCALE`.\n    pub default_locale: String,\n}",
+      "fields": [
+        [
+          "default_locale",
+          "String"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "default_locale",
+          "b\"en\".to_vec()"
+        ]
+      ],
+      "values": {
+        "default_locale": [
+          101,
+          110
+        ]
+      }
+    },
+    {
+      "name": "VideoThumbnailConfig",
+      "id": "video_thumbnail_config_default_a4fe67b2",
+      "source": "    fn default() -> Self {\n        Self {\n            ffmpeg_path: \"ffmpeg\".to_string(),\n            concurrency: None,\n            timeout_secs: 30,\n            max_mb: 2048,\n        }\n    }",
+      "meta": {
+        "file": "src/common/config.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "VideoThumbnailConfig",
+        "start": 3074,
+        "end": 3081,
+        "sha256": "9453a913deecfe5e230cc159b5f337cbda70f5ace22e1a199fa036d21ccc8de0"
+      },
+      "carrier_source": "/// Server-side video thumbnail extraction (ffmpeg).\n#[derive(Debug, Clone)]\npub struct VideoThumbnailConfig {\n    /// ffmpeg binary (`OXICLOUD_FFMPEG_PATH`); default resolves on `PATH`.\n    pub ffmpeg_path: String,\n    /// Parallel extractions (`OXICLOUD_VIDEO_THUMBNAIL_CONCURRENCY`);\n    /// `None` = half the available cores, at least 1.\n    pub concurrency: Option<usize>,\n    /// Per-video ffmpeg timeout (`OXICLOUD_VIDEO_THUMBNAIL_TIMEOUT_SECS`).\n    pub timeout_secs: u64,\n    /// Cap on bytes streamed to a temp file for extraction\n    /// (`OXICLOUD_VIDEO_THUMBNAIL_MAX_MB`).\n    pub max_mb: u64,\n}",
+      "fields": [
+        [
+          "ffmpeg_path",
+          "String"
+        ],
+        [
+          "concurrency",
+          "Option<usize>"
+        ],
+        [
+          "timeout_secs",
+          "u64"
+        ],
+        [
+          "max_mb",
+          "u64"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "ffmpeg_path",
+          "b\"ffmpeg\".to_vec()"
+        ],
+        [
+          "concurrency",
+          "None"
+        ],
+        [
+          "timeout_secs",
+          "30"
+        ],
+        [
+          "max_mb",
+          "2048"
+        ]
+      ],
+      "values": {
+        "ffmpeg_path": [
+          102,
+          102,
+          109,
+          112,
+          101,
+          103
+        ],
+        "concurrency": null,
+        "timeout_secs": 30,
+        "max_mb": 2048
+      }
+    },
+    {
+      "name": "FileContentCacheConfig",
+      "id": "file_content_cache_config_default_28be87aa",
+      "source": "    fn default() -> Self {\n        Self {\n            max_file_size: 10 * 1024 * 1024,   // 10MB max per file\n            max_total_size: 512 * 1024 * 1024, // 512MB total cache\n            max_entries: 10000,                // Max 10k files\n        }\n    }",
+      "meta": {
+        "file": "src/infrastructure/services/file_content_cache.rs",
+        "kind": "method",
+        "name": "default",
+        "self_ty": "FileContentCacheConfig",
+        "start": 22,
+        "end": 28,
+        "sha256": "49629589b737f33ea23f6f8886459b56fc920266382edeb7470c95dea6b4c80a"
+      },
+      "carrier_source": "/// Configuration for the file content cache\n#[derive(Debug, Clone)]\npub struct FileContentCacheConfig {\n    /// Maximum size of individual files to cache (bytes)\n    pub max_file_size: usize,\n    /// Maximum total cache size (bytes)\n    pub max_total_size: usize,\n    /// Maximum number of entries\n    pub max_entries: usize,\n}",
+      "fields": [
+        [
+          "max_file_size",
+          "usize"
+        ],
+        [
+          "max_total_size",
+          "usize"
+        ],
+        [
+          "max_entries",
+          "usize"
+        ]
+      ],
+      "enums": {},
+      "initializers": [
+        [
+          "max_file_size",
+          "10 * 1024 * 1024"
+        ],
+        [
+          "max_total_size",
+          "512 * 1024 * 1024"
+        ],
+        [
+          "max_entries",
+          "10000"
+        ]
+      ],
+      "values": {
+        "max_file_size": 10485760,
+        "max_total_size": 536870912,
+        "max_entries": 10000
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "file": "src/application/adapters/collab_evict_lifecycle_hook.rs",
+      "type": "CollabEvictLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/adapters/plugin_lifecycle_hook.rs",
+      "type": "PluginLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/adapters/plugin_user_lifecycle_hook.rs",
+      "type": "PluginUserLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/adapters/webdav_adapter.rs",
+      "type": "QualifiedName",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/application/dtos/address_book_dto.rs",
+      "type": "AddressBookDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/calendar_dto.rs",
+      "type": "CalendarDto",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/dtos/calendar_dto.rs",
+      "type": "CalendarEventDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/contact_dto.rs",
+      "type": "ContactDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/file_dto.rs",
+      "type": "FileDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/file_dto.rs",
+      "type": "FileDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/folder_dto.rs",
+      "type": "FolderDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/folder_dto.rs",
+      "type": "FolderDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/grant_dto.rs",
+      "type": "NotifyOutcomeSetDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/pagination.rs",
+      "type": "PaginationRequestDto",
+      "reason": "non-closed expression 'default_page_size()' : usize"
+    },
+    {
+      "file": "src/application/dtos/pagination.rs",
+      "type": "PaginatedResponseDto",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/application/dtos/playlist_dto.rs",
+      "type": "PlaylistDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/playlist_dto.rs",
+      "type": "PlaylistItemDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/playlist_dto.rs",
+      "type": "AudioMetadataDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/search_dto.rs",
+      "type": "SearchCriteriaDto",
+      "reason": "non-closed expression 'default_recursive()' : bool"
+    },
+    {
+      "file": "src/application/dtos/search_dto.rs",
+      "type": "SearchResultsDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/search_dto.rs",
+      "type": "SearchResultsDto",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/dtos/user_dto.rs",
+      "type": "PublicUserDto",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/application/ports/blob_reference_ports.rs",
+      "type": "BlobReferenceRegistry",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/admin_settings_service.rs",
+      "type": "AdminSettingsService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/app_password_service.rs",
+      "type": "AppPasswordService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/auth_application_service.rs",
+      "type": "AuthApplicationService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/batch_operations.rs",
+      "type": "BatchOperationService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/batch_operations.rs",
+      "type": "BatchOperationService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/blob_lifecycle_service.rs",
+      "type": "BlobLifecycleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/blob_lifecycle_service.rs",
+      "type": "BlobLifecycleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/calendar_service.rs",
+      "type": "CalendarService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/calendar_service.rs",
+      "type": "DefaultCalendarLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/collab_session_service.rs",
+      "type": "CollabLimits",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/collab_session_service.rs",
+      "type": "CollabSessionService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/contact_service.rs",
+      "type": "ContactService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/contact_service.rs",
+      "type": "DefaultAddressBookLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/delta_upload_service.rs",
+      "type": "DeltaUploadService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/device_auth_service.rs",
+      "type": "DeviceAuthService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/drive_management_service.rs",
+      "type": "DriveManagementService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/drive_policy_defaults_service.rs",
+      "type": "DrivePolicyDefaultsService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/external_identity_service.rs",
+      "type": "ExternalIdentityLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/external_identity_service.rs",
+      "type": "ExternalIdentityLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/external_mount_router.rs",
+      "type": "MountRouter",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/external_upload_service.rs",
+      "type": "ExternalUploadService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/favorites_service.rs",
+      "type": "FavoritesService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/file_lifecycle_service.rs",
+      "type": "FileLifecycleService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/file_lifecycle_service.rs",
+      "type": "FileLifecycleService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/file_retrieval_service.rs",
+      "type": "FileRetrievalService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/file_upload_service.rs",
+      "type": "FileUploadService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/file_use_case_factory.rs",
+      "type": "AppFileUseCaseFactory",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/folder_service.rs",
+      "type": "FolderService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/folder_service.rs",
+      "type": "PersonalDriveLifecycleHook",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/i18n_application_service.rs",
+      "type": "I18nApplicationService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/magic_link_invite_service.rs",
+      "type": "MagicLinkInviteService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/mount_registry.rs",
+      "type": "MountRegistry",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/mount_registry.rs",
+      "type": "MountRegistry",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/music_service.rs",
+      "type": "MusicService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/nextcloud_file_id_service.rs",
+      "type": "NextcloudFileIdService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/nextcloud_login_flow_service.rs",
+      "type": "NextcloudLoginFlowService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/notification_application_service.rs",
+      "type": "NotificationApplicationService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/people_service.rs",
+      "type": "UnionFind",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/application/services/people_service.rs",
+      "type": "PeopleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/places_service.rs",
+      "type": "PlacesService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/recent_service.rs",
+      "type": "RecentService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/recipient_notification_service.rs",
+      "type": "NotifyOutcomeSet",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/recipient_notification_service.rs",
+      "type": "RecipientNotificationService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/search_service.rs",
+      "type": "SearchService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/share_service.rs",
+      "type": "ShareService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/share_service.rs",
+      "type": "ShareServiceForTest",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/application/services/share_service.rs",
+      "type": "MockShareRepository",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/storage_settings_service.rs",
+      "type": "StorageSettingsService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/storage_usage_service.rs",
+      "type": "StorageUsageService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/subject_group_service.rs",
+      "type": "SubjectGroupService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/trash_service.rs",
+      "type": "TrashService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/user_lifecycle_service.rs",
+      "type": "UserLifecycleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/user_lifecycle_service.rs",
+      "type": "UserLifecycleService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/user_lifecycle_service.rs",
+      "type": "SessionRevocationLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/application/services/wopi_lock_service.rs",
+      "type": "WopiLockService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/application/services/wopi_token_service.rs",
+      "type": "WopiTokenService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "RetryConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "StorageConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "AuthConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "OpaqueConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "WopiConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "NextcloudConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "FeaturesConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "FacesConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "ContentSearchConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "PluginConfig",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/config.rs",
+      "type": "AppConfig",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/common/di.rs",
+      "type": "AppServiceFactory",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/common/locale.rs",
+      "type": "Locale",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/common/migration_progress.rs",
+      "type": "MigrationProgress",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/domain/entities/app_password.rs",
+      "type": "AppPassword",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/calendar.rs",
+      "type": "Calendar",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/domain/entities/calendar_event.rs",
+      "type": "CalendarEvent",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/contact.rs",
+      "type": "AddressBook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/contact.rs",
+      "type": "AddressBook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/contact.rs",
+      "type": "Contact",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/contact.rs",
+      "type": "Contact",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/contact.rs",
+      "type": "ContactGroup",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/contact.rs",
+      "type": "ContactGroup",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/device_code.rs",
+      "type": "DeviceCode",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/file.rs",
+      "type": "File",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/file.rs",
+      "type": "File",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/folder.rs",
+      "type": "Folder",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/folder.rs",
+      "type": "Folder",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/magic_link_token.rs",
+      "type": "MagicLinkToken",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/playlist.rs",
+      "type": "Playlist",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/playlist.rs",
+      "type": "PlaylistItem",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/playlist.rs",
+      "type": "AudioFileMetadata",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/session.rs",
+      "type": "Session",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/share.rs",
+      "type": "Share",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/subject_group.rs",
+      "type": "SubjectGroup",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/trashed_item.rs",
+      "type": "TrashedItem",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/entities/user.rs",
+      "type": "User",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/domain/errors.rs",
+      "type": "DomainError",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/domain/services/external_mount_id.rs",
+      "type": "MountChildId",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/domain/services/path_service.rs",
+      "type": "StoragePath",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/domain/services/path_service.rs",
+      "type": "StoragePath",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/infrastructure/adapters/calendar_storage_adapter.rs",
+      "type": "CalendarStorageAdapter",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/adapters/contact_storage_adapter.rs",
+      "type": "ContactStorageAdapter",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/adapters/music_storage_adapter.rs",
+      "type": "MusicStorageAdapter",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/address_book_pg_repository.rs",
+      "type": "AddressBookPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/app_password_pg_repository.rs",
+      "type": "AppPasswordPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/blob_reference_sources.rs",
+      "type": "FilesReferenceSource",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/blob_reference_sources.rs",
+      "type": "ChunksReferenceSource",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/blob_reference_sources.rs",
+      "type": "ContentDerivedReferenceSource",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/blob_reference_sources.rs",
+      "type": "FileAttachedReferenceSource",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/calendar_event_pg_repository.rs",
+      "type": "CalendarEventPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/calendar_pg_repository.rs",
+      "type": "CalendarPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/calendar_todo_pg_repository.rs",
+      "type": "CalendarTodoPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/collab_doc_session_pg_repository.rs",
+      "type": "CollabDocSessionPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/contact_group_pg_repository.rs",
+      "type": "ContactGroupPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/contact_pg_repository.rs",
+      "type": "ContactPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/device_code_pg_repository.rs",
+      "type": "DeviceCodePgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/drive_pg_repository.rs",
+      "type": "DrivePgRepository",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/external_mount_repository.rs",
+      "type": "ExternalMountPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/face_pg_repository.rs",
+      "type": "FacePgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/favorites_pg_repository.rs",
+      "type": "FavoritesPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/file_blob_read_repository.rs",
+      "type": "FileBlobReadRepository",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/file_blob_write_repository.rs",
+      "type": "FileBlobWriteRepository",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/file_metadata_repository.rs",
+      "type": "FileMetadataRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/folder_db_repository.rs",
+      "type": "FolderDbRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/magic_link_token_pg_repository.rs",
+      "type": "MagicLinkTokenPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/nextcloud_object_id_repository.rs",
+      "type": "NextcloudObjectIdRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/notification_pg_repository.rs",
+      "type": "NotificationPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/opaque_pg_repository.rs",
+      "type": "OpaquePgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/playlist_pg_repository.rs",
+      "type": "PlaylistPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/playlist_pg_repository.rs",
+      "type": "PlaylistItemPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/playlist_pg_repository.rs",
+      "type": "AudioMetadataPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/recent_items_pg_repository.rs",
+      "type": "RecentItemsPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/session_pg_repository.rs",
+      "type": "SessionPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/settings_pg_repository.rs",
+      "type": "SettingsPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/share_pg_repository.rs",
+      "type": "SharePgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/subject_group_pg_repository.rs",
+      "type": "SubjectGroupPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/trash_db_repository.rs",
+      "type": "TrashDbRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/repositories/pg/user_pg_repository.rs",
+      "type": "UserPgRepository",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/scheduler/pg_job_store.rs",
+      "type": "PgJobStore",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/scheduler/pg_job_store.rs",
+      "type": "PgJobStoreProvider",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/scheduler/recoverable.rs",
+      "type": "RecoverableAdapter",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/scheduler/registry.rs",
+      "type": "JobRegistry",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/scheduler/registry.rs",
+      "type": "JobRegistry",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/scheduler/types.rs",
+      "type": "JobRunArgs",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/audio_metadata_service.rs",
+      "type": "AudioMetadataService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/azure_blob_backend.rs",
+      "type": "AzureBlobBackend",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/backend_cache_cleanup_service.rs",
+      "type": "BackendCacheCleanup",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/backend_consistency_service.rs",
+      "type": "BackendConsistencyCheck",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/backend_migration_service.rs",
+      "type": "BackendMigrationService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/backend_rechunk_service.rs",
+      "type": "BackendRechunk",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/backend_reclaim_service.rs",
+      "type": "BackendReclaim",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/backend_rotate_service.rs",
+      "type": "BackendRotateService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/blobs_consistency_service.rs",
+      "type": "BlobsConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/cached_blob_backend.rs",
+      "type": "CachedBlobBackend",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/chunked_upload_service.rs",
+      "type": "ChunkedUploadService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/collab_idle_gc_service.rs",
+      "type": "CollabIdleGcService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/compression_service.rs",
+      "type": "GzipCompressionService",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/infrastructure/services/compression_service.rs",
+      "type": "GzipCompressionService",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/infrastructure/services/consistency_batch_service.rs",
+      "type": "ConsistencyBatch",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/db_pool_monitor.rs",
+      "type": "DbPoolMonitor",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/dedup_service.rs",
+      "type": "IngestGuard",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/dedup_service.rs",
+      "type": "IntegrityBlobSizes",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/infrastructure/services/dedup_service.rs",
+      "type": "DedupService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/dpop_nonce_service.rs",
+      "type": "DpopNonceService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/dpop_nonce_service.rs",
+      "type": "DpopNonceService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/dpop_replay_cache.rs",
+      "type": "DpopReplayCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/dpop_replay_cache.rs",
+      "type": "DpopReplayCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/drive_policies_consistency_service.rs",
+      "type": "DrivePoliciesConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/drives_consistency_service.rs",
+      "type": "DrivesConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/encrypted_blob_backend.rs",
+      "type": "EncryptedBlobBackend",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/face_indexing_service.rs",
+      "type": "FaceIndexingService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/ffmpeg_video_frame_service.rs",
+      "type": "FfmpegVideoFrameService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/file_content_cache.rs",
+      "type": "FileContentCacheConfig",
+      "reason": "non-literal default body"
+    },
+    {
+      "file": "src/infrastructure/services/file_content_cache.rs",
+      "type": "FileContentCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/file_content_cache.rs",
+      "type": "FileContentCache",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/file_system_i18n_service.rs",
+      "type": "FileSystemI18nService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/files_consistency_service.rs",
+      "type": "FilesConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/folders_consistency_service.rs",
+      "type": "FoldersConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/grant_cleanup_service.rs",
+      "type": "GrantCleanupService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/image_transcode_service.rs",
+      "type": "ImageTranscodeService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/jwt_service.rs",
+      "type": "JwtTokenService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/local_blob_backend.rs",
+      "type": "LocalBlobBackend",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/local_fs_mount_provider.rs",
+      "type": "LocalFsMountProvider",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/login_lockout_service.rs",
+      "type": "LoginLockoutService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/manifests_consistency_service.rs",
+      "type": "ManifestsConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/media_metadata_service.rs",
+      "type": "MediaMetadataService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/mock_email_sender.rs",
+      "type": "MockEmailSender",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/mock_email_sender.rs",
+      "type": "MockEmailSender",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/mount_provider_factory.rs",
+      "type": "DefaultMountProviderFactory",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/infrastructure/services/nextcloud_chunked_upload_service.rs",
+      "type": "NextcloudChunkedUploadService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/notifications_cleanup_service.rs",
+      "type": "NotificationsCleanupService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/oidc_service.rs",
+      "type": "Cached",
+      "reason": "non-simple carrier"
+    },
+    {
+      "file": "src/infrastructure/services/oidc_service.rs",
+      "type": "OidcService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/opaque_login_exchange.rs",
+      "type": "OpaqueLoginExchange",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/opaque_login_exchange.rs",
+      "type": "OpaqueLoginExchange",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/password_hasher.rs",
+      "type": "Argon2PasswordHasher",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/path_resolver_service.rs",
+      "type": "PathResolverService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/path_service.rs",
+      "type": "PathService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/pg_acl_engine.rs",
+      "type": "PgAclEngine",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/pg_acl_engine.rs",
+      "type": "AuthzCacheLifecycleHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/plugins/log_retention_service.rs",
+      "type": "PluginLogMaintenanceService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/plugins/log_store.rs",
+      "type": "PluginLogStore",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/plugins/runtime.rs",
+      "type": "PluginRuntime",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/recent_recording_hook.rs",
+      "type": "RecentRecordingHook",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/retry_blob_backend.rs",
+      "type": "RetryPolicy",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/retry_blob_backend.rs",
+      "type": "RetryBlobBackend",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/rt_ticket_store.rs",
+      "type": "RtTicketStore",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/s3_blob_backend.rs",
+      "type": "S3BlobBackend",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/satellites_consistency_service.rs",
+      "type": "SatellitesConsistencyCheck",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/search_index/content_index_worker.rs",
+      "type": "ContentIndexWorker",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/session_cleanup_service.rs",
+      "type": "SessionCleanupService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/smtp_email_sender.rs",
+      "type": "SmtpEmailSender",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/swappable_blob_backend.rs",
+      "type": "SwappableBlobBackend",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/thumb_attached_import_service.rs",
+      "type": "ThumbAttachedImport",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/thumb_derived_import_service.rs",
+      "type": "ThumbDerivedImport",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/thumbnail_service.rs",
+      "type": "ThumbnailService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/thumbnail_service.rs",
+      "type": "ThumbnailRefreshHook",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/timeout_blob_backend.rs",
+      "type": "TimeoutPolicy",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/timeout_blob_backend.rs",
+      "type": "TimeoutBlobBackend",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/transcode_import_service.rs",
+      "type": "TranscodeImport",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/trash_cleanup_service.rs",
+      "type": "TrashCleanupService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/tree_etag_flush_service.rs",
+      "type": "TreeEtagFlushService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/webdav_dead_property_store.rs",
+      "type": "DeadPropertyStore",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/infrastructure/services/webdav_lock_service.rs",
+      "type": "WebDavLockStore",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/wopi_discovery_service.rs",
+      "type": "WopiDiscoveryService",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/infrastructure/services/zip_service.rs",
+      "type": "ZipService",
+      "reason": "unsupported field type"
+    },
+    {
+      "file": "src/interfaces/errors.rs",
+      "type": "AppError",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/interfaces/middleware/rate_limit.rs",
+      "type": "RateLimiter",
+      "reason": "non-simple fields"
+    },
+    {
+      "file": "src/interfaces/upload_ingest.rs",
+      "type": "IncrementalHasher",
+      "reason": "not enough values to unpack (expected 1, got 0)"
+    }
+  ]
+}

@@ -1,0 +1,355 @@
+{
+  "revision": "f864a9a95e8669b00202c18b0b774ab0fc2e56cc",
+  "records": [
+    {
+      "name": "html_escape",
+      "source": "/// Escape HTML special characters\npub fn html_escape(s: &str) -> String {\n    s.replace('&', \"&amp;\")\n        .replace('<', \"&lt;\")\n        .replace('>', \"&gt;\")\n        .replace('\"', \"&quot;\")\n        .replace('\\'', \"&#39;\")\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "html_escape",
+        "self_ty": "",
+        "start": 798,
+        "end": 805,
+        "sha256": "f539a8b8a222601373e20cfbe122d3fc0630564f18e10fd8ecc844c29930fed1"
+      }
+    },
+    {
+      "name": "render_activity_row",
+      "source": "/// Render a single activity log row\npub fn render_activity_row(\n    timestamp: &str,\n    action: &str,\n    artifact: &str,\n    registry: &str,\n    source: &str,\n) -> String {\n    let action_color = match action {\n        \"PULL\" => \"text-blue-400\",\n        \"PUSH\" => \"text-green-400\",\n        \"CACHE\" => \"text-yellow-400\",\n        \"PROXY\" => \"text-purple-400\",\n        _ => \"text-slate-400\",\n    };\n\n    format!(\n        r##\"\n        <tr class=\"border-b border-slate-700/50 text-sm\">\n            <td class=\"px-4 py-2 text-slate-500\">{}</td>\n            <td class=\"px-4 py-2 font-medium {}\"><span class=\"px-2 py-0.5 bg-slate-700 rounded\">{}</span></td>\n            <td class=\"px-4 py-2 text-slate-300 font-mono text-xs\">{}</td>\n            <td class=\"px-4 py-2 text-slate-400\">{}</td>\n            <td class=\"px-4 py-2 text-slate-500\">{}</td>\n        </tr>\n        \"##,\n        html_escape(timestamp),\n        action_color,\n        html_escape(action),\n        html_escape(artifact),\n        html_escape(registry),\n        html_escape(source)\n    )\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "render_activity_row",
+        "self_ty": "",
+        "start": 649,
+        "end": 682,
+        "sha256": "b836e30d7315c0d7714f6da7b18a451c3902f324b3a38f74422684ef28c5a966"
+      },
+      "pieces": [
+        [
+          false,
+          "\n        <tr class=\"border-b border-slate-700/50 text-sm\">\n            <td class=\"px-4 py-2 text-slate-500\">"
+        ],
+        [
+          true,
+          "html_escape(timestamp)"
+        ],
+        [
+          false,
+          "</td>\n            <td class=\"px-4 py-2 font-medium "
+        ],
+        [
+          true,
+          "action_color"
+        ],
+        [
+          false,
+          "\"><span class=\"px-2 py-0.5 bg-slate-700 rounded\">"
+        ],
+        [
+          true,
+          "html_escape(action)"
+        ],
+        [
+          false,
+          "</span></td>\n            <td class=\"px-4 py-2 text-slate-300 font-mono text-xs\">"
+        ],
+        [
+          true,
+          "html_escape(artifact)"
+        ],
+        [
+          false,
+          "</td>\n            <td class=\"px-4 py-2 text-slate-400\">"
+        ],
+        [
+          true,
+          "html_escape(registry)"
+        ],
+        [
+          false,
+          "</td>\n            <td class=\"px-4 py-2 text-slate-500\">"
+        ],
+        [
+          true,
+          "html_escape(source)"
+        ],
+        [
+          false,
+          "</td>\n        </tr>\n        "
+        ]
+      ]
+    },
+    {
+      "name": "render_activity_log",
+      "source": "/// Render the activity log container\npub fn render_activity_log(rows: &str, t: &Translations) -> String {\n    format!(\n        r##\"\n        <div class=\"bg-[#1e293b] rounded-lg border border-slate-700 overflow-hidden\">\n            <div class=\"px-4 py-3 border-b border-slate-700 flex items-center justify-between\">\n                <h3 class=\"text-slate-200 font-semibold\">{}</h3>\n                <span class=\"text-xs text-slate-500\">{}</span>\n            </div>\n            <div class=\"overflow-auto max-h-80\">\n                <table class=\"w-full\" id=\"activity-log\">\n                    <thead class=\"sticky top-0 bg-slate-800\">\n                        <tr class=\"text-left text-xs text-slate-500 uppercase border-b border-slate-700\">\n                            <th class=\"px-4 py-2\">{}</th>\n                            <th class=\"px-4 py-2\">{}</th>\n                            <th class=\"px-4 py-2\">{}</th>\n                            <th class=\"px-4 py-2\">{}</th>\n                            <th class=\"px-4 py-2\">{}</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        {}\n                    </tbody>\n                </table>\n            </div>\n        </div>\n        \"##,\n        t.recent_activity,\n        t.last_n_events,\n        t.time,\n        t.action,\n        t.artifact,\n        t.registry,\n        t.source,\n        rows\n    )\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "render_activity_log",
+        "self_ty": "",
+        "start": 684,
+        "end": 720,
+        "sha256": "27e39c800c52ee9b1bd212fd003f842a59b43bae6f3339697549afe932f819ca"
+      },
+      "pieces": [
+        [
+          false,
+          "\n        <div class=\"bg-[#1e293b] rounded-lg border border-slate-700 overflow-hidden\">\n            <div class=\"px-4 py-3 border-b border-slate-700 flex items-center justify-between\">\n                <h3 class=\"text-slate-200 font-semibold\">"
+        ],
+        [
+          true,
+          "&t.recent_activity"
+        ],
+        [
+          false,
+          "</h3>\n                <span class=\"text-xs text-slate-500\">"
+        ],
+        [
+          true,
+          "&t.last_n_events"
+        ],
+        [
+          false,
+          "</span>\n            </div>\n            <div class=\"overflow-auto max-h-80\">\n                <table class=\"w-full\" id=\"activity-log\">\n                    <thead class=\"sticky top-0 bg-slate-800\">\n                        <tr class=\"text-left text-xs text-slate-500 uppercase border-b border-slate-700\">\n                            <th class=\"px-4 py-2\">"
+        ],
+        [
+          true,
+          "&t.time"
+        ],
+        [
+          false,
+          "</th>\n                            <th class=\"px-4 py-2\">"
+        ],
+        [
+          true,
+          "&t.action"
+        ],
+        [
+          false,
+          "</th>\n                            <th class=\"px-4 py-2\">"
+        ],
+        [
+          true,
+          "&t.artifact"
+        ],
+        [
+          false,
+          "</th>\n                            <th class=\"px-4 py-2\">"
+        ],
+        [
+          true,
+          "&t.registry"
+        ],
+        [
+          false,
+          "</th>\n                            <th class=\"px-4 py-2\">"
+        ],
+        [
+          true,
+          "&t.source"
+        ],
+        [
+          false,
+          "</th>\n                        </tr>\n                    </thead>\n                    <tbody>\n                        "
+        ],
+        [
+          true,
+          "rows"
+        ],
+        [
+          false,
+          "\n                    </tbody>\n                </table>\n            </div>\n        </div>\n        "
+        ]
+      ]
+    },
+    {
+      "name": "render_polling_script",
+      "source": "/// Render the polling script for auto-refresh\npub fn render_polling_script() -> String {\n    r##\"\n    <script>\n        setInterval(async () => {\n            try {\n                const data = await fetch('/api/ui/dashboard').then(r => r.json());\n\n                // Update global stats\n                document.getElementById('stat-downloads').textContent = data.global_stats.downloads;\n                document.getElementById('stat-uploads').textContent = data.global_stats.uploads;\n                document.getElementById('stat-artifacts').textContent = data.global_stats.artifacts;\n                document.getElementById('stat-cache-hit').textContent = data.global_stats.cache_hit_percent.toFixed(1) + '%';\n\n                // Format storage size\n                const bytes = data.global_stats.storage_bytes;\n                let sizeStr;\n                if (bytes >= 1073741824) sizeStr = (bytes / 1073741824).toFixed(1) + ' GB';\n                else if (bytes >= 1048576) sizeStr = (bytes / 1048576).toFixed(1) + ' MB';\n                else if (bytes >= 1024) sizeStr = (bytes / 1024).toFixed(1) + ' KB';\n                else sizeStr = bytes + ' B';\n                document.getElementById('stat-storage').textContent = sizeStr;\n\n                // Update uptime\n                const uptime = document.getElementById('uptime');\n                if (uptime) {\n                    const secs = data.uptime_seconds;\n                    const hours = Math.floor(secs / 3600);\n                    const mins = Math.floor((secs % 3600) / 60);\n                    uptime.textContent = hours + 'h ' + mins + 'm';\n                }\n            } catch (e) {\n                console.error('Dashboard poll failed:', e);\n            }\n        }, 5000);\n    </script>\n    \"##.to_string()\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "render_polling_script",
+        "self_ty": "",
+        "start": 722,
+        "end": 759,
+        "sha256": "339f3b5d242a57c6b7d6539b2b70b70794c6612c5ae8ea9edbfb37876a3b5327"
+      },
+      "pieces": [
+        [
+          false,
+          "\n    <script>\n        setInterval(async () => {\n            try {\n                const data = await fetch('/api/ui/dashboard').then(r => r.json());\n\n                // Update global stats\n                document.getElementById('stat-downloads').textContent = data.global_stats.downloads;\n                document.getElementById('stat-uploads').textContent = data.global_stats.uploads;\n                document.getElementById('stat-artifacts').textContent = data.global_stats.artifacts;\n                document.getElementById('stat-cache-hit').textContent = data.global_stats.cache_hit_percent.toFixed(1) + '%';\n\n                // Format storage size\n                const bytes = data.global_stats.storage_bytes;\n                let sizeStr;\n                if (bytes >= 1073741824) sizeStr = (bytes / 1073741824).toFixed(1) + ' GB';\n                else if (bytes >= 1048576) sizeStr = (bytes / 1048576).toFixed(1) + ' MB';\n                else if (bytes >= 1024) sizeStr = (bytes / 1024).toFixed(1) + ' KB';\n                else sizeStr = bytes + ' B';\n                document.getElementById('stat-storage').textContent = sizeStr;\n\n                // Update uptime\n                const uptime = document.getElementById('uptime');\n                if (uptime) {\n                    const secs = data.uptime_seconds;\n                    const hours = Math.floor(secs / 3600);\n                    const mins = Math.floor((secs % 3600) / 60);\n                    uptime.textContent = hours + 'h ' + mins + 'm';\n                }\n            } catch (e) {\n                console.error('Dashboard poll failed:', e);\n            }\n        }, 5000);\n    </script>\n    "
+        ]
+      ]
+    },
+    {
+      "name": "header_dark",
+      "source": "/// Dark theme header with language switcher\nfn header_dark(lang: Lang) -> String {\n    let (en_class, ru_class, zh_class) = match lang {\n        Lang::En => (\n            \"text-white font-semibold\",\n            \"text-slate-400 hover:text-slate-200\",\n            \"text-slate-400 hover:text-slate-200\",\n        ),\n        Lang::Ru => (\n            \"text-slate-400 hover:text-slate-200\",\n            \"text-white font-semibold\",\n            \"text-slate-400 hover:text-slate-200\",\n        ),\n        Lang::Zh => (\n            \"text-slate-400 hover:text-slate-200\",\n            \"text-slate-400 hover:text-slate-200\",\n            \"text-white font-semibold\",\n        ),\n    };\n\n    format!(\n        r##\"\n        <header class=\"h-16 bg-[#1e293b] border-b border-slate-700 flex items-center justify-between px-4 md:px-6\">\n            <div class=\"flex items-center\">\n                <button onclick=\"toggleSidebar()\" class=\"md:hidden p-2 -ml-2 mr-2 rounded-lg hover:bg-slate-700\">\n                    <svg class=\"w-6 h-6 text-slate-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"/>\n                    </svg>\n                </button>\n                <div class=\"md:hidden flex items-center\">\n                    <span class=\"font-bold text-slate-200 tracking-tight\">N<span class=\"inline-block w-4 h-4 rounded-full border-2 border-current align-middle mx-px\"></span>RA</span>\n                </div>\n            </div>\n            <div class=\"flex items-center space-x-2 md:space-x-4\">\n                <!-- Language switcher -->\n                <div class=\"flex items-center border border-slate-600 rounded-lg overflow-hidden text-sm\">\n                    <button onclick=\"setLang('en')\" class=\"px-3 py-1.5 {} transition-colors\">EN</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('ru')\" class=\"px-3 py-1.5 {} transition-colors\">RU</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('zh')\" class=\"px-3 py-1.5 {} transition-colors\">\u4e2d\u6587</button>\n                </div>\n                <a href=\"https://github.com/getnora-io/nora\" target=\"_blank\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\">\n                    <svg class=\"w-5 h-5\" fill=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path fill-rule=\"evenodd\" d=\"M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z\" clip-rule=\"evenodd\"/>\n                    </svg>\n                </a>\n                <a href=\"/api-docs\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\" title=\"API Docs\">\n                    <svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"/>\n                    </svg>\n                </a>\n            </div>\n        </header>\n    \"##,\n        en_class, ru_class, zh_class\n    )\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/components.rs",
+        "kind": "fn",
+        "name": "header_dark",
+        "self_ty": "",
+        "start": 419,
+        "end": 476,
+        "sha256": "338afc3eeea1b53f8aa02dbd77a6bfdd3a8e8b63bf61dec835e9d1318dc7f174"
+      },
+      "pieces": [
+        [
+          false,
+          "\n        <header class=\"h-16 bg-[#1e293b] border-b border-slate-700 flex items-center justify-between px-4 md:px-6\">\n            <div class=\"flex items-center\">\n                <button onclick=\"toggleSidebar()\" class=\"md:hidden p-2 -ml-2 mr-2 rounded-lg hover:bg-slate-700\">\n                    <svg class=\"w-6 h-6 text-slate-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"/>\n                    </svg>\n                </button>\n                <div class=\"md:hidden flex items-center\">\n                    <span class=\"font-bold text-slate-200 tracking-tight\">N<span class=\"inline-block w-4 h-4 rounded-full border-2 border-current align-middle mx-px\"></span>RA</span>\n                </div>\n            </div>\n            <div class=\"flex items-center space-x-2 md:space-x-4\">\n                <!-- Language switcher -->\n                <div class=\"flex items-center border border-slate-600 rounded-lg overflow-hidden text-sm\">\n                    <button onclick=\"setLang('en')\" class=\"px-3 py-1.5 "
+        ],
+        [
+          true,
+          "en_class"
+        ],
+        [
+          false,
+          " transition-colors\">EN</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('ru')\" class=\"px-3 py-1.5 "
+        ],
+        [
+          true,
+          "ru_class"
+        ],
+        [
+          false,
+          " transition-colors\">RU</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('zh')\" class=\"px-3 py-1.5 "
+        ],
+        [
+          true,
+          "zh_class"
+        ],
+        [
+          false,
+          " transition-colors\">\u4e2d\u6587</button>\n                </div>\n                <a href=\"https://github.com/getnora-io/nora\" target=\"_blank\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\">\n                    <svg class=\"w-5 h-5\" fill=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path fill-rule=\"evenodd\" d=\"M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z\" clip-rule=\"evenodd\"/>\n                    </svg>\n                </a>\n                <a href=\"/api-docs\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\" title=\"API Docs\">\n                    <svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"/>\n                    </svg>\n                </a>\n            </div>\n        </header>\n    "
+        ]
+      ],
+      "header_chunks": {
+        "chunks": [
+          "\n        <header class=\"h-16 bg-[#1e293b] border-b border-slate-700 flex items-center justify-between px-4 md:px-6\">\n            <div class=\"flex items-center\">\n                <button onclick=\"toggleSidebar()\" class=\"md:hidden p-2 -ml-2 mr-2 rounded-lg ho",
+          "ver:bg-slate-700\">\n                    <svg class=\"w-6 h-6 text-slate-300\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M4 6h16M4 12h16M4 18h16\"/>\n  ",
+          "                  </svg>\n                </button>\n                <div class=\"md:hidden flex items-center\">\n                    <span class=\"font-bold text-slate-200 tracking-tight\">N<span class=\"inline-block w-4 h-4 rounded-full border-2 border-current a",
+          "lign-middle mx-px\"></span>RA</span>\n                </div>\n            </div>\n            <div class=\"flex items-center space-x-2 md:space-x-4\">\n                <!-- Language switcher -->\n                <div class=\"flex items-center border border-slate-60",
+          "0 rounded-lg overflow-hidden text-sm\">\n                    <button onclick=\"setLang('en')\" class=\"px-3 py-1.5 text-white font-semibold transition-colors\">EN</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button oncl",
+          "ick=\"setLang('ru')\" class=\"px-3 py-1.5 text-slate-400 hover:text-slate-200 transition-colors\">RU</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('zh')\" class=\"px-3 py-1.5 text-slate-400 hover:",
+          "text-slate-200 transition-colors\">\u4e2d\u6587</button>\n                </div>\n                <a href=\"https://github.com/getnora-io/nora\" target=\"_blank\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\">\n                    <svg class=",
+          "\"w-5 h-5\" fill=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path fill-rule=\"evenodd\" d=\"M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454",
+          "-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75",
+          " 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688",
+          ".482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z\" clip-rule=\"evenodd\"/>\n                    </svg>\n                </a>\n                <a href=\"/api-docs\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\" title=\"API Doc",
+          "s\">\n                    <svg class=\"w-5 h-5\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">\n                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0",
+          " 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z\"/>\n                    </svg>\n                </a>\n            </div>\n        </header>\n    ",
+          "0 rounded-lg overflow-hidden text-sm\">\n                    <button onclick=\"setLang('en')\" class=\"px-3 py-1.5 text-slate-400 hover:text-slate-200 transition-colors\">EN</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <",
+          "button onclick=\"setLang('ru')\" class=\"px-3 py-1.5 text-white font-semibold transition-colors\">RU</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('zh')\" class=\"px-3 py-1.5 text-slate-400 hover:",
+          "button onclick=\"setLang('ru')\" class=\"px-3 py-1.5 text-slate-400 hover:text-slate-200 transition-colors\">RU</button>\n                    <span class=\"text-slate-600\">|</span>\n                    <button onclick=\"setLang('zh')\" class=\"px-3 py-1.5 text-white",
+          " font-semibold transition-colors\">\u4e2d\u6587</button>\n                </div>\n                <a href=\"https://github.com/getnora-io/nora\" target=\"_blank\" class=\"p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-700 rounded-lg\">\n                    <svg class="
+        ],
+        "variants": [
+          [
+            "En",
+            [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ]
+          ],
+          [
+            "Ru",
+            [
+              0,
+              1,
+              2,
+              3,
+              13,
+              14,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ]
+          ],
+          [
+            "Zh",
+            [
+              0,
+              1,
+              2,
+              3,
+              13,
+              15,
+              16,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "name": "encode_uri_component",
+      "source": "/// Simple URL encoding for path components\npub fn encode_uri_component(s: &str) -> String {\n    let mut result = String::new();\n    for c in s.chars() {\n        match c {\n            'a'..='z' | 'A'..='Z' | '0'..='9' | '-' | '_' | '.' | '~' => result.push(c),\n            _ => {\n                for byte in c.to_string().as_bytes() {\n                    let _ = write!(result, \"%{:02X}\", byte);\n                }\n            }\n        }\n    }\n    result\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/templates.rs",
+        "kind": "fn",
+        "name": "encode_uri_component",
+        "self_ty": "",
+        "start": 2000,
+        "end": 2014,
+        "sha256": "6b021b527a75aa9afab32f4d549c1a58815bd6cabc42da55a21d7284a98a1bc0"
+      }
+    },
+    {
+      "name": "registry_search_bar",
+      "source": "/// HTMX search bar that filters a registry's repo list into `#repo-table-body`.\n/// The hierarchical browsers (Maven/Go) embed this so they honour the same\n/// search contract as the flat-list pages \u2014 `/api/ui/<registry>/search` is a\n/// generic handler that works for every registry type.\nfn registry_search_bar(registry: &str, placeholder: &str) -> String {\n    format!(\n        r##\"<div class=\"flex items-center justify-end mb-4\">\n            <div class=\"relative w-full md:w-auto\">\n                <input type=\"text\" placeholder=\"{placeholder}\"\n                    class=\"w-full md:w-auto pl-10 pr-4 py-2 bg-slate-800 border border-slate-600 text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500\"\n                    hx-get=\"/api/ui/{registry}/search\" hx-trigger=\"keyup changed delay:300ms\"\n                    hx-target=\"#repo-table-body\" name=\"q\">\n                <svg class=\"absolute left-3 top-2.5 h-5 w-5 text-slate-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"/></svg>\n            </div>\n        </div>\"##\n    )\n}",
+      "meta": {
+        "file": "nora-registry/src/ui/templates.rs",
+        "kind": "fn",
+        "name": "registry_search_bar",
+        "self_ty": "",
+        "start": 675,
+        "end": 691,
+        "sha256": "963e15732b1da82b70855f4d1bf8de7b8fc27a771586381b6d3b1676b07c4ea4"
+      },
+      "pieces": [
+        [
+          false,
+          "<div class=\"flex items-center justify-end mb-4\">\n            <div class=\"relative w-full md:w-auto\">\n                <input type=\"text\" placeholder=\""
+        ],
+        [
+          true,
+          "placeholder"
+        ],
+        [
+          false,
+          "\"\n                    class=\"w-full md:w-auto pl-10 pr-4 py-2 bg-slate-800 border border-slate-600 text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent placeholder-slate-500\"\n                    hx-get=\"/api/ui/"
+        ],
+        [
+          true,
+          "registry"
+        ],
+        [
+          false,
+          "/search\" hx-trigger=\"keyup changed delay:300ms\"\n                    hx-target=\"#repo-table-body\" name=\"q\">\n                <svg class=\"absolute left-3 top-2.5 h-5 w-5 text-slate-500\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z\"/></svg>\n            </div>\n        </div>"
+        ]
+      ]
+    }
+  ]
+}

@@ -137,3 +137,111 @@ booleans/effects because each invocation increments a counter at most once.
 `verify_integrity_by_hash` requires the adapter to check the upstream debug assertion: the hash starts
 with `sha256:` and has byte length 71. This does not assert hexadecimal content. These source spans are dependency reach,
 not a proof of the crypto, formatting or individual ProxyFilter implementations.
+
+## Exhaustive finite enum decisions (2026-11-01)
+
+`finite_catalog` retains the pinned unit variants, explicit discriminants,
+method branches and supported callees. Returned UTF-8 strings become their
+exact byte vectors; scalar and boolean results retain their original types.
+Derive implementations, visibility and module paths are carrier changes.
+Methods needing unresolved external dependencies are excluded. Each accepted
+method has a complete output theorem over every enum variant, and differential
+tests compare every input against unchanged pinned method bodies.
+
+`difftest/finite_catalog/plan.json` records the upstream revision, exact source
+spans and hashes, all reference outputs, excluded candidates, and extraction
+roots. Regenerate with `python3 harness/finite_catalog.py generate --app nora`
+from `prove/`. Integration is a separate one-time action; standard extraction,
+project gates and source-reach validation are still required for credit.
+Enum declarations, test data and generated code add no upstream line credit.
+
+## Complete rendering outputs
+
+`rendering` ports seven complete pinned functions: HTML escaping, URI component
+encoding, the activity row and log, the polling script string, the dark header,
+and the registry search bar. String inputs and outputs use UTF-8 bytes without
+normalization. The HTML proof relates its byte loop to upstream's five ordered
+replacements. URI encoding preserves ASCII letters, digits and `-_.~`, and
+percent-encodes other bytes with uppercase hexadecimal digits.
+
+Renderer models retain every literal byte and dynamic insertion. Translations
+carry the seven fields read by the activity log; the language carrier retains
+all three upstream variants. The capacity hypothesis requires the complete
+output length to fit `usize`. JavaScript is compared as returned text; browser
+execution and DOM behavior are outside this claim. Registry and placeholder
+values retain upstream's direct insertion behavior.
+
+The header kernel folds the literal template substitutions separately for each
+of its three language variants. The generator reads the exact upstream class
+tuples; exhaustive differential checks cover the entire language domain. Its
+Lean model retains the separate template literals and substitutions.
+The folded bytes are split into shared bounded fragments. Each fragment has a
+complete-output lemma; their composition is proved equal to the independent
+template model. These helper functions receive no additional upstream credit.
+
+`harness/nora_rendering.py` regenerates the kernels and retains unchanged source
+bodies, spans and SHA-256 hashes under `difftest/rendering`. Differential tests
+compare complete fragments and exercise both encoders across every Unicode
+scalar plus randomized strings. Only mapped upstream function spans qualify
+for source credit; helper code and proof definitions add no lines.
+
+## Complete pinned sidebar byte output
+
+`sidebar::sidebar` reaches the complete pinned
+`components.rs::sidebar_dark_with_registries` body. Its canonical theorem
+states termination and equality of every decoded output byte to an independent
+model of the four original format templates. The model preserves navigation
+order, active classes, fill/stroke attributes, visibility, unescaped caller
+text, all icon bytes, whitespace and the version field. Empty registry
+membership suppresses the entire registry section; the dashboard remains
+visible, and authentication controls the token section.
+
+Caller adapters embed `active_page.unwrap_or("")` and the three fields actually
+read from `Translations` as UTF-8 byte vectors. `Enabled` carries the membership
+bit for each of the exact 16 registry enum variants; `None` becomes all enabled.
+The source enum order and navigation order differ for Go/Raw, so the reference
+adapter obtains each bit by variant membership. The `PubDart` bit is named
+`pub_dart` to avoid the Rust keyword `pub`; its source navigation ID stays `pub`.
+The theorem also admits arbitrary byte strings outside the UTF-8 caller image.
+
+The source VERSION expression `env!("CARGO_PKG_VERSION")` resolves to 1.3.2 in
+the pinned workspace. The kernel receives version bytes explicitly, and the
+reference adapter passes that exact value. No build environment behavior is
+included in the source credit. The kernel returns bounded, at most 128-byte
+constant fragments plus caller text in fixed-size arrays; `decode` concatenates
+them mathematically. This representation avoids a machine-size bound on the
+combined logical output. It proves the byte result and pure kernel termination
+under the extraction's allocation model; it does not model allocator failure or
+verify a host allocator. Independent models split source literals at 96-byte
+boundaries before relating them to the kernel fragments.
+
+`python3 prove/harness/nora_sidebar.py audit --port prove/ports/nora` regenerates
+all five generated artifacts byte identically from the immutable source. It
+compiles the unchanged upstream function and all icon constants with projected
+translation and registry carriers, then compares complete output on 135,160
+cases. These include every registry subset with both authentication choices,
+None/empty enabled selections over all recognized and several unknown active
+IDs, and arbitrary Unicode/control-character translation fields. The proof
+covers every carrier input, beyond this finite differential evidence. Helpers,
+carrier definitions and icon constants receive no independent line credit.
+
+## Complete closed record constructors
+
+The `closed_records` module ports the complete literal record initializers listed
+in `difftest/closed_records/plan.json`. Every upstream field is retained. String
+fields use their UTF-8 bytes; scalar widths, None, empty vectors, unit-enum
+variants and integer multiplication are preserved. The admission grammar rejects
+unresolved calls, environment access, clocks, randomness, floating point,
+conditional definitions, partial records and unsupported field types. Constructor
+bodies remain verbatim in the independently compiled Rust reference; carrier
+records keep the exact upstream field names and types, and visibility changes
+only let the reference driver inspect their values.
+
+The Lean properties state all fields of every returned record and successful
+termination. Reference evaluation supplies the independent field models and Rust
+tests compare each ported result with those models. `closed_records.py audit`
+recompiles the pinned bodies, recomputes every field, checks byte-identical
+regeneration, and reruns the comparisons. Only constructor bodies receive source
+mappings: carrier definitions, enum definitions and harness code receive no credit.
+These properties describe constructor defaults; they make no claim about runtime
+configuration loading or enforcement by callers.

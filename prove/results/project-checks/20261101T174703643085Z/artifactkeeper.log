@@ -1,0 +1,304 @@
+
+[earlier output omitted]
+actic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1052:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1052:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1067:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1067:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1067:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1066:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1068:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1068:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1082:78: This simp argument is unused:
+  finite_catalog.totp_policy_31812d2d.TotpPolicy.is_enforcing
+
+Hint: Omit it from the simp argument list.
+  simp only [finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵t̵o̵t̵p̵_̵p̵o̵l̵i̵c̵y̵_̵3̵1̵8̵1̵2̵d̵2̵d̵.̵T̵o̵t̵p̵P̵o̵l̵i̵c̵y̵.̵i̵s̵_̵e̵n̵f̵o̵r̵c̵i̵n̵g̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1084:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1084:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1084:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1083:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1085:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1085:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1099:23: This simp argument is unused:
+  finite_catalog.totp_policy_31812d2d.TotpPolicy.as_str
+
+Hint: Omit it from the simp argument list.
+  simp only [̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵t̵o̵t̵p̵_̵p̵o̵l̵i̵c̵y̵_̵3̵1̵8̵1̵2̵d̵2̵d̵.̵T̵o̵t̵p̵P̵o̵l̵i̵c̵y̵.̵a̵s̵_̵s̵t̵r̵,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵t̵o̵t̵p̵_̵p̵o̵l̵i̵c̵y̵_̵3̵1̵8̵1̵2̵d̵2̵d̵.̵T̵o̵t̵p̵P̵o̵l̵i̵c̵y̵.̵i̵s̵_̵e̵n̵f̵o̵r̵c̵i̵n̵g̵]̵[̲f̲i̲n̲i̲t̲e̲_̲c̲a̲t̲a̲l̲o̲g̲.̲t̲o̲t̲p̲_̲p̲o̲l̲i̲c̲y̲_̲3̲1̲8̲1̲2̲d̲2̲d̲.̲T̲o̲t̲p̲P̲o̲l̲i̲c̲y̲.̲i̲s̲_̲e̲n̲f̲o̲r̲c̲i̲n̲g̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1101:2: 'all_goals
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+    alloc.vec.FromVecArray.from, Std.Array.empty]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1102:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1101:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1102:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1117:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1117:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1117:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1116:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1118:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1118:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1134:2: 'all_goals
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+    alloc.vec.FromVecArray.from, Std.Array.empty]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1135:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1134:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1135:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1150:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1150:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1150:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1149:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1151:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1151:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1166:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1166:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1166:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1165:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1167:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1167:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1184:82: This simp argument is unused:
+  finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.uses_ratio
+
+Hint: Omit it from the simp argument list.
+  simp only [finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵s̵a̵m̵p̵l̵e̵r̵_̵c̵h̵o̵i̵c̵e̵_̵f̵5̵c̵c̵6̵e̵a̵1̵.̵S̵a̵m̵p̵l̵e̵r̵C̵h̵o̵i̵c̵e̵.̵u̵s̵e̵s̵_̵r̵a̵t̵i̵o̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1186:22: This simp argument is unused:
+  Array.to_slice
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.t̵o̵_̵s̵l̵i̵c̵e̵,̵ ̵A̵r̵r̵a̵y̵.̵make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1186:50: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵from, alloc.vec.Vec.val,
+  ̲  ̲ ̲ ̲alloc.vec.FromVecArray.from, Std.Array.empty]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1186:137: This simp argument is unused:
+  Std.Array.empty
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.FromVecArray.from,̵ ̵S̵t̵d̵.̵A̵r̵r̵a̵y̵.̵e̵m̵p̵t̵y̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1185:2: 'all_goals h5i_steps' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1187:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1187:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1204:23: This simp argument is unused:
+  finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.name
+
+Hint: Omit it from the simp argument list.
+  simp only [finite_catalog.sampler_choice_f5cc6ea1.SamplerChoice.n̵a̵m̵e̵,̵ ̵f̵i̵n̵i̵t̵e̵_̵c̵a̵t̵a̵l̵o̵g̵.̵s̵a̵m̵p̵l̵e̵r̵_̵c̵h̵o̵i̵c̵e̵_̵f̵5̵c̵c̵6̵e̵a̵1̵.̵S̵a̵m̵p̵l̵e̵r̵C̵h̵o̵i̵c̵e̵.̵uses_ratio]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/FiniteCatalog.lean:1206:2: 'all_goals
+  simp_all [Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val,
+    alloc.vec.FromVecArray.from, Std.Array.empty]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1207:2: 'all_goals scalar_tac' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/FiniteCatalog.lean:1206:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/FiniteCatalog.lean:1207:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1755/1756] Built Properties (8.0s)
+warning: Properties.lean:122:97: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+warning: Properties.lean:138:89: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:138:89: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Properties.lean:191:94: 'assumption' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Properties.lean:191:94: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+Build completed successfully (1756 jobs).
+
+note: Verified.MigrationSafety is not built by `lake build`, so its theorems are not gated
+note: solutions.artifactkeeper-admin-audited.Solution is not built by `lake build`, so its theorems are not gated
+note: solutions.artifactkeeper-only-admin-rules.Solution is not built by `lake build`, so its theorems are not gated
+$ lake env lean /home/ht2673/Dev/h5i-app-bench/prove/ports/artifactkeeper/proofs/.lake/h5i/Gate.lean
+gate: 1578 theorems in 25 modules checked against propext, Classical.choice, Quot.sound
+
+ports/artifactkeeper: proofs ok

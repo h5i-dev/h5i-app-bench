@@ -1,0 +1,314 @@
+
+[earlier output omitted]
+ied.NoraRevokeAll (17s)
+✔ [1750/1765] Built Verified.NoraDigest (17s)
+⚠ [1751/1765] Built Verified.NoraReference (18s)
+warning: Verified/NoraReference.lean:219:2: 'all_goals try simp_all [WP.spec_ok, UScalar.le_equiv, UScalar.lt_equiv]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:228:2: 'all_goals simp_all' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraReference.lean:228:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/NoraReference.lean:277:45: This simp argument is unused:
+  hx
+
+Hint: Omit it from the simp argument list.
+  simp [nats,̵ ̵h̵x̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [1752/1765] Built Verified.NoraDockerName (19s)
+✔ [1753/1765] Built Verified.NoraStorageKey (21s)
+✔ [1754/1765] Built Verified.NoraAdminPath (22s)
+⚠ [1755/1765] Built Verified.NoraGlobMatch (25s)
+warning: Verified/NoraGlobMatch.lean:44:4: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Verified/NoraGlobMatch.lean:42:15: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵,̵ ̵lit_star, nats, hx, List.map_cons, List.map_nil,
+  ̵  ̵ ̵ ̵ ̵ ̵List.getElem_cons_zero,
+  ̲  ̲ ̲ ̲ ̲ ̲List.cons.injEq, and_true, u8_eq_iff] at *
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:59:15: This simp argument is unused:
+  bind_tc_ite
+
+Hint: Omit it from the simp argument list.
+  simp only [̵b̵i̵n̵d̵_̵t̵c̵_̵i̵t̵e̵,̵ ̵b̵i̵n̵d̵_̵i̵t̵e̵]̵[̲b̲i̲n̲d̲_̲i̲t̲e̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:68:19: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵,̵ ̵Bool.false_eq, decide_eq_false_iff_not, List.cons_prefix_cons]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:143:81: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:151:48: This simp argument is unused:
+  vec_new_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [FoldStep2, splitStep,̵ ̵v̵e̵c̵_̵n̵e̵w̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:200:30: This simp argument is unused:
+  Nat.mul_one
+
+Hint: Omit it from the simp argument list.
+  simp only [List.find?_cons,̵ ̵N̵a̵t̵.̵m̵u̵l̵_̵o̵n̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:247:59: This simp argument is unused:
+  forall_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [Option.map_some, Option.mem_some_iff,̵ ̵f̵o̵r̵a̵l̵l̵_̵e̵q̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:276:39: This simp argument is unused:
+  Nat.add_comm
+
+Hint: Omit it from the simp argument list.
+  simp only [← nats_drop, nats_prefix,̵ ̵N̵a̵t̵.̵a̵d̵d̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:284:76: This simp argument is unused:
+  List.take_length
+
+Hint: Omit it from the simp argument list.
+  simp only [List.length_drop, hlen, le_refl, true_and, List.drop_drop, hp,̵ ̵L̵i̵s̵t̵.̵t̵a̵k̵e̵_̵l̵e̵n̵g̵t̵h̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraGlobMatch.lean:328:12: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:340:12: 'all_goals simp only [if_neg hpreN]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:363:14: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:396:14: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:407:8: 'step*' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraGlobMatch.lean:340:22: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+✔ [1756/1765] Built Verified.NoraTotal (27s)
+⚠ [1757/1765] Built Verified.NoraMiddlewareSupport (34s)
+warning: Verified/NoraMiddlewareSupport.lean:235:4: Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+
+Note: This linter can be disabled with `set_option linter.unnecessarySeqFocus false`
+✔ [1758/1765] Built Verified.NoraFailureRecorded (42s)
+⚠ [1759/1765] Built Verified.NoraFailuresCleared (60s)
+warning: Verified/NoraFailuresCleared.lean:206:6: 'cases_type Prod' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraFailuresCleared.lean:206:6: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+⚠ [1760/1765] Built Verified.NoraWritesNeedWriteRole (73s)
+warning: Verified/NoraWritesNeedWriteRole.lean:284:63: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraWritesNeedWriteRole.lean:285:60: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraWritesNeedWriteRole.lean:294:63: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraWritesNeedWriteRole.lean:295:60: This simp argument is unused:
+  hm
+
+Hint: Omit it from the simp argument list.
+  simp [h̵m̵,̵ ̵isWriteMethod]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1761/1765] Built Verified.NoraNoCredentials (82s)
+warning: Verified/NoraNoCredentials.lean:85:27: This simp argument is unused:
+  Prod.mk.injEq
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵o̵d̵.̵m̵k̵.̵i̵n̵j̵E̵q̵,̵ ̵m̵i̵d̵d̵l̵e̵w̵a̵r̵e̵.̵O̵u̵t̵c̵o̵m̵e̵.̵N̵e̵x̵t̵.̵i̵n̵j̵E̵q̵,̵[̲m̲i̲d̲d̲l̲e̲w̲a̲r̲e̲.̲O̲u̲t̲c̲o̲m̲e̲.̲N̲e̲x̲t̲.̲i̲n̲j̲E̲q̲,̲ reduceCtorEq] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraNoCredentials.lean:85:73: This simp argument is unused:
+  reduceCtorEq
+
+Hint: Omit it from the simp argument list.
+  simp only [Prod.mk.injEq, middleware.Outcome.Next.injEq,̵ ̵r̵e̵d̵u̵c̵e̵C̵t̵o̵r̵E̵q̵] at h
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/NoraNoCredentials.lean:77:2: 'all_goals try simp only [hn] at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/NoraNoCredentials.lean:83:4: 'all_goals try simp only [hn] at h' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+✔ [1762/1765] Built Verified.NoraMiddlewareTotal (316s)
+✖ [1763/1765] Building Verified.Rendering (1062s)
+trace: .> LEAN_PATH=/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Cli/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/batteries/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/Qq/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aesop/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/proofwidgets/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/importGraph/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/LeanSearchClient/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/plausible/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/mathlib/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/aeneas/backends/lean/.lake/build/lib/lean:/dev/shm/h5i-cache/lake/leanprover-lean4-v4.31.0-dc4cdc4e98604e9b/packages/h5i_app_lib/crates/h5i-app-core/proofs/.lake/build/lib/lean:/home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean /home/ht2673/.elan/toolchains/leanprover--lean4---v4.31.0/bin/lean /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/Verified/Rendering.lean -o /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean/Verified/Rendering.olean -i /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/lib/lean/Verified/Rendering.ilean -c /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/ir/Verified/Rendering.c --setup /home/ht2673/Dev/h5i-app-bench/prove/ports/nora/proofs/.lake/build/ir/Verified/Rendering.setup.json --json
+warning: Verified/Rendering.lean:60:2: 'all_goals omega' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:60:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/Rendering.lean:69:2: 'all_goals simp_all [List.getElem!_eq_getElem?_getD, List.getElem?_eq_getElem]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:69:12: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/Rendering.lean:114:21: This simp argument is unused:
+  if_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, i̵f̵_̵n̵e̵g̵,̵ ̵WP.spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:114:29: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, if_neg,̵ ̵W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:111:4: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:149:21: This simp argument is unused:
+  if_neg
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, i̵f̵_̵n̵e̵g̵,̵ ̵WP.spec_ok]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:149:29: This simp argument is unused:
+  WP.spec_ok
+
+Hint: Omit it from the simp argument list.
+  simp only [hcmp, if_neg,̵ ̵W̵P̵.̵s̵p̵e̵c̵_̵o̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:146:4: 'all_goals (try scalar_tac)' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:180:42: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:181:34: This simp argument is unused:
+  UScalar.eq_equiv
+
+Hint: Omit it from the simp argument list.
+  simp_all [U̵S̵c̵a̵l̵a̵r̵.̵e̵q̵_̵e̵q̵u̵i̵v̵,̵ ̵byte_literal_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:181:52: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:182:34: This simp argument is unused:
+  UScalar.eq_equiv
+
+Hint: Omit it from the simp argument list.
+  simp_all [U̵S̵c̵a̵l̵a̵r̵.̵e̵q̵_̵e̵q̵u̵i̵v̵,̵ ̵byte_literal_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:182:52: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:183:34: This simp argument is unused:
+  UScalar.eq_equiv
+
+Hint: Omit it from the simp argument list.
+  simp_all [U̵S̵c̵a̵l̵a̵r̵.̵e̵q̵_̵e̵q̵u̵i̵v̵,̵ ̵byte_literal_val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:183:52: This simp argument is unused:
+  byte_literal_val
+
+Hint: Omit it from the simp argument list.
+  simp_all [UScalar.eq_equiv,̵ ̵b̵y̵t̵e̵_̵l̵i̵t̵e̵r̵a̵l̵_̵v̵a̵l̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:184:4: 'all_goals split <;> simp_all [UScalar.eq_equiv, byte_literal_val]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+warning: Verified/Rendering.lean:184:14: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+warning: Verified/Rendering.lean:235:106: This simp argument is unused:
+  alloc.vec.Vec.deref
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵d̵e̵r̵e̵f̵,̵ ̵Slice.from_val, List.append_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Verified/Rendering.lean:235:143: This simp argument is unused:
+  List.append_assoc
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, alloc.vec.Vec.deref, Slice.from_val,̵ ̵L̵i̵s̵t̵.̵a̵p̵p̵e̵n̵d̵_̵a̵s̵s̵o̵c̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Verified/Rendering.lean:242:0: (deterministic) timeout at `whnf`, maximum number of heartbeats (10000000) has been reached
+
+Note: Use `set_option maxHeartbeats <num>` to set the limit.
+
+Hint: Additional diagnostic information may be available using the `set_option diagnostics true` command.
+error: Verified/Rendering.lean:242:2: (kernel) unknown constant 'nora_kernel.Verified.Rendering.header_dark_complete'
+warning: Verified/Rendering.lean:260:106: This simp argument is unused:
+  alloc.vec.Vec.deref
+
+Hint: Omit it from the simp argument list.
+  simp_all [Array.make, Slice.eq_iff, alloc.vec.Vec.new, alloc.vec.Vec.from,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val, a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵d̵e̵r̵e̵f̵,̵ ̵Slice.from_val, List.append_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+Some required targets logged failures:
+- Verified.Rendering
+error: build failed
+
+Error: `lake build` failed

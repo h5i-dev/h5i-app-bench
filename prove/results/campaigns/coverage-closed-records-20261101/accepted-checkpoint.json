@@ -1,0 +1,69 @@
+{
+  "recorded_at": "2026-11-01T21:35:00.432878+00:00",
+  "branch": "prove-20k-expansion",
+  "baseline_commit": "2731f10",
+  "baseline": {
+    "lines": 42773,
+    "properties": 1174
+  },
+  "accepted": {
+    "lines": 42975,
+    "properties": 1197
+  },
+  "new_deduplicated_lines": 202,
+  "target_lines": 100000,
+  "target_reached": false,
+  "remaining_lines": 57025,
+  "apps": {
+    "artifactkeeper": {
+      "lines": 2122,
+      "properties": 99,
+      "gate_log": "results/project-checks/20261101T174703643085Z/artifactkeeper.log",
+      "extraction_log": "results/project-checks/20261101T174703642701Z/artifactkeeper.log",
+      "gate_finished_at": "2026-11-01T18:01:45.264288+00:00",
+      "extraction_finished_at": "2026-11-01T17:48:40.537992+00:00"
+    },
+    "kanidm": {
+      "lines": 31103,
+      "properties": 545,
+      "gate_log": "results/project-checks/20261101T064422467823Z/kanidm.log",
+      "extraction_log": "results/project-checks/20261101T064423672903Z/kanidm.log",
+      "gate_finished_at": "2026-11-01T07:08:14.415071+00:00",
+      "extraction_finished_at": "2026-11-01T06:46:14.229994+00:00"
+    },
+    "nora": {
+      "lines": 1959,
+      "properties": 61,
+      "gate_log": "results/project-checks/20261101T174846349037Z/nora.log",
+      "extraction_log": "results/project-checks/20261101T174846328378Z/nora.log",
+      "gate_finished_at": "2026-11-01T18:15:55.423209+00:00",
+      "extraction_finished_at": "2026-11-01T17:52:06.799923+00:00"
+    },
+    "oxicloud": {
+      "lines": 3794,
+      "properties": 198,
+      "gate_log": "results/project-checks/20261101T174544838773Z/oxicloud.log",
+      "extraction_log": "results/project-checks/20261101T174544819942Z/oxicloud.log",
+      "gate_finished_at": "2026-11-01T17:56:53.232730+00:00",
+      "extraction_finished_at": "2026-11-01T17:46:05.299382+00:00"
+    },
+    "rustfs": {
+      "lines": 2000,
+      "properties": 270,
+      "gate_log": "results/project-checks/20261101T064422467823Z/rustfs.log",
+      "extraction_log": "results/project-checks/20261101T064423672903Z/rustfs.log",
+      "gate_finished_at": "2026-11-01T07:31:56.834335+00:00",
+      "extraction_finished_at": "2026-11-01T06:46:58.515537+00:00"
+    },
+    "tuwunel": {
+      "lines": 1997,
+      "properties": 24,
+      "gate_log": "results/project-checks/20261101T064532180572Z/tuwunel.log",
+      "extraction_log": "results/project-checks/20261101T064533351983Z/tuwunel.log",
+      "gate_finished_at": "2026-11-01T07:11:27.206202+00:00",
+      "extraction_finished_at": "2026-11-01T06:46:37.135515+00:00"
+    }
+  },
+  "meaning": "Deduplicated pinned executable source reached from theorem types and extracted dependencies. Twenty-three complete closed record constructors have all-field output and termination proofs, compiled pinned-body reference comparisons and reproducible generation. Carrier and enum definitions receive no independent source credit. Constructor proofs do not establish runtime caller enforcement.",
+  "published": false
+}

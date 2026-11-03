@@ -1,0 +1,51 @@
+import Verified.SchemaCatalog72
+import Verified.SchemaCatalog73
+import Verified.SchemaCatalog74
+import Verified.SchemaCatalog75
+import Verified.SchemaCatalog76
+import Verified.SchemaCatalog77
+import Verified.SchemaCatalog78
+import Verified.SchemaCatalog79
+import Verified.SchemaCatalog80
+import Verified.SchemaCatalog81
+import Verified.SchemaCatalog82
+import Verified.SchemaCatalog83
+import Verified.SchemaCatalog84
+import Verified.SchemaCatalog85
+import Verified.SchemaCatalog86
+import Verified.SchemaCatalog87
+import Verified.SchemaCatalog88
+import Verified.SchemaCatalog89
+import Verified.SchemaCatalog90
+import Verified.SchemaCatalog91
+open Aeneas Aeneas.Std Result kanidm_kernel kanidm_kernel.Spec
+open H5iAppLib hiding lit
+namespace kanidm_kernel.Verified.MigrationCatalog
+set_option maxRecDepth 32768
+set_option maxHeartbeats 16000000
+def expected_system_classes : List SchemaCatalog.ClassModel := [SchemaCatalog.expected_system_class_attribute_type,
+SchemaCatalog.expected_system_class_class_type,
+SchemaCatalog.expected_system_class_object,
+SchemaCatalog.expected_system_class_builtin,
+SchemaCatalog.expected_system_class_member_of,
+SchemaCatalog.expected_system_class_extensible_object,
+SchemaCatalog.expected_system_class_recycled,
+SchemaCatalog.expected_system_class_tombstone,
+SchemaCatalog.expected_system_class_conflict,
+SchemaCatalog.expected_system_class_system_info,
+SchemaCatalog.expected_system_class_access_control_search,
+SchemaCatalog.expected_system_class_access_control_delete,
+SchemaCatalog.expected_system_class_access_control_modify,
+SchemaCatalog.expected_system_class_access_control_create,
+SchemaCatalog.expected_system_class_access_control_profile,
+SchemaCatalog.expected_system_class_access_control_receiver_entry_manager,
+SchemaCatalog.expected_system_class_access_control_receiver_group,
+SchemaCatalog.expected_system_class_access_countrol_target_scope,
+SchemaCatalog.expected_system_class_system,
+SchemaCatalog.expected_system_class_sync_object]
+@[step] theorem system_classes_complete : migration_catalog.system_classes ⦃r => r.val.map SchemaCatalog.viewClass = expected_system_classes⦄ := by
+  unfold migration_catalog.system_classes
+  h5i_steps
+  all_goals simp_all [expected_system_classes, Array.to_slice, Array.make, alloc.vec.Vec.new, alloc.vec.Vec.from, alloc.vec.Vec.val, alloc.vec.FromVecArray.from, Std.Array.empty]
+  all_goals scalar_tac
+end kanidm_kernel.Verified.MigrationCatalog

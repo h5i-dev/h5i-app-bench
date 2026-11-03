@@ -1,8 +1,48 @@
 # Real-world Rust verification campaign
 
 This campaign uses one standard h5i-app project per application: `kernel/`,
-`proofs/`, and `h5i-app.toml`. The release criterion is `h5i app prove`, not a
+`proofs/`, and `h5i-app.toml`. The release criterion is `h5i app check`, not a
 historical agent score or a candidate proof in an isolated task workspace.
+
+## Current stopping point — paused by request (2026-11-01)
+
+Coverage expansion is paused at **42,975 accepted deduplicated pinned executable
+source lines and 1,197 canonical project properties**, committed and pushed as
+`1bb4102` on `prove-20k-expansion`. The 100,000-line objective remains unfinished;
+**57,025 lines remain**. Resume expansion only on a new user request.
+
+| Application | Accepted source lines | Canonical properties |
+| --- | ---: | ---: |
+| ArtifactKeeper | 2,122 | 99 |
+| Kanidm | 31,103 | 545 |
+| Nora | 1,959 | 61 |
+| OxiCloud | 3,794 | 198 |
+| RustFS | 2,000 | 270 |
+| Tuwunel | 1,997 | 24 |
+| **Total** | **42,975** | **1,197** |
+
+The final batch adds 202 lines and 23 complete record-constructor properties.
+Every returned field and successful termination are stated. All 1,174 prior
+canonical property statements remain unchanged. All six applications have fresh
+successful proof/axiom gates and extraction evidence. Pinned-body comparisons,
+byte-identical regeneration, the source attribute audit and all 23 harness tests
+pass. Constructor proofs do not establish runtime configuration enforcement or
+whole-application equivalence.
+
+The dashboard data is refreshed locally; it has not been deployed. Historical
+benchmark accounting remains 101 tasks / 99 accepted, separate from canonical
+project properties. Runtime measurements were not refreshed in this batch.
+
+Durable evidence: [checkpoint report](../results/campaigns/coverage-closed-records-20261101/STATUS.md)
+and [acceptance record](../results/campaigns/coverage-closed-records-20261101/accepted-checkpoint.json).
+The [handoff](../results/campaigns/coverage-closed-records-20261101/NEXT.md) records
+142 experimental forwarding constructors with universal Lean proofs and retained
+source-body comparisons. Their 715 inventory lines are **not accepted coverage**;
+production integration, deduplication and gates remain. Experimental files under
+`/tmp` are disposable and must be reconstructed from pinned sources if absent.
+
+Earlier checkpoints and work-queue states below are historical; this stopping
+point supersedes their statements that expansion is active or gates are pending.
 
 ## Scope and completion criteria
 
@@ -159,3 +199,79 @@ Candidate reach and isolated proofs are not counted as passing project gates.
 Durable coordination and validation evidence are under
 `results/campaigns/coverage-20k-20261028T202224Z/`. The checked aggregate has not
 established the 20,000-line milestone.
+
+
+## Accepted 40k source reach milestone (2026-10-31 local / 2026-11-01 UTC)
+
+The next campaign started from an accepted 20,765 pinned executable source lines
+and 609 project properties. It now reaches **40,317 lines with 1,010 accepted
+properties**, adding 19,552 deduplicated lines and 401 complete Kanidm catalog
+and ordered-selection properties. All 142 earlier Kanidm property types remain
+unchanged. The gain covers ACP, schema, group and entry construction, and twenty
+complete migration record selections; it does not certify database migrations or
+whole-application equivalence.
+
+The standard Kanidm gate checked 3,514 theorems across 470 modules using only
+the three permitted axioms. Its inputs were unchanged throughout the run. The
+matching official extraction passed, as did all 43 Rust tests and all 13 source
+reach, dashboard accounting and detail tests. All six projects retain fresh gate
+and extraction evidence. The local dashboard assets are refreshed; deployment
+has not been performed.
+
+Evidence and the 100k+ candidate plan are in
+`results/campaigns/coverage-40k-20261101/accepted-checkpoint.json` and `NEXT.md`.
+Reaching 100k+ will require further executable validation, parsing and policy
+logic as well as complete data construction. Candidate estimates are not counted
+as accepted source reach.
+
+
+## Accepted finite enum checkpoint toward 100k (2026-11-01)
+
+The accepted source reach is now **41,133 deduplicated pinned executable lines
+and 1,130 canonical project properties**, up 816 lines and 120 properties from
+`c793a05`. The 100,000-line target has not been reached; 58,867 lines remain.
+
+The reusable finite catalog importer covers 88 closed unit enums across all six
+apps. It preserves pinned method bodies and enum discriminants, compares every
+valid input against independent Rust reference execution (712 comparisons), and
+proves complete outputs for those finite domains. Enum declarations, tests and
+generated code receive no upstream line credit. All 1,010 earlier canonical
+property statements are unchanged. These results do not establish complete
+application behavior or external-effect equivalence.
+
+All six standard project/axiom gates and matching extraction checks pass with
+unchanged inputs. All 133 Rust tests, isolated byte-for-byte artifact regeneration,
+pinned-reference audits and 13 dashboard/accounting/detail tests pass. Nora's
+first gate timed out after waiting approximately 24 minutes for the shared
+package lock; the longer rerun passed without changing its proof inputs.
+The dashboard snapshot is refreshed while preserving historical benchmark runs;
+deployment has not been performed.
+
+Exact acceptance evidence, reproducible checks and the next substantive candidates
+are in `results/campaigns/coverage-100k-20261101/{accepted-checkpoint.json,STATUS.md,NEXT.md}`.
+Finite enum methods supply only a small part of the remaining target; broader
+value-set, parsing, policy and exact-output transformations are still needed.
+
+## Accepted arbitrary string checkpoint toward 100k (2026-11-01)
+
+The accepted total is **41,414 pinned executable source lines and 1,133
+canonical properties**, up 281 lines and three properties from `1827206`.
+The 100,000-line objective remains active, with 58,586 lines left.
+
+OxiCloud's complete MIME/extension display decisions now have arbitrary-byte
+output and termination proofs, including bounded substring search and exact
+54-string output interning. The pinned Rust reference passed 201,750 complete
+string comparisons. All 1,130 prior statements remain unchanged. Synthetic
+chunks, enum declarations, tests and generated source receive no line credit.
+
+The complete OxiCloud gate checked 1,728 theorems across 34 modules, with only
+the permitted axioms. Matching extraction, byte-for-byte regeneration, pinned
+reference audits, all OxiCloud Rust tests, and 19 source/accounting/dashboard/
+runner tests pass. All six apps retain fresh gate and extraction evidence.
+The local dashboard is refreshed; historical benchmark accounting remains
+101 tasks / 99 accepted, and deployment has not been performed.
+
+Evidence and the continuing work queue are in
+`results/campaigns/coverage-strings-20261101/{accepted-checkpoint.json,STATUS.md,NEXT.md}`.
+This establishes reusable string-decision proofs; larger collection, parsing
+and transformation ports are still required to reach the target.

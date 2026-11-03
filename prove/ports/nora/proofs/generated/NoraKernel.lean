@@ -19,6 +19,18 @@ set_option maxRecDepth 2048
 
 namespace nora_kernel
 
+/-- Trait implementation: [core::slice::cmp::{impl core::cmp::PartialEq<[U]> for [T]}]
+    Source: '/rustc/library/core/src/slice/cmp.rs', lines 14:0-16:28
+    Name pattern: [core::cmp::PartialEq<[@T], [@U]>] -/
+@[reducible, rust_trait_impl "core::cmp::PartialEq<[@T], [@U]>"]
+impl_def Slice.Insts.CoreCmpPartialEqSlice {T : Type} {U : Type}
+  (cmpPartialEqInst : core.cmp.PartialEq T U) : core.cmp.PartialEq (Slice T)
+  (Slice U) := {
+  eq := core.slice.cmp.PartialEqSlice.eq cmpPartialEqInst
+  ne := core.cmp.PartialEq.ne.trait_default (Slice.Insts.CoreCmpPartialEqSlice
+    cmpPartialEqInst)
+}
+
 /-- [nora_kernel::circuit_breaker::Phase]
     Source: 'prove/ports/nora/kernel/src/circuit_breaker.rs', lines 7:0-11:1
     Visibility: public -/
@@ -230,6 +242,33 @@ def circuit_breaker.reset_timeout
   match override_value with
   | none => ok default
   | some x => ok x
+
+/-- [nora_kernel::closed_records::signing_config_default_942b3541::SigningConfig]
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 3:0-3:63
+    Visibility: public -/
+structure closed_records.signing_config_default_942b3541.SigningConfig where
+  enabled : Bool
+  key_path : alloc.vec.Vec Std.U8
+
+/-- [nora_kernel::closed_records::signing_config_default_942b3541::make]:
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 4:0-4:85
+    Visibility: public -/
+def closed_records.signing_config_default_942b3541.make
+  : Result closed_records.signing_config_default_942b3541.SigningConfig := do
+  ok { enabled := true, key_path := (alloc.vec.Vec.new Std.U8) }
+
+/-- [nora_kernel::closed_records::env_provider_new_23e18cff::EnvProvider]
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 7:0-7:49
+    Visibility: public -/
+structure closed_records.env_provider_new_23e18cff.EnvProvider where
+  clear_after_read : Bool
+
+/-- [nora_kernel::closed_records::env_provider_new_23e18cff::make]:
+    Source: 'prove/ports/nora/kernel/src/closed_records.rs', lines 8:0-8:70
+    Visibility: public -/
+def closed_records.env_provider_new_23e18cff.make
+  : Result closed_records.env_provider_new_23e18cff.EnvProvider := do
+  ok { clear_after_read := false }
 
 /-- [nora_kernel::curation::Mode]
     Source: 'prove/ports/nora/kernel/src/curation.rs', lines 8:0-8:37
@@ -599,6 +638,100 @@ def curation.verify_integrity_by_hash
       curation.evaluate mode «namespace» filters false true bypass_name
     curation.integrity_response result
   else ok none
+
+/-- [nora_kernel::finite_catalog::breaker_state_f11f5e92::BreakerState]
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 4:0-4:44
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.breaker_state_f11f5e92.BreakerState where
+| Closed : finite_catalog.breaker_state_f11f5e92.BreakerState
+| Open : finite_catalog.breaker_state_f11f5e92.BreakerState
+| HalfOpen : finite_catalog.breaker_state_f11f5e92.BreakerState
+
+/-- [nora_kernel::finite_catalog::breaker_state_f11f5e92::{nora_kernel::finite_catalog::breaker_state_f11f5e92::BreakerState}::as_gauge]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 6:4-12:5
+    Visibility: public -/
+def finite_catalog.breaker_state_f11f5e92.BreakerState.as_gauge
+  (self : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+  Result Std.I64
+  := do
+  match self with
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Closed => ok 0#i64
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Open => ok 1#i64
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.HalfOpen => ok 2#i64
+
+/-- [nora_kernel::finite_catalog::breaker_state_f11f5e92::{nora_kernel::finite_catalog::breaker_state_f11f5e92::BreakerState}::as_health_str]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 16:4-22:5
+    Visibility: public -/
+def finite_catalog.breaker_state_f11f5e92.BreakerState.as_health_str
+  (self : finite_catalog.breaker_state_f11f5e92.BreakerState) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Closed =>
+    alloc.vec.FromVecArray.from
+      (Array.make 6#usize [ 99#u8, 108#u8, 111#u8, 115#u8, 101#u8, 100#u8 ])
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.Open =>
+    alloc.vec.FromVecArray.from
+      (Array.make 4#usize [ 111#u8, 112#u8, 101#u8, 110#u8 ])
+  | finite_catalog.breaker_state_f11f5e92.BreakerState.HalfOpen =>
+    alloc.vec.FromVecArray.from
+      (Array.make 9#usize [
+        104#u8, 97#u8, 108#u8, 102#u8, 95#u8, 111#u8, 112#u8, 101#u8, 110#u8
+        ])
+
+/-- [nora_kernel::finite_catalog::role_a890c86c::Role]
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 27:0-27:32
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.role_a890c86c.Role where
+| Read : finite_catalog.role_a890c86c.Role
+| Write : finite_catalog.role_a890c86c.Role
+| Admin : finite_catalog.role_a890c86c.Role
+
+/-- [nora_kernel::finite_catalog::role_a890c86c::{nora_kernel::finite_catalog::role_a890c86c::Role}::can_write]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 29:4-31:5
+    Visibility: public -/
+def finite_catalog.role_a890c86c.Role.can_write
+  (self : finite_catalog.role_a890c86c.Role) : Result Bool := do
+  match self with
+  | finite_catalog.role_a890c86c.Role.Read => ok false
+  | finite_catalog.role_a890c86c.Role.Write => ok true
+  | finite_catalog.role_a890c86c.Role.Admin => ok true
+
+/-- [nora_kernel::finite_catalog::role_a890c86c::{nora_kernel::finite_catalog::role_a890c86c::Role}::can_admin]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 32:4-34:5
+    Visibility: public -/
+def finite_catalog.role_a890c86c.Role.can_admin
+  (self : finite_catalog.role_a890c86c.Role) : Result Bool := do
+  match self with
+  | finite_catalog.role_a890c86c.Role.Read => ok false
+  | finite_catalog.role_a890c86c.Role.Write => ok false
+  | finite_catalog.role_a890c86c.Role.Admin => ok true
+
+/-- [nora_kernel::finite_catalog::lang_986f59b4::Lang]
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 39:0-39:24
+    Visibility: public -/
+@[discriminant isize]
+inductive finite_catalog.lang_986f59b4.Lang where
+| En : finite_catalog.lang_986f59b4.Lang
+| Ru : finite_catalog.lang_986f59b4.Lang
+| Zh : finite_catalog.lang_986f59b4.Lang
+
+/-- [nora_kernel::finite_catalog::lang_986f59b4::{nora_kernel::finite_catalog::lang_986f59b4::Lang}::code]:
+    Source: 'prove/ports/nora/kernel/src/finite_catalog.rs', lines 41:4-47:5
+    Visibility: public -/
+def finite_catalog.lang_986f59b4.Lang.code
+  (self : finite_catalog.lang_986f59b4.Lang) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  match self with
+  | finite_catalog.lang_986f59b4.Lang.En =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 101#u8, 110#u8 ])
+  | finite_catalog.lang_986f59b4.Lang.Ru =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 114#u8, 117#u8 ])
+  | finite_catalog.lang_986f59b4.Lang.Zh =>
+    alloc.vec.FromVecArray.from (Array.make 2#usize [ 122#u8, 104#u8 ])
 
 /-- [nora_kernel::Role]
     Source: 'prove/ports/nora/kernel/src/lib.rs', lines 15:0-19:1
@@ -11729,6 +11862,6459 @@ def permission_import.map_to_proposal
   := do
   let c ← permission_import.collect principals
   permission_import.emit c grant_write
+
+/-- [nora_kernel::rendering::Lang]
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 5:0-5:28
+    Visibility: public -/
+@[discriminant isize]
+inductive rendering.Lang where
+| En : rendering.Lang
+| Ru : rendering.Lang
+| Zh : rendering.Lang
+
+/-- [nora_kernel::rendering::Translations]
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 6:0-6:191
+    Visibility: public -/
+structure rendering.Translations where
+  recent_activity : alloc.vec.Vec Std.U8
+  last_n_events : alloc.vec.Vec Std.U8
+  time : alloc.vec.Vec Std.U8
+  action : alloc.vec.Vec Std.U8
+  artifact : alloc.vec.Vec Std.U8
+  registry : alloc.vec.Vec Std.U8
+  source : alloc.vec.Vec Std.U8
+
+/-- [nora_kernel::rendering::append]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 8:0-8:80
+    Visibility: public -/
+def rendering.append
+  (out : alloc.vec.Vec Std.U8) (bytes : Slice Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  alloc.vec.Vec.extend_from_slice core.clone.CloneU8 out bytes
+
+/-- [nora_kernel::rendering::action_color]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 14:0-20:1
+    Visibility: public -/
+def rendering.action_color
+  (action : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice (Array.make 4#usize [ 80#u8, 85#u8, 76#u8, 76#u8 ]))
+  let b ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s
+  if b
+  then
+    let s1 ←
+      lift (Array.to_slice
+        (Array.make 13#usize [
+          116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 98#u8, 108#u8, 117#u8, 101#u8,
+          45#u8, 52#u8, 48#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  else
+    let s1 ←
+      lift (Array.to_slice (Array.make 4#usize [ 80#u8, 85#u8, 83#u8, 72#u8 ]))
+    let b1 ← core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s1
+    if b1
+    then
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 14#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 103#u8, 114#u8, 101#u8,
+            101#u8, 110#u8, 45#u8, 52#u8, 48#u8, 48#u8
+            ]))
+      alloc.slice.Slice.to_vec core.clone.CloneU8 s2
+    else
+      let s2 ←
+        lift (Array.to_slice
+          (Array.make 5#usize [ 67#u8, 65#u8, 67#u8, 72#u8, 69#u8 ]))
+      let b2 ←
+        core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s2
+      if b2
+      then
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 15#usize [
+              116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 121#u8, 101#u8, 108#u8,
+              108#u8, 111#u8, 119#u8, 45#u8, 52#u8, 48#u8, 48#u8
+              ]))
+        alloc.slice.Slice.to_vec core.clone.CloneU8 s3
+      else
+        let s3 ←
+          lift (Array.to_slice
+            (Array.make 5#usize [ 80#u8, 82#u8, 79#u8, 88#u8, 89#u8 ]))
+        let b3 ←
+          core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 action s3
+        if b3
+        then
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 15#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 112#u8, 117#u8, 114#u8,
+                112#u8, 108#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8
+                ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+        else
+          let s4 ←
+            lift (Array.to_slice
+              (Array.make 14#usize [
+                116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+                116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8
+                ]))
+          alloc.slice.Slice.to_vec core.clone.CloneU8 s4
+
+/-- [nora_kernel::rendering::html_byte]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 23:0-25:1
+    Visibility: public -/
+def rendering.html_byte (b : Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  match b with
+  | 38#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 38#u8, 97#u8, 109#u8, 112#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 60#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 38#u8, 108#u8, 116#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 62#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 4#usize [ 38#u8, 103#u8, 116#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 34#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 6#usize [ 38#u8, 113#u8, 117#u8, 111#u8, 116#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | 39#uscalar =>
+    let s ←
+      lift (Array.to_slice
+        (Array.make 5#usize [ 38#u8, 35#u8, 51#u8, 57#u8, 59#u8 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  | _ =>
+    let s ← lift (Array.to_slice (Array.make 1#usize [ b ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::uri_allowed]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 26:0-28:1
+    Visibility: public -/
+def rendering.uri_allowed (b : Std.U8) : Result Bool := do
+  if b >= 97#u8
+  then
+    if b <= 122#u8
+    then ok true
+    else
+      if b >= 65#u8
+      then
+        if b <= 90#u8
+        then ok true
+        else
+          if b >= 48#u8
+          then
+            if b <= 57#u8
+            then ok true
+            else
+              if b = 45#u8
+              then ok true
+              else
+                if b = 95#u8
+                then ok true
+                else if b = 46#u8
+                     then ok true
+                     else ok (b = 126#u8)
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 46#u8
+                   then ok true
+                   else ok (b = 126#u8)
+      else
+        if b >= 48#u8
+        then
+          if b <= 57#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 46#u8
+                   then ok true
+                   else ok (b = 126#u8)
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 46#u8
+                 then ok true
+                 else ok (b = 126#u8)
+  else
+    if b >= 65#u8
+    then
+      if b <= 90#u8
+      then ok true
+      else
+        if b >= 48#u8
+        then
+          if b <= 57#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 46#u8
+                   then ok true
+                   else ok (b = 126#u8)
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 46#u8
+                 then ok true
+                 else ok (b = 126#u8)
+    else
+      if b >= 48#u8
+      then
+        if b <= 57#u8
+        then ok true
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 46#u8
+                 then ok true
+                 else ok (b = 126#u8)
+      else
+        if b = 45#u8
+        then ok true
+        else
+          if b = 95#u8
+          then ok true
+          else if b = 46#u8
+               then ok true
+               else ok (b = 126#u8)
+
+/-- [nora_kernel::rendering::uri_byte]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 29:0-34:1
+    Visibility: public -/
+def rendering.uri_byte (b : Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let b1 ← rendering.uri_allowed b
+  if b1
+  then
+    let s ← lift (Array.to_slice (Array.make 1#usize [ b ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else
+    let i ← b / 16#u8
+    let i1 ← lift (UScalar.cast .Usize i)
+    let i2 ←
+      Array.index_usize
+        (Array.make 16#usize [
+          48#u8, 49#u8, 50#u8, 51#u8, 52#u8, 53#u8, 54#u8, 55#u8, 56#u8, 57#u8,
+          65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8
+          ]) i1
+    let i3 ← b % 16#u8
+    let i4 ← lift (UScalar.cast .Usize i3)
+    let i5 ←
+      Array.index_usize
+        (Array.make 16#usize [
+          48#u8, 49#u8, 50#u8, 51#u8, 52#u8, 53#u8, 54#u8, 55#u8, 56#u8, 57#u8,
+          65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8
+          ]) i4
+    let s ← lift (Array.to_slice (Array.make 3#usize [ 37#u8, i2, i5 ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::html_escape]: loop body 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 38:4-42:5
+    Visibility: public -/
+@[rust_loop_body]
+def rendering.html_escape_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let piece ← rendering.html_byte i2
+    let s1 := alloc.vec.Vec.deref piece
+    let out1 ← rendering.append out s1
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [nora_kernel::rendering::html_escape]: loop 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 38:4-42:5
+    Visibility: public -/
+@[rust_loop]
+def rendering.html_escape_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => rendering.html_escape_loop.body s out1 i1)
+    (out, i)
+
+/-- [nora_kernel::rendering::html_escape]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 35:0-44:1
+    Visibility: public -/
+@[reducible]
+def rendering.html_escape
+  (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  rendering.html_escape_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [nora_kernel::rendering::encode_uri_component]: loop body 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 48:4-52:5
+    Visibility: public -/
+@[rust_loop_body]
+def rendering.encode_uri_component_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let piece ← rendering.uri_byte i2
+    let s1 := alloc.vec.Vec.deref piece
+    let out1 ← rendering.append out s1
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [nora_kernel::rendering::encode_uri_component]: loop 0:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 48:4-52:5
+    Visibility: public -/
+@[rust_loop]
+def rendering.encode_uri_component_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => rendering.encode_uri_component_loop.body s out1 i1)
+    (out, i)
+
+/-- [nora_kernel::rendering::encode_uri_component]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 45:0-54:1
+    Visibility: public -/
+@[reducible]
+def rendering.encode_uri_component
+  (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  rendering.encode_uri_component_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [nora_kernel::rendering::render_activity_row]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 56:0-74:1
+    Visibility: public -/
+def rendering.render_activity_row
+  (timestamp : Slice Std.U8) (action : Slice Std.U8) (artifact : Slice Std.U8)
+  (registry : Slice Std.U8) (source : Slice Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let action_color ← rendering.action_color action
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        116#u8, 114#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 98#u8,
+        32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 47#u8,
+        53#u8, 48#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        109#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 100#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8,
+        45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 53#u8, 48#u8,
+        48#u8, 34#u8, 62#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let v ← rendering.html_escape timestamp
+  let s2 := alloc.vec.Vec.deref v
+  let out2 ← rendering.append out1 s2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 51#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8,
+        32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+        105#u8, 117#u8, 109#u8, 32#u8
+        ]))
+  let out3 ← rendering.append out2 s3
+  let s4 := alloc.vec.Vec.deref action_color
+  let out4 ← rendering.append out3 s4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 49#usize [
+        34#u8, 62#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        50#u8, 32#u8, 112#u8, 121#u8, 45#u8, 48#u8, 46#u8, 53#u8, 32#u8, 98#u8,
+        103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8,
+        48#u8, 48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8,
+        100#u8, 34#u8, 62#u8
+        ]))
+  let out5 ← rendering.append out4 s5
+  let v1 ← rendering.html_escape action
+  let s6 := alloc.vec.Vec.deref v1
+  let out6 ← rendering.append out5 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 80#usize [
+        60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 60#u8, 47#u8,
+        116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 100#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8,
+        45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 51#u8, 48#u8, 48#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8,
+        45#u8, 109#u8, 111#u8, 110#u8, 111#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 120#u8, 115#u8, 34#u8, 62#u8
+        ]))
+  let out7 ← rendering.append out6 s7
+  let v2 ← rendering.html_escape artifact
+  let s8 := alloc.vec.Vec.deref v2
+  let out8 ← rendering.append out7 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 55#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 34#u8, 62#u8
+        ]))
+  let out9 ← rendering.append out8 s9
+  let v3 ← rendering.html_escape registry
+  let s10 := alloc.vec.Vec.deref v3
+  let out10 ← rendering.append out9 s10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 55#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        100#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 53#u8, 48#u8, 48#u8, 34#u8, 62#u8
+        ]))
+  let out11 ← rendering.append out10 s11
+  let v4 ← rendering.html_escape source
+  let s12 := alloc.vec.Vec.deref v4
+  let out12 ← rendering.append out11 s12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 28#usize [
+        60#u8, 47#u8, 116#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 116#u8, 114#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  rendering.append out12 s13
+
+/-- [nora_kernel::rendering::render_activity_log]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 76:0-103:1
+    Visibility: public -/
+def rendering.render_activity_log
+  (rows : Slice Std.U8) (t : rendering.Translations) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 98#u8, 103#u8, 45#u8, 91#u8, 35#u8, 49#u8, 101#u8, 50#u8,
+        57#u8, 51#u8, 98#u8, 93#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+        100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8,
+        101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8,
+        55#u8, 48#u8, 48#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 104#u8, 105#u8, 100#u8, 100#u8, 101#u8,
+        110#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 98#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8, 102#u8, 108#u8, 101#u8,
+        120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8,
+        101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 106#u8, 117#u8, 115#u8,
+        116#u8, 105#u8, 102#u8, 121#u8, 45#u8, 98#u8, 101#u8, 116#u8, 119#u8,
+        101#u8, 101#u8, 110#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 48#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 104#u8, 51#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8,
+        45#u8, 115#u8, 101#u8, 109#u8, 105#u8, 98#u8, 111#u8, 108#u8, 100#u8,
+        34#u8, 62#u8
+        ]))
+  let out2 ← rendering.append out1 s2
+  let s3 := alloc.vec.Vec.deref t.recent_activity
+  let out3 ← rendering.append out2 s3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 59#usize [
+        60#u8, 47#u8, 104#u8, 51#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 120#u8, 115#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 53#u8, 48#u8,
+        48#u8, 34#u8, 62#u8
+        ]))
+  let out4 ← rendering.append out3 s4
+  let s5 := alloc.vec.Vec.deref t.last_n_events
+  let out5 ← rendering.append out4 s5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 97#u8, 117#u8, 116#u8, 111#u8, 32#u8,
+        109#u8, 97#u8, 120#u8, 45#u8, 104#u8, 45#u8, 56#u8, 48#u8, 34#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8,
+        97#u8, 98#u8
+        ]))
+  let out6 ← rendering.append out5 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        108#u8, 101#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 119#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 34#u8, 32#u8,
+        105#u8, 100#u8, 61#u8, 34#u8, 97#u8, 99#u8, 116#u8, 105#u8, 118#u8,
+        105#u8, 116#u8, 121#u8, 45#u8, 108#u8, 111#u8, 103#u8, 34#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 116#u8, 104#u8, 101#u8, 97#u8, 100#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 115#u8, 116#u8, 105#u8,
+        99#u8, 107#u8, 121#u8, 32#u8, 116#u8, 111#u8, 112#u8, 45#u8, 48#u8,
+        32#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 56#u8, 48#u8, 48#u8
+        ]))
+  let out7 ← rendering.append out6 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 114#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 108#u8, 101#u8, 102#u8, 116#u8, 32#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 120#u8, 115#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 53#u8, 48#u8, 48#u8, 32#u8, 117#u8, 112#u8, 112#u8, 101#u8,
+        114#u8, 99#u8, 97#u8, 115#u8, 101#u8, 32#u8, 98#u8, 111#u8, 114#u8,
+        100#u8, 101#u8, 114#u8, 45#u8, 98#u8, 32#u8, 98#u8, 111#u8, 114#u8,
+        100#u8, 101#u8, 114#u8
+        ]))
+  let out8 ← rendering.append out7 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 63#usize [
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8,
+        48#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8,
+        112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out9 ← rendering.append out8 s9
+  let s10 := alloc.vec.Vec.deref t.time
+  let out10 ← rendering.append out9 s10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out11 ← rendering.append out10 s11
+  let s12 := alloc.vec.Vec.deref t.action
+  let out12 ← rendering.append out11 s12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out13 ← rendering.append out12 s13
+  let s14 := alloc.vec.Vec.deref t.artifact
+  let out14 ← rendering.append out13 s14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out15 ← rendering.append out14 s15
+  let s16 := alloc.vec.Vec.deref t.registry
+  let out16 ← rendering.append out15 s16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 56#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 104#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 34#u8, 62#u8
+        ]))
+  let out17 ← rendering.append out16 s17
+  let s18 := alloc.vec.Vec.deref t.source
+  let out18 ← rendering.append out17 s18
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        60#u8, 47#u8, 116#u8, 104#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 47#u8, 116#u8, 114#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 116#u8, 104#u8,
+        101#u8, 97#u8, 100#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 116#u8, 98#u8, 111#u8,
+        100#u8, 121#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out19 ← rendering.append out18 s19
+  let s20 ←
+    lift (Array.to_slice
+      (Array.make 21#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8
+        ]))
+  let out20 ← rendering.append out19 s20
+  let out21 ← rendering.append out20 rows
+  let s21 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 47#u8, 116#u8, 98#u8, 111#u8, 100#u8, 121#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 116#u8,
+        97#u8, 98#u8, 108#u8, 101#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+        100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out22 ← rendering.append out21 s21
+  let s22 ← lift (Array.to_slice (Array.make 1#usize [ 32#u8 ]))
+  rendering.append out22 s22
+
+/-- [nora_kernel::rendering::render_polling_script]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 105:0-126:1
+    Visibility: public -/
+def rendering.render_polling_script : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 99#u8, 114#u8,
+        105#u8, 112#u8, 116#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 115#u8, 101#u8, 116#u8, 73#u8, 110#u8,
+        116#u8, 101#u8, 114#u8, 118#u8, 97#u8, 108#u8, 40#u8, 97#u8, 115#u8,
+        121#u8, 110#u8, 99#u8, 32#u8, 40#u8, 41#u8, 32#u8, 61#u8, 62#u8, 32#u8,
+        123#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 116#u8, 114#u8, 121#u8, 32#u8, 123#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        115#u8, 116#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 32#u8, 61#u8,
+        32#u8, 97#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        119#u8, 97#u8, 105#u8, 116#u8, 32#u8, 102#u8, 101#u8, 116#u8, 99#u8,
+        104#u8, 40#u8, 39#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8, 117#u8,
+        105#u8, 47#u8, 100#u8, 97#u8, 115#u8, 104#u8, 98#u8, 111#u8, 97#u8,
+        114#u8, 100#u8, 39#u8, 41#u8, 46#u8, 116#u8, 104#u8, 101#u8, 110#u8,
+        40#u8, 114#u8, 32#u8, 61#u8, 62#u8, 32#u8, 114#u8, 46#u8, 106#u8,
+        115#u8, 111#u8, 110#u8, 40#u8, 41#u8, 41#u8, 59#u8, 10#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 47#u8, 47#u8, 32#u8, 85#u8,
+        112#u8, 100#u8, 97#u8, 116#u8, 101#u8, 32#u8, 103#u8, 108#u8, 111#u8,
+        98#u8, 97#u8, 108#u8, 32#u8, 115#u8, 116#u8, 97#u8, 116#u8, 115#u8,
+        10#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+        110#u8, 116#u8, 46#u8, 103#u8, 101#u8, 116#u8, 69#u8, 108#u8, 101#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 66#u8, 121#u8, 73#u8, 100#u8, 40#u8,
+        39#u8, 115#u8, 116#u8, 97#u8, 116#u8, 45#u8, 100#u8, 111#u8, 119#u8,
+        110#u8, 108#u8, 111#u8, 97#u8, 100#u8, 115#u8, 39#u8, 41#u8, 46#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8, 110#u8, 116#u8, 101#u8,
+        110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8,
+        46#u8, 103#u8, 108#u8, 111#u8, 98#u8, 97#u8, 108#u8, 95#u8, 115#u8,
+        116#u8, 97#u8, 116#u8, 115#u8, 46#u8, 100#u8, 111#u8, 119#u8, 110#u8,
+        108#u8, 111#u8, 97#u8, 100#u8, 115#u8
+        ]))
+  let out2 ← rendering.append out1 s2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8, 111#u8,
+        99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8, 101#u8,
+        116#u8, 69#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 66#u8,
+        121#u8, 73#u8, 100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8, 116#u8,
+        45#u8, 117#u8, 112#u8, 108#u8, 111#u8, 97#u8, 100#u8, 115#u8, 39#u8,
+        41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8, 110#u8,
+        116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8,
+        116#u8, 97#u8, 46#u8, 103#u8, 108#u8, 111#u8, 98#u8, 97#u8, 108#u8,
+        95#u8, 115#u8, 116#u8, 97#u8, 116#u8, 115#u8, 46#u8, 117#u8, 112#u8,
+        108#u8, 111#u8, 97#u8, 100#u8
+        ]))
+  let out3 ← rendering.append out2 s3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        115#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8,
+        101#u8, 116#u8, 69#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        66#u8, 121#u8, 73#u8, 100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 45#u8, 97#u8, 114#u8, 116#u8, 105#u8, 102#u8, 97#u8, 99#u8,
+        116#u8, 115#u8, 39#u8, 41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        67#u8, 111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8,
+        32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8, 103#u8, 108#u8, 111#u8,
+        98#u8, 97#u8, 108#u8, 95#u8, 115#u8, 116#u8, 97#u8, 116#u8, 115#u8,
+        46#u8, 97#u8, 114#u8, 116#u8
+        ]))
+  let out4 ← rendering.append out3 s4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        105#u8, 102#u8, 97#u8, 99#u8, 116#u8, 115#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8, 111#u8, 99#u8, 117#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8, 101#u8, 116#u8, 69#u8,
+        108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8, 66#u8, 121#u8, 73#u8,
+        100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8, 116#u8, 45#u8, 99#u8,
+        97#u8, 99#u8, 104#u8, 101#u8, 45#u8, 104#u8, 105#u8, 116#u8, 39#u8,
+        41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8, 110#u8,
+        116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8,
+        116#u8, 97#u8, 46#u8, 103#u8, 108#u8, 111#u8, 98#u8, 97#u8, 108#u8,
+        95#u8, 115#u8, 116#u8, 97#u8, 116#u8
+        ]))
+  let out5 ← rendering.append out4 s5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        115#u8, 46#u8, 99#u8, 97#u8, 99#u8, 104#u8, 101#u8, 95#u8, 104#u8,
+        105#u8, 116#u8, 95#u8, 112#u8, 101#u8, 114#u8, 99#u8, 101#u8, 110#u8,
+        116#u8, 46#u8, 116#u8, 111#u8, 70#u8, 105#u8, 120#u8, 101#u8, 100#u8,
+        40#u8, 49#u8, 41#u8, 32#u8, 43#u8, 32#u8, 39#u8, 37#u8, 39#u8, 59#u8,
+        10#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 47#u8, 47#u8,
+        32#u8, 70#u8, 111#u8, 114#u8, 109#u8, 97#u8, 116#u8, 32#u8, 115#u8,
+        116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8, 32#u8, 115#u8, 105#u8,
+        122#u8, 101#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8,
+        111#u8
+        ]))
+  let out6 ← rendering.append out5 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        110#u8, 115#u8, 116#u8, 32#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8,
+        32#u8, 61#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8, 46#u8, 103#u8,
+        108#u8, 111#u8, 98#u8, 97#u8, 108#u8, 95#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 115#u8, 46#u8, 115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8,
+        101#u8, 95#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 59#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 108#u8, 101#u8, 116#u8,
+        32#u8, 115#u8, 105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 59#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 105#u8, 102#u8, 32#u8,
+        40#u8, 98#u8, 121#u8
+        ]))
+  let out7 ← rendering.append out6 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        116#u8, 101#u8, 115#u8, 32#u8, 62#u8, 61#u8, 32#u8, 49#u8, 48#u8,
+        55#u8, 51#u8, 55#u8, 52#u8, 49#u8, 56#u8, 50#u8, 52#u8, 41#u8, 32#u8,
+        115#u8, 105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8,
+        32#u8, 40#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 47#u8,
+        32#u8, 49#u8, 48#u8, 55#u8, 51#u8, 55#u8, 52#u8, 49#u8, 56#u8, 50#u8,
+        52#u8, 41#u8, 46#u8, 116#u8, 111#u8, 70#u8, 105#u8, 120#u8, 101#u8,
+        100#u8, 40#u8, 49#u8, 41#u8, 32#u8, 43#u8, 32#u8, 39#u8, 32#u8, 71#u8,
+        66#u8, 39#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        101#u8, 108#u8, 115#u8, 101#u8, 32#u8, 105#u8, 102#u8, 32#u8, 40#u8,
+        98#u8
+        ]))
+  let out8 ← rendering.append out7 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 62#u8, 61#u8, 32#u8, 49#u8,
+        48#u8, 52#u8, 56#u8, 53#u8, 55#u8, 54#u8, 41#u8, 32#u8, 115#u8, 105#u8,
+        122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8, 32#u8, 40#u8,
+        98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 47#u8, 32#u8, 49#u8,
+        48#u8, 52#u8, 56#u8, 53#u8, 55#u8, 54#u8, 41#u8, 46#u8, 116#u8, 111#u8,
+        70#u8, 105#u8, 120#u8, 101#u8, 100#u8, 40#u8, 49#u8, 41#u8, 32#u8,
+        43#u8, 32#u8, 39#u8, 32#u8, 77#u8, 66#u8, 39#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 101#u8, 108#u8, 115#u8, 101#u8,
+        32#u8, 105#u8, 102#u8, 32#u8, 40#u8, 98#u8, 121#u8, 116#u8, 101#u8,
+        115#u8, 32#u8
+        ]))
+  let out9 ← rendering.append out8 s9
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        62#u8, 61#u8, 32#u8, 49#u8, 48#u8, 50#u8, 52#u8, 41#u8, 32#u8, 115#u8,
+        105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8, 32#u8,
+        40#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 47#u8, 32#u8,
+        49#u8, 48#u8, 50#u8, 52#u8, 41#u8, 46#u8, 116#u8, 111#u8, 70#u8,
+        105#u8, 120#u8, 101#u8, 100#u8, 40#u8, 49#u8, 41#u8, 32#u8, 43#u8,
+        32#u8, 39#u8, 32#u8, 75#u8, 66#u8, 39#u8, 59#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 101#u8, 108#u8, 115#u8, 101#u8, 32#u8,
+        115#u8, 105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 32#u8, 61#u8,
+        32#u8, 98#u8, 121#u8, 116#u8, 101#u8, 115#u8, 32#u8, 43#u8, 32#u8,
+        39#u8, 32#u8, 66#u8
+        ]))
+  let out10 ← rendering.append out9 s10
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        39#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 100#u8,
+        111#u8, 99#u8, 117#u8, 109#u8, 101#u8, 110#u8, 116#u8, 46#u8, 103#u8,
+        101#u8, 116#u8, 69#u8, 108#u8, 101#u8, 109#u8, 101#u8, 110#u8, 116#u8,
+        66#u8, 121#u8, 73#u8, 100#u8, 40#u8, 39#u8, 115#u8, 116#u8, 97#u8,
+        116#u8, 45#u8, 115#u8, 116#u8, 111#u8, 114#u8, 97#u8, 103#u8, 101#u8,
+        39#u8, 41#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8, 111#u8,
+        110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8, 115#u8,
+        105#u8, 122#u8, 101#u8, 83#u8, 116#u8, 114#u8, 59#u8, 10#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8
+        ]))
+  let out11 ← rendering.append out10 s11
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 47#u8, 47#u8, 32#u8, 85#u8, 112#u8, 100#u8, 97#u8,
+        116#u8, 101#u8, 32#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8, 111#u8, 110#u8,
+        115#u8, 116#u8, 32#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8,
+        32#u8, 61#u8, 32#u8, 100#u8, 111#u8, 99#u8, 117#u8, 109#u8, 101#u8,
+        110#u8, 116#u8, 46#u8, 103#u8, 101#u8, 116#u8, 69#u8, 108#u8, 101#u8,
+        109#u8, 101#u8, 110#u8, 116#u8, 66#u8, 121#u8, 73#u8, 100#u8, 40#u8,
+        39#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8, 39#u8, 41#u8,
+        59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8
+        ]))
+  let out12 ← rendering.append out11 s12
+  let s13 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 105#u8, 102#u8, 32#u8, 40#u8,
+        117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8, 41#u8, 32#u8, 123#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 99#u8, 111#u8, 110#u8, 115#u8, 116#u8, 32#u8, 115#u8, 101#u8,
+        99#u8, 115#u8, 32#u8, 61#u8, 32#u8, 100#u8, 97#u8, 116#u8, 97#u8,
+        46#u8, 117#u8, 112#u8, 116#u8, 105#u8, 109#u8, 101#u8, 95#u8, 115#u8,
+        101#u8, 99#u8, 111#u8, 110#u8, 100#u8, 115#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8,
+        111#u8
+        ]))
+  let out13 ← rendering.append out12 s13
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        110#u8, 115#u8, 116#u8, 32#u8, 104#u8, 111#u8, 117#u8, 114#u8, 115#u8,
+        32#u8, 61#u8, 32#u8, 77#u8, 97#u8, 116#u8, 104#u8, 46#u8, 102#u8,
+        108#u8, 111#u8, 111#u8, 114#u8, 40#u8, 115#u8, 101#u8, 99#u8, 115#u8,
+        32#u8, 47#u8, 32#u8, 51#u8, 54#u8, 48#u8, 48#u8, 41#u8, 59#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        99#u8, 111#u8, 110#u8, 115#u8, 116#u8, 32#u8, 109#u8, 105#u8, 110#u8,
+        115#u8, 32#u8, 61#u8, 32#u8, 77#u8, 97#u8, 116#u8, 104#u8, 46#u8,
+        102#u8, 108#u8, 111#u8, 111#u8, 114#u8, 40#u8, 40#u8, 115#u8, 101#u8,
+        99#u8, 115#u8, 32#u8, 37#u8, 32#u8, 51#u8, 54#u8, 48#u8, 48#u8, 41#u8,
+        32#u8, 47#u8
+        ]))
+  let out14 ← rendering.append out13 s14
+  let s15 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 54#u8, 48#u8, 41#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 117#u8, 112#u8, 116#u8,
+        105#u8, 109#u8, 101#u8, 46#u8, 116#u8, 101#u8, 120#u8, 116#u8, 67#u8,
+        111#u8, 110#u8, 116#u8, 101#u8, 110#u8, 116#u8, 32#u8, 61#u8, 32#u8,
+        104#u8, 111#u8, 117#u8, 114#u8, 115#u8, 32#u8, 43#u8, 32#u8, 39#u8,
+        104#u8, 32#u8, 39#u8, 32#u8, 43#u8, 32#u8, 109#u8, 105#u8, 110#u8,
+        115#u8, 32#u8, 43#u8, 32#u8, 39#u8, 109#u8, 39#u8, 59#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8
+        ]))
+  let out15 ← rendering.append out14 s15
+  let s16 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8, 32#u8,
+        99#u8, 97#u8, 116#u8, 99#u8, 104#u8, 32#u8, 40#u8, 101#u8, 41#u8,
+        32#u8, 123#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 99#u8,
+        111#u8, 110#u8, 115#u8, 111#u8, 108#u8, 101#u8, 46#u8, 101#u8, 114#u8,
+        114#u8, 111#u8, 114#u8, 40#u8, 39#u8, 68#u8, 97#u8, 115#u8, 104#u8,
+        98#u8, 111#u8, 97#u8, 114#u8, 100#u8, 32#u8, 112#u8, 111#u8, 108#u8,
+        108#u8, 32#u8, 102#u8, 97#u8, 105#u8, 108#u8, 101#u8, 100#u8, 58#u8,
+        39#u8, 44#u8, 32#u8, 101#u8, 41#u8, 59#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8,
+        10#u8
+        ]))
+  let out16 ← rendering.append out15 s16
+  let s17 ←
+    lift (Array.to_slice
+      (Array.make 36#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 125#u8, 44#u8,
+        32#u8, 53#u8, 48#u8, 48#u8, 48#u8, 41#u8, 59#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 99#u8, 114#u8, 105#u8, 112#u8,
+        116#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8
+        ]))
+  rendering.append out16 s17
+
+/-- [nora_kernel::rendering::header_piece_0]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 128:0-128:337
+    Visibility: public -/
+def rendering.header_piece_0 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        104#u8, 101#u8, 97#u8, 100#u8, 101#u8, 114#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 104#u8, 45#u8, 49#u8, 54#u8,
+        32#u8, 98#u8, 103#u8, 45#u8, 91#u8, 35#u8, 49#u8, 101#u8, 50#u8, 57#u8,
+        51#u8, 98#u8, 93#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8,
+        114#u8, 45#u8, 98#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8,
+        114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8,
+        48#u8, 48#u8, 32#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+        116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 32#u8, 106#u8, 117#u8, 115#u8, 116#u8, 105#u8, 102#u8,
+        121#u8, 45#u8, 98#u8, 101#u8, 116#u8, 119#u8, 101#u8, 101#u8, 110#u8,
+        32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 109#u8, 100#u8, 58#u8,
+        112#u8, 120#u8, 45#u8, 54#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8,
+        101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8,
+        114#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 116#u8,
+        111#u8, 103#u8, 103#u8, 108#u8, 101#u8, 83#u8, 105#u8, 100#u8, 101#u8,
+        98#u8, 97#u8, 114#u8, 40#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 109#u8, 100#u8, 58#u8, 104#u8, 105#u8,
+        100#u8, 100#u8, 101#u8, 110#u8, 32#u8, 112#u8, 45#u8, 50#u8, 32#u8,
+        45#u8, 109#u8, 108#u8, 45#u8, 50#u8, 32#u8, 109#u8, 114#u8, 45#u8,
+        50#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 32#u8, 104#u8, 111#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_1]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 130:0-130:367
+    Visibility: public -/
+def rendering.header_piece_1 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        118#u8, 101#u8, 114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 34#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 119#u8, 45#u8, 54#u8, 32#u8, 104#u8, 45#u8,
+        54#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 51#u8, 48#u8, 48#u8, 34#u8, 32#u8,
+        102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8,
+        101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8,
+        67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8,
+        101#u8, 119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8,
+        48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8,
+        32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8,
+        105#u8, 110#u8, 101#u8, 99#u8, 97#u8, 112#u8, 61#u8, 34#u8, 114#u8,
+        111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8,
+        111#u8, 107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 106#u8,
+        111#u8, 105#u8, 110#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+        100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        45#u8, 119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8,
+        34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 52#u8, 32#u8, 54#u8, 104#u8,
+        49#u8, 54#u8, 77#u8, 52#u8, 32#u8, 49#u8, 50#u8, 104#u8, 49#u8, 54#u8,
+        77#u8, 52#u8, 32#u8, 49#u8, 56#u8, 104#u8, 49#u8, 54#u8, 34#u8, 47#u8,
+        62#u8, 10#u8, 32#u8, 32#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_2]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 132:0-132:331
+    Visibility: public -/
+def rendering.header_piece_2 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+        115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8,
+        110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+        100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 109#u8, 100#u8, 58#u8, 104#u8, 105#u8, 100#u8, 100#u8,
+        101#u8, 110#u8, 32#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+        116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8,
+        110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 98#u8, 111#u8, 108#u8, 100#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 116#u8, 114#u8,
+        97#u8, 99#u8, 107#u8, 105#u8, 110#u8, 103#u8, 45#u8, 116#u8, 105#u8,
+        103#u8, 104#u8, 116#u8, 34#u8, 62#u8, 78#u8, 60#u8, 115#u8, 112#u8,
+        97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 105#u8, 110#u8, 108#u8, 105#u8, 110#u8, 101#u8, 45#u8, 98#u8,
+        108#u8, 111#u8, 99#u8, 107#u8, 32#u8, 119#u8, 45#u8, 52#u8, 32#u8,
+        104#u8, 45#u8, 52#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8,
+        101#u8, 100#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 98#u8,
+        111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 50#u8, 32#u8, 98#u8,
+        111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 99#u8, 117#u8, 114#u8,
+        114#u8, 101#u8, 110#u8, 116#u8, 32#u8, 97#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_3]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 134:0-134:334
+    Visibility: public -/
+def rendering.header_piece_3 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        108#u8, 105#u8, 103#u8, 110#u8, 45#u8, 109#u8, 105#u8, 100#u8, 100#u8,
+        108#u8, 101#u8, 32#u8, 109#u8, 120#u8, 45#u8, 112#u8, 120#u8, 34#u8,
+        62#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 82#u8,
+        65#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8,
+        118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8,
+        118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 102#u8,
+        108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8,
+        45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 115#u8,
+        112#u8, 97#u8, 99#u8, 101#u8, 45#u8, 120#u8, 45#u8, 50#u8, 32#u8,
+        109#u8, 100#u8, 58#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 45#u8,
+        120#u8, 45#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 33#u8, 45#u8, 45#u8, 32#u8, 76#u8, 97#u8, 110#u8,
+        103#u8, 117#u8, 97#u8, 103#u8, 101#u8, 32#u8, 115#u8, 119#u8, 105#u8,
+        116#u8, 99#u8, 104#u8, 101#u8, 114#u8, 32#u8, 45#u8, 45#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8,
+        118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8,
+        115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8,
+        98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 32#u8, 98#u8, 111#u8,
+        114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 54#u8, 48#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_4]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 136:0-136:337
+    Visibility: public -/
+def rendering.header_piece_4 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 104#u8, 105#u8, 100#u8, 100#u8, 101#u8,
+        110#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+        34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8,
+        61#u8, 34#u8, 115#u8, 101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8,
+        40#u8, 39#u8, 101#u8, 110#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        51#u8, 32#u8, 112#u8, 121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 119#u8, 104#u8, 105#u8, 116#u8,
+        101#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 115#u8, 101#u8,
+        109#u8, 105#u8, 98#u8, 111#u8, 108#u8, 100#u8, 32#u8, 116#u8, 114#u8,
+        97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+        99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 69#u8,
+        78#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 54#u8,
+        48#u8, 48#u8, 34#u8, 62#u8, 124#u8, 60#u8, 47#u8, 115#u8, 112#u8,
+        97#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8,
+        111#u8, 110#u8, 32#u8, 111#u8, 110#u8, 99#u8, 108#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_5]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 138:0-138:340
+    Visibility: public -/
+def rendering.header_piece_5 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8, 101#u8, 116#u8, 76#u8,
+        97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 114#u8, 117#u8, 39#u8, 41#u8,
+        34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8, 121#u8, 45#u8, 49#u8,
+        46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8,
+        104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8,
+        48#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8,
+        114#u8, 115#u8, 34#u8, 62#u8, 82#u8, 85#u8, 60#u8, 47#u8, 98#u8,
+        117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+        112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 54#u8, 48#u8, 48#u8, 34#u8, 62#u8,
+        124#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8,
+        101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 122#u8,
+        104#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8,
+        121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8,
+        48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_6]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 140:0-140:359
+    Visibility: public -/
+def rendering.header_piece_6 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 260#usize [
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8,
+        110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8,
+        111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 228#u8, 184#u8,
+        173#u8, 230#u8, 150#u8, 135#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8,
+        116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8,
+        114#u8, 101#u8, 102#u8, 61#u8, 34#u8, 104#u8, 116#u8, 116#u8, 112#u8,
+        115#u8, 58#u8, 47#u8, 47#u8, 103#u8, 105#u8, 116#u8, 104#u8, 117#u8,
+        98#u8, 46#u8, 99#u8, 111#u8, 109#u8, 47#u8, 103#u8, 101#u8, 116#u8,
+        110#u8, 111#u8, 114#u8, 97#u8, 45#u8, 105#u8, 111#u8, 47#u8, 110#u8,
+        111#u8, 114#u8, 97#u8, 34#u8, 32#u8, 116#u8, 97#u8, 114#u8, 103#u8,
+        101#u8, 116#u8, 61#u8, 34#u8, 95#u8, 98#u8, 108#u8, 97#u8, 110#u8,
+        107#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 112#u8, 45#u8, 50#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8,
+        48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8,
+        114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+        110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 34#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_7]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 142:0-142:337
+    Visibility: public -/
+def rendering.header_piece_7 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8, 34#u8, 32#u8,
+        102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8,
+        114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8,
+        34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8, 66#u8, 111#u8, 120#u8,
+        61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8,
+        52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 112#u8,
+        97#u8, 116#u8, 104#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 45#u8,
+        114#u8, 117#u8, 108#u8, 101#u8, 61#u8, 34#u8, 101#u8, 118#u8, 101#u8,
+        110#u8, 111#u8, 100#u8, 100#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8,
+        77#u8, 49#u8, 50#u8, 32#u8, 50#u8, 67#u8, 54#u8, 46#u8, 52#u8, 55#u8,
+        55#u8, 32#u8, 50#u8, 32#u8, 50#u8, 32#u8, 54#u8, 46#u8, 52#u8, 56#u8,
+        52#u8, 32#u8, 50#u8, 32#u8, 49#u8, 50#u8, 46#u8, 48#u8, 49#u8, 55#u8,
+        99#u8, 48#u8, 32#u8, 52#u8, 46#u8, 52#u8, 50#u8, 53#u8, 32#u8, 50#u8,
+        46#u8, 56#u8, 54#u8, 53#u8, 32#u8, 56#u8, 46#u8, 49#u8, 56#u8, 32#u8,
+        54#u8, 46#u8, 56#u8, 51#u8, 57#u8, 32#u8, 57#u8, 46#u8, 53#u8, 48#u8,
+        52#u8, 46#u8, 53#u8, 46#u8, 48#u8, 57#u8, 50#u8, 46#u8, 54#u8, 56#u8,
+        50#u8, 45#u8, 46#u8, 50#u8, 49#u8, 55#u8, 46#u8, 54#u8, 56#u8, 50#u8,
+        45#u8, 46#u8, 52#u8, 56#u8, 51#u8, 32#u8, 48#u8, 45#u8, 46#u8, 50#u8,
+        51#u8, 55#u8, 45#u8, 46#u8, 48#u8, 48#u8, 56#u8, 45#u8, 46#u8, 56#u8,
+        54#u8, 56#u8, 45#u8, 46#u8, 48#u8, 49#u8, 51#u8, 45#u8, 49#u8, 46#u8,
+        55#u8, 48#u8, 51#u8, 45#u8, 50#u8, 46#u8, 55#u8, 56#u8, 50#u8, 46#u8,
+        54#u8, 48#u8, 53#u8, 45#u8, 51#u8, 46#u8, 51#u8, 54#u8, 57#u8, 45#u8,
+        49#u8, 46#u8, 51#u8, 52#u8, 51#u8, 45#u8, 51#u8, 46#u8, 51#u8, 54#u8,
+        57#u8, 45#u8, 49#u8, 46#u8, 51#u8, 52#u8, 51#u8, 45#u8, 46#u8, 52#u8,
+        53#u8, 52#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_8]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 144:0-144:307
+    Visibility: public -/
+def rendering.header_piece_8 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        45#u8, 49#u8, 46#u8, 49#u8, 53#u8, 56#u8, 45#u8, 49#u8, 46#u8, 49#u8,
+        49#u8, 45#u8, 49#u8, 46#u8, 52#u8, 54#u8, 54#u8, 45#u8, 49#u8, 46#u8,
+        49#u8, 49#u8, 45#u8, 49#u8, 46#u8, 52#u8, 54#u8, 54#u8, 45#u8, 46#u8,
+        57#u8, 48#u8, 56#u8, 45#u8, 46#u8, 54#u8, 50#u8, 46#u8, 48#u8, 54#u8,
+        57#u8, 45#u8, 46#u8, 54#u8, 48#u8, 56#u8, 46#u8, 48#u8, 54#u8, 57#u8,
+        45#u8, 46#u8, 54#u8, 48#u8, 56#u8, 32#u8, 49#u8, 46#u8, 48#u8, 48#u8,
+        51#u8, 46#u8, 48#u8, 55#u8, 32#u8, 49#u8, 46#u8, 53#u8, 51#u8, 49#u8,
+        32#u8, 49#u8, 46#u8, 48#u8, 51#u8, 50#u8, 32#u8, 49#u8, 46#u8, 53#u8,
+        51#u8, 49#u8, 32#u8, 49#u8, 46#u8, 48#u8, 51#u8, 50#u8, 46#u8, 56#u8,
+        57#u8, 50#u8, 32#u8, 49#u8, 46#u8, 53#u8, 51#u8, 32#u8, 50#u8, 46#u8,
+        51#u8, 52#u8, 49#u8, 32#u8, 49#u8, 46#u8, 48#u8, 56#u8, 56#u8, 32#u8,
+        50#u8, 46#u8, 57#u8, 49#u8, 46#u8, 56#u8, 51#u8, 50#u8, 46#u8, 48#u8,
+        57#u8, 50#u8, 45#u8, 46#u8, 54#u8, 52#u8, 55#u8, 46#u8, 51#u8, 53#u8,
+        45#u8, 49#u8, 46#u8, 48#u8, 56#u8, 56#u8, 46#u8, 54#u8, 51#u8, 54#u8,
+        45#u8, 49#u8, 46#u8, 51#u8, 51#u8, 56#u8, 45#u8, 50#u8, 46#u8, 50#u8,
+        50#u8, 45#u8, 46#u8, 50#u8, 53#u8, 51#u8, 45#u8, 52#u8, 46#u8, 53#u8,
+        53#u8, 53#u8, 45#u8, 49#u8, 46#u8, 49#u8, 49#u8, 51#u8, 45#u8, 52#u8,
+        46#u8, 53#u8, 53#u8, 53#u8, 45#u8, 52#u8, 46#u8, 57#u8, 53#u8, 49#u8,
+        32#u8, 48#u8, 45#u8, 49#u8, 46#u8, 48#u8, 57#u8, 51#u8, 46#u8, 51#u8,
+        57#u8, 45#u8, 49#u8, 46#u8, 57#u8, 56#u8, 56#u8, 32#u8, 49#u8, 46#u8,
+        48#u8, 50#u8, 57#u8, 45#u8, 50#u8, 46#u8, 54#u8, 56#u8, 56#u8, 45#u8,
+        46#u8, 49#u8, 48#u8, 51#u8, 45#u8, 46#u8, 50#u8, 53#u8, 51#u8, 45#u8,
+        46#u8, 52#u8, 52#u8, 54#u8, 45#u8, 49#u8, 46#u8, 50#u8, 55#u8, 50#u8,
+        46#u8, 48#u8, 57#u8, 56#u8, 45#u8, 50#u8, 46#u8, 54#u8, 53#u8, 32#u8,
+        48#u8, 32#u8, 48#u8, 32#u8, 46#u8, 56#u8, 52#u8, 45#u8, 46#u8, 50#u8,
+        55#u8, 32#u8, 50#u8, 46#u8, 55#u8, 53#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_9]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 146:0-146:307
+    Visibility: public -/
+def rendering.header_piece_9 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        32#u8, 49#u8, 46#u8, 48#u8, 50#u8, 54#u8, 65#u8, 57#u8, 46#u8, 53#u8,
+        54#u8, 52#u8, 32#u8, 57#u8, 46#u8, 53#u8, 54#u8, 52#u8, 32#u8, 48#u8,
+        32#u8, 48#u8, 49#u8, 49#u8, 50#u8, 32#u8, 54#u8, 46#u8, 56#u8, 52#u8,
+        52#u8, 99#u8, 46#u8, 56#u8, 53#u8, 46#u8, 48#u8, 48#u8, 52#u8, 32#u8,
+        49#u8, 46#u8, 55#u8, 48#u8, 53#u8, 46#u8, 49#u8, 49#u8, 53#u8, 32#u8,
+        50#u8, 46#u8, 53#u8, 48#u8, 52#u8, 46#u8, 51#u8, 51#u8, 55#u8, 32#u8,
+        49#u8, 46#u8, 57#u8, 48#u8, 57#u8, 45#u8, 49#u8, 46#u8, 50#u8, 57#u8,
+        54#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 55#u8, 45#u8, 49#u8, 46#u8,
+        48#u8, 50#u8, 55#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 55#u8, 45#u8,
+        49#u8, 46#u8, 48#u8, 50#u8, 55#u8, 46#u8, 53#u8, 52#u8, 54#u8, 32#u8,
+        49#u8, 46#u8, 51#u8, 55#u8, 57#u8, 46#u8, 50#u8, 48#u8, 50#u8, 32#u8,
+        50#u8, 46#u8, 51#u8, 57#u8, 56#u8, 46#u8, 49#u8, 32#u8, 50#u8, 46#u8,
+        54#u8, 53#u8, 49#u8, 46#u8, 54#u8, 52#u8, 46#u8, 55#u8, 32#u8, 49#u8,
+        46#u8, 48#u8, 50#u8, 56#u8, 32#u8, 49#u8, 46#u8, 53#u8, 57#u8, 53#u8,
+        32#u8, 49#u8, 46#u8, 48#u8, 50#u8, 56#u8, 32#u8, 50#u8, 46#u8, 54#u8,
+        56#u8, 56#u8, 32#u8, 48#u8, 32#u8, 51#u8, 46#u8, 56#u8, 52#u8, 56#u8,
+        45#u8, 50#u8, 46#u8, 51#u8, 51#u8, 57#u8, 32#u8, 52#u8, 46#u8, 54#u8,
+        57#u8, 53#u8, 45#u8, 52#u8, 46#u8, 53#u8, 54#u8, 54#u8, 32#u8, 52#u8,
+        46#u8, 57#u8, 52#u8, 51#u8, 46#u8, 51#u8, 53#u8, 57#u8, 46#u8, 51#u8,
+        48#u8, 57#u8, 46#u8, 54#u8, 55#u8, 56#u8, 46#u8, 57#u8, 50#u8, 46#u8,
+        54#u8, 55#u8, 56#u8, 32#u8, 49#u8, 46#u8, 56#u8, 53#u8, 53#u8, 32#u8,
+        48#u8, 32#u8, 49#u8, 46#u8, 51#u8, 51#u8, 56#u8, 45#u8, 46#u8, 48#u8,
+        49#u8, 50#u8, 32#u8, 50#u8, 46#u8, 52#u8, 49#u8, 57#u8, 45#u8, 46#u8,
+        48#u8, 49#u8, 50#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 55#u8, 32#u8,
+        48#u8, 32#u8, 46#u8, 50#u8, 54#u8, 56#u8, 46#u8, 49#u8, 56#u8, 46#u8,
+        53#u8, 56#u8, 46#u8, 54#u8, 56#u8, 56#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_10]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 148:0-148:341
+    Visibility: public -/
+def rendering.header_piece_10 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        46#u8, 52#u8, 56#u8, 50#u8, 65#u8, 49#u8, 48#u8, 46#u8, 48#u8, 49#u8,
+        57#u8, 32#u8, 49#u8, 48#u8, 46#u8, 48#u8, 49#u8, 57#u8, 32#u8, 48#u8,
+        32#u8, 48#u8, 48#u8, 50#u8, 50#u8, 32#u8, 49#u8, 50#u8, 46#u8, 48#u8,
+        49#u8, 55#u8, 67#u8, 50#u8, 50#u8, 32#u8, 54#u8, 46#u8, 52#u8, 56#u8,
+        52#u8, 32#u8, 49#u8, 55#u8, 46#u8, 53#u8, 50#u8, 50#u8, 32#u8, 50#u8,
+        32#u8, 49#u8, 50#u8, 32#u8, 50#u8, 122#u8, 34#u8, 32#u8, 99#u8, 108#u8,
+        105#u8, 112#u8, 45#u8, 114#u8, 117#u8, 108#u8, 101#u8, 61#u8, 34#u8,
+        101#u8, 118#u8, 101#u8, 110#u8, 111#u8, 100#u8, 100#u8, 34#u8, 47#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8,
+        104#u8, 114#u8, 101#u8, 102#u8, 61#u8, 34#u8, 47#u8, 97#u8, 112#u8,
+        105#u8, 45#u8, 100#u8, 111#u8, 99#u8, 115#u8, 34#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 45#u8, 50#u8,
+        32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8,
+        118#u8, 101#u8, 114#u8, 58#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+        115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8,
+        32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 98#u8, 103#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8,
+        48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 34#u8, 32#u8, 116#u8, 105#u8, 116#u8, 108#u8,
+        101#u8, 61#u8, 34#u8, 65#u8, 80#u8, 73#u8, 32#u8, 68#u8, 111#u8, 99#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_11]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 150:0-150:362
+    Visibility: public -/
+def rendering.header_piece_11 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        115#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 118#u8, 103#u8, 32#u8,
+        99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 119#u8, 45#u8,
+        53#u8, 32#u8, 104#u8, 45#u8, 53#u8, 34#u8, 32#u8, 102#u8, 105#u8,
+        108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8,
+        32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8,
+        99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+        108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8,
+        66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8, 50#u8,
+        52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 115#u8, 116#u8,
+        114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8,
+        99#u8, 97#u8, 112#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+        100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 106#u8, 111#u8, 105#u8, 110#u8,
+        61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8,
+        115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 119#u8, 105#u8,
+        100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8, 32#u8, 100#u8,
+        61#u8, 34#u8, 77#u8, 57#u8, 32#u8, 49#u8, 50#u8, 104#u8, 54#u8, 109#u8,
+        45#u8, 54#u8, 32#u8, 52#u8, 104#u8, 54#u8, 109#u8, 50#u8, 32#u8, 53#u8,
+        72#u8, 55#u8, 97#u8, 50#u8, 32#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+        49#u8, 45#u8, 50#u8, 45#u8, 50#u8, 86#u8, 53#u8, 97#u8, 50#u8, 32#u8,
+        50#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 50#u8, 45#u8, 50#u8, 104#u8,
+        53#u8, 46#u8, 53#u8, 56#u8, 54#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8,
+        48#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_12]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 152:0-152:220
+    Visibility: public -/
+def rendering.header_piece_12 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 150#usize [
+        32#u8, 48#u8, 49#u8, 46#u8, 55#u8, 48#u8, 55#u8, 46#u8, 50#u8, 57#u8,
+        51#u8, 108#u8, 53#u8, 46#u8, 52#u8, 49#u8, 52#u8, 32#u8, 53#u8, 46#u8,
+        52#u8, 49#u8, 52#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8,
+        48#u8, 49#u8, 46#u8, 50#u8, 57#u8, 51#u8, 46#u8, 55#u8, 48#u8, 55#u8,
+        86#u8, 49#u8, 57#u8, 97#u8, 50#u8, 32#u8, 50#u8, 32#u8, 48#u8, 32#u8,
+        48#u8, 49#u8, 45#u8, 50#u8, 32#u8, 50#u8, 122#u8, 34#u8, 47#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+        104#u8, 101#u8, 97#u8, 100#u8, 101#u8, 114#u8, 62#u8, 10#u8, 32#u8,
+        32#u8, 32#u8, 32#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_13]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 154:0-154:338
+    Visibility: public -/
+def rendering.header_piece_13 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        48#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8,
+        45#u8, 108#u8, 103#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+        108#u8, 111#u8, 119#u8, 45#u8, 104#u8, 105#u8, 100#u8, 100#u8, 101#u8,
+        110#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+        34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8,
+        110#u8, 32#u8, 111#u8, 110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8,
+        61#u8, 34#u8, 115#u8, 101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8,
+        40#u8, 39#u8, 101#u8, 110#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8,
+        108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+        51#u8, 32#u8, 112#u8, 121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8,
+        116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8,
+        101#u8, 114#u8, 58#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8,
+        116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+        110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8,
+        62#u8, 69#u8, 78#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8, 116#u8,
+        111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8, 110#u8,
+        32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 54#u8, 48#u8, 48#u8, 34#u8, 62#u8, 124#u8, 60#u8, 47#u8, 115#u8,
+        112#u8, 97#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_14]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 156:0-156:341
+    Visibility: public -/
+def rendering.header_piece_14 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8, 110#u8,
+        99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8, 101#u8,
+        116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 114#u8, 117#u8,
+        39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8, 121#u8,
+        45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 119#u8, 104#u8, 105#u8, 116#u8, 101#u8, 32#u8, 102#u8, 111#u8,
+        110#u8, 116#u8, 45#u8, 115#u8, 101#u8, 109#u8, 105#u8, 98#u8, 111#u8,
+        108#u8, 100#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8,
+        116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8,
+        114#u8, 115#u8, 34#u8, 62#u8, 82#u8, 85#u8, 60#u8, 47#u8, 98#u8,
+        117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+        112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8,
+        97#u8, 116#u8, 101#u8, 45#u8, 54#u8, 48#u8, 48#u8, 34#u8, 62#u8,
+        124#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8,
+        110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8,
+        101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 122#u8,
+        104#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8,
+        121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8,
+        48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_15]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 158:0-158:341
+    Visibility: public -/
+def rendering.header_piece_15 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 256#usize [
+        98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8, 110#u8,
+        99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 115#u8, 101#u8,
+        116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8, 39#u8, 114#u8, 117#u8,
+        39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+        61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8, 32#u8, 112#u8, 121#u8,
+        45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8,
+        48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8,
+        115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8,
+        108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 82#u8, 85#u8, 60#u8,
+        47#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+        115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 54#u8, 48#u8, 48#u8,
+        34#u8, 62#u8, 124#u8, 60#u8, 47#u8, 115#u8, 112#u8, 97#u8, 110#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8,
+        32#u8, 111#u8, 110#u8, 99#u8, 108#u8, 105#u8, 99#u8, 107#u8, 61#u8,
+        34#u8, 115#u8, 101#u8, 116#u8, 76#u8, 97#u8, 110#u8, 103#u8, 40#u8,
+        39#u8, 122#u8, 104#u8, 39#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8,
+        97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8, 51#u8,
+        32#u8, 112#u8, 121#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 119#u8, 104#u8, 105#u8, 116#u8, 101#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_piece_16]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 160:0-160:360
+    Visibility: public -/
+def rendering.header_piece_16 : Result (alloc.vec.Vec Std.U8) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 260#usize [
+        32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 115#u8, 101#u8, 109#u8,
+        105#u8, 98#u8, 111#u8, 108#u8, 100#u8, 32#u8, 116#u8, 114#u8, 97#u8,
+        110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8,
+        111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 34#u8, 62#u8, 228#u8, 184#u8,
+        173#u8, 230#u8, 150#u8, 135#u8, 60#u8, 47#u8, 98#u8, 117#u8, 116#u8,
+        116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8,
+        114#u8, 101#u8, 102#u8, 61#u8, 34#u8, 104#u8, 116#u8, 116#u8, 112#u8,
+        115#u8, 58#u8, 47#u8, 47#u8, 103#u8, 105#u8, 116#u8, 104#u8, 117#u8,
+        98#u8, 46#u8, 99#u8, 111#u8, 109#u8, 47#u8, 103#u8, 101#u8, 116#u8,
+        110#u8, 111#u8, 114#u8, 97#u8, 45#u8, 105#u8, 111#u8, 47#u8, 110#u8,
+        111#u8, 114#u8, 97#u8, 34#u8, 32#u8, 116#u8, 97#u8, 114#u8, 103#u8,
+        101#u8, 116#u8, 61#u8, 34#u8, 95#u8, 98#u8, 108#u8, 97#u8, 110#u8,
+        107#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 112#u8, 45#u8, 50#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8,
+        48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8,
+        101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 50#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8,
+        114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+        101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+        110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 34#u8, 62#u8,
+        10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+        115#u8, 115#u8, 61#u8
+        ]))
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [nora_kernel::rendering::header_dark]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 162:0-255:1
+    Visibility: public -/
+def rendering.header_dark
+  (lang : rendering.Lang) : Result (alloc.vec.Vec Std.U8) := do
+  match lang with
+  | rendering.Lang.En =>
+    let piece ← rendering.header_piece_0
+    let s := alloc.vec.Vec.deref piece
+    let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+    let piece1 ← rendering.header_piece_1
+    let s1 := alloc.vec.Vec.deref piece1
+    let out1 ← rendering.append out s1
+    let piece2 ← rendering.header_piece_2
+    let s2 := alloc.vec.Vec.deref piece2
+    let out2 ← rendering.append out1 s2
+    let piece3 ← rendering.header_piece_3
+    let s3 := alloc.vec.Vec.deref piece3
+    let out3 ← rendering.append out2 s3
+    let piece4 ← rendering.header_piece_4
+    let s4 := alloc.vec.Vec.deref piece4
+    let out4 ← rendering.append out3 s4
+    let piece5 ← rendering.header_piece_5
+    let s5 := alloc.vec.Vec.deref piece5
+    let out5 ← rendering.append out4 s5
+    let piece6 ← rendering.header_piece_6
+    let s6 := alloc.vec.Vec.deref piece6
+    let out6 ← rendering.append out5 s6
+    let piece7 ← rendering.header_piece_7
+    let s7 := alloc.vec.Vec.deref piece7
+    let out7 ← rendering.append out6 s7
+    let piece8 ← rendering.header_piece_8
+    let s8 := alloc.vec.Vec.deref piece8
+    let out8 ← rendering.append out7 s8
+    let piece9 ← rendering.header_piece_9
+    let s9 := alloc.vec.Vec.deref piece9
+    let out9 ← rendering.append out8 s9
+    let piece10 ← rendering.header_piece_10
+    let s10 := alloc.vec.Vec.deref piece10
+    let out10 ← rendering.append out9 s10
+    let piece11 ← rendering.header_piece_11
+    let s11 := alloc.vec.Vec.deref piece11
+    let out11 ← rendering.append out10 s11
+    let piece12 ← rendering.header_piece_12
+    let s12 := alloc.vec.Vec.deref piece12
+    rendering.append out11 s12
+  | rendering.Lang.Ru =>
+    let piece ← rendering.header_piece_0
+    let s := alloc.vec.Vec.deref piece
+    let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+    let piece1 ← rendering.header_piece_1
+    let s1 := alloc.vec.Vec.deref piece1
+    let out1 ← rendering.append out s1
+    let piece2 ← rendering.header_piece_2
+    let s2 := alloc.vec.Vec.deref piece2
+    let out2 ← rendering.append out1 s2
+    let piece3 ← rendering.header_piece_3
+    let s3 := alloc.vec.Vec.deref piece3
+    let out3 ← rendering.append out2 s3
+    let piece4 ← rendering.header_piece_13
+    let s4 := alloc.vec.Vec.deref piece4
+    let out4 ← rendering.append out3 s4
+    let piece5 ← rendering.header_piece_14
+    let s5 := alloc.vec.Vec.deref piece5
+    let out5 ← rendering.append out4 s5
+    let piece6 ← rendering.header_piece_6
+    let s6 := alloc.vec.Vec.deref piece6
+    let out6 ← rendering.append out5 s6
+    let piece7 ← rendering.header_piece_7
+    let s7 := alloc.vec.Vec.deref piece7
+    let out7 ← rendering.append out6 s7
+    let piece8 ← rendering.header_piece_8
+    let s8 := alloc.vec.Vec.deref piece8
+    let out8 ← rendering.append out7 s8
+    let piece9 ← rendering.header_piece_9
+    let s9 := alloc.vec.Vec.deref piece9
+    let out9 ← rendering.append out8 s9
+    let piece10 ← rendering.header_piece_10
+    let s10 := alloc.vec.Vec.deref piece10
+    let out10 ← rendering.append out9 s10
+    let piece11 ← rendering.header_piece_11
+    let s11 := alloc.vec.Vec.deref piece11
+    let out11 ← rendering.append out10 s11
+    let piece12 ← rendering.header_piece_12
+    let s12 := alloc.vec.Vec.deref piece12
+    rendering.append out11 s12
+  | rendering.Lang.Zh =>
+    let piece ← rendering.header_piece_0
+    let s := alloc.vec.Vec.deref piece
+    let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+    let piece1 ← rendering.header_piece_1
+    let s1 := alloc.vec.Vec.deref piece1
+    let out1 ← rendering.append out s1
+    let piece2 ← rendering.header_piece_2
+    let s2 := alloc.vec.Vec.deref piece2
+    let out2 ← rendering.append out1 s2
+    let piece3 ← rendering.header_piece_3
+    let s3 := alloc.vec.Vec.deref piece3
+    let out3 ← rendering.append out2 s3
+    let piece4 ← rendering.header_piece_13
+    let s4 := alloc.vec.Vec.deref piece4
+    let out4 ← rendering.append out3 s4
+    let piece5 ← rendering.header_piece_15
+    let s5 := alloc.vec.Vec.deref piece5
+    let out5 ← rendering.append out4 s5
+    let piece6 ← rendering.header_piece_16
+    let s6 := alloc.vec.Vec.deref piece6
+    let out6 ← rendering.append out5 s6
+    let piece7 ← rendering.header_piece_7
+    let s7 := alloc.vec.Vec.deref piece7
+    let out7 ← rendering.append out6 s7
+    let piece8 ← rendering.header_piece_8
+    let s8 := alloc.vec.Vec.deref piece8
+    let out8 ← rendering.append out7 s8
+    let piece9 ← rendering.header_piece_9
+    let s9 := alloc.vec.Vec.deref piece9
+    let out9 ← rendering.append out8 s9
+    let piece10 ← rendering.header_piece_10
+    let s10 := alloc.vec.Vec.deref piece10
+    let out10 ← rendering.append out9 s10
+    let piece11 ← rendering.header_piece_11
+    let s11 := alloc.vec.Vec.deref piece11
+    let out11 ← rendering.append out10 s11
+    let piece12 ← rendering.header_piece_12
+    let s12 := alloc.vec.Vec.deref piece12
+    rendering.append out11 s12
+
+/-- [nora_kernel::rendering::registry_search_bar]:
+    Source: 'prove/ports/nora/kernel/src/rendering.rs', lines 257:0-272:1
+    Visibility: public -/
+def rendering.registry_search_bar
+  (registry : Slice Std.U8) (placeholder : Slice Std.U8) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+        115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+        116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+        101#u8, 114#u8, 32#u8, 106#u8, 117#u8, 115#u8, 116#u8, 105#u8, 102#u8,
+        121#u8, 45#u8, 101#u8, 110#u8, 100#u8, 32#u8, 109#u8, 98#u8, 45#u8,
+        52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8,
+        118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        114#u8, 101#u8, 108#u8, 97#u8, 116#u8, 105#u8, 118#u8, 101#u8, 32#u8,
+        119#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 109#u8, 100#u8,
+        58#u8, 119#u8, 45#u8, 97#u8, 117#u8
+        ]))
+  let out ← rendering.append (alloc.vec.Vec.new Std.U8) s
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 53#usize [
+        116#u8, 111#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 60#u8, 105#u8, 110#u8, 112#u8, 117#u8, 116#u8, 32#u8, 116#u8,
+        121#u8, 112#u8, 101#u8, 61#u8, 34#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+        34#u8, 32#u8, 112#u8, 108#u8, 97#u8, 99#u8, 101#u8, 104#u8, 111#u8,
+        108#u8, 100#u8, 101#u8, 114#u8, 61#u8, 34#u8
+        ]))
+  let out1 ← rendering.append out s1
+  let out2 ← rendering.append out1 placeholder
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        34#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+        119#u8, 45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 109#u8, 100#u8,
+        58#u8, 119#u8, 45#u8, 97#u8, 117#u8, 116#u8, 111#u8, 32#u8, 112#u8,
+        108#u8, 45#u8, 49#u8, 48#u8, 32#u8, 112#u8, 114#u8, 45#u8, 52#u8,
+        32#u8, 112#u8, 121#u8, 45#u8, 50#u8, 32#u8, 98#u8, 103#u8, 45#u8,
+        115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 56#u8, 48#u8, 48#u8,
+        32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 32#u8, 98#u8,
+        111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+        116#u8, 101#u8, 45#u8, 54#u8
+        ]))
+  let out3 ← rendering.append out2 s2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        48#u8, 48#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+        108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 50#u8, 48#u8, 48#u8, 32#u8,
+        114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8,
+        103#u8, 32#u8, 102#u8, 111#u8, 99#u8, 117#u8, 115#u8, 58#u8, 111#u8,
+        117#u8, 116#u8, 108#u8, 105#u8, 110#u8, 101#u8, 45#u8, 110#u8, 111#u8,
+        110#u8, 101#u8, 32#u8, 102#u8, 111#u8, 99#u8, 117#u8, 115#u8, 58#u8,
+        114#u8, 105#u8, 110#u8, 103#u8, 45#u8, 50#u8, 32#u8, 102#u8, 111#u8,
+        99#u8, 117#u8, 115#u8, 58#u8, 114#u8, 105#u8, 110#u8, 103#u8, 45#u8,
+        98#u8, 108#u8, 117#u8, 101#u8, 45#u8, 53#u8, 48#u8, 48#u8, 32#u8,
+        102#u8, 111#u8, 99#u8, 117#u8, 115#u8, 58#u8, 98#u8, 111#u8, 114#u8,
+        100#u8, 101#u8, 114#u8, 45#u8, 116#u8, 114#u8
+        ]))
+  let out4 ← rendering.append out3 s3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 69#usize [
+        97#u8, 110#u8, 115#u8, 112#u8, 97#u8, 114#u8, 101#u8, 110#u8, 116#u8,
+        32#u8, 112#u8, 108#u8, 97#u8, 99#u8, 101#u8, 104#u8, 111#u8, 108#u8,
+        100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+        45#u8, 53#u8, 48#u8, 48#u8, 34#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 104#u8, 120#u8, 45#u8,
+        103#u8, 101#u8, 116#u8, 61#u8, 34#u8, 47#u8, 97#u8, 112#u8, 105#u8,
+        47#u8, 117#u8, 105#u8, 47#u8
+        ]))
+  let out5 ← rendering.append out4 s4
+  let out6 ← rendering.append out5 registry
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        47#u8, 115#u8, 101#u8, 97#u8, 114#u8, 99#u8, 104#u8, 34#u8, 32#u8,
+        104#u8, 120#u8, 45#u8, 116#u8, 114#u8, 105#u8, 103#u8, 103#u8, 101#u8,
+        114#u8, 61#u8, 34#u8, 107#u8, 101#u8, 121#u8, 117#u8, 112#u8, 32#u8,
+        99#u8, 104#u8, 97#u8, 110#u8, 103#u8, 101#u8, 100#u8, 32#u8, 100#u8,
+        101#u8, 108#u8, 97#u8, 121#u8, 58#u8, 51#u8, 48#u8, 48#u8, 109#u8,
+        115#u8, 34#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 104#u8, 120#u8, 45#u8, 116#u8, 97#u8, 114#u8,
+        103#u8, 101#u8, 116#u8, 61#u8, 34#u8, 35#u8, 114#u8, 101#u8, 112#u8,
+        111#u8, 45#u8, 116#u8, 97#u8, 98#u8, 108#u8, 101#u8, 45#u8, 98#u8,
+        111#u8, 100#u8, 121#u8, 34#u8
+        ]))
+  let out7 ← rendering.append out6 s5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        32#u8, 110#u8, 97#u8, 109#u8, 101#u8, 61#u8, 34#u8, 113#u8, 34#u8,
+        62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+        118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+        34#u8, 97#u8, 98#u8, 115#u8, 111#u8, 108#u8, 117#u8, 116#u8, 101#u8,
+        32#u8, 108#u8, 101#u8, 102#u8, 116#u8, 45#u8, 51#u8, 32#u8, 116#u8,
+        111#u8, 112#u8, 45#u8, 50#u8, 46#u8, 53#u8, 32#u8, 104#u8, 45#u8,
+        53#u8, 32#u8, 119#u8, 45#u8, 53#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+        116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 53#u8,
+        48#u8, 48#u8, 34#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8,
+        34#u8, 110#u8, 111#u8, 110#u8
+        ]))
+  let out8 ← rendering.append out7 s6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8,
+        61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8,
+        67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8,
+        101#u8, 119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8,
+        48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 60#u8,
+        112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8,
+        107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 99#u8, 97#u8,
+        112#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8,
+        32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8,
+        105#u8, 110#u8, 101#u8, 106#u8, 111#u8, 105#u8, 110#u8, 61#u8, 34#u8,
+        114#u8, 111#u8, 117#u8, 110#u8, 100#u8
+        ]))
+  let out9 ← rendering.append out8 s7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 96#usize [
+        34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8,
+        119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8,
+        32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 50#u8, 49#u8, 32#u8, 50#u8, 49#u8,
+        108#u8, 45#u8, 54#u8, 45#u8, 54#u8, 109#u8, 50#u8, 45#u8, 53#u8, 97#u8,
+        55#u8, 32#u8, 55#u8, 32#u8, 48#u8, 32#u8, 49#u8, 49#u8, 45#u8, 49#u8,
+        52#u8, 32#u8, 48#u8, 32#u8, 55#u8, 32#u8, 55#u8, 32#u8, 48#u8, 32#u8,
+        48#u8, 49#u8, 49#u8, 52#u8, 32#u8, 48#u8, 122#u8, 34#u8, 47#u8, 62#u8,
+        60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+        60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8, 32#u8
+        ]))
+  let out10 ← rendering.append out9 s8
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 12#usize [
+        32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8,
+        118#u8, 62#u8
+        ]))
+  rendering.append out10 s9
+
+/-- [nora_kernel::sidebar::Enabled]
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 3:0-3:289
+    Visibility: public -/
+structure sidebar.Enabled where
+  docker : Bool
+  maven : Bool
+  npm : Bool
+  cargo : Bool
+  pypi : Bool
+  raw : Bool
+  go : Bool
+  gems : Bool
+  terraform : Bool
+  ansible : Bool
+  nuget : Bool
+  pub_dart : Bool
+  conan : Bool
+  rpm : Bool
+  deb : Bool
+  cpan : Bool
+
+/-- [nora_kernel::sidebar::Translations]
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 4:0-4:108
+    Visibility: public -/
+structure sidebar.Translations where
+  nav_dashboard : alloc.vec.Vec Std.U8
+  nav_registries : alloc.vec.Vec Std.U8
+  nav_tokens : alloc.vec.Vec Std.U8
+
+/-- [nora_kernel::sidebar::input]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 5:0-5:92
+    Visibility: public -/
+def sidebar.input
+  (keep : Bool) (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::is_active]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 6:0-6:67
+    Visibility: public -/
+def sidebar.is_active
+  (active : Slice Std.U8) (id : Slice Std.U8) : Result Bool := do
+  core.slice.cmp.PartialEqSlice.eq core.cmp.PartialEqU8 active id
+
+/-- [nora_kernel::sidebar::has_registries]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 7:0-7:215
+    Visibility: public -/
+def sidebar.has_registries (e : sidebar.Enabled) : Result Bool := do
+  if e.docker
+  then ok true
+  else
+    if e.maven
+    then ok true
+    else
+      if e.npm
+      then ok true
+      else
+        if e.cargo
+        then ok true
+        else
+          if e.pypi
+          then ok true
+          else
+            if e.raw
+            then ok true
+            else
+              if e.go
+              then ok true
+              else
+                if e.gems
+                then ok true
+                else
+                  if e.terraform
+                  then ok true
+                  else
+                    if e.ansible
+                    then ok true
+                    else
+                      if e.nuget
+                      then ok true
+                      else
+                        if e.pub_dart
+                        then ok true
+                        else
+                          if e.conan
+                          then ok true
+                          else
+                            if e.rpm
+                            then ok true
+                            else if e.deb
+                                 then ok true
+                                 else ok e.cpan
+
+/-- [nora_kernel::sidebar::active_class]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 8:0-8:616
+    Visibility: public -/
+def sidebar.active_class
+  (keep : Bool) (active : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    if active
+    then
+      let s ←
+        lift (Array.to_slice
+          (Array.make 23#usize [
+            98#u8, 103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8,
+            55#u8, 48#u8, 48#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+            119#u8, 104#u8, 105#u8, 116#u8, 101#u8
+            ]))
+      alloc.slice.Slice.to_vec core.clone.CloneU8 s
+    else
+      let s ←
+        lift (Array.to_slice
+          (Array.make 50#usize [
+            116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8,
+            116#u8, 101#u8, 45#u8, 51#u8, 48#u8, 48#u8, 32#u8, 104#u8, 111#u8,
+            118#u8, 101#u8, 114#u8, 58#u8, 98#u8, 103#u8, 45#u8, 115#u8,
+            108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8,
+            104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 116#u8, 101#u8,
+            120#u8, 116#u8, 45#u8, 119#u8, 104#u8, 105#u8, 116#u8, 101#u8
+            ]))
+      alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_0]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 9:0-9:921
+    Visibility: public -/
+def sidebar.piece_0 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          100#u8, 105#u8, 118#u8, 32#u8, 105#u8, 100#u8, 61#u8, 34#u8, 115#u8,
+          105#u8, 100#u8, 101#u8, 98#u8, 97#u8, 114#u8, 34#u8, 32#u8, 99#u8,
+          108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 105#u8, 120#u8,
+          101#u8, 100#u8, 32#u8, 109#u8, 100#u8, 58#u8, 115#u8, 116#u8, 97#u8,
+          116#u8, 105#u8, 99#u8, 32#u8, 105#u8, 110#u8, 115#u8, 101#u8, 116#u8,
+          45#u8, 121#u8, 45#u8, 48#u8, 32#u8, 108#u8, 101#u8, 102#u8, 116#u8,
+          45#u8, 48#u8, 32#u8, 122#u8, 45#u8, 53#u8, 48#u8, 32#u8, 119#u8,
+          45#u8, 54#u8, 52#u8, 32#u8, 98#u8, 103#u8, 45#u8, 115#u8, 108#u8,
+          97#u8, 116#u8, 101#u8, 45#u8, 56#u8, 48#u8, 48#u8, 32#u8, 116#u8,
+          101#u8, 120#u8, 116#u8, 45#u8, 119#u8, 104#u8, 105#u8, 116#u8,
+          101#u8, 32#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 102#u8, 108#u8,
+          101#u8, 120#u8, 45#u8, 99#u8, 111#u8, 108#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 102#u8, 111#u8, 114#u8, 109#u8, 32#u8, 45#u8,
+          116#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_1]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 10:0-10:925
+    Visibility: public -/
+def sidebar.piece_1 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          97#u8, 110#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 120#u8,
+          45#u8, 102#u8, 117#u8, 108#u8, 108#u8, 32#u8, 109#u8, 100#u8, 58#u8,
+          116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8,
+          45#u8, 120#u8, 45#u8, 48#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8,
+          115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 116#u8,
+          114#u8, 97#u8, 110#u8, 115#u8, 102#u8, 111#u8, 114#u8, 109#u8, 32#u8,
+          100#u8, 117#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          50#u8, 48#u8, 48#u8, 32#u8, 101#u8, 97#u8, 115#u8, 101#u8, 45#u8,
+          105#u8, 110#u8, 45#u8, 111#u8, 117#u8, 116#u8, 34#u8, 62#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8,
+          97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 104#u8, 45#u8, 49#u8, 54#u8,
+          32#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 106#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_2]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 11:0-11:905
+    Visibility: public -/
+def sidebar.piece_2 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          117#u8, 115#u8, 116#u8, 105#u8, 102#u8, 121#u8, 45#u8, 98#u8, 101#u8,
+          116#u8, 119#u8, 101#u8, 101#u8, 110#u8, 32#u8, 112#u8, 120#u8, 45#u8,
+          54#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8,
+          98#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8,
+          115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8,
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8,
+          101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8,
+          114#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 112#u8, 97#u8,
+          110#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_3]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 12:0-12:933
+    Visibility: public -/
+def sidebar.piece_3 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          34#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 120#u8, 108#u8, 32#u8,
+          102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 98#u8, 111#u8, 108#u8, 100#u8,
+          32#u8, 116#u8, 114#u8, 97#u8, 99#u8, 107#u8, 105#u8, 110#u8, 103#u8,
+          45#u8, 116#u8, 105#u8, 103#u8, 104#u8, 116#u8, 34#u8, 62#u8, 78#u8,
+          60#u8, 115#u8, 112#u8, 97#u8, 110#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+          115#u8, 115#u8, 61#u8, 34#u8, 105#u8, 110#u8, 108#u8, 105#u8, 110#u8,
+          101#u8, 45#u8, 98#u8, 108#u8, 111#u8, 99#u8, 107#u8, 32#u8, 119#u8,
+          45#u8, 52#u8, 32#u8, 104#u8, 45#u8, 52#u8, 32#u8, 114#u8, 111#u8,
+          117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 102#u8, 117#u8,
+          108#u8, 108#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8,
+          45#u8, 50#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8,
+          45#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 32#u8,
+          97#u8, 108#u8, 105#u8, 103#u8, 110#u8, 45#u8, 109#u8, 105#u8, 100#u8,
+          100#u8, 108#u8, 101#u8, 32#u8, 109#u8, 120#u8, 45#u8, 112#u8, 120#u8,
+          34#u8, 62#u8, 60#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_4]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 13:0-13:906
+    Visibility: public -/
+def sidebar.piece_4 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 82#u8, 65#u8, 60#u8,
+          47#u8, 115#u8, 112#u8, 97#u8, 110#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 98#u8,
+          117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 32#u8, 111#u8, 110#u8, 99#u8,
+          108#u8, 105#u8, 99#u8, 107#u8, 61#u8, 34#u8, 116#u8, 111#u8, 103#u8,
+          103#u8, 108#u8, 101#u8, 83#u8, 105#u8, 100#u8, 101#u8, 98#u8, 97#u8,
+          114#u8, 40#u8, 41#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+          115#u8, 61#u8, 34#u8, 109#u8, 100#u8, 58#u8, 104#u8, 105#u8, 100#u8,
+          100#u8, 101#u8, 110#u8, 32#u8, 112#u8, 45#u8, 49#u8, 32#u8, 114#u8,
+          111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8,
+          103#u8, 32#u8, 104#u8, 111#u8, 118#u8, 101#u8, 114#u8, 58#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_5]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 14:0-14:894
+    Visibility: public -/
+def sidebar.piece_5 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          103#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8,
+          48#u8, 48#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8, 118#u8, 103#u8,
+          32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 119#u8,
+          45#u8, 54#u8, 32#u8, 104#u8, 45#u8, 54#u8, 34#u8, 32#u8, 102#u8,
+          105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8,
+          34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8,
+          34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8,
+          111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8, 101#u8,
+          119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8, 48#u8,
+          32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_6]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 15:0-15:905
+    Visibility: public -/
+def sidebar.piece_6 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 112#u8, 97#u8,
+          116#u8, 104#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8,
+          101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 99#u8, 97#u8, 112#u8,
+          61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8,
+          115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8,
+          105#u8, 110#u8, 101#u8, 106#u8, 111#u8, 105#u8, 110#u8, 61#u8, 34#u8,
+          114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8, 115#u8, 116#u8,
+          114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 119#u8, 105#u8, 100#u8,
+          116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8, 32#u8, 100#u8, 61#u8,
+          34#u8, 77#u8, 54#u8, 32#u8, 49#u8, 56#u8, 76#u8, 49#u8, 56#u8, 32#u8,
+          54#u8, 77#u8, 54#u8, 32#u8, 54#u8, 108#u8, 49#u8, 50#u8, 32#u8,
+          49#u8, 50#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8,
+          118#u8, 103#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_7]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 16:0-16:888
+    Visibility: public -/
+def sidebar.piece_7 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          98#u8, 117#u8, 116#u8, 116#u8, 111#u8, 110#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 60#u8, 110#u8, 97#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+          115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 45#u8,
+          49#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8,
+          45#u8, 54#u8, 32#u8, 115#u8, 112#u8, 97#u8, 99#u8, 101#u8, 45#u8,
+          121#u8, 45#u8, 49#u8, 32#u8, 111#u8, 118#u8, 101#u8, 114#u8, 102#u8,
+          108#u8, 111#u8, 119#u8, 45#u8, 121#u8, 45#u8, 97#u8, 117#u8, 116#u8,
+          111#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_8]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 17:0-17:107
+    Visibility: public -/
+def sidebar.piece_8 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let a := Array.repeat 4#usize 32#u8
+    let s ← lift (Array.to_slice a)
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_9]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 18:0-18:185
+    Visibility: public -/
+def sidebar.piece_9 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 17#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_10]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 19:0-19:899
+    Visibility: public -/
+def sidebar.piece_10 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 110#u8, 97#u8, 118#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8,
+          108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 112#u8, 120#u8, 45#u8,
+          52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 52#u8, 32#u8, 98#u8, 111#u8,
+          114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 116#u8, 32#u8, 98#u8, 111#u8,
+          114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8,
+          101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 34#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8,
+          32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+          101#u8, 120#u8, 116#u8, 45#u8, 120#u8, 115#u8, 32#u8, 116#u8, 101#u8,
+          120#u8, 116#u8, 45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_11]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 20:0-20:285
+    Visibility: public -/
+def sidebar.piece_11 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 33#usize [
+          45#u8, 52#u8, 48#u8, 48#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 78#u8, 111#u8,
+          114#u8, 97#u8, 32#u8, 118#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_12]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 21:0-21:465
+    Visibility: public -/
+def sidebar.piece_12 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 62#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_13]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 22:0-22:822
+    Visibility: public -/
+def sidebar.piece_13 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 112#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 34#u8, 32#u8,
+          99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 108#u8,
+          101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8,
+          99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 112#u8, 120#u8,
+          45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 116#u8,
+          101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8, 32#u8, 102#u8, 111#u8,
+          110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8, 105#u8, 117#u8,
+          109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8,
+          100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8,
+          115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_14]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 23:0-23:897
+    Visibility: public -/
+def sidebar.piece_14 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8,
+          32#u8, 109#u8, 114#u8, 45#u8, 51#u8, 34#u8, 32#u8, 102#u8, 105#u8,
+          108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8,
+          32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8,
+          99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8,
+          66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8,
+          50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 115#u8, 116#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_15]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 24:0-24:906
+    Visibility: public -/
+def sidebar.piece_15 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8,
+          101#u8, 99#u8, 97#u8, 112#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8,
+          110#u8, 100#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8,
+          101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 106#u8, 111#u8,
+          105#u8, 110#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8,
+          34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8,
+          119#u8, 105#u8, 100#u8, 116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8,
+          32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 51#u8, 32#u8, 49#u8, 50#u8,
+          108#u8, 50#u8, 45#u8, 50#u8, 109#u8, 48#u8, 32#u8, 48#u8, 108#u8,
+          55#u8, 45#u8, 55#u8, 32#u8, 55#u8, 32#u8, 55#u8, 77#u8, 53#u8, 32#u8,
+          49#u8, 48#u8, 118#u8, 49#u8, 48#u8, 97#u8, 49#u8, 32#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 49#u8, 32#u8, 49#u8, 104#u8,
+          51#u8, 109#u8, 49#u8, 48#u8, 45#u8, 49#u8, 49#u8, 108#u8, 50#u8,
+          32#u8, 50#u8, 109#u8, 45#u8, 50#u8, 45#u8, 50#u8, 118#u8, 49#u8,
+          48#u8, 97#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_16]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 25:0-25:838
+    Visibility: public -/
+def sidebar.piece_16 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 124#usize [
+          32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8, 32#u8,
+          49#u8, 104#u8, 45#u8, 51#u8, 109#u8, 45#u8, 54#u8, 32#u8, 48#u8,
+          97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 49#u8,
+          45#u8, 49#u8, 118#u8, 45#u8, 52#u8, 97#u8, 49#u8, 32#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 49#u8, 45#u8, 49#u8, 104#u8,
+          50#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8,
+          49#u8, 32#u8, 49#u8, 118#u8, 52#u8, 97#u8, 49#u8, 32#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 49#u8, 32#u8, 49#u8, 109#u8,
+          45#u8, 54#u8, 32#u8, 48#u8, 104#u8, 54#u8, 34#u8, 47#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_17]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 26:0-26:240
+    Visibility: public -/
+def sidebar.piece_17 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 26#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_18]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 27:0-27:863
+    Visibility: public -/
+def sidebar.piece_18 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 118#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 100#u8, 111#u8,
+          99#u8, 107#u8, 101#u8, 114#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+          115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8,
+          105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8,
+          116#u8, 101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8,
+          112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8,
+          45#u8, 115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8,
+          109#u8, 101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8,
+          111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8,
+          103#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8,
+          115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_19]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 28:0-28:897
+    Visibility: public -/
+def sidebar.piece_19 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8,
+          32#u8, 109#u8, 114#u8, 45#u8, 51#u8, 34#u8, 32#u8, 102#u8, 105#u8,
+          108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+          110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8,
+          118#u8, 105#u8, 101#u8, 119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8,
+          48#u8, 32#u8, 48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 102#u8,
+          105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8,
+          101#u8, 110#u8, 116#u8, 67#u8, 111#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_20]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 29:0-29:858
+    Visibility: public -/
+def sidebar.piece_20 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          51#u8, 46#u8, 57#u8, 56#u8, 51#u8, 32#u8, 49#u8, 49#u8, 46#u8, 48#u8,
+          55#u8, 56#u8, 104#u8, 50#u8, 46#u8, 49#u8, 49#u8, 57#u8, 97#u8,
+          46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 48#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 86#u8, 57#u8, 46#u8, 48#u8, 48#u8, 54#u8, 97#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 54#u8, 104#u8, 45#u8, 50#u8, 46#u8, 49#u8, 49#u8, 57#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 118#u8, 49#u8, 46#u8, 56#u8, 56#u8, 56#u8,
+          99#u8, 48#u8, 32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8, 56#u8,
+          51#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_21]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 30:0-30:856
+    Visibility: public -/
+def sidebar.piece_21 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 109#u8, 45#u8, 50#u8, 46#u8, 57#u8, 53#u8, 52#u8, 45#u8,
+          53#u8, 46#u8, 52#u8, 51#u8, 104#u8, 50#u8, 46#u8, 49#u8, 49#u8,
+          56#u8, 97#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8,
+          46#u8, 49#u8, 56#u8, 54#u8, 86#u8, 51#u8, 46#u8, 53#u8, 55#u8, 52#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8,
+          46#u8, 49#u8, 56#u8, 53#u8, 104#u8, 45#u8, 50#u8, 46#u8, 49#u8,
+          49#u8, 56#u8, 97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 118#u8, 49#u8, 46#u8, 56#u8,
+          56#u8, 56#u8, 99#u8, 48#u8, 32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8,
+          48#u8, 56#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_22]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 31:0-31:856
+    Visibility: public -/
+def sidebar.piece_22 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          50#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 109#u8, 48#u8, 32#u8, 50#u8, 46#u8, 55#u8,
+          49#u8, 54#u8, 104#u8, 50#u8, 46#u8, 49#u8, 49#u8, 56#u8, 97#u8,
+          46#u8, 49#u8, 56#u8, 55#u8, 46#u8, 49#u8, 56#u8, 55#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 48#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 54#u8, 86#u8, 54#u8, 46#u8, 50#u8, 57#u8, 97#u8, 46#u8, 49#u8,
+          56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 104#u8, 45#u8, 50#u8, 46#u8, 49#u8, 49#u8, 56#u8, 97#u8,
+          46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 118#u8, 49#u8, 46#u8, 56#u8, 56#u8, 55#u8, 99#u8,
+          48#u8, 32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8, 56#u8, 50#u8,
+          46#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_23]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 32:0-32:855
+    Visibility: public -/
+def sidebar.piece_23 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 54#u8,
+          109#u8, 45#u8, 50#u8, 46#u8, 57#u8, 51#u8, 32#u8, 48#u8, 104#u8,
+          50#u8, 46#u8, 49#u8, 50#u8, 97#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 46#u8, 49#u8,
+          56#u8, 52#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 86#u8, 54#u8, 46#u8,
+          50#u8, 57#u8, 97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8, 72#u8, 56#u8, 46#u8, 49#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 118#u8, 49#u8, 46#u8, 56#u8, 56#u8, 55#u8,
+          99#u8, 48#u8, 32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8, 56#u8,
+          51#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_24]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 33:0-33:855
+    Visibility: public -/
+def sidebar.piece_24 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          49#u8, 56#u8, 54#u8, 109#u8, 45#u8, 50#u8, 46#u8, 57#u8, 54#u8,
+          52#u8, 32#u8, 48#u8, 104#u8, 50#u8, 46#u8, 49#u8, 49#u8, 57#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 46#u8, 49#u8, 56#u8, 53#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 86#u8, 54#u8, 46#u8, 50#u8, 57#u8, 97#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 72#u8, 53#u8, 46#u8, 49#u8, 51#u8, 54#u8, 97#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 118#u8, 49#u8, 46#u8, 56#u8, 56#u8, 55#u8, 99#u8, 48#u8,
+          32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8, 56#u8, 52#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8,
+          54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_25]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 34:0-34:856
+    Visibility: public -/
+def sidebar.piece_25 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          109#u8, 53#u8, 46#u8, 56#u8, 57#u8, 51#u8, 32#u8, 50#u8, 46#u8,
+          55#u8, 49#u8, 53#u8, 104#u8, 50#u8, 46#u8, 49#u8, 49#u8, 56#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 86#u8, 57#u8, 46#u8, 48#u8, 48#u8, 54#u8, 97#u8,
+          46#u8, 49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 54#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 104#u8, 45#u8, 50#u8, 46#u8, 49#u8, 49#u8,
+          56#u8, 97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8,
+          46#u8, 49#u8, 56#u8, 53#u8, 118#u8, 49#u8, 46#u8, 56#u8, 56#u8,
+          56#u8, 99#u8, 48#u8, 32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8,
+          56#u8, 50#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8,
+          46#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_26]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 35:0-35:857
+    Visibility: public -/
+def sidebar.piece_26 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          56#u8, 53#u8, 109#u8, 45#u8, 50#u8, 46#u8, 57#u8, 51#u8, 32#u8,
+          48#u8, 104#u8, 50#u8, 46#u8, 49#u8, 50#u8, 97#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          48#u8, 46#u8, 49#u8, 56#u8, 52#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8,
+          86#u8, 57#u8, 46#u8, 48#u8, 48#u8, 54#u8, 97#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8,
+          45#u8, 46#u8, 49#u8, 56#u8, 52#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8,
+          104#u8, 45#u8, 50#u8, 46#u8, 49#u8, 50#u8, 97#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 52#u8, 46#u8, 49#u8, 56#u8, 53#u8,
+          118#u8, 49#u8, 46#u8, 56#u8, 56#u8, 56#u8, 99#u8, 48#u8, 32#u8,
+          46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8, 56#u8, 51#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8,
+          109#u8, 45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_27]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 36:0-36:856
+    Visibility: public -/
+def sidebar.piece_27 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          50#u8, 46#u8, 57#u8, 54#u8, 52#u8, 32#u8, 48#u8, 104#u8, 50#u8,
+          46#u8, 49#u8, 49#u8, 57#u8, 97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 45#u8, 46#u8, 49#u8, 56#u8, 53#u8, 86#u8, 57#u8, 46#u8,
+          48#u8, 48#u8, 54#u8, 97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 53#u8, 45#u8, 46#u8, 49#u8, 56#u8, 54#u8, 104#u8, 45#u8,
+          50#u8, 46#u8, 49#u8, 50#u8, 97#u8, 46#u8, 49#u8, 56#u8, 54#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 54#u8, 118#u8, 49#u8,
+          46#u8, 56#u8, 56#u8, 55#u8, 99#u8, 48#u8, 32#u8, 46#u8, 49#u8, 48#u8,
+          50#u8, 46#u8, 48#u8, 56#u8, 52#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 46#u8, 49#u8, 56#u8, 53#u8, 109#u8, 45#u8,
+          50#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_28]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 37:0-37:855
+    Visibility: public -/
+def sidebar.piece_28 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          57#u8, 50#u8, 32#u8, 48#u8, 104#u8, 50#u8, 46#u8, 49#u8, 50#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 46#u8, 49#u8, 56#u8, 52#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 86#u8, 57#u8, 46#u8, 48#u8, 48#u8, 54#u8, 97#u8,
+          46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 52#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 54#u8, 104#u8, 45#u8, 50#u8, 46#u8, 49#u8, 50#u8,
+          97#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 49#u8, 56#u8, 52#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 118#u8, 49#u8, 46#u8, 56#u8, 56#u8, 56#u8,
+          99#u8, 48#u8, 32#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 48#u8, 56#u8,
+          50#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8, 49#u8, 56#u8, 53#u8, 46#u8,
+          49#u8, 56#u8, 53#u8, 77#u8, 50#u8, 51#u8, 46#u8, 55#u8, 54#u8, 51#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_29]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 38:0-38:853
+    Visibility: public -/
+def sidebar.piece_29 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          57#u8, 46#u8, 56#u8, 57#u8, 99#u8, 45#u8, 46#u8, 48#u8, 54#u8, 53#u8,
+          45#u8, 46#u8, 48#u8, 53#u8, 49#u8, 45#u8, 46#u8, 54#u8, 55#u8, 50#u8,
+          45#u8, 46#u8, 53#u8, 49#u8, 45#u8, 49#u8, 46#u8, 57#u8, 53#u8, 52#u8,
+          45#u8, 46#u8, 53#u8, 49#u8, 45#u8, 46#u8, 51#u8, 51#u8, 56#u8, 46#u8,
+          48#u8, 48#u8, 49#u8, 45#u8, 46#u8, 54#u8, 55#u8, 54#u8, 46#u8, 48#u8,
+          51#u8, 45#u8, 49#u8, 46#u8, 48#u8, 49#u8, 46#u8, 48#u8, 56#u8, 55#u8,
+          45#u8, 46#u8, 50#u8, 52#u8, 56#u8, 45#u8, 49#u8, 46#u8, 55#u8, 45#u8,
+          49#u8, 46#u8, 54#u8, 53#u8, 51#u8, 45#u8, 50#u8, 46#u8, 53#u8, 51#u8,
+          45#u8, 49#u8, 46#u8, 55#u8, 49#u8, 54#u8, 45#u8, 50#u8, 46#u8, 53#u8,
+          54#u8, 54#u8, 108#u8, 45#u8, 46#u8, 51#u8, 52#u8, 52#u8, 45#u8,
+          46#u8, 49#u8, 57#u8, 57#u8, 45#u8, 46#u8, 50#u8, 50#u8, 54#u8, 46#u8,
+          51#u8, 50#u8, 55#u8, 99#u8, 45#u8, 46#u8, 50#u8, 56#u8, 52#u8, 46#u8,
+          52#u8, 51#u8, 56#u8, 45#u8, 46#u8, 52#u8, 57#u8, 46#u8, 57#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_30]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 39:0-39:852
+    Visibility: public -/
+def sidebar.piece_30 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          50#u8, 50#u8, 45#u8, 46#u8, 54#u8, 49#u8, 50#u8, 32#u8, 49#u8, 46#u8,
+          52#u8, 51#u8, 45#u8, 46#u8, 50#u8, 51#u8, 46#u8, 57#u8, 55#u8, 45#u8,
+          46#u8, 48#u8, 57#u8, 32#u8, 49#u8, 46#u8, 56#u8, 56#u8, 50#u8, 46#u8,
+          52#u8, 48#u8, 51#u8, 32#u8, 50#u8, 46#u8, 54#u8, 54#u8, 49#u8, 45#u8,
+          46#u8, 53#u8, 57#u8, 53#u8, 46#u8, 51#u8, 51#u8, 50#u8, 45#u8, 49#u8,
+          46#u8, 53#u8, 53#u8, 46#u8, 52#u8, 49#u8, 51#u8, 45#u8, 49#u8, 46#u8,
+          55#u8, 52#u8, 52#u8, 46#u8, 52#u8, 50#u8, 72#u8, 46#u8, 55#u8, 53#u8,
+          49#u8, 97#u8, 46#u8, 55#u8, 53#u8, 49#u8, 46#u8, 55#u8, 53#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 55#u8, 53#u8, 46#u8,
+          55#u8, 52#u8, 56#u8, 32#u8, 49#u8, 49#u8, 46#u8, 51#u8, 55#u8, 54#u8,
+          32#u8, 49#u8, 49#u8, 46#u8, 51#u8, 55#u8, 54#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 48#u8, 46#u8, 54#u8, 57#u8, 50#u8, 32#u8, 52#u8, 46#u8, 48#u8,
+          54#u8, 50#u8, 99#u8, 46#u8, 53#u8, 52#u8, 53#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_31]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 40:0-40:852
+    Visibility: public -/
+def sidebar.piece_31 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          49#u8, 46#u8, 52#u8, 50#u8, 56#u8, 32#u8, 49#u8, 46#u8, 51#u8, 53#u8,
+          53#u8, 32#u8, 50#u8, 46#u8, 52#u8, 56#u8, 32#u8, 50#u8, 46#u8, 52#u8,
+          49#u8, 32#u8, 51#u8, 46#u8, 49#u8, 50#u8, 52#u8, 32#u8, 49#u8, 46#u8,
+          49#u8, 56#u8, 46#u8, 55#u8, 50#u8, 51#u8, 32#u8, 51#u8, 46#u8, 49#u8,
+          32#u8, 49#u8, 46#u8, 49#u8, 51#u8, 55#u8, 32#u8, 53#u8, 46#u8, 50#u8,
+          55#u8, 53#u8, 32#u8, 49#u8, 46#u8, 49#u8, 51#u8, 55#u8, 46#u8, 57#u8,
+          56#u8, 51#u8, 46#u8, 48#u8, 48#u8, 51#u8, 32#u8, 49#u8, 46#u8, 57#u8,
+          54#u8, 51#u8, 45#u8, 46#u8, 48#u8, 56#u8, 54#u8, 32#u8, 50#u8, 46#u8,
+          57#u8, 51#u8, 45#u8, 46#u8, 50#u8, 54#u8, 54#u8, 97#u8, 49#u8, 50#u8,
+          46#u8, 50#u8, 52#u8, 56#u8, 32#u8, 49#u8, 50#u8, 46#u8, 50#u8, 52#u8,
+          56#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 51#u8, 46#u8, 56#u8, 50#u8,
+          51#u8, 45#u8, 49#u8, 46#u8, 51#u8, 56#u8, 57#u8, 99#u8, 46#u8, 57#u8,
+          56#u8, 45#u8, 46#u8, 53#u8, 54#u8, 55#u8, 32#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_32]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 41:0-41:854
+    Visibility: public -/
+def sidebar.piece_32 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 56#u8, 54#u8, 45#u8, 49#u8, 46#u8, 50#u8, 56#u8, 56#u8, 32#u8,
+          50#u8, 46#u8, 54#u8, 49#u8, 45#u8, 50#u8, 46#u8, 49#u8, 51#u8, 54#u8,
+          32#u8, 49#u8, 46#u8, 50#u8, 53#u8, 50#u8, 45#u8, 49#u8, 46#u8, 52#u8,
+          49#u8, 56#u8, 32#u8, 49#u8, 46#u8, 57#u8, 57#u8, 56#u8, 45#u8, 50#u8,
+          46#u8, 57#u8, 57#u8, 55#u8, 32#u8, 50#u8, 46#u8, 53#u8, 53#u8, 51#u8,
+          45#u8, 52#u8, 46#u8, 52#u8, 104#u8, 46#u8, 50#u8, 50#u8, 49#u8,
+          99#u8, 49#u8, 46#u8, 51#u8, 55#u8, 50#u8, 32#u8, 48#u8, 32#u8, 50#u8,
+          46#u8, 50#u8, 49#u8, 53#u8, 45#u8, 46#u8, 53#u8, 52#u8, 57#u8, 32#u8,
+          50#u8, 46#u8, 54#u8, 56#u8, 45#u8, 49#u8, 46#u8, 48#u8, 48#u8, 57#u8,
+          46#u8, 51#u8, 48#u8, 57#u8, 45#u8, 46#u8, 50#u8, 57#u8, 51#u8, 46#u8,
+          53#u8, 53#u8, 45#u8, 46#u8, 54#u8, 53#u8, 46#u8, 55#u8, 48#u8, 55#u8,
+          45#u8, 49#u8, 46#u8, 48#u8, 52#u8, 54#u8, 108#u8, 46#u8, 48#u8,
+          57#u8, 56#u8, 45#u8, 46#u8, 50#u8, 56#u8, 56#u8, 90#u8, 34#u8, 47#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_33]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 42:0-42:529
+    Visibility: public -/
+def sidebar.piece_33 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 73#usize [
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 68#u8, 111#u8, 99#u8, 107#u8, 101#u8, 114#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_34]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 43:0-43:856
+    Visibility: public -/
+def sidebar.piece_34 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 117#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 109#u8, 97#u8,
+          118#u8, 101#u8, 110#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+          115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+          116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+          101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8,
+          121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+          115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8,
+          101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8,
+          117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8,
+          116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_35]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 44:0-44:858
+    Visibility: public -/
+def sidebar.piece_35 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          50#u8, 32#u8, 50#u8, 67#u8, 54#u8, 46#u8, 52#u8, 56#u8, 32#u8, 50#u8,
+          32#u8, 50#u8, 32#u8, 54#u8, 46#u8, 52#u8, 56#u8, 32#u8, 50#u8, 32#u8,
+          49#u8, 50#u8, 115#u8, 52#u8, 46#u8, 52#u8, 56#u8, 32#u8, 49#u8,
+          48#u8, 32#u8, 49#u8, 48#u8, 32#u8, 49#u8, 48#u8, 32#u8, 49#u8, 48#u8,
+          45#u8, 52#u8, 46#u8, 52#u8, 56#u8, 32#u8, 49#u8, 48#u8, 45#u8, 49#u8,
+          48#u8, 83#u8, 49#u8, 55#u8, 46#u8, 53#u8, 50#u8, 32#u8, 50#u8, 32#u8,
+          49#u8, 50#u8, 32#u8, 50#u8, 122#u8, 109#u8, 45#u8, 49#u8, 32#u8,
+          49#u8, 55#u8, 46#u8, 57#u8, 51#u8, 99#u8, 45#u8, 51#u8, 46#u8, 57#u8,
+          53#u8, 45#u8, 46#u8, 52#u8, 57#u8, 45#u8, 55#u8, 45#u8, 51#u8, 46#u8,
+          56#u8, 53#u8, 45#u8, 55#u8, 45#u8, 55#u8, 46#u8, 57#u8, 51#u8, 32#u8,
+          48#u8, 45#u8, 46#u8, 54#u8, 50#u8, 46#u8, 48#u8, 56#u8, 45#u8, 49#u8,
+          46#u8, 50#u8, 49#u8, 46#u8, 50#u8, 49#u8, 45#u8, 49#u8, 46#u8, 55#u8,
+          57#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_36]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 45:0-45:862
+    Visibility: public -/
+def sidebar.piece_36 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          76#u8, 57#u8, 32#u8, 49#u8, 53#u8, 118#u8, 49#u8, 99#u8, 48#u8,
+          32#u8, 49#u8, 46#u8, 49#u8, 46#u8, 57#u8, 32#u8, 50#u8, 32#u8, 50#u8,
+          32#u8, 50#u8, 118#u8, 49#u8, 46#u8, 57#u8, 51#u8, 122#u8, 109#u8,
+          54#u8, 46#u8, 57#u8, 45#u8, 50#u8, 46#u8, 53#u8, 52#u8, 99#u8, 45#u8,
+          46#u8, 50#u8, 54#u8, 45#u8, 46#u8, 56#u8, 49#u8, 45#u8, 49#u8, 45#u8,
+          49#u8, 46#u8, 51#u8, 57#u8, 45#u8, 49#u8, 46#u8, 57#u8, 45#u8, 49#u8,
+          46#u8, 51#u8, 57#u8, 104#u8, 45#u8, 49#u8, 118#u8, 45#u8, 51#u8,
+          99#u8, 48#u8, 45#u8, 46#u8, 53#u8, 53#u8, 45#u8, 46#u8, 52#u8, 53#u8,
+          45#u8, 49#u8, 45#u8, 49#u8, 45#u8, 49#u8, 72#u8, 56#u8, 118#u8,
+          45#u8, 50#u8, 104#u8, 50#u8, 99#u8, 46#u8, 53#u8, 53#u8, 32#u8,
+          48#u8, 32#u8, 49#u8, 45#u8, 46#u8, 52#u8, 53#u8, 32#u8, 49#u8, 45#u8,
+          49#u8, 86#u8, 55#u8, 104#u8, 50#u8, 99#u8, 49#u8, 46#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 50#u8, 45#u8, 46#u8, 57#u8, 32#u8, 50#u8, 45#u8,
+          50#u8, 118#u8, 45#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_37]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 46:0-46:841
+    Visibility: public -/
+def sidebar.piece_37 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 125#usize [
+          52#u8, 49#u8, 99#u8, 50#u8, 46#u8, 57#u8, 51#u8, 32#u8, 49#u8, 46#u8,
+          49#u8, 57#u8, 32#u8, 53#u8, 32#u8, 52#u8, 46#u8, 48#u8, 54#u8, 32#u8,
+          53#u8, 32#u8, 55#u8, 46#u8, 52#u8, 49#u8, 32#u8, 48#u8, 32#u8, 50#u8,
+          46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 56#u8, 32#u8, 51#u8, 46#u8, 57#u8,
+          55#u8, 45#u8, 50#u8, 46#u8, 49#u8, 32#u8, 53#u8, 46#u8, 51#u8, 57#u8,
+          122#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 77#u8, 97#u8, 118#u8,
+          101#u8, 110#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_38]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 47:0-47:843
+    Visibility: public -/
+def sidebar.piece_38 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 115#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 110#u8, 112#u8,
+          109#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8,
+          51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+          32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+          105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+          100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_39]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 48:0-48:871
+    Visibility: public -/
+def sidebar.piece_39 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 48#u8,
+          32#u8, 55#u8, 46#u8, 51#u8, 51#u8, 52#u8, 118#u8, 56#u8, 104#u8,
+          54#u8, 46#u8, 54#u8, 54#u8, 54#u8, 118#u8, 49#u8, 46#u8, 51#u8,
+          51#u8, 50#u8, 72#u8, 49#u8, 50#u8, 118#u8, 45#u8, 49#u8, 46#u8,
+          51#u8, 51#u8, 50#u8, 104#u8, 49#u8, 50#u8, 118#u8, 45#u8, 56#u8,
+          72#u8, 48#u8, 122#u8, 109#u8, 54#u8, 46#u8, 54#u8, 54#u8, 54#u8,
+          32#u8, 54#u8, 46#u8, 54#u8, 54#u8, 52#u8, 72#u8, 53#u8, 46#u8, 51#u8,
+          51#u8, 52#u8, 118#u8, 45#u8, 52#u8, 72#u8, 51#u8, 46#u8, 57#u8,
+          57#u8, 57#u8, 118#u8, 52#u8, 72#u8, 49#u8, 46#u8, 51#u8, 51#u8,
+          53#u8, 86#u8, 56#u8, 46#u8, 54#u8, 54#u8, 55#u8, 104#u8, 53#u8,
+          46#u8, 51#u8, 51#u8, 49#u8, 118#u8, 53#u8, 46#u8, 51#u8, 51#u8,
+          49#u8, 122#u8, 109#u8, 52#u8, 32#u8, 48#u8, 118#u8, 49#u8, 46#u8,
+          51#u8, 51#u8, 54#u8, 72#u8, 56#u8, 46#u8, 48#u8, 48#u8, 49#u8, 86#u8,
+          56#u8, 46#u8, 54#u8, 54#u8, 55#u8, 104#u8, 53#u8, 46#u8, 51#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_40]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 49:0-49:872
+    Visibility: public -/
+def sidebar.piece_40 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          51#u8, 52#u8, 118#u8, 53#u8, 46#u8, 51#u8, 51#u8, 50#u8, 104#u8,
+          45#u8, 50#u8, 46#u8, 54#u8, 54#u8, 57#u8, 118#u8, 45#u8, 46#u8,
+          48#u8, 48#u8, 49#u8, 122#u8, 109#u8, 49#u8, 50#u8, 46#u8, 48#u8,
+          48#u8, 49#u8, 32#u8, 48#u8, 104#u8, 45#u8, 49#u8, 46#u8, 51#u8,
+          51#u8, 118#u8, 45#u8, 52#u8, 104#u8, 45#u8, 49#u8, 46#u8, 51#u8,
+          51#u8, 54#u8, 118#u8, 52#u8, 104#u8, 45#u8, 49#u8, 46#u8, 51#u8,
+          51#u8, 53#u8, 118#u8, 45#u8, 52#u8, 104#u8, 45#u8, 49#u8, 46#u8,
+          51#u8, 51#u8, 118#u8, 52#u8, 104#u8, 45#u8, 50#u8, 46#u8, 54#u8,
+          55#u8, 49#u8, 86#u8, 56#u8, 46#u8, 54#u8, 54#u8, 55#u8, 104#u8,
+          56#u8, 46#u8, 48#u8, 48#u8, 50#u8, 118#u8, 53#u8, 46#u8, 51#u8,
+          51#u8, 49#u8, 122#u8, 77#u8, 49#u8, 48#u8, 46#u8, 54#u8, 54#u8,
+          53#u8, 32#u8, 49#u8, 48#u8, 72#u8, 49#u8, 50#u8, 118#u8, 50#u8,
+          46#u8, 54#u8, 54#u8, 55#u8, 104#u8, 45#u8, 49#u8, 46#u8, 51#u8,
+          51#u8, 53#u8, 86#u8, 49#u8, 48#u8, 122#u8, 34#u8, 47#u8, 62#u8,
+          10#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_41]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 50:0-50:492
+    Visibility: public -/
+def sidebar.piece_41 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 67#usize [
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8,
+          103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          110#u8, 112#u8, 109#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_42]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 51:0-51:855
+    Visibility: public -/
+def sidebar.piece_42 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 117#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 99#u8, 97#u8,
+          114#u8, 103#u8, 111#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+          115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+          116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+          101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8,
+          121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+          115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8,
+          101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8,
+          117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8,
+          116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_43]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 52:0-52:868
+    Visibility: public -/
+def sidebar.piece_43 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 54#u8,
+          32#u8, 50#u8, 104#u8, 49#u8, 50#u8, 97#u8, 49#u8, 32#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 49#u8, 32#u8, 49#u8, 118#u8,
+          56#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8,
+          45#u8, 49#u8, 32#u8, 49#u8, 72#u8, 54#u8, 97#u8, 49#u8, 32#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8, 45#u8, 49#u8, 86#u8,
+          51#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8,
+          49#u8, 45#u8, 49#u8, 122#u8, 109#u8, 48#u8, 32#u8, 50#u8, 118#u8,
+          50#u8, 104#u8, 49#u8, 50#u8, 86#u8, 52#u8, 72#u8, 54#u8, 122#u8,
+          109#u8, 48#u8, 32#u8, 51#u8, 118#u8, 50#u8, 104#u8, 49#u8, 50#u8,
+          86#u8, 55#u8, 72#u8, 54#u8, 122#u8, 77#u8, 50#u8, 32#u8, 49#u8,
+          52#u8, 104#u8, 56#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 49#u8, 49#u8, 32#u8, 49#u8, 118#u8, 54#u8, 97#u8,
+          49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_44]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 53:0-53:866
+    Visibility: public -/
+def sidebar.piece_44 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          49#u8, 45#u8, 49#u8, 32#u8, 49#u8, 72#u8, 50#u8, 97#u8, 49#u8, 32#u8,
+          49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8, 45#u8, 49#u8,
+          118#u8, 45#u8, 54#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 49#u8, 49#u8, 45#u8, 49#u8, 122#u8, 109#u8, 48#u8,
+          32#u8, 50#u8, 118#u8, 49#u8, 46#u8, 53#u8, 104#u8, 56#u8, 86#u8,
+          49#u8, 54#u8, 72#u8, 50#u8, 122#u8, 77#u8, 49#u8, 52#u8, 32#u8,
+          49#u8, 52#u8, 104#u8, 56#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 49#u8, 49#u8, 32#u8, 49#u8, 118#u8, 54#u8,
+          97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8,
+          49#u8, 32#u8, 49#u8, 104#u8, 45#u8, 56#u8, 97#u8, 49#u8, 32#u8,
+          49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8, 45#u8, 49#u8,
+          118#u8, 45#u8, 54#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8,
+          32#u8, 48#u8, 49#u8, 49#u8, 45#u8, 49#u8, 122#u8, 109#u8, 48#u8,
+          32#u8, 50#u8, 118#u8, 49#u8, 46#u8, 53#u8, 104#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_45]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 54:0-54:584
+    Visibility: public -/
+def sidebar.piece_45 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 82#usize [
+          56#u8, 86#u8, 49#u8, 54#u8, 104#u8, 45#u8, 56#u8, 122#u8, 34#u8,
+          47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 67#u8, 97#u8, 114#u8, 103#u8, 111#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_46]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 55:0-55:850
+    Visibility: public -/
+def sidebar.piece_46 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 116#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 112#u8, 121#u8,
+          112#u8, 105#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8,
+          101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8,
+          114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8,
+          45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+          109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8,
+          100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+          110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8,
+          114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+          110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_47]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 56:0-56:857
+    Visibility: public -/
+def sidebar.piece_47 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          52#u8, 46#u8, 50#u8, 53#u8, 46#u8, 49#u8, 56#u8, 108#u8, 46#u8,
+          57#u8, 46#u8, 50#u8, 46#u8, 55#u8, 51#u8, 46#u8, 50#u8, 54#u8, 46#u8,
+          53#u8, 57#u8, 46#u8, 51#u8, 46#u8, 52#u8, 53#u8, 46#u8, 51#u8, 50#u8,
+          46#u8, 51#u8, 52#u8, 46#u8, 51#u8, 52#u8, 46#u8, 50#u8, 53#u8, 46#u8,
+          51#u8, 52#u8, 46#u8, 49#u8, 54#u8, 46#u8, 51#u8, 51#u8, 46#u8, 49#u8,
+          46#u8, 51#u8, 46#u8, 48#u8, 52#u8, 46#u8, 50#u8, 54#u8, 46#u8, 48#u8,
+          50#u8, 46#u8, 50#u8, 45#u8, 46#u8, 48#u8, 49#u8, 46#u8, 49#u8, 51#u8,
+          86#u8, 56#u8, 46#u8, 53#u8, 108#u8, 45#u8, 46#u8, 48#u8, 53#u8,
+          46#u8, 54#u8, 51#u8, 45#u8, 46#u8, 49#u8, 51#u8, 46#u8, 53#u8, 53#u8,
+          45#u8, 46#u8, 50#u8, 49#u8, 46#u8, 52#u8, 54#u8, 45#u8, 46#u8, 50#u8,
+          54#u8, 46#u8, 51#u8, 56#u8, 45#u8, 46#u8, 51#u8, 46#u8, 51#u8, 49#u8,
+          45#u8, 46#u8, 51#u8, 51#u8, 46#u8, 50#u8, 53#u8, 45#u8, 46#u8, 51#u8,
+          53#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_48]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 57:0-57:854
+    Visibility: public -/
+def sidebar.piece_48 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 49#u8, 57#u8, 45#u8, 46#u8, 51#u8, 53#u8, 46#u8, 49#u8, 52#u8,
+          45#u8, 46#u8, 51#u8, 51#u8, 46#u8, 49#u8, 45#u8, 46#u8, 51#u8, 46#u8,
+          48#u8, 55#u8, 45#u8, 46#u8, 50#u8, 54#u8, 46#u8, 48#u8, 52#u8, 45#u8,
+          46#u8, 50#u8, 49#u8, 46#u8, 48#u8, 50#u8, 72#u8, 56#u8, 46#u8, 56#u8,
+          51#u8, 108#u8, 45#u8, 46#u8, 54#u8, 57#u8, 46#u8, 48#u8, 53#u8,
+          45#u8, 46#u8, 53#u8, 57#u8, 46#u8, 49#u8, 52#u8, 45#u8, 46#u8, 53#u8,
+          46#u8, 50#u8, 50#u8, 45#u8, 46#u8, 52#u8, 49#u8, 46#u8, 50#u8, 55#u8,
+          45#u8, 46#u8, 51#u8, 51#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8, 50#u8,
+          55#u8, 46#u8, 51#u8, 53#u8, 45#u8, 46#u8, 50#u8, 46#u8, 51#u8, 54#u8,
+          45#u8, 46#u8, 49#u8, 53#u8, 46#u8, 51#u8, 55#u8, 45#u8, 46#u8, 49#u8,
+          46#u8, 51#u8, 53#u8, 45#u8, 46#u8, 48#u8, 55#u8, 46#u8, 51#u8, 50#u8,
+          45#u8, 46#u8, 48#u8, 52#u8, 46#u8, 50#u8, 55#u8, 45#u8, 46#u8, 48#u8,
+          50#u8, 46#u8, 50#u8, 49#u8, 118#u8, 51#u8, 46#u8, 48#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_49]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 58:0-58:854
+    Visibility: public -/
+def sidebar.piece_49 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          72#u8, 51#u8, 46#u8, 50#u8, 51#u8, 108#u8, 45#u8, 46#u8, 50#u8,
+          49#u8, 45#u8, 46#u8, 48#u8, 51#u8, 45#u8, 46#u8, 50#u8, 56#u8, 45#u8,
+          46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8, 49#u8,
+          50#u8, 45#u8, 46#u8, 51#u8, 53#u8, 45#u8, 46#u8, 49#u8, 56#u8, 45#u8,
+          46#u8, 51#u8, 54#u8, 45#u8, 46#u8, 50#u8, 54#u8, 45#u8, 46#u8, 51#u8,
+          54#u8, 45#u8, 46#u8, 51#u8, 54#u8, 45#u8, 46#u8, 51#u8, 53#u8, 45#u8,
+          46#u8, 52#u8, 54#u8, 45#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8, 53#u8,
+          57#u8, 45#u8, 46#u8, 50#u8, 56#u8, 45#u8, 46#u8, 55#u8, 51#u8, 45#u8,
+          46#u8, 50#u8, 49#u8, 45#u8, 46#u8, 56#u8, 56#u8, 45#u8, 46#u8, 49#u8,
+          52#u8, 45#u8, 49#u8, 46#u8, 48#u8, 53#u8, 76#u8, 48#u8, 32#u8, 49#u8,
+          49#u8, 46#u8, 57#u8, 55#u8, 108#u8, 46#u8, 48#u8, 54#u8, 45#u8,
+          49#u8, 46#u8, 50#u8, 50#u8, 46#u8, 49#u8, 54#u8, 45#u8, 49#u8, 46#u8,
+          48#u8, 52#u8, 46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 56#u8, 55#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_50]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 59:0-59:857
+    Visibility: public -/
+def sidebar.piece_50 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          51#u8, 50#u8, 45#u8, 46#u8, 55#u8, 49#u8, 46#u8, 51#u8, 54#u8, 45#u8,
+          46#u8, 53#u8, 55#u8, 46#u8, 52#u8, 45#u8, 46#u8, 52#u8, 52#u8, 46#u8,
+          52#u8, 50#u8, 45#u8, 46#u8, 51#u8, 51#u8, 46#u8, 52#u8, 50#u8, 45#u8,
+          46#u8, 50#u8, 52#u8, 46#u8, 52#u8, 45#u8, 46#u8, 49#u8, 54#u8, 46#u8,
+          51#u8, 54#u8, 45#u8, 46#u8, 49#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8,
+          48#u8, 53#u8, 46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 48#u8, 49#u8,
+          104#u8, 46#u8, 49#u8, 54#u8, 108#u8, 46#u8, 48#u8, 54#u8, 46#u8,
+          48#u8, 49#u8, 104#u8, 56#u8, 46#u8, 49#u8, 54#u8, 118#u8, 45#u8,
+          46#u8, 56#u8, 51#u8, 72#u8, 54#u8, 46#u8, 50#u8, 52#u8, 108#u8,
+          45#u8, 46#u8, 48#u8, 49#u8, 45#u8, 50#u8, 46#u8, 55#u8, 53#u8, 45#u8,
+          46#u8, 48#u8, 50#u8, 45#u8, 46#u8, 51#u8, 55#u8, 46#u8, 48#u8, 53#u8,
+          45#u8, 46#u8, 51#u8, 52#u8, 46#u8, 49#u8, 49#u8, 45#u8, 46#u8, 51#u8,
+          49#u8, 46#u8, 49#u8, 55#u8, 45#u8, 46#u8, 50#u8, 56#u8, 46#u8, 50#u8,
+          53#u8, 45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_51]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 60:0-60:855
+    Visibility: public -/
+def sidebar.piece_51 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 50#u8, 54#u8, 46#u8, 51#u8, 49#u8, 45#u8, 46#u8, 50#u8, 51#u8,
+          46#u8, 51#u8, 56#u8, 45#u8, 46#u8, 50#u8, 46#u8, 52#u8, 52#u8, 45#u8,
+          46#u8, 49#u8, 56#u8, 46#u8, 53#u8, 49#u8, 45#u8, 46#u8, 49#u8, 53#u8,
+          46#u8, 53#u8, 56#u8, 45#u8, 46#u8, 49#u8, 50#u8, 46#u8, 54#u8, 52#u8,
+          45#u8, 46#u8, 49#u8, 46#u8, 55#u8, 49#u8, 45#u8, 46#u8, 48#u8, 54#u8,
+          46#u8, 55#u8, 55#u8, 45#u8, 46#u8, 48#u8, 52#u8, 46#u8, 56#u8, 52#u8,
+          45#u8, 46#u8, 48#u8, 50#u8, 32#u8, 49#u8, 46#u8, 50#u8, 55#u8, 46#u8,
+          48#u8, 53#u8, 32#u8, 49#u8, 46#u8, 48#u8, 55#u8, 46#u8, 49#u8, 51#u8,
+          122#u8, 109#u8, 45#u8, 54#u8, 46#u8, 51#u8, 32#u8, 49#u8, 46#u8,
+          57#u8, 56#u8, 108#u8, 45#u8, 46#u8, 50#u8, 51#u8, 46#u8, 51#u8,
+          51#u8, 45#u8, 46#u8, 48#u8, 56#u8, 46#u8, 52#u8, 49#u8, 46#u8, 48#u8,
+          56#u8, 46#u8, 52#u8, 49#u8, 46#u8, 50#u8, 51#u8, 46#u8, 51#u8, 52#u8,
+          46#u8, 51#u8, 51#u8, 46#u8, 50#u8, 50#u8, 46#u8, 52#u8, 49#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_52]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 61:0-61:854
+    Visibility: public -/
+def sidebar.piece_52 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          48#u8, 57#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8, 48#u8, 57#u8, 46#u8,
+          51#u8, 51#u8, 45#u8, 46#u8, 50#u8, 50#u8, 46#u8, 50#u8, 51#u8, 45#u8,
+          46#u8, 51#u8, 52#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 52#u8, 49#u8,
+          45#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8,
+          50#u8, 51#u8, 45#u8, 46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 51#u8, 51#u8,
+          45#u8, 46#u8, 50#u8, 50#u8, 45#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8,
+          48#u8, 57#u8, 45#u8, 46#u8, 52#u8, 49#u8, 46#u8, 48#u8, 57#u8, 45#u8,
+          46#u8, 51#u8, 51#u8, 46#u8, 50#u8, 50#u8, 122#u8, 77#u8, 50#u8,
+          49#u8, 46#u8, 49#u8, 32#u8, 54#u8, 46#u8, 49#u8, 49#u8, 108#u8,
+          46#u8, 50#u8, 56#u8, 46#u8, 48#u8, 54#u8, 46#u8, 51#u8, 50#u8, 46#u8,
+          49#u8, 50#u8, 46#u8, 51#u8, 53#u8, 46#u8, 49#u8, 56#u8, 46#u8, 51#u8,
+          54#u8, 46#u8, 50#u8, 55#u8, 46#u8, 51#u8, 54#u8, 46#u8, 51#u8, 53#u8,
+          46#u8, 51#u8, 53#u8, 46#u8, 52#u8, 55#u8, 46#u8, 51#u8, 50#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_53]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 62:0-62:853
+    Visibility: public -/
+def sidebar.piece_53 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          53#u8, 57#u8, 46#u8, 50#u8, 56#u8, 46#u8, 55#u8, 51#u8, 46#u8, 50#u8,
+          49#u8, 46#u8, 56#u8, 56#u8, 46#u8, 49#u8, 52#u8, 32#u8, 49#u8, 46#u8,
+          48#u8, 52#u8, 46#u8, 48#u8, 53#u8, 32#u8, 49#u8, 46#u8, 50#u8, 51#u8,
+          45#u8, 46#u8, 48#u8, 54#u8, 32#u8, 49#u8, 46#u8, 50#u8, 51#u8, 45#u8,
+          46#u8, 49#u8, 54#u8, 32#u8, 49#u8, 46#u8, 48#u8, 52#u8, 45#u8, 46#u8,
+          50#u8, 52#u8, 46#u8, 56#u8, 54#u8, 45#u8, 46#u8, 51#u8, 50#u8, 46#u8,
+          55#u8, 49#u8, 45#u8, 46#u8, 51#u8, 54#u8, 46#u8, 53#u8, 55#u8, 45#u8,
+          46#u8, 52#u8, 46#u8, 52#u8, 53#u8, 45#u8, 46#u8, 52#u8, 50#u8, 46#u8,
+          51#u8, 51#u8, 45#u8, 46#u8, 52#u8, 50#u8, 46#u8, 50#u8, 52#u8, 45#u8,
+          46#u8, 52#u8, 46#u8, 49#u8, 54#u8, 45#u8, 46#u8, 51#u8, 54#u8, 46#u8,
+          48#u8, 57#u8, 45#u8, 46#u8, 51#u8, 50#u8, 46#u8, 48#u8, 53#u8, 45#u8,
+          46#u8, 50#u8, 52#u8, 46#u8, 48#u8, 50#u8, 45#u8, 46#u8, 49#u8, 54#u8,
+          45#u8, 46#u8, 48#u8, 49#u8, 104#u8, 45#u8, 56#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_54]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 63:0-63:855
+    Visibility: public -/
+def sidebar.piece_54 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          50#u8, 50#u8, 118#u8, 46#u8, 56#u8, 50#u8, 104#u8, 53#u8, 46#u8,
+          56#u8, 52#u8, 108#u8, 46#u8, 48#u8, 49#u8, 32#u8, 50#u8, 46#u8,
+          55#u8, 54#u8, 46#u8, 48#u8, 50#u8, 46#u8, 51#u8, 54#u8, 45#u8, 46#u8,
+          48#u8, 53#u8, 46#u8, 51#u8, 52#u8, 45#u8, 46#u8, 49#u8, 49#u8, 46#u8,
+          51#u8, 49#u8, 45#u8, 46#u8, 49#u8, 55#u8, 46#u8, 50#u8, 57#u8, 45#u8,
+          46#u8, 50#u8, 53#u8, 46#u8, 50#u8, 53#u8, 45#u8, 46#u8, 51#u8, 49#u8,
+          46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 51#u8, 56#u8, 46#u8, 50#u8, 45#u8,
+          46#u8, 52#u8, 52#u8, 46#u8, 49#u8, 55#u8, 45#u8, 46#u8, 53#u8, 49#u8,
+          46#u8, 49#u8, 53#u8, 45#u8, 46#u8, 53#u8, 56#u8, 46#u8, 49#u8, 51#u8,
+          45#u8, 46#u8, 54#u8, 52#u8, 46#u8, 48#u8, 57#u8, 45#u8, 46#u8, 55#u8,
+          49#u8, 46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 55#u8, 55#u8, 46#u8, 48#u8,
+          52#u8, 45#u8, 46#u8, 56#u8, 52#u8, 46#u8, 48#u8, 49#u8, 45#u8, 49#u8,
+          46#u8, 50#u8, 55#u8, 45#u8, 46#u8, 48#u8, 52#u8, 45#u8, 49#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_55]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 64:0-64:854
+    Visibility: public -/
+def sidebar.piece_55 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          48#u8, 55#u8, 45#u8, 46#u8, 49#u8, 52#u8, 45#u8, 46#u8, 57#u8, 45#u8,
+          46#u8, 50#u8, 45#u8, 46#u8, 55#u8, 51#u8, 45#u8, 46#u8, 50#u8, 53#u8,
+          45#u8, 46#u8, 53#u8, 57#u8, 45#u8, 46#u8, 51#u8, 45#u8, 46#u8, 52#u8,
+          53#u8, 45#u8, 46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 51#u8, 52#u8, 45#u8,
+          46#u8, 51#u8, 52#u8, 45#u8, 46#u8, 50#u8, 53#u8, 45#u8, 46#u8, 51#u8,
+          52#u8, 45#u8, 46#u8, 49#u8, 54#u8, 45#u8, 46#u8, 51#u8, 51#u8, 45#u8,
+          46#u8, 49#u8, 45#u8, 46#u8, 51#u8, 45#u8, 46#u8, 48#u8, 52#u8, 45#u8,
+          46#u8, 50#u8, 53#u8, 45#u8, 46#u8, 48#u8, 50#u8, 45#u8, 46#u8, 50#u8,
+          46#u8, 48#u8, 49#u8, 45#u8, 46#u8, 49#u8, 51#u8, 118#u8, 45#u8,
+          53#u8, 46#u8, 51#u8, 52#u8, 108#u8, 46#u8, 48#u8, 53#u8, 45#u8,
+          46#u8, 54#u8, 52#u8, 46#u8, 49#u8, 51#u8, 45#u8, 46#u8, 53#u8, 52#u8,
+          46#u8, 50#u8, 49#u8, 45#u8, 46#u8, 52#u8, 54#u8, 46#u8, 50#u8, 54#u8,
+          45#u8, 46#u8, 51#u8, 56#u8, 46#u8, 51#u8, 45#u8, 46#u8, 51#u8, 50#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_56]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 65:0-65:854
+    Visibility: public -/
+def sidebar.piece_56 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 50#u8, 52#u8, 46#u8, 51#u8, 53#u8,
+          45#u8, 46#u8, 50#u8, 46#u8, 51#u8, 53#u8, 45#u8, 46#u8, 49#u8, 52#u8,
+          46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 49#u8, 46#u8, 51#u8, 45#u8, 46#u8,
+          48#u8, 54#u8, 46#u8, 50#u8, 54#u8, 45#u8, 46#u8, 48#u8, 52#u8, 46#u8,
+          50#u8, 49#u8, 45#u8, 46#u8, 48#u8, 50#u8, 46#u8, 49#u8, 51#u8, 45#u8,
+          46#u8, 48#u8, 49#u8, 104#u8, 53#u8, 46#u8, 56#u8, 52#u8, 108#u8,
+          46#u8, 54#u8, 57#u8, 45#u8, 46#u8, 48#u8, 53#u8, 46#u8, 53#u8, 57#u8,
+          45#u8, 46#u8, 49#u8, 52#u8, 46#u8, 53#u8, 45#u8, 46#u8, 50#u8, 49#u8,
+          46#u8, 52#u8, 49#u8, 45#u8, 46#u8, 50#u8, 56#u8, 46#u8, 51#u8, 51#u8,
+          45#u8, 46#u8, 51#u8, 50#u8, 46#u8, 50#u8, 55#u8, 45#u8, 46#u8, 51#u8,
+          53#u8, 46#u8, 50#u8, 45#u8, 46#u8, 51#u8, 54#u8, 46#u8, 49#u8, 53#u8,
+          45#u8, 46#u8, 51#u8, 54#u8, 46#u8, 49#u8, 45#u8, 46#u8, 51#u8, 53#u8,
+          46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 51#u8, 50#u8, 46#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_57]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 66:0-66:857
+    Visibility: public -/
+def sidebar.piece_57 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          52#u8, 45#u8, 46#u8, 50#u8, 56#u8, 46#u8, 48#u8, 50#u8, 45#u8, 46#u8,
+          50#u8, 49#u8, 86#u8, 54#u8, 46#u8, 48#u8, 55#u8, 104#u8, 50#u8,
+          46#u8, 48#u8, 57#u8, 108#u8, 46#u8, 49#u8, 52#u8, 46#u8, 48#u8,
+          49#u8, 46#u8, 50#u8, 49#u8, 46#u8, 48#u8, 51#u8, 122#u8, 109#u8,
+          45#u8, 54#u8, 46#u8, 52#u8, 55#u8, 32#u8, 49#u8, 52#u8, 46#u8, 50#u8,
+          53#u8, 108#u8, 45#u8, 46#u8, 50#u8, 51#u8, 46#u8, 51#u8, 51#u8,
+          45#u8, 46#u8, 48#u8, 56#u8, 46#u8, 52#u8, 49#u8, 46#u8, 48#u8, 56#u8,
+          46#u8, 52#u8, 49#u8, 46#u8, 50#u8, 51#u8, 46#u8, 51#u8, 51#u8, 46#u8,
+          51#u8, 51#u8, 46#u8, 50#u8, 51#u8, 46#u8, 52#u8, 49#u8, 46#u8, 48#u8,
+          56#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8, 48#u8, 56#u8, 46#u8, 51#u8,
+          51#u8, 45#u8, 46#u8, 50#u8, 51#u8, 46#u8, 50#u8, 51#u8, 45#u8, 46#u8,
+          51#u8, 51#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 52#u8, 49#u8, 45#u8,
+          46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8, 50#u8,
+          51#u8, 45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_58]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 67:0-67:731
+    Visibility: public -/
+def sidebar.piece_58 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 107#usize [
+          46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 50#u8,
+          51#u8, 45#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8, 48#u8, 56#u8, 45#u8,
+          46#u8, 52#u8, 49#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 51#u8, 51#u8,
+          46#u8, 50#u8, 51#u8, 122#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8,
+          103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          80#u8, 121#u8, 80#u8, 73#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_59]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 68:0-68:842
+    Visibility: public -/
+def sidebar.piece_59 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 115#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 114#u8, 97#u8,
+          119#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8,
+          51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+          32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+          105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+          100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_60]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 69:0-69:868
+    Visibility: public -/
+def sidebar.piece_60 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          52#u8, 32#u8, 50#u8, 72#u8, 54#u8, 97#u8, 50#u8, 32#u8, 50#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 50#u8, 32#u8, 50#u8, 118#u8,
+          49#u8, 54#u8, 97#u8, 50#u8, 32#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          48#u8, 50#u8, 32#u8, 50#u8, 104#u8, 49#u8, 50#u8, 97#u8, 50#u8,
+          32#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 50#u8, 45#u8, 50#u8,
+          86#u8, 56#u8, 108#u8, 45#u8, 54#u8, 45#u8, 54#u8, 122#u8, 109#u8,
+          52#u8, 32#u8, 49#u8, 56#u8, 72#u8, 54#u8, 86#u8, 52#u8, 104#u8,
+          55#u8, 118#u8, 53#u8, 104#u8, 53#u8, 118#u8, 49#u8, 49#u8, 122#u8,
+          34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 82#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_61]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 70:0-70:253
+    Visibility: public -/
+def sidebar.piece_61 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          97#u8, 119#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_62]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 71:0-71:836
+    Visibility: public -/
+def sidebar.piece_62 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 114#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 103#u8, 111#u8,
+          34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8,
+          102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8,
+          51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+          32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+          105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+          100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_63]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 72:0-72:856
+    Visibility: public -/
+def sidebar.piece_63 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 50#u8,
+          46#u8, 54#u8, 52#u8, 32#u8, 57#u8, 46#u8, 53#u8, 54#u8, 115#u8,
+          46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 49#u8, 52#u8, 46#u8, 54#u8, 53#u8,
+          45#u8, 46#u8, 51#u8, 56#u8, 99#u8, 46#u8, 52#u8, 49#u8, 45#u8, 46#u8,
+          50#u8, 52#u8, 46#u8, 57#u8, 55#u8, 45#u8, 46#u8, 53#u8, 32#u8, 49#u8,
+          46#u8, 54#u8, 51#u8, 45#u8, 46#u8, 55#u8, 65#u8, 55#u8, 46#u8, 56#u8,
+          53#u8, 32#u8, 55#u8, 46#u8, 56#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          49#u8, 55#u8, 46#u8, 53#u8, 51#u8, 32#u8, 56#u8, 99#u8, 46#u8, 56#u8,
+          54#u8, 32#u8, 48#u8, 32#u8, 49#u8, 46#u8, 54#u8, 55#u8, 46#u8, 49#u8,
+          55#u8, 32#u8, 50#u8, 46#u8, 51#u8, 55#u8, 46#u8, 53#u8, 50#u8, 46#u8,
+          55#u8, 46#u8, 51#u8, 53#u8, 32#u8, 49#u8, 46#u8, 50#u8, 54#u8, 46#u8,
+          56#u8, 55#u8, 32#u8, 49#u8, 46#u8, 54#u8, 51#u8, 32#u8, 49#u8, 46#u8,
+          53#u8, 49#u8, 46#u8, 51#u8, 55#u8, 46#u8, 54#u8, 52#u8, 46#u8, 53#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_64]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 73:0-73:855
+    Visibility: public -/
+def sidebar.piece_64 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          52#u8, 32#u8, 49#u8, 46#u8, 52#u8, 49#u8, 46#u8, 53#u8, 52#u8, 32#u8,
+          50#u8, 46#u8, 50#u8, 55#u8, 118#u8, 46#u8, 50#u8, 104#u8, 45#u8,
+          50#u8, 46#u8, 55#u8, 118#u8, 45#u8, 46#u8, 49#u8, 54#u8, 99#u8,
+          48#u8, 45#u8, 46#u8, 52#u8, 55#u8, 45#u8, 46#u8, 48#u8, 57#u8, 45#u8,
+          46#u8, 56#u8, 54#u8, 45#u8, 46#u8, 50#u8, 56#u8, 45#u8, 49#u8, 46#u8,
+          49#u8, 53#u8, 97#u8, 49#u8, 46#u8, 55#u8, 32#u8, 49#u8, 46#u8, 55#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8, 55#u8, 55#u8, 45#u8,
+          46#u8, 54#u8, 55#u8, 32#u8, 50#u8, 46#u8, 55#u8, 32#u8, 50#u8, 46#u8,
+          55#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 49#u8, 46#u8, 49#u8,
+          52#u8, 45#u8, 46#u8, 50#u8, 50#u8, 99#u8, 45#u8, 46#u8, 53#u8, 54#u8,
+          32#u8, 48#u8, 45#u8, 49#u8, 46#u8, 48#u8, 54#u8, 46#u8, 49#u8, 51#u8,
+          45#u8, 49#u8, 46#u8, 52#u8, 54#u8, 46#u8, 52#u8, 45#u8, 46#u8, 52#u8,
+          49#u8, 46#u8, 50#u8, 55#u8, 45#u8, 46#u8, 55#u8, 50#u8, 46#u8, 54#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_65]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 74:0-74:852
+    Visibility: public -/
+def sidebar.piece_65 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          54#u8, 45#u8, 46#u8, 57#u8, 51#u8, 32#u8, 49#u8, 46#u8, 49#u8, 54#u8,
+          45#u8, 46#u8, 50#u8, 49#u8, 46#u8, 53#u8, 45#u8, 46#u8, 51#u8, 49#u8,
+          32#u8, 49#u8, 46#u8, 49#u8, 45#u8, 46#u8, 51#u8, 49#u8, 32#u8, 49#u8,
+          46#u8, 56#u8, 32#u8, 48#u8, 32#u8, 46#u8, 54#u8, 57#u8, 46#u8, 49#u8,
+          32#u8, 49#u8, 46#u8, 50#u8, 56#u8, 46#u8, 51#u8, 50#u8, 32#u8, 49#u8,
+          46#u8, 55#u8, 56#u8, 46#u8, 50#u8, 49#u8, 46#u8, 53#u8, 46#u8, 53#u8,
+          51#u8, 46#u8, 56#u8, 56#u8, 46#u8, 57#u8, 52#u8, 32#u8, 49#u8, 46#u8,
+          49#u8, 53#u8, 46#u8, 52#u8, 49#u8, 46#u8, 50#u8, 55#u8, 46#u8, 57#u8,
+          46#u8, 52#u8, 32#u8, 49#u8, 46#u8, 52#u8, 55#u8, 46#u8, 52#u8, 46#u8,
+          51#u8, 56#u8, 32#u8, 48#u8, 32#u8, 46#u8, 55#u8, 51#u8, 45#u8, 46#u8,
+          48#u8, 54#u8, 32#u8, 49#u8, 46#u8, 48#u8, 52#u8, 45#u8, 46#u8, 49#u8,
+          55#u8, 46#u8, 51#u8, 49#u8, 45#u8, 46#u8, 49#u8, 50#u8, 46#u8, 53#u8,
+          54#u8, 45#u8, 46#u8, 50#u8, 57#u8, 46#u8, 55#u8, 52#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_66]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 75:0-75:856
+    Visibility: public -/
+def sidebar.piece_66 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          45#u8, 46#u8, 53#u8, 50#u8, 46#u8, 49#u8, 57#u8, 45#u8, 46#u8, 50#u8,
+          51#u8, 46#u8, 50#u8, 57#u8, 45#u8, 46#u8, 53#u8, 49#u8, 46#u8, 50#u8,
+          57#u8, 45#u8, 46#u8, 56#u8, 52#u8, 118#u8, 45#u8, 46#u8, 49#u8,
+          52#u8, 72#u8, 55#u8, 46#u8, 49#u8, 53#u8, 118#u8, 45#u8, 49#u8,
+          46#u8, 55#u8, 54#u8, 104#u8, 53#u8, 46#u8, 48#u8, 55#u8, 118#u8,
+          49#u8, 46#u8, 51#u8, 99#u8, 48#u8, 32#u8, 46#u8, 56#u8, 45#u8, 46#u8,
+          49#u8, 55#u8, 32#u8, 49#u8, 46#u8, 52#u8, 56#u8, 45#u8, 46#u8, 53#u8,
+          50#u8, 32#u8, 50#u8, 46#u8, 48#u8, 52#u8, 97#u8, 51#u8, 46#u8, 52#u8,
+          54#u8, 32#u8, 51#u8, 46#u8, 52#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          49#u8, 45#u8, 49#u8, 46#u8, 53#u8, 32#u8, 49#u8, 46#u8, 51#u8, 99#u8,
+          45#u8, 46#u8, 54#u8, 54#u8, 46#u8, 51#u8, 45#u8, 49#u8, 46#u8, 52#u8,
+          52#u8, 46#u8, 52#u8, 53#u8, 45#u8, 50#u8, 46#u8, 51#u8, 53#u8, 46#u8,
+          52#u8, 53#u8, 45#u8, 46#u8, 57#u8, 57#u8, 32#u8, 48#u8, 45#u8, 49#u8,
+          46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_67]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 76:0-76:855
+    Visibility: public -/
+def sidebar.piece_67 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          56#u8, 55#u8, 45#u8, 46#u8, 49#u8, 56#u8, 45#u8, 50#u8, 46#u8, 54#u8,
+          51#u8, 45#u8, 46#u8, 53#u8, 53#u8, 97#u8, 52#u8, 46#u8, 50#u8, 32#u8,
+          52#u8, 46#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8,
+          46#u8, 55#u8, 55#u8, 45#u8, 49#u8, 46#u8, 53#u8, 57#u8, 67#u8, 51#u8,
+          46#u8, 49#u8, 53#u8, 32#u8, 49#u8, 52#u8, 46#u8, 56#u8, 50#u8, 32#u8,
+          51#u8, 32#u8, 49#u8, 51#u8, 46#u8, 57#u8, 52#u8, 32#u8, 51#u8, 32#u8,
+          49#u8, 50#u8, 46#u8, 56#u8, 57#u8, 118#u8, 45#u8, 46#u8, 50#u8,
+          56#u8, 99#u8, 48#u8, 45#u8, 49#u8, 46#u8, 48#u8, 52#u8, 46#u8, 49#u8,
+          54#u8, 45#u8, 49#u8, 46#u8, 57#u8, 51#u8, 46#u8, 52#u8, 56#u8, 45#u8,
+          50#u8, 46#u8, 54#u8, 53#u8, 97#u8, 51#u8, 46#u8, 48#u8, 56#u8, 32#u8,
+          51#u8, 46#u8, 48#u8, 56#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8,
+          46#u8, 56#u8, 52#u8, 45#u8, 46#u8, 52#u8, 122#u8, 109#u8, 49#u8,
+          50#u8, 46#u8, 49#u8, 45#u8, 49#u8, 46#u8, 51#u8, 52#u8, 99#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_68]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 77:0-77:853
+    Visibility: public -/
+def sidebar.piece_68 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          57#u8, 50#u8, 32#u8, 48#u8, 32#u8, 49#u8, 46#u8, 55#u8, 52#u8, 46#u8,
+          49#u8, 56#u8, 32#u8, 50#u8, 46#u8, 52#u8, 52#u8, 46#u8, 53#u8, 53#u8,
+          97#u8, 51#u8, 46#u8, 57#u8, 54#u8, 32#u8, 51#u8, 46#u8, 57#u8, 54#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 49#u8, 46#u8, 54#u8, 54#u8, 32#u8,
+          49#u8, 46#u8, 53#u8, 57#u8, 99#u8, 46#u8, 52#u8, 46#u8, 55#u8, 46#u8,
+          54#u8, 32#u8, 49#u8, 46#u8, 53#u8, 52#u8, 46#u8, 54#u8, 32#u8, 50#u8,
+          46#u8, 53#u8, 51#u8, 118#u8, 46#u8, 50#u8, 56#u8, 99#u8, 48#u8,
+          32#u8, 46#u8, 57#u8, 57#u8, 45#u8, 46#u8, 50#u8, 32#u8, 49#u8, 46#u8,
+          56#u8, 51#u8, 45#u8, 46#u8, 54#u8, 32#u8, 50#u8, 46#u8, 53#u8, 51#u8,
+          97#u8, 51#u8, 46#u8, 57#u8, 54#u8, 32#u8, 51#u8, 46#u8, 57#u8, 54#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8, 46#u8, 54#u8, 54#u8,
+          32#u8, 49#u8, 46#u8, 53#u8, 57#u8, 99#u8, 45#u8, 46#u8, 55#u8, 46#u8,
+          51#u8, 55#u8, 45#u8, 49#u8, 46#u8, 53#u8, 50#u8, 46#u8, 53#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_69]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 78:0-78:854
+    Visibility: public -/
+def sidebar.piece_69 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          53#u8, 45#u8, 50#u8, 46#u8, 52#u8, 52#u8, 46#u8, 53#u8, 53#u8,
+          115#u8, 45#u8, 49#u8, 46#u8, 55#u8, 52#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 45#u8, 50#u8, 46#u8, 52#u8, 52#u8, 45#u8, 46#u8, 53#u8, 53#u8,
+          97#u8, 51#u8, 46#u8, 57#u8, 54#u8, 32#u8, 51#u8, 46#u8, 57#u8, 54#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 49#u8, 46#u8, 54#u8, 54#u8,
+          45#u8, 49#u8, 46#u8, 53#u8, 57#u8, 99#u8, 45#u8, 46#u8, 52#u8, 45#u8,
+          46#u8, 55#u8, 45#u8, 46#u8, 54#u8, 45#u8, 49#u8, 46#u8, 53#u8, 52#u8,
+          45#u8, 46#u8, 54#u8, 45#u8, 50#u8, 46#u8, 53#u8, 51#u8, 118#u8,
+          45#u8, 46#u8, 50#u8, 56#u8, 99#u8, 48#u8, 45#u8, 46#u8, 57#u8, 57#u8,
+          46#u8, 50#u8, 45#u8, 49#u8, 46#u8, 56#u8, 51#u8, 46#u8, 54#u8, 45#u8,
+          50#u8, 46#u8, 53#u8, 51#u8, 97#u8, 51#u8, 46#u8, 57#u8, 54#u8, 32#u8,
+          51#u8, 46#u8, 57#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 49#u8,
+          46#u8, 54#u8, 54#u8, 45#u8, 49#u8, 46#u8, 53#u8, 57#u8, 99#u8, 46#u8,
+          55#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_70]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 79:0-79:855
+    Visibility: public -/
+def sidebar.piece_70 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          45#u8, 46#u8, 51#u8, 55#u8, 32#u8, 49#u8, 46#u8, 53#u8, 50#u8, 45#u8,
+          46#u8, 53#u8, 53#u8, 32#u8, 50#u8, 46#u8, 52#u8, 52#u8, 45#u8, 46#u8,
+          53#u8, 53#u8, 122#u8, 109#u8, 48#u8, 32#u8, 50#u8, 46#u8, 49#u8,
+          50#u8, 99#u8, 45#u8, 46#u8, 52#u8, 52#u8, 32#u8, 48#u8, 45#u8, 46#u8,
+          56#u8, 50#u8, 46#u8, 49#u8, 50#u8, 45#u8, 49#u8, 46#u8, 49#u8, 52#u8,
+          46#u8, 51#u8, 55#u8, 45#u8, 46#u8, 51#u8, 50#u8, 46#u8, 50#u8, 52#u8,
+          45#u8, 46#u8, 53#u8, 54#u8, 46#u8, 54#u8, 45#u8, 46#u8, 55#u8, 51#u8,
+          32#u8, 49#u8, 46#u8, 48#u8, 54#u8, 45#u8, 46#u8, 49#u8, 55#u8, 46#u8,
+          52#u8, 54#u8, 45#u8, 46#u8, 50#u8, 54#u8, 32#u8, 49#u8, 46#u8, 48#u8,
+          49#u8, 45#u8, 46#u8, 50#u8, 54#u8, 32#u8, 49#u8, 46#u8, 54#u8, 53#u8,
+          118#u8, 46#u8, 50#u8, 56#u8, 99#u8, 48#u8, 32#u8, 46#u8, 54#u8,
+          52#u8, 46#u8, 48#u8, 57#u8, 32#u8, 49#u8, 46#u8, 49#u8, 57#u8, 46#u8,
+          50#u8, 54#u8, 32#u8, 49#u8, 46#u8, 54#u8, 53#u8, 46#u8, 49#u8, 55#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_71]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 80:0-80:853
+    Visibility: public -/
+def sidebar.piece_71 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 52#u8, 54#u8, 46#u8, 52#u8, 49#u8, 46#u8, 56#u8, 50#u8, 46#u8,
+          55#u8, 51#u8, 32#u8, 49#u8, 46#u8, 48#u8, 54#u8, 46#u8, 51#u8, 50#u8,
+          46#u8, 50#u8, 53#u8, 46#u8, 55#u8, 46#u8, 51#u8, 55#u8, 32#u8, 49#u8,
+          46#u8, 49#u8, 52#u8, 46#u8, 51#u8, 55#u8, 46#u8, 52#u8, 52#u8, 32#u8,
+          48#u8, 32#u8, 46#u8, 56#u8, 50#u8, 45#u8, 46#u8, 49#u8, 50#u8, 32#u8,
+          49#u8, 46#u8, 49#u8, 52#u8, 45#u8, 46#u8, 51#u8, 55#u8, 46#u8, 51#u8,
+          50#u8, 45#u8, 46#u8, 50#u8, 52#u8, 46#u8, 53#u8, 54#u8, 45#u8, 46#u8,
+          54#u8, 46#u8, 55#u8, 51#u8, 45#u8, 49#u8, 46#u8, 48#u8, 54#u8, 46#u8,
+          49#u8, 55#u8, 45#u8, 46#u8, 52#u8, 54#u8, 46#u8, 50#u8, 54#u8, 45#u8,
+          49#u8, 46#u8, 48#u8, 49#u8, 46#u8, 50#u8, 54#u8, 45#u8, 49#u8, 46#u8,
+          54#u8, 53#u8, 118#u8, 45#u8, 46#u8, 50#u8, 56#u8, 99#u8, 48#u8,
+          45#u8, 46#u8, 54#u8, 52#u8, 45#u8, 46#u8, 48#u8, 57#u8, 45#u8, 49#u8,
+          46#u8, 49#u8, 57#u8, 45#u8, 46#u8, 50#u8, 54#u8, 45#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_72]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 81:0-81:827
+    Visibility: public -/
+def sidebar.piece_72 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 123#usize [
+          46#u8, 54#u8, 53#u8, 97#u8, 50#u8, 46#u8, 49#u8, 55#u8, 32#u8, 50#u8,
+          46#u8, 49#u8, 55#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8, 46#u8,
+          55#u8, 51#u8, 45#u8, 49#u8, 46#u8, 48#u8, 54#u8, 32#u8, 49#u8, 46#u8,
+          55#u8, 56#u8, 32#u8, 49#u8, 46#u8, 55#u8, 56#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 48#u8, 45#u8, 49#u8, 46#u8, 49#u8, 52#u8, 45#u8, 46#u8, 51#u8,
+          55#u8, 122#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 71#u8, 111#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_73]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 82:0-82:850
+    Visibility: public -/
+def sidebar.piece_73 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 116#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 103#u8, 101#u8,
+          109#u8, 115#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8,
+          101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8,
+          114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8,
+          45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+          109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8,
+          100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+          110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8,
+          114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+          110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_74]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 83:0-83:862
+    Visibility: public -/
+def sidebar.piece_74 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 55#u8,
+          46#u8, 56#u8, 49#u8, 32#u8, 55#u8, 46#u8, 57#u8, 108#u8, 45#u8,
+          50#u8, 46#u8, 57#u8, 55#u8, 32#u8, 50#u8, 46#u8, 57#u8, 53#u8, 32#u8,
+          55#u8, 46#u8, 49#u8, 57#u8, 32#u8, 55#u8, 46#u8, 49#u8, 56#u8, 32#u8,
+          50#u8, 46#u8, 57#u8, 54#u8, 45#u8, 50#u8, 46#u8, 57#u8, 53#u8, 32#u8,
+          52#u8, 46#u8, 50#u8, 50#u8, 45#u8, 52#u8, 46#u8, 50#u8, 51#u8, 45#u8,
+          50#u8, 46#u8, 57#u8, 54#u8, 45#u8, 50#u8, 46#u8, 57#u8, 54#u8,
+          118#u8, 45#u8, 46#u8, 48#u8, 49#u8, 72#u8, 55#u8, 46#u8, 56#u8,
+          122#u8, 77#u8, 49#u8, 50#u8, 32#u8, 48#u8, 76#u8, 49#u8, 46#u8,
+          53#u8, 51#u8, 32#u8, 54#u8, 118#u8, 49#u8, 50#u8, 76#u8, 49#u8,
+          50#u8, 32#u8, 50#u8, 52#u8, 108#u8, 49#u8, 48#u8, 46#u8, 52#u8,
+          55#u8, 45#u8, 54#u8, 86#u8, 54#u8, 76#u8, 49#u8, 50#u8, 32#u8, 48#u8,
+          122#u8, 109#u8, 56#u8, 46#u8, 52#u8, 55#u8, 32#u8, 49#u8, 54#u8,
+          46#u8, 56#u8, 53#u8, 76#u8, 49#u8, 50#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_75]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 84:0-84:834
+    Visibility: public -/
+def sidebar.piece_75 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 123#usize [
+          32#u8, 50#u8, 49#u8, 46#u8, 55#u8, 51#u8, 108#u8, 45#u8, 56#u8,
+          46#u8, 52#u8, 55#u8, 45#u8, 52#u8, 46#u8, 56#u8, 56#u8, 86#u8, 55#u8,
+          46#u8, 49#u8, 50#u8, 76#u8, 49#u8, 50#u8, 32#u8, 50#u8, 46#u8, 50#u8,
+          52#u8, 108#u8, 56#u8, 46#u8, 52#u8, 55#u8, 32#u8, 52#u8, 46#u8,
+          56#u8, 56#u8, 118#u8, 57#u8, 46#u8, 55#u8, 51#u8, 122#u8, 34#u8,
+          47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 82#u8, 117#u8, 98#u8, 121#u8, 71#u8, 101#u8,
+          109#u8, 115#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_76]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 85:0-85:884
+    Visibility: public -/
+def sidebar.piece_76 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 121#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 116#u8, 101#u8,
+          114#u8, 114#u8, 97#u8, 102#u8, 111#u8, 114#u8, 109#u8, 34#u8, 32#u8,
+          99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 108#u8,
+          101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8,
+          99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 112#u8, 120#u8,
+          45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 116#u8,
+          101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8, 32#u8, 102#u8, 111#u8,
+          110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8, 105#u8, 117#u8,
+          109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 101#u8,
+          100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8,
+          115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_77]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 86:0-86:867
+    Visibility: public -/
+def sidebar.piece_77 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          46#u8, 53#u8, 32#u8, 48#u8, 118#u8, 55#u8, 46#u8, 54#u8, 57#u8,
+          108#u8, 54#u8, 46#u8, 53#u8, 54#u8, 32#u8, 51#u8, 46#u8, 56#u8,
+          53#u8, 86#u8, 51#u8, 46#u8, 56#u8, 53#u8, 76#u8, 49#u8, 46#u8, 53#u8,
+          32#u8, 48#u8, 122#u8, 109#u8, 55#u8, 46#u8, 57#u8, 52#u8, 32#u8,
+          52#u8, 46#u8, 54#u8, 50#u8, 118#u8, 55#u8, 46#u8, 54#u8, 57#u8,
+          108#u8, 54#u8, 46#u8, 53#u8, 54#u8, 45#u8, 51#u8, 46#u8, 56#u8,
+          52#u8, 86#u8, 46#u8, 55#u8, 55#u8, 76#u8, 57#u8, 46#u8, 52#u8, 52#u8,
+          32#u8, 52#u8, 46#u8, 54#u8, 50#u8, 122#u8, 109#u8, 55#u8, 46#u8,
+          57#u8, 52#u8, 32#u8, 48#u8, 118#u8, 55#u8, 46#u8, 54#u8, 57#u8,
+          108#u8, 54#u8, 46#u8, 53#u8, 54#u8, 45#u8, 51#u8, 46#u8, 56#u8,
+          52#u8, 86#u8, 46#u8, 55#u8, 55#u8, 108#u8, 45#u8, 54#u8, 46#u8,
+          53#u8, 54#u8, 32#u8, 51#u8, 46#u8, 56#u8, 53#u8, 122#u8, 77#u8,
+          57#u8, 46#u8, 52#u8, 52#u8, 32#u8, 49#u8, 51#u8, 46#u8, 52#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_78]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 87:0-87:771
+    Visibility: public -/
+def sidebar.piece_78 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 112#usize [
+          54#u8, 118#u8, 55#u8, 46#u8, 54#u8, 57#u8, 108#u8, 54#u8, 46#u8,
+          53#u8, 54#u8, 45#u8, 51#u8, 46#u8, 56#u8, 53#u8, 118#u8, 45#u8,
+          55#u8, 46#u8, 54#u8, 57#u8, 108#u8, 45#u8, 54#u8, 46#u8, 53#u8,
+          54#u8, 32#u8, 51#u8, 46#u8, 56#u8, 53#u8, 122#u8, 34#u8, 47#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 84#u8, 101#u8, 114#u8, 114#u8, 97#u8, 102#u8, 111#u8,
+          114#u8, 109#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_79]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 88:0-88:869
+    Visibility: public -/
+def sidebar.piece_79 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 119#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 97#u8, 110#u8,
+          115#u8, 105#u8, 98#u8, 108#u8, 101#u8, 34#u8, 32#u8, 99#u8, 108#u8,
+          97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8,
+          32#u8, 105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8,
+          110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8,
+          32#u8, 112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+          116#u8, 45#u8, 115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8,
+          45#u8, 109#u8, 101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8,
+          111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8,
+          103#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8,
+          115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_80]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 89:0-89:860
+    Visibility: public -/
+def sidebar.piece_80 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          48#u8, 46#u8, 54#u8, 49#u8, 55#u8, 32#u8, 49#u8, 49#u8, 46#u8, 52#u8,
+          55#u8, 51#u8, 108#u8, 52#u8, 46#u8, 54#u8, 56#u8, 54#u8, 32#u8,
+          51#u8, 46#u8, 54#u8, 57#u8, 53#u8, 45#u8, 51#u8, 46#u8, 49#u8, 48#u8,
+          50#u8, 45#u8, 55#u8, 46#u8, 54#u8, 54#u8, 50#u8, 122#u8, 77#u8,
+          49#u8, 50#u8, 32#u8, 48#u8, 67#u8, 53#u8, 46#u8, 51#u8, 55#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 32#u8, 53#u8, 46#u8, 51#u8, 55#u8, 49#u8,
+          32#u8, 48#u8, 32#u8, 49#u8, 50#u8, 115#u8, 53#u8, 46#u8, 51#u8,
+          55#u8, 49#u8, 32#u8, 49#u8, 50#u8, 32#u8, 49#u8, 50#u8, 32#u8, 49#u8,
+          50#u8, 32#u8, 49#u8, 50#u8, 45#u8, 53#u8, 46#u8, 51#u8, 55#u8, 49#u8,
+          32#u8, 49#u8, 50#u8, 45#u8, 49#u8, 50#u8, 83#u8, 49#u8, 56#u8, 46#u8,
+          54#u8, 50#u8, 57#u8, 32#u8, 48#u8, 32#u8, 49#u8, 50#u8, 32#u8, 48#u8,
+          122#u8, 109#u8, 53#u8, 46#u8, 55#u8, 57#u8, 55#u8, 32#u8, 49#u8,
+          55#u8, 46#u8, 51#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_81]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 90:0-90:853
+    Visibility: public -/
+def sidebar.piece_81 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          48#u8, 53#u8, 99#u8, 45#u8, 46#u8, 48#u8, 49#u8, 49#u8, 46#u8, 52#u8,
+          55#u8, 49#u8, 45#u8, 46#u8, 52#u8, 48#u8, 51#u8, 46#u8, 56#u8, 52#u8,
+          50#u8, 45#u8, 46#u8, 56#u8, 55#u8, 53#u8, 46#u8, 56#u8, 51#u8, 45#u8,
+          46#u8, 50#u8, 51#u8, 54#u8, 32#u8, 48#u8, 45#u8, 46#u8, 52#u8, 49#u8,
+          54#u8, 45#u8, 46#u8, 48#u8, 57#u8, 45#u8, 46#u8, 54#u8, 54#u8, 52#u8,
+          45#u8, 46#u8, 50#u8, 57#u8, 51#u8, 108#u8, 45#u8, 54#u8, 46#u8,
+          49#u8, 57#u8, 45#u8, 53#u8, 45#u8, 50#u8, 46#u8, 48#u8, 55#u8, 57#u8,
+          32#u8, 53#u8, 46#u8, 50#u8, 48#u8, 51#u8, 72#u8, 54#u8, 46#u8, 49#u8,
+          57#u8, 49#u8, 76#u8, 49#u8, 49#u8, 46#u8, 52#u8, 51#u8, 56#u8, 32#u8,
+          53#u8, 46#u8, 52#u8, 52#u8, 99#u8, 46#u8, 49#u8, 50#u8, 52#u8, 45#u8,
+          46#u8, 51#u8, 49#u8, 52#u8, 46#u8, 52#u8, 50#u8, 55#u8, 45#u8, 46#u8,
+          53#u8, 50#u8, 46#u8, 55#u8, 54#u8, 52#u8, 45#u8, 46#u8, 53#u8, 48#u8,
+          54#u8, 46#u8, 51#u8, 50#u8, 54#u8, 45#u8, 46#u8, 48#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_82]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 91:0-91:860
+    Visibility: public -/
+def sidebar.piece_82 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          52#u8, 46#u8, 54#u8, 51#u8, 46#u8, 49#u8, 56#u8, 57#u8, 46#u8, 55#u8,
+          52#u8, 50#u8, 46#u8, 53#u8, 48#u8, 54#u8, 108#u8, 52#u8, 46#u8,
+          55#u8, 55#u8, 52#u8, 32#u8, 49#u8, 49#u8, 46#u8, 52#u8, 57#u8, 52#u8,
+          99#u8, 46#u8, 48#u8, 52#u8, 53#u8, 46#u8, 49#u8, 49#u8, 49#u8, 46#u8,
+          48#u8, 56#u8, 46#u8, 50#u8, 51#u8, 52#u8, 46#u8, 48#u8, 56#u8, 46#u8,
+          51#u8, 52#u8, 56#u8, 45#u8, 46#u8, 48#u8, 48#u8, 49#u8, 46#u8, 48#u8,
+          48#u8, 57#u8, 45#u8, 46#u8, 48#u8, 48#u8, 49#u8, 46#u8, 48#u8, 48#u8,
+          57#u8, 45#u8, 46#u8, 48#u8, 48#u8, 49#u8, 46#u8, 48#u8, 50#u8, 51#u8,
+          122#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 65#u8, 110#u8, 115#u8,
+          105#u8, 98#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_83]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 92:0-92:254
+    Visibility: public -/
+def sidebar.piece_83 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 28#usize [
+          108#u8, 101#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_84]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 93:0-93:857
+    Visibility: public -/
+def sidebar.piece_84 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 117#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 110#u8, 117#u8,
+          103#u8, 101#u8, 116#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+          115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+          116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+          101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8,
+          121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+          115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8,
+          101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8,
+          117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8,
+          116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_85]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 94:0-94:888
+    Visibility: public -/
+def sidebar.piece_85 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8,
+          32#u8, 109#u8, 114#u8, 45#u8, 51#u8, 34#u8, 32#u8, 102#u8, 105#u8,
+          108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+          110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8,
+          118#u8, 105#u8, 101#u8, 119#u8, 66#u8, 111#u8, 120#u8, 61#u8, 34#u8,
+          48#u8, 32#u8, 48#u8, 32#u8, 50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 99#u8, 105#u8, 114#u8, 99#u8, 108#u8, 101#u8,
+          32#u8, 99#u8, 120#u8, 61#u8, 34#u8, 55#u8, 34#u8, 32#u8, 99#u8,
+          121#u8, 61#u8, 34#u8, 49#u8, 55#u8, 34#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_86]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 95:0-95:909
+    Visibility: public -/
+def sidebar.piece_86 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          32#u8, 114#u8, 61#u8, 34#u8, 51#u8, 46#u8, 53#u8, 34#u8, 32#u8,
+          102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8,
+          114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8,
+          114#u8, 34#u8, 47#u8, 62#u8, 60#u8, 99#u8, 105#u8, 114#u8, 99#u8,
+          108#u8, 101#u8, 32#u8, 99#u8, 120#u8, 61#u8, 34#u8, 49#u8, 54#u8,
+          34#u8, 32#u8, 99#u8, 121#u8, 61#u8, 34#u8, 56#u8, 46#u8, 53#u8,
+          34#u8, 32#u8, 114#u8, 61#u8, 34#u8, 53#u8, 34#u8, 32#u8, 102#u8,
+          105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8,
+          101#u8, 110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8,
+          47#u8, 62#u8, 60#u8, 99#u8, 105#u8, 114#u8, 99#u8, 108#u8, 101#u8,
+          32#u8, 99#u8, 120#u8, 61#u8, 34#u8, 52#u8, 34#u8, 32#u8, 99#u8,
+          121#u8, 61#u8, 34#u8, 53#u8, 34#u8, 32#u8, 114#u8, 61#u8, 34#u8,
+          50#u8, 34#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8,
+          99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_87]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 96:0-96:534
+    Visibility: public -/
+def sidebar.piece_87 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 74#usize [
+          34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 78#u8, 117#u8, 71#u8, 101#u8, 116#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_88]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 97:0-97:842
+    Visibility: public -/
+def sidebar.piece_88 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 115#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 112#u8, 117#u8,
+          98#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8,
+          51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+          32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+          105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+          100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_89]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 98:0-98:896
+    Visibility: public -/
+def sidebar.piece_89 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          115#u8, 118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8,
+          32#u8, 109#u8, 114#u8, 45#u8, 51#u8, 34#u8, 32#u8, 102#u8, 105#u8,
+          108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8,
+          32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8,
+          99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8,
+          66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8,
+          50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          103#u8, 62#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_90]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 99:0-99:887
+    Visibility: public -/
+def sidebar.piece_90 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8,
+          110#u8, 101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8,
+          101#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8, 110#u8,
+          116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 100#u8,
+          61#u8, 34#u8, 77#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 32#u8, 52#u8,
+          46#u8, 49#u8, 48#u8, 53#u8, 118#u8, 49#u8, 50#u8, 46#u8, 55#u8,
+          57#u8, 99#u8, 48#u8, 32#u8, 49#u8, 46#u8, 50#u8, 54#u8, 54#u8, 46#u8,
+          49#u8, 53#u8, 57#u8, 32#u8, 49#u8, 46#u8, 53#u8, 55#u8, 55#u8, 46#u8,
+          55#u8, 57#u8, 32#u8, 50#u8, 46#u8, 50#u8, 49#u8, 76#u8, 57#u8, 46#u8,
+          55#u8, 57#u8, 32#u8, 50#u8, 52#u8, 104#u8, 57#u8, 46#u8, 57#u8,
+          52#u8, 55#u8, 118#u8, 45#u8, 52#u8, 46#u8, 50#u8, 54#u8, 51#u8,
+          76#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 32#u8, 52#u8, 46#u8, 49#u8,
+          48#u8, 53#u8, 122#u8, 34#u8, 47#u8, 62#u8, 60#u8, 112#u8, 97#u8,
+          116#u8, 104#u8, 32#u8, 102#u8, 105#u8, 108#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_91]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 100:0-100:889
+    Visibility: public -/
+def sidebar.piece_91 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8, 32#u8,
+          115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8, 99#u8,
+          117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8,
+          52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 32#u8, 49#u8, 54#u8, 46#u8, 56#u8,
+          57#u8, 52#u8, 99#u8, 48#u8, 32#u8, 49#u8, 46#u8, 50#u8, 54#u8, 54#u8,
+          46#u8, 49#u8, 53#u8, 57#u8, 32#u8, 49#u8, 46#u8, 53#u8, 55#u8, 55#u8,
+          46#u8, 55#u8, 57#u8, 32#u8, 50#u8, 46#u8, 50#u8, 49#u8, 108#u8,
+          46#u8, 54#u8, 51#u8, 50#u8, 46#u8, 54#u8, 51#u8, 50#u8, 104#u8,
+          49#u8, 52#u8, 46#u8, 50#u8, 49#u8, 76#u8, 52#u8, 46#u8, 49#u8, 48#u8,
+          53#u8, 32#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 118#u8, 49#u8,
+          50#u8, 46#u8, 55#u8, 57#u8, 122#u8, 34#u8, 47#u8, 62#u8, 60#u8,
+          112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8,
+          61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_92]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 101:0-101:870
+    Visibility: public -/
+def sidebar.piece_92 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8, 99#u8,
+          117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8,
+          52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 32#u8, 52#u8, 46#u8, 49#u8, 48#u8,
+          53#u8, 76#u8, 46#u8, 51#u8, 49#u8, 54#u8, 32#u8, 49#u8, 50#u8, 99#u8,
+          45#u8, 46#u8, 49#u8, 51#u8, 53#u8, 46#u8, 50#u8, 56#u8, 55#u8, 45#u8,
+          46#u8, 51#u8, 49#u8, 54#u8, 46#u8, 54#u8, 52#u8, 45#u8, 46#u8, 51#u8,
+          49#u8, 54#u8, 46#u8, 57#u8, 53#u8, 99#u8, 48#u8, 32#u8, 46#u8, 54#u8,
+          57#u8, 46#u8, 51#u8, 48#u8, 51#u8, 32#u8, 49#u8, 46#u8, 51#u8, 57#u8,
+          53#u8, 46#u8, 55#u8, 57#u8, 32#u8, 49#u8, 46#u8, 56#u8, 57#u8, 53#u8,
+          108#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 32#u8, 52#u8, 46#u8,
+          49#u8, 48#u8, 53#u8, 99#u8, 45#u8, 46#u8, 54#u8, 51#u8, 49#u8, 45#u8,
+          46#u8, 54#u8, 51#u8, 51#u8, 45#u8, 46#u8, 55#u8, 57#u8, 45#u8, 46#u8,
+          57#u8, 52#u8, 52#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_93]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 102:0-102:883
+    Visibility: public -/
+def sidebar.piece_93 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          45#u8, 46#u8, 55#u8, 57#u8, 45#u8, 50#u8, 46#u8, 50#u8, 49#u8, 86#u8,
+          52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 122#u8, 34#u8, 47#u8, 62#u8,
+          60#u8, 112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 102#u8, 105#u8, 108#u8,
+          108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8, 32#u8,
+          115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8, 99#u8,
+          117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8,
+          53#u8, 46#u8, 48#u8, 53#u8, 51#u8, 32#u8, 49#u8, 57#u8, 46#u8, 50#u8,
+          54#u8, 51#u8, 99#u8, 45#u8, 46#u8, 54#u8, 51#u8, 49#u8, 45#u8, 46#u8,
+          54#u8, 51#u8, 51#u8, 45#u8, 46#u8, 55#u8, 57#u8, 45#u8, 46#u8, 57#u8,
+          52#u8, 52#u8, 45#u8, 46#u8, 55#u8, 57#u8, 45#u8, 50#u8, 46#u8, 50#u8,
+          49#u8, 86#u8, 52#u8, 46#u8, 50#u8, 54#u8, 51#u8, 108#u8, 45#u8,
+          46#u8, 49#u8, 53#u8, 56#u8, 45#u8, 46#u8, 49#u8, 53#u8, 56#u8,
+          118#u8, 49#u8, 50#u8, 46#u8, 55#u8, 57#u8, 99#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_94]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 103:0-103:884
+    Visibility: public -/
+def sidebar.piece_94 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          48#u8, 32#u8, 49#u8, 46#u8, 50#u8, 54#u8, 54#u8, 46#u8, 49#u8, 53#u8,
+          57#u8, 32#u8, 49#u8, 46#u8, 53#u8, 55#u8, 55#u8, 46#u8, 55#u8, 57#u8,
+          32#u8, 50#u8, 46#u8, 50#u8, 49#u8, 108#u8, 46#u8, 54#u8, 51#u8,
+          50#u8, 46#u8, 54#u8, 51#u8, 50#u8, 104#u8, 48#u8, 76#u8, 53#u8,
+          46#u8, 48#u8, 53#u8, 51#u8, 32#u8, 49#u8, 57#u8, 46#u8, 50#u8, 54#u8,
+          51#u8, 122#u8, 34#u8, 47#u8, 62#u8, 60#u8, 112#u8, 97#u8, 116#u8,
+          104#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 110#u8,
+          111#u8, 110#u8, 101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8,
+          107#u8, 101#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+          110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8,
+          100#u8, 61#u8, 34#u8, 77#u8, 49#u8, 54#u8, 46#u8, 55#u8, 51#u8,
+          55#u8, 32#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 72#u8, 52#u8, 46#u8,
+          49#u8, 48#u8, 53#u8, 108#u8, 49#u8, 53#u8, 46#u8, 54#u8, 51#u8,
+          50#u8, 32#u8, 49#u8, 53#u8, 46#u8, 54#u8, 51#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_95]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 104:0-104:883
+    Visibility: public -/
+def sidebar.piece_95 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          50#u8, 72#u8, 50#u8, 52#u8, 86#u8, 57#u8, 46#u8, 57#u8, 52#u8, 55#u8,
+          108#u8, 45#u8, 53#u8, 46#u8, 48#u8, 53#u8, 51#u8, 45#u8, 53#u8,
+          46#u8, 48#u8, 53#u8, 51#u8, 99#u8, 45#u8, 46#u8, 55#u8, 49#u8, 49#u8,
+          45#u8, 46#u8, 55#u8, 49#u8, 50#u8, 45#u8, 49#u8, 46#u8, 51#u8, 52#u8,
+          50#u8, 45#u8, 46#u8, 55#u8, 57#u8, 45#u8, 50#u8, 46#u8, 50#u8, 49#u8,
+          45#u8, 46#u8, 55#u8, 57#u8, 122#u8, 34#u8, 47#u8, 62#u8, 60#u8,
+          112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8,
+          61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8, 32#u8, 115#u8,
+          116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8, 99#u8, 117#u8,
+          114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8, 108#u8,
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          56#u8, 46#u8, 57#u8, 52#u8, 55#u8, 32#u8, 52#u8, 46#u8, 56#u8, 57#u8,
+          53#u8, 108#u8, 45#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 45#u8,
+          52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 67#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_96]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 105:0-105:873
+    Visibility: public -/
+def sidebar.piece_96 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          52#u8, 46#u8, 52#u8, 56#u8, 52#u8, 46#u8, 52#u8, 50#u8, 57#u8, 32#u8,
+          49#u8, 51#u8, 46#u8, 55#u8, 51#u8, 55#u8, 32#u8, 48#u8, 32#u8, 49#u8,
+          51#u8, 46#u8, 49#u8, 48#u8, 53#u8, 32#u8, 48#u8, 99#u8, 45#u8, 46#u8,
+          53#u8, 52#u8, 51#u8, 32#u8, 48#u8, 45#u8, 49#u8, 46#u8, 48#u8, 55#u8,
+          54#u8, 46#u8, 49#u8, 48#u8, 56#u8, 45#u8, 49#u8, 46#u8, 52#u8, 50#u8,
+          49#u8, 46#u8, 51#u8, 49#u8, 54#u8, 76#u8, 52#u8, 46#u8, 49#u8, 48#u8,
+          53#u8, 32#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8, 104#u8, 49#u8,
+          50#u8, 46#u8, 54#u8, 51#u8, 50#u8, 99#u8, 46#u8, 56#u8, 54#u8, 56#u8,
+          32#u8, 48#u8, 32#u8, 49#u8, 46#u8, 52#u8, 57#u8, 57#u8, 46#u8, 48#u8,
+          55#u8, 56#u8, 32#u8, 50#u8, 46#u8, 50#u8, 49#u8, 46#u8, 55#u8, 57#u8,
+          122#u8, 34#u8, 47#u8, 62#u8, 60#u8, 112#u8, 111#u8, 108#u8, 121#u8,
+          103#u8, 111#u8, 110#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8,
+          34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8, 32#u8, 115#u8, 116#u8,
+          114#u8, 111#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_97]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 106:0-106:887
+    Visibility: public -/
+def sidebar.piece_97 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          107#u8, 101#u8, 61#u8, 34#u8, 99#u8, 117#u8, 114#u8, 114#u8, 101#u8,
+          110#u8, 116#u8, 67#u8, 111#u8, 108#u8, 111#u8, 114#u8, 34#u8, 32#u8,
+          112#u8, 111#u8, 105#u8, 110#u8, 116#u8, 115#u8, 61#u8, 34#u8, 50#u8,
+          51#u8, 46#u8, 56#u8, 52#u8, 50#u8, 32#u8, 57#u8, 46#u8, 55#u8, 57#u8,
+          32#u8, 50#u8, 51#u8, 46#u8, 56#u8, 52#u8, 50#u8, 32#u8, 49#u8, 57#u8,
+          46#u8, 53#u8, 55#u8, 57#u8, 32#u8, 49#u8, 57#u8, 46#u8, 53#u8, 55#u8,
+          57#u8, 32#u8, 49#u8, 57#u8, 46#u8, 53#u8, 55#u8, 57#u8, 32#u8, 49#u8,
+          57#u8, 46#u8, 55#u8, 51#u8, 55#u8, 32#u8, 49#u8, 57#u8, 46#u8, 55#u8,
+          51#u8, 55#u8, 32#u8, 50#u8, 52#u8, 32#u8, 49#u8, 57#u8, 46#u8, 55#u8,
+          51#u8, 55#u8, 32#u8, 50#u8, 52#u8, 32#u8, 57#u8, 46#u8, 57#u8, 52#u8,
+          55#u8, 34#u8, 47#u8, 62#u8, 60#u8, 112#u8, 97#u8, 116#u8, 104#u8,
+          32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 61#u8, 34#u8, 110#u8, 111#u8,
+          110#u8, 101#u8, 34#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8,
+          101#u8, 61#u8, 34#u8, 99#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_98]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 107:0-107:868
+    Visibility: public -/
+def sidebar.piece_98 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8,
+          49#u8, 56#u8, 46#u8, 57#u8, 52#u8, 55#u8, 32#u8, 52#u8, 46#u8, 56#u8,
+          57#u8, 53#u8, 99#u8, 45#u8, 46#u8, 55#u8, 56#u8, 51#u8, 45#u8, 46#u8,
+          55#u8, 56#u8, 51#u8, 45#u8, 49#u8, 46#u8, 52#u8, 50#u8, 53#u8, 45#u8,
+          46#u8, 55#u8, 57#u8, 45#u8, 50#u8, 46#u8, 51#u8, 54#u8, 56#u8, 45#u8,
+          46#u8, 55#u8, 57#u8, 72#u8, 52#u8, 46#u8, 49#u8, 48#u8, 53#u8,
+          108#u8, 46#u8, 49#u8, 53#u8, 56#u8, 46#u8, 49#u8, 53#u8, 56#u8,
+          104#u8, 49#u8, 50#u8, 46#u8, 51#u8, 49#u8, 54#u8, 99#u8, 46#u8,
+          51#u8, 57#u8, 53#u8, 32#u8, 48#u8, 32#u8, 49#u8, 46#u8, 49#u8, 56#u8,
+          53#u8, 45#u8, 46#u8, 48#u8, 55#u8, 57#u8, 32#u8, 49#u8, 46#u8, 56#u8,
+          57#u8, 53#u8, 46#u8, 54#u8, 51#u8, 50#u8, 108#u8, 46#u8, 52#u8,
+          55#u8, 52#u8, 46#u8, 52#u8, 55#u8, 52#u8, 122#u8, 34#u8, 47#u8,
+          62#u8, 60#u8, 47#u8, 103#u8, 62#u8, 10#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_99]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 108:0-108:524
+    Visibility: public -/
+def sidebar.piece_99 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 72#usize [
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8,
+          118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 112#u8, 117#u8, 98#u8, 46#u8, 100#u8, 101#u8, 118#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_100]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 109:0-109:856
+    Visibility: public -/
+def sidebar.piece_100 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 117#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 99#u8, 111#u8,
+          110#u8, 97#u8, 110#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+          115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8,
+          116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8,
+          101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8,
+          121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8,
+          115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8,
+          101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8,
+          117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8,
+          116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8,
+          111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_101]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 110:0-110:860
+    Visibility: public -/
+def sidebar.piece_101 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          49#u8, 46#u8, 55#u8, 48#u8, 57#u8, 32#u8, 48#u8, 32#u8, 48#u8, 32#u8,
+          53#u8, 46#u8, 53#u8, 51#u8, 52#u8, 86#u8, 49#u8, 54#u8, 46#u8, 55#u8,
+          54#u8, 76#u8, 49#u8, 49#u8, 46#u8, 57#u8, 56#u8, 52#u8, 32#u8, 50#u8,
+          52#u8, 108#u8, 52#u8, 46#u8, 56#u8, 53#u8, 55#u8, 45#u8, 50#u8,
+          46#u8, 55#u8, 48#u8, 54#u8, 86#u8, 57#u8, 46#u8, 57#u8, 57#u8, 56#u8,
+          99#u8, 46#u8, 49#u8, 51#u8, 45#u8, 46#u8, 48#u8, 56#u8, 52#u8, 46#u8,
+          50#u8, 55#u8, 53#u8, 45#u8, 46#u8, 49#u8, 57#u8, 54#u8, 46#u8, 51#u8,
+          57#u8, 57#u8, 45#u8, 46#u8, 50#u8, 55#u8, 108#u8, 46#u8, 48#u8,
+          51#u8, 50#u8, 45#u8, 46#u8, 48#u8, 49#u8, 55#u8, 99#u8, 46#u8, 49#u8,
+          57#u8, 55#u8, 45#u8, 46#u8, 49#u8, 49#u8, 46#u8, 51#u8, 50#u8, 57#u8,
+          45#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 50#u8, 51#u8, 46#u8, 51#u8,
+          51#u8, 118#u8, 49#u8, 48#u8, 46#u8, 56#u8, 56#u8, 52#u8, 108#u8,
+          54#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_102]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 111:0-111:854
+    Visibility: public -/
+def sidebar.piece_102 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          52#u8, 54#u8, 54#u8, 45#u8, 51#u8, 46#u8, 54#u8, 48#u8, 51#u8, 86#u8,
+          54#u8, 46#u8, 49#u8, 49#u8, 76#u8, 50#u8, 52#u8, 32#u8, 54#u8, 46#u8,
+          48#u8, 57#u8, 51#u8, 90#u8, 109#u8, 46#u8, 57#u8, 49#u8, 53#u8,
+          32#u8, 50#u8, 46#u8, 56#u8, 51#u8, 99#u8, 46#u8, 57#u8, 51#u8, 50#u8,
+          46#u8, 48#u8, 50#u8, 32#u8, 49#u8, 46#u8, 56#u8, 53#u8, 53#u8, 46#u8,
+          49#u8, 57#u8, 49#u8, 32#u8, 50#u8, 46#u8, 55#u8, 48#u8, 54#u8, 46#u8,
+          53#u8, 53#u8, 50#u8, 32#u8, 49#u8, 46#u8, 51#u8, 50#u8, 46#u8, 53#u8,
+          51#u8, 51#u8, 32#u8, 50#u8, 46#u8, 53#u8, 50#u8, 50#u8, 32#u8, 49#u8,
+          46#u8, 51#u8, 54#u8, 52#u8, 32#u8, 51#u8, 46#u8, 52#u8, 53#u8, 32#u8,
+          50#u8, 46#u8, 52#u8, 50#u8, 57#u8, 97#u8, 54#u8, 50#u8, 46#u8, 56#u8,
+          49#u8, 52#u8, 32#u8, 54#u8, 50#u8, 46#u8, 56#u8, 49#u8, 52#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 32#u8, 49#u8, 45#u8, 51#u8, 46#u8, 48#u8, 52#u8,
+          52#u8, 32#u8, 49#u8, 46#u8, 54#u8, 49#u8, 54#u8, 99#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_103]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 112:0-112:853
+    Visibility: public -/
+def sidebar.piece_103 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          53#u8, 54#u8, 45#u8, 46#u8, 56#u8, 53#u8, 51#u8, 46#u8, 49#u8, 52#u8,
+          45#u8, 50#u8, 46#u8, 48#u8, 48#u8, 57#u8, 45#u8, 46#u8, 55#u8, 54#u8,
+          45#u8, 50#u8, 46#u8, 52#u8, 53#u8, 53#u8, 45#u8, 46#u8, 57#u8, 51#u8,
+          45#u8, 46#u8, 54#u8, 52#u8, 56#u8, 45#u8, 50#u8, 46#u8, 48#u8, 57#u8,
+          51#u8, 45#u8, 46#u8, 55#u8, 51#u8, 45#u8, 51#u8, 46#u8, 50#u8, 48#u8,
+          53#u8, 45#u8, 46#u8, 54#u8, 55#u8, 52#u8, 45#u8, 49#u8, 46#u8, 48#u8,
+          54#u8, 52#u8, 46#u8, 49#u8, 55#u8, 53#u8, 45#u8, 50#u8, 46#u8, 50#u8,
+          53#u8, 56#u8, 46#u8, 53#u8, 49#u8, 45#u8, 50#u8, 46#u8, 56#u8, 57#u8,
+          51#u8, 32#u8, 49#u8, 46#u8, 52#u8, 55#u8, 52#u8, 45#u8, 46#u8, 55#u8,
+          50#u8, 50#u8, 46#u8, 56#u8, 54#u8, 50#u8, 45#u8, 46#u8, 48#u8, 56#u8,
+          52#u8, 32#u8, 50#u8, 46#u8, 49#u8, 49#u8, 46#u8, 57#u8, 49#u8, 52#u8,
+          32#u8, 50#u8, 46#u8, 52#u8, 48#u8, 56#u8, 32#u8, 49#u8, 46#u8, 50#u8,
+          46#u8, 53#u8, 48#u8, 57#u8, 32#u8, 50#u8, 46#u8, 53#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_104]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 113:0-113:853
+    Visibility: public -/
+def sidebar.piece_104 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          52#u8, 51#u8, 46#u8, 51#u8, 56#u8, 32#u8, 51#u8, 46#u8, 56#u8, 48#u8,
+          54#u8, 46#u8, 52#u8, 49#u8, 51#u8, 45#u8, 46#u8, 57#u8, 55#u8, 53#u8,
+          46#u8, 52#u8, 53#u8, 55#u8, 45#u8, 49#u8, 46#u8, 57#u8, 51#u8, 49#u8,
+          46#u8, 57#u8, 55#u8, 45#u8, 50#u8, 46#u8, 57#u8, 50#u8, 55#u8, 32#u8,
+          49#u8, 46#u8, 51#u8, 53#u8, 56#u8, 45#u8, 49#u8, 46#u8, 55#u8, 48#u8,
+          49#u8, 45#u8, 46#u8, 49#u8, 55#u8, 54#u8, 45#u8, 51#u8, 46#u8, 53#u8,
+          56#u8, 53#u8, 45#u8, 46#u8, 57#u8, 49#u8, 55#u8, 45#u8, 52#u8, 46#u8,
+          51#u8, 55#u8, 52#u8, 45#u8, 50#u8, 46#u8, 53#u8, 49#u8, 45#u8, 46#u8,
+          53#u8, 55#u8, 52#u8, 45#u8, 49#u8, 46#u8, 49#u8, 55#u8, 56#u8, 46#u8,
+          50#u8, 49#u8, 53#u8, 45#u8, 50#u8, 46#u8, 53#u8, 55#u8, 50#u8, 32#u8,
+          49#u8, 46#u8, 51#u8, 49#u8, 57#u8, 45#u8, 51#u8, 46#u8, 49#u8, 52#u8,
+          97#u8, 49#u8, 49#u8, 46#u8, 52#u8, 50#u8, 54#u8, 32#u8, 49#u8, 49#u8,
+          46#u8, 52#u8, 50#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_105]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 114:0-114:799
+    Visibility: public -/
+def sidebar.piece_105 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 118#usize [
+          32#u8, 49#u8, 32#u8, 51#u8, 46#u8, 51#u8, 51#u8, 54#u8, 45#u8, 49#u8,
+          46#u8, 51#u8, 52#u8, 56#u8, 32#u8, 57#u8, 46#u8, 50#u8, 49#u8, 50#u8,
+          32#u8, 57#u8, 46#u8, 50#u8, 49#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          32#u8, 49#u8, 32#u8, 49#u8, 46#u8, 54#u8, 55#u8, 50#u8, 45#u8, 46#u8,
+          49#u8, 50#u8, 51#u8, 90#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8,
+          62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 67#u8,
+          111#u8, 110#u8, 97#u8, 110#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_106]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 115:0-115:844
+    Visibility: public -/
+def sidebar.piece_106 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 115#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 114#u8, 112#u8,
+          109#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8,
+          51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+          32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+          105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+          100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_107]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 116:0-116:857
+    Visibility: public -/
+def sidebar.piece_107 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          54#u8, 46#u8, 48#u8, 48#u8, 57#u8, 32#u8, 49#u8, 51#u8, 46#u8, 51#u8,
+          56#u8, 54#u8, 99#u8, 49#u8, 46#u8, 53#u8, 55#u8, 55#u8, 32#u8, 48#u8,
+          32#u8, 51#u8, 46#u8, 56#u8, 54#u8, 45#u8, 46#u8, 51#u8, 50#u8, 54#u8,
+          32#u8, 51#u8, 46#u8, 56#u8, 54#u8, 45#u8, 50#u8, 46#u8, 50#u8, 48#u8,
+          50#u8, 97#u8, 49#u8, 46#u8, 55#u8, 54#u8, 53#u8, 32#u8, 49#u8, 46#u8,
+          55#u8, 54#u8, 53#u8, 32#u8, 48#u8, 32#u8, 48#u8, 32#u8, 48#u8, 45#u8,
+          46#u8, 48#u8, 52#u8, 45#u8, 46#u8, 52#u8, 51#u8, 49#u8, 108#u8,
+          45#u8, 46#u8, 57#u8, 52#u8, 45#u8, 52#u8, 46#u8, 48#u8, 56#u8, 99#u8,
+          45#u8, 46#u8, 50#u8, 49#u8, 54#u8, 45#u8, 46#u8, 56#u8, 57#u8, 56#u8,
+          45#u8, 46#u8, 52#u8, 48#u8, 54#u8, 45#u8, 49#u8, 46#u8, 51#u8, 48#u8,
+          53#u8, 45#u8, 49#u8, 46#u8, 57#u8, 56#u8, 50#u8, 45#u8, 50#u8, 46#u8,
+          48#u8, 57#u8, 51#u8, 45#u8, 49#u8, 46#u8, 50#u8, 50#u8, 51#u8, 45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_108]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 117:0-117:853
+    Visibility: public -/
+def sidebar.piece_108 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 54#u8, 50#u8, 53#u8, 45#u8, 51#u8, 46#u8, 56#u8, 56#u8, 56#u8,
+          45#u8, 49#u8, 46#u8, 54#u8, 53#u8, 56#u8, 45#u8, 52#u8, 46#u8, 54#u8,
+          55#u8, 54#u8, 45#u8, 49#u8, 46#u8, 54#u8, 53#u8, 56#u8, 45#u8, 46#u8,
+          55#u8, 51#u8, 51#u8, 32#u8, 48#u8, 45#u8, 46#u8, 57#u8, 52#u8, 55#u8,
+          46#u8, 57#u8, 52#u8, 54#u8, 45#u8, 49#u8, 46#u8, 56#u8, 50#u8, 50#u8,
+          46#u8, 57#u8, 52#u8, 54#u8, 45#u8, 46#u8, 56#u8, 52#u8, 50#u8, 32#u8,
+          48#u8, 45#u8, 49#u8, 46#u8, 52#u8, 54#u8, 55#u8, 45#u8, 46#u8, 55#u8,
+          48#u8, 54#u8, 45#u8, 50#u8, 46#u8, 50#u8, 53#u8, 53#u8, 45#u8, 46#u8,
+          55#u8, 48#u8, 54#u8, 45#u8, 46#u8, 55#u8, 53#u8, 55#u8, 32#u8, 48#u8,
+          45#u8, 49#u8, 46#u8, 50#u8, 53#u8, 46#u8, 53#u8, 49#u8, 53#u8, 45#u8,
+          49#u8, 46#u8, 54#u8, 51#u8, 32#u8, 49#u8, 46#u8, 53#u8, 55#u8, 54#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 45#u8, 49#u8, 46#u8, 48#u8, 54#u8, 32#u8,
+          50#u8, 46#u8, 57#u8, 57#u8, 45#u8, 49#u8, 46#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_109]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 118:0-118:854
+    Visibility: public -/
+def sidebar.piece_109 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          57#u8, 55#u8, 32#u8, 51#u8, 46#u8, 52#u8, 50#u8, 52#u8, 97#u8, 46#u8,
+          56#u8, 49#u8, 46#u8, 56#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 45#u8, 46#u8, 48#u8, 50#u8, 56#u8, 46#u8, 50#u8, 52#u8, 53#u8,
+          99#u8, 48#u8, 32#u8, 49#u8, 46#u8, 49#u8, 54#u8, 50#u8, 32#u8, 52#u8,
+          46#u8, 53#u8, 55#u8, 55#u8, 32#u8, 52#u8, 46#u8, 57#u8, 55#u8, 52#u8,
+          32#u8, 49#u8, 48#u8, 46#u8, 55#u8, 49#u8, 32#u8, 52#u8, 46#u8, 57#u8,
+          55#u8, 52#u8, 109#u8, 52#u8, 46#u8, 49#u8, 48#u8, 49#u8, 45#u8,
+          49#u8, 46#u8, 52#u8, 51#u8, 53#u8, 99#u8, 46#u8, 50#u8, 49#u8, 56#u8,
+          32#u8, 49#u8, 46#u8, 48#u8, 51#u8, 50#u8, 46#u8, 50#u8, 49#u8, 56#u8,
+          32#u8, 49#u8, 46#u8, 49#u8, 52#u8, 46#u8, 50#u8, 49#u8, 56#u8, 32#u8,
+          49#u8, 46#u8, 50#u8, 55#u8, 55#u8, 32#u8, 48#u8, 32#u8, 49#u8, 46#u8,
+          55#u8, 54#u8, 53#u8, 45#u8, 49#u8, 46#u8, 57#u8, 56#u8, 52#u8, 32#u8,
+          50#u8, 46#u8, 55#u8, 52#u8, 53#u8, 45#u8, 52#u8, 46#u8, 53#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_110]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 119:0-119:853
+    Visibility: public -/
+def sidebar.piece_110 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          57#u8, 51#u8, 32#u8, 50#u8, 46#u8, 55#u8, 52#u8, 53#u8, 45#u8, 53#u8,
+          46#u8, 56#u8, 57#u8, 53#u8, 46#u8, 48#u8, 48#u8, 52#u8, 45#u8, 49#u8,
+          49#u8, 46#u8, 48#u8, 54#u8, 45#u8, 51#u8, 46#u8, 52#u8, 53#u8, 49#u8,
+          45#u8, 49#u8, 49#u8, 46#u8, 48#u8, 54#u8, 45#u8, 53#u8, 46#u8, 55#u8,
+          51#u8, 52#u8, 97#u8, 50#u8, 46#u8, 51#u8, 50#u8, 54#u8, 32#u8, 50#u8,
+          46#u8, 51#u8, 50#u8, 54#u8, 32#u8, 48#u8, 32#u8, 48#u8, 32#u8, 49#u8,
+          32#u8, 46#u8, 49#u8, 57#u8, 45#u8, 46#u8, 57#u8, 50#u8, 53#u8, 67#u8,
+          50#u8, 46#u8, 55#u8, 52#u8, 54#u8, 32#u8, 57#u8, 46#u8, 52#u8, 49#u8,
+          53#u8, 32#u8, 48#u8, 32#u8, 57#u8, 46#u8, 55#u8, 57#u8, 52#u8, 32#u8,
+          48#u8, 32#u8, 49#u8, 50#u8, 46#u8, 50#u8, 49#u8, 55#u8, 99#u8, 48#u8,
+          32#u8, 51#u8, 46#u8, 57#u8, 54#u8, 57#u8, 32#u8, 57#u8, 46#u8, 52#u8,
+          48#u8, 53#u8, 32#u8, 56#u8, 46#u8, 56#u8, 54#u8, 49#u8, 32#u8, 49#u8,
+          54#u8, 46#u8, 56#u8, 53#u8, 49#u8, 32#u8, 56#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_111]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 120:0-120:856
+    Visibility: public -/
+def sidebar.piece_111 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          56#u8, 54#u8, 49#u8, 32#u8, 53#u8, 46#u8, 55#u8, 49#u8, 32#u8, 48#u8,
+          32#u8, 55#u8, 46#u8, 49#u8, 52#u8, 57#u8, 45#u8, 50#u8, 46#u8, 53#u8,
+          56#u8, 50#u8, 32#u8, 55#u8, 46#u8, 49#u8, 52#u8, 57#u8, 45#u8, 52#u8,
+          46#u8, 54#u8, 50#u8, 32#u8, 48#u8, 45#u8, 49#u8, 46#u8, 54#u8, 48#u8,
+          53#u8, 45#u8, 49#u8, 46#u8, 51#u8, 56#u8, 55#u8, 45#u8, 51#u8, 46#u8,
+          52#u8, 50#u8, 53#u8, 45#u8, 51#u8, 46#u8, 56#u8, 56#u8, 55#u8, 45#u8,
+          52#u8, 46#u8, 53#u8, 49#u8, 50#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 115#u8, 118#u8,
+          103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          82#u8, 80#u8, 77#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_112]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 121:0-121:139
+    Visibility: public -/
+def sidebar.piece_112 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 9#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_113]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 122:0-122:843
+    Visibility: public -/
+def sidebar.piece_113 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 115#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 100#u8, 101#u8,
+          98#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8, 101#u8,
+          109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8, 114#u8,
+          32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8, 45#u8,
+          51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8, 109#u8,
+          32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8, 100#u8,
+          105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8, 110#u8,
+          100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8, 114#u8,
+          97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8, 110#u8, 45#u8,
+          99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_114]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 123:0-123:857
+    Visibility: public -/
+def sidebar.piece_114 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8, 77#u8, 49#u8,
+          51#u8, 46#u8, 56#u8, 56#u8, 32#u8, 49#u8, 50#u8, 46#u8, 54#u8, 56#u8,
+          53#u8, 99#u8, 45#u8, 46#u8, 52#u8, 32#u8, 48#u8, 32#u8, 46#u8, 48#u8,
+          56#u8, 46#u8, 50#u8, 46#u8, 54#u8, 48#u8, 49#u8, 46#u8, 50#u8, 56#u8,
+          46#u8, 49#u8, 52#u8, 45#u8, 46#u8, 49#u8, 46#u8, 50#u8, 55#u8, 45#u8,
+          46#u8, 50#u8, 50#u8, 46#u8, 51#u8, 57#u8, 45#u8, 46#u8, 51#u8, 51#u8,
+          97#u8, 51#u8, 46#u8, 48#u8, 48#u8, 49#u8, 32#u8, 51#u8, 46#u8, 48#u8,
+          48#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 46#u8, 57#u8,
+          57#u8, 46#u8, 48#u8, 53#u8, 109#u8, 50#u8, 46#u8, 49#u8, 52#u8,
+          45#u8, 46#u8, 53#u8, 51#u8, 99#u8, 46#u8, 50#u8, 51#u8, 45#u8, 46#u8,
+          51#u8, 51#u8, 46#u8, 52#u8, 45#u8, 46#u8, 54#u8, 57#u8, 46#u8, 52#u8,
+          55#u8, 45#u8, 49#u8, 46#u8, 48#u8, 54#u8, 45#u8, 46#u8, 48#u8, 54#u8,
+          46#u8, 50#u8, 55#u8, 45#u8, 46#u8, 50#u8, 46#u8, 53#u8, 45#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_115]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 124:0-124:854
+    Visibility: public -/
+def sidebar.piece_115 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          51#u8, 51#u8, 46#u8, 55#u8, 51#u8, 45#u8, 46#u8, 55#u8, 53#u8, 46#u8,
+          52#u8, 55#u8, 45#u8, 46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 50#u8, 55#u8,
+          32#u8, 48#u8, 45#u8, 46#u8, 53#u8, 54#u8, 45#u8, 46#u8, 56#u8, 32#u8,
+          49#u8, 46#u8, 48#u8, 49#u8, 45#u8, 46#u8, 49#u8, 49#u8, 46#u8, 54#u8,
+          45#u8, 46#u8, 49#u8, 52#u8, 46#u8, 56#u8, 57#u8, 109#u8, 46#u8,
+          55#u8, 56#u8, 49#u8, 45#u8, 50#u8, 46#u8, 48#u8, 53#u8, 99#u8, 46#u8,
+          48#u8, 53#u8, 45#u8, 46#u8, 55#u8, 50#u8, 49#u8, 45#u8, 46#u8, 49#u8,
+          52#u8, 45#u8, 46#u8, 53#u8, 48#u8, 49#u8, 45#u8, 46#u8, 50#u8, 45#u8,
+          46#u8, 50#u8, 50#u8, 49#u8, 46#u8, 48#u8, 55#u8, 46#u8, 48#u8, 52#u8,
+          46#u8, 49#u8, 51#u8, 46#u8, 53#u8, 46#u8, 50#u8, 46#u8, 50#u8, 50#u8,
+          77#u8, 49#u8, 50#u8, 46#u8, 51#u8, 56#u8, 46#u8, 51#u8, 49#u8, 99#u8,
+          46#u8, 50#u8, 46#u8, 48#u8, 52#u8, 46#u8, 52#u8, 53#u8, 46#u8, 48#u8,
+          55#u8, 46#u8, 52#u8, 50#u8, 46#u8, 49#u8, 50#u8, 46#u8, 50#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_116]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 125:0-125:857
+    Visibility: public -/
+def sidebar.piece_116 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          51#u8, 45#u8, 46#u8, 48#u8, 53#u8, 46#u8, 50#u8, 56#u8, 45#u8, 46#u8,
+          49#u8, 45#u8, 46#u8, 52#u8, 51#u8, 45#u8, 46#u8, 49#u8, 50#u8,
+          109#u8, 46#u8, 52#u8, 51#u8, 46#u8, 49#u8, 50#u8, 108#u8, 45#u8,
+          46#u8, 49#u8, 53#u8, 46#u8, 48#u8, 51#u8, 46#u8, 49#u8, 52#u8, 45#u8,
+          46#u8, 48#u8, 49#u8, 86#u8, 46#u8, 52#u8, 51#u8, 109#u8, 54#u8,
+          46#u8, 54#u8, 51#u8, 51#u8, 32#u8, 57#u8, 46#u8, 57#u8, 52#u8, 52#u8,
+          99#u8, 46#u8, 48#u8, 50#u8, 46#u8, 54#u8, 52#u8, 45#u8, 46#u8, 50#u8,
+          46#u8, 57#u8, 53#u8, 45#u8, 46#u8, 51#u8, 56#u8, 32#u8, 49#u8, 46#u8,
+          53#u8, 108#u8, 45#u8, 46#u8, 51#u8, 53#u8, 46#u8, 49#u8, 56#u8,
+          49#u8, 99#u8, 45#u8, 46#u8, 50#u8, 56#u8, 46#u8, 53#u8, 52#u8, 46#u8,
+          48#u8, 51#u8, 46#u8, 51#u8, 53#u8, 45#u8, 46#u8, 49#u8, 55#u8, 46#u8,
+          55#u8, 56#u8, 45#u8, 46#u8, 52#u8, 52#u8, 46#u8, 51#u8, 57#u8, 45#u8,
+          49#u8, 46#u8, 51#u8, 52#u8, 32#u8, 49#u8, 46#u8, 50#u8, 50#u8, 45#u8,
+          49#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_117]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 126:0-126:854
+    Visibility: public -/
+def sidebar.piece_117 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          54#u8, 50#u8, 32#u8, 49#u8, 46#u8, 51#u8, 48#u8, 49#u8, 45#u8, 46#u8,
+          50#u8, 48#u8, 49#u8, 32#u8, 48#u8, 32#u8, 46#u8, 49#u8, 52#u8, 45#u8,
+          46#u8, 50#u8, 53#u8, 46#u8, 49#u8, 57#u8, 45#u8, 46#u8, 51#u8, 52#u8,
+          45#u8, 46#u8, 53#u8, 57#u8, 49#u8, 46#u8, 52#u8, 45#u8, 46#u8, 52#u8,
+          56#u8, 49#u8, 46#u8, 54#u8, 45#u8, 49#u8, 46#u8, 51#u8, 55#u8, 49#u8,
+          46#u8, 56#u8, 53#u8, 108#u8, 45#u8, 46#u8, 48#u8, 51#u8, 45#u8,
+          46#u8, 48#u8, 54#u8, 99#u8, 45#u8, 50#u8, 46#u8, 50#u8, 50#u8, 49#u8,
+          32#u8, 49#u8, 46#u8, 48#u8, 52#u8, 45#u8, 53#u8, 46#u8, 51#u8, 48#u8,
+          51#u8, 45#u8, 49#u8, 46#u8, 48#u8, 50#u8, 45#u8, 53#u8, 46#u8, 50#u8,
+          53#u8, 51#u8, 45#u8, 51#u8, 46#u8, 56#u8, 52#u8, 50#u8, 45#u8, 46#u8,
+          48#u8, 51#u8, 46#u8, 49#u8, 55#u8, 45#u8, 46#u8, 48#u8, 55#u8, 46#u8,
+          49#u8, 51#u8, 45#u8, 46#u8, 49#u8, 50#u8, 46#u8, 50#u8, 97#u8, 51#u8,
+          46#u8, 53#u8, 53#u8, 49#u8, 32#u8, 51#u8, 46#u8, 53#u8, 53#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_118]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 127:0-127:853
+    Visibility: public -/
+def sidebar.piece_118 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          50#u8, 32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 50#u8, 46#u8, 48#u8, 48#u8,
+          49#u8, 45#u8, 51#u8, 46#u8, 53#u8, 48#u8, 49#u8, 32#u8, 51#u8, 46#u8,
+          51#u8, 54#u8, 49#u8, 32#u8, 51#u8, 46#u8, 51#u8, 54#u8, 50#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 49#u8, 51#u8, 46#u8, 55#u8, 51#u8, 50#u8, 46#u8,
+          52#u8, 56#u8, 32#u8, 51#u8, 46#u8, 51#u8, 52#u8, 49#u8, 32#u8, 51#u8,
+          46#u8, 51#u8, 52#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 45#u8,
+          50#u8, 46#u8, 55#u8, 50#u8, 49#u8, 45#u8, 49#u8, 46#u8, 51#u8, 99#u8,
+          45#u8, 49#u8, 46#u8, 49#u8, 56#u8, 46#u8, 48#u8, 49#u8, 45#u8, 50#u8,
+          46#u8, 50#u8, 56#u8, 49#u8, 46#u8, 55#u8, 54#u8, 45#u8, 50#u8, 46#u8,
+          54#u8, 53#u8, 49#u8, 32#u8, 49#u8, 46#u8, 53#u8, 55#u8, 45#u8, 46#u8,
+          54#u8, 46#u8, 51#u8, 56#u8, 45#u8, 46#u8, 54#u8, 55#u8, 32#u8, 49#u8,
+          46#u8, 52#u8, 55#u8, 45#u8, 46#u8, 57#u8, 51#u8, 32#u8, 49#u8, 46#u8,
+          54#u8, 54#u8, 49#u8, 45#u8, 46#u8, 51#u8, 54#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_119]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 128:0-128:853
+    Visibility: public -/
+def sidebar.piece_119 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          32#u8, 50#u8, 46#u8, 54#u8, 48#u8, 49#u8, 46#u8, 54#u8, 54#u8, 32#u8,
+          51#u8, 46#u8, 55#u8, 50#u8, 50#u8, 32#u8, 50#u8, 46#u8, 51#u8, 56#u8,
+          32#u8, 53#u8, 46#u8, 48#u8, 52#u8, 50#u8, 46#u8, 50#u8, 55#u8, 46#u8,
+          49#u8, 57#u8, 46#u8, 48#u8, 56#u8, 46#u8, 50#u8, 49#u8, 46#u8, 49#u8,
+          50#u8, 46#u8, 51#u8, 53#u8, 97#u8, 52#u8, 46#u8, 55#u8, 48#u8, 50#u8,
+          32#u8, 52#u8, 46#u8, 55#u8, 48#u8, 50#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          49#u8, 45#u8, 49#u8, 46#u8, 53#u8, 51#u8, 45#u8, 49#u8, 46#u8, 49#u8,
+          54#u8, 99#u8, 46#u8, 50#u8, 51#u8, 46#u8, 51#u8, 51#u8, 46#u8, 52#u8,
+          55#u8, 46#u8, 54#u8, 54#u8, 46#u8, 56#u8, 46#u8, 57#u8, 49#u8, 45#u8,
+          46#u8, 53#u8, 53#u8, 45#u8, 46#u8, 49#u8, 56#u8, 45#u8, 49#u8, 46#u8,
+          50#u8, 55#u8, 45#u8, 49#u8, 46#u8, 51#u8, 45#u8, 49#u8, 46#u8, 52#u8,
+          56#u8, 45#u8, 49#u8, 46#u8, 51#u8, 53#u8, 46#u8, 57#u8, 51#u8, 32#u8,
+          49#u8, 46#u8, 54#u8, 54#u8, 32#u8, 51#u8, 46#u8, 55#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_120]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 129:0-129:853
+    Visibility: public -/
+def sidebar.piece_120 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          56#u8, 32#u8, 50#u8, 46#u8, 57#u8, 50#u8, 49#u8, 32#u8, 53#u8, 46#u8,
+          50#u8, 54#u8, 49#u8, 32#u8, 50#u8, 46#u8, 51#u8, 97#u8, 54#u8, 46#u8,
+          50#u8, 48#u8, 51#u8, 32#u8, 54#u8, 46#u8, 50#u8, 48#u8, 51#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 49#u8, 45#u8, 50#u8, 46#u8, 51#u8, 51#u8, 45#u8,
+          46#u8, 50#u8, 56#u8, 99#u8, 45#u8, 46#u8, 51#u8, 51#u8, 45#u8, 46#u8,
+          49#u8, 54#u8, 45#u8, 46#u8, 55#u8, 55#u8, 45#u8, 46#u8, 53#u8, 49#u8,
+          45#u8, 46#u8, 55#u8, 45#u8, 46#u8, 53#u8, 55#u8, 97#u8, 53#u8, 46#u8,
+          56#u8, 48#u8, 50#u8, 32#u8, 53#u8, 46#u8, 56#u8, 48#u8, 51#u8, 32#u8,
+          48#u8, 32#u8, 48#u8, 48#u8, 53#u8, 46#u8, 57#u8, 48#u8, 50#u8, 45#u8,
+          46#u8, 56#u8, 52#u8, 99#u8, 46#u8, 52#u8, 52#u8, 45#u8, 46#u8, 51#u8,
+          53#u8, 46#u8, 57#u8, 51#u8, 45#u8, 46#u8, 57#u8, 52#u8, 32#u8, 49#u8,
+          46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 57#u8, 53#u8, 45#u8, 46#u8, 50#u8,
+          46#u8, 51#u8, 50#u8, 46#u8, 48#u8, 52#u8, 46#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_121]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 130:0-130:854
+    Visibility: public -/
+def sidebar.piece_121 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          54#u8, 45#u8, 46#u8, 49#u8, 50#u8, 46#u8, 52#u8, 52#u8, 46#u8, 52#u8,
+          52#u8, 45#u8, 46#u8, 55#u8, 50#u8, 45#u8, 46#u8, 50#u8, 45#u8, 46#u8,
+          51#u8, 46#u8, 52#u8, 54#u8, 45#u8, 49#u8, 46#u8, 50#u8, 52#u8,
+          108#u8, 46#u8, 50#u8, 52#u8, 46#u8, 51#u8, 51#u8, 99#u8, 45#u8,
+          46#u8, 48#u8, 57#u8, 45#u8, 46#u8, 54#u8, 46#u8, 55#u8, 52#u8, 45#u8,
+          49#u8, 46#u8, 51#u8, 50#u8, 49#u8, 46#u8, 54#u8, 54#u8, 45#u8, 50#u8,
+          46#u8, 50#u8, 54#u8, 50#u8, 46#u8, 49#u8, 57#u8, 45#u8, 46#u8, 51#u8,
+          46#u8, 50#u8, 46#u8, 51#u8, 32#u8, 48#u8, 32#u8, 46#u8, 57#u8, 55#u8,
+          46#u8, 50#u8, 57#u8, 45#u8, 46#u8, 55#u8, 52#u8, 46#u8, 48#u8, 56#u8,
+          45#u8, 46#u8, 56#u8, 53#u8, 46#u8, 49#u8, 53#u8, 45#u8, 49#u8, 46#u8,
+          52#u8, 54#u8, 46#u8, 48#u8, 56#u8, 46#u8, 50#u8, 46#u8, 49#u8, 56#u8,
+          46#u8, 52#u8, 50#u8, 46#u8, 50#u8, 51#u8, 46#u8, 54#u8, 51#u8, 45#u8,
+          46#u8, 49#u8, 56#u8, 45#u8, 46#u8, 55#u8, 46#u8, 50#u8, 45#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_122]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 131:0-131:853
+    Visibility: public -/
+def sidebar.piece_122 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 50#u8, 46#u8, 50#u8, 56#u8, 45#u8, 49#u8, 46#u8, 54#u8, 45#u8,
+          46#u8, 48#u8, 57#u8, 45#u8, 46#u8, 48#u8, 53#u8, 45#u8, 46#u8, 50#u8,
+          56#u8, 46#u8, 51#u8, 45#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8, 53#u8,
+          51#u8, 32#u8, 48#u8, 45#u8, 46#u8, 51#u8, 55#u8, 46#u8, 49#u8, 45#u8,
+          46#u8, 50#u8, 46#u8, 49#u8, 52#u8, 45#u8, 46#u8, 50#u8, 56#u8, 45#u8,
+          46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 48#u8, 53#u8, 45#u8, 46#u8, 50#u8,
+          54#u8, 45#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8, 51#u8, 56#u8, 45#u8,
+          46#u8, 56#u8, 54#u8, 49#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 49#u8,
+          51#u8, 46#u8, 50#u8, 50#u8, 46#u8, 51#u8, 51#u8, 46#u8, 51#u8, 52#u8,
+          46#u8, 51#u8, 52#u8, 45#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 52#u8,
+          50#u8, 45#u8, 46#u8, 50#u8, 45#u8, 46#u8, 55#u8, 53#u8, 45#u8, 46#u8,
+          50#u8, 45#u8, 49#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8, 51#u8, 52#u8,
+          45#u8, 46#u8, 54#u8, 56#u8, 45#u8, 46#u8, 49#u8, 50#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_123]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 132:0-132:853
+    Visibility: public -/
+def sidebar.piece_123 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 49#u8, 45#u8, 46#u8, 52#u8, 45#u8, 46#u8, 51#u8, 45#u8, 46#u8,
+          51#u8, 52#u8, 45#u8, 49#u8, 46#u8, 48#u8, 57#u8, 49#u8, 46#u8, 51#u8,
+          45#u8, 46#u8, 50#u8, 53#u8, 46#u8, 51#u8, 52#u8, 45#u8, 46#u8, 55#u8,
+          52#u8, 46#u8, 53#u8, 52#u8, 46#u8, 55#u8, 55#u8, 46#u8, 56#u8, 52#u8,
+          32#u8, 49#u8, 46#u8, 57#u8, 54#u8, 46#u8, 57#u8, 56#u8, 49#u8, 32#u8,
+          50#u8, 46#u8, 52#u8, 54#u8, 45#u8, 46#u8, 49#u8, 45#u8, 46#u8, 54#u8,
+          45#u8, 46#u8, 50#u8, 56#u8, 45#u8, 49#u8, 46#u8, 50#u8, 45#u8, 46#u8,
+          52#u8, 57#u8, 45#u8, 49#u8, 46#u8, 55#u8, 54#u8, 46#u8, 49#u8, 54#u8,
+          46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 50#u8, 54#u8, 45#u8, 49#u8, 46#u8,
+          50#u8, 52#u8, 49#u8, 46#u8, 50#u8, 49#u8, 45#u8, 46#u8, 51#u8, 55#u8,
+          65#u8, 55#u8, 46#u8, 56#u8, 50#u8, 51#u8, 32#u8, 55#u8, 46#u8, 56#u8,
+          50#u8, 52#u8, 32#u8, 48#u8, 32#u8, 48#u8, 48#u8, 49#u8, 55#u8, 46#u8,
+          55#u8, 48#u8, 50#u8, 32#u8, 49#u8, 46#u8, 54#u8, 99#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_124]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 133:0-133:854
+    Visibility: public -/
+def sidebar.piece_124 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 49#u8, 56#u8, 46#u8, 49#u8, 55#u8, 46#u8, 52#u8, 50#u8, 46#u8,
+          51#u8, 57#u8, 46#u8, 51#u8, 51#u8, 46#u8, 52#u8, 50#u8, 45#u8, 46#u8,
+          55#u8, 53#u8, 45#u8, 46#u8, 52#u8, 53#u8, 45#u8, 46#u8, 54#u8, 50#u8,
+          45#u8, 46#u8, 52#u8, 56#u8, 45#u8, 46#u8, 55#u8, 51#u8, 45#u8, 46#u8,
+          54#u8, 55#u8, 45#u8, 46#u8, 54#u8, 49#u8, 45#u8, 46#u8, 50#u8, 53#u8,
+          45#u8, 46#u8, 54#u8, 53#u8, 46#u8, 48#u8, 50#u8, 45#u8, 49#u8, 46#u8,
+          48#u8, 54#u8, 32#u8, 48#u8, 67#u8, 49#u8, 53#u8, 46#u8, 48#u8, 56#u8,
+          50#u8, 46#u8, 55#u8, 51#u8, 32#u8, 49#u8, 52#u8, 46#u8, 56#u8, 54#u8,
+          50#u8, 46#u8, 56#u8, 32#u8, 49#u8, 51#u8, 46#u8, 56#u8, 46#u8, 52#u8,
+          108#u8, 46#u8, 48#u8, 53#u8, 46#u8, 50#u8, 51#u8, 99#u8, 45#u8,
+          46#u8, 55#u8, 55#u8, 45#u8, 46#u8, 50#u8, 53#u8, 45#u8, 46#u8, 57#u8,
+          46#u8, 49#u8, 45#u8, 49#u8, 46#u8, 55#u8, 51#u8, 32#u8, 48#u8, 45#u8,
+          46#u8, 48#u8, 53#u8, 45#u8, 46#u8, 48#u8, 52#u8, 46#u8, 50#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_125]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 134:0-134:853
+    Visibility: public -/
+def sidebar.piece_125 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          55#u8, 45#u8, 46#u8, 49#u8, 52#u8, 46#u8, 53#u8, 51#u8, 45#u8, 46#u8,
+          49#u8, 56#u8, 45#u8, 46#u8, 55#u8, 52#u8, 49#u8, 46#u8, 49#u8, 45#u8,
+          46#u8, 55#u8, 48#u8, 49#u8, 45#u8, 46#u8, 49#u8, 52#u8, 45#u8, 49#u8,
+          46#u8, 52#u8, 51#u8, 49#u8, 46#u8, 48#u8, 51#u8, 46#u8, 49#u8, 55#u8,
+          45#u8, 46#u8, 49#u8, 51#u8, 46#u8, 51#u8, 54#u8, 45#u8, 46#u8, 50#u8,
+          49#u8, 46#u8, 53#u8, 53#u8, 45#u8, 46#u8, 51#u8, 50#u8, 45#u8, 46#u8,
+          54#u8, 46#u8, 48#u8, 52#u8, 45#u8, 49#u8, 46#u8, 52#u8, 52#u8, 46#u8,
+          51#u8, 53#u8, 45#u8, 49#u8, 46#u8, 49#u8, 56#u8, 46#u8, 48#u8, 55#u8,
+          67#u8, 57#u8, 46#u8, 54#u8, 46#u8, 54#u8, 56#u8, 32#u8, 55#u8, 46#u8,
+          56#u8, 52#u8, 55#u8, 32#u8, 49#u8, 46#u8, 51#u8, 32#u8, 54#u8, 46#u8,
+          56#u8, 54#u8, 55#u8, 32#u8, 50#u8, 46#u8, 50#u8, 50#u8, 76#u8, 54#u8,
+          46#u8, 56#u8, 51#u8, 56#u8, 32#u8, 50#u8, 99#u8, 45#u8, 46#u8, 52#u8,
+          53#u8, 46#u8, 53#u8, 52#u8, 45#u8, 49#u8, 46#u8, 57#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_126]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 135:0-135:854
+    Visibility: public -/
+def sidebar.piece_126 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          54#u8, 32#u8, 49#u8, 46#u8, 54#u8, 49#u8, 49#u8, 45#u8, 50#u8, 46#u8,
+          48#u8, 56#u8, 32#u8, 50#u8, 46#u8, 51#u8, 49#u8, 49#u8, 108#u8,
+          45#u8, 46#u8, 49#u8, 51#u8, 49#u8, 46#u8, 48#u8, 51#u8, 99#u8, 45#u8,
+          46#u8, 50#u8, 51#u8, 46#u8, 52#u8, 45#u8, 46#u8, 51#u8, 56#u8, 46#u8,
+          56#u8, 53#u8, 45#u8, 46#u8, 53#u8, 55#u8, 32#u8, 49#u8, 46#u8, 50#u8,
+          54#u8, 49#u8, 45#u8, 46#u8, 51#u8, 46#u8, 53#u8, 50#u8, 45#u8, 46#u8,
+          52#u8, 53#u8, 46#u8, 50#u8, 45#u8, 46#u8, 52#u8, 46#u8, 50#u8, 56#u8,
+          45#u8, 46#u8, 54#u8, 32#u8, 49#u8, 46#u8, 50#u8, 50#u8, 45#u8, 46#u8,
+          57#u8, 32#u8, 50#u8, 46#u8, 50#u8, 53#u8, 49#u8, 45#u8, 49#u8, 46#u8,
+          49#u8, 54#u8, 32#u8, 51#u8, 46#u8, 49#u8, 48#u8, 50#u8, 46#u8, 49#u8,
+          56#u8, 46#u8, 50#u8, 55#u8, 32#u8, 48#u8, 32#u8, 49#u8, 46#u8, 54#u8,
+          53#u8, 46#u8, 48#u8, 55#u8, 32#u8, 50#u8, 46#u8, 55#u8, 54#u8, 45#u8,
+          46#u8, 51#u8, 32#u8, 53#u8, 46#u8, 52#u8, 54#u8, 51#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_127]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 136:0-136:854
+    Visibility: public -/
+def sidebar.piece_127 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          51#u8, 46#u8, 56#u8, 52#u8, 32#u8, 49#u8, 48#u8, 46#u8, 55#u8, 55#u8,
+          54#u8, 32#u8, 56#u8, 46#u8, 51#u8, 54#u8, 51#u8, 32#u8, 49#u8, 50#u8,
+          46#u8, 48#u8, 48#u8, 54#u8, 46#u8, 54#u8, 55#u8, 46#u8, 50#u8, 51#u8,
+          32#u8, 49#u8, 46#u8, 54#u8, 53#u8, 46#u8, 50#u8, 51#u8, 32#u8, 50#u8,
+          46#u8, 52#u8, 57#u8, 46#u8, 50#u8, 53#u8, 45#u8, 46#u8, 57#u8, 57#u8,
+          45#u8, 46#u8, 50#u8, 56#u8, 45#u8, 49#u8, 46#u8, 49#u8, 50#u8, 45#u8,
+          46#u8, 49#u8, 53#u8, 45#u8, 50#u8, 46#u8, 48#u8, 56#u8, 45#u8, 46#u8,
+          52#u8, 57#u8, 45#u8, 46#u8, 55#u8, 45#u8, 46#u8, 51#u8, 50#u8, 45#u8,
+          46#u8, 56#u8, 53#u8, 45#u8, 46#u8, 55#u8, 45#u8, 49#u8, 46#u8, 51#u8,
+          52#u8, 45#u8, 49#u8, 46#u8, 49#u8, 51#u8, 108#u8, 46#u8, 50#u8,
+          46#u8, 51#u8, 53#u8, 99#u8, 45#u8, 46#u8, 57#u8, 55#u8, 49#u8, 45#u8,
+          46#u8, 51#u8, 52#u8, 45#u8, 46#u8, 53#u8, 55#u8, 45#u8, 46#u8, 52#u8,
+          50#u8, 45#u8, 49#u8, 46#u8, 51#u8, 54#u8, 49#u8, 45#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_128]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 137:0-137:856
+    Visibility: public -/
+def sidebar.piece_128 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          54#u8, 55#u8, 108#u8, 46#u8, 50#u8, 49#u8, 45#u8, 46#u8, 50#u8,
+          55#u8, 99#u8, 45#u8, 46#u8, 51#u8, 49#u8, 45#u8, 46#u8, 48#u8, 51#u8,
+          45#u8, 46#u8, 56#u8, 51#u8, 45#u8, 46#u8, 53#u8, 51#u8, 45#u8, 46#u8,
+          57#u8, 55#u8, 45#u8, 46#u8, 56#u8, 49#u8, 108#u8, 45#u8, 46#u8,
+          51#u8, 52#u8, 46#u8, 48#u8, 49#u8, 99#u8, 45#u8, 46#u8, 52#u8, 49#u8,
+          45#u8, 46#u8, 53#u8, 48#u8, 49#u8, 45#u8, 46#u8, 54#u8, 51#u8, 45#u8,
+          46#u8, 56#u8, 55#u8, 49#u8, 45#u8, 46#u8, 54#u8, 49#u8, 45#u8, 49#u8,
+          46#u8, 49#u8, 54#u8, 49#u8, 108#u8, 45#u8, 46#u8, 49#u8, 49#u8,
+          49#u8, 46#u8, 50#u8, 99#u8, 45#u8, 46#u8, 49#u8, 51#u8, 45#u8, 46#u8,
+          50#u8, 49#u8, 45#u8, 49#u8, 46#u8, 53#u8, 50#u8, 45#u8, 49#u8, 46#u8,
+          57#u8, 48#u8, 49#u8, 45#u8, 46#u8, 56#u8, 45#u8, 49#u8, 46#u8, 53#u8,
+          49#u8, 49#u8, 45#u8, 46#u8, 49#u8, 51#u8, 45#u8, 46#u8, 49#u8, 50#u8,
+          45#u8, 46#u8, 51#u8, 49#u8, 45#u8, 46#u8, 50#u8, 45#u8, 46#u8, 53#u8,
+          45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_129]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 138:0-138:856
+    Visibility: public -/
+def sidebar.piece_129 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 53#u8, 53#u8, 108#u8, 46#u8, 49#u8, 52#u8, 45#u8, 46#u8,
+          49#u8, 55#u8, 99#u8, 45#u8, 46#u8, 51#u8, 53#u8, 45#u8, 46#u8, 52#u8,
+          52#u8, 45#u8, 46#u8, 54#u8, 52#u8, 45#u8, 49#u8, 46#u8, 48#u8, 50#u8,
+          45#u8, 46#u8, 54#u8, 50#u8, 45#u8, 49#u8, 46#u8, 50#u8, 46#u8, 50#u8,
+          46#u8, 50#u8, 52#u8, 46#u8, 51#u8, 50#u8, 46#u8, 51#u8, 46#u8, 52#u8,
+          53#u8, 46#u8, 51#u8, 51#u8, 45#u8, 46#u8, 56#u8, 56#u8, 45#u8, 50#u8,
+          46#u8, 49#u8, 55#u8, 50#u8, 45#u8, 46#u8, 57#u8, 51#u8, 45#u8, 46#u8,
+          49#u8, 50#u8, 45#u8, 49#u8, 46#u8, 54#u8, 48#u8, 49#u8, 45#u8, 50#u8,
+          46#u8, 50#u8, 48#u8, 50#u8, 108#u8, 46#u8, 49#u8, 53#u8, 45#u8,
+          46#u8, 48#u8, 50#u8, 99#u8, 45#u8, 46#u8, 49#u8, 45#u8, 46#u8, 49#u8,
+          54#u8, 45#u8, 46#u8, 49#u8, 56#u8, 45#u8, 46#u8, 51#u8, 52#u8, 45#u8,
+          46#u8, 50#u8, 54#u8, 45#u8, 46#u8, 53#u8, 49#u8, 108#u8, 46#u8,
+          48#u8, 54#u8, 45#u8, 46#u8, 54#u8, 99#u8, 45#u8, 46#u8, 54#u8, 51#u8,
+          45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_130]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 139:0-139:854
+    Visibility: public -/
+def sidebar.piece_130 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 55#u8, 52#u8, 45#u8, 46#u8, 49#u8, 56#u8, 45#u8, 51#u8, 46#u8,
+          49#u8, 48#u8, 50#u8, 45#u8, 46#u8, 48#u8, 57#u8, 45#u8, 52#u8, 46#u8,
+          52#u8, 48#u8, 50#u8, 46#u8, 48#u8, 55#u8, 45#u8, 46#u8, 53#u8, 52#u8,
+          46#u8, 53#u8, 51#u8, 45#u8, 49#u8, 46#u8, 49#u8, 46#u8, 56#u8, 56#u8,
+          45#u8, 49#u8, 46#u8, 57#u8, 56#u8, 49#u8, 108#u8, 45#u8, 46#u8,
+          50#u8, 49#u8, 45#u8, 46#u8, 48#u8, 52#u8, 99#u8, 46#u8, 52#u8, 45#u8,
+          46#u8, 55#u8, 49#u8, 32#u8, 50#u8, 46#u8, 51#u8, 52#u8, 49#u8, 45#u8,
+          50#u8, 46#u8, 56#u8, 55#u8, 50#u8, 32#u8, 51#u8, 46#u8, 50#u8, 52#u8,
+          49#u8, 45#u8, 50#u8, 46#u8, 55#u8, 54#u8, 49#u8, 46#u8, 52#u8, 51#u8,
+          45#u8, 46#u8, 53#u8, 53#u8, 45#u8, 46#u8, 48#u8, 57#u8, 32#u8, 48#u8,
+          45#u8, 46#u8, 49#u8, 56#u8, 45#u8, 46#u8, 49#u8, 52#u8, 46#u8, 57#u8,
+          54#u8, 45#u8, 46#u8, 57#u8, 57#u8, 49#u8, 32#u8, 49#u8, 46#u8, 50#u8,
+          54#u8, 45#u8, 46#u8, 55#u8, 32#u8, 49#u8, 46#u8, 57#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_131]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 140:0-140:854
+    Visibility: public -/
+def sidebar.piece_131 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          49#u8, 45#u8, 46#u8, 56#u8, 56#u8, 46#u8, 55#u8, 45#u8, 46#u8, 52#u8,
+          48#u8, 49#u8, 45#u8, 46#u8, 54#u8, 46#u8, 49#u8, 54#u8, 45#u8, 46#u8,
+          50#u8, 55#u8, 45#u8, 46#u8, 49#u8, 53#u8, 49#u8, 32#u8, 49#u8, 46#u8,
+          50#u8, 45#u8, 46#u8, 51#u8, 46#u8, 56#u8, 53#u8, 45#u8, 46#u8, 55#u8,
+          32#u8, 50#u8, 46#u8, 52#u8, 50#u8, 49#u8, 45#u8, 46#u8, 56#u8, 53#u8,
+          46#u8, 49#u8, 54#u8, 46#u8, 49#u8, 45#u8, 46#u8, 51#u8, 57#u8, 46#u8,
+          49#u8, 52#u8, 45#u8, 46#u8, 53#u8, 50#u8, 46#u8, 50#u8, 54#u8, 32#u8,
+          49#u8, 45#u8, 46#u8, 52#u8, 57#u8, 32#u8, 51#u8, 46#u8, 49#u8, 53#u8,
+          49#u8, 45#u8, 46#u8, 51#u8, 55#u8, 32#u8, 52#u8, 46#u8, 53#u8, 54#u8,
+          50#u8, 46#u8, 50#u8, 55#u8, 32#u8, 49#u8, 46#u8, 54#u8, 51#u8, 46#u8,
+          55#u8, 55#u8, 32#u8, 51#u8, 46#u8, 52#u8, 54#u8, 49#u8, 32#u8, 51#u8,
+          46#u8, 48#u8, 49#u8, 49#u8, 32#u8, 51#u8, 46#u8, 53#u8, 51#u8, 49#u8,
+          32#u8, 53#u8, 46#u8, 49#u8, 51#u8, 50#u8, 108#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_132]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 141:0-141:856
+    Visibility: public -/
+def sidebar.piece_132 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          48#u8, 56#u8, 46#u8, 48#u8, 50#u8, 99#u8, 45#u8, 46#u8, 48#u8, 52#u8,
+          46#u8, 56#u8, 53#u8, 46#u8, 49#u8, 51#u8, 32#u8, 49#u8, 46#u8, 56#u8,
+          50#u8, 49#u8, 45#u8, 46#u8, 49#u8, 55#u8, 32#u8, 50#u8, 46#u8, 55#u8,
+          49#u8, 49#u8, 108#u8, 46#u8, 50#u8, 45#u8, 46#u8, 52#u8, 50#u8,
+          77#u8, 57#u8, 46#u8, 53#u8, 52#u8, 32#u8, 49#u8, 51#u8, 46#u8, 50#u8,
+          51#u8, 54#u8, 108#u8, 45#u8, 46#u8, 48#u8, 53#u8, 46#u8, 50#u8,
+          56#u8, 99#u8, 46#u8, 50#u8, 54#u8, 46#u8, 51#u8, 53#u8, 46#u8, 52#u8,
+          55#u8, 46#u8, 55#u8, 51#u8, 46#u8, 56#u8, 32#u8, 49#u8, 46#u8, 48#u8,
+          49#u8, 45#u8, 46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 52#u8, 55#u8, 45#u8,
+          46#u8, 52#u8, 50#u8, 45#u8, 46#u8, 54#u8, 54#u8, 45#u8, 46#u8, 55#u8,
+          53#u8, 45#u8, 49#u8, 46#u8, 51#u8, 109#u8, 46#u8, 54#u8, 50#u8,
+          45#u8, 46#u8, 48#u8, 50#u8, 99#u8, 45#u8, 46#u8, 49#u8, 52#u8, 45#u8,
+          46#u8, 49#u8, 53#u8, 45#u8, 46#u8, 50#u8, 50#u8, 45#u8, 46#u8, 51#u8,
+          52#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_133]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 142:0-142:856
+    Visibility: public -/
+def sidebar.piece_133 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          45#u8, 46#u8, 51#u8, 49#u8, 45#u8, 46#u8, 53#u8, 50#u8, 46#u8, 48#u8,
+          56#u8, 46#u8, 51#u8, 50#u8, 46#u8, 50#u8, 54#u8, 46#u8, 54#u8, 46#u8,
+          52#u8, 51#u8, 46#u8, 56#u8, 56#u8, 108#u8, 45#u8, 46#u8, 49#u8,
+          50#u8, 45#u8, 46#u8, 51#u8, 54#u8, 109#u8, 49#u8, 48#u8, 46#u8,
+          57#u8, 52#u8, 53#u8, 45#u8, 50#u8, 46#u8, 51#u8, 56#u8, 50#u8,
+          108#u8, 45#u8, 46#u8, 48#u8, 55#u8, 46#u8, 49#u8, 53#u8, 99#u8,
+          45#u8, 46#u8, 49#u8, 46#u8, 55#u8, 54#u8, 45#u8, 46#u8, 51#u8, 52#u8,
+          32#u8, 49#u8, 46#u8, 53#u8, 49#u8, 49#u8, 45#u8, 46#u8, 54#u8, 57#u8,
+          32#u8, 50#u8, 46#u8, 50#u8, 49#u8, 50#u8, 46#u8, 52#u8, 45#u8, 46#u8,
+          55#u8, 51#u8, 46#u8, 54#u8, 53#u8, 45#u8, 49#u8, 46#u8, 53#u8, 52#u8,
+          49#u8, 46#u8, 55#u8, 53#u8, 45#u8, 50#u8, 46#u8, 51#u8, 54#u8, 50#u8,
+          77#u8, 49#u8, 50#u8, 46#u8, 52#u8, 53#u8, 46#u8, 49#u8, 50#u8, 99#u8,
+          46#u8, 50#u8, 55#u8, 45#u8, 46#u8, 49#u8, 46#u8, 54#u8, 54#u8, 45#u8,
+          46#u8, 48#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_134]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 143:0-143:855
+    Visibility: public -/
+def sidebar.piece_134 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          53#u8, 46#u8, 57#u8, 53#u8, 45#u8, 46#u8, 49#u8, 50#u8, 45#u8, 46#u8,
+          51#u8, 55#u8, 46#u8, 48#u8, 51#u8, 45#u8, 46#u8, 55#u8, 52#u8, 46#u8,
+          48#u8, 53#u8, 45#u8, 49#u8, 46#u8, 49#u8, 46#u8, 49#u8, 108#u8,
+          46#u8, 49#u8, 53#u8, 46#u8, 48#u8, 50#u8, 77#u8, 51#u8, 46#u8, 48#u8,
+          48#u8, 54#u8, 32#u8, 53#u8, 46#u8, 49#u8, 52#u8, 50#u8, 99#u8, 46#u8,
+          48#u8, 55#u8, 46#u8, 53#u8, 55#u8, 45#u8, 46#u8, 52#u8, 51#u8, 46#u8,
+          56#u8, 46#u8, 49#u8, 49#u8, 46#u8, 52#u8, 50#u8, 46#u8, 51#u8, 45#u8,
+          46#u8, 54#u8, 54#u8, 45#u8, 46#u8, 49#u8, 49#u8, 45#u8, 46#u8, 49#u8,
+          56#u8, 45#u8, 46#u8, 49#u8, 45#u8, 46#u8, 52#u8, 50#u8, 109#u8,
+          45#u8, 46#u8, 54#u8, 52#u8, 32#u8, 50#u8, 46#u8, 54#u8, 54#u8, 49#u8,
+          99#u8, 46#u8, 49#u8, 50#u8, 45#u8, 46#u8, 51#u8, 57#u8, 46#u8, 49#u8,
+          53#u8, 45#u8, 46#u8, 54#u8, 50#u8, 46#u8, 50#u8, 45#u8, 46#u8, 56#u8,
+          52#u8, 45#u8, 46#u8, 51#u8, 53#u8, 46#u8, 52#u8, 52#u8, 45#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_135]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 144:0-144:607
+    Visibility: public -/
+def sidebar.piece_135 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 86#usize [
+          49#u8, 55#u8, 46#u8, 53#u8, 51#u8, 45#u8, 46#u8, 50#u8, 46#u8, 56#u8,
+          51#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 68#u8, 101#u8, 98#u8, 105#u8,
+          97#u8, 110#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8, 97#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_136]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 145:0-145:849
+    Visibility: public -/
+def sidebar.piece_136 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 116#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 99#u8, 112#u8,
+          97#u8, 110#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8,
+          61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8, 105#u8, 116#u8,
+          101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8, 110#u8, 116#u8, 101#u8,
+          114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8, 32#u8, 112#u8, 121#u8,
+          45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+          109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8, 45#u8, 109#u8, 101#u8,
+          100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8, 111#u8, 117#u8,
+          110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8, 103#u8, 32#u8, 116#u8,
+          114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8, 105#u8, 111#u8,
+          110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8, 115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_137]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 146:0-146:877
+    Visibility: public -/
+def sidebar.piece_137 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          111#u8, 114#u8, 34#u8, 32#u8, 102#u8, 105#u8, 108#u8, 108#u8, 45#u8,
+          114#u8, 117#u8, 108#u8, 101#u8, 61#u8, 34#u8, 101#u8, 118#u8, 101#u8,
+          110#u8, 111#u8, 100#u8, 100#u8, 34#u8, 32#u8, 100#u8, 61#u8, 34#u8,
+          77#u8, 49#u8, 50#u8, 46#u8, 55#u8, 50#u8, 32#u8, 49#u8, 46#u8, 54#u8,
+          56#u8, 104#u8, 45#u8, 46#u8, 52#u8, 56#u8, 108#u8, 45#u8, 46#u8,
+          52#u8, 56#u8, 46#u8, 50#u8, 52#u8, 76#u8, 46#u8, 57#u8, 54#u8, 32#u8,
+          49#u8, 53#u8, 46#u8, 56#u8, 52#u8, 118#u8, 46#u8, 55#u8, 50#u8,
+          108#u8, 49#u8, 46#u8, 50#u8, 32#u8, 49#u8, 46#u8, 50#u8, 32#u8,
+          49#u8, 46#u8, 54#u8, 56#u8, 46#u8, 52#u8, 56#u8, 46#u8, 50#u8, 52#u8,
+          32#u8, 49#u8, 46#u8, 52#u8, 52#u8, 46#u8, 55#u8, 50#u8, 46#u8, 57#u8,
+          54#u8, 32#u8, 49#u8, 51#u8, 46#u8, 52#u8, 52#u8, 46#u8, 50#u8, 52#u8,
+          32#u8, 49#u8, 46#u8, 50#u8, 45#u8, 46#u8, 57#u8, 54#u8, 45#u8, 46#u8,
+          55#u8, 50#u8, 45#u8, 49#u8, 46#u8, 52#u8, 52#u8, 118#u8, 45#u8,
+          46#u8, 50#u8, 52#u8, 108#u8, 46#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_138]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 147:0-147:857
+    Visibility: public -/
+def sidebar.piece_138 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          57#u8, 54#u8, 45#u8, 46#u8, 52#u8, 56#u8, 46#u8, 55#u8, 50#u8, 46#u8,
+          52#u8, 56#u8, 46#u8, 55#u8, 50#u8, 45#u8, 46#u8, 50#u8, 52#u8, 32#u8,
+          49#u8, 46#u8, 50#u8, 45#u8, 46#u8, 52#u8, 56#u8, 46#u8, 55#u8, 50#u8,
+          45#u8, 46#u8, 55#u8, 50#u8, 118#u8, 45#u8, 46#u8, 55#u8, 50#u8,
+          76#u8, 49#u8, 52#u8, 46#u8, 54#u8, 52#u8, 32#u8, 54#u8, 46#u8, 50#u8,
+          52#u8, 108#u8, 46#u8, 55#u8, 50#u8, 45#u8, 49#u8, 46#u8, 57#u8,
+          50#u8, 45#u8, 46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 52#u8, 56#u8, 45#u8,
+          46#u8, 52#u8, 56#u8, 46#u8, 50#u8, 52#u8, 45#u8, 51#u8, 46#u8, 51#u8,
+          54#u8, 32#u8, 54#u8, 46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 50#u8, 52#u8,
+          46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 50#u8, 52#u8, 45#u8, 46#u8, 50#u8,
+          52#u8, 46#u8, 52#u8, 56#u8, 45#u8, 49#u8, 46#u8, 54#u8, 56#u8, 32#u8,
+          50#u8, 46#u8, 54#u8, 52#u8, 45#u8, 52#u8, 46#u8, 53#u8, 54#u8,
+          118#u8, 45#u8, 46#u8, 57#u8, 54#u8, 108#u8, 45#u8, 46#u8, 55#u8,
+          50#u8, 45#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_139]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 148:0-148:858
+    Visibility: public -/
+def sidebar.piece_139 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          46#u8, 52#u8, 56#u8, 45#u8, 52#u8, 46#u8, 53#u8, 54#u8, 32#u8, 54#u8,
+          46#u8, 52#u8, 56#u8, 45#u8, 52#u8, 46#u8, 56#u8, 32#u8, 53#u8, 46#u8,
+          48#u8, 52#u8, 45#u8, 49#u8, 46#u8, 57#u8, 50#u8, 32#u8, 49#u8, 46#u8,
+          54#u8, 56#u8, 32#u8, 54#u8, 46#u8, 55#u8, 50#u8, 45#u8, 55#u8, 46#u8,
+          52#u8, 52#u8, 32#u8, 52#u8, 46#u8, 51#u8, 50#u8, 45#u8, 54#u8, 46#u8,
+          50#u8, 52#u8, 122#u8, 77#u8, 49#u8, 56#u8, 46#u8, 50#u8, 52#u8,
+          32#u8, 49#u8, 54#u8, 46#u8, 56#u8, 72#u8, 54#u8, 46#u8, 52#u8, 56#u8,
+          108#u8, 45#u8, 46#u8, 57#u8, 54#u8, 46#u8, 50#u8, 52#u8, 45#u8,
+          46#u8, 57#u8, 54#u8, 46#u8, 55#u8, 50#u8, 104#u8, 45#u8, 46#u8,
+          50#u8, 52#u8, 108#u8, 55#u8, 46#u8, 50#u8, 45#u8, 54#u8, 46#u8,
+          55#u8, 50#u8, 32#u8, 49#u8, 46#u8, 50#u8, 45#u8, 49#u8, 46#u8, 52#u8,
+          52#u8, 122#u8, 34#u8, 47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_140]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 149:0-149:406
+    Visibility: public -/
+def sidebar.piece_140 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 53#usize [
+          60#u8, 47#u8, 115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 67#u8, 80#u8, 65#u8, 78#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_141]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 150:0-150:916
+    Visibility: public -/
+def sidebar.piece_141 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          60#u8, 100#u8, 105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8,
+          115#u8, 61#u8, 34#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8,
+          45#u8, 116#u8, 32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8,
+          45#u8, 115#u8, 108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8,
+          48#u8, 32#u8, 109#u8, 116#u8, 45#u8, 52#u8, 32#u8, 112#u8, 116#u8,
+          45#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8, 105#u8, 118#u8,
+          32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8, 34#u8, 116#u8,
+          101#u8, 120#u8, 116#u8, 45#u8, 120#u8, 115#u8, 32#u8, 102#u8, 111#u8,
+          110#u8, 116#u8, 45#u8, 115#u8, 101#u8, 109#u8, 105#u8, 98#u8, 111#u8,
+          108#u8, 100#u8, 32#u8, 116#u8, 101#u8, 120#u8, 116#u8, 45#u8, 115#u8,
+          108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 52#u8, 48#u8, 48#u8, 32#u8,
+          117#u8, 112#u8, 112#u8, 101#u8, 114#u8, 99#u8, 97#u8, 115#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_142]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 151:0-151:411
+    Visibility: public -/
+def sidebar.piece_142 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 52#usize [
+          32#u8, 116#u8, 114#u8, 97#u8, 99#u8, 107#u8, 105#u8, 110#u8, 103#u8,
+          45#u8, 119#u8, 105#u8, 100#u8, 101#u8, 114#u8, 32#u8, 112#u8, 120#u8,
+          45#u8, 52#u8, 32#u8, 109#u8, 98#u8, 45#u8, 51#u8, 34#u8, 62#u8,
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_143]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 152:0-152:376
+    Visibility: public -/
+def sidebar.piece_143 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 48#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_144]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 153:0-153:226
+    Visibility: public -/
+def sidebar.piece_144 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 23#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          100#u8, 105#u8, 118#u8, 62#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_145]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 154:0-154:903
+    Visibility: public -/
+def sidebar.piece_145 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 100#u8,
+          105#u8, 118#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 116#u8,
+          32#u8, 98#u8, 111#u8, 114#u8, 100#u8, 101#u8, 114#u8, 45#u8, 115#u8,
+          108#u8, 97#u8, 116#u8, 101#u8, 45#u8, 55#u8, 48#u8, 48#u8, 32#u8,
+          109#u8, 116#u8, 45#u8, 54#u8, 32#u8, 112#u8, 116#u8, 45#u8, 52#u8,
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 60#u8, 97#u8, 32#u8, 104#u8, 114#u8, 101#u8,
+          102#u8, 61#u8, 34#u8, 47#u8, 117#u8, 105#u8, 47#u8, 116#u8, 111#u8,
+          107#u8, 101#u8, 110#u8, 115#u8, 34#u8, 32#u8, 99#u8, 108#u8, 97#u8,
+          115#u8, 115#u8, 61#u8, 34#u8, 102#u8, 108#u8, 101#u8, 120#u8, 32#u8,
+          105#u8, 116#u8, 101#u8, 109#u8, 115#u8, 45#u8, 99#u8, 101#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_146]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 155:0-155:516
+    Visibility: public -/
+def sidebar.piece_146 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 64#usize [
+          110#u8, 116#u8, 101#u8, 114#u8, 32#u8, 112#u8, 120#u8, 45#u8, 52#u8,
+          32#u8, 112#u8, 121#u8, 45#u8, 51#u8, 32#u8, 116#u8, 101#u8, 120#u8,
+          116#u8, 45#u8, 115#u8, 109#u8, 32#u8, 102#u8, 111#u8, 110#u8, 116#u8,
+          45#u8, 109#u8, 101#u8, 100#u8, 105#u8, 117#u8, 109#u8, 32#u8, 114#u8,
+          111#u8, 117#u8, 110#u8, 100#u8, 101#u8, 100#u8, 45#u8, 108#u8,
+          103#u8, 32#u8, 116#u8, 114#u8, 97#u8, 110#u8, 115#u8, 105#u8, 116#u8,
+          105#u8, 111#u8, 110#u8, 45#u8, 99#u8, 111#u8, 108#u8, 111#u8, 114#u8,
+          115#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_147]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 156:0-156:893
+    Visibility: public -/
+def sidebar.piece_147 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          34#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 115#u8,
+          118#u8, 103#u8, 32#u8, 99#u8, 108#u8, 97#u8, 115#u8, 115#u8, 61#u8,
+          34#u8, 119#u8, 45#u8, 53#u8, 32#u8, 104#u8, 45#u8, 53#u8, 32#u8,
+          109#u8, 114#u8, 45#u8, 51#u8, 34#u8, 32#u8, 102#u8, 105#u8, 108#u8,
+          108#u8, 61#u8, 34#u8, 110#u8, 111#u8, 110#u8, 101#u8, 34#u8, 32#u8,
+          115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 61#u8, 34#u8, 99#u8,
+          117#u8, 114#u8, 114#u8, 101#u8, 110#u8, 116#u8, 67#u8, 111#u8,
+          108#u8, 111#u8, 114#u8, 34#u8, 32#u8, 118#u8, 105#u8, 101#u8, 119#u8,
+          66#u8, 111#u8, 120#u8, 61#u8, 34#u8, 48#u8, 32#u8, 48#u8, 32#u8,
+          50#u8, 52#u8, 32#u8, 50#u8, 52#u8, 34#u8, 62#u8, 10#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_148]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 157:0-157:904
+    Visibility: public -/
+def sidebar.piece_148 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8,
+          112#u8, 97#u8, 116#u8, 104#u8, 32#u8, 115#u8, 116#u8, 114#u8, 111#u8,
+          107#u8, 101#u8, 45#u8, 108#u8, 105#u8, 110#u8, 101#u8, 99#u8, 97#u8,
+          112#u8, 61#u8, 34#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8,
+          32#u8, 115#u8, 116#u8, 114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 108#u8,
+          105#u8, 110#u8, 101#u8, 106#u8, 111#u8, 105#u8, 110#u8, 61#u8, 34#u8,
+          114#u8, 111#u8, 117#u8, 110#u8, 100#u8, 34#u8, 32#u8, 115#u8, 116#u8,
+          114#u8, 111#u8, 107#u8, 101#u8, 45#u8, 119#u8, 105#u8, 100#u8,
+          116#u8, 104#u8, 61#u8, 34#u8, 50#u8, 34#u8, 32#u8, 100#u8, 61#u8,
+          34#u8, 77#u8, 49#u8, 53#u8, 32#u8, 55#u8, 97#u8, 50#u8, 32#u8, 50#u8,
+          32#u8, 48#u8, 32#u8, 48#u8, 49#u8, 50#u8, 32#u8, 50#u8, 109#u8,
+          52#u8, 32#u8, 48#u8, 97#u8, 54#u8, 32#u8, 54#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 49#u8, 45#u8, 55#u8, 46#u8, 55#u8, 52#u8, 51#u8, 32#u8, 53#u8,
+          46#u8, 55#u8, 52#u8, 51#u8, 76#u8, 49#u8, 49#u8, 32#u8, 49#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_149]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 158:0-158:861
+    Visibility: public -/
+def sidebar.piece_149 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 128#usize [
+          55#u8, 72#u8, 57#u8, 118#u8, 50#u8, 72#u8, 55#u8, 118#u8, 50#u8,
+          72#u8, 52#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8, 48#u8,
+          49#u8, 45#u8, 49#u8, 45#u8, 49#u8, 118#u8, 45#u8, 50#u8, 46#u8,
+          53#u8, 56#u8, 54#u8, 97#u8, 49#u8, 32#u8, 49#u8, 32#u8, 48#u8, 32#u8,
+          48#u8, 49#u8, 46#u8, 50#u8, 57#u8, 51#u8, 45#u8, 46#u8, 55#u8, 48#u8,
+          55#u8, 108#u8, 53#u8, 46#u8, 57#u8, 54#u8, 52#u8, 45#u8, 53#u8,
+          46#u8, 57#u8, 54#u8, 52#u8, 65#u8, 54#u8, 32#u8, 54#u8, 32#u8, 48#u8,
+          32#u8, 49#u8, 49#u8, 50#u8, 49#u8, 32#u8, 57#u8, 122#u8, 34#u8,
+          47#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 60#u8, 47#u8,
+          115#u8, 118#u8, 103#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_150]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 159:0-159:121
+    Visibility: public -/
+def sidebar.piece_150 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let a := Array.repeat 6#usize 32#u8
+    let s ← lift (Array.to_slice a)
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::piece_151]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 160:0-160:454
+    Visibility: public -/
+def sidebar.piece_151 (keep : Bool) : Result (alloc.vec.Vec Std.U8) := do
+  if keep
+  then
+    let s ←
+      lift (Array.to_slice
+        (Array.make 61#usize [
+          10#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 60#u8, 47#u8, 97#u8, 62#u8, 10#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8, 60#u8, 47#u8, 100#u8, 105#u8, 118#u8, 62#u8, 10#u8,
+          32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8, 32#u8,
+          32#u8, 32#u8
+          ]))
+    alloc.slice.Slice.to_vec core.clone.CloneU8 s
+  else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [nora_kernel::sidebar::frame_0]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 161:0-161:182
+    Visibility: public -/
+def sidebar.frame_0
+  (keep : Bool) : Result (Array (alloc.vec.Vec Std.U8) 9#usize) := do
+  let v ← sidebar.piece_0 keep
+  let v1 ← sidebar.piece_1 keep
+  let v2 ← sidebar.piece_2 keep
+  let v3 ← sidebar.piece_3 keep
+  let v4 ← sidebar.piece_4 keep
+  let v5 ← sidebar.piece_5 keep
+  let v6 ← sidebar.piece_6 keep
+  let v7 ← sidebar.piece_7 keep
+  let v8 ← sidebar.piece_8 keep
+  ok (Array.make 9#usize [ v, v1, v2, v3, v4, v5, v6, v7, v8 ])
+
+/-- [nora_kernel::sidebar::frame_1]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 162:0-162:62
+    Visibility: public -/
+def sidebar.frame_1
+  (keep : Bool) : Result (Array (alloc.vec.Vec Std.U8) 1#usize) := do
+  let v ← sidebar.piece_9 keep
+  ok (Array.make 1#usize [ v ])
+
+/-- [nora_kernel::sidebar::frame_2]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 163:0-163:62
+    Visibility: public -/
+def sidebar.frame_2
+  (keep : Bool) : Result (Array (alloc.vec.Vec Std.U8) 1#usize) := do
+  let v ← sidebar.piece_9 keep
+  ok (Array.make 1#usize [ v ])
+
+/-- [nora_kernel::sidebar::frame_3]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 164:0-164:79
+    Visibility: public -/
+def sidebar.frame_3
+  (keep : Bool) : Result (Array (alloc.vec.Vec Std.U8) 2#usize) := do
+  let v ← sidebar.piece_10 keep
+  let v1 ← sidebar.piece_11 keep
+  ok (Array.make 2#usize [ v, v1 ])
+
+/-- [nora_kernel::sidebar::frame_4]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 165:0-165:63
+    Visibility: public -/
+def sidebar.frame_4
+  (keep : Bool) : Result (Array (alloc.vec.Vec Std.U8) 1#usize) := do
+  let v ← sidebar.piece_12 keep
+  ok (Array.make 1#usize [ v ])
+
+/-- [nora_kernel::sidebar::row_0]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 166:0-166:201
+    Visibility: public -/
+def sidebar.row_0
+  (keep : Bool) (active : Bool) (label : Slice Std.U8) :
+  Result (Array (alloc.vec.Vec Std.U8) 7#usize)
+  := do
+  let v ← sidebar.piece_13 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_14 keep
+  let v3 ← sidebar.piece_15 keep
+  let v4 ← sidebar.piece_16 keep
+  let v5 ← sidebar.input keep label
+  let v6 ← sidebar.piece_17 keep
+  ok (Array.make 7#usize [ v, v1, v2, v3, v4, v5, v6 ])
+
+/-- [nora_kernel::sidebar::row_1]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 167:0-167:344
+    Visibility: public -/
+def sidebar.row_1
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 17#usize)
+  := do
+  let v ← sidebar.piece_18 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_20 keep
+  let v4 ← sidebar.piece_21 keep
+  let v5 ← sidebar.piece_22 keep
+  let v6 ← sidebar.piece_23 keep
+  let v7 ← sidebar.piece_24 keep
+  let v8 ← sidebar.piece_25 keep
+  let v9 ← sidebar.piece_26 keep
+  let v10 ← sidebar.piece_27 keep
+  let v11 ← sidebar.piece_28 keep
+  let v12 ← sidebar.piece_29 keep
+  let v13 ← sidebar.piece_30 keep
+  let v14 ← sidebar.piece_31 keep
+  let v15 ← sidebar.piece_32 keep
+  let v16 ← sidebar.piece_33 keep
+  ok
+    (Array.make 17#usize [
+      v, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16
+      ])
+
+/-- [nora_kernel::sidebar::row_2]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 168:0-168:167
+    Visibility: public -/
+def sidebar.row_2
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 6#usize)
+  := do
+  let v ← sidebar.piece_34 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_35 keep
+  let v4 ← sidebar.piece_36 keep
+  let v5 ← sidebar.piece_37 keep
+  ok (Array.make 6#usize [ v, v1, v2, v3, v4, v5 ])
+
+/-- [nora_kernel::sidebar::row_3]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 169:0-169:167
+    Visibility: public -/
+def sidebar.row_3
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 6#usize)
+  := do
+  let v ← sidebar.piece_38 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_39 keep
+  let v4 ← sidebar.piece_40 keep
+  let v5 ← sidebar.piece_41 keep
+  ok (Array.make 6#usize [ v, v1, v2, v3, v4, v5 ])
+
+/-- [nora_kernel::sidebar::row_4]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 170:0-170:167
+    Visibility: public -/
+def sidebar.row_4
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 6#usize)
+  := do
+  let v ← sidebar.piece_42 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_43 keep
+  let v4 ← sidebar.piece_44 keep
+  let v5 ← sidebar.piece_45 keep
+  ok (Array.make 6#usize [ v, v1, v2, v3, v4, v5 ])
+
+/-- [nora_kernel::sidebar::row_5]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 171:0-171:312
+    Visibility: public -/
+def sidebar.row_5
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 15#usize)
+  := do
+  let v ← sidebar.piece_46 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_47 keep
+  let v4 ← sidebar.piece_48 keep
+  let v5 ← sidebar.piece_49 keep
+  let v6 ← sidebar.piece_50 keep
+  let v7 ← sidebar.piece_51 keep
+  let v8 ← sidebar.piece_52 keep
+  let v9 ← sidebar.piece_53 keep
+  let v10 ← sidebar.piece_54 keep
+  let v11 ← sidebar.piece_55 keep
+  let v12 ← sidebar.piece_56 keep
+  let v13 ← sidebar.piece_57 keep
+  let v14 ← sidebar.piece_58 keep
+  ok
+    (Array.make 15#usize [
+      v, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14
+      ])
+
+/-- [nora_kernel::sidebar::row_6]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 172:0-172:151
+    Visibility: public -/
+def sidebar.row_6
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 5#usize)
+  := do
+  let v ← sidebar.piece_59 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_60 keep
+  let v4 ← sidebar.piece_61 keep
+  ok (Array.make 5#usize [ v, v1, v2, v3, v4 ])
+
+/-- [nora_kernel::sidebar::row_7]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 173:0-173:280
+    Visibility: public -/
+def sidebar.row_7
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 13#usize)
+  := do
+  let v ← sidebar.piece_62 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_63 keep
+  let v4 ← sidebar.piece_64 keep
+  let v5 ← sidebar.piece_65 keep
+  let v6 ← sidebar.piece_66 keep
+  let v7 ← sidebar.piece_67 keep
+  let v8 ← sidebar.piece_68 keep
+  let v9 ← sidebar.piece_69 keep
+  let v10 ← sidebar.piece_70 keep
+  let v11 ← sidebar.piece_71 keep
+  let v12 ← sidebar.piece_72 keep
+  ok
+    (Array.make 13#usize [
+      v, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12
+      ])
+
+/-- [nora_kernel::sidebar::row_8]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 174:0-174:151
+    Visibility: public -/
+def sidebar.row_8
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 5#usize)
+  := do
+  let v ← sidebar.piece_73 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_74 keep
+  let v4 ← sidebar.piece_75 keep
+  ok (Array.make 5#usize [ v, v1, v2, v3, v4 ])
+
+/-- [nora_kernel::sidebar::row_9]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 175:0-175:151
+    Visibility: public -/
+def sidebar.row_9
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 5#usize)
+  := do
+  let v ← sidebar.piece_76 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_77 keep
+  let v4 ← sidebar.piece_78 keep
+  ok (Array.make 5#usize [ v, v1, v2, v3, v4 ])
+
+/-- [nora_kernel::sidebar::row_10]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 176:0-176:184
+    Visibility: public -/
+def sidebar.row_10
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 7#usize)
+  := do
+  let v ← sidebar.piece_79 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_80 keep
+  let v4 ← sidebar.piece_81 keep
+  let v5 ← sidebar.piece_82 keep
+  let v6 ← sidebar.piece_83 keep
+  ok (Array.make 7#usize [ v, v1, v2, v3, v4, v5, v6 ])
+
+/-- [nora_kernel::sidebar::row_11]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 177:0-177:152
+    Visibility: public -/
+def sidebar.row_11
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 5#usize)
+  := do
+  let v ← sidebar.piece_84 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_85 keep
+  let v3 ← sidebar.piece_86 keep
+  let v4 ← sidebar.piece_87 keep
+  ok (Array.make 5#usize [ v, v1, v2, v3, v4 ])
+
+/-- [nora_kernel::sidebar::row_12]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 178:0-178:281
+    Visibility: public -/
+def sidebar.row_12
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 13#usize)
+  := do
+  let v ← sidebar.piece_88 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_89 keep
+  let v3 ← sidebar.piece_90 keep
+  let v4 ← sidebar.piece_91 keep
+  let v5 ← sidebar.piece_92 keep
+  let v6 ← sidebar.piece_93 keep
+  let v7 ← sidebar.piece_94 keep
+  let v8 ← sidebar.piece_95 keep
+  let v9 ← sidebar.piece_96 keep
+  let v10 ← sidebar.piece_97 keep
+  let v11 ← sidebar.piece_98 keep
+  let v12 ← sidebar.piece_99 keep
+  ok
+    (Array.make 13#usize [
+      v, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12
+      ])
+
+/-- [nora_kernel::sidebar::row_13]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 179:0-179:206
+    Visibility: public -/
+def sidebar.row_13
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 8#usize)
+  := do
+  let v ← sidebar.piece_100 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_101 keep
+  let v4 ← sidebar.piece_102 keep
+  let v5 ← sidebar.piece_103 keep
+  let v6 ← sidebar.piece_104 keep
+  let v7 ← sidebar.piece_105 keep
+  ok (Array.make 8#usize [ v, v1, v2, v3, v4, v5, v6, v7 ])
+
+/-- [nora_kernel::sidebar::row_14]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 180:0-180:223
+    Visibility: public -/
+def sidebar.row_14
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 9#usize)
+  := do
+  let v ← sidebar.piece_106 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_107 keep
+  let v4 ← sidebar.piece_108 keep
+  let v5 ← sidebar.piece_109 keep
+  let v6 ← sidebar.piece_110 keep
+  let v7 ← sidebar.piece_111 keep
+  let v8 ← sidebar.piece_112 keep
+  ok (Array.make 9#usize [ v, v1, v2, v3, v4, v5, v6, v7, v8 ])
+
+/-- [nora_kernel::sidebar::row_15]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 181:0-181:496
+    Visibility: public -/
+def sidebar.row_15
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 25#usize)
+  := do
+  let v ← sidebar.piece_113 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_114 keep
+  let v4 ← sidebar.piece_115 keep
+  let v5 ← sidebar.piece_116 keep
+  let v6 ← sidebar.piece_117 keep
+  let v7 ← sidebar.piece_118 keep
+  let v8 ← sidebar.piece_119 keep
+  let v9 ← sidebar.piece_120 keep
+  let v10 ← sidebar.piece_121 keep
+  let v11 ← sidebar.piece_122 keep
+  let v12 ← sidebar.piece_123 keep
+  let v13 ← sidebar.piece_124 keep
+  let v14 ← sidebar.piece_125 keep
+  let v15 ← sidebar.piece_126 keep
+  let v16 ← sidebar.piece_127 keep
+  let v17 ← sidebar.piece_128 keep
+  let v18 ← sidebar.piece_129 keep
+  let v19 ← sidebar.piece_130 keep
+  let v20 ← sidebar.piece_131 keep
+  let v21 ← sidebar.piece_132 keep
+  let v22 ← sidebar.piece_133 keep
+  let v23 ← sidebar.piece_134 keep
+  let v24 ← sidebar.piece_135 keep
+  ok
+    (Array.make 25#usize [
+      v, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, v16,
+      v17, v18, v19, v20, v21, v22, v23, v24
+      ])
+
+/-- [nora_kernel::sidebar::row_16]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 182:0-182:189
+    Visibility: public -/
+def sidebar.row_16
+  (keep : Bool) (active : Bool) :
+  Result (Array (alloc.vec.Vec Std.U8) 7#usize)
+  := do
+  let v ← sidebar.piece_136 keep
+  let v1 ← sidebar.active_class keep active
+  let v2 ← sidebar.piece_19 keep
+  let v3 ← sidebar.piece_137 keep
+  let v4 ← sidebar.piece_138 keep
+  let v5 ← sidebar.piece_139 keep
+  let v6 ← sidebar.piece_140 keep
+  ok (Array.make 7#usize [ v, v1, v2, v3, v4, v5, v6 ])
+
+/-- [nora_kernel::sidebar::registry_heading]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 183:0-183:141
+    Visibility: public -/
+def sidebar.registry_heading
+  (keep : Bool) (label : Slice Std.U8) :
+  Result (Array (alloc.vec.Vec Std.U8) 4#usize)
+  := do
+  let v ← sidebar.piece_141 keep
+  let v1 ← sidebar.piece_142 keep
+  let v2 ← sidebar.input keep label
+  let v3 ← sidebar.piece_143 keep
+  ok (Array.make 4#usize [ v, v1, v2, v3 ])
+
+/-- [nora_kernel::sidebar::registry_tail]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 184:0-184:70
+    Visibility: public -/
+def sidebar.registry_tail
+  (keep : Bool) : Result (Array (alloc.vec.Vec Std.U8) 1#usize) := do
+  let v ← sidebar.piece_144 keep
+  ok (Array.make 1#usize [ v ])
+
+/-- [nora_kernel::sidebar::admin]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 185:0-185:240
+    Visibility: public -/
+def sidebar.admin
+  (keep : Bool) (active : Bool) (label : Slice Std.U8) :
+  Result (Array (alloc.vec.Vec Std.U8) 9#usize)
+  := do
+  let v ← sidebar.piece_145 keep
+  let v1 ← sidebar.piece_146 keep
+  let v2 ← sidebar.active_class keep active
+  let v3 ← sidebar.piece_147 keep
+  let v4 ← sidebar.piece_148 keep
+  let v5 ← sidebar.piece_149 keep
+  let v6 ← sidebar.piece_150 keep
+  let v7 ← sidebar.input keep label
+  let v8 ← sidebar.piece_151 keep
+  ok (Array.make 9#usize [ v, v1, v2, v3, v4, v5, v6, v7, v8 ])
+
+/-- [nora_kernel::sidebar::Output]
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 186:0-213:1
+    Visibility: public -/
+structure sidebar.Output where
+  frame_0 : Array (alloc.vec.Vec Std.U8) 9#usize
+  frame_1 : Array (alloc.vec.Vec Std.U8) 1#usize
+  frame_2 : Array (alloc.vec.Vec Std.U8) 1#usize
+  frame_3 : Array (alloc.vec.Vec Std.U8) 2#usize
+  frame_4 : Array (alloc.vec.Vec Std.U8) 1#usize
+  row_0 : Array (alloc.vec.Vec Std.U8) 7#usize
+  row_1 : Array (alloc.vec.Vec Std.U8) 17#usize
+  row_2 : Array (alloc.vec.Vec Std.U8) 6#usize
+  row_3 : Array (alloc.vec.Vec Std.U8) 6#usize
+  row_4 : Array (alloc.vec.Vec Std.U8) 6#usize
+  row_5 : Array (alloc.vec.Vec Std.U8) 15#usize
+  row_6 : Array (alloc.vec.Vec Std.U8) 5#usize
+  row_7 : Array (alloc.vec.Vec Std.U8) 13#usize
+  row_8 : Array (alloc.vec.Vec Std.U8) 5#usize
+  row_9 : Array (alloc.vec.Vec Std.U8) 5#usize
+  row_10 : Array (alloc.vec.Vec Std.U8) 7#usize
+  row_11 : Array (alloc.vec.Vec Std.U8) 5#usize
+  row_12 : Array (alloc.vec.Vec Std.U8) 13#usize
+  row_13 : Array (alloc.vec.Vec Std.U8) 8#usize
+  row_14 : Array (alloc.vec.Vec Std.U8) 9#usize
+  row_15 : Array (alloc.vec.Vec Std.U8) 25#usize
+  row_16 : Array (alloc.vec.Vec Std.U8) 7#usize
+  registry_heading : Array (alloc.vec.Vec Std.U8) 4#usize
+  registry_tail : Array (alloc.vec.Vec Std.U8) 1#usize
+  admin : Array (alloc.vec.Vec Std.U8) 9#usize
+  version : alloc.vec.Vec Std.U8
+
+/-- [nora_kernel::sidebar::sidebar]:
+    Source: 'prove/ports/nora/kernel/src/sidebar.rs', lines 214:0-244:1
+    Visibility: public -/
+def sidebar.sidebar
+  (active : Slice Std.U8) (t : sidebar.Translations) (auth : Bool)
+  (e : sidebar.Enabled) (version : Slice Std.U8) :
+  Result sidebar.Output
+  := do
+  let show_registries ← sidebar.has_registries e
+  let a ← sidebar.frame_0 true
+  let a1 ← sidebar.frame_1 true
+  let a2 ← sidebar.frame_2 true
+  let a3 ← sidebar.frame_3 true
+  let a4 ← sidebar.frame_4 true
+  let s ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        100#u8, 97#u8, 115#u8, 104#u8, 98#u8, 111#u8, 97#u8, 114#u8, 100#u8
+        ]))
+  let b ← sidebar.is_active active s
+  let s1 := alloc.vec.Vec.deref t.nav_dashboard
+  let a5 ← sidebar.row_0 true b s1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 100#u8, 111#u8, 99#u8, 107#u8, 101#u8, 114#u8 ]))
+  let b1 ← sidebar.is_active active s2
+  let a6 ← sidebar.row_1 e.docker b1
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 109#u8, 97#u8, 118#u8, 101#u8, 110#u8 ]))
+  let b2 ← sidebar.is_active active s3
+  let a7 ← sidebar.row_2 e.maven b2
+  let s4 ←
+    lift (Array.to_slice (Array.make 3#usize [ 110#u8, 112#u8, 109#u8 ]))
+  let b3 ← sidebar.is_active active s4
+  let a8 ← sidebar.row_3 e.npm b3
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 99#u8, 97#u8, 114#u8, 103#u8, 111#u8 ]))
+  let b4 ← sidebar.is_active active s5
+  let a9 ← sidebar.row_4 e.cargo b4
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 112#u8, 121#u8, 112#u8, 105#u8 ]))
+  let b5 ← sidebar.is_active active s6
+  let a10 ← sidebar.row_5 e.pypi b5
+  let s7 ←
+    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 97#u8, 119#u8 ]))
+  let b6 ← sidebar.is_active active s7
+  let a11 ← sidebar.row_6 e.raw b6
+  let s8 ← lift (Array.to_slice (Array.make 2#usize [ 103#u8, 111#u8 ]))
+  let b7 ← sidebar.is_active active s8
+  let a12 ← sidebar.row_7 e.go b7
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 103#u8, 101#u8, 109#u8, 115#u8 ]))
+  let b8 ← sidebar.is_active active s9
+  let a13 ← sidebar.row_8 e.gems b8
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        116#u8, 101#u8, 114#u8, 114#u8, 97#u8, 102#u8, 111#u8, 114#u8, 109#u8
+        ]))
+  let b9 ← sidebar.is_active active s10
+  let a14 ← sidebar.row_9 e.terraform b9
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        97#u8, 110#u8, 115#u8, 105#u8, 98#u8, 108#u8, 101#u8
+        ]))
+  let b10 ← sidebar.is_active active s11
+  let a15 ← sidebar.row_10 e.ansible b10
+  let s12 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 110#u8, 117#u8, 103#u8, 101#u8, 116#u8 ]))
+  let b11 ← sidebar.is_active active s12
+  let a16 ← sidebar.row_11 e.nuget b11
+  let s13 ←
+    lift (Array.to_slice (Array.make 3#usize [ 112#u8, 117#u8, 98#u8 ]))
+  let b12 ← sidebar.is_active active s13
+  let a17 ← sidebar.row_12 e.pub_dart b12
+  let s14 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 99#u8, 111#u8, 110#u8, 97#u8, 110#u8 ]))
+  let b13 ← sidebar.is_active active s14
+  let a18 ← sidebar.row_13 e.conan b13
+  let s15 ←
+    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 112#u8, 109#u8 ]))
+  let b14 ← sidebar.is_active active s15
+  let a19 ← sidebar.row_14 e.rpm b14
+  let s16 ←
+    lift (Array.to_slice (Array.make 3#usize [ 100#u8, 101#u8, 98#u8 ]))
+  let b15 ← sidebar.is_active active s16
+  let a20 ← sidebar.row_15 e.deb b15
+  let s17 ←
+    lift (Array.to_slice (Array.make 4#usize [ 99#u8, 112#u8, 97#u8, 110#u8 ]))
+  let b16 ← sidebar.is_active active s17
+  let a21 ← sidebar.row_16 e.cpan b16
+  let s18 := alloc.vec.Vec.deref t.nav_registries
+  let a22 ← sidebar.registry_heading show_registries s18
+  let a23 ← sidebar.registry_tail show_registries
+  let s19 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 111#u8, 107#u8, 101#u8, 110#u8, 115#u8 ]))
+  let b17 ← sidebar.is_active active s19
+  let s20 := alloc.vec.Vec.deref t.nav_tokens
+  let a24 ← sidebar.admin auth b17 s20
+  let v ← sidebar.input true version
+  ok
+    {
+      frame_0 := a,
+      frame_1 := a1,
+      frame_2 := a2,
+      frame_3 := a3,
+      frame_4 := a4,
+      row_0 := a5,
+      row_1 := a6,
+      row_2 := a7,
+      row_3 := a8,
+      row_4 := a9,
+      row_5 := a10,
+      row_6 := a11,
+      row_7 := a12,
+      row_8 := a13,
+      row_9 := a14,
+      row_10 := a15,
+      row_11 := a16,
+      row_12 := a17,
+      row_13 := a18,
+      row_14 := a19,
+      row_15 := a20,
+      row_16 := a21,
+      registry_heading := a22,
+      registry_tail := a23,
+      admin := a24,
+      version := v
+    }
 
 /-- [nora_kernel::tokens::{impl core::clone::Clone for nora_kernel::tokens::TokenFile}::clone]:
     Source: 'prove/ports/nora/kernel/src/tokens.rs', lines 24:4-30:5

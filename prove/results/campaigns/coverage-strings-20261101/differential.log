@@ -1,0 +1,10 @@
+   Compiling oxicloud-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/oxicloud/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.73s
+     Running tests/display_classifiers.rs (prove/ports/oxicloud/kernel/target/debug/deps/display_classifiers-a492f2658660e3c1)
+
+running 2 tests
+test byte_predicates_match_standard_operations_at_boundaries ... ok
+test pinned_classifiers_match_full_literal_cross_product_and_adversarial_strings ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.59s
+

@@ -22,3 +22,11 @@ pub mod admin;
 pub mod liveauth;
 pub mod policydefaults;
 pub mod davstate;
+
+pub mod finite_catalog;
+
+pub mod display_classifiers;
+
+pub mod asyncapi;
+
+pub mod closed_records;

@@ -1,0 +1,9 @@
+
+running 2 tests
+test complete_arbitrary_text_fields ... ok
+test complete_outputs_all_registry_subsets ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.60s
+
+Generated complete sidebar with 25 groups and 152 shared fragments in /home/ht2673/Dev/h5i-app-bench/prove/ports/nora.
+Pinned source, exact complete outputs, and deterministic sidebar generation audited.

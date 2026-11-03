@@ -1,6 +1,6 @@
 {
   "upstream_revision": "e870a6d25bbf02323b7841b0c5e2230a56551970",
-  "mapping_sha256": "5d4c652913e84cedf4900e29dc3a62ecf88ea200135680e6572f11f30c2ee0ee",
+  "mapping_sha256": "a8921c571c1460ab244ada3141da629aa9647dcfde9b84a1aef63ce431cbaeb5",
   "lines": {
     "crates/policy/src/policy/action.rs": [
       50,
@@ -23823,6 +23823,42 @@
           "start": 23,
           "end": 29,
           "sha256": "2e871f34dec30492245efe7ad423736a74d88bd0d08a1abf1f0ae550151960cf"
+        }
+      ]
+    },
+    {
+      "name": "rustfs_kernel.Properties.finite_admin_action_dfb862e5_is_table_resource_scoped_complete",
+      "generated_dependencies": [
+        "finite_catalog.admin_action_dfb862e5.AdminAction.is_table_resource_scoped"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.admin_action_dfb862e5.AdminAction.is_table_resource_scoped",
+          "file": "crates/policy/src/policy/action.rs",
+          "kind": "method",
+          "name": "is_table_resource_scoped",
+          "self_ty": "AdminAction",
+          "start": 595,
+          "end": 619,
+          "sha256": "9da809dd6fa0ffaa52847dc37a491ba0e777371b09e7dfa9e94259f5b5d947b6"
+        }
+      ]
+    },
+    {
+      "name": "rustfs_kernel.Properties.finite_admin_action_dfb862e5_is_valid_complete",
+      "generated_dependencies": [
+        "finite_catalog.admin_action_dfb862e5.AdminAction.is_valid"
+      ],
+      "items": [
+        {
+          "declaration": "finite_catalog.admin_action_dfb862e5.AdminAction.is_valid",
+          "file": "crates/policy/src/policy/action.rs",
+          "kind": "method",
+          "name": "is_valid",
+          "self_ty": "AdminAction",
+          "start": 622,
+          "end": 717,
+          "sha256": "8befc4dcaa098e633d709a70a28881195525b66b7d36a96cd9ffe0670f69bf3c"
         }
       ]
     }

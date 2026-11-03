@@ -1,0 +1,1248 @@
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:21:2: warning: 'all_goals simp_all [alloc.vec.Vec.new, alloc.vec.Vec.val]' tactic does nothing
+
+Note: This linter can be disabled with `set_option linter.unusedTactic false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:21:12: warning: this tactic is never executed
+
+Note: This linter can be disabled with `set_option linter.unreachableTactic false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:355:52: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [class_model, active_class_bytes, inactive_class_bytes,
+      active_class_bytes_reference_0, inactive_class_bytes_reference_0,
+  ̵  ̵ ̵ ̵Array.to_slice,
+  ̲  ̲ ̲ ̲Array.make_val, Slice.from_val, alloc.vec.Vec.n̵e̵w̵,̵ ̵a̵l̵l̵o̵c̵.̵ve̵c̵.̵V̵e̵c̵.̵v̵al]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:368:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_0_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:376:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_1_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:384:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_2_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:392:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_3_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:400:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_4_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:408:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_5_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:416:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_6_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:424:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_7_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:432:58: warning: This simp argument is unused:
+  Array.make_val
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_8_model, Array.to_slice, A̵r̵r̵a̵y̵.̵m̵a̵k̵e̵_̵v̵a̵l̵,̵ ̵Slice.from_val, alloc.vec.Vec.new,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:432:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_8_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:440:90: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_9_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:448:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_10_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:456:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_11_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:464:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_12_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:472:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_13_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:480:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_14_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:488:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_15_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:496:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_16_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:504:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_17_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:512:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_18_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:520:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_19_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:528:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_20_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:536:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_21_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:544:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_22_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:552:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_23_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:560:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_24_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:568:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_25_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:576:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_26_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:584:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_27_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:592:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_28_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:600:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_29_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:608:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_30_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:616:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_31_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:624:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_32_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:632:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_33_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:640:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_34_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:648:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_35_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:656:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_36_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:664:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_37_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:672:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_38_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:680:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_39_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:688:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_40_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:696:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_41_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:704:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_42_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:712:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_43_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:720:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_44_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:728:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_45_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:736:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_46_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:744:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_47_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:752:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_48_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:760:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_49_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:768:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_50_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:776:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_51_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:784:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_52_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:792:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_53_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:800:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_54_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:808:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_55_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:816:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_56_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:824:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_57_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:832:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_58_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:840:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_59_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:848:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_60_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:856:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_61_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:864:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_62_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:872:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_63_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:880:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_64_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:888:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_65_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:896:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_66_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:904:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_67_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:912:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_68_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:920:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_69_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:928:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_70_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:936:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_71_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:944:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_72_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:952:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_73_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:960:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_74_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:968:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_75_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:976:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_76_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:984:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_77_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:992:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_78_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1000:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_79_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1008:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_80_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1016:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_81_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1024:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_82_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1032:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_83_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1040:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_84_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1048:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_85_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1056:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_86_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1064:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_87_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1072:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_88_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1080:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_89_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1088:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_90_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1096:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_91_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1104:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_92_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1112:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_93_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1120:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_94_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1128:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_95_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1136:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_96_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1144:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_97_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1152:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_98_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1160:91: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_99_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1168:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_100_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1176:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_101_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1184:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_102_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1192:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_103_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1200:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_104_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1208:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_105_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1216:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_106_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1224:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_107_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1232:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_108_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1240:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_109_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1248:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_110_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1256:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_111_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1264:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_112_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1272:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_113_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1280:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_114_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1288:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_115_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1296:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_116_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1304:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_117_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1312:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_118_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1320:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_119_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1328:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_120_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1336:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_121_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1344:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_122_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1352:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_123_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1360:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_124_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1368:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_125_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1376:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_126_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1384:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_127_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1392:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_128_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1400:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_129_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1408:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_130_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1416:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_131_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1424:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_132_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1432:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_133_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1440:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_134_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1448:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_135_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1456:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_136_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1464:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_137_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1472:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_138_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1480:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_139_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1488:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_140_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1496:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_141_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1504:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_142_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1512:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_143_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1520:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_144_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1528:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_145_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1536:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_146_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1544:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_147_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1552:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_148_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1560:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_149_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1568:60: warning: This simp argument is unused:
+  Array.make_val
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_150_model, Array.to_slice, A̵r̵r̵a̵y̵.̵m̵a̵k̵e̵_̵v̵a̵l̵,̵ ̵Slice.from_val, alloc.vec.Vec.new,
+  ̲  ̲ ̲ ̲alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1568:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_150_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+/tmp/h5i-sidebar-stage/proofs/SidebarBase.lean:1576:92: warning: This simp argument is unused:
+  alloc.vec.Vec.new
+
+Hint: Omit it from the simp argument list.
+  simp_all only [piece_151_model, Array.to_slice, Array.make_val, Slice.from_val,
+  ̲  ̲ ̲ ̲a̵l̵l̵o̵c̵.̵v̵e̵c̵.̵V̵e̵c̵.̵n̵e̵w̵,̵ ̵alloc.vec.Vec.val]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`

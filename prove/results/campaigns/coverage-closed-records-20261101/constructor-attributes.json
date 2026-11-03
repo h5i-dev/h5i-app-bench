@@ -1,0 +1,215 @@
+[
+  {
+    "app": "nora",
+    "constructor": "SigningConfig",
+    "file": "nora-registry/src/config/signing_cfg.rs",
+    "end": 33,
+    "context": [
+      "# ! [doc = \" Repository index signing configuration (#128).\"]"
+    ],
+    "attributes": []
+  },
+  {
+    "app": "nora",
+    "constructor": "EnvProvider",
+    "file": "nora-registry/src/secrets/env.rs",
+    "end": 32,
+    "context": [
+      "# ! [doc = \" Environment variables secrets provider\"]",
+      "# ! [doc = \"\"]",
+      "# ! [doc = \" Reads secrets from environment variables. This is the default provider\"]",
+      "# ! [doc = \" following 12-Factor App principles.\"]"
+    ],
+    "attributes": [
+      "# [doc = \" Create a new environment provider\"]"
+    ]
+  },
+  {
+    "app": "artifactkeeper",
+    "constructor": "PluginResourceLimits",
+    "file": "backend/src/models/plugin.rs",
+    "end": 102,
+    "context": [
+      "# ! [doc = \" Plugin and plugin configuration models.\"]"
+    ],
+    "attributes": []
+  },
+  {
+    "app": "artifactkeeper",
+    "constructor": "PluginCapabilities",
+    "file": "backend/src/models/plugin.rs",
+    "end": 127,
+    "context": [
+      "# ! [doc = \" Plugin and plugin configuration models.\"]"
+    ],
+    "attributes": []
+  },
+  {
+    "app": "artifactkeeper",
+    "constructor": "CapabilitiesConfig",
+    "file": "backend/src/models/plugin_manifest.rs",
+    "end": 78,
+    "context": [
+      "# ! [doc = \" Plugin manifest model for parsing plugin.toml files.\"]"
+    ],
+    "attributes": []
+  },
+  {
+    "app": "artifactkeeper",
+    "constructor": "TelemetrySettings",
+    "file": "backend/src/services/crash_reporting_service.rs",
+    "end": 386,
+    "context": [
+      "# ! [doc = \" Opt-in crash reporting and telemetry service.\"]",
+      "# ! [doc = \"\"]",
+      "# ! [doc = \" Captures Rust panics, unrecoverable errors, and service failures.\"]",
+      "# ! [doc = \" All reports are PII-scrubbed before storage or submission.\"]",
+      "# ! [doc = \" Strictly opt-in: disabled by default, requires explicit admin toggle.\"]"
+    ],
+    "attributes": []
+  },
+  {
+    "app": "artifactkeeper",
+    "constructor": "PasswordPolicyConfig",
+    "file": "backend/src/services/password_policy.rs",
+    "end": 31,
+    "context": [
+      "# ! [doc = \" Configurable password policy validation for local user accounts.\"]",
+      "# ! [doc = \"\"]",
+      "# ! [doc = \" All validation logic lives in a single pure function\"]",
+      "# ! [doc = \" [`validate_password`] so it can be tested exhaustively without\"]",
+      "# ! [doc = \" database or application state.\"]"
+    ],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "CacheConfig",
+    "file": "src/common/config.rs",
+    "end": 25,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "TimeoutConfig",
+    "file": "src/common/config.rs",
+    "end": 52,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "ResourceConfig",
+    "file": "src/common/config.rs",
+    "end": 118,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "ConcurrencyConfig",
+    "file": "src/common/config.rs",
+    "end": 199,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "BlobCacheConfig",
+    "file": "src/common/config.rs",
+    "end": 342,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "EncryptionConfig",
+    "file": "src/common/config.rs",
+    "end": 361,
+    "context": [],
+    "attributes": [
+      "# [allow (clippy :: derivable_impls)]"
+    ]
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "DatabaseConfig",
+    "file": "src/common/config.rs",
+    "end": 1352,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "RateLimitConfig",
+    "file": "src/common/config.rs",
+    "end": 1695,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "OidcConfig",
+    "file": "src/common/config.rs",
+    "end": 1794,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "SmtpConfig",
+    "file": "src/common/config.rs",
+    "end": 2155,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "MagicLinkConfig",
+    "file": "src/common/config.rs",
+    "end": 2272,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "GrantCleanupConfig",
+    "file": "src/common/config.rs",
+    "end": 2623,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "SearchCacheConfig",
+    "file": "src/common/config.rs",
+    "end": 2769,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "I18nConfig",
+    "file": "src/common/config.rs",
+    "end": 3014,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "VideoThumbnailConfig",
+    "file": "src/common/config.rs",
+    "end": 3081,
+    "context": [],
+    "attributes": []
+  },
+  {
+    "app": "oxicloud",
+    "constructor": "FileContentCacheConfig",
+    "file": "src/infrastructure/services/file_content_cache.rs",
+    "end": 28,
+    "context": [],
+    "attributes": []
+  }
+]

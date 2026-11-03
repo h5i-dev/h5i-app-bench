@@ -9,9 +9,16 @@ The first milestone is to prove all selected specifications and measure the
 performance of the ports against pinned upstream code. Coding agents help
 produce proofs; model rankings are historical data. See
 [docs/VERIFICATION.md](docs/VERIFICATION.md) for coverage and performance
-measurement, [docs/WORKPLAN.md](docs/WORKPLAN.md) for the active work queue,
+measurement, [docs/WORKPLAN.md](docs/WORKPLAN.md) for the work plan and paused handoff,
 and [docs/DESIGN.md](docs/DESIGN.md) for the existing task checker.
 The dashboard's data is in [../docs/prove/data](../docs/prove/data).
+
+Coverage expansion is paused by request at **42,975 accepted pinned executable
+source lines and 1,197 canonical properties** (`1bb4102`, 2026-11-01). All six
+ports have passing proof/axiom and extraction checks. The 100,000-line objective
+is unfinished, with 57,025 lines remaining. See the
+[current stopping point](docs/WORKPLAN.md#current-stopping-point--paused-by-request-2026-11-01)
+for evidence and handoff. Dashboard assets are updated locally, not deployed.
 
 This repository was the home of the framework itself, then called i5h. The
 framework now lives in the [h5i](https://github.com/h5i-dev/h5i) repository as
@@ -85,7 +92,7 @@ prices in `billing.py`.
 
 ## Applications
 
-| Application | Upstream | Upstream lines | Tasks | Ported code |
+| Application | Upstream | Upstream lines (original task scope) | Tasks | Ported code |
 |---|---|---|---|---|
 | [nora](ports/nora) | getnora-io/nora @ f864a9a | 977 | 25 | authentication middleware, API tokens and their cache, OIDC claims, role rules and namespace scopes, brute-force lockout, trusted proxies; validators for digests, Docker names and references, and storage keys; glob matching |
 | [artifact-keeper](ports/artifactkeeper) | Artifact-Keeper @ 7c42891 | ~2,150 | 17 | repository permission service, auth, admin and visibility middleware, guest access, token scopes, download tickets, anonymous-rule validation, CIDR matching |

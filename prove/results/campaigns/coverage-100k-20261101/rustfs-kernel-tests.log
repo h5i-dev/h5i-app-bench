@@ -1,0 +1,30 @@
+warning: unused import: `rustfs_kernel::finite_catalog`
+ --> tests/finite_catalog.rs:2:5
+  |
+2 | use rustfs_kernel::finite_catalog;
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `rustfs-kernel` (test "finite_catalog") generated 1 warning (run `cargo fix --test "finite_catalog" -p rustfs-kernel` to apply 1 suggestion)
+   Compiling rustfs-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/rustfs/kernel)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.15s
+     Running unittests src/lib.rs (prove/ports/rustfs/kernel/target/debug/deps/rustfs_kernel-825092aa85ce1ef2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/finite_catalog.rs (prove/ports/rustfs/kernel/target/debug/deps/finite_catalog-22fa82918f90899b)
+
+running 1 test
+test admin_action_dfb862e5::all_variants_match_pinned_methods ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests rustfs_kernel
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

@@ -1,3 +1,7 @@
+import Verified.ClosedRecords
+import Verified.Asyncapi
+import Verified.DisplayClassifiers
+import Verified.FiniteCatalog
 import Verified.OxicloudDavState
 import Verified.OxicloudUserRole
 import Verified.OxicloudAuthWire
@@ -836,5 +840,419 @@ theorem trasheditem_restoration (snapshot : davstate.TrashedItem) :
     davstate.TrashedItem.impl.trashed_at (snapshot) = ok snapshot.trashed_at ∧
     davstate.TrashedItem.impl.deletion_date (snapshot) = ok snapshot.deletion_date := by
   exact Verified.OxicloudDavState.trasheditem_restoration snapshot
+
+end oxicloud_kernel.Properties
+
+namespace oxicloud_kernel.Properties
+open Verified.FiniteCatalog
+theorem finite_authz_denial_visibility_4079d78e_as_str_complete (v : finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility) :
+    finite_catalog.authz_denial_visibility_4079d78e.AuthzDenialVisibility.as_str v ⦃r => r.val = authz_denial_visibility_4079d78e_as_str_model v⦄ := Verified.FiniteCatalog.authz_denial_visibility_4079d78e_as_str_complete v
+
+theorem finite_ref_level_2ec664a4_as_str_complete (v : finite_catalog.ref_level_2ec664a4.RefLevel) :
+    finite_catalog.ref_level_2ec664a4.RefLevel.as_str v ⦃r => r.val = ref_level_2ec664a4_as_str_model v⦄ := Verified.FiniteCatalog.ref_level_2ec664a4_as_str_complete v
+
+theorem finite_checksum_alg_cf7683cd_as_str_complete (v : finite_catalog.checksum_alg_cf7683cd.ChecksumAlg) :
+    finite_catalog.checksum_alg_cf7683cd.ChecksumAlg.as_str v ⦃r => r.val = checksum_alg_cf7683cd_as_str_model v⦄ := Verified.FiniteCatalog.checksum_alg_cf7683cd_as_str_complete v
+
+theorem finite_thumbnail_size_e90c1659_as_str_complete (v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.as_str v ⦃r => r.val = thumbnail_size_e90c1659_as_str_model v⦄ := Verified.FiniteCatalog.thumbnail_size_e90c1659_as_str_complete v
+
+theorem finite_thumbnail_size_e90c1659_max_dimension_complete (v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.max_dimension v ⦃r => r = thumbnail_size_e90c1659_max_dimension_model v⦄ := Verified.FiniteCatalog.thumbnail_size_e90c1659_max_dimension_complete v
+
+theorem finite_thumbnail_size_e90c1659_dir_name_complete (v : finite_catalog.thumbnail_size_e90c1659.ThumbnailSize) :
+    finite_catalog.thumbnail_size_e90c1659.ThumbnailSize.dir_name v ⦃r => r.val = thumbnail_size_e90c1659_dir_name_model v⦄ := Verified.FiniteCatalog.thumbnail_size_e90c1659_dir_name_complete v
+
+theorem finite_thumbnail_format_e90c1659_as_str_complete (v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.as_str v ⦃r => r.val = thumbnail_format_e90c1659_as_str_model v⦄ := Verified.FiniteCatalog.thumbnail_format_e90c1659_as_str_complete v
+
+theorem finite_thumbnail_format_e90c1659_ext_complete (v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.ext v ⦃r => r.val = thumbnail_format_e90c1659_ext_model v⦄ := Verified.FiniteCatalog.thumbnail_format_e90c1659_ext_complete v
+
+theorem finite_thumbnail_format_e90c1659_mime_complete (v : finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat) :
+    finite_catalog.thumbnail_format_e90c1659.ThumbnailFormat.mime v ⦃r => r.val = thumbnail_format_e90c1659_mime_model v⦄ := Verified.FiniteCatalog.thumbnail_format_e90c1659_mime_complete v
+
+theorem finite_output_format_f1a5ab73_extension_complete (v : finite_catalog.output_format_f1a5ab73.OutputFormat) :
+    finite_catalog.output_format_f1a5ab73.OutputFormat.extension v ⦃r => r.val = output_format_f1a5ab73_extension_model v⦄ := Verified.FiniteCatalog.output_format_f1a5ab73_extension_complete v
+
+theorem finite_output_format_f1a5ab73_mime_type_complete (v : finite_catalog.output_format_f1a5ab73.OutputFormat) :
+    finite_catalog.output_format_f1a5ab73.OutputFormat.mime_type v ⦃r => r.val = output_format_f1a5ab73_mime_type_model v⦄ := Verified.FiniteCatalog.output_format_f1a5ab73_mime_type_complete v
+
+theorem finite_device_poll_error_1fb5547a_error_code_complete (v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.error_code v ⦃r => r.val = device_poll_error_1fb5547a_error_code_model v⦄ := Verified.FiniteCatalog.device_poll_error_1fb5547a_error_code_complete v
+
+theorem finite_device_poll_error_1fb5547a_description_complete (v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.description v ⦃r => r.val = device_poll_error_1fb5547a_description_model v⦄ := Verified.FiniteCatalog.device_poll_error_1fb5547a_description_complete v
+
+theorem finite_device_poll_error_1fb5547a_http_status_complete (v : finite_catalog.device_poll_error_1fb5547a.DevicePollError) :
+    finite_catalog.device_poll_error_1fb5547a.DevicePollError.http_status v ⦃r => r = device_poll_error_1fb5547a_http_status_model v⦄ := Verified.FiniteCatalog.device_poll_error_1fb5547a_http_status_complete v
+
+theorem finite_notify_trigger_5dfe5802_audit_str_complete (v : finite_catalog.notify_trigger_5dfe5802.NotifyTrigger) :
+    finite_catalog.notify_trigger_5dfe5802.NotifyTrigger.audit_str v ⦃r => r.val = notify_trigger_5dfe5802_audit_str_model v⦄ := Verified.FiniteCatalog.notify_trigger_5dfe5802_audit_str_complete v
+
+theorem finite_notify_kind_5dfe5802_audit_str_complete (v : finite_catalog.notify_kind_5dfe5802.NotifyKind) :
+    finite_catalog.notify_kind_5dfe5802.NotifyKind.audit_str v ⦃r => r.val = notify_kind_5dfe5802_audit_str_model v⦄ := Verified.FiniteCatalog.notify_kind_5dfe5802_audit_str_complete v
+
+theorem finite_cipher_kind_a4fe67b2_as_str_complete (v : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :
+    finite_catalog.cipher_kind_a4fe67b2.CipherKind.as_str v ⦃r => r.val = cipher_kind_a4fe67b2_as_str_model v⦄ := Verified.FiniteCatalog.cipher_kind_a4fe67b2_as_str_complete v
+
+theorem finite_cipher_kind_a4fe67b2_needs_key_complete (v : finite_catalog.cipher_kind_a4fe67b2.CipherKind) :
+    finite_catalog.cipher_kind_a4fe67b2.CipherKind.needs_key v ⦃r => r = cipher_kind_a4fe67b2_needs_key_model v⦄ := Verified.FiniteCatalog.cipher_kind_a4fe67b2_needs_key_complete v
+
+theorem finite_device_code_status_fb933849_as_str_complete (v : finite_catalog.device_code_status_fb933849.DeviceCodeStatus) :
+    finite_catalog.device_code_status_fb933849.DeviceCodeStatus.as_str v ⦃r => r.val = device_code_status_fb933849_as_str_model v⦄ := Verified.FiniteCatalog.device_code_status_fb933849_as_str_complete v
+
+theorem finite_drive_kind_bf867fda_as_str_complete (v : finite_catalog.drive_kind_bf867fda.DriveKind) :
+    finite_catalog.drive_kind_bf867fda.DriveKind.as_str v ⦃r => r.val = drive_kind_bf867fda_as_str_model v⦄ := Verified.FiniteCatalog.drive_kind_bf867fda_as_str_complete v
+
+theorem finite_magic_link_status_023c994e_as_str_complete (v : finite_catalog.magic_link_status_023c994e.MagicLinkStatus) :
+    finite_catalog.magic_link_status_023c994e.MagicLinkStatus.as_str v ⦃r => r.val = magic_link_status_023c994e_as_str_model v⦄ := Verified.FiniteCatalog.magic_link_status_023c994e_as_str_complete v
+
+theorem finite_session_origin_086d7c6c_as_str_complete (v : finite_catalog.session_origin_086d7c6c.SessionOrigin) :
+    finite_catalog.session_origin_086d7c6c.SessionOrigin.as_str v ⦃r => r.val = session_origin_086d7c6c_as_str_model v⦄ := Verified.FiniteCatalog.session_origin_086d7c6c_as_str_complete v
+
+theorem finite_user_role_d47f77bc_as_str_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.as_str v ⦃r => r.val = user_role_d47f77bc_as_str_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_as_str_complete v
+
+theorem finite_user_role_d47f77bc_rank_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.rank v ⦃r => r = user_role_d47f77bc_rank_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_rank_complete v
+
+theorem finite_user_role_d47f77bc_is_anonymous_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.is_anonymous v ⦃r => r = user_role_d47f77bc_is_anonymous_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_is_anonymous_complete v
+
+theorem finite_user_role_d47f77bc_is_privileged_complete (v : finite_catalog.user_role_d47f77bc.UserRole) :
+    finite_catalog.user_role_d47f77bc.UserRole.is_privileged v ⦃r => r = user_role_d47f77bc_is_privileged_model v⦄ := Verified.FiniteCatalog.user_role_d47f77bc_is_privileged_complete v
+
+theorem finite_federation_kind_d47f77bc_as_str_complete (v : finite_catalog.federation_kind_d47f77bc.FederationKind) :
+    finite_catalog.federation_kind_d47f77bc.FederationKind.as_str v ⦃r => r.val = federation_kind_d47f77bc_as_str_model v⦄ := Verified.FiniteCatalog.federation_kind_d47f77bc_as_str_complete v
+
+theorem finite_error_kind_59712eff_as_str_complete (v : finite_catalog.error_kind_59712eff.ErrorKind) :
+    finite_catalog.error_kind_59712eff.ErrorKind.as_str v ⦃r => r.val = error_kind_59712eff_as_str_model v⦄ := Verified.FiniteCatalog.error_kind_59712eff_as_str_complete v
+
+theorem finite_permission_5d9dca62_as_str_complete (v : finite_catalog.permission_5d9dca62.Permission) :
+    finite_catalog.permission_5d9dca62.Permission.as_str v ⦃r => r.val = permission_5d9dca62_as_str_model v⦄ := Verified.FiniteCatalog.permission_5d9dca62_as_str_complete v
+
+theorem finite_role_5d9dca62_as_str_complete (v : finite_catalog.role_5d9dca62.Role) :
+    finite_catalog.role_5d9dca62.Role.as_str v ⦃r => r.val = role_5d9dca62_as_str_model v⦄ := Verified.FiniteCatalog.role_5d9dca62_as_str_complete v
+
+theorem finite_run_status_dbd87cc3_as_str_complete (v : finite_catalog.run_status_dbd87cc3.RunStatus) :
+    finite_catalog.run_status_dbd87cc3.RunStatus.as_str v ⦃r => r.val = run_status_dbd87cc3_as_str_model v⦄ := Verified.FiniteCatalog.run_status_dbd87cc3_as_str_complete v
+
+theorem finite_run_status_dbd87cc3_is_non_terminal_complete (v : finite_catalog.run_status_dbd87cc3.RunStatus) :
+    finite_catalog.run_status_dbd87cc3.RunStatus.is_non_terminal v ⦃r => r = run_status_dbd87cc3_is_non_terminal_model v⦄ := Verified.FiniteCatalog.run_status_dbd87cc3_is_non_terminal_complete v
+
+theorem finite_progress_kind_dbd87cc3_as_str_complete (v : finite_catalog.progress_kind_dbd87cc3.ProgressKind) :
+    finite_catalog.progress_kind_dbd87cc3.ProgressKind.as_str v ⦃r => r.val = progress_kind_dbd87cc3_as_str_model v⦄ := Verified.FiniteCatalog.progress_kind_dbd87cc3_as_str_complete v
+
+theorem finite_err_cause_75575f17_as_str_complete (v : finite_catalog.err_cause_75575f17.ErrCause) :
+    finite_catalog.err_cause_75575f17.ErrCause.as_str v ⦃r => r.val = err_cause_75575f17_as_str_model v⦄ := Verified.FiniteCatalog.err_cause_75575f17_as_str_complete v
+
+theorem finite_dpop_verify_error_8219bbef_reason_complete (v : finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError) :
+    finite_catalog.dpop_verify_error_8219bbef.DpopVerifyError.reason v ⦃r => r.val = dpop_verify_error_8219bbef_reason_model v⦄ := Verified.FiniteCatalog.dpop_verify_error_8219bbef_reason_complete v
+
+theorem finite_output_format_a83b795c_extension_complete (v : finite_catalog.output_format_a83b795c.OutputFormat) :
+    finite_catalog.output_format_a83b795c.OutputFormat.extension v ⦃r => r.val = output_format_a83b795c_extension_model v⦄ := Verified.FiniteCatalog.output_format_a83b795c_extension_complete v
+
+theorem finite_output_format_a83b795c_mime_type_complete (v : finite_catalog.output_format_a83b795c.OutputFormat) :
+    finite_catalog.output_format_a83b795c.OutputFormat.mime_type v ⦃r => r.val = output_format_a83b795c_mime_type_model v⦄ := Verified.FiniteCatalog.output_format_a83b795c_mime_type_complete v
+
+theorem finite_opaque_mode_b0957357_as_str_complete (v : finite_catalog.opaque_mode_b0957357.OpaqueMode) :
+    finite_catalog.opaque_mode_b0957357.OpaqueMode.as_str v ⦃r => r.val = opaque_mode_b0957357_as_str_model v⦄ := Verified.FiniteCatalog.opaque_mode_b0957357_as_str_complete v
+
+theorem finite_phase_ce65bf5b_as_str_complete (v : finite_catalog.phase_ce65bf5b.Phase) :
+    finite_catalog.phase_ce65bf5b.Phase.as_str v ⦃r => r.val = phase_ce65bf5b_as_str_model v⦄ := Verified.FiniteCatalog.phase_ce65bf5b_as_str_complete v
+
+theorem finite_thumbnail_size_4088a69a_max_dimension_complete (v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
+    finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.max_dimension v ⦃r => r = thumbnail_size_4088a69a_max_dimension_model v⦄ := Verified.FiniteCatalog.thumbnail_size_4088a69a_max_dimension_complete v
+
+theorem finite_thumbnail_size_4088a69a_dir_name_complete (v : finite_catalog.thumbnail_size_4088a69a.ThumbnailSize) :
+    finite_catalog.thumbnail_size_4088a69a.ThumbnailSize.dir_name v ⦃r => r.val = thumbnail_size_4088a69a_dir_name_model v⦄ := Verified.FiniteCatalog.thumbnail_size_4088a69a_dir_name_complete v
+
+-- Complete arbitrary-byte display decisions.
+theorem display_icon_class_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
+    display_classifiers.icon_class_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.icon_class_with_ext_model mime.val (ext.map Slice.val)⦄ :=
+  Verified.DisplayClassifiers.icon_class_with_ext_complete mime ext
+
+theorem display_icon_special_class_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
+    display_classifiers.icon_special_class_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.icon_special_class_with_ext_model mime.val (ext.map Slice.val)⦄ :=
+  Verified.DisplayClassifiers.icon_special_class_with_ext_complete mime ext
+
+theorem display_category_with_ext_complete (mime : Slice U8) (ext : Option (Slice U8)) :
+    display_classifiers.category_with_ext mime ext ⦃r => r = Verified.DisplayClassifiers.category_with_ext_model mime.val (ext.map Slice.val)⦄ :=
+  Verified.DisplayClassifiers.category_with_ext_complete mime ext
+
+end oxicloud_kernel.Properties
+-- Complete closed pinned AsyncAPI schema values.
+namespace oxicloud_kernel.Properties
+open Verified.Asyncapi
+
+theorem asyncapi_channels_complete :
+    asyncapi.channels ⦃r => r.val.flatMap alloc.vec.Vec.val = channels_model⦄ :=
+  Verified.Asyncapi.channels_complete
+
+theorem asyncapi_operations_complete :
+    asyncapi.operations ⦃r => r.val.flatMap alloc.vec.Vec.val = operations_model⦄ :=
+  Verified.Asyncapi.operations_complete
+
+theorem asyncapi_components_complete :
+    asyncapi.components ⦃r => r.val.flatMap alloc.vec.Vec.val = components_model⦄ :=
+  Verified.Asyncapi.components_complete
+
+theorem asyncapi_topic_params_schema_complete :
+    asyncapi.topic_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = topic_params_schema_model⦄ :=
+  Verified.Asyncapi.topic_params_schema_complete
+
+theorem asyncapi_rpc_success_response_schema_complete :
+    asyncapi.rpc_success_response_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_success_response_schema_model⦄ :=
+  Verified.Asyncapi.rpc_success_response_schema_complete
+
+theorem asyncapi_rpc_pong_response_schema_complete :
+    asyncapi.rpc_pong_response_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_pong_response_schema_model⦄ :=
+  Verified.Asyncapi.rpc_pong_response_schema_complete
+
+theorem asyncapi_rpc_pong_result_schema_complete :
+    asyncapi.rpc_pong_result_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_pong_result_schema_model⦄ :=
+  Verified.Asyncapi.rpc_pong_result_schema_complete
+
+theorem asyncapi_rpc_error_response_schema_complete :
+    asyncapi.rpc_error_response_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_response_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_response_schema_complete
+
+theorem asyncapi_rpc_error_object_schema_complete :
+    asyncapi.rpc_error_object_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_object_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_object_schema_complete
+
+theorem asyncapi_rpc_error_code_schema_complete :
+    asyncapi.rpc_error_code_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_code_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_code_schema_complete
+
+theorem asyncapi_rpc_error_message_schema_complete :
+    asyncapi.rpc_error_message_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = rpc_error_message_schema_model⦄ :=
+  Verified.Asyncapi.rpc_error_message_schema_complete
+
+theorem asyncapi_folder_event_notification_schema_complete :
+    asyncapi.folder_event_notification_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_event_notification_schema_model⦄ :=
+  Verified.Asyncapi.folder_event_notification_schema_complete
+
+theorem asyncapi_event_params_schema_complete :
+    asyncapi.event_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = event_params_schema_model⦄ :=
+  Verified.Asyncapi.event_params_schema_complete
+
+theorem asyncapi_event_kind_schema_complete :
+    asyncapi.event_kind_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = event_kind_schema_model⦄ :=
+  Verified.Asyncapi.event_kind_schema_complete
+
+theorem asyncapi_event_data_union_schema_complete :
+    asyncapi.event_data_union_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = event_data_union_schema_model⦄ :=
+  Verified.Asyncapi.event_data_union_schema_complete
+
+theorem asyncapi_file_created_schema_complete :
+    asyncapi.file_created_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_created_schema_model⦄ :=
+  Verified.Asyncapi.file_created_schema_complete
+
+theorem asyncapi_file_renamed_schema_complete :
+    asyncapi.file_renamed_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_renamed_schema_model⦄ :=
+  Verified.Asyncapi.file_renamed_schema_complete
+
+theorem asyncapi_file_moved_schema_complete :
+    asyncapi.file_moved_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_moved_schema_model⦄ :=
+  Verified.Asyncapi.file_moved_schema_complete
+
+theorem asyncapi_file_deleted_schema_complete :
+    asyncapi.file_deleted_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = file_deleted_schema_model⦄ :=
+  Verified.Asyncapi.file_deleted_schema_complete
+
+theorem asyncapi_folder_created_schema_complete :
+    asyncapi.folder_created_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_created_schema_model⦄ :=
+  Verified.Asyncapi.folder_created_schema_complete
+
+theorem asyncapi_folder_renamed_schema_complete :
+    asyncapi.folder_renamed_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_renamed_schema_model⦄ :=
+  Verified.Asyncapi.folder_renamed_schema_complete
+
+theorem asyncapi_folder_moved_schema_complete :
+    asyncapi.folder_moved_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_moved_schema_model⦄ :=
+  Verified.Asyncapi.folder_moved_schema_complete
+
+theorem asyncapi_folder_deleted_schema_complete :
+    asyncapi.folder_deleted_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = folder_deleted_schema_model⦄ :=
+  Verified.Asyncapi.folder_deleted_schema_complete
+
+theorem asyncapi_notification_received_schema_complete :
+    asyncapi.notification_received_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = notification_received_schema_model⦄ :=
+  Verified.Asyncapi.notification_received_schema_complete
+
+theorem asyncapi_job_run_started_schema_complete :
+    asyncapi.job_run_started_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = job_run_started_schema_model⦄ :=
+  Verified.Asyncapi.job_run_started_schema_complete
+
+theorem asyncapi_job_run_progress_schema_complete :
+    asyncapi.job_run_progress_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = job_run_progress_schema_model⦄ :=
+  Verified.Asyncapi.job_run_progress_schema_complete
+
+theorem asyncapi_job_run_ended_schema_complete :
+    asyncapi.job_run_ended_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = job_run_ended_schema_model⦄ :=
+  Verified.Asyncapi.job_run_ended_schema_complete
+
+theorem asyncapi_revoked_notification_schema_complete :
+    asyncapi.revoked_notification_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = revoked_notification_schema_model⦄ :=
+  Verified.Asyncapi.revoked_notification_schema_complete
+
+theorem asyncapi_revoked_params_schema_complete :
+    asyncapi.revoked_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = revoked_params_schema_model⦄ :=
+  Verified.Asyncapi.revoked_params_schema_complete
+
+theorem asyncapi_revoked_reason_schema_complete :
+    asyncapi.revoked_reason_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = revoked_reason_schema_model⦄ :=
+  Verified.Asyncapi.revoked_reason_schema_complete
+
+theorem asyncapi_collab_flush_params_schema_complete :
+    asyncapi.collab_flush_params_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = collab_flush_params_schema_model⦄ :=
+  Verified.Asyncapi.collab_flush_params_schema_complete
+
+theorem asyncapi_collab_flush_result_schema_complete :
+    asyncapi.collab_flush_result_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = collab_flush_result_schema_model⦄ :=
+  Verified.Asyncapi.collab_flush_result_schema_complete
+
+theorem asyncapi_collab_binary_frame_schema_complete :
+    asyncapi.collab_binary_frame_schema ⦃r => r.val.flatMap alloc.vec.Vec.val = collab_binary_frame_schema_model⦄ :=
+  Verified.Asyncapi.collab_binary_frame_schema_complete
+
+end oxicloud_kernel.Properties
+-- Complete pinned closed record constructors.
+namespace oxicloud_kernel.Properties
+
+theorem closed_records_cache_config_default_a4fe67b2_complete :
+    closed_records.cache_config_default_a4fe67b2.make ⦃r => r.file_ttl_ms.val = 60000 ∧
+      r.directory_ttl_ms.val = 120000 ∧
+      r.max_entries.val = 10000⦄ :=
+  Verified.ClosedRecords.cache_config_default_a4fe67b2_complete
+
+theorem closed_records_timeout_config_default_a4fe67b2_complete :
+    closed_records.timeout_config_default_a4fe67b2.make ⦃r => r.file_operation_ms.val = 10000 ∧
+      r.dir_operation_ms.val = 30000 ∧
+      r.lock_acquisition_ms.val = 5000 ∧
+      r.network_operation_ms.val = 15000 ∧
+      r.thumbnail_generation_ms.val = 30000⦄ :=
+  Verified.ClosedRecords.timeout_config_default_a4fe67b2_complete
+
+theorem closed_records_resource_config_default_a4fe67b2_complete :
+    closed_records.resource_config_default_a4fe67b2.make ⦃r => r.large_file_threshold_mb.val = 100 ∧
+      r.large_dir_threshold_entries.val = 1000 ∧
+      r.chunk_size_bytes.val = 1048576 ∧
+      r.max_in_memory_file_size_mb.val = 50⦄ :=
+  Verified.ClosedRecords.resource_config_default_a4fe67b2_complete
+
+theorem closed_records_concurrency_config_default_a4fe67b2_complete :
+    closed_records.concurrency_config_default_a4fe67b2.make ⦃r => r.max_concurrent_files.val = 10 ∧
+      r.max_concurrent_dirs.val = 5 ∧
+      r.max_concurrent_io.val = 20 ∧
+      r.max_parallel_chunks.val = 8 ∧
+      r.min_size_for_parallel_chunks_mb.val = 200 ∧
+      r.parallel_chunk_size_bytes.val = 8388608⦄ :=
+  Verified.ClosedRecords.concurrency_config_default_a4fe67b2_complete
+
+theorem closed_records_blob_cache_config_default_a4fe67b2_complete :
+    closed_records.blob_cache_config_default_a4fe67b2.make ⦃r => r.enabled = false ∧
+      r.max_size_bytes.val = 53687091200 ∧
+      r.cache_path = none⦄ :=
+  Verified.ClosedRecords.blob_cache_config_default_a4fe67b2_complete
+
+theorem closed_records_encryption_config_default_a4fe67b2_complete :
+    closed_records.encryption_config_default_a4fe67b2.make ⦃r => r.enabled = false ∧
+      r.key_base64 = none⦄ :=
+  Verified.ClosedRecords.encryption_config_default_a4fe67b2_complete
+
+theorem closed_records_database_config_default_a4fe67b2_complete :
+    closed_records.database_config_default_a4fe67b2.make ⦃r => r.connection_string.val = [112#u8, 111#u8, 115#u8, 116#u8, 103#u8, 114#u8, 101#u8, 115#u8, 58#u8, 47#u8, 47#u8, 112#u8, 111#u8, 115#u8, 116#u8, 103#u8, 114#u8, 101#u8, 115#u8, 58#u8, 112#u8, 111#u8, 115#u8, 116#u8, 103#u8, 114#u8, 101#u8, 115#u8, 64#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 104#u8, 111#u8, 115#u8, 116#u8, 58#u8, 53#u8, 52#u8, 51#u8, 50#u8, 47#u8, 111#u8, 120#u8, 105#u8, 99#u8, 108#u8, 111#u8, 117#u8, 100#u8] ∧
+      r.max_connections.val = 20 ∧
+      r.min_connections.val = 5 ∧
+      r.connect_timeout_secs.val = 10 ∧
+      r.idle_timeout_secs.val = 300 ∧
+      r.max_lifetime_secs.val = 1800 ∧
+      r.maintenance_max_connections.val = 5 ∧
+      r.maintenance_min_connections.val = 1 ∧
+      r.statement_timeout_secs.val = 30 ∧
+      r.pool_monitor_interval_secs.val = 30⦄ :=
+  Verified.ClosedRecords.database_config_default_a4fe67b2_complete
+
+theorem closed_records_rate_limit_config_default_a4fe67b2_complete :
+    closed_records.rate_limit_config_default_a4fe67b2.make ⦃r => r.login_max_requests.val = 10 ∧
+      r.login_window_secs.val = 60 ∧
+      r.register_max_requests.val = 5 ∧
+      r.register_window_secs.val = 3600 ∧
+      r.refresh_max_requests.val = 20 ∧
+      r.refresh_window_secs.val = 60 ∧
+      r.lockout_max_failures.val = 5 ∧
+      r.lockout_duration_secs.val = 900 ∧
+      r.user_profile_max_requests.val = 60 ∧
+      r.user_profile_window_secs.val = 60 ∧
+      r.delta_upload_max_requests.val = 240 ∧
+      r.delta_upload_window_secs.val = 60⦄ :=
+  Verified.ClosedRecords.rate_limit_config_default_a4fe67b2_complete
+
+theorem closed_records_oidc_config_default_a4fe67b2_complete :
+    closed_records.oidc_config_default_a4fe67b2.make ⦃r => r.enabled = false ∧
+      r.issuer_url.val = [] ∧
+      r.client_id.val = [] ∧
+      r.client_secret.val = [] ∧
+      r.redirect_uri.val = [104#u8, 116#u8, 116#u8, 112#u8, 58#u8, 47#u8, 47#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 104#u8, 111#u8, 115#u8, 116#u8, 58#u8, 56#u8, 48#u8, 56#u8, 54#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8, 97#u8, 117#u8, 116#u8, 104#u8, 47#u8, 111#u8, 105#u8, 100#u8, 99#u8, 47#u8, 99#u8, 97#u8, 108#u8, 108#u8, 98#u8, 97#u8, 99#u8, 107#u8] ∧
+      r.scopes.val = [111#u8, 112#u8, 101#u8, 110#u8, 105#u8, 100#u8, 32#u8, 112#u8, 114#u8, 111#u8, 102#u8, 105#u8, 108#u8, 101#u8, 32#u8, 101#u8, 109#u8, 97#u8, 105#u8, 108#u8] ∧
+      r.frontend_url.val = [104#u8, 116#u8, 116#u8, 112#u8, 58#u8, 47#u8, 47#u8, 108#u8, 111#u8, 99#u8, 97#u8, 108#u8, 104#u8, 111#u8, 115#u8, 116#u8, 58#u8, 56#u8, 48#u8, 56#u8, 54#u8] ∧
+      r.auto_provision = true ∧
+      r.admin_groups.val = [] ∧
+      r.disable_password_login = false ∧
+      r.provider_name.val = [83#u8, 83#u8, 79#u8] ∧
+      r.auto_link_email_match = true⦄ :=
+  Verified.ClosedRecords.oidc_config_default_a4fe67b2_complete
+
+theorem closed_records_smtp_config_default_a4fe67b2_complete :
+    closed_records.smtp_config_default_a4fe67b2.make ⦃r => r.host.val = [] ∧
+      r.port.val = 587 ∧
+      r.user.val = [] ∧
+      r.pass.val = [] ∧
+      r.from.val = [] ∧
+      r.tls = .Starttls ∧
+      r.mock = false⦄ :=
+  Verified.ClosedRecords.smtp_config_default_a4fe67b2_complete
+
+theorem closed_records_magic_link_config_default_a4fe67b2_complete :
+    closed_records.magic_link_config_default_a4fe67b2.make ⦃r => r.login_ttl_minutes.val = 10 ∧
+      r.invite_ttl_hours.val = 24 ∧
+      r.allow_external_users = true ∧
+      r.allowed_email_domains.val = [] ∧
+      r.invite_per_caller_per_hour.val = 50 ∧
+      r.send_per_email_per_hour.val = 5 ∧
+      r.send_per_ip_per_hour.val = 200 ∧
+      r.open_to_password_users = false ∧
+      r.notify_internal_users_on_share = true⦄ :=
+  Verified.ClosedRecords.magic_link_config_default_a4fe67b2_complete
+
+theorem closed_records_grant_cleanup_config_default_a4fe67b2_complete :
+    closed_records.grant_cleanup_config_default_a4fe67b2.make ⦃r => r.enabled = true ∧
+      r.grace_days.val = 15 ∧
+      r.interval_hours.val = 24⦄ :=
+  Verified.ClosedRecords.grant_cleanup_config_default_a4fe67b2_complete
+
+theorem closed_records_search_cache_config_default_a4fe67b2_complete :
+    closed_records.search_cache_config_default_a4fe67b2.make ⦃r => r.max_bytes.val = 33554432⦄ :=
+  Verified.ClosedRecords.search_cache_config_default_a4fe67b2_complete
+
+theorem closed_records_i18n_config_default_a4fe67b2_complete :
+    closed_records.i18n_config_default_a4fe67b2.make ⦃r => r.default_locale.val = [101#u8, 110#u8]⦄ :=
+  Verified.ClosedRecords.i18n_config_default_a4fe67b2_complete
+
+theorem closed_records_video_thumbnail_config_default_a4fe67b2_complete :
+    closed_records.video_thumbnail_config_default_a4fe67b2.make ⦃r => r.ffmpeg_path.val = [102#u8, 102#u8, 109#u8, 112#u8, 101#u8, 103#u8] ∧
+      r.concurrency = none ∧
+      r.timeout_secs.val = 30 ∧
+      r.max_mb.val = 2048⦄ :=
+  Verified.ClosedRecords.video_thumbnail_config_default_a4fe67b2_complete
+
+theorem closed_records_file_content_cache_config_default_28be87aa_complete :
+    closed_records.file_content_cache_config_default_28be87aa.make ⦃r => r.max_file_size.val = 10485760 ∧
+      r.max_total_size.val = 536870912 ∧
+      r.max_entries.val = 10000⦄ :=
+  Verified.ClosedRecords.file_content_cache_config_default_28be87aa_complete
 
 end oxicloud_kernel.Properties

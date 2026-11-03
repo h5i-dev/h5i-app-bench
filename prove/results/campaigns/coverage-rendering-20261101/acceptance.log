@@ -1,0 +1,3 @@
+Generated 7 retained functions and complete byte kernels.
+Seven complete pinned functions and deterministic rendering kernels audited.
+Accepted: {'lines': 41603, 'properties': 1140} ; remaining to 100k: 58397

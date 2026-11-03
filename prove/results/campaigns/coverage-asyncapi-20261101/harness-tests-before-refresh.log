@@ -1,0 +1,87 @@
+..............FF....
+======================================================================
+FAIL: test_every_current_property_has_its_exact_coverage_source_pairs (test_project_details.ProjectDetailsTests.test_every_current_property_has_its_exact_coverage_source_pairs) (app='oxicloud')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ht2673/Dev/h5i-app-bench/prove/harness/test_project_details.py", line 44, in test_every_current_property_has_its_exact_coverage_source_pairs
+    self.assertEqual(set(asset["properties"]), set(selected))
+AssertionError: Items in the second set but not the first:
+'oxicloud_kernel.Properties.asyncapi_folder_event_notification_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_event_data_union_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_created_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_revoked_reason_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_pong_response_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_revoked_notification_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_collab_binary_frame_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_channels_complete'
+'oxicloud_kernel.Properties.asyncapi_collab_flush_result_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_response_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_event_kind_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_job_run_started_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_created_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_revoked_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_deleted_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_code_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_components_complete'
+'oxicloud_kernel.Properties.asyncapi_operations_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_object_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_job_run_progress_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_collab_flush_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_deleted_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_job_run_ended_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_success_response_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_moved_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_renamed_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_pong_result_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_topic_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_event_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_notification_received_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_moved_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_message_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_renamed_schema_complete'
+
+======================================================================
+FAIL: test_every_current_property_has_its_exact_coverage_source_pairs (test_project_details.ProjectDetailsTests.test_every_current_property_has_its_exact_coverage_source_pairs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/ht2673/Dev/h5i-app-bench/prove/harness/test_project_details.py", line 64, in test_every_current_property_has_its_exact_coverage_source_pairs
+    self.assertEqual(set(rows), expected)
+AssertionError: Items in the second set but not the first:
+'oxicloud_kernel.Properties.asyncapi_folder_event_notification_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_event_data_union_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_created_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_revoked_reason_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_pong_response_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_revoked_notification_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_collab_flush_result_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_channels_complete'
+'oxicloud_kernel.Properties.asyncapi_collab_binary_frame_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_response_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_event_kind_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_job_run_started_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_created_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_revoked_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_deleted_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_code_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_components_complete'
+'oxicloud_kernel.Properties.asyncapi_operations_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_object_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_job_run_progress_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_collab_flush_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_deleted_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_job_run_ended_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_success_response_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_moved_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_folder_renamed_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_pong_result_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_topic_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_event_params_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_moved_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_notification_received_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_rpc_error_message_schema_complete'
+'oxicloud_kernel.Properties.asyncapi_file_renamed_schema_complete'
+
+----------------------------------------------------------------------
+Ran 19 tests in 1.297s
+
+FAILED (failures=2)

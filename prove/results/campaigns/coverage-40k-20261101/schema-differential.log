@@ -1,0 +1,27 @@
+   Compiling kanidm-kernel v0.1.0 (/home/ht2673/Dev/h5i-app-bench/prove/ports/kanidm/kernel)
+warning: unused variable: `allow_cls`
+  --> src/migration.rs:83:75
+   |
+83 | fn add_domain_info(classes: &[Vec<u8>], allow_attrs: &mut Vec<Attribute>, allow_cls: &mut Vec<Vec<u8>>) {
+   |                                                                           ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_allow_cls`
+   |
+   = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused variable: `allow_cls`
+   --> src/migration.rs:137:78
+    |
+137 | fn add_account_policy(classes: &[Vec<u8>], allow_attrs: &mut Vec<Attribute>, allow_cls: &mut Vec<Vec<u8>>) {
+    |                                                                              ^^^^^^^^^ help: if this is intentional, prefix it with an underscore: `_allow_cls`
+
+warning: `kanidm-kernel` (lib) generated 2 warnings (run `cargo fix --lib -p kanidm-kernel` to apply 2 suggestions)
+    Finished `release` profile [optimized] target(s) in 44.70s
+     Running tests/schema_catalog.rs (prove/ports/kanidm/kernel/target/release/deps/schema_catalog-828bac164b581abc)
+
+running 2 tests
+204 pinned Class records matched every field
+648 pinned Attribute records matched every field
+test class_records_match_every_field ... ok
+test attribute_records_match_every_field ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+

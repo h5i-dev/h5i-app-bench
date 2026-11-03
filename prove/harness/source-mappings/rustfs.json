@@ -1541,6 +1541,28 @@
         "end": 111,
         "sha256": "2c6c0d4bf5059a11473d669041702f878476a0ee45f17a4beae5ef5c696dc5a0"
       }
+    ],
+    "finite_catalog.admin_action_dfb862e5.AdminAction.is_table_resource_scoped": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "kind": "method",
+        "name": "is_table_resource_scoped",
+        "self_ty": "AdminAction",
+        "start": 595,
+        "end": 619,
+        "sha256": "9da809dd6fa0ffaa52847dc37a491ba0e777371b09e7dfa9e94259f5b5d947b6"
+      }
+    ],
+    "finite_catalog.admin_action_dfb862e5.AdminAction.is_valid": [
+      {
+        "file": "crates/policy/src/policy/action.rs",
+        "kind": "method",
+        "name": "is_valid",
+        "self_ty": "AdminAction",
+        "start": 622,
+        "end": 717,
+        "sha256": "8befc4dcaa098e633d709a70a28881195525b66b7d36a96cd9ffe0670f69bf3c"
+      }
     ]
   }
 }
