@@ -1,4 +1,7 @@
-"""Publish only a complete standard framework comparison with correctness gates."""
+"""Publish only a complete standard framework comparison with correctness gates.
+
+A run may cover a subset of the implementations (e.g. CPU variants while every
+GPU is busy); each listed implementation still needs its gates and full grid."""
 import csv
 import itertools
 import json
@@ -15,16 +18,19 @@ METRICS = ['rps', 'p50_ms', 'p90_ms', 'p99_ms', 'errors', 'rss_peak_mb', 'cpu_pe
 def summarize(root):
     root = Path(root)
     config = json.loads((root / 'environment.json').read_text())['config']
-    if (set(config['variants']) != set(IMPLEMENTATIONS) or config['concurrency'] != [1, 16, 64, 256]
+    variants = config['variants']
+    names = [i for i in IMPLEMENTATIONS if i in variants]
+    if (not variants or len(set(variants)) != len(variants) or len(names) != len(variants)
+            or config['concurrency'] != [1, 16, 64, 256]
             or config['repeats'] != 3 or config['warmup'] != 10 or config['duration'] != 30
             or config['lines'] != 32 or config['carts'] != [4096, 65536]):
-        raise ValueError('publication requires all six implementations and the standard dataset/timing/client matrix')
+        raise ValueError('publication requires known implementations and the standard dataset/timing/client matrix')
     gates = json.loads((root / 'conformance.json').read_text())
-    for name in IMPLEMENTATIONS:
+    for name in names:
         gate = gates.get(name, {})
         if any(gate.get(k) != n for k, n in [('decimal_cases', 4146), ('freshness_updates', 2), ('error_status_cases', 3)]):
             raise ValueError(f'missing correctness gate: {name}')
-    expected = set(itertools.product(IMPLEMENTATIONS, [f'total_{n}' for n in config['carts']], config['concurrency'], range(3)))
+    expected = set(itertools.product(names, [f'total_{n}' for n in config['carts']], config['concurrency'], range(3)))
     points = {}
     with (root / 'points.csv').open() as f:
         for raw in csv.DictReader(f):
@@ -44,13 +50,13 @@ def summarize(root):
     if set(points) != expected:
         raise ValueError(f'incomplete grid: missing={len(expected - set(points))}, extra={len(set(points) - expected)}')
     rows = []
-    for name, carts, clients in itertools.product(IMPLEMENTATIONS, config['carts'], config['concurrency']):
+    for name, carts, clients in itertools.product(names, config['carts'], config['concurrency']):
         samples = [points[name, f'total_{carts}', clients, rep] for rep in range(3)]
         rows.append(dict(impl=name, scenario=f'total_{carts}', concurrency=clients, reps=3,
                          rps_stdev=statistics.stdev(r['rps'] for r in samples),
                          **{k: statistics.mean(r[k] for r in samples) for k in METRICS}))
     with (root / 'summary.csv').open('w') as f:
-        writer = csv.DictWriter(f, fieldnames=['impl', 'scenario', 'concurrency', 'reps', 'rps_stdev', *METRICS])
+        writer = csv.DictWriter(f, fieldnames=['impl', 'scenario', 'concurrency', 'reps', 'rps_stdev', *METRICS], lineterminator='\n')
         writer.writeheader()
         writer.writerows(rows)
     report = ['# Benchmark summary', '',
@@ -61,6 +67,8 @@ def summarize(root):
               'The h5i engine executes complete per-cart tenants through its default transaction path. '
               'Cart pricing has differential checks, no application-specific Lean proof. '
               'CUDA uses one SQL/CUDA worker and fresh upload/download per request.', '']
+    if missing := [i for i in IMPLEMENTATIONS if i not in names]:
+        report += [f"Not measured in this run: {', '.join(missing)}.", '']
     for carts in config['carts']:
         report += [f'## total_{carts}', '',
                    '| impl | conc | req/s | p50 ms | p90 ms | p99 ms | errors | RSS MiB | CPU peak % |',

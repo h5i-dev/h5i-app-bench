@@ -65,6 +65,20 @@ class PublicationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'missing correctness gate'):
             summarize(self.root)
 
+    def test_cpu_subset_publishes_listed_implementations_only(self):
+        cpu = [i for i in IMPLEMENTATIONS if i != 'rust-h5i-gpu']
+        self.config['variants'] = cpu
+        self.write_config()
+        self.rows = [r for r in self.rows if r['impl'] in cpu]
+        self.write_points()
+        rows = summarize(self.root)
+        self.assertEqual(list(dict.fromkeys(r['impl'] for r in rows)), cpu)
+        self.assertIn('Not measured in this run: rust-h5i-gpu.', (self.root / 'summary.md').read_text())
+        self.config['variants'] = [*cpu, 'unknown']
+        self.write_config()
+        with self.assertRaisesRegex(ValueError, 'publication requires'):
+            summarize(self.root)
+
 
 if __name__ == '__main__':
     unittest.main()
