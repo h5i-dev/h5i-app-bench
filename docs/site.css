@@ -499,6 +499,20 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .w-bar-s .bar-track, td .bar-track { min-width: 60px; }
 
 /* performance page */
+.performance-page .site-header { height: auto; min-height: 60px; flex-wrap: wrap; gap: 12px 24px; padding-block: 12px; }
+.performance-page .brand, .performance-page .site-nav a { white-space: nowrap; }
+.performance-page .report-links { list-style: none; padding: 0; margin: 0; max-width: 76ch; }
+.performance-page .report-links li { padding: 16px 0; border-top: 1px solid var(--line2); }
+.performance-page .report-links a { font-weight: 600; }
+.performance-page .report-links span { display: block; margin-top: 6px; color: var(--dim); font-size: 14px; line-height: 1.6; }
+.performance-page #app-detail .block-head h3 { margin: 26px 0 0; font: 600 24px/1.3 var(--disp); }
+.performance-page .perf-matrix { min-width: calc(160px + var(--perf-columns) * 135px); }
+.performance-page .scenario-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+@media (max-width: 900px) {
+  .performance-page .site-nav { display: flex; flex-basis: 100%; order: 3; gap: 24px; }
+  .performance-page .brand-reading { display: none; }
+  .performance-page :target { scroll-margin-top: 116px; }
+}
 .impl { font-family: var(--mono); font-size: 12.5px; color: var(--dim); white-space: nowrap; }
 .impl.h5i { color: var(--ink); font-weight: 600; }
 .impl.h5i::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 7px; background: var(--spot-solid); vertical-align: middle; }

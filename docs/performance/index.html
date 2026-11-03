@@ -31,26 +31,21 @@
     <link rel="stylesheet" href="../site.css" />
     <script src="./performance.js" defer></script>
   </head>
-  <body>
+  <body class="performance-page">
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
       <a class="brand" href="../" aria-label="h5i-app benchmark home">
         <img src="../logo.png" alt="" />
-        <span>h5i-app</span><span class="brand-reading">/ bench / performance</span>
+        <span>h5i-app</span><span class="brand-reading">/ performance</span>
       </a>
-      <nav class="site-nav" aria-label="Benchmark sections" id="app-nav">
+      <nav class="site-nav" aria-label="Performance sections">
         <a href="#overview">Overview</a>
-        <a href="#gpu-search">GPU search</a>
-        <a href="#gpu-conduit">GPU policies</a>
-        <a href="#cart-experiments">Cart experiments</a>
-        <a href="#gpu-cart">GPU carts</a>
-        <a href="#cart-resident-languages">Cart languages</a>
+        <a href="#comparison">Compare</a>
         <a href="#method">Method</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
         <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
       </div>
-      <a class="github-link" href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance" target="_blank" rel="noreferrer">GitHub</a>
     </header>
 
     <main id="main">
@@ -63,320 +58,48 @@
       <section id="overview" class="block">
         <div class="block-head">
           <h2 class="term" data-n="01">Overview</h2>
-          <p>Requests/s at <span class="conc-label">16</span> clients. Darker shading means faster within a row. – = unmeasured.</p>
+          <p>Requests/s at <span class="conc-label">16</span> clients. Longer bars mean higher throughput within a row. – = unmeasured.</p>
         </div>
         <div class="filters">
           <label class="field"><span>Concurrency</span><select id="f-conc"></select></label>
         </div>
-        <div id="overview-tables"></div>
+        <div id="overview-tables" aria-live="polite"></div>
+        <noscript><p>Enable JavaScript to compare results, or <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">read the benchmark reports</a>.</p></noscript>
       </section>
 
-      <div id="apps"></div>
-
-      <details class="block" id="cart-experiments">
-        <summary>django-cart execution-strategy experiments · SQL, request batching and line scaling</summary>
-        <p class="caption">Supplemental measurements compare execution strategies. Their original implementation names and measurement conditions are preserved.</p>
-        <div id="supplemental-apps"></div>
-      </details>
-
-      <section id="gpu-search" class="block">
+      <section id="comparison" class="block">
         <div class="block-head">
-          <h2 class="term" data-n="+">GPU search</h2>
-          <p>Linkding · 2026-10-17. The same server with CPU or GPU search over a resident index.</p>
+          <h2 class="term" data-n="02">Compare in detail</h2>
+          <p>Choose an application and scenario to compare throughput, latency and resource use.</p>
         </div>
-        <p class="caption">Full HTTP requests, including authentication, SQL, pagination and JSON. At 16 clients, GPU search is 6.94× faster for simple search and 12.51× for complex search than the resident CPU version.</p>
-        <!-- Values from bench/results/text-search-2026-10-17/summary.csv; separate from the earlier overview dataset. -->
-        <div class="table-wrap">
-          <table class="perf-detail">
-            <caption>Requests per second, mean of three repetitions. GPU / CPU compares resident scan backends.</caption>
-            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Optimized SQL</th><th scope="col" class="num">CPU scan</th><th scope="col" class="num">GPU scan</th><th scope="col" class="num">Upstream 1.47.0</th><th scope="col" class="num">GPU / CPU</th></tr></thead>
-            <tbody>
-              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">4.72</td><td class="num">34.69</td><td class="num">65.26</td><td class="num">4.95</td><td class="num">1.88×</td></tr>
-              <tr><th scope="row"><code>search</code></th><td class="num">16</td><td class="num">19.52</td><td class="num">96.32</td><td class="num">668.96</td><td class="num">13.53</td><td class="num">6.94×</td></tr>
-              <tr><th scope="row"><code>search_complex</code></th><td class="num">1</td><td class="num">2.26</td><td class="num">10.72</td><td class="num">48.29</td><td class="num">1.86</td><td class="num">4.50×</td></tr>
-              <tr><th scope="row"><code>search_complex</code></th><td class="num">16</td><td class="num">5.00</td><td class="num">15.26</td><td class="num">190.91</td><td class="num">4.15</td><td class="num">12.51×</td></tr>
-              <tr><th scope="row"><code>mixed</code></th><td class="num">1</td><td class="num">15.89</td><td class="num">8.76</td><td class="num">7.37</td><td class="num">9.88</td><td class="num">0.84×</td></tr>
-              <tr><th scope="row"><code>mixed</code></th><td class="num">16</td><td class="num">84.31</td><td class="num">32.24</td><td class="num">35.67</td><td class="num">34.00</td><td class="num">1.11×</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="caption">Optimized SQL is faster for mixed traffic. At one client, GPU mixed throughput falls below CPU. The CPU scan here uses a resident index; it is a different implementation from the normal h5i engine.</p>
-        <details class="dev">
-          <summary>Run conditions</summary>
-          <ul class="limits">
-            <li>100,000 bookmarks, 2,000 tags, 50 users. Simple and synthetic eight-term searches each match 1,000 active bookmarks; the first page returns 20.</li>
-            <li>Dual EPYC 7502, RTX 3090. Four concurrent variants, each with 4 server, 4 PostgreSQL and 4 client CPUs. Shared host; clocks and NUMA placement vary.</li>
-            <li>Three repetitions, fresh database/server, 10 s warmup, 30 s measurement. Index initialization is in warmup; mixed traffic includes rebuilding after writes. 128,022 measured requests; zero failures. Cost, power and cold start were not measured.</li>
-          </ul>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/text-search-2026-10-17.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-text-search/performance/linkding/bench/results/text-search-2026-10-17/points.csv">Per-point CSV</a></p>
-        <p class="caption">Complex search measured separately on 2026-10-19: <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/linkding/bench/complex-engine-2026-10-19.md">h5i engine</a>, <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/linkding/bench/complex-languages-2026-10-19.md">Go, Python and TypeScript</a>.</p>
-      </section>
-
-      <section id="gpu-conduit" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">GPU policies</h2>
-          <p>Conduit · 2026-10-18. The same server with CPU or GPU policy decisions.</p>
-        </div>
-        <p class="caption">CUDA handles eight authorization and state decisions. HTTP, SQL and serialization use the same code. The CPU kernel has Lean proofs; GPU behavior is tested against CPU results. List, slug and login are controls that do not use GPU decisions.</p>
-        <div class="table-wrap">
-          <table class="perf-detail">
-            <caption>End-to-end HTTP requests per second and p99 latency, means of three repetitions. GPU / CPU is the throughput ratio.</caption>
-            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">CPU req/s</th><th scope="col" class="num">GPU req/s</th><th scope="col" class="num">GPU / CPU</th><th scope="col" class="num">CPU p99 ms</th><th scope="col" class="num">GPU p99 ms</th></tr></thead>
-            <tbody>
-              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">83.37</td><td class="num">82.83</td><td class="num">0.99×</td><td class="num">32.69</td><td class="num">32.65</td></tr>
-              <tr><th scope="row"><code>list</code></th><td class="num">16</td><td class="num">766.32</td><td class="num">769.67</td><td class="num">1.00×</td><td class="num">78.78</td><td class="num">78.82</td></tr>
-              <tr><th scope="row"><code>slug</code></th><td class="num">1</td><td class="num">1,110.16</td><td class="num">1,118.36</td><td class="num">1.01×</td><td class="num">0.96</td><td class="num">1.00</td></tr>
-              <tr><th scope="row"><code>slug</code></th><td class="num">16</td><td class="num">13,560.10</td><td class="num">14,174.03</td><td class="num">1.05×</td><td class="num">8.89</td><td class="num">8.55</td></tr>
-              <tr><th scope="row"><code>feed</code></th><td class="num">1</td><td class="num">187.76</td><td class="num">179.55</td><td class="num">0.96×</td><td class="num">5.80</td><td class="num">6.10</td></tr>
-              <tr><th scope="row"><code>feed</code></th><td class="num">16</td><td class="num">2,194.92</td><td class="num">2,201.72</td><td class="num">1.00×</td><td class="num">14.30</td><td class="num">13.99</td></tr>
-              <tr><th scope="row"><code>login</code></th><td class="num">1</td><td class="num">3.85</td><td class="num">3.83</td><td class="num">1.00×</td><td class="num">260.47</td><td class="num">261.96</td></tr>
-              <tr><th scope="row"><code>login</code></th><td class="num">16</td><td class="num">15.45</td><td class="num">15.41</td><td class="num">1.00×</td><td class="num">1,113.43</td><td class="num">1,104.02</td></tr>
-              <tr><th scope="row"><code>create</code></th><td class="num">1</td><td class="num">196.21</td><td class="num">190.83</td><td class="num">0.97×</td><td class="num">5.64</td><td class="num">5.78</td></tr>
-              <tr><th scope="row"><code>create</code></th><td class="num">16</td><td class="num">216.31</td><td class="num">209.85</td><td class="num">0.97×</td><td class="num">363.18</td><td class="num">367.29</td></tr>
-              <tr><th scope="row"><code>favorite</code></th><td class="num">1</td><td class="num">504.53</td><td class="num">439.16</td><td class="num">0.87×</td><td class="num">2.63</td><td class="num">3.15</td></tr>
-              <tr><th scope="row"><code>favorite</code></th><td class="num">16</td><td class="num">4,457.18</td><td class="num">4,725.08</td><td class="num">1.06×</td><td class="num">19.18</td><td class="num">17.90</td></tr>
-              <tr><th scope="row"><code>mixed</code></th><td class="num">1</td><td class="num">121.54</td><td class="num">123.87</td><td class="num">1.02×</td><td class="num">35.13</td><td class="num">33.75</td></tr>
-              <tr><th scope="row"><code>mixed</code></th><td class="num">16</td><td class="num">1,001.07</td><td class="num">982.93</td><td class="num">0.98×</td><td class="num">68.70</td><td class="num">71.16</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="caption">No consistent GPU speedup. Mixed throughput is 0.98× CPU at 16 clients; GPU host RSS is 93–98 MiB versus 7–11 MiB. The 1.06× favorite result is within observed variation. CPU remains the default.</p>
-        <details class="dev">
-          <summary>Run conditions</summary>
-          <ul class="limits">
-            <li>100 users, 10,000 articles, 10,000 comments, 1,000 follows, 5,000 favorites. Three repetitions, fresh database/server, 10 s warmup, 30 s measurement; startup excluded.</li>
-            <li>Dual EPYC 7502, two RTX 3090s. Two CPU/GPU pairs split the scenarios; each variant has 4 server, 4 PostgreSQL and 4 client CPUs. Shared host; clocks and NUMA placement vary.</li>
-            <li>4,467,960 measured requests; zero failures. GPU execution was logged with no runtime CPU fallback. Paired runs cover 1 and 16 clients; cost and power were not measured.</li>
-          </ul>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/gpu-policy-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/summary.csv">Summary CSV</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/bench-conduit-gpu/performance/realworld/bench/results/gpu-policy-2026-10-18/points.csv">Per-point CSV</a></p>
-      </section>
-
-      <section id="gpu-cart" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">GPU cart pricing</h2>
-          <p>django-cart 3.1.1 · 2026-10-19. Recalculate already-loaded cart snapshots.</p>
-        </div>
-        <p class="caption">Compare Rust, Go, Node.js and CUDA using identical cart snapshots. Select lines per cart to see how batch size changes the result. Milliseconds per complete batch, lower is faster; median of three repetition means. Hover over a timing for its measured range.</p>
-        <div class="filters"><label class="field"><span>Lines/cart</span><select id="cart-lines"><option>1</option><option selected>8</option><option>32</option></select></label></div>
-        <div id="cart-results" class="table-wrap"></div>
-        <p class="caption">GPU resident reuses unchanged input; upload each transfers all snapshots every call. Both download all totals. A CPU could cache unchanged totals too; useful residency needs changing prices or discount scenarios, including synchronization costs. See <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/gpu-workloads.md">candidate workloads and evaluation requirements</a>. This is an offline calculation microbenchmark. For HTTP request coalescing and SQL query batching, see <a href="#django-cart">django-cart totals</a> and the <a href="#django-cart-lines">32–2,048 lines/cart comparison</a> above. Session handling, database aggregation and checkout transactions are excluded. This does not establish a speedup over a Django deployment.</p>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-          <ul class="limits">
-            <li>EPYC 7502, CPUs 64–79, RTX 3090 device 0, CUDA 12.6. Eight warmup passes; three repetitions, each averaging 100 iterations below 4,096 carts and 10 otherwise; shared host and uncontrolled clocks/NUMA placement.</li>
-            <li>GPU snapshots are transposed on upload for contiguous reads; upload-each timing includes that conversion. The same integer pricing source runs on CPU and CUDA using h5i's NVVM launch shell. CPU 16 uses persistent Rayon workers. GPU resident timing includes launch, synchronization, result allocation, download and error validation.</li>
-            <li>4,146 cases agree with the pinned upstream's Decimal methods; 49 exercise its ORM aggregate. Rust, Go, Node.js and CUDA agree with this corpus. CPU/GPU checks also cover malformed snapshots and batch boundaries. This pricing kernel has no Lean proof.</li>
-            <li>None, percentage and fixed discounts, final half-up rounding, default zero tax/shipping. Fixed-width snapshots reserve 32 lines; no mutations or live cache invalidation are measured.</li>
-          </ul>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/django-cart">Contract and reproduction</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/bench/results/2026-10-19-scale-soa/summary.md">All batch sizes</a> · <a href="https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2">Upstream source</a></p>
-      </section>
-
-      <section id="cart-resident-languages" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Resident cart updates across languages</h2>
-          <p>Go, JavaScript, Python, NumPy, Rust and GPU: the same changing input and every total returned.</p>
-        </div>
-        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="language-shape"></select></label></div>
-        <div id="language-results"></div>
-        <div id="language-contended"></div>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-        <p class="caption">Every path retains rows, subtotals and totals between batches. Canonical commands contain explicit u64 query IDs and four u64 fields per replacement. Timings include applying updates, pricing, worker dispatch/join and a complete freshly owned output. GPU paths also include encoding where applicable, upload, synchronization and full download. All returned values are checked exactly outside timing. No SQL/HTTP is included.</p>
-        <p class="caption">One or four persistent computation workers; Python 4 uses fork processes, JavaScript 4 uses worker threads, Go 4 uses goroutines, Rust 4 uses Rayon. NumPy is a separate native vectorized implementation with native thread counts fixed to one. All modes share the same four-core allocation (CPUs 64–67), with GC enabled. CPU timings are collected without concurrent benchmark processes. If GPU references from the prior run are shown, their status is explicit above and their ratios are not contemporary speedups. JavaScript uses exact Float64 integer subtotals and quotient/remainder discount rounding. CPython loops use Python integers with u64 retained storage; NumPy is used for untimed input validation in every Python mode.</p>
-        <p class="caption">Initial placement, loading, worker creation and validation are excluded. Python imports initial subtotal caches from fixtures, computes initial totals itself, and independently rescans subtotals for every upstream gate; other languages construct their initial caches. Initialization timings are not comparable cache-construction costs. Three repetitions, eight changing warmups and 50 changing timed rounds; RTX 3090 device 0. Shared host; clocks, NUMA and cache placement are uncontrolled. This is a resident calculation/update benchmark, not a Django deployment speedup.</p>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/languages/results/2026-10-20/summary.md">All timings</a></p>
-      </section>
-
-      <details class="block dev" id="cart-experiments">
-        <summary>Cart update and GPU tuning experiments · 2026-10-19–20</summary>
-        <p class="caption">Resident update sweeps, transfer diagnostics and compact-buffer comparisons. Calculation timings exclude HTTP and SQL.</p>
-      <section id="cart-resident" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Resident carts with updates</h2>
-          <p>CPU and GPU retain the same 4,096-cart population. Apply line replacements, then query current totals.</p>
-        </div>
-        <p class="caption">Microseconds per complete update-and-query batch, lower is faster. GPU includes command upload, mutation/query kernels, synchronization and full result download. CPU and GPU delta maintain subtotals and cached totals; this baseline matters because simple sums do not require full rescans. This is a calculation experiment: database commits, CDC, HTTP and cross-process coherence are excluded.</p>
         <div class="filters">
-          <label class="field"><span>Lines/cart</span><select id="resident-lines"><option>32</option><option>128</option><option>512</option><option selected>2048</option></select></label>
-          <label class="field"><span>Queries/batch</span><select id="resident-queries"><option>8</option><option selected>128</option><option>256</option><option>4096</option></select></label>
-          <label class="field"><span>Replacements/batch</span><select id="resident-updates"><option value="none">None</option><option value="one" selected>One</option><option value="per-query">One per queried cart</option><option value="sixteen-per-query">Sixteen per queried cart</option></select></label>
+          <label class="field"><span>Application</span><select id="f-app"></select></label>
+          <label class="field"><span>Concurrency</span><select id="f-detail-conc"></select></label>
         </div>
-        <div id="resident-results"></div>
-        <p class="caption">These initial results use a single-thread CPU delta baseline. See <a href="#cart-resident-scale">larger cart update batches</a> for grouped single/four-thread CPU delta comparisons.</p>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-        <p class="caption">Three repetitions × 100 changing rounds after eight warmups. Every warmup and timed output is checked against a separate full-rescan state machine; the very next query must observe replacements. CPU delta is single-threaded; the four-worker CPU path rescans all lines. Parallel CPU delta is not part of this initial run. One/four CPU workers share CPUs 64–67; RTX 3090 device 0. Variant order rotates/reverses; clocks, NUMA, host activity and caches are uncontrolled. Initial placement is separate and includes subtotal initialization for both delta paths. p50/p99 are averaged iteration percentiles, not pooled HTTP percentiles.</p>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/README.md">Method and limits</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/results/2026-10-19/summary.md">All shapes and update rates</a></p>
+        <div id="app-detail"></div>
       </section>
-
-      <section id="cart-resident-scale" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Larger cart update batches</h2>
-          <p>4,096–65,536 resident carts, including single/four-thread incremental CPU baselines.</p>
-        </div>
-        <p id="scale-summary" class="caption"></p>
-        <p class="caption">Every cart is queried after changing 1, 16 or 64 of its lines. CPU and GPU retain the same data and cached subtotals. The comparison uses the fastest measured implementation on each side; above 1 favors GPU. GPU timing includes fresh command upload, kernels, synchronization and complete result download.</p>
-        <div class="filters">
-          <label class="field"><span>Lines/cart</span><select id="scale-lines"><option>512</option><option selected>2048</option></select></label>
-          <label class="field"><span>Carts/queries</span><select id="scale-carts"><option>4096</option><option>16384</option><option selected>65536</option></select></label>
-          <label class="field"><span>Replacements/cart</span><select id="scale-factor"><option>1</option><option selected>16</option><option>64</option></select></label>
-        </div>
-        <div id="scale-results"></div>
-        <p class="caption"><a href="#cart-update-phases">Measured update transfer, kernel and result phases</a> for four selected conditions.</p>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-        <p class="caption">Seven implementations × 18 shapes × three repetitions; 50 changing measured rounds after eight warmups. Every output is checked exactly against an independent full-rescan state machine. Grouped CPU delta processes all changes for a cart together, with either one thread or four persistent Rayon workers. CPUs 64–67, RTX 3090 device 0; shared host, uncontrolled clocks/NUMA/cache. Initial placement is separate. Iteration percentiles are averaged across repetitions; with 50 rounds p99 is the maximum round. These are Rust calculation measurements, excluding HTTP, database commits, CDC delivery and durable cache coherence.</p>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/README.md">Method and findings</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/results/2026-10-19/summary.md">All shapes</a></p>
-      </section>
-
-      <section id="cart-update-phases" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Cart update GPU phases</h2>
-          <p>Separate changing-trace replay of the 1.79× condition and three larger update batches.</p>
-        </div>
-        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="phase-shape"></select></label></div>
-        <div id="phase-results"></div>
-        <p class="caption"><a href="#cart-update-transport">Compact input and pinned-buffer comparison</a>, including packing costs.</p>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-        <p class="caption">The one-update delta host replay and small-shape delta event replay contain large upload outliers; all rounds are retained. Host columns are disjoint wall-time intervals. Upload/download include pageable staging and driver overhead; they are not isolated PCIe times. Sync includes remaining kernel execution and waiting overhead. Device event intervals come from a separate replay, overlap enqueue/sync, and must not be added to the host columns. Delta fuses update and total gathering in one kernel. All modes replay the same 58 changing rounds from reset state; three repetitions, eight warmups. Initialization is excluded. Shared host, uncontrolled clocks/NUMA/cache.</p>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/profile/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/profile/results/2026-10-20/summary.md">All phase timings</a></p>
-      </section>
-
-      <section id="cart-update-transport" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Compact cart updates and pinned buffers</h2>
-          <p>32-byte versus 8-byte replacements, with pageable or reusable page-locked host staging.</p>
-        </div>
-        <div class="filters"><label class="field"><span>Carts × lines · replacements/cart</span><select id="transport-shape"></select></label></div>
-        <div id="transport-results"></div>
-        <details class="dev">
-          <summary>Run conditions and correctness</summary>
-        <p class="caption">All paths consume the same canonical commands and return a fresh owned vector of every queried total. Encoding and staging copies are timed. A compact replacement packs slot (11 bits), price (27) and quantity (10); cart ID comes from the validated round-robin query order. Query IDs remain explicit. This format requires that routing contract. Compact encoders run on one or four workers; encode4 uses the same persistent Rayon pool and four-core budget as CPU4. Pinned paths copy/encode into reusable locked input, queue upload/kernels/full download in one stream, wait, then copy locked output into an owned vector. There is no overlap across batches. Initialization is separate.</p>
-        <p class="caption">Plain runs drive comparisons. Event runs are separate diagnostics: upload, kernels and download use the same stream. Pageable upload intervals include possible host submission gaps; they do not isolate DMA. Event readout is included in the diagnostic total. Three repetitions, 50 changing rounds after eight warmups; CPUs 64–67 and RTX 3090 device 0. Shared host, uncontrolled clocks/NUMA/cache. Controls retain the original host calls and kernel source, compiled into a separate PTX. HTTP, database commits and CDC are excluded.</p>
-        </details>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/transport/README.md">Findings and method</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/main/performance/django-cart/resident/scale/transport/results/2026-10-20/summary.md">All timings</a></p>
-      </section>
-
-      </details>
-
-      <details class="block dev" id="linkding-experiments">
-        <summary>Linkding tuning experiments · 2026-10-18</summary>
-        <p class="caption">Separate before/after runs; these results are not included in the overview.</p>
-      <section id="search-initialization" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Linkding search initialization</h2>
-          <p>Post-seed ANALYZE · 2026-10-18.</p>
-        </div>
-        <div class="table-wrap">
-          <table class="perf-detail">
-            <caption>Requests/s, mean of three repetitions. Separate from the overview runs.</caption>
-            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">After / before</th></tr></thead>
-            <tbody>
-              <tr><th scope="row"><code>get</code></th><td class="num">1</td><td class="num">480.12</td><td class="num">462.90</td><td class="num">0.96×</td></tr>
-              <tr><th scope="row"><code>get</code></th><td class="num">64</td><td class="num">11407.44</td><td class="num">11503.83</td><td class="num">1.01×</td></tr>
-              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">31.72</td><td class="num">21.60</td><td class="num">0.68×</td></tr>
-              <tr><th scope="row"><code>list</code></th><td class="num">64</td><td class="num">136.91</td><td class="num">120.64</td><td class="num">0.88×</td></tr>
-              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">0.97</td><td class="num">1.87</td><td class="num">1.93×</td></tr>
-              <tr><th scope="row"><code>search</code></th><td class="num">64</td><td class="num">4.13</td><td class="num">7.54</td><td class="num">1.83×</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="caption">Search improves 1.83× at 64 clients; list throughput falls to 0.88×. Instrumented runs: 5 s warmup, 15 s measurement, three repetitions. Search reads 287,002 physical rows per request.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/search-plan-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/search-plan-2026-10-18/comparison.csv">Summary CSV</a></p>
-      </section>
-
-      <section id="linkding-hotpaths" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Linkding retrieval, creation and search</h2>
-          <p>Combined bookmark/tag retrieval and scalar SQL · 2026-10-18.</p>
-        </div>
-        <div class="table-wrap"><table class="perf-detail">
-          <caption>Requests/s, mean of three repetitions. Separate from the overview runs.</caption>
-          <thead><tr><th scope="col">Route</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Ratio</th><th scope="col">Reference</th><th scope="col" class="num">Reference req/s</th></tr></thead><tbody>
-            <tr><th scope="row">Optimized get</th><td class="num">1</td><td class="num">460.12</td><td class="num">694.76</td><td class="num">1.51×</td><td>h5i</td><td class="num">475.71</td></tr>
-            <tr><th scope="row">Optimized get</th><td class="num">64</td><td class="num">4353.98</td><td class="num">6573.41</td><td class="num">1.51×</td><td>h5i</td><td class="num">8582.49</td></tr>
-            <tr><th scope="row">Engine create</th><td class="num">1</td><td class="num">48.54</td><td class="num">174.66</td><td class="num">3.60×</td><td>Go</td><td class="num">152.26</td></tr>
-            <tr><th scope="row">Engine create</th><td class="num">64</td><td class="num">29.88</td><td class="num">224.81</td><td class="num">7.52×</td><td>Go</td><td class="num">3525.29</td></tr>
-            <tr><th scope="row">Engine search</th><td class="num">1</td><td class="num">1.86</td><td class="num">2.36</td><td class="num">1.27×</td><td>Go</td><td class="num">4.73</td></tr>
-            <tr><th scope="row">Engine search</th><td class="num">64</td><td class="num">6.68</td><td class="num">10.24</td><td class="num">1.53×</td><td>Go</td><td class="num">19.21</td></tr>
-          </tbody></table></div>
-        <p class="caption">Get improves 1.51×. Engine creation and search improve, but Go stays faster at 64 clients. No timing probes; three repetitions with CPU/database slot rotation. Read SQL is differential-tested; the kernel and its Lean proofs are unchanged.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/hotpaths-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/tree/measure-engine-cost/performance/linkding/bench/results/hotpaths-2026-10-18">Summary CSVs</a></p>
-      </section>
-
-      <section id="optimized-single-get" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Single-bookmark retrieval</h2>
-          <p>Reuse the authorized bookmark row · 2026-10-18.</p>
-        </div>
-        <div class="table-wrap"><table class="perf-detail">
-          <caption>Requests/s, mean of three repetitions. Separate from the overview runs.</caption>
-          <thead><tr><th scope="col">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Ratio</th><th scope="col" class="num">Go</th></tr></thead><tbody>
-            <tr><th scope="row">1</th><td class="num">331.60</td><td class="num">399.48</td><td class="num">1.20×</td><td class="num">402.78</td></tr>
-            <tr><th scope="row">64</th><td class="num">2866.83</td><td class="num">3676.61</td><td class="num">1.28×</td><td class="num">6450.85</td></tr>
-          </tbody></table></div>
-        <p class="caption">Get improves 1.20–1.28×. Go was measured concurrently on a shared host with slot rotation. Three repetitions, 5 s warmup and 15 s measurement; zero failures. The earlier sequential run regressed at 64 clients; see the report.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/single-get-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/single-get-2026-10-18/summary.csv">Summary CSV</a></p>
-      </section>
-
-      <section id="read-sql-modes" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Read SQL modes</h2>
-          <p>Membership versus scalar subqueries · 2026-10-18.</p>
-        </div>
-        <div class="table-wrap"><table class="perf-detail">
-          <caption>Requests/s, mean of three repetitions. Separate from the overview runs.</caption>
-          <thead><tr><th scope="col">Clients</th><th scope="col" class="num">Membership</th><th scope="col" class="num">Scalar when unique</th><th scope="col" class="num">Ratio</th></tr></thead><tbody>
-            <tr><th scope="row">1</th><td class="num">31.20</td><td class="num">47.86</td><td class="num">1.53×</td></tr>
-            <tr><th scope="row">64</th><td class="num">154.11</td><td class="num">259.12</td><td class="num">1.68×</td></tr>
-          </tbody></table></div>
-        <p class="caption">Scalar mode improves list throughput 1.53–1.68× at fixed offset 100. Timing probes enabled; three repetitions. Both modes return 20 results and an exact total of 95,000. The earlier rotating-offset regression remains unresolved; IN remains the default.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/sql-modes-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/sql-modes-2026-10-18/comparison.csv">Summary CSV</a></p>
-      </section>
-
-      <section id="scalar-membership" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="+">Unique-membership SQL</h2>
-          <p>Scalar subqueries for primary-key membership · 2026-10-18.</p>
-        </div>
-        <div class="table-wrap">
-          <table class="perf-detail">
-            <caption>Requests/s, mean of three repetitions. Separate from the overview runs.</caption>
-            <thead><tr><th scope="col">Scenario</th><th scope="col" class="num">Clients</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">After / before</th></tr></thead>
-            <tbody>
-              <tr><th scope="row"><code>get</code></th><td class="num">1</td><td class="num">480.17</td><td class="num">490.78</td><td class="num">1.02×</td></tr>
-              <tr><th scope="row"><code>get</code></th><td class="num">64</td><td class="num">11443.34</td><td class="num">11180.28</td><td class="num">0.98×</td></tr>
-              <tr><th scope="row"><code>list</code></th><td class="num">1</td><td class="num">21.81</td><td class="num">22.23</td><td class="num">1.02×</td></tr>
-              <tr><th scope="row"><code>list</code></th><td class="num">64</td><td class="num">120.26</td><td class="num">107.66</td><td class="num">0.90×</td></tr>
-              <tr><th scope="row"><code>search</code></th><td class="num">1</td><td class="num">1.87</td><td class="num">2.40</td><td class="num">1.28×</td></tr>
-              <tr><th scope="row"><code>search</code></th><td class="num">64</td><td class="num">7.70</td><td class="num">11.81</td><td class="num">1.53×</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="caption">Search improves 1.28–1.53×; list throughput falls to 0.90× at 64 clients. Instrumented runs: 5 s warmup, 15 s measurement, three repetitions. Read SQL is differential-tested; application decisions and read/count plans are unchanged.</p>
-        <p class="caption"><a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/scalar-membership-2026-10-18.md">Report</a> · <a href="https://github.com/h5i-dev/h5i-app-bench/blob/measure-engine-cost/performance/linkding/bench/results/scalar-membership-2026-10-18/comparison.csv">Summary CSV</a></p>
-      </section>
-
-      </details>
 
       <section id="method" class="block">
         <div class="block-head">
-          <h2 class="term" data-n="—">Method</h2>
-          <p>Overview runs: fresh seed, 10 s warmup, 30 s measurement, mean of three repetitions. Targeted experiments list their own conditions.</p>
+          <h2 class="term" data-n="03">Method</h2>
+          <p>Fresh seed, 10 s warmup, 30 s measurement, mean of three repetitions. Compare implementations within the same application and scenario.</p>
         </div>
         <ul class="limits">
           <li>Servers, PostgreSQL and k6 use separate CPUs. Serial runs give each server 4 cores: 4 workers for Python, Node and Go; 4 Tokio threads for Rust.</li>
           <li>Requests/s includes k6's graceful stop. Latencies are per-run percentiles; RSS is peak memory across the server process tree.</li>
           <li>Login uses bcrypt cost 12, which dominates that scenario.</li>
           <li>Single-host measurements. Scripts and CSV results: <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance">performance/</a>.</li>
+        </ul>
+      </section>
+      <section id="reports" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="04">Further reading</h2>
+          <p>Separate experiments explore GPU workloads and implementation tuning. Each report includes its own measurement conditions.</p>
+        </div>
+        <ul class="report-links">
+          <li><a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/django-cart">Cart experiments</a><span>SQL, request batching, resident updates and language comparisons.</span></li>
+          <li><a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/linkding/bench">Search and query tuning</a><span>GPU search, SQL plans and engine hot paths.</span></li>
+          <li><a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance/realworld/bench">Authorization experiments</a><span>CPU and GPU policy decisions in full HTTP requests.</span></li>
         </ul>
       </section>
     </main>
