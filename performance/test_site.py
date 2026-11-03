@@ -32,7 +32,7 @@ class MeasurementSelectionTests(unittest.TestCase):
 
     def test_overview_renders_identical_columns_and_pending_details(self):
         # Exercise the actual JS renderer against the generated data, including
-        # absent framework values and preserved supplemental measurements.
+        # absent framework values and the application selector.
         data = json.loads((site.HERE.parent / 'docs/performance/data.json').read_text())
         script = (site.HERE.parent / 'docs/performance/performance.js').read_text().split('\nmain().catch')[0]
         check = r'''
@@ -52,8 +52,40 @@ for (const head of heads) assert.deepEqual(head, input.order);
 const detail = vm.runInContext('pick["django-cart"] = "total_4096"; renderApp(DATA.apps[2])', context);
 assert.ok(!detail.includes('NaN') && !detail.includes('Infinity'));
 assert.equal((detail.match(/class="sub"/g) || []).length, 6);
-const supplemental = vm.runInContext('for (const app of allApps()) pick[app.id] = app.scenarios[0].id; renderSections(DATA.supplemental_apps)', context);
-assert.ok(supplemental.includes('go-sql') && supplemental.includes('rust-gpu-batch'));
+assert.deepEqual(Object.keys(input.data), ['apps']);
+const controls = Object.fromEntries(['#overview-tables', '#app-detail', '#f-app', '#f-conc', '#f-detail-conc', '#comparison'].map(id =>
+  [id, {innerHTML: '', value: id === '#f-app' ? 'realworld' : '16', handlers: {},
+    addEventListener(name, handler) { this.handlers[name] = handler; },
+    scrollIntoView() { this.scrolled = true; }}]));
+const events = {};
+context.document = {
+  documentElement: {dataset: {}},
+  querySelector: id => { assert.ok(controls[id], `Unexpected page target: ${id}`); return controls[id]; },
+  querySelectorAll: () => [],
+  addEventListener: (name, handler) => events[name] = handler
+};
+context.localStorage = {setItem() {}};
+context.location = {hash: ''};
+context.history = {replaceState: (_, __, hash) => context.location.hash = hash};
+context.window = {addEventListener: (name, handler) => events[name] = handler};
+context.fetch = async () => ({ok: true, json: async () => input.data});
+vm.runInContext('main()', context).then(() => {
+  controls['#f-app'].value = 'django-cart';
+  controls['#f-app'].handlers.change();
+  assert.ok(controls['#app-detail'].innerHTML.includes('total_4096'));
+  assert.ok(!controls['#app-detail'].innerHTML.includes('data-app="realworld"'));
+  controls['#f-detail-conc'].handlers.change({target: {value: '64'}});
+  assert.equal(controls['#f-conc'].value, '64');
+  assert.ok(controls['#app-detail'].innerHTML.includes('At 64 clients'));
+  let prevented = false;
+  events.click({target: {closest: () => ({dataset: {app: 'django-cart', scenario: 'total_65536'}, tagName: 'A'})},
+    preventDefault() { prevented = true; }});
+  assert.ok(prevented && controls['#comparison'].scrolled);
+  assert.ok(controls['#app-detail'].innerHTML.includes('aria-selected="true" data-app="django-cart" data-scenario="total_65536"'));
+  context.location.hash = '#linkding';
+  events.hashchange();
+  assert.equal(controls['#f-app'].value, 'linkding');
+}).catch(err => { console.error(err); process.exitCode = 1; });
 '''
         result = subprocess.run(['node', '-e', check], input=json.dumps(dict(data=data, script=script, order=site.COMPARISON_ORDER)),
                                 text=True, capture_output=True)

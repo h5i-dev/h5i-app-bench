@@ -206,20 +206,7 @@ def load(app):
 
 def main():
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE.parent / "docs/performance/data.json"
-    cart = HERE / "django-cart/bench/results/2026-10-19-scale-soa/summary.json"
-    resident = HERE / "django-cart/resident/results/2026-10-19/summary.json"
-    resident_scale = HERE / "django-cart/resident/scale/results/2026-10-19/summary.json"
-    resident_phases = HERE / "django-cart/resident/scale/profile/results/2026-10-20/summary.json"
-    resident_transport = HERE / "django-cart/resident/scale/transport/results/2026-10-20/summary.json"
-    resident_languages = HERE / "django-cart/resident/languages/results/2026-10-20/summary.json"
-    resident_contended = HERE / "django-cart/resident/languages/results/2026-10-20-contended/summary.json"
-    data = {"apps": [load(a) for a in APPS], "supplemental_apps": [load(a) for a in SUPPLEMENTAL_APPS], "cart_pricing": json.loads(cart.read_text()),
-            "cart_resident": json.loads(resident.read_text()),
-            "cart_resident_scale": json.loads(resident_scale.read_text()),
-            "cart_update_phases": json.loads(resident_phases.read_text()),
-            "cart_update_transport": json.loads(resident_transport.read_text()),
-            "cart_resident_languages": json.loads(resident_languages.read_text()),
-            "cart_resident_languages_contended": json.loads(resident_contended.read_text())}
+    data = {"apps": [load(a) for a in APPS]}
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, indent=1) + "\n")
     print(f"wrote {out}")

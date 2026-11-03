@@ -9,7 +9,7 @@ Results: <https://benchmark.h5i.dev/performance/>.
 | --- | --- | --- |
 | [`realworld/`](realworld) | [RealWorld (Conduit)](https://github.com/realworld-apps/realworld): users, articles, comments, follows, favorites | `rust-h5i`, `rust-h5i-optimized`, `go`, `fastify`, `fastapi` |
 | [`linkding/`](linkding) | [linkding](https://github.com/sissbruecker/linkding) 1.47.0 bookmarks API | `rust-h5i`, `go`, `fastify`, `fastapi`, and the upstream image |
-| [`django-cart/`](django-cart) | Read-only cart totals adapters for pinned django-cart pricing | `rust-h5i`, `rust-h5i-optimized`, `rust-h5i-gpu`, `fastapi`, `go`, `fastify` (standard comparison awaits measurement) |
+| [`django-cart/`](django-cart) | Read-only cart totals adapters for pinned django-cart pricing | `rust-h5i`, `rust-h5i-optimized`, `rust-h5i-gpu`, `fastapi`, `go`, `fastify` (CPU results published; GPU timing pending) |
 
 `rust-h5i` runs every request through the h5i-app engine (`h5i-app-pg`).
 In RealWorld and linkding, the read plan and frame theorem have Lean proofs;
@@ -27,15 +27,22 @@ RealWorld and linkding. Its [standard runner](django-cart/comparison/README.md)
 checks all six implementations against pinned `bmentges/django-cart` 3.1.1 and
 measures one cart total per HTTP request, fresh PostgreSQL reads, 10 s warmup,
 30 s measurement and three repetitions at 1/16/64/256 clients. Cart pricing has
-differential checks, no application-specific Lean proof. Standard results are
-currently unmeasured; the page shows dashes until a complete run is available.
+differential checks, no application-specific Lean proof. The five CPU
+implementations completed the standard matrix on 2026-10-24. The page shows
+dashes for GPU timing, which remains unmeasured.
 
 The existing [HTTP batching](django-cart/http/README.md) and
 [line scaling](django-cart/http/lines/README.md) results retain their original
-implementation names in the dashboard's supplemental experiments. Snapshot,
+implementation names in their source reports. Snapshot,
 [resident updates](django-cart/resident/README.md), and
 [larger batches](django-cart/resident/scale/README.md) remain separate calculation
 experiments. They do not populate the framework comparison.
+
+The dashboard contains the framework overview, one selected application's
+details, and the measurement method. Its header has a fixed set of section
+links; applications are selected inside the comparison. Experimental tables
+are not embedded or included in the page's JSON payload. Further reading links
+to the original reports and data.
 
 Engine-stage attribution experiments, with unchanged kernels and proof sources,
 live in [`engine-profile/`](engine-profile). These diagnostic runs are separate
@@ -63,5 +70,5 @@ the application heading shows the date range across the selected runs.
 
 The overview always uses the same implementation columns, in this order:
 `rust-h5i`, `rust-h5i-optimized`, `rust-h5i-gpu`, `fastapi`, `go`, `fastify`.
-Missing measurements appear as dashes. Supplemental execution-strategy results
-are loaded separately and never renamed or used to fill these columns.
+Missing measurements appear as dashes. Separate execution-strategy results
+remain in their reports and never fill these columns.
