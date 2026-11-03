@@ -133,13 +133,15 @@ async function main() {
   if (!concs.includes(CONC)) CONC = concs[concs.length - 1];
   for (const id of ["#f-conc", "#f-detail-conc"]) {
     $(id).innerHTML = concs.map((c) => `<option value="${c}"${c === CONC ? " selected" : ""}>${c} clients</option>`).join("");
+    $(id).value = String(CONC);
     $(id).addEventListener("change", (e) => {
       CONC = Number(e.target.value);
       $("#f-conc").value = $("#f-detail-conc").value = String(CONC);
       rerender();
     });
   }
-  $("#f-app").innerHTML = DATA.apps.map((a) => `<option value="${esc(a.id)}">${esc(a.title)}</option>`).join("");
+  $("#f-app").innerHTML = DATA.apps.map((a, i) => `<option value="${esc(a.id)}"${i === 0 ? " selected" : ""}>${esc(a.title)}</option>`).join("");
+  $("#f-app").value = DATA.apps[0].id;
   $("#f-app").addEventListener("change", () => {
     renderApps();
     history.replaceState(null, "", `#${encodeURIComponent($("#f-app").value)}`);
@@ -148,6 +150,7 @@ async function main() {
   rerender();
   window.addEventListener("hashchange", revealHashTarget);
   revealHashTarget();
+  for (const id of ["#f-app", "#f-conc", "#f-detail-conc"]) $(id).disabled = false;
 
   document.addEventListener("click", (e) => {
     const t = e.target.closest("[data-app][data-scenario]");

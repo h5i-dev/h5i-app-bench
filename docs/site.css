@@ -508,6 +508,9 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .performance-page #app-detail .block-head h3 { margin: 26px 0 0; font: 600 24px/1.3 var(--disp); }
 .performance-page .perf-matrix { min-width: calc(160px + var(--perf-columns) * 135px); }
 .performance-page .scenario-tabs { display: flex; flex-wrap: wrap; gap: 4px; }
+.performance-page .caption + .table-wrap { margin-top: 16px; }
+.performance-page .caption + .app-body { margin-top: 24px; }
+.performance-page .scenario-tabs + .caption { margin-top: 16px; }
 @media (max-width: 900px) {
   .performance-page .site-nav { display: flex; flex-basis: 100%; order: 3; gap: 24px; }
   .performance-page .brand-reading { display: none; }
