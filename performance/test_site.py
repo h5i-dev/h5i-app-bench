@@ -19,7 +19,10 @@ class MeasurementSelectionTests(unittest.TestCase):
         self.assertEqual([a['id'] for a in site.APPS], ['realworld', 'linkding', 'django-cart'])
         cart = site.load(site.APPS[-1])
         self.assertEqual([i['id'] for i in cart['impls']], site.COMPARISON_ORDER)
-        self.assertEqual(cart['rows'], [])
+        self.assertEqual(len(cart['rows']), 40)
+        self.assertEqual({r['impl'] for r in cart['rows']}, set(site.COMPARISON_ORDER) - {'rust-h5i-gpu'})
+        self.assertEqual(cart['measured'], '2026-10-24')
+        self.assertIn('rust-h5i-gpu is pending', cart['measurement_note'])
         self.assertEqual(cart['concurrency'], [1, 16, 64, 256])
         self.assertEqual([s['id'] for s in cart['scenarios']], ['total_4096', 'total_65536'])
         experiments = [site.load(a) for a in site.SUPPLEMENTAL_APPS]

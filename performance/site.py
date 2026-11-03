@@ -133,12 +133,13 @@ SUPPLEMENTAL_APPS = [
 
 APPS.append({
     "id": "django-cart", "title": "django-cart totals",
-    "results": "comparison/results/2026-10-22", "allow_missing": True,
+    "results": "comparison/results/2026-10-24", "allow_missing": True,
     "implementations": COMPARISON_ORDER,
     "upstream": "https://github.com/bmentges/django-cart/tree/6b3daa26842c978b9520d479c4d33e3620e731a2",
     "about": "Read-only pricing API checked against pinned django-cart 3.1.1. Framework comparison; application pricing has differential tests, no Lean proof.",
     "seed": "4,096 or 65,536 carts, 32 lines/cart; the same committed PostgreSQL rows for all implementations.",
     "measurement_note": "Standard comparison awaits measurement: six implementations, 1/16/64/256 clients, fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Existing SQL/batch measurements are in supplemental experiments below.",
+    "measured_note": "Paired framework comparison: fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Four server cores; Python/Node four workers, Rust CPU/Go 32 connections. rust-h5i-gpu is pending: every GPU was in use by external jobs; its timed run requires an idle device.",
     "stacks": {
         "rust-h5i": "Rust, axum, h5i-app PostgreSQL engine; complete per-cart tenants, default transaction path (pricing not Lean-proved)",
         "rust-h5i-optimized": "Rust, axum, sqlx, PostgreSQL SUM and shared pricing kernel (pricing not Lean-proved)",
@@ -195,7 +196,7 @@ def load(app):
         "seed": app["seed"], "source": f"{REPO}/{directory}",
         **{k: app[k] for k in ("nav_title", "diagnostic_url") if k in app},
         "measured": "–".join(dict.fromkeys([dates[0], dates[-1]])) if dates else None,
-        "measurement_note": app.get("measurement_note", "") if not rows or not app.get("allow_missing") else "Paired framework comparison: fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Four server cores; Python/Node four workers, Rust CPU/Go 32 connections. CUDA uses one SQL/CUDA worker and fresh transfers.",
+        "measurement_note": app.get("measurement_note", "") if not rows or not app.get("allow_missing") else app.get("measured_note") or "Paired framework comparison: fresh seed, 10 s warmup, 30 s measurement, three repetitions. No request batching. Four server cores; Python/Node four workers, Rust CPU/Go 32 connections. CUDA uses one SQL/CUDA worker and fresh transfers.",
         "impls": [{"id": i, "stack": app.get("stacks", {}).get(i) or STACKS.get(i, ""), "h5i": i in H5I} for i in impls],
         "scenarios": [{"id": s, "requests": app["scenarios"][s]} for s in scenarios],
         "concurrency": sorted({r["concurrency"] for r in rows}) or [1, 16, 64, 256],

@@ -46,10 +46,12 @@ Before timing, every implementation must pass all 4,146 upstream Decimal
 fixtures, two committed item changes (including a nonconsecutive item slot),
 and three invalid/missing-ID status cases. The conformance runner also requires
 actual GPU launches. All six passed these gates on 2026-10-22. CPU variants also
-passed a short k6 smoke run; smoke timings are not published. Standard
-performance results are pending because all four GPUs were occupied by other
-compute processes. The published page shows unmeasured values, preserving the
-old measurements in a separate supplemental section.
+passed a short k6 smoke run; smoke timings are not published. The five CPU
+implementations completed the standard timing matrix on 2026-10-24 (120 points).
+Their aggregate results are published; GPU performance remains pending because
+all four GPUs were occupied by other compute processes. The published page
+keeps the GPU values unmeasured and preserves the old measurements in a separate
+supplemental section.
 
 ## Reproduce
 
@@ -63,7 +65,7 @@ GO_BIN=/var/tmp/go/bin/go bash performance/django-cart/comparison/build.sh
 python3 performance/django-cart/comparison/run.py --conformance-only
 python3 performance/django-cart/comparison/run.py
 python3 performance/django-cart/comparison/summarize.py \
-  performance/django-cart/comparison/results/2026-10-22
+  performance/django-cart/comparison/results/2026-10-24
 python3 performance/site.py
 ```
 
@@ -74,9 +76,11 @@ publishes no performance scores. The date directory defaults to the UTC run
 date; update `performance/site.py` to select a later dated result directory.
 
 `--help` exposes artifact paths, CPU affinity and smoke-run options. The
-summarizer refuses shortened runs, missing implementations, failed correctness
-gates, invalid/duplicate points, request errors and incomplete grids. A complete
-run has 144 points and produces the same summary.csv fields and Markdown
+summarizer accepts a nonempty subset of known implementations and explicitly
+lists omitted implementations in its report. It refuses shortened runs, failed
+correctness gates, invalid/duplicate points, request errors and incomplete grids
+for the selected implementations. A six-implementation run has 144 points and
+produces the same summary.csv fields and Markdown
 metric columns as the other applications. Only summary CSV/JSON/Markdown is
 eligible for tracking. Raw k6 output, points, logs, metadata and conformance
 evidence remain local under the existing ignore policy.
