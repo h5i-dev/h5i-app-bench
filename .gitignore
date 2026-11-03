@@ -1,3 +1,26 @@
 __pycache__/
 target/
 **/.lake/
+
+# Local artifacts left in the former layout before the move to prove/.
+/env/h5i-app-lib/
+/tasks/
+/ports/*/upstream-src/
+/ports/*/.h5i/
+/results/runs/
+/results/runs-aborted/
+/results/scratch/
+/results/upstream/
+/results/tmp*/
+/results/verification/tmp*/
+/results/protocol1/
+/results/campaigns/
+/results/build-logs/
+
+# Host-specific model routing and billing configuration in the former layout.
+/harness/proxy.py
+/harness/billing.py
+/harness/pricing.py
+/harness/campaign.py
+/scripts/local-gateway.sh
+/scripts/vertex_gemini_gateway.py
