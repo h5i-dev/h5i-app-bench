@@ -1,6 +1,8 @@
 import Spec
 open Aeneas Aeneas.Std Result windmill_kernel windmill_kernel.Spec H5iAppLib
 
+set_option linter.unusedSimpArgs false
+
 namespace windmill_kernel.Lemmas
 
 h5i_derive_all
@@ -138,7 +140,58 @@ theorem dotdot_iff (l : List U8) : l = dotdot ↔ l.length = 2 ∧ l[0]? = some 
   unfold authz.is_dotdot
   step*
   all_goals simp only [dotdot_iff]
-  all_goals simp_all [List.getElem?_eq_getElem]
+  all_goals simp_all
+  all_goals
+    have hl : s.val.length = 2 := by scalar_tac
+    simp [hl, List.getElem?_eq_getElem (show 1 < s.val.length by omega)]
+
+@[step] theorem has_dotdot_spec (parts : Slice (alloc.vec.Vec U8)) :
+    authz.has_dotdot_segment parts ⦃ b => b = parts.val.any (fun p => decide (p.val = dotdot)) ⦄ := by
+  unfold authz.has_dotdot_segment authz.has_dotdot_segment_loop
+  h5i_search_any parts.val (fun p => decide (p.val = dotdot))
+  all_goals simp_all [vec_deref_val]
   all_goals scalar_tac
+
+@[step] theorem has_nul_spec (s : Slice U8) :
+    authz.has_nul s ⦃ b => b = s.val.any (fun c => decide (c = 0#u8)) ⦄ := by
+  unfold authz.has_nul authz.has_nul_loop
+  h5i_search_any s.val (fun c => decide (c = 0#u8))
+  all_goals simp_all
+  all_goals scalar_tac
+
+@[step] theorem is_owner_spec (a : authz.Authed) (n : Slice U8) :
+    authz.is_owner a n ⦃ b => (b = true ↔ ownsFolder a n.val) ⦄ := by
+  unfold authz.is_owner
+  split
+  · simp_all [ownsFolder]
+  · step*
+    simp_all [ownsFolder]
+
+theorem U_val : authz.U.val = uB := by simp [authz.U, uB, array_to_slice_val]
+theorem F_val : authz.F.val = fB := by simp [authz.F, fB, array_to_slice_val]
+
+/-- Reading the `i`-th piece of a split. -/
+theorem seg_of {parts : alloc.vec.Vec (alloc.vec.Vec U8)} {segs : List Bytes}
+    (hs : parts.val.map (·.val) = segs) {i : Usize} {v : alloc.vec.Vec U8}
+    (hv : alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec U8)) parts i = ok v) :
+    segs[i.val]! = v.val := by
+  have hg := vec_index_slice_ok_get? hv
+  rw [← hs, List.getElem!_eq_getElem?_getD, List.getElem?_map, hg]
+  rfl
+
+theorem eq_true {a b : Slice U8} {r : Bool} (h : bytes.eq a b = ok r) (hr : r = true) : a.val = b.val := by
+  have := post_of_ok (eq_spec a b) h
+  subst hr
+  simpa using this
+
+theorem eq_false {a b : Slice U8} {r : Bool} (h : bytes.eq a b = ok r) (hr : ¬ r = true) : a.val ≠ b.val := by
+  have := post_of_ok (eq_spec a b) h
+  intro e; apply hr; rw [this]; simpa using e
+
+theorem require_is_owner_ok {a : authz.Authed} {n : Slice U8}
+    (h : authz.require_is_owner a n = ok (.Ok ())) : ownsFolder a n.val := by
+  unfold authz.require_is_owner at h
+  h5i_invert h
+  exact (post_of_ok (is_owner_spec a n) (by assumption)).1 (by assumption)
 
 end windmill_kernel.Lemmas
