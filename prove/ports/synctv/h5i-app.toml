@@ -17,6 +17,7 @@ theorems = [
   "synctv_kernel.Properties.non_admin_ignores_admin_columns",
   "synctv_kernel.Properties.removed_never_held",
   "synctv_kernel.Properties.creator_holds_all",
+  "synctv_kernel.Properties.calculator_precheck_redundant",
   "synctv_kernel.Properties.default_admin_spec",
   "synctv_kernel.Properties.default_guest_empty",
   "synctv_kernel.Properties.default_member_spec",

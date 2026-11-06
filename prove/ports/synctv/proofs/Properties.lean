@@ -192,6 +192,19 @@ theorem member_delete_room_only_from_server_default (d : perms.Defaults) (m : pe
   have h2 := names_none (space := memberBit) (bits := s.member_added_permissions.val) (p := .DeleteRoom) rfl
   tauto
 
+/-- FINDING (info): the first test in `EffectivePermissionCalculator::has_permission`
+(`member.has_permission(permission, RoomPermissionSet::all())`) never changes the
+answer. Effective permissions over the real role default already imply it, so the
+calculator returns exactly whether the effective permissions grant `p`. See
+FINDINGS.md. -/
+theorem calculator_precheck_redundant (d : perms.Defaults) (m : perms.MemberPerms) (s : perms.SettingsPerms)
+    (p : perms.RoomPermission) :
+    calcHas d s m p ↔ effective m (roleDefault d s m.role) p := by
+  unfold calcHas
+  refine ⟨fun h => h.2, fun h => ⟨?_, h⟩⟩
+  unfold effective at h ⊢
+  cases hr : m.role <;> simp only [hr, allowDeny] at h ⊢ <;> tauto
+
 /-! ## Member role and override policy -/
 
 /-- The creator role can never be conferred through role assignment. -/
