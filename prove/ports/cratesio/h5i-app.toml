@@ -4,4 +4,14 @@ crate = "kernel"
 start-from = ["validation::validate_crate_name", "validation::validate_dependency_name", "scopes::is_valid_pattern", "scopes::scope_matches", "auth::parse_auth_header", "auth::authenticate", "auth::check"]
 
 [check]
-theorems = []
+theorems = [
+  "cratesio_kernel.Properties.cross_origin_never_authenticates",
+  "cratesio_kernel.Properties.token_authentication_is_live",
+  "cratesio_kernel.Properties.revoked_or_expired_token_rejected",
+  "cratesio_kernel.Properties.session_needs_current_epoch",
+  "cratesio_kernel.Properties.locked_account_never_authenticates",
+  "cratesio_kernel.Properties.cookie_only_rejects_tokens",
+  "cratesio_kernel.Properties.token_needs_endpoint_scope",
+  "cratesio_kernel.Properties.token_confined_to_crate_scopes",
+  "cratesio_kernel.Properties.crate_scoped_token_needs_crate_or_opt_in",
+]
