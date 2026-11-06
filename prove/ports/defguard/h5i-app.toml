@@ -4,4 +4,118 @@ crate = "kernel"
 start-from = ["lockout::authenticate", "auth::admin_role", "auth::user_for_admin_or_self", "auth::device_for_admin_or_self", "token::start_session", "token::validate_session", "ranges::merge_ranges"]
 
 [check]
-theorems = []
+theorems = [
+  "defguard_kernel.Properties.locked_name_blocked",
+  "defguard_kernel.Properties.verified_needs_password",
+  "defguard_kernel.Properties.failure_recorded",
+  "defguard_kernel.Properties.fifth_failure_locks",
+  "defguard_kernel.Properties.email_login_never_locked",
+  "defguard_kernel.Properties.session_info_sound",
+  "defguard_kernel.Properties.expired_session_rejected",
+  "defguard_kernel.Properties.admin_role_sound",
+  "defguard_kernel.Properties.other_user_needs_admin",
+  "defguard_kernel.Properties.other_device_needs_admin",
+  "defguard_kernel.Properties.expired_token_never_starts",
+  "defguard_kernel.Properties.token_single_session",
+  "defguard_kernel.Properties.enrollment_session_sound",
+  "defguard_kernel.Properties.session_outlives_token",
+  "defguard_kernel.Verified.verify_username_ok",
+  "defguard_kernel.Verified.log_failed_attempt_ok",
+  "defguard_kernel.Verified.find_account_ok",
+  "defguard_kernel.Verified.authenticate_cases",
+  "defguard_kernel.Verified.extract_session_ok",
+  "defguard_kernel.Verified.start_session_ok",
+  "defguard_kernel.Verified.is_session_valid_ok",
+]
+
+# Bugs the proofs must reject (`h5i app mutate`); `fix_*` mutants fix a
+# finding and must break the theorem that records it.
+[[mutant]]
+name = "lockout_threshold_six"
+file = "kernel/src/lockout.rs"
+old = "f.attempt_count >= COUNT && now - f.last_attempt <= TIMEOUT_NS"
+new = "f.attempt_count > COUNT && now - f.last_attempt <= TIMEOUT_NS"
+
+[[mutant]]
+name = "lockout_not_enforced"
+file = "kernel/src/lockout.rs"
+old = "    if blocked {"
+new = "    if false {"
+
+[[mutant]]
+name = "failure_not_logged"
+file = "kernel/src/lockout.rs"
+old = "(log_failed_attempt(&m1, &us[i].username, now), LoginOutcome::WrongPassword)"
+new = "(m1, LoginOutcome::WrongPassword)"
+
+[[mutant]]
+name = "password_ignored"
+file = "kernel/src/lockout.rs"
+old = "if i < password_ok.len() && password_ok[i] {"
+new = "if i < password_ok.len() {"
+
+[[mutant]]
+name = "fix_log_failure_under_typed_name"
+file = "kernel/src/lockout.rs"
+old = "(log_failed_attempt(&m1, &us[i].username, now), LoginOutcome::WrongPassword)"
+new = "(log_failed_attempt(&m1, input, now), LoginOutcome::WrongPassword)"
+
+[[mutant]]
+name = "mfa_gate_dropped"
+file = "kernel/src/auth.rs"
+old = "if u.mfa_enabled && s.state != SessionState::MultiFactorVerified && s.state != SessionState::ApiTokenVerified {"
+new = "if false {"
+
+[[mutant]]
+name = "api_token_for_everyone"
+file = "kernel/src/auth.rs"
+old = "if !is_admin && s.state == SessionState::ApiTokenVerified {"
+new = "if false {"
+
+[[mutant]]
+name = "session_expiry_ignored"
+file = "kernel/src/auth.rs"
+old = "if expired(s, now) {"
+new = "if false {"
+
+[[mutant]]
+name = "disabled_admin_allowed"
+file = "kernel/src/auth.rs"
+old = "if !info.user.is_active {"
+new = "if false {"
+
+[[mutant]]
+name = "any_user_for_anyone"
+file = "kernel/src/auth.rs"
+old = "if bytes_eq(&info.user.username, username) || info.is_admin {"
+new = "if true {"
+
+[[mutant]]
+name = "any_device_for_anyone"
+file = "kernel/src/auth.rs"
+old = "if ds[i].id == id && (info.is_admin || ds[i].user_id == info.user.id) {"
+new = "if ds[i].id == id {"
+
+[[mutant]]
+name = "expired_token_starts"
+file = "kernel/src/token.rs"
+old = "if is_expired(t, now) {"
+new = "if false {"
+
+[[mutant]]
+name = "token_reused_after_window"
+file = "kernel/src/token.rs"
+old = "            if is_session_valid(t, now, timeout_ns) {"
+new = "            if true {"
+
+[[mutant]]
+name = "any_token_type"
+file = "kernel/src/token.rs"
+old = "if !t.enrollment_type {"
+new = "if false {"
+
+[[mutant]]
+name = "fix_validate_checks_expiry"
+file = "kernel/src/token.rs"
+old = "if !is_session_valid(t, now, timeout_ns) {"
+new = "if !is_session_valid(t, now, timeout_ns) || is_expired(t, now) {"

@@ -1,0 +1,24 @@
+[package]
+name = "defguard-difftest"
+description = "Differential test: the defguard kernel against defguard's own code at 12508b4"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# build.rs copies the pinned upstream sources from `prove/results/upstream/defguard`
+# (a gitignored symlink: ln -s /mnt/scratch/oss-sec/upstream/defguard prove/results/upstream/defguard,
+# HEAD 12508b40a49121f5439cdb2701b751df1b72826c).
+[dependencies]
+defguard-kernel = { path = "../kernel" }
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+ipnetwork = "0.20"
+thiserror = "2.0"
+tracing = "0.1"
+rand = "0.8"
+rand_chacha = "0.3"
+futures = { version = "0.3", default-features = false, features = ["executor"] }
+
+[workspace]
+
+[profile.release]
+overflow-checks = false
