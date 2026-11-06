@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace defguard_kernel
 
 /-- [defguard_kernel::auth::SessionState]
-    Source: 'kernel/src/auth.rs', lines 8:0-13:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 8:0-13:1
     Visibility: public -/
 @[discriminant isize]
 inductive auth.SessionState where
@@ -30,14 +30,14 @@ inductive auth.SessionState where
 | ApiTokenVerified : auth.SessionState
 
 /-- [defguard_kernel::auth::{impl core::clone::Clone for defguard_kernel::auth::SessionState}::clone]:
-    Source: 'kernel/src/auth.rs', lines 7:9-7:14
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 7:9-7:14
     Visibility: public -/
 def auth.SessionState.Insts.CoreCloneClone.clone
   (self : auth.SessionState) : Result auth.SessionState := do
   ok self
 
 /-- [defguard_kernel::auth::{impl core::cmp::PartialEq<defguard_kernel::auth::SessionState> for defguard_kernel::auth::SessionState}::eq]:
-    Source: 'kernel/src/auth.rs', lines 7:29-7:38
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 7:29-7:38
     Visibility: public -/
 def auth.SessionState.Insts.CoreCmpPartialEqSessionState.eq
   (self : auth.SessionState) (other : auth.SessionState) : Result Bool := do
@@ -46,7 +46,7 @@ def auth.SessionState.Insts.CoreCmpPartialEqSessionState.eq
   ok (self1 = other1)
 
 /-- Trait implementation: [defguard_kernel::auth::{impl core::cmp::PartialEq<defguard_kernel::auth::SessionState> for defguard_kernel::auth::SessionState}]
-    Source: 'kernel/src/auth.rs', lines 7:29-7:38 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 7:29-7:38 -/
 @[reducible]
 impl_def auth.SessionState.Insts.CoreCmpPartialEqSessionState :
   core.cmp.PartialEq auth.SessionState auth.SessionState := {
@@ -56,7 +56,7 @@ impl_def auth.SessionState.Insts.CoreCmpPartialEqSessionState :
 }
 
 /-- [defguard_kernel::auth::Session]
-    Source: 'kernel/src/auth.rs', lines 17:0-21:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 17:0-21:1
     Visibility: public -/
 structure auth.Session where
   user_id : Std.U64
@@ -64,7 +64,7 @@ structure auth.Session where
   expires : Std.I64
 
 /-- [defguard_kernel::auth::{impl core::clone::Clone for defguard_kernel::auth::Session}::clone]:
-    Source: 'kernel/src/auth.rs', lines 16:9-16:14
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 16:9-16:14
     Visibility: public -/
 def auth.Session.Insts.CoreCloneClone.clone
   (self : auth.Session) : Result auth.Session := do
@@ -74,7 +74,7 @@ def auth.Session.Insts.CoreCloneClone.clone
   ok { user_id := i, state := ss, expires := i1 }
 
 /-- [defguard_kernel::auth::User]
-    Source: 'kernel/src/auth.rs', lines 26:0-32:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 26:0-32:1
     Visibility: public -/
 structure auth.User where
   id : Std.U64
@@ -84,7 +84,7 @@ structure auth.User where
   groups : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [defguard_kernel::auth::{impl core::clone::Clone for defguard_kernel::auth::User}::clone]:
-    Source: 'kernel/src/auth.rs', lines 25:9-25:14
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 25:9-25:14
     Visibility: public -/
 def auth.User.Insts.CoreCloneClone.clone
   (self : auth.User) : Result auth.User := do
@@ -99,14 +99,14 @@ def auth.User.Insts.CoreCloneClone.clone
     { id := i, username := v, mfa_enabled := b, is_active := b1, groups := v1 }
 
 /-- [defguard_kernel::auth::Device]
-    Source: 'kernel/src/auth.rs', lines 35:0-38:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 35:0-38:1
     Visibility: public -/
 structure auth.Device where
   id : Std.U64
   user_id : Std.U64
 
 /-- [defguard_kernel::auth::{impl core::clone::Clone for defguard_kernel::auth::Device}::clone]:
-    Source: 'kernel/src/auth.rs', lines 34:9-34:14
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 34:9-34:14
     Visibility: public -/
 def auth.Device.Insts.CoreCloneClone.clone
   (self : auth.Device) : Result auth.Device := do
@@ -115,7 +115,7 @@ def auth.Device.Insts.CoreCloneClone.clone
   ok { id := i, user_id := i1 }
 
 /-- [defguard_kernel::auth::Credential]
-    Source: 'kernel/src/auth.rs', lines 42:0-49:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 42:0-49:1
     Visibility: public -/
 @[discriminant isize]
 inductive auth.Credential where
@@ -124,7 +124,7 @@ inductive auth.Credential where
 | Nothing : auth.Credential
 
 /-- [defguard_kernel::auth::AuthError]
-    Source: 'kernel/src/auth.rs', lines 52:0-73:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 52:0-73:1
     Visibility: public -/
 @[discriminant isize]
 inductive auth.AuthError where
@@ -140,13 +140,13 @@ inductive auth.AuthError where
 | NotFound : auth.AuthError
 
 /-- [defguard_kernel::auth::expired]:
-    Source: 'kernel/src/auth.rs', lines 76:0-78:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 76:0-78:1
     Visibility: public -/
 def auth.expired (s : auth.Session) (now : Std.I64) : Result Bool := do
   ok (s.expires < now)
 
 /-- [defguard_kernel::auth::extract_session]:
-    Source: 'kernel/src/auth.rs', lines 82:0-107:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 82:0-107:1
     Visibility: public -/
 def auth.extract_session
   (license_active : Bool) (cred : auth.Credential) (now : Std.I64) :
@@ -180,7 +180,7 @@ def auth.extract_session
     ok (core.result.Result.Err auth.AuthError.SessionRequired)
 
 /-- [defguard_kernel::util::bytes_eq]: loop body 0:
-    Source: 'kernel/src/util.rs', lines 8:4-15:1
+    Source: 'prove/ports/defguard/kernel/src/util.rs', lines 8:4-15:1
     Visibility: public -/
 @[rust_loop_body]
 def util.bytes_eq_loop.body
@@ -199,7 +199,7 @@ def util.bytes_eq_loop.body
   else ok (done true)
 
 /-- [defguard_kernel::util::bytes_eq]: loop 0:
-    Source: 'kernel/src/util.rs', lines 8:4-15:1
+    Source: 'prove/ports/defguard/kernel/src/util.rs', lines 8:4-15:1
     Visibility: public -/
 @[rust_loop]
 def util.bytes_eq_loop
@@ -209,7 +209,7 @@ def util.bytes_eq_loop
     i
 
 /-- [defguard_kernel::util::bytes_eq]:
-    Source: 'kernel/src/util.rs', lines 3:0-15:1
+    Source: 'prove/ports/defguard/kernel/src/util.rs', lines 3:0-15:1
     Visibility: public -/
 def util.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -219,7 +219,7 @@ def util.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else util.bytes_eq_loop a b 0#usize
 
 /-- [defguard_kernel::auth::contains_name]: loop body 0:
-    Source: 'kernel/src/auth.rs', lines 113:4-120:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 113:4-120:1 -/
 @[rust_loop_body]
 def auth.contains_name_loop.body
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (n : Slice Std.U8)
@@ -241,7 +241,7 @@ def auth.contains_name_loop.body
   else ok (done false)
 
 /-- [defguard_kernel::auth::contains_name]: loop 0:
-    Source: 'kernel/src/auth.rs', lines 113:4-120:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 113:4-120:1 -/
 @[rust_loop]
 def auth.contains_name_loop
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (n : Slice Std.U8)
@@ -253,7 +253,7 @@ def auth.contains_name_loop
     i
 
 /-- [defguard_kernel::auth::contains_name]:
-    Source: 'kernel/src/auth.rs', lines 111:0-120:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 111:0-120:1 -/
 @[reducible]
 def auth.contains_name
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (n : Slice Std.U8) :
@@ -262,7 +262,7 @@ def auth.contains_name
   auth.contains_name_loop names n 0#usize
 
 /-- [defguard_kernel::auth::contains_any_group]: loop body 0:
-    Source: 'kernel/src/auth.rs', lines 125:4-132:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 125:4-132:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.contains_any_group_loop.body
@@ -285,7 +285,7 @@ def auth.contains_any_group_loop.body
   else ok (done false)
 
 /-- [defguard_kernel::auth::contains_any_group]: loop 0:
-    Source: 'kernel/src/auth.rs', lines 125:4-132:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 125:4-132:1
     Visibility: public -/
 @[rust_loop]
 def auth.contains_any_group_loop
@@ -298,7 +298,7 @@ def auth.contains_any_group_loop
     i
 
 /-- [defguard_kernel::auth::contains_any_group]:
-    Source: 'kernel/src/auth.rs', lines 123:0-132:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 123:0-132:1
     Visibility: public -/
 @[reducible]
 def auth.contains_any_group
@@ -308,7 +308,7 @@ def auth.contains_any_group
   auth.contains_any_group_loop u names 0#usize
 
 /-- [defguard_kernel::auth::find_user]: loop body 0:
-    Source: 'kernel/src/auth.rs', lines 136:4-143:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 136:4-143:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.find_user_loop.body
@@ -329,7 +329,7 @@ def auth.find_user_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::auth::find_user]: loop 0:
-    Source: 'kernel/src/auth.rs', lines 136:4-143:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 136:4-143:1
     Visibility: public -/
 @[rust_loop]
 def auth.find_user_loop
@@ -341,7 +341,7 @@ def auth.find_user_loop
     i
 
 /-- [defguard_kernel::auth::find_user]:
-    Source: 'kernel/src/auth.rs', lines 134:0-143:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 134:0-143:1
     Visibility: public -/
 @[reducible]
 def auth.find_user
@@ -351,7 +351,7 @@ def auth.find_user
   auth.find_user_loop us id 0#usize
 
 /-- [defguard_kernel::auth::Info]
-    Source: 'kernel/src/auth.rs', lines 148:0-152:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 148:0-152:1
     Visibility: public -/
 structure auth.Info where
   session : auth.Session
@@ -359,7 +359,7 @@ structure auth.Info where
   is_admin : Bool
 
 /-- [defguard_kernel::auth::session_info]:
-    Source: 'kernel/src/auth.rs', lines 155:0-178:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 155:0-178:1
     Visibility: public -/
 def auth.session_info
   (license_active : Bool) (cred : auth.Credential)
@@ -436,7 +436,7 @@ def auth.session_info
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [defguard_kernel::auth::admin_role]:
-    Source: 'kernel/src/auth.rs', lines 181:0-200:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 181:0-200:1
     Visibility: public -/
 def auth.admin_role
   (license_active : Bool) (cred : auth.Credential)
@@ -457,7 +457,7 @@ def auth.admin_role
   | core.result.Result.Err _ => ok r
 
 /-- [defguard_kernel::auth::find_user_by_name]: loop body 0:
-    Source: 'kernel/src/auth.rs', lines 204:4-211:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 204:4-211:1 -/
 @[rust_loop_body]
 def auth.find_user_by_name_loop.body
   (us : alloc.vec.Vec auth.User) («name» : Slice Std.U8) (i : Std.Usize) :
@@ -479,7 +479,7 @@ def auth.find_user_by_name_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::auth::find_user_by_name]: loop 0:
-    Source: 'kernel/src/auth.rs', lines 204:4-211:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 204:4-211:1 -/
 @[rust_loop]
 def auth.find_user_by_name_loop
   (us : alloc.vec.Vec auth.User) («name» : Slice Std.U8) (i : Std.Usize) :
@@ -490,7 +490,7 @@ def auth.find_user_by_name_loop
     i
 
 /-- [defguard_kernel::auth::find_user_by_name]:
-    Source: 'kernel/src/auth.rs', lines 202:0-211:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 202:0-211:1 -/
 @[reducible]
 def auth.find_user_by_name
   (us : alloc.vec.Vec auth.User) («name» : Slice Std.U8) :
@@ -499,7 +499,7 @@ def auth.find_user_by_name
   auth.find_user_by_name_loop us «name» 0#usize
 
 /-- [defguard_kernel::auth::user_for_admin_or_self]:
-    Source: 'kernel/src/auth.rs', lines 214:0-223:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 214:0-223:1
     Visibility: public -/
 def auth.user_for_admin_or_self
   (info : auth.Info) (us : alloc.vec.Vec auth.User) (username : Slice Std.U8) :
@@ -523,7 +523,7 @@ def auth.user_for_admin_or_self
     else ok (core.result.Result.Err auth.AuthError.Forbidden)
 
 /-- [defguard_kernel::auth::device_for_admin_or_self]: loop body 0:
-    Source: 'kernel/src/auth.rs', lines 230:4-237:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 230:4-237:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.device_for_admin_or_self_loop.body
@@ -556,7 +556,7 @@ def auth.device_for_admin_or_self_loop.body
   else ok (done (core.result.Result.Err auth.AuthError.NotFound))
 
 /-- [defguard_kernel::auth::device_for_admin_or_self]: loop 0:
-    Source: 'kernel/src/auth.rs', lines 230:4-237:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 230:4-237:1
     Visibility: public -/
 @[rust_loop]
 def auth.device_for_admin_or_self_loop
@@ -569,7 +569,7 @@ def auth.device_for_admin_or_self_loop
     i
 
 /-- [defguard_kernel::auth::device_for_admin_or_self]:
-    Source: 'kernel/src/auth.rs', lines 228:0-237:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 228:0-237:1
     Visibility: public -/
 @[reducible]
 def auth.device_for_admin_or_self
@@ -579,14 +579,14 @@ def auth.device_for_admin_or_self
   auth.device_for_admin_or_self_loop info ds id 0#usize
 
 /-- [defguard_kernel::ipalloc::Ip]
-    Source: 'kernel/src/ipalloc.rs', lines 8:0-11:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 8:0-11:1
     Visibility: public -/
 structure ipalloc.Ip where
   v4 : Bool
   bits : Std.U128
 
 /-- [defguard_kernel::ipalloc::Net]
-    Source: 'kernel/src/ipalloc.rs', lines 16:0-20:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 16:0-20:1
     Visibility: public -/
 structure ipalloc.Net where
   v4 : Bool
@@ -594,7 +594,7 @@ structure ipalloc.Net where
   «prefix» : Std.U8
 
 /-- [defguard_kernel::ipalloc::host_bits]:
-    Source: 'kernel/src/ipalloc.rs', lines 23:0-32:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 23:0-32:1
     Visibility: public -/
 def ipalloc.host_bits (n : ipalloc.Net) : Result Std.U32 := do
   let p ← lift (UScalar.cast .U32 n.prefix)
@@ -607,7 +607,7 @@ def ipalloc.host_bits (n : ipalloc.Net) : Result Std.U32 := do
        else 128#u32 - p
 
 /-- [defguard_kernel::ipalloc::network]:
-    Source: 'kernel/src/ipalloc.rs', lines 35:0-43:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 35:0-43:1
     Visibility: public -/
 def ipalloc.network (n : ipalloc.Net) : Result Std.U128 := do
   let h ← ipalloc.host_bits n
@@ -618,7 +618,7 @@ def ipalloc.network (n : ipalloc.Net) : Result Std.U128 := do
        n.ip - i
 
 /-- [defguard_kernel::ipalloc::broadcast]:
-    Source: 'kernel/src/ipalloc.rs', lines 46:0-54:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 46:0-54:1
     Visibility: public -/
 def ipalloc.broadcast (n : ipalloc.Net) : Result Std.U128 := do
   let h ← ipalloc.host_bits n
@@ -631,7 +631,7 @@ def ipalloc.broadcast (n : ipalloc.Net) : Result Std.U128 := do
     i + i1
 
 /-- [defguard_kernel::ipalloc::contains]:
-    Source: 'kernel/src/ipalloc.rs', lines 57:0-59:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 57:0-59:1
     Visibility: public -/
 def ipalloc.contains (n : ipalloc.Net) (ip : ipalloc.Ip) : Result Bool := do
   if n.v4 = ip.v4
@@ -644,7 +644,7 @@ def ipalloc.contains (n : ipalloc.Net) (ip : ipalloc.Ip) : Result Bool := do
   else ok false
 
 /-- [defguard_kernel::ipalloc::ip_in]: loop body 0:
-    Source: 'kernel/src/ipalloc.rs', lines 63:4-70:1 -/
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 63:4-70:1 -/
 @[rust_loop_body]
 def ipalloc.ip_in_loop.body
   (v : alloc.vec.Vec ipalloc.Ip) (ip : ipalloc.Ip) (i : Std.Usize) :
@@ -667,7 +667,7 @@ def ipalloc.ip_in_loop.body
   else ok (done false)
 
 /-- [defguard_kernel::ipalloc::ip_in]: loop 0:
-    Source: 'kernel/src/ipalloc.rs', lines 63:4-70:1 -/
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 63:4-70:1 -/
 @[rust_loop]
 def ipalloc.ip_in_loop
   (v : alloc.vec.Vec ipalloc.Ip) (ip : ipalloc.Ip) (i : Std.Usize) :
@@ -678,14 +678,14 @@ def ipalloc.ip_in_loop
     i
 
 /-- [defguard_kernel::ipalloc::ip_in]:
-    Source: 'kernel/src/ipalloc.rs', lines 61:0-70:1 -/
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 61:0-70:1 -/
 @[reducible]
 def ipalloc.ip_in
   (v : alloc.vec.Vec ipalloc.Ip) (ip : ipalloc.Ip) : Result Bool := do
   ipalloc.ip_in_loop v ip 0#usize
 
 /-- [defguard_kernel::ipalloc::assignable]:
-    Source: 'kernel/src/ipalloc.rs', lines 74:0-77:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 74:0-77:1
     Visibility: public -/
 def ipalloc.assignable
   (n : ipalloc.Net) (x : Std.U128) (used : alloc.vec.Vec ipalloc.Ip)
@@ -711,7 +711,7 @@ def ipalloc.assignable
           ok (¬ b1)
 
 /-- [defguard_kernel::ipalloc::first_free]: loop body 0:
-    Source: 'kernel/src/ipalloc.rs', lines 83:4-93:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 83:4-93:1
     Visibility: public -/
 @[rust_loop_body]
 def ipalloc.first_free_loop.body
@@ -732,7 +732,7 @@ def ipalloc.first_free_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::ipalloc::first_free]: loop 0:
-    Source: 'kernel/src/ipalloc.rs', lines 83:4-93:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 83:4-93:1
     Visibility: public -/
 @[rust_loop]
 def ipalloc.first_free_loop
@@ -745,7 +745,7 @@ def ipalloc.first_free_loop
     x
 
 /-- [defguard_kernel::ipalloc::first_free]:
-    Source: 'kernel/src/ipalloc.rs', lines 80:0-93:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 80:0-93:1
     Visibility: public -/
 def ipalloc.first_free
   (n : ipalloc.Net) (used : alloc.vec.Vec ipalloc.Ip)
@@ -757,7 +757,7 @@ def ipalloc.first_free
   ipalloc.first_free_loop n used reserved last x
 
 /-- [defguard_kernel::ipalloc::find_current]: loop body 0:
-    Source: 'kernel/src/ipalloc.rs', lines 98:4-105:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 98:4-105:1
     Visibility: public -/
 @[rust_loop_body]
 def ipalloc.find_current_loop.body
@@ -778,7 +778,7 @@ def ipalloc.find_current_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::ipalloc::find_current]: loop 0:
-    Source: 'kernel/src/ipalloc.rs', lines 98:4-105:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 98:4-105:1
     Visibility: public -/
 @[rust_loop]
 def ipalloc.find_current_loop
@@ -790,7 +790,7 @@ def ipalloc.find_current_loop
     i
 
 /-- [defguard_kernel::ipalloc::find_current]:
-    Source: 'kernel/src/ipalloc.rs', lines 96:0-105:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 96:0-105:1
     Visibility: public -/
 @[reducible]
 def ipalloc.find_current
@@ -800,7 +800,7 @@ def ipalloc.find_current
   ipalloc.find_current_loop current n 0#usize
 
 /-- [defguard_kernel::ipalloc::pick]:
-    Source: 'kernel/src/ipalloc.rs', lines 109:0-117:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 109:0-117:1
     Visibility: public -/
 def ipalloc.pick
   (n : ipalloc.Net) (used : alloc.vec.Vec ipalloc.Ip)
@@ -817,7 +817,7 @@ def ipalloc.pick
     | some _ => ok o
 
 /-- [defguard_kernel::ipalloc::assign_next_network_ip]: loop body 0:
-    Source: 'kernel/src/ipalloc.rs', lines 124:4-132:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 124:4-132:1
     Visibility: public -/
 @[rust_loop_body]
 def ipalloc.assign_next_network_ip_loop.body
@@ -844,7 +844,7 @@ def ipalloc.assign_next_network_ip_loop.body
   else ok (done (core.result.Result.Ok ips))
 
 /-- [defguard_kernel::ipalloc::assign_next_network_ip]: loop 0:
-    Source: 'kernel/src/ipalloc.rs', lines 124:4-132:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 124:4-132:1
     Visibility: public -/
 @[rust_loop]
 def ipalloc.assign_next_network_ip_loop
@@ -860,7 +860,7 @@ def ipalloc.assign_next_network_ip_loop
     (ips, k)
 
 /-- [defguard_kernel::ipalloc::assign_next_network_ip]:
-    Source: 'kernel/src/ipalloc.rs', lines 121:0-132:1
+    Source: 'prove/ports/defguard/kernel/src/ipalloc.rs', lines 121:0-132:1
     Visibility: public -/
 @[reducible]
 def ipalloc.assign_next_network_ip
@@ -873,23 +873,23 @@ def ipalloc.assign_next_network_ip
     (alloc.vec.Vec.new ipalloc.Ip) 0#usize
 
 /-- [defguard_kernel::lockout::WINDOW_NS]
-    Source: 'kernel/src/lockout.rs', lines 8:0-8:42
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 8:0-8:42
     Visibility: public -/
 @[global_simps, irreducible] def lockout.WINDOW_NS : Std.I64 := 60000000000#i64
 
 /-- [defguard_kernel::lockout::COUNT]
-    Source: 'kernel/src/lockout.rs', lines 10:0-10:25
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 10:0-10:25
     Visibility: public -/
 @[global_simps, irreducible] def lockout.COUNT : Std.U32 := 5#u32
 
 /-- [defguard_kernel::lockout::TIMEOUT_NS]
-    Source: 'kernel/src/lockout.rs', lines 12:0-12:44
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 12:0-12:44
     Visibility: public -/
 @[global_simps, irreducible]
 def lockout.TIMEOUT_NS : Std.I64 := 300000000000#i64
 
 /-- [defguard_kernel::lockout::FailedLogin]
-    Source: 'kernel/src/lockout.rs', lines 16:0-21:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 16:0-21:1
     Visibility: public -/
 structure lockout.FailedLogin where
   key : alloc.vec.Vec Std.U8
@@ -898,7 +898,7 @@ structure lockout.FailedLogin where
   last_attempt : Std.I64
 
 /-- [defguard_kernel::lockout::{impl core::clone::Clone for defguard_kernel::lockout::FailedLogin}::clone]:
-    Source: 'kernel/src/lockout.rs', lines 15:9-15:14
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 15:9-15:14
     Visibility: public -/
 def lockout.FailedLogin.Insts.CoreCloneClone.clone
   (self : lockout.FailedLogin) : Result lockout.FailedLogin := do
@@ -909,7 +909,7 @@ def lockout.FailedLogin.Insts.CoreCloneClone.clone
   ok { key := v, attempt_count := i, first_attempt := i1, last_attempt := i2 }
 
 /-- Trait implementation: [defguard_kernel::lockout::{impl core::clone::Clone for defguard_kernel::lockout::FailedLogin}]
-    Source: 'kernel/src/lockout.rs', lines 15:9-15:14 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 15:9-15:14 -/
 @[reducible]
 def lockout.FailedLogin.Insts.CoreCloneClone : core.clone.Clone
   lockout.FailedLogin := {
@@ -917,7 +917,7 @@ def lockout.FailedLogin.Insts.CoreCloneClone : core.clone.Clone
 }
 
 /-- [defguard_kernel::lockout::should_prevent_login]:
-    Source: 'kernel/src/lockout.rs', lines 24:0-26:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 24:0-26:1
     Visibility: public -/
 def lockout.should_prevent_login
   (f : lockout.FailedLogin) (now : Std.I64) : Result Bool := do
@@ -927,7 +927,7 @@ def lockout.should_prevent_login
   else ok false
 
 /-- [defguard_kernel::lockout::should_reset_counter]:
-    Source: 'kernel/src/lockout.rs', lines 29:0-31:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 29:0-31:1
     Visibility: public -/
 def lockout.should_reset_counter
   (f : lockout.FailedLogin) (now : Std.I64) : Result Bool := do
@@ -942,7 +942,7 @@ def lockout.should_reset_counter
        ok (i1 > lockout.TIMEOUT_NS)
 
 /-- [defguard_kernel::lockout::find_entry]: loop body 0:
-    Source: 'kernel/src/lockout.rs', lines 38:4-45:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 38:4-45:1
     Visibility: public -/
 @[rust_loop_body]
 def lockout.find_entry_loop.body
@@ -965,7 +965,7 @@ def lockout.find_entry_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::lockout::find_entry]: loop 0:
-    Source: 'kernel/src/lockout.rs', lines 38:4-45:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 38:4-45:1
     Visibility: public -/
 @[rust_loop]
 def lockout.find_entry_loop
@@ -978,7 +978,7 @@ def lockout.find_entry_loop
     i
 
 /-- [defguard_kernel::lockout::find_entry]:
-    Source: 'kernel/src/lockout.rs', lines 36:0-45:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 36:0-45:1
     Visibility: public -/
 @[reducible]
 def lockout.find_entry
@@ -988,7 +988,7 @@ def lockout.find_entry
   lockout.find_entry_loop map key 0#usize
 
 /-- [defguard_kernel::lockout::set_entry]:
-    Source: 'kernel/src/lockout.rs', lines 48:0-54:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 48:0-54:1 -/
 def lockout.set_entry
   (map : alloc.vec.Vec lockout.FailedLogin) (i : Std.Usize)
   (f : lockout.FailedLogin) :
@@ -1006,7 +1006,7 @@ def lockout.set_entry
   else ok res
 
 /-- [defguard_kernel::lockout::incremented]:
-    Source: 'kernel/src/lockout.rs', lines 57:0-64:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 57:0-64:1 -/
 def lockout.incremented
   (f : lockout.FailedLogin) (now : Std.I64) : Result lockout.FailedLogin := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 f.key
@@ -1014,7 +1014,7 @@ def lockout.incremented
   ok { f with key := v, attempt_count := i, last_attempt := now }
 
 /-- [defguard_kernel::lockout::fresh]: loop body 0:
-    Source: 'kernel/src/lockout.rs', lines 70:4-73:5 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 70:4-73:5 -/
 @[rust_loop_body]
 def lockout.fresh_loop.body
   (key : Slice Std.U8) (k : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1031,7 +1031,7 @@ def lockout.fresh_loop.body
   else ok (done k)
 
 /-- [defguard_kernel::lockout::fresh]: loop 0:
-    Source: 'kernel/src/lockout.rs', lines 70:4-73:5 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 70:4-73:5 -/
 @[rust_loop]
 def lockout.fresh_loop
   (key : Slice Std.U8) (k : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -1042,7 +1042,7 @@ def lockout.fresh_loop
     (k, i)
 
 /-- [defguard_kernel::lockout::fresh]:
-    Source: 'kernel/src/lockout.rs', lines 67:0-75:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 67:0-75:1 -/
 def lockout.fresh
   (key : Slice Std.U8) (now : Std.I64) : Result lockout.FailedLogin := do
   let k ← lockout.fresh_loop key (alloc.vec.Vec.new Std.U8) 0#usize
@@ -1055,7 +1055,7 @@ def lockout.fresh
     }
 
 /-- [defguard_kernel::lockout::log_failed_attempt]:
-    Source: 'kernel/src/lockout.rs', lines 78:0-93:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 78:0-93:1
     Visibility: public -/
 def lockout.log_failed_attempt
   (map : alloc.vec.Vec lockout.FailedLogin) (key : Slice Std.U8)
@@ -1081,7 +1081,7 @@ def lockout.log_failed_attempt
          lockout.set_entry map i fl1
 
 /-- [defguard_kernel::lockout::verify_username]:
-    Source: 'kernel/src/lockout.rs', lines 97:0-108:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 97:0-108:1
     Visibility: public -/
 def lockout.verify_username
   (map : alloc.vec.Vec lockout.FailedLogin) (key : Slice Std.U8)
@@ -1110,14 +1110,14 @@ def lockout.verify_username
       ok (v, false)
 
 /-- [defguard_kernel::lockout::Account]
-    Source: 'kernel/src/lockout.rs', lines 112:0-115:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 112:0-115:1
     Visibility: public -/
 structure lockout.Account where
   username : alloc.vec.Vec Std.U8
   email : alloc.vec.Vec Std.U8
 
 /-- [defguard_kernel::lockout::lower]:
-    Source: 'kernel/src/lockout.rs', lines 118:0-120:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 118:0-120:1 -/
 def lockout.lower (b : Std.U8) : Result Std.U8 := do
   if b >= 65#u8
   then if b <= 90#u8
@@ -1126,7 +1126,7 @@ def lockout.lower (b : Std.U8) : Result Std.U8 := do
   else ok b
 
 /-- [defguard_kernel::lockout::eq_lower]: loop body 0:
-    Source: 'kernel/src/lockout.rs', lines 127:4-134:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 127:4-134:1 -/
 @[rust_loop_body]
 def lockout.eq_lower_loop.body
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
@@ -1146,7 +1146,7 @@ def lockout.eq_lower_loop.body
   else ok (done true)
 
 /-- [defguard_kernel::lockout::eq_lower]: loop 0:
-    Source: 'kernel/src/lockout.rs', lines 127:4-134:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 127:4-134:1 -/
 @[rust_loop]
 def lockout.eq_lower_loop
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -1155,7 +1155,7 @@ def lockout.eq_lower_loop
     i
 
 /-- [defguard_kernel::lockout::eq_lower]:
-    Source: 'kernel/src/lockout.rs', lines 122:0-134:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 122:0-134:1 -/
 def lockout.eq_lower (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
   let i1 := Slice.len b
@@ -1164,7 +1164,7 @@ def lockout.eq_lower (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else lockout.eq_lower_loop a b 0#usize
 
 /-- [defguard_kernel::lockout::find_by_username]: loop body 0:
-    Source: 'kernel/src/lockout.rs', lines 138:4-145:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 138:4-145:1 -/
 @[rust_loop_body]
 def lockout.find_by_username_loop.body
   (us : alloc.vec.Vec lockout.Account) («name» : Slice Std.U8)
@@ -1186,7 +1186,7 @@ def lockout.find_by_username_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::lockout::find_by_username]: loop 0:
-    Source: 'kernel/src/lockout.rs', lines 138:4-145:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 138:4-145:1 -/
 @[rust_loop]
 def lockout.find_by_username_loop
   (us : alloc.vec.Vec lockout.Account) («name» : Slice Std.U8)
@@ -1198,7 +1198,7 @@ def lockout.find_by_username_loop
     i
 
 /-- [defguard_kernel::lockout::find_by_username]:
-    Source: 'kernel/src/lockout.rs', lines 136:0-145:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 136:0-145:1 -/
 @[reducible]
 def lockout.find_by_username
   (us : alloc.vec.Vec lockout.Account) («name» : Slice Std.U8) :
@@ -1207,7 +1207,7 @@ def lockout.find_by_username
   lockout.find_by_username_loop us «name» 0#usize
 
 /-- [defguard_kernel::lockout::find_by_email]: loop body 0:
-    Source: 'kernel/src/lockout.rs', lines 149:4-156:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 149:4-156:1 -/
 @[rust_loop_body]
 def lockout.find_by_email_loop.body
   (us : alloc.vec.Vec lockout.Account) (email : Slice Std.U8) (i : Std.Usize) :
@@ -1228,7 +1228,7 @@ def lockout.find_by_email_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::lockout::find_by_email]: loop 0:
-    Source: 'kernel/src/lockout.rs', lines 149:4-156:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 149:4-156:1 -/
 @[rust_loop]
 def lockout.find_by_email_loop
   (us : alloc.vec.Vec lockout.Account) (email : Slice Std.U8) (i : Std.Usize) :
@@ -1239,7 +1239,7 @@ def lockout.find_by_email_loop
     i
 
 /-- [defguard_kernel::lockout::find_by_email]:
-    Source: 'kernel/src/lockout.rs', lines 147:0-156:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 147:0-156:1 -/
 @[reducible]
 def lockout.find_by_email
   (us : alloc.vec.Vec lockout.Account) (email : Slice Std.U8) :
@@ -1248,7 +1248,7 @@ def lockout.find_by_email
   lockout.find_by_email_loop us email 0#usize
 
 /-- [defguard_kernel::lockout::find_by_username_or_email]:
-    Source: 'kernel/src/lockout.rs', lines 160:0-165:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 160:0-165:1
     Visibility: public -/
 def lockout.find_by_username_or_email
   (us : alloc.vec.Vec lockout.Account) (input : Slice Std.U8) :
@@ -1260,7 +1260,7 @@ def lockout.find_by_username_or_email
   | some _ => ok o
 
 /-- [defguard_kernel::lockout::LoginOutcome]
-    Source: 'kernel/src/lockout.rs', lines 168:0-177:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 168:0-177:1
     Visibility: public -/
 @[discriminant isize]
 inductive lockout.LoginOutcome where
@@ -1270,7 +1270,7 @@ inductive lockout.LoginOutcome where
 | UnknownUser : lockout.LoginOutcome
 
 /-- [defguard_kernel::lockout::authenticate]:
-    Source: 'kernel/src/lockout.rs', lines 184:0-205:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 184:0-205:1
     Visibility: public -/
 def lockout.authenticate
   (map : alloc.vec.Vec lockout.FailedLogin)
@@ -1312,14 +1312,14 @@ def lockout.authenticate
         ok (v, lockout.LoginOutcome.WrongPassword)
 
 /-- [defguard_kernel::ranges::Range]
-    Source: 'kernel/src/ranges.rs', lines 9:0-12:1
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 9:0-12:1
     Visibility: public -/
 structure ranges.Range where
   start : Std.U128
   «end» : Std.U128
 
 /-- [defguard_kernel::ranges::next]:
-    Source: 'kernel/src/ranges.rs', lines 15:0-17:1
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 15:0-17:1
     Visibility: public -/
 def ranges.next (x : Std.U128) (max : Std.U128) : Result Std.U128 := do
   if x >= max
@@ -1327,7 +1327,7 @@ def ranges.next (x : Std.U128) (max : Std.U128) : Result Std.U128 := do
   else x + 1#u128
 
 /-- [defguard_kernel::ranges::insert_by_start]: loop body 0:
-    Source: 'kernel/src/ranges.rs', lines 23:4-26:5
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 23:4-26:5
     Visibility: public -/
 @[rust_loop_body]
 def ranges.insert_by_start_loop0.body
@@ -1351,7 +1351,7 @@ def ranges.insert_by_start_loop0.body
   else ok (done (r, res, i))
 
 /-- [defguard_kernel::ranges::insert_by_start]: loop 0:
-    Source: 'kernel/src/ranges.rs', lines 23:4-26:5
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 23:4-26:5
     Visibility: public -/
 @[rust_loop]
 def ranges.insert_by_start_loop0
@@ -1364,7 +1364,7 @@ def ranges.insert_by_start_loop0
     (res, i)
 
 /-- [defguard_kernel::ranges::insert_by_start]: loop body 1:
-    Source: 'kernel/src/ranges.rs', lines 28:4-31:5
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 28:4-31:5
     Visibility: public -/
 @[rust_loop_body]
 def ranges.insert_by_start_loop1.body
@@ -1385,7 +1385,7 @@ def ranges.insert_by_start_loop1.body
   else ok (done res)
 
 /-- [defguard_kernel::ranges::insert_by_start]: loop 1:
-    Source: 'kernel/src/ranges.rs', lines 28:4-31:5
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 28:4-31:5
     Visibility: public -/
 @[rust_loop]
 def ranges.insert_by_start_loop1
@@ -1398,7 +1398,7 @@ def ranges.insert_by_start_loop1
     (res, i)
 
 /-- [defguard_kernel::ranges::insert_by_start]:
-    Source: 'kernel/src/ranges.rs', lines 20:0-33:1
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 20:0-33:1
     Visibility: public -/
 def ranges.insert_by_start
   (v : alloc.vec.Vec ranges.Range) (r : ranges.Range) :
@@ -1410,7 +1410,7 @@ def ranges.insert_by_start
   ranges.insert_by_start_loop1 v res1 i
 
 /-- [defguard_kernel::ranges::sort_by_start]: loop body 0:
-    Source: 'kernel/src/ranges.rs', lines 40:4-43:5
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 40:4-43:5
     Visibility: public -/
 @[rust_loop_body]
 def ranges.sort_by_start_loop.body
@@ -1431,7 +1431,7 @@ def ranges.sort_by_start_loop.body
   else ok (done res)
 
 /-- [defguard_kernel::ranges::sort_by_start]: loop 0:
-    Source: 'kernel/src/ranges.rs', lines 40:4-43:5
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 40:4-43:5
     Visibility: public -/
 @[rust_loop]
 def ranges.sort_by_start_loop
@@ -1444,7 +1444,7 @@ def ranges.sort_by_start_loop
     (res, i)
 
 /-- [defguard_kernel::ranges::sort_by_start]:
-    Source: 'kernel/src/ranges.rs', lines 37:0-45:1
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 37:0-45:1
     Visibility: public -/
 @[reducible]
 def ranges.sort_by_start
@@ -1452,7 +1452,7 @@ def ranges.sort_by_start
   ranges.sort_by_start_loop v (alloc.vec.Vec.new ranges.Range) 0#usize
 
 /-- [defguard_kernel::ranges::sweep]: loop body 0:
-    Source: 'kernel/src/ranges.rs', lines 54:4-69:5 -/
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 54:4-69:5 -/
 @[rust_loop_body]
 def ranges.sweep_loop.body
   (rs : alloc.vec.Vec ranges.Range) (max : Std.U128)
@@ -1491,7 +1491,7 @@ def ranges.sweep_loop.body
   else ok (done (merged, cur_start, cur_end))
 
 /-- [defguard_kernel::ranges::sweep]: loop 0:
-    Source: 'kernel/src/ranges.rs', lines 54:4-69:5 -/
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 54:4-69:5 -/
 @[rust_loop]
 def ranges.sweep_loop
   (rs : alloc.vec.Vec ranges.Range) (max : Std.U128)
@@ -1505,7 +1505,7 @@ def ranges.sweep_loop
     (merged, cur_start, cur_end, next_up, i)
 
 /-- [defguard_kernel::ranges::sweep]:
-    Source: 'kernel/src/ranges.rs', lines 48:0-72:1 -/
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 48:0-72:1 -/
 def ranges.sweep
   (rs : alloc.vec.Vec ranges.Range) (max : Std.U128) :
   Result (alloc.vec.Vec ranges.Range)
@@ -1521,7 +1521,7 @@ def ranges.sweep
     ranges.Range)
 
 /-- [defguard_kernel::ranges::merge_ranges]:
-    Source: 'kernel/src/ranges.rs', lines 75:0-81:1
+    Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 75:0-81:1
     Visibility: public -/
 def ranges.merge_ranges
   (input : alloc.vec.Vec ranges.Range) (max : Std.U128) :
@@ -1534,7 +1534,7 @@ def ranges.merge_ranges
        ranges.sweep sorted max
 
 /-- [defguard_kernel::token::Token]
-    Source: 'kernel/src/token.rs', lines 8:0-14:1
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 8:0-14:1
     Visibility: public -/
 structure token.Token where
   user_id : Std.U64
@@ -1543,7 +1543,7 @@ structure token.Token where
   enrollment_type : Bool
 
 /-- [defguard_kernel::token::TokenError]
-    Source: 'kernel/src/token.rs', lines 17:0-26:1
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 17:0-26:1
     Visibility: public -/
 @[discriminant isize]
 inductive token.TokenError where
@@ -1553,13 +1553,13 @@ inductive token.TokenError where
 | SessionExpired : token.TokenError
 
 /-- [defguard_kernel::token::is_expired]:
-    Source: 'kernel/src/token.rs', lines 29:0-31:1
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 29:0-31:1
     Visibility: public -/
 def token.is_expired (t : token.Token) (now : Std.I64) : Result Bool := do
   ok (t.expires_at < now)
 
 /-- [defguard_kernel::token::is_session_valid]:
-    Source: 'kernel/src/token.rs', lines 36:0-41:1
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 36:0-41:1
     Visibility: public -/
 def token.is_session_valid
   (t : token.Token) (now : Std.I64) (timeout_ns : Std.I64) : Result Bool := do
@@ -1569,14 +1569,14 @@ def token.is_session_valid
               ok (now < i)
 
 /-- [defguard_kernel::token::same]:
-    Source: 'kernel/src/token.rs', lines 44:0-50:1 -/
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 44:0-50:1 -/
 def token.same (t : token.Token) : Result token.Token := do
   match t.used_at with
   | none => ok t
   | some _ => ok t
 
 /-- [defguard_kernel::token::start_session]:
-    Source: 'kernel/src/token.rs', lines 54:0-71:1
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 54:0-71:1
     Visibility: public -/
 def token.start_session
   (t : token.Token) (now : Std.I64) (timeout_ns : Std.I64) :
@@ -1604,7 +1604,7 @@ def token.start_session
         ok (t1, core.result.Result.Err token.TokenError.TokenUsed)
 
 /-- [defguard_kernel::token::validate_session]:
-    Source: 'kernel/src/token.rs', lines 75:0-83:1
+    Source: 'prove/ports/defguard/kernel/src/token.rs', lines 75:0-83:1
     Visibility: public -/
 def token.validate_session
   (t : token.Token) (now : Std.I64) (timeout_ns : Std.I64) :

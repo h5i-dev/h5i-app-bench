@@ -1,6 +1,8 @@
 import Verified.LoginGate
 import Verified.Guards
 import Verified.Tokens
+import Verified.IpAlloc
+import Verified.Ranges
 /-!
 # defguard: the security properties
 
@@ -147,5 +149,61 @@ theorem session_outlives_token (t : token.Token) (now timeout u : I64)
     (hin : now.val < u.val + timeout.val) (hb : u.val + timeout.val ≤ I64.max) (hb' : I64.min ≤ u.val + timeout.val) :
     token.validate_session t now timeout = ok (.Ok t.user_id) :=
   Verified.session_outlives_token he hu hin hb hb'
+
+/-! ## Device addresses (`db/models/device.rs` `assign_next_network_ip`) -/
+
+/-- A fresh assignment gives each subnet of the location an address inside
+it that is not its network, broadcast or gateway address and is neither
+used nor reserved, and it is the lowest such address. -/
+theorem fresh_addresses_valid (nets : alloc.vec.Vec ipalloc.Net) (used reserved ips : alloc.vec.Vec ipalloc.Ip)
+    (h : ipalloc.assign_next_network_ip nets used reserved none = ok (.Ok ips)) :
+    ips.val.length = nets.val.length ∧ ∀ k (h1 : k < nets.val.length) (h2 : k < ips.val.length),
+      Assignable nets.val[k] used.val reserved.val ips.val[k] ∧
+      ∀ ip', Assignable nets.val[k] used.val reserved.val ip' → ips.val[k].bits.val ≤ ip'.bits.val :=
+  Verified.fresh_addresses_valid h
+
+/-- `NetworkFull` is reported only for a subnet with no assignable address. -/
+theorem full_only_when_full (nets : alloc.vec.Vec ipalloc.Net) (used reserved : alloc.vec.Vec ipalloc.Ip) (k : Usize)
+    (h : ipalloc.assign_next_network_ip nets used reserved none = ok (.Err k)) :
+    ∃ hk : k.val < nets.val.length, ∀ ip, ¬ Assignable nets.val[k.val] used.val reserved.val ip :=
+  Verified.full_only_when_full h
+
+/-- Finding: on reassignment, an address the device already has inside a
+subnet is kept without any of the checks a fresh address gets. -/
+theorem kept_address_unchecked (nets : alloc.vec.Vec ipalloc.Net) (used reserved c ips : alloc.vec.Vec ipalloc.Ip)
+    (ip : ipalloc.Ip) (k : Nat) (h1 : k < nets.val.length) (h2 : k < ips.val.length)
+    (h : ipalloc.assign_next_network_ip nets used reserved (some c) = ok (.Ok ips))
+    (hc : c.val.find? (fun x => decide (InNet nets.val[k] x)) = some ip) :
+    ips.val[k] = ip :=
+  Verified.kept_address_unchecked k h1 h2 h hc
+
+/-- Finding, concretely: a device whose address is now the subnet's gateway
+keeps it, an address no fresh assignment would give. -/
+theorem keeps_gateway_address (nets : alloc.vec.Vec ipalloc.Net) (used reserved c ips : alloc.vec.Vec ipalloc.Ip)
+    (k : Nat) (h1 : k < nets.val.length) (h2 : k < ips.val.length)
+    (hc : c.val = [⟨nets.val[k].v4, nets.val[k].ip⟩])
+    (h : ipalloc.assign_next_network_ip nets used reserved (some c) = ok (.Ok ips)) :
+    ips.val[k] = ⟨nets.val[k].v4, nets.val[k].ip⟩ ∧ ¬ Assignable nets.val[k] used.val reserved.val ips.val[k] :=
+  Verified.keeps_gateway_address k h1 h2 hc h
+
+/-! ## Firewall ranges (`enterprise/utils.rs` `merge_ranges`) -/
+
+/-- Merging the port or address ranges of a firewall rule neither opens nor
+closes any value: the result covers exactly what the input covers. -/
+theorem merge_ranges_exact (input out : alloc.vec.Vec ranges.Range) (max : U128)
+    (hwf : ∀ r ∈ input.val, r.start.val ≤ r.end.val ∧ r.end.val ≤ max.val)
+    (h : ranges.merge_ranges input max = ok out) :
+    ∀ x, InRanges out.val x ↔ InRanges input.val x :=
+  Verified.merge_ranges_ok input out max hwf h
+
+/-- Finding: the merged ranges can overlap. With ports `1024-65535` and
+`2000`, `next(65535)` wraps to 0, so `2000` is not merged in. -/
+theorem merge_ranges_overlap :
+    ∃ input out : alloc.vec.Vec ranges.Range,
+      input.val = [⟨1024#u128, 65535#u128⟩, ⟨2000#u128, 2000#u128⟩] ∧
+      ranges.merge_ranges input 65535#u128 = ok out ∧ out.val = input.val ∧ ¬ PairwiseDisjoint out.val := by
+  refine ⟨Verified.ex_in, Verified.ex_in, Verified.ex_in_val, Verified.merge_ex_in, rfl, ?_⟩
+  rw [Verified.ex_in_val]
+  simp [PairwiseDisjoint]
 
 end defguard_kernel.Properties

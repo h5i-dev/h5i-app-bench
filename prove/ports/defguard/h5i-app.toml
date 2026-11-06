@@ -19,6 +19,12 @@ theorems = [
   "defguard_kernel.Properties.token_single_session",
   "defguard_kernel.Properties.enrollment_session_sound",
   "defguard_kernel.Properties.session_outlives_token",
+  "defguard_kernel.Properties.fresh_addresses_valid",
+  "defguard_kernel.Properties.full_only_when_full",
+  "defguard_kernel.Properties.kept_address_unchecked",
+  "defguard_kernel.Properties.keeps_gateway_address",
+  "defguard_kernel.Properties.merge_ranges_exact",
+  "defguard_kernel.Properties.merge_ranges_overlap",
   "defguard_kernel.Verified.verify_username_ok",
   "defguard_kernel.Verified.log_failed_attempt_ok",
   "defguard_kernel.Verified.find_account_ok",
@@ -119,3 +125,57 @@ name = "fix_validate_checks_expiry"
 file = "kernel/src/token.rs"
 old = "if !is_session_valid(t, now, timeout_ns) {"
 new = "if !is_session_valid(t, now, timeout_ns) || is_expired(t, now) {"
+
+[[mutant]]
+name = "gateway_assignable"
+file = "kernel/src/ipalloc.rs"
+old = "!(x == network(n) || x == broadcast(n) || x == n.ip)"
+new = "!(x == network(n) || x == broadcast(n))"
+
+[[mutant]]
+name = "reserved_ignored"
+file = "kernel/src/ipalloc.rs"
+old = " && !ip_in(reserved, &ip)"
+new = ""
+
+[[mutant]]
+name = "used_ignored"
+file = "kernel/src/ipalloc.rs"
+old = " && !ip_in(used, &ip)"
+new = ""
+
+[[mutant]]
+name = "first_host_skipped"
+file = "kernel/src/ipalloc.rs"
+old = "if assignable(n, x, used, reserved) {"
+new = "if assignable(n, x, used, reserved) && x != network(n) + 1 {"
+
+[[mutant]]
+name = "fix_recheck_kept_address"
+file = "kernel/src/ipalloc.rs"
+old = "            Some(ip) => Some(ip),"
+new = "            Some(ip) => if assignable(n, ip.bits, used, reserved) { Some(ip) } else { first_free(n, used, reserved) },"
+
+[[mutant]]
+name = "merge_always"
+file = "kernel/src/ranges.rs"
+old = "if next_up >= s {"
+new = "if true {"
+
+[[mutant]]
+name = "merge_end_shrinks"
+file = "kernel/src/ranges.rs"
+old = "if e >= cur_end {"
+new = "if true {"
+
+[[mutant]]
+name = "last_range_dropped"
+file = "kernel/src/ranges.rs"
+old = "});\n    merged\n}"
+new = "});\n    Vec::new()\n}"
+
+[[mutant]]
+name = "fix_next_saturates"
+file = "kernel/src/ranges.rs"
+old = "if x >= max { 0 } else { x + 1 }"
+new = "if x >= max { max } else { x + 1 }"
