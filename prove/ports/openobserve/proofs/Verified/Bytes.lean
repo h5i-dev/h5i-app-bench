@@ -195,4 +195,134 @@ theorem take_succ_eq {α} (l : List α) (j : Nat) (h : j < l.length) :
   · simp_all
   · simp_all
 
+theorem splitAcc_drop (s : List U8) (j : Nat) (h : j < s.length) (cur : List Nat) :
+    splitAcc cur (nats (s.drop j)) = if s[j].val = 47 then cur :: splitAcc [] (nats (s.drop (j+1)))
+      else splitAcc (cur ++ [s[j].val]) (nats (s.drop (j+1))) := by
+  rw [List.drop_eq_getElem_cons h]; simp only [nats, List.map_cons, splitAcc]
+
+@[step] theorem split_slash_spec (s : Slice U8) (hs : s.length < Usize.max) :
+    bytes.split_slash s ⦃ v => v.val.map (fun w => nats w.val) = splitSlash (nats s.val) ⦄ := by
+  unfold bytes.split_slash bytes.split_slash_loop
+  apply WP.spec_bind (Pₘ := fun (x : alloc.vec.Vec (alloc.vec.Vec U8) × alloc.vec.Vec U8) =>
+    x.1.val.length ≤ s.length ∧
+    x.1.val.map (fun w => nats w.val) ++ [nats x.2.val] = splitSlash (nats s.val))
+  · apply loop.spec_decr_nat
+      (measure := fun (x : alloc.vec.Vec (alloc.vec.Vec U8) × alloc.vec.Vec U8 × Usize) => s.length - x.2.2.val)
+      (inv := fun x => x.2.2.val ≤ s.length ∧ x.1.val.length + x.2.1.val.length ≤ x.2.2.val ∧
+        x.1.val.map (fun w => nats w.val) ++ splitAcc (nats x.2.1.val) (nats (s.val.drop x.2.2.val)) =
+          splitSlash (nats s.val))
+    · rintro ⟨out, cur, j⟩ ⟨h1, h2, h3⟩
+      simp only at h1 h2 h3
+      unfold bytes.split_slash_loop.body; simp only []
+      have hn : out.val.length + cur.val.length < Usize.max := by scalar_tac
+      split
+      · rename_i hj
+        have hj' : j.val < s.val.length := by scalar_tac
+        have hsa := splitAcc_drop s.val j.val hj' (nats cur.val)
+        step*
+        by_cases hc : i2 = 47#u8
+        · simp only [hc, if_true]
+          step*
+          refine ⟨by scalar_tac, by simp [x_post]; scalar_tac, ?_, by scalar_tac⟩
+          rw [← h3, hsa, i3_post]
+          have : (s.val[j.val]).val = 47 := by rw [← i2_post, hc]; rfl
+          simp [this, x_post, nats]
+        · simp only [hc, if_false]
+          step*
+          refine ⟨by scalar_tac, by simp [x_post]; scalar_tac, ?_, by scalar_tac⟩
+          rw [← h3, hsa, i3_post]
+          have : ¬ (s.val[j.val]).val = 47 := by
+            intro h; apply hc; rw [i2_post]; apply UScalar.eq_of_val_eq; simpa using h
+          simp [this, x_post, nats, i2_post]
+      · simp only [WP.spec_ok]
+        have : s.val.drop j.val = [] := List.drop_eq_nil_of_le (by scalar_tac)
+        rw [this] at h3
+        refine ⟨by scalar_tac, ?_⟩
+        simpa [splitAcc, nats] using h3
+    · simp [splitSlash, nats]
+  · rintro ⟨out, cur⟩ ⟨h1, h2⟩
+    simp only at h1 h2
+    step*
+    rw [v_post, ← h2]; simp
+
+theorem takeWhile_len_stop {α} (l : List α) (p : α → Bool) (j : Nat)
+    (hall : (l.take j).all p) (hj : j < l.length) (hn : p l[j] = false) :
+    (l.takeWhile p).length = j := by
+  induction l generalizing j with
+  | nil => simp at hj
+  | cons a t ih =>
+    cases j with
+    | zero => simp_all
+    | succ k =>
+      simp only [List.take_succ_cons, List.all_cons, Bool.and_eq_true] at hall
+      simp only [List.takeWhile_cons, hall.1, if_true, List.length_cons]
+      simp at hj
+      rw [ih k hall.2 (by omega) (by simpa using hn)]
+
+@[step] theorem find_byte_spec (s : Slice U8) (c : U8) :
+    bytes.find_byte s c ⦃ i => i.val = (s.val.takeWhile (fun x => x ≠ c)).length ⦄ := by
+  unfold bytes.find_byte bytes.find_byte_loop
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => s.length - j.val)
+    (inv := fun j => j.val ≤ s.length ∧ (s.val.take j.val).all (fun x => x ≠ c))
+  · rintro j ⟨hj, hk⟩
+    unfold bytes.find_byte_loop.body; simp only []
+    step*
+    · rw [takeWhile_len_stop _ _ j.val hk (by scalar_tac) (by simp_all)]
+    · refine ⟨by scalar_tac, ?_, by scalar_tac⟩
+      rw [i3_post, take_succ_eq _ _ (by scalar_tac)]
+      simp only [List.all_append, Bool.and_eq_true, List.all_cons, List.all_nil, Bool.and_true]
+      refine ⟨by simpa using hk, ?_⟩
+      simp only [decide_eq_true_eq]
+      intro h; apply ‹¬ _›; rw [i2_post, h]
+    · have : s.val.take j.val = s.val := List.take_of_length_le (by scalar_tac)
+      rw [this] at hk
+      rw [List.takeWhile_eq_self_iff.2 (by simpa using hk)]
+      simp
+  · simp
+
+theorem takeWhile_lt_iff {α} (l : List α) (c : α) [DecidableEq α] :
+    (l.takeWhile (fun x => decide (x ≠ c))).length < l.length ↔ c ∈ l := by
+  induction l with
+  | nil => simp
+  | cons a t ih =>
+    by_cases h : a = c
+    · subst h; simp
+    · rw [List.takeWhile_cons, if_pos (by simpa using h)]
+      simp only [List.length_cons, List.mem_cons]
+      rw [Nat.add_lt_add_iff_right, ih]
+      constructor
+      · exact Or.inr
+      · rintro (h' | h'); exact absurd h'.symm h; exact h'
+
+@[step] theorem split_once_spec (s : Slice U8) (c : U8) :
+    bytes.split_once s c ⦃ o => o.isSome = decide (c ∈ s.val) ⦄ := by
+  unfold bytes.split_once
+  step*
+  · simp only [Option.isSome_some]
+    rw [eq_comm, decide_eq_true_iff, ← takeWhile_lt_iff]; scalar_tac
+  · simp only [Option.isSome_none]
+    rw [eq_comm, decide_eq_false_iff_not, ← takeWhile_lt_iff]; scalar_tac
+
+@[step] theorem contains_spec (list : Slice (alloc.vec.Vec U8)) (x : Slice U8) :
+    bytes.contains list x ⦃ b => b = decide (nats x.val ∈ list.val.map (fun v => nats v.val)) ⦄ := by
+  unfold bytes.contains bytes.contains_loop
+  apply WP.spec_mono (loop_search list.val (fun v => decide (nats v.val = nats x.val)) id
+    (fun _ _ => true) false _ ?_ 0#usize (by simp))
+  · intro b hb
+    rw [id, searchFrom_const] at hb
+    simp only [UScalar.ofNatCore_val_eq, List.drop_zero] at hb
+    rw [hb]
+    have : list.val.any (fun v => decide (nats v.val = nats x.val)) =
+        decide (nats x.val ∈ list.val.map (fun v => nats v.val)) := by
+      rw [Bool.eq_iff_iff, List.any_eq_true, decide_eq_true_iff, List.mem_map]
+      simp only [decide_eq_true_eq]
+    rw [this]; cases decide (nats x.val ∈ list.val.map (fun v => nats v.val)) <;> rfl
+  · intro i hi
+    unfold bytes.contains_loop.body; simp only []
+    step*
+    · left; exact ⟨by scalar_tac, by simp_all [alloc.vec.Vec.deref], rfl⟩
+    · exact ⟨by scalar_tac, by simp_all [alloc.vec.Vec.deref], by scalar_tac⟩
+    · right; exact ⟨by scalar_tac, rfl⟩
+
+
 end openobserve_kernel.Verified
