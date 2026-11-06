@@ -7,9 +7,9 @@ the pinned upstream code.
 
 | Project | Upstream (pinned) | Listed theorems | S / C / F | Difftests |
 |---|---|---|---|---|
-| wastebin | matze/wastebin @ `c0ec968` | 30 (182 checked) | 23 / 4 / 3 | 7 pass: real `wastebin_core::Database` (SQLite, zstd, argon2+XChaCha20) on 1,200 random ops; ids/keys/extensions/`Content-Disposition` on 200k-400k inputs each |
+| wastebin | matze/wastebin @ `c0ec968` | 31 (191 checked) | 24 / 4 / 3 | 7 pass: real `wastebin_core::Database` (SQLite, zstd, argon2+XChaCha20) on 1,200 random ops; ids/keys/extensions/`Content-Disposition` on 200k-400k inputs each |
 | crates.io | rust-lang/crates.io @ `e0fc83a` | 23 (148 checked) | 22 / 0 / 1 | 8 pass: `crates_io_validation` linked; scopes, `AuthCheck` scope checks, account locks, `Authorization` parsing, access tokens, workflow-filename regex, owner ids copied verbatim; 100k-300k inputs each |
-| **Total** | | **53** | **45 / 4 / 4** | |
+| **Total** | | **54** | **46 / 4 / 4** | |
 
 S = security property (implementation-independent statement, falsifiable by a plausible bug,
 backed by a named killing mutant); C = correspondence/helper; F = finding. The roughly 250
@@ -30,6 +30,9 @@ correspondence lemmas in `proofs/Verified/` are not listed and not counted.
   touches no paste and adds only the verified uid.
 - Raw/download gated like the view; extensions in keys are at most 32 URL-safe bytes (no markup
   or path injection); insert never reuses an existing id; purge deletes exactly expired rows.
+- Download header: `Content-Disposition` is the fixed `attachment; filename*=UTF-8''` prefix
+  followed only by RFC 5987 token bytes and `%XX` escapes, so no CR/LF, quote or `;` from a
+  title reaches the header.
 
 **crates.io** (package registry):
 - Authentication: cross-origin requests never authenticate; API tokens only via a live

@@ -6,6 +6,7 @@ import Verified.View
 import Verified.Owner
 import Verified.Ids
 import Verified.Insert
+import Verified.Disposition
 import Spec
 /-!
 # wastebin: the security properties
@@ -385,5 +386,17 @@ theorem parsed_key_extension_url_safe (s : Slice U8) (k : ids.Key) (h : ids.pars
     (t : alloc.vec.Vec U8) (ht : k.ext = some t) : t.val.length ≤ 32 ∧ ∀ b ∈ t.val, UrlSafe b.val := by
   obtain ⟨hl, hb⟩ := Verified.Ids.parse_key_ext s k h t ht
   exact ⟨hl, fun b hm => Verified.Ids.extByte_urlSafe (hb b hm)⟩
+
+/-! ## Download header -/
+
+/-- The `Content-Disposition` value built for a download is the fixed
+`attachment; filename*=UTF-8''` prefix followed only by header-token bytes
+(RFC 5987 unreserved characters and `%`-escapes): whatever the paste title,
+no CR, LF, control byte, `"`, `;`, `,` or `\` reaches the header. -/
+theorem download_header_safe (f : Slice U8) (v : alloc.vec.Vec U8)
+    (h : disposition.content_disposition f = ok v) :
+    v.val.take 29 = disposition.PREFIX.val ∧ (∀ b ∈ v.val.drop 29, HeaderToken b.val) ∧
+      ∀ b ∈ v.val, 32 ≤ b.val ∧ b.val < 127 :=
+  Verified.Disposition.content_disposition_safe f v h
 
 end wastebin_kernel.Properties

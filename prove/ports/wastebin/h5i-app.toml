@@ -35,4 +35,5 @@ theorems = [
   "wastebin_kernel.Properties.purge_removes_exactly_expired",
   "wastebin_kernel.Properties.extension_accepts_only_url_safe",
   "wastebin_kernel.Properties.parsed_key_extension_url_safe",
+  "wastebin_kernel.Properties.download_header_safe",
 ]

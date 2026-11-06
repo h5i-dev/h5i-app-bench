@@ -1,10 +1,10 @@
 # wastebin: status
 
 Upstream matze/wastebin @ `c0ec9687ba41e8806654f34841e9a739f0264ced`. Gate: `h5i app check` passes
-with 30 listed theorems (182 checked in total), axioms only `propext`, `Classical.choice`,
+with 31 listed theorems (191 checked in total), axioms only `propext`, `Classical.choice`,
 `Quot.sound`; `h5i app extract --check` up to date.
 
-**Theorem classes: S = 23, C = 4, F = 3.**
+**Theorem classes: S = 24, C = 4, F = 3.**
 
 ## Theorems
 
@@ -45,6 +45,7 @@ whose behaviour violates the statement; *caught* means the mutant broke the gate
 | 28 | `parsed_key_extension_url_safe` | S | a parsed key carrying an unvalidated extension | `parse_key@ids.rs:196:if-false` caught |
 | 29 | `insert_never_clobbers` | S | an insert overwriting or adopting another paste's id; unbounded retries | `id_taken@handlers.rs:294:negate`, `insert@handlers.rs:309:if-true`, `:322:if-false` (targeted run, see below) |
 | 30 | `purge_removes_exactly_expired` | S | purge deleting live pastes or keeping expired ones | `purge@store.rs:269:if-true`, `:drop-not` (targeted run) |
+| 31 | `download_header_safe` | S | header injection through the download filename: CR/LF, `"`, `;` or other unescaped bytes in `Content-Disposition` | `content_disposition@disposition.rs:40:if-true` (raw bytes pushed), `unreserved@disposition.rs:21-25:negate` caught in the full run |
 
 ## Mutation
 
@@ -60,7 +61,8 @@ were added: **91 caught, 41 survived**. Survivors and why:
   mutants make parsing fail (index out of bounds) or split at another position while still
   validating the extension, which the statement allows. Difftest `key_agrees` covers them.
 - `content_disposition@disposition.rs:33/38:boundary`: out-of-bounds-only mutants (the loop
-  reads one byte past the end and fails); there is no totality theorem. Difftest covers it.
+  reads one byte past the end and fails); `download_header_safe` (31) is about successful runs
+  and there is no totality theorem. Difftest covers it.
 - `id_taken` (4), `insert` (7), `purge` (4): no theorem at the time; theorems 29-30 were added
   for them. Targeted re-run: `h5i app mutate --auto --only insert@ --only id_taken@ --only purge@`
   (results below once finished). Expected to stay alive: mutants that only make `insert` fail
@@ -71,12 +73,12 @@ Caveat: "caught" means the mutated project failed the gate, possibly first in a 
 "Kills" column additionally states that the mutant violates the S statement itself.
 
 ## Done
-- Kernel, extraction, 28 gated theorems, FINDINGS.md (F1-F4), DEVIATIONS.md.
+- Kernel, extraction, 31 gated theorems, FINDINGS.md (F1-F4), DEVIATIONS.md.
 - Difftest `difftest/` (all 7 tests pass): ids/keys/extensions/Content-Disposition on 200k-400k
   generated inputs each; the real `wastebin_core::Database` on 1,200 random operations.
 
 ## Next
-- Content-Disposition header-safety S theorem and totality.
+- Totality of `content_disposition` (no error for any filename length that fits in memory).
 - HTTP-level difftest of the handler decisions against the upstream server binary.
 - Id round trip `decode (encode id) = Ok id` (C) and a Lean witness for F3.
 
