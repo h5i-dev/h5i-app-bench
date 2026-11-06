@@ -78,8 +78,12 @@ theorem trustpub_auth_ok {existing : Option publish.Crate} {tp : alloc.vec.Vec p
 /-- The check `publish` makes for a user: tokens allowed, the endpoint scope
 `publish-update` for an existing crate and `publish-new` otherwise, the
 crate's name for crate scopes. -/
+def pubScope : Option publish.Crate → scopes.EndpointScope
+  | none => .PublishNew
+  | some _ => .PublishUpdate
+
 def publishCheck (existing : Option publish.Crate) (v : alloc.vec.Vec U8) : auth.AuthCheck :=
-  ⟨true, some (match existing with | none => .PublishNew | some _ => .PublishUpdate), some v, false⟩
+  ⟨true, some (pubScope existing), some v, false⟩
 
 /-- The user an authentication names. -/
 def userOf : auth.Authentication → auth.User
@@ -118,7 +122,7 @@ theorem publish_check_ok (existing : Option publish.Crate) (nm : Slice U8) :
   obtain ⟨v, hv⟩ := ok_of (sub_spec nm 0#usize nm.len (by simp) (by simp [Slice.length]))
   have hvv := post_of_ok (sub_spec nm 0#usize nm.len (by simp) (by simp [Slice.length])) hv
   refine ⟨v, ?_, by rw [hvv]; simp [Slice.length]⟩
-  rcases existing with _ | k <;> simp [hv, publishCheck]
+  rcases existing with _ | k <;> simp [hv, publishCheck, pubScope]
 
 theorem trustpub_only_eq (existing : Option publish.Crate) :
     publish.trustpub_only existing = ok (match existing with | none => false | some k => k.trustpub_only) := by

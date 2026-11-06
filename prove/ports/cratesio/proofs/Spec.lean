@@ -41,4 +41,19 @@ def epochOf : auth.Epoch → Option Int
   | .Invalid => none
   | .Value v => some v.val
 
+/-- ASCII lowercase of a byte value (Postgres `lower()` and Rust
+`to_lowercase()` on ASCII). -/
+def lowerN (b : Nat) : Nat := if 65 ≤ b ∧ b ≤ 90 then b + 32 else b
+
+/-- Two byte strings are equal ignoring ASCII case. -/
+def EqLower (a b : List U8) : Prop := a.map (lowerN ·.val) = b.map (lowerN ·.val)
+
+instance (a b : List U8) : Decidable (EqLower a b) := by unfold EqLower; infer_instance
+
+/-- A Trusted Publishing config's environment rule: a config without an
+environment accepts any token; one with an environment needs the token to
+name the same environment, ignoring case. -/
+def EnvOk (config claim : Option (List U8)) : Prop :=
+  config = none ∨ ∃ c s, config = some c ∧ claim = some s ∧ EqLower c s
+
 end cratesio_kernel.Spec

@@ -214,7 +214,7 @@ theorem publish_token_scoped (nm : Slice U8) (existing : Option publish.Crate)
     ∃ a, auth.authenticate allowed users tokens req now = ok (.Ok a) ∧
       ∀ i u, a = .Token i u → ∃ hi : i.val < tokens.val.length,
         (Legacy (tokens.val[i.val]) ∨ ∃ v, (tokens.val[i.val]).endpoint_scopes = some v ∧
-          (match existing with | none => scopes.EndpointScope.PublishNew | some _ => .PublishUpdate) ∈ v.val) ∧
+          pubScope existing ∈ v.val) ∧
         (∀ v, (tokens.val[i.val]).crate_scopes = some v → v.val ≠ [] → ∃ p ∈ v.val, Covers p.val nm.val) := by
   obtain ⟨v, a, hv, hc, -, -, -⟩ := publish_ok h
   obtain ⟨ha, ht⟩ := Verified.Authn.check_ok hc
