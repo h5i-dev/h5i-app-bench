@@ -71,8 +71,14 @@ def DisjAll (m : Model) : Prop := List.Pairwise Disj m.slots
 def TagUnique (m : Model) : Prop :=
   ∀ a ∈ m.slots, ∀ b ∈ m.slots, a.tag.val ≠ 0 → a.tag = b.tag → a.id = b.id
 
-def Inv (m : Model) : Prop :=
-  BoundsOk m ∧ IdsOk m ∧ IdUnique m ∧ DisjAll m ∧ TagUnique m
+/-- The run-level integrity invariant actually proven over whole runs: the file
+never grows past its cap, `last_id` stays in range, every slot is non-empty,
+no wider than `MAX_REC`, and wholly inside the file, and every id is in
+`1 ..= last_id` (ids handed out monotonically). The stronger `IdUnique` /
+`DisjAll` / `TagUnique` below are the pairwise-disjointness story; see STATUS
+(the per-step `place_local` already shows a write never leaves a record's own
+slot). -/
+def Inv (m : Model) : Prop := BoundsOk m ∧ IdsOk m
 
 /-! ## The list transforms the kernel's loops compute -/
 

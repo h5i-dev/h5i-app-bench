@@ -163,4 +163,33 @@ theorem transition_total (a : Device) (s : Store) (c : Command)
   obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
   exact ⟨r, hr⟩
 
+/-! ## Fresh ids (S): `AddSpool` never reuses an existing spool id. -/
+
+/-- `AddSpool` assigns `last_id + 1`. -/
+theorem addspool_id (a : Device) (s : Store) (tag len : U32)
+    (hcap : s.slots.val.length < Usize.max) (hmax : s.last_id.val < 4294967294)
+    {ws id plan} (h : transition a s (.AddSpool tag len) = ok (.Ok (ws, Reply.Added id plan))) :
+    id.val = s.last_id.val + 1 := by
+  have hw : transition a s (.AddSpool tag len) ⦃ res =>
+      ∀ ws id plan, res = .Ok (ws, Reply.Added id plan) → id.val = s.last_id.val + 1 ⦄ := by
+    unfold transition
+    step* <;> (try obtain ⟨slot0, off, plan0, fl⟩ := val) <;> step* <;>
+      (first | scalar_tac | assumption | simp_all [alloc.vec.Vec.deref])
+  exact post_of_ok hw h ws id plan rfl
+
+/-- (S) The spool id `AddSpool` hands out is new: no record in the store
+already uses it. Rules out the `fresh_id_reuse` mutant (reusing `last_id`
+would let a new spool shadow an existing record's storage). Needs only that
+existing ids are `≤ last_id` (part of `IdsOk`). -/
+theorem fresh_id_is_new (a : Device) (s : Store) (tag len : U32)
+    (hcap : s.slots.val.length < Usize.max) (hmax : s.last_id.val < 4294967294)
+    (hids : ∀ sl ∈ s.slots.val, sl.id.val ≤ s.last_id.val)
+    {ws id plan} (h : transition a s (.AddSpool tag len) = ok (.Ok (ws, Reply.Added id plan))) :
+    ∀ sl ∈ s.slots.val, sl.id ≠ id := by
+  have hid := addspool_id a s tag len hcap hmax h
+  intro sl hsl heq
+  have h2 := hids sl hsl
+  have hv : sl.id.val = id.val := by rw [heq]
+  omega
+
 end spoolease_kernel.Properties
