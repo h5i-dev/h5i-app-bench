@@ -82,8 +82,8 @@ theorem splitSlash_ne_nil (l : List Nat) : splitSlash l ≠ [] := splitAcc_ne_ni
   · rw [if_pos (by scalar_tac)]
     clear cols_post
     have ha : cols.val[0]'(by simp [hc]) = a := by simp [hc]
-    have hv2 : ((Array.make 2#usize [118#u8, 50#u8] path_org._proof_1).to_slice : Slice U8).val = [118#u8, 50#u8] := by
-      simp [Array.to_slice, Array.make]
+    have hv2 : ∀ h, ((Array.make 2#usize [118#u8, 50#u8] h).to_slice : Slice U8).val = [118#u8, 50#u8] := by
+      intro h; simp [Array.to_slice, Array.make]
     by_cases hv : nats a.val = [118, 50]
     · step*
       have hx : x = true := by
