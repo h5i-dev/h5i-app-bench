@@ -1,0 +1,18 @@
+[package]
+name = "spacedrive-difftest"
+description = "Differential test: the spacedrive kernel against spacedrive's own code at 2c4da34"
+edition = "2024"
+version = "0.1.0"
+publish = false
+build = "build.rs"
+
+[dependencies]
+spacedrive-kernel = { path = "../kernel" }
+# What the copied upstream items use, at the versions spacedrive's Cargo.lock resolves.
+tar = "0.4.44"
+zstd = "0.13"
+zip = { version = "4", default-features = false, features = ["deflate", "time"] }
+chrono = "0.4"
+tokio = { version = "1", features = ["sync"] }
+
+[workspace]
