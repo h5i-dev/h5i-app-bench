@@ -1,4 +1,4 @@
-import Verified.Validate
+import Verified.RouteScope
 /-!
 # Security properties of OpenObserve's delegated (`o2dt.`) tokens
 
@@ -102,6 +102,57 @@ theorem blocked_external_denied {env o now t path pfx m d}
   cases hx : u.is_external
   · simp [hi, hx]
   · exfalso; apply hn; refine ⟨hx, ?_⟩; rw [he, ← hde]; exact hb
+
+/-- The route check behind an accepted request, as the `Spec` model. -/
+theorem accepted_route {env o now t path pfx m d}
+    (hp : path.length < Usize.max) (h : validate_delegated env o now t path pfx m = ok (.Ok d)) :
+    checkRoute (nats path.val) (nats pfx.val) m (nats d.org.val) (nats d.scope.val) = .Ok () := by
+  obtain ⟨c, -, -, -, -, hr, -, -, -, hdo, -, hds⟩ := Verified.validate_delegated_ok h
+  have := H5iAppLib.post_of_ok (Verified.check_route_spec path pfx m c hp) hr
+  rw [hdo, hds, ← this]
+
+/-- S (cross-org isolation): an accepted delegated request names the token's
+org in its path (`/{org}/…` or `/v2/{org}/…`). A token for org A never
+authorizes a route of org B. -/
+theorem delegated_route_in_token_org {env o now t path pfx m d}
+    (hp : path.length < Usize.max) (h : validate_delegated env o now t path pfx m = ok (.Ok d)) :
+    pathOrg (relativePath (nats path.val)) = some (nats d.org.val) :=
+  (Verified.checkRoute_ok (accepted_route hp h)).2.1
+
+/-- S: delegated tokens only read, create and patch: never DELETE, PUT or
+any other method. -/
+theorem delegated_methods_limited {env o now t path pfx m d}
+    (hp : path.length < Usize.max) (h : validate_delegated env o now t path pfx m = ok (.Ok d)) :
+    m = .Get ∨ m = .Post ∨ m = .Patch := by
+  obtain ⟨-, -, routes, hr, hin⟩ := Verified.checkRoute_ok (accepted_route hp h)
+  obtain ⟨-, r, hrm, hm, -⟩ := Verified.inScope_true hin
+  exact Verified.scope_methods r (Verified.scopeRoutes_sub hr r hrm) m hm
+
+/-- S: proxy routes are never reachable with a delegated token. -/
+theorem delegated_never_on_proxy {env o now t path pfx m d}
+    (hp : path.length < Usize.max) (h : validate_delegated env o now t path pfx m = ok (.Ok d)) :
+    nats pfx.val ≠ [47, 112, 114, 111, 120, 121, 47] /- /proxy/ -/ :=
+  (Verified.checkRoute_ok (accepted_route hp h)).1
+
+/-- S: a `slack_action` token (minted for Slack alert buttons) only reaches
+`…/{org}/alerts/…` and `…/{org}/oncall/…` routes. -/
+theorem slack_action_only_alerts_and_oncall {env o now t path pfx m d}
+    (hp : path.length < Usize.max) (h : validate_delegated env o now t path pfx m = ok (.Ok d))
+    (hs : nats d.scope.val = [115, 108, 97, 99, 107, 95, 97, 99, 116, 105, 111, 110] /- slack_action -/) :
+    let rel := relativePath (nats path.val)
+    let rest := if [118, 50, 47] <+: rel then rel.drop 3 else rel
+    (splitSlash rest)[1]? = some Verified.alertsLit ∨ (splitSlash rest)[1]? = some Verified.oncallLit := by
+  obtain ⟨-, -, routes, hr, hin⟩ := Verified.checkRoute_ok (accepted_route hp h)
+  rw [hs] at hr
+  have hr' : routes = slackActionScope := by
+    unfold scopeRoutes at hr
+    rw [if_neg (by decide), if_pos rfl] at hr
+    exact (Option.some.inj hr).symm
+  subst hr'
+  obtain ⟨-, r, hrm, -, -, hseg⟩ := Verified.inScope_true hin
+  rcases Verified.slack_scope_second r hrm with h1 | h1
+  · exact Or.inl (Verified.segsMatch_lit hseg h1)
+  · exact Or.inr (Verified.segsMatch_lit hseg h1)
 
 /-- F: the kernel's (and upstream's) lifetime check computes `exp - iat` in
 `i64`. For `exp = i64::MAX, iat = -10` that overflows: the extracted kernel
