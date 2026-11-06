@@ -186,32 +186,39 @@ def consider
         else ok best
 
 /-- [anova_oven_kernel::soonest_due]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 206:0-217:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 206:0-213:1
     Visibility: public -/
-def soonest_due (q : Queue) (now : Std.U64) : Result (Option Kind) := do
+def soonest_due
+  (q : Queue) (now : Std.U64) : Result (Option (Std.U64 × Kind)) := do
   let b0 ← consider none q.status Kind.PollStatus now
   let b1 ← consider b0 q.cook Kind.PollCurrentCook now
   let b2 ← consider b1 q.recipes Kind.PollRecipes now
   let b3 ← consider b2 q.start Kind.UserStart now
   let b4 ← consider b3 q.stop Kind.UserStop now
-  let b5 ← consider b4 q.next Kind.UserNextStage now
-  match b5 with
+  consider b4 q.next Kind.UserNextStage now
+
+/-- [anova_oven_kernel::kind_of]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 216:0-221:1
+    Visibility: public -/
+def kind_of (o : Option (Std.U64 × Kind)) : Result (Option Kind) := do
+  match o with
   | none => ok none
   | some b => let (_, k) := b
               ok (some k)
 
 /-- [anova_oven_kernel::pop_due]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 220:0-225:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 224:0-229:1
     Visibility: public -/
 def pop_due (q : Queue) (now : Std.U64) : Result (Queue × (Option Kind)) := do
   let o ← soonest_due q now
-  match o with
+  let o1 ← kind_of o
+  match o1 with
   | none => ok (q, none)
   | some k => let q1 ← with_slot q k none
-              ok (q1, o)
+              ok (q1, o1)
 
 /-- [anova_oven_kernel::next_poll_interval]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 230:0-240:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 234:0-244:1
     Visibility: public -/
 def next_poll_interval (fail_count : Std.U64) : Result Std.U64 := do
   if fail_count >= TIER3_FAILS
@@ -225,13 +232,13 @@ def next_poll_interval (fail_count : Std.U64) : Result Std.U64 := do
       else ok NORMAL_POLL_SECS
 
 /-- [anova_oven_kernel::is_offline]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 243:0-245:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 247:0-249:1
     Visibility: public -/
 def is_offline (fail_count : Std.U64) : Result Bool := do
   ok (fail_count >= OFFLINE_THRESHOLD)
 
 /-- [anova_oven_kernel::incr_sat]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 254:0-260:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 258:0-264:1
     Visibility: public -/
 def incr_sat (x : Std.U64) : Result Std.U64 := do
   if x >= TIER3_FAILS
@@ -239,7 +246,7 @@ def incr_sat (x : Std.U64) : Result Std.U64 := do
   else x + 1#u64
 
 /-- [anova_oven_kernel::Command]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 263:0-274:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 267:0-278:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -250,7 +257,7 @@ inductive Command where
 | Peek : Command
 
 /-- [anova_oven_kernel::Reply]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 277:0-285:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 281:0-289:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -259,14 +266,14 @@ inductive Reply where
 | Health : Std.U64 → Std.U64 → Bool → Reply
 
 /-- [anova_oven_kernel::Error]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 289:0-291:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 293:0-295:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
 | Never : Error
 
 /-- [anova_oven_kernel::transition]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 295:0-324:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 299:0-328:1
     Visibility: public -/
 def transition
   (s : Queue) (cmd : Command) :
@@ -291,7 +298,7 @@ def transition
     ok (core.result.Result.Ok (none, Reply.Health s.fail_count i b))
 
 /-- [anova_oven_kernel::apply]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 326:0-331:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 330:0-335:1
     Visibility: public -/
 def apply (s : Queue) (w : Option Queue) : Result Queue := do
   match w with
@@ -299,7 +306,7 @@ def apply (s : Queue) (w : Option Queue) : Result Queue := do
   | some n => ok n
 
 /-- [anova_oven_kernel::read_only]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 334:0-339:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 338:0-343:1
     Visibility: public -/
 def read_only (cmd : Command) : Result Bool := do
   match cmd with
@@ -310,7 +317,7 @@ def read_only (cmd : Command) : Result Bool := do
   | Command.Peek => ok true
 
 /-- [anova_oven_kernel::ResetReason]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 347:0-355:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 351:0-359:1
     Visibility: public -/
 @[discriminant isize]
 inductive ResetReason where
@@ -323,17 +330,17 @@ inductive ResetReason where
 | InitTimeout : ResetReason
 
 /-- [anova_oven_kernel::INIT_STAGE_WIFI]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 357:0-357:37
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 361:0-361:37
     Visibility: public -/
 @[global_simps, irreducible] def INIT_STAGE_WIFI : Std.U32 := 100#u32
 
 /-- [anova_oven_kernel::INIT_STAGE_DHCP]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 358:0-358:37
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 362:0-362:37
     Visibility: public -/
 @[global_simps, irreducible] def INIT_STAGE_DHCP : Std.U32 := 101#u32
 
 /-- [anova_oven_kernel::is_init_stage]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 360:0-362:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 364:0-366:1
     Visibility: public -/
 def is_init_stage (s : Std.U32) : Result Bool := do
   if s = INIT_STAGE_WIFI
@@ -341,7 +348,7 @@ def is_init_stage (s : Std.U32) : Result Bool := do
   else ok (s = INIT_STAGE_DHCP)
 
 /-- [anova_oven_kernel::reset_from_u32]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 366:0-376:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 370:0-380:1
     Visibility: public -/
 def reset_from_u32 (v : Std.U32) : Result ResetReason := do
   match v with
@@ -354,7 +361,7 @@ def reset_from_u32 (v : Std.U32) : Result ResetReason := do
   | _ => ok ResetReason.Unknown
 
 /-- [anova_oven_kernel::reset_to_u32]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 379:0-389:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 383:0-393:1
     Visibility: public -/
 def reset_to_u32 (r : ResetReason) : Result Std.U32 := do
   match r with
@@ -367,7 +374,7 @@ def reset_to_u32 (r : ResetReason) : Result Std.U32 := do
   | ResetReason.InitTimeout => ok 6#u32
 
 /-- [anova_oven_kernel::classify_reset]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 396:0-416:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 400:0-420:1
     Visibility: public -/
 def classify_reset
   (magic_was_valid : Bool) (panic_count_advanced : Bool)

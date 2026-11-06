@@ -8,6 +8,7 @@ start-from = [
     "apply",
     "read_only",
     "soonest_due",
+    "kind_of",
     "pop_due",
     "enqueue",
     "next_poll_interval",

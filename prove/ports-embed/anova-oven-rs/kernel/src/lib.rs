@@ -201,16 +201,20 @@ pub fn consider(best: Option<(u64, Kind)>, s: Option<u64>, k: Kind, now: u64) ->
     }
 }
 
-/// The soonest-due kind at or before `now`, ordered by `(time, priority)`, or
+/// The soonest-due event at or before `now`, ordered by `(time, priority)`, or
 /// `None` if nothing is due.
-pub fn soonest_due(q: &Queue, now: u64) -> Option<Kind> {
+pub fn soonest_due(q: &Queue, now: u64) -> Option<(u64, Kind)> {
     let b0 = consider(None, q.status, Kind::PollStatus, now);
     let b1 = consider(b0, q.cook, Kind::PollCurrentCook, now);
     let b2 = consider(b1, q.recipes, Kind::PollRecipes, now);
     let b3 = consider(b2, q.start, Kind::UserStart, now);
     let b4 = consider(b3, q.stop, Kind::UserStop, now);
-    let b5 = consider(b4, q.next, Kind::UserNextStage, now);
-    match b5 {
+    consider(b4, q.next, Kind::UserNextStage, now)
+}
+
+/// The kind of a best-due event, dropping its time.
+pub fn kind_of(o: Option<(u64, Kind)>) -> Option<Kind> {
+    match o {
         None => None,
         Some(b) => Some(b.1),
     }
@@ -218,7 +222,7 @@ pub fn soonest_due(q: &Queue, now: u64) -> Option<Kind> {
 
 /// Pop the soonest-due event: clear its slot and report which kind popped.
 pub fn pop_due(q: &Queue, now: u64) -> (Queue, Option<Kind>) {
-    match soonest_due(q, now) {
+    match kind_of(soonest_due(q, now)) {
         None => (*q, None),
         Some(k) => (with_slot(q, k, None), Some(k)),
     }

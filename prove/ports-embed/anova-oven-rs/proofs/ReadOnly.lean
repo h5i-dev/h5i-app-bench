@@ -27,6 +27,6 @@ theorem sound : H5iAppLib.ReadOnly.Sound read_only tr writesOf := by
   intro a s c hro
   cases c <;> simp [read_only] at hro
   unfold tr transition
-  simp [H5iAppLib.OnOk, writesOf]
+  step* <;> simp [H5iAppLib.OnOk, writesOf]
 
 end anova_oven_kernel.ReadOnly

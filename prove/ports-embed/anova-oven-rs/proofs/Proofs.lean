@@ -77,24 +77,19 @@ namespace anova_oven_kernel.Proofs
     · simp
     · cases best with
       | none => simp
-      | some b =>
-        obtain ⟨i, k1⟩ := b
-        dsimp only
-        h5i_steps
+      | some b => rcases b with ⟨i, k1⟩; h5i_steps
 
 @[step] theorem soonest_due_spec (q : Queue) (now : U64) : soonest_due q now ⦃ _ => True ⦄ := by
-  unfold soonest_due
-  step*
-  cases b5 with
-  | none => simp
-  | some b => obtain ⟨t, k⟩ := b; dsimp only; simp
+  unfold soonest_due; step*
 
-@[step] theorem pop_due_spec (q : Queue) (now : U64) : pop_due q now ⦃ _ => True ⦄ := by
-  unfold pop_due
-  step*
+@[step] theorem kind_of_spec (o : Option (U64 × Kind)) : kind_of o ⦃ _ => True ⦄ := by
+  unfold kind_of
   cases o with
   | none => simp
-  | some k => step*; simp
+  | some b => rcases b with ⟨t, k⟩; simp
+
+@[step] theorem pop_due_spec (q : Queue) (now : U64) : pop_due q now ⦃ _ => True ⦄ := by
+  unfold pop_due; h5i_steps
 
 @[step] theorem next_poll_interval_spec (fc : U64) : next_poll_interval fc ⦃ _ => True ⦄ := by
   unfold next_poll_interval; h5i_steps
@@ -224,8 +219,8 @@ theorem user_preempts_poll (t now : U64) (ht : t.val ≤ now.val) :
         start := none, stop := some t, next := none, fail_count := 0#u64 } now
       ⦃ res => res.2 = some Kind.UserStop ⦄ := by
   have hnd : ¬ (t > now) := by scalar_tac
-  unfold pop_due soonest_due consider better priority with_slot
-  simp only [hnd, if_false, gt_iff_lt, lt_self_iff_false]
+  unfold pop_due kind_of soonest_due consider better priority with_slot
+  simp only [hnd, if_false, gt_iff_lt]
   simp
 
 -- ------------------------------------------------------------------
