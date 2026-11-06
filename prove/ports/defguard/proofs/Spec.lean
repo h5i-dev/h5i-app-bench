@@ -54,3 +54,41 @@ def SessionOpen (t : token.Token) (now timeout : Int) : Prop :=
   ∃ u, t.used_at = some u ∧ now < u.val + timeout
 
 end defguard_kernel.Spec
+
+namespace defguard_kernel.Spec
+
+/-! ## Device addresses (`ipnetwork`, `assign_next_network_ip`) -/
+
+/-- Host bits of a subnet. -/
+def hostBits (n : ipalloc.Net) : Nat := if n.v4 then 32 - min 32 n.prefix.val else 128 - min 128 n.prefix.val
+
+/-- `network()`. -/
+def netLo (n : ipalloc.Net) : Nat := n.ip.val / 2 ^ hostBits n * 2 ^ hostBits n
+
+/-- `broadcast()`. -/
+def netHi (n : ipalloc.Net) : Nat := netLo n + 2 ^ hostBits n - 1
+
+/-- The address is in the subnet. -/
+def InNet (n : ipalloc.Net) (ip : ipalloc.Ip) : Prop :=
+  ip.v4 = n.v4 ∧ netLo n ≤ ip.bits.val ∧ ip.bits.val ≤ netHi n
+
+/-- An address a device may be given in subnet `n`: inside it, not its
+network, broadcast or gateway address, and neither in use nor reserved. -/
+def Assignable (n : ipalloc.Net) (used reserved : List ipalloc.Ip) (ip : ipalloc.Ip) : Prop :=
+  InNet n ip ∧ ip.bits.val ≠ netLo n ∧ ip.bits.val ≠ netHi n ∧ ip.bits.val ≠ n.ip.val ∧
+    ip ∉ used ∧ ip ∉ reserved
+
+end defguard_kernel.Spec
+
+namespace defguard_kernel.Spec
+
+/-! ## Firewall port and address ranges (`merge_ranges`) -/
+
+/-- Value `x` lies in one of the inclusive ranges. -/
+def InRanges (l : List ranges.Range) (x : Nat) : Prop := ∃ r ∈ l, r.start.val ≤ x ∧ x ≤ r.end.val
+
+/-- No two ranges of the list share a value. -/
+def PairwiseDisjoint (l : List ranges.Range) : Prop :=
+  l.Pairwise (fun a b => a.end.val < b.start.val ∨ b.end.val < a.start.val)
+
+end defguard_kernel.Spec
