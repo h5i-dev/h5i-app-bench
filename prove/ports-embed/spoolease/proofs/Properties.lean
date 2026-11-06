@@ -9,6 +9,8 @@ Classes (see STATUS.md): S = security/safety property, C = correspondence.
 open Aeneas Aeneas.Std Result spoolease_kernel spoolease_kernel.Spec
 open H5iAppLib
 
+set_option maxRecDepth 100000
+
 namespace spoolease_kernel.Properties
 
 /-! ## Loop-correctness specs (C): each `Vec`-building loop computes a plain
@@ -70,14 +72,24 @@ record count to stay below `usize::MAX` (it is bounded by the file size; see
 record index. Proven directly from the extracted equation with `h5i_invert`. -/
 
 /-- (S) `place` never lets the file grow past the cap, and the record it
-places lies wholly inside the (new) file. -/
+places lies wholly inside the (new) file (given the previous slot, if any, was
+itself in bounds — which the store invariant guarantees). -/
 theorem place_capacity (file_len : U32) (prev : Option Slot) (len : U32)
     (hlen : 1 ≤ len.val ∧ len.val ≤ 4096) (hfile : file_len.val ≤ 16777216)
+    (hprev : ∀ p, prev = some p → slotEnd p ≤ file_len.val)
     {slot off plan fl} (h : place file_len prev len = ok (.Ok (slot, off, plan, fl))) :
     fl.val ≤ 16777216 ∧ slotEnd slot ≤ fl.val := by
   obtain ⟨hlen1, hlen2⟩ := hlen
+  have hmf : MAX_FILE.val = 16777216 := max_file_val
   unfold place at h
-  cases prev <;> h5i_invert h <;> simp_all [slotEnd, max_file_val] <;> scalar_tac
+  cases prev with
+  | none =>
+    h5i_invert h <;> (try obtain ⟨rfl, rfl, rfl, rfl⟩ := h) <;>
+      (simp only [slotEnd] at *; h5i_ok_facts; scalar_tac)
+  | some p =>
+    have hp := hprev p rfl
+    h5i_invert h <;> (try obtain ⟨rfl, rfl, rfl, rfl⟩ := h) <;>
+      (simp only [slotEnd] at *; h5i_ok_facts; scalar_tac)
 
 /-- (S) An in-place overwrite (no new end-of-file) happens only when the new
 record fits its old slot, and then it writes exactly that old slot's range
@@ -90,7 +102,13 @@ theorem place_inplace_fits (file_len : U32) (p : Slot) (len : U32)
       plan.void = NO_REGION := by
   obtain ⟨hlen1, hlen2⟩ := hlen
   unfold place at h
-  h5i_invert h <;> simp_all [NO_REGION, max_file_val] <;> scalar_tac
+  h5i_invert h <;> (try obtain ⟨rfl, rfl, rfl, rfl⟩ := h) <;>
+    first
+      | exact ⟨by scalar_tac, rfl, rfl, rfl⟩
+      | (exfalso
+         have hadd := add_ok_val (by assumption)
+         rw [hinplace] at hadd
+         omega)
 
 /-- (S) Every byte `place` writes (its `void` and `data` regions) lies either
 in fresh space at/after the old end of file or in the record's *own* previous
@@ -106,19 +124,15 @@ theorem place_local (file_len : U32) (prev : Option Slot) (len : U32)
   unfold place at h
   cases prev with
   | none =>
-    h5i_invert h <;> simp_all [NO_REGION, inSlot, slotEnd]
-    rcases hq with hd | hv
-    · left; scalar_tac
-    · exfalso; scalar_tac
+    h5i_invert h <;> (try obtain ⟨rfl, rfl, rfl, rfl⟩ := h) <;>
+      (left; rcases hq with hh | hh <;>
+        (simp only [inSlot, slotEnd, no_region_off, no_region_len] at hh; scalar_tac))
   | some p =>
-    h5i_invert h <;> simp_all [NO_REGION, inSlot, slotEnd]
-    · -- in place: data == p's old range, void empty
-      rcases hq with hd | hv
-      · right; exact ⟨p, rfl, by simp only [inSlot, slotEnd]; scalar_tac⟩
-      · exfalso; scalar_tac
-    · -- append: void == p's old range, data fresh at file_len
-      rcases hq with hd | hv
-      · left; scalar_tac
-      · right; exact ⟨p, rfl, by simp only [inSlot, slotEnd]; scalar_tac⟩
+    h5i_invert h <;> (try obtain ⟨rfl, rfl, rfl, rfl⟩ := h) <;>
+      (rcases hq with hh | hh <;>
+        simp only [inSlot, slotEnd, no_region_off, no_region_len] at hh <;>
+        first
+          | (left; scalar_tac)
+          | (right; exact ⟨p, rfl, by simp only [inSlot, slotEnd]; scalar_tac⟩))
 
 end spoolease_kernel.Properties

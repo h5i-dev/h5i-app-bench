@@ -94,4 +94,7 @@ def applyM (m : Model) : Option Store → Model
   | none => m
   | some n => toM n
 
+@[simp] theorem no_region_off : NO_REGION.off.val = 0 := by unfold NO_REGION; rfl
+@[simp] theorem no_region_len : NO_REGION.len.val = 0 := by unfold NO_REGION; rfl
+
 end spoolease_kernel.Spec
