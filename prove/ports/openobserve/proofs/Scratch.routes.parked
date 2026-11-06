@@ -1,0 +1,66 @@
+import Verified.Routes
+open Aeneas Aeneas.Std Result openobserve_kernel openobserve_kernel.Spec openobserve_kernel.Verified
+open H5iAppLib hiding lit
+open openobserve_kernel.delegation
+
+@[step] theorem seg_matches_spec (p : Seg) (col : Slice U8) :
+    seg_matches p col ⦃ b => b = segOk (toSSeg p) (nats col.val) ⦄ := by
+  unfold seg_matches
+  cases p <;> simp only [] <;> step*
+  all_goals (simp_all [toSSeg, segOk, alloc.vec.Vec.deref, nats, List.length_pos_iff_ne_nil]; try scalar_tac)
+  all_goals (intro _ h; simp_all)
+
+theorem zip_all_iff {α β} (l₁ : List α) (l₂ : List β) (f : α × β → Bool) (h : l₁.length = l₂.length) :
+    (l₁.zip l₂).all f = true ↔ ∀ k (h1 : k < l₁.length), f (l₁[k], l₂[k]'(h ▸ h1)) = true := by
+  rw [List.all_eq_true]
+  constructor
+  · intro H k hk
+    apply H
+    rw [List.mem_iff_getElem]
+    exact ⟨k, by simp [List.length_zip, h] at *; omega, by simp⟩
+  · intro H x hx
+    rw [List.mem_iff_getElem] at hx
+    obtain ⟨k, hk, rfl⟩ := hx
+    simp only [List.length_zip] at hk
+    simpa using H k (by omega)
+
+theorem segsMatch_map_iff (ps : List Seg) (cs : List (alloc.vec.Vec U8)) (h : ps.length = cs.length) :
+    segsMatch (ps.map toSSeg) (cs.map (fun c => nats c.val)) = true ↔
+      ∀ k (h1 : k < ps.length) (h2 : k < cs.length), segOk (toSSeg ps[k]) (nats cs[k].val) = true := by
+  unfold segsMatch
+  simp only [List.length_map, h, true_and, decide_eq_true_eq, Bool.decide_and, Bool.and_eq_true, decide_true]
+  rw [zip_all_iff _ _ _ (by simp [h])]
+  simp only [List.length_map, List.getElem_map]
+  constructor
+  · intro H k h1 h2; exact H k h1
+  · intro H k h1; exact H k h1 (by omega)
+
+@[step] theorem segments_match_spec (ps : Slice Seg) (cs : Slice (alloc.vec.Vec U8)) :
+    segments_match ps cs ⦃ b => b = segsMatch (ps.val.map toSSeg) (cs.val.map (fun c => nats c.val)) ⦄ := by
+  unfold segments_match
+  simp only []
+  split
+  · simp only [WP.spec_ok, segsMatch]
+    have : ps.val.length ≠ cs.val.length := by scalar_tac
+    simp [this]
+  · rename_i hl
+    have hl' : ps.val.length = cs.val.length := by scalar_tac
+    unfold segments_match_loop
+    apply loop.spec_decr_nat (measure := fun (j : Usize) => ps.length - j.val)
+      (inv := fun j => j.val ≤ ps.length ∧ ∀ k (hk : k < j.val) (h1 : k < ps.val.length) (h2 : k < cs.val.length),
+        segOk (toSSeg ps.val[k]) (nats cs.val[k].val) = true)
+    · rintro j ⟨hj, hk⟩
+      unfold segments_match_loop.body; simp only []
+      step*
+      · refine ⟨by scalar_tac, ?_, by scalar_tac⟩
+        intro k hk' h1 h2
+        rcases Nat.lt_succ_iff_lt_or_eq.1 (show k < j.val + 1 by scalar_tac) with h3 | h3
+        · exact hk k h3 h1 h2
+        · subst h3; simp_all [alloc.vec.Vec.deref]
+      · symm; rw [Bool.eq_false_iff]; intro H
+        rw [segsMatch_map_iff _ _ hl'] at H
+        have := H j.val (by scalar_tac) (by scalar_tac)
+        simp_all [alloc.vec.Vec.deref]
+      · symm; rw [segsMatch_map_iff _ _ hl']
+        intro k h1 h2; exact hk k (by scalar_tac) h1 h2
+    · simp
