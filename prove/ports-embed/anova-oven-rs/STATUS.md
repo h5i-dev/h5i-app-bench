@@ -70,6 +70,24 @@ h5i-app-audit** (per the brief's "if not confirmed, do NOT write a finding").
    general tie-break primitive (`better_user_wins`), with the full pop-ordering
    differentially tested against upstream — the fully-general fold-argmin lemma
    over 6 slots was judged not worth the proof weight for the marginal assurance.
+
+   **Mutation coverage.** The 4 hand-authored, security-targeted mutants in
+   `h5i-app.toml` are **4/4 caught** (`user_loses_priority`, `backoff_unbounded`,
+   `poll_ok_keeps_fail`, `watchdog_masks_panic`). `h5i app mutate --auto`
+   generated 48 mutants: **28 caught, 20 survived**. The survivors are, by
+   construction, *functional-detail* mutations the security properties
+   intentionally do **not** pin down — exact backoff tier boundaries
+   (`next_poll_interval` `>=`→`>`: `backoff_bounded`/`backoff_monotone` stay true
+   under a boundary shift), the dedup time chosen by `enqueue`/`better`
+   (`enqueue_keeps_others`/`enqueue_present` fix *which slot*, not *which time*),
+   the `is_offline`/`is_init_stage` thresholds, and the lower `classify_reset`
+   arms (WatchdogTimeout/Forced/InitTimeout — only the Panic-precedence and
+   ColdBoot-dominance arms carry S theorems). Per the campaign's "a handful of
+   real security properties over many correspondence lemmas," these functional
+   details are covered by the **exhaustive difftest** against the real upstream
+   (classify_reset over every breadcrumb combination; backoff over fail_count
+   0..40; 4000 scheduler sequences), not by extra correspondence theorems. The
+   gate is `h5i app check` + the hand-authored mutants, not `--auto`.
 3. **Bugs reproduced against real upstream.** **None.** The `difftest/` replays
    4000 random enqueue/pop sequences against the *real* `scheduler::EventQueue`,
    exhaustively checks `reset::classify_reset` over all boolean breadcrumbs ×10

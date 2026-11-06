@@ -27,6 +27,8 @@ theorems = [
     "anova_oven_kernel.Proofs.transition_total",
     "anova_oven_kernel.Proofs.inv_reachable",
     "anova_oven_kernel.Proofs.enqueue_keeps_others",
+    "anova_oven_kernel.Proofs.enqueue_never_delays",
+    "anova_oven_kernel.Proofs.pop_clears",
     "anova_oven_kernel.Proofs.user_preempts_poll",
     "anova_oven_kernel.Proofs.poll_ok_recovers",
     "anova_oven_kernel.Proofs.backoff_bounded",
@@ -66,3 +68,17 @@ new = "n.fail_count = s.fail_count;"
 name = "watchdog_masks_panic"
 old = "} else if panic_count_advanced {\n        ResetReason::Panic\n    } else if watchdog_timer {"
 new = "} else if watchdog_timer {\n        ResetReason::WatchdogTimeout\n    } else if panic_count_advanced {"
+
+# A PreferEarlier re-enqueue must keep the earlier time; preferring the later
+# one would let a re-schedule delay a pending Stop.
+[[mutant]]
+name = "enqueue_prefers_later"
+old = "existing < time"
+new = "existing > time"
+
+# Popping an event must clear its slot; leaving it pending would let the same
+# scheduled event fire twice.
+[[mutant]]
+name = "pop_does_not_clear"
+old = "Some(k) => (with_slot(q, k, None), Some(k)),"
+new = "Some(k) => (*q, Some(k)),"

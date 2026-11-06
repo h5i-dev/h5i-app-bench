@@ -196,6 +196,43 @@ theorem enqueue_present (q : Queue) (k : Kind) (time : U64) (replace : Bool)
   obtain ⟨v, -, h⟩ := h
   exact ⟨v, slot_with_slot_eq q k (some v) n h⟩
 
+/-- A `PreferEarlier` re-enqueue never *delays* a command already pending: if
+`k` was due at `e`, after the enqueue it is due at some time `≤ e`. So
+re-scheduling a Stop can only move it earlier, never later. -/
+theorem enqueue_never_delays (q : Queue) (k : Kind) (time e : U64) (n : Queue)
+    (hpre : slot q k = ok (some e)) (h : enqueue q k time false = ok n) :
+    ∃ t, slot n k = ok (some t) ∧ t.val ≤ e.val := by
+  unfold enqueue at h
+  rw [H5iAppLib.bind_eq_ok] at h
+  obtain ⟨o, ho, h⟩ := h
+  rw [hpre] at ho
+  simp only [Result.ok.injEq] at ho
+  subst ho
+  rw [H5iAppLib.bind_eq_ok] at h
+  obtain ⟨v, hv, h⟩ := h
+  refine ⟨v, slot_with_slot_eq q k (some v) n h, ?_⟩
+  simp only [Bool.false_eq_true, if_false] at hv
+  split at hv <;> (simp only [Result.ok.injEq] at hv; subst hv) <;> scalar_tac
+
+/-- A popped event's slot is cleared: after `pop_due` returns a kind, that kind
+is no longer pending, so the same scheduled event is never executed twice. -/
+theorem pop_clears (q : Queue) (now : U64) (n : Queue) (k : Kind)
+    (h : pop_due q now = ok (n, some k)) : slot n k = ok none := by
+  unfold pop_due at h
+  rw [H5iAppLib.bind_eq_ok] at h
+  obtain ⟨o, -, h⟩ := h
+  rw [H5iAppLib.bind_eq_ok] at h
+  obtain ⟨o1, -, h⟩ := h
+  cases o1 with
+  | none => simp at h
+  | some k' =>
+    rw [H5iAppLib.bind_eq_ok] at h
+    obtain ⟨q1, hq1, h⟩ := h
+    simp only [Result.ok.injEq, Prod.mk.injEq, Option.some.injEq] at h
+    obtain ⟨hn, hk⟩ := h
+    rw [← hn, ← hk]
+    exact slot_with_slot_eq q k' none q1 hq1
+
 -- ------------------------------------------------------------------
 -- Scheduler: user commands preempt polls at equal time (S).
 -- ------------------------------------------------------------------
