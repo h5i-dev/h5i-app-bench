@@ -179,10 +179,11 @@ def auth.extract_session
   | auth.Credential.Nothing =>
     ok (core.result.Result.Err auth.AuthError.SessionRequired)
 
-/-- [defguard_kernel::auth::bytes_eq]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 114:4-121:1 -/
+/-- [defguard_kernel::util::bytes_eq]: loop body 0:
+    Source: 'prove/ports/defguard/kernel/src/util.rs', lines 8:4-15:1
+    Visibility: public -/
 @[rust_loop_body]
-def auth.bytes_eq_loop.body
+def util.bytes_eq_loop.body
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Bool)
   := do
@@ -197,26 +198,28 @@ def auth.bytes_eq_loop.body
          ok (cont i4)
   else ok (done true)
 
-/-- [defguard_kernel::auth::bytes_eq]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 114:4-121:1 -/
+/-- [defguard_kernel::util::bytes_eq]: loop 0:
+    Source: 'prove/ports/defguard/kernel/src/util.rs', lines 8:4-15:1
+    Visibility: public -/
 @[rust_loop]
-def auth.bytes_eq_loop
+def util.bytes_eq_loop
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
   loop
-    (fun i1 => auth.bytes_eq_loop.body a b i1)
+    (fun i1 => util.bytes_eq_loop.body a b i1)
     i
 
-/-- [defguard_kernel::auth::bytes_eq]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 109:0-121:1 -/
-def auth.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
+/-- [defguard_kernel::util::bytes_eq]:
+    Source: 'prove/ports/defguard/kernel/src/util.rs', lines 3:0-15:1
+    Visibility: public -/
+def util.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
   let i1 := Slice.len b
   if i != i1
   then ok false
-  else auth.bytes_eq_loop a b 0#usize
+  else util.bytes_eq_loop a b 0#usize
 
 /-- [defguard_kernel::auth::contains_name]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 125:4-132:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 113:4-120:1 -/
 @[rust_loop_body]
 def auth.contains_name_loop.body
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (n : Slice Std.U8)
@@ -230,7 +233,7 @@ def auth.contains_name_loop.body
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
         Std.U8)) names i
     let s := alloc.vec.Vec.deref v
-    let b ← auth.bytes_eq s n
+    let b ← util.bytes_eq s n
     if b
     then ok (done true)
     else let i2 ← i + 1#usize
@@ -238,7 +241,7 @@ def auth.contains_name_loop.body
   else ok (done false)
 
 /-- [defguard_kernel::auth::contains_name]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 125:4-132:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 113:4-120:1 -/
 @[rust_loop]
 def auth.contains_name_loop
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (n : Slice Std.U8)
@@ -250,7 +253,7 @@ def auth.contains_name_loop
     i
 
 /-- [defguard_kernel::auth::contains_name]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 123:0-132:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 111:0-120:1 -/
 @[reducible]
 def auth.contains_name
   (names : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (n : Slice Std.U8) :
@@ -259,7 +262,7 @@ def auth.contains_name
   auth.contains_name_loop names n 0#usize
 
 /-- [defguard_kernel::auth::contains_any_group]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 137:4-144:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 125:4-132:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.contains_any_group_loop.body
@@ -282,7 +285,7 @@ def auth.contains_any_group_loop.body
   else ok (done false)
 
 /-- [defguard_kernel::auth::contains_any_group]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 137:4-144:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 125:4-132:1
     Visibility: public -/
 @[rust_loop]
 def auth.contains_any_group_loop
@@ -295,7 +298,7 @@ def auth.contains_any_group_loop
     i
 
 /-- [defguard_kernel::auth::contains_any_group]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 135:0-144:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 123:0-132:1
     Visibility: public -/
 @[reducible]
 def auth.contains_any_group
@@ -305,7 +308,7 @@ def auth.contains_any_group
   auth.contains_any_group_loop u names 0#usize
 
 /-- [defguard_kernel::auth::find_user]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 148:4-155:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 136:4-143:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.find_user_loop.body
@@ -326,7 +329,7 @@ def auth.find_user_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::auth::find_user]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 148:4-155:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 136:4-143:1
     Visibility: public -/
 @[rust_loop]
 def auth.find_user_loop
@@ -338,7 +341,7 @@ def auth.find_user_loop
     i
 
 /-- [defguard_kernel::auth::find_user]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 146:0-155:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 134:0-143:1
     Visibility: public -/
 @[reducible]
 def auth.find_user
@@ -348,7 +351,7 @@ def auth.find_user
   auth.find_user_loop us id 0#usize
 
 /-- [defguard_kernel::auth::Info]
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 160:0-164:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 148:0-152:1
     Visibility: public -/
 structure auth.Info where
   session : auth.Session
@@ -356,7 +359,7 @@ structure auth.Info where
   is_admin : Bool
 
 /-- [defguard_kernel::auth::session_info]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 167:0-190:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 155:0-178:1
     Visibility: public -/
 def auth.session_info
   (license_active : Bool) (cred : auth.Credential)
@@ -433,7 +436,7 @@ def auth.session_info
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [defguard_kernel::auth::admin_role]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 193:0-212:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 181:0-200:1
     Visibility: public -/
 def auth.admin_role
   (license_active : Bool) (cred : auth.Credential)
@@ -454,7 +457,7 @@ def auth.admin_role
   | core.result.Result.Err _ => ok r
 
 /-- [defguard_kernel::auth::find_user_by_name]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 216:4-223:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 204:4-211:1 -/
 @[rust_loop_body]
 def auth.find_user_by_name_loop.body
   (us : alloc.vec.Vec auth.User) («name» : Slice Std.U8) (i : Std.Usize) :
@@ -467,7 +470,7 @@ def auth.find_user_by_name_loop.body
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice auth.User) us
         i
     let s := alloc.vec.Vec.deref u.username
-    let b ← auth.bytes_eq s «name»
+    let b ← util.bytes_eq s «name»
     if b
     then let u1 ← auth.User.Insts.CoreCloneClone.clone u
          ok (done (some u1))
@@ -476,7 +479,7 @@ def auth.find_user_by_name_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::auth::find_user_by_name]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 216:4-223:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 204:4-211:1 -/
 @[rust_loop]
 def auth.find_user_by_name_loop
   (us : alloc.vec.Vec auth.User) («name» : Slice Std.U8) (i : Std.Usize) :
@@ -487,7 +490,7 @@ def auth.find_user_by_name_loop
     i
 
 /-- [defguard_kernel::auth::find_user_by_name]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 214:0-223:1 -/
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 202:0-211:1 -/
 @[reducible]
 def auth.find_user_by_name
   (us : alloc.vec.Vec auth.User) («name» : Slice Std.U8) :
@@ -496,14 +499,14 @@ def auth.find_user_by_name
   auth.find_user_by_name_loop us «name» 0#usize
 
 /-- [defguard_kernel::auth::user_for_admin_or_self]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 226:0-235:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 214:0-223:1
     Visibility: public -/
 def auth.user_for_admin_or_self
   (info : auth.Info) (us : alloc.vec.Vec auth.User) (username : Slice Std.U8) :
   Result (core.result.Result auth.User auth.AuthError)
   := do
   let s := alloc.vec.Vec.deref info.user.username
-  let b ← auth.bytes_eq s username
+  let b ← util.bytes_eq s username
   if b
   then
     let o ← auth.find_user_by_name us username
@@ -520,7 +523,7 @@ def auth.user_for_admin_or_self
     else ok (core.result.Result.Err auth.AuthError.Forbidden)
 
 /-- [defguard_kernel::auth::device_for_admin_or_self]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 242:4-249:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 230:4-237:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.device_for_admin_or_self_loop.body
@@ -553,7 +556,7 @@ def auth.device_for_admin_or_self_loop.body
   else ok (done (core.result.Result.Err auth.AuthError.NotFound))
 
 /-- [defguard_kernel::auth::device_for_admin_or_self]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 242:4-249:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 230:4-237:1
     Visibility: public -/
 @[rust_loop]
 def auth.device_for_admin_or_self_loop
@@ -566,7 +569,7 @@ def auth.device_for_admin_or_self_loop
     i
 
 /-- [defguard_kernel::auth::device_for_admin_or_self]:
-    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 240:0-249:1
+    Source: 'prove/ports/defguard/kernel/src/auth.rs', lines 228:0-237:1
     Visibility: public -/
 @[reducible]
 def auth.device_for_admin_or_self
@@ -644,44 +647,8 @@ def lockout.should_reset_counter
   else let i1 ← now - f.last_attempt
        ok (i1 > lockout.TIMEOUT_NS)
 
-/-- [defguard_kernel::lockout::bytes_eq]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 38:4-45:1 -/
-@[rust_loop_body]
-def lockout.bytes_eq_loop.body
-  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len a
-  if i < i1
-  then
-    let i2 ← Slice.index_usize a i
-    let i3 ← Slice.index_usize b i
-    if i2 != i3
-    then ok (done false)
-    else let i4 ← i + 1#usize
-         ok (cont i4)
-  else ok (done true)
-
-/-- [defguard_kernel::lockout::bytes_eq]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 38:4-45:1 -/
-@[rust_loop]
-def lockout.bytes_eq_loop
-  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => lockout.bytes_eq_loop.body a b i1)
-    i
-
-/-- [defguard_kernel::lockout::bytes_eq]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 33:0-45:1 -/
-def lockout.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
-  let i := Slice.len a
-  let i1 := Slice.len b
-  if i != i1
-  then ok false
-  else lockout.bytes_eq_loop a b 0#usize
-
 /-- [defguard_kernel::lockout::find_entry]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 50:4-57:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 38:4-45:1
     Visibility: public -/
 @[rust_loop_body]
 def lockout.find_entry_loop.body
@@ -696,7 +663,7 @@ def lockout.find_entry_loop.body
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
         lockout.FailedLogin) map i
     let s := alloc.vec.Vec.deref fl.key
-    let b ← lockout.bytes_eq s key
+    let b ← util.bytes_eq s key
     if b
     then ok (done (some i))
     else let i2 ← i + 1#usize
@@ -704,7 +671,7 @@ def lockout.find_entry_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::lockout::find_entry]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 50:4-57:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 38:4-45:1
     Visibility: public -/
 @[rust_loop]
 def lockout.find_entry_loop
@@ -717,7 +684,7 @@ def lockout.find_entry_loop
     i
 
 /-- [defguard_kernel::lockout::find_entry]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 48:0-57:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 36:0-45:1
     Visibility: public -/
 @[reducible]
 def lockout.find_entry
@@ -727,7 +694,7 @@ def lockout.find_entry
   lockout.find_entry_loop map key 0#usize
 
 /-- [defguard_kernel::lockout::set_entry]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 60:0-66:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 48:0-54:1 -/
 def lockout.set_entry
   (map : alloc.vec.Vec lockout.FailedLogin) (i : Std.Usize)
   (f : lockout.FailedLogin) :
@@ -745,7 +712,7 @@ def lockout.set_entry
   else ok res
 
 /-- [defguard_kernel::lockout::incremented]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 69:0-76:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 57:0-64:1 -/
 def lockout.incremented
   (f : lockout.FailedLogin) (now : Std.I64) : Result lockout.FailedLogin := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 f.key
@@ -753,7 +720,7 @@ def lockout.incremented
   ok { f with key := v, attempt_count := i, last_attempt := now }
 
 /-- [defguard_kernel::lockout::fresh]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 82:4-85:5 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 70:4-73:5 -/
 @[rust_loop_body]
 def lockout.fresh_loop.body
   (key : Slice Std.U8) (k : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -770,7 +737,7 @@ def lockout.fresh_loop.body
   else ok (done k)
 
 /-- [defguard_kernel::lockout::fresh]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 82:4-85:5 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 70:4-73:5 -/
 @[rust_loop]
 def lockout.fresh_loop
   (key : Slice Std.U8) (k : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -781,7 +748,7 @@ def lockout.fresh_loop
     (k, i)
 
 /-- [defguard_kernel::lockout::fresh]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 79:0-87:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 67:0-75:1 -/
 def lockout.fresh
   (key : Slice Std.U8) (now : Std.I64) : Result lockout.FailedLogin := do
   let k ← lockout.fresh_loop key (alloc.vec.Vec.new Std.U8) 0#usize
@@ -794,7 +761,7 @@ def lockout.fresh
     }
 
 /-- [defguard_kernel::lockout::log_failed_attempt]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 90:0-105:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 78:0-93:1
     Visibility: public -/
 def lockout.log_failed_attempt
   (map : alloc.vec.Vec lockout.FailedLogin) (key : Slice Std.U8)
@@ -820,7 +787,7 @@ def lockout.log_failed_attempt
          lockout.set_entry map i fl1
 
 /-- [defguard_kernel::lockout::verify_username]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 109:0-120:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 97:0-108:1
     Visibility: public -/
 def lockout.verify_username
   (map : alloc.vec.Vec lockout.FailedLogin) (key : Slice Std.U8)
@@ -849,14 +816,14 @@ def lockout.verify_username
       ok (v, false)
 
 /-- [defguard_kernel::lockout::Account]
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 124:0-127:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 112:0-115:1
     Visibility: public -/
 structure lockout.Account where
   username : alloc.vec.Vec Std.U8
   email : alloc.vec.Vec Std.U8
 
 /-- [defguard_kernel::lockout::lower]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 130:0-132:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 118:0-120:1 -/
 def lockout.lower (b : Std.U8) : Result Std.U8 := do
   if b >= 65#u8
   then if b <= 90#u8
@@ -865,7 +832,7 @@ def lockout.lower (b : Std.U8) : Result Std.U8 := do
   else ok b
 
 /-- [defguard_kernel::lockout::eq_lower]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 139:4-146:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 127:4-134:1 -/
 @[rust_loop_body]
 def lockout.eq_lower_loop.body
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
@@ -885,7 +852,7 @@ def lockout.eq_lower_loop.body
   else ok (done true)
 
 /-- [defguard_kernel::lockout::eq_lower]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 139:4-146:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 127:4-134:1 -/
 @[rust_loop]
 def lockout.eq_lower_loop
   (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -894,7 +861,7 @@ def lockout.eq_lower_loop
     i
 
 /-- [defguard_kernel::lockout::eq_lower]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 134:0-146:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 122:0-134:1 -/
 def lockout.eq_lower (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
   let i1 := Slice.len b
@@ -903,7 +870,7 @@ def lockout.eq_lower (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else lockout.eq_lower_loop a b 0#usize
 
 /-- [defguard_kernel::lockout::find_by_username]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 150:4-157:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 138:4-145:1 -/
 @[rust_loop_body]
 def lockout.find_by_username_loop.body
   (us : alloc.vec.Vec lockout.Account) («name» : Slice Std.U8)
@@ -917,7 +884,7 @@ def lockout.find_by_username_loop.body
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
         lockout.Account) us i
     let s := alloc.vec.Vec.deref a.username
-    let b ← lockout.bytes_eq s «name»
+    let b ← util.bytes_eq s «name»
     if b
     then ok (done (some i))
     else let i2 ← i + 1#usize
@@ -925,7 +892,7 @@ def lockout.find_by_username_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::lockout::find_by_username]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 150:4-157:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 138:4-145:1 -/
 @[rust_loop]
 def lockout.find_by_username_loop
   (us : alloc.vec.Vec lockout.Account) («name» : Slice Std.U8)
@@ -937,7 +904,7 @@ def lockout.find_by_username_loop
     i
 
 /-- [defguard_kernel::lockout::find_by_username]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 148:0-157:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 136:0-145:1 -/
 @[reducible]
 def lockout.find_by_username
   (us : alloc.vec.Vec lockout.Account) («name» : Slice Std.U8) :
@@ -946,7 +913,7 @@ def lockout.find_by_username
   lockout.find_by_username_loop us «name» 0#usize
 
 /-- [defguard_kernel::lockout::find_by_email]: loop body 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 161:4-168:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 149:4-156:1 -/
 @[rust_loop_body]
 def lockout.find_by_email_loop.body
   (us : alloc.vec.Vec lockout.Account) (email : Slice Std.U8) (i : Std.Usize) :
@@ -967,7 +934,7 @@ def lockout.find_by_email_loop.body
   else ok (done none)
 
 /-- [defguard_kernel::lockout::find_by_email]: loop 0:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 161:4-168:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 149:4-156:1 -/
 @[rust_loop]
 def lockout.find_by_email_loop
   (us : alloc.vec.Vec lockout.Account) (email : Slice Std.U8) (i : Std.Usize) :
@@ -978,7 +945,7 @@ def lockout.find_by_email_loop
     i
 
 /-- [defguard_kernel::lockout::find_by_email]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 159:0-168:1 -/
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 147:0-156:1 -/
 @[reducible]
 def lockout.find_by_email
   (us : alloc.vec.Vec lockout.Account) (email : Slice Std.U8) :
@@ -987,7 +954,7 @@ def lockout.find_by_email
   lockout.find_by_email_loop us email 0#usize
 
 /-- [defguard_kernel::lockout::find_by_username_or_email]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 172:0-177:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 160:0-165:1
     Visibility: public -/
 def lockout.find_by_username_or_email
   (us : alloc.vec.Vec lockout.Account) (input : Slice Std.U8) :
@@ -999,7 +966,7 @@ def lockout.find_by_username_or_email
   | some _ => ok o
 
 /-- [defguard_kernel::lockout::LoginOutcome]
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 180:0-189:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 168:0-177:1
     Visibility: public -/
 @[discriminant isize]
 inductive lockout.LoginOutcome where
@@ -1009,7 +976,7 @@ inductive lockout.LoginOutcome where
 | UnknownUser : lockout.LoginOutcome
 
 /-- [defguard_kernel::lockout::authenticate]:
-    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 196:0-217:1
+    Source: 'prove/ports/defguard/kernel/src/lockout.rs', lines 184:0-205:1
     Visibility: public -/
 def lockout.authenticate
   (map : alloc.vec.Vec lockout.FailedLogin)

@@ -106,19 +106,7 @@ pub fn extract_session(license_active: bool, cred: &Credential, now: i64) -> Res
     }
 }
 
-fn bytes_eq(a: &[u8], b: &[u8]) -> bool {
-    if a.len() != b.len() {
-        return false;
-    }
-    let mut i = 0;
-    while i < a.len() {
-        if a[i] != b[i] {
-            return false;
-        }
-        i += 1;
-    }
-    true
-}
+use crate::util::bytes_eq;
 
 fn contains_name(names: &Vec<Vec<u8>>, n: &[u8]) -> bool {
     let mut i = 0;

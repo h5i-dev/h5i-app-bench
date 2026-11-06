@@ -30,19 +30,7 @@ pub fn should_reset_counter(f: &FailedLogin, now: i64) -> bool {
     (now - f.first_attempt > WINDOW_NS && f.attempt_count < COUNT) || now - f.last_attempt > TIMEOUT_NS
 }
 
-fn bytes_eq(a: &[u8], b: &[u8]) -> bool {
-    if a.len() != b.len() {
-        return false;
-    }
-    let mut i = 0;
-    while i < a.len() {
-        if a[i] != b[i] {
-            return false;
-        }
-        i += 1;
-    }
-    true
-}
+use crate::util::bytes_eq;
 
 /// The entry `HashMap::get` finds for `key`.
 pub fn find_entry(map: &Vec<FailedLogin>, key: &[u8]) -> Option<usize> {

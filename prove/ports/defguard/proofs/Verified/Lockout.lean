@@ -24,17 +24,17 @@ theorem list_eq_of_getElem! {a b : List U8} (hl : a.length = b.length)
   simp [alloc.vec.Vec.deref]
 
 @[step] theorem bytes_eq_spec (a b : Slice U8) :
-    lockout.bytes_eq a b ⦃ r => r = decide (a.val = b.val) ⦄ := by
-  unfold lockout.bytes_eq; simp only []
+    util.bytes_eq a b ⦃ r => r = decide (a.val = b.val) ⦄ := by
+  unfold util.bytes_eq; simp only []
   split
   · simp only [WP.spec_ok]
     have : a.val ≠ b.val := fun h => by simp_all
     simp [this]
-  · unfold lockout.bytes_eq_loop
+  · unfold util.bytes_eq_loop
     apply loop.spec_decr_nat (measure := fun (j : Usize) => a.length - j.val)
       (inv := fun j => j.val ≤ a.length ∧ ∀ k < j.val, a.val[k]! = b.val[k]!)
     · rintro j ⟨hj, hk⟩
-      unfold lockout.bytes_eq_loop.body; simp only []
+      unfold util.bytes_eq_loop.body; simp only []
       step*
       · refine ⟨by scalar_tac, ?_, by scalar_tac⟩
         intro k hk'
