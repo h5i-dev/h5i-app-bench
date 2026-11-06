@@ -23,6 +23,9 @@ theorems = [
   "windmill_kernel.Properties.delegation_stays_in_domain_and_action",
   "windmill_kernel.Properties.read_delegates_only_read",
   "windmill_kernel.Properties.extra_perms_true_needs_entry",
+  "windmill_kernel.Properties.check_scopes_ok",
+  "windmill_kernel.Properties.scoped_token_needs_matching_scope",
+  "windmill_kernel.Properties.scoped_token_rejects_malformed_requirement",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). STATUS.md names the theorem that
@@ -136,3 +139,21 @@ name = "extra_perms_group_key_as_user"
 file = "kernel/src/authz.rs"
 old = "lookup(obj, &key_for(103, &a.groups[i]))"
 new = "lookup(obj, &key_for(117, &a.groups[i]))"
+
+[[mutant]]
+name = "check_scopes_malformed_req_ok"
+file = "kernel/src/authz.rs"
+old = "        None => return Err(AuthzError::BadRequest),"
+new = "        None => return Ok(()),"
+
+[[mutant]]
+name = "check_scopes_filter_tags_grant"
+file = "kernel/src/authz.rs"
+old = "        if !is_filter_tags(&list[i]) && parsed_includes(&list[i], req) {"
+new = "        if parsed_includes(&list[i], req) {"
+
+[[mutant]]
+name = "check_scopes_denial_dropped"
+file = "kernel/src/authz.rs"
+old = "        return Err(AuthzError::PermissionDenied);"
+new = "        return Ok(());"

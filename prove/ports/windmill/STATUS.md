@@ -1,6 +1,6 @@
 # windmill: status
 
-**Theorem classes: S = 13, C = 4, F = 1** (18 theorems in `[check] theorems`).
+**Theorem classes: S = 15, C = 5, F = 1** (21 theorems in `[check] theorems`).
 Upstream pinned at `9dedc42b4ece1fbceae7d695ec51a508caa49710`. Threat model, ported code
 and deviations are in DEVIATIONS.md; findings are in FINDINGS.md.
 
@@ -30,6 +30,9 @@ statement is false. The counterexample is given in brief.
 | `contains_true` | C | an accepted `scope_contains` implies same domain and a covering action | — |
 | `delegation_stays_in_domain_and_action` | S | a minted scope stays in the caller's domain and in an action the caller's covers | `contains_ignores_domain` |
 | `read_delegates_only_read` | S | a `read` caller can only mint `read` | `read_covers_write` |
+| `check_scopes_ok` | C | an accepted `check_scopes` is unscoped, tag-filters-only, or has a parsed scope that `includes` the parsed requirement | — |
+| `scoped_token_needs_matching_scope` | S | a genuinely scoped token passes only if one of its scope strings has the requirement's domain field and a covering action field | `check_scopes_denial_dropped`, `check_scopes_filter_tags_grant` |
+| `scoped_token_rejects_malformed_requirement` | S | a scoped token is rejected (`BadRequest`) when the requirement does not parse | `check_scopes_malformed_req_ok` |
 | `extra_perms_true_needs_entry` | S | `extra_perms` grants only through an explicit JSON `true` entry for `u/<username>` or `g/<own group>` | `extra_perms_user_false_grants`, `extra_perms_group_key_as_user` |
 
 Helper lemmas (byte loops, `split`, `prefix`, `nth_char_is_slash`, list facts) are in
@@ -53,9 +56,6 @@ mutant under which its statement is false. No equivalent mutants.
 
 ## Not yet proved (next steps)
 
-- `check_scopes`: a scoped token passes only with a granting scope, and it rejects a
-  malformed requirement. This needs a `from_scope_string` spec (split on `:`/`,` plus
-  part counts).
 - `intersect_job_token_scopes` never widens. The proof needs reflexivity of
   `scope_contains` and a parse spec.
 - W2 as a Lean F theorem. This needs a `resources_match_small/large` spec. W2 is

@@ -548,4 +548,80 @@ theorem perm_loop1_sound (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc
       | skip
   · simp
 
+theorem seg_of' {parts : alloc.vec.Vec (alloc.vec.Vec U8)} {segs : List Bytes}
+    (hs : parts.val.map (·.val) = segs) {i : Usize} {v : alloc.vec.Vec U8}
+    (hv : alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec U8)) parts i = ok v)
+    {n : Nat} (hn : i.val = n) : segs[n]! = v.val := by
+  subst hn; exact seg_of hs hv
+
+theorem parse_fields (s : Slice U8) (sc : scopes.Scope) (hs : s.length < Usize.max)
+    (h : scopes.from_scope_string s = ok (some sc)) :
+    sc.domain.val = (segments 58#u8 s.val)[0]! ∧ sc.action.val = (segments 58#u8 s.val)[1]! := by
+  unfold scopes.from_scope_string at h
+  simp only [u8vec_clone, bind_ok] at h
+  h5i_invert h
+  all_goals
+    have hsp := post_of_ok (split_spec s 58#u8 hs) hparts
+    simp only [Option.some.injEq] at h
+    subst h
+    constructor
+    all_goals
+      simp only
+      first
+        | exact (seg_of' hsp (i := 0#usize) (by assumption) rfl).symm
+        | exact (seg_of' hsp (i := 1#usize) (by assumption) rfl).symm
+
+theorem is_filter_tags_spec (s : Slice U8) :
+    authz.is_filter_tags s ⦃ b => (b = true ↔ filterTagsB <+: s.val) ⦄ := by
+  unfold authz.is_filter_tags
+  step*
+  subst b_post
+  rename_i hs1 _
+  have e : p.slice.val = filterTagsB := by
+    rw [← s1_post, hs1]; simp [array_to_slice_val, filterTagsB, Array.make]
+  simp [vec_deref_val]
+  rw [show p.val = p.slice.val from rfl, e]
+
+theorem any_grants_sound (list : Slice (alloc.vec.Vec U8)) (req : scopes.Scope)
+    (h : authz.any_grants list req = ok true) :
+    ∃ s ∈ list.val, ¬ filterTagsB <+: s.val ∧ authz.parsed_includes s.deref req = ok true := by
+  unfold authz.any_grants authz.any_grants_loop at h
+  refine loop_true_witness _ (fun i : Usize => i.val ≤ list.length) (fun i => list.length - i.val) _ ?_
+    0#usize (by simp) h
+  intro i r hi hr
+  unfold authz.any_grants_loop.body at hr
+  h5i_invert hr
+  all_goals simp only []
+  all_goals first
+    | (h5i_ok_facts; constructor <;> scalar_tac)
+    | (intro _
+       refine ⟨v, slice_index_ok_mem hv, fun hp => hc_1 ((post_of_ok (is_filter_tags_spec _) hb).2
+         (by simpa [vec_deref_val] using hp)), by rw [hb1, hc_2]⟩)
+    | simp
+
+theorem unscoped_true_all_filters (list : Slice (alloc.vec.Vec U8))
+    (h : authz.is_effectively_unscoped true list = ok true) : ∀ s ∈ list.val, filterTagsB <+: s.val := by
+  unfold authz.is_effectively_unscoped authz.is_effectively_unscoped_loop at h
+  refine loop_ok _ (fun i : Usize => i.val ≤ list.length ∧ ∀ k < i.val, filterTagsB <+: (list.val[k]!).val)
+    (fun b => b = true → ∀ s ∈ list.val, filterTagsB <+: s.val) (fun i => list.length - i.val) ?_
+    0#usize true (by simp) h rfl
+  intro i r ⟨hi, hk⟩ hr
+  unfold authz.is_effectively_unscoped_loop.body at hr
+  h5i_invert hr
+  all_goals simp only []
+  · h5i_ok_facts
+    refine ⟨⟨by scalar_tac, ?_⟩, by scalar_tac⟩
+    intro k hk'
+    rcases Nat.lt_succ_iff_lt_or_eq.1 (show k < i.val + 1 by scalar_tac) with h1 | h1
+    · exact hk k h1
+    · subst h1
+      obtain ⟨hlt, hve⟩ := slice_index_ok hv
+      rw [List.getElem!_eq_getElem?_getD, List.getElem?_eq_getElem hlt, Option.getD_some, hve]
+      simpa [vec_deref_val] using (post_of_ok (is_filter_tags_spec _) hb).1 hc_1
+  · simp
+  · intro _ s hs
+    obtain ⟨k, hk', rfl⟩ := List.getElem_of_mem hs
+    have := hk k (by scalar_tac)
+    rwa [List.getElem!_eq_getElem?_getD, List.getElem?_eq_getElem hk', Option.getD_some] at this
+
 end windmill_kernel.Lemmas
