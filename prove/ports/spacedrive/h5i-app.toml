@@ -5,4 +5,34 @@ start-from = ["archive::landing"]
 
 [check]
 theorems = [
+  # S: security properties of archive-extraction landing
+  "spacedrive_kernel.Properties.landing_rejects_parent",
+  "spacedrive_kernel.Properties.landing_rejects_nul",
+  "spacedrive_kernel.Properties.landing_rejects_empty",
+  "spacedrive_kernel.Properties.landing_rejects_curdir",
+  # C: foundations
+  "spacedrive_kernel.Properties.landing_safe_all",
+  "spacedrive_kernel.Properties.components_safe_all",
+  "spacedrive_kernel.Verified.is_dot_spec",
+  "spacedrive_kernel.Verified.is_dotdot_spec",
+  "spacedrive_kernel.Verified.has_nul_spec",
 ]
+
+# Bugs the proofs must reject (`h5i app mutate`); each names the S theorem it targets.
+[[mutant]]
+name = "keep_parent"  # landing_rejects_parent
+file = "kernel/src/archive.rs"
+old = "} else if is_dotdot(&cur) {"
+new = "} else if false {"
+
+[[mutant]]
+name = "keep_nul"  # landing_rejects_nul
+file = "kernel/src/archive.rs"
+old = "} else if has_nul(&cur) {"
+new = "} else if false {"
+
+[[mutant]]
+name = "keep_empty_and_curdir"  # landing_rejects_empty, landing_rejects_curdir
+file = "kernel/src/archive.rs"
+old = "if cur.len() == 0 || is_dot(&cur) {"
+new = "if false {"
