@@ -178,6 +178,89 @@ pub fn auth_user(a: &Authentication) -> User {
     }
 }
 
+/// The `AuthCheck` `publish` uses for a user: `publish-update` for an
+/// existing crate, `publish-new` otherwise, and the crate's name.
+pub fn publish_check(existing: &Option<Crate>, name: &[u8]) -> AuthCheck {
+    let scope = match existing {
+        Some(_) => EndpointScope::PublishUpdate,
+        None => EndpointScope::PublishNew,
+    };
+    AuthCheck {
+        allow_token: true,
+        endpoint_scope: Some(scope),
+        crate_name: Some(sub(name, 0, name.len())),
+        allow_any_crate_scope: false,
+    }
+}
+
+/// The crate requires Trusted Publishing.
+pub fn trustpub_only(existing: &Option<Crate>) -> bool {
+    match existing {
+        Some(k) => k.trustpub_only,
+        None => false,
+    }
+}
+
+/// The ownership check after the crate row is written: a crate this publish
+/// created is the user's; otherwise `Rights::get` must give at least
+/// `Publish`.
+pub fn owner_ok(
+    user_id: i32,
+    owners_at_write: &Option<Vec<Owner>>,
+    actor_gh: (Option<bool>, bool),
+    answers: &[(i64, crate::rights::Membership)],
+) -> Result<Publisher, PublishError> {
+    match owners_at_write {
+        None => Ok(Publisher::User(user_id)),
+        Some(owners) => {
+            let actor = Actor { id: user_id, gh_token: actor_gh.0, gh_login: actor_gh.1 };
+            match rights(&actor, owners, answers) {
+                Err(e) => Err(PublishError::Rights(e)),
+                Ok(r) => {
+                    if rank(r) < 1 {
+                        Err(PublishError::NotOwner)
+                    } else {
+                        Ok(Publisher::User(user_id))
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// The publish of a user (cookie or API token).
+#[allow(clippy::too_many_arguments)]
+pub fn user_publish(
+    name: &[u8],
+    existing: &Option<Crate>,
+    owners_at_write: &Option<Vec<Owner>>,
+    allowed_origins: &[u64],
+    users: &[User],
+    tokens: &Vec<crate::auth::ApiToken>,
+    req: &Request,
+    now: i64,
+    actor_gh: (Option<bool>, bool),
+    answers: &[(i64, crate::rights::Membership)],
+) -> Result<Publisher, PublishError> {
+    let ac = publish_check(existing, name);
+    let a = match check(&ac, allowed_origins, users, tokens, req, now) {
+        Err(e) => return Err(PublishError::Auth(e)),
+        Ok(a) => a,
+    };
+    if trustpub_only(existing) {
+        return Err(PublishError::TrustpubOnly);
+    }
+    owner_ok(auth_user(&a).id, owners_at_write, actor_gh, answers)
+}
+
+/// The header token, if it is a Trusted Publishing token (`cio_tp_`).
+pub fn is_tp(header_token: &Option<Vec<u8>>) -> bool {
+    match header_token {
+        None => false,
+        Some(t) => starts_with(t, &TP_PREFIX),
+    }
+}
+
 /// `publish`'s authorization, up to and including the ownership check.
 #[allow(clippy::too_many_arguments)]
 pub fn publish_auth(
@@ -193,61 +276,17 @@ pub fn publish_auth(
     actor_gh: (Option<bool>, bool),
     answers: &[(i64, crate::rights::Membership)],
 ) -> Result<Publisher, PublishError> {
-    let header_token = match &req.authorization {
-        None => None,
+    match &req.authorization {
+        None => user_publish(name, existing, owners_at_write, allowed_origins, users, tokens, req, now, actor_gh, answers),
         Some(h) => match parse_auth_header(h) {
-            Err(e) => return Err(PublishError::Header(e)),
-            Ok(t) => Some(t),
-        },
-    };
-    let tp = match &header_token {
-        None => false,
-        Some(t) => starts_with(t, &TP_PREFIX),
-    };
-    if tp {
-        let t = match &header_token {
-            None => return Err(PublishError::TrustpubParse),
-            Some(t) => t,
-        };
-        return trustpub_auth(existing, tp_tokens, t, now);
-    }
-    let scope = match existing {
-        Some(_) => EndpointScope::PublishUpdate,
-        None => EndpointScope::PublishNew,
-    };
-    let ac = AuthCheck {
-        allow_token: true,
-        endpoint_scope: Some(scope),
-        crate_name: Some(sub(name, 0, name.len())),
-        allow_any_crate_scope: false,
-    };
-    let a = match check(&ac, allowed_origins, users, tokens, req, now) {
-        Err(e) => return Err(PublishError::Auth(e)),
-        Ok(a) => a,
-    };
-    match existing {
-        Some(k) => {
-            if k.trustpub_only {
-                return Err(PublishError::TrustpubOnly);
-            }
-        }
-        None => {}
-    }
-    let user = auth_user(&a);
-    match owners_at_write {
-        None => Ok(Publisher::User(user.id)),
-        Some(owners) => {
-            let actor = Actor { id: user.id, gh_token: actor_gh.0, gh_login: actor_gh.1 };
-            match rights(&actor, owners, answers) {
-                Err(e) => Err(PublishError::Rights(e)),
-                Ok(r) => {
-                    if rank(r) < 1 {
-                        Err(PublishError::NotOwner)
-                    } else {
-                        Ok(Publisher::User(user.id))
-                    }
+            Err(e) => Err(PublishError::Header(e)),
+            Ok(t) => {
+                if starts_with(&t, &TP_PREFIX) {
+                    trustpub_auth(existing, tp_tokens, &t, now)
+                } else {
+                    user_publish(name, existing, owners_at_write, allowed_origins, users, tokens, req, now, actor_gh, answers)
                 }
             }
-        }
+        },
     }
 }

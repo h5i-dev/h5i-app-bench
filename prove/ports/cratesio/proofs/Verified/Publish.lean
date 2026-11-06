@@ -75,6 +75,12 @@ theorem trustpub_auth_ok {existing : Option publish.Crate} {tp : alloc.vec.Vec p
   refine ⟨k, h_1, rfl, rfl, ho, i.val, hi, by simpa using hl, ?_⟩
   rw [hte]; simpa using hc'
 
+/-- The check `publish` makes for a user: tokens allowed, the endpoint scope
+`publish-update` for an existing crate and `publish-new` otherwise, the
+crate's name for crate scopes. -/
+def publishCheck (existing : Option publish.Crate) (v : alloc.vec.Vec U8) : auth.AuthCheck :=
+  ⟨true, some (match existing with | none => .PublishNew | some _ => .PublishUpdate), some v, false⟩
+
 /-- The user an authentication names. -/
 def userOf : auth.Authentication → auth.User
   | .Cookie u => u
@@ -86,26 +92,84 @@ theorem auth_user_eq (a : auth.Authentication) : publish.auth_user a = ok (userO
 theorem rank_ge {r : rights.Rights} {i : U8} (h : rights.rank r = ok i) (hi : ¬ i < 1#u8) : r ≠ .None := by
   intro e; subst e; simp [rights.rank] at h; subst h; simp at hi
 
+theorem owner_ok_ok {uid : I32} {ow : Option (alloc.vec.Vec rights.Owner)} {gh : Option Bool × Bool}
+    {answers : Slice (I64 × rights.Membership)} {p : publish.Publisher}
+    (h : publish.owner_ok uid ow gh answers = ok (.Ok p)) :
+    p = .User uid ∧ ∀ owners, ow = some owners → rights.Owner.User uid ∈ owners.val ∨
+      ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧ gh.1 = some true ∧ gh.2 = true := by
+  unfold publish.owner_ok at h
+  rcases ow with _ | owners
+  · simp only at h; have := Result.ok.inj h; simp only [core.result.Result.Ok.injEq] at this
+    exact ⟨this.symm, fun _ e => by cases e⟩
+  · simp only at h
+    obtain ⟨o, b⟩ := gh
+    dsimp only at h
+    h5i_invert h
+    refine ⟨by first | rfl | simp_all | (subst_vars; rfl), fun owners' e => ?_⟩
+    cases e
+    have hne := rank_ge ‹_› ‹_›
+    obtain ⟨h1, h2⟩ := rights_ok _ _ _ _ ‹_›
+    rcases hr : r1 with _ | _ | _
+    · exact absurd hr hne
+    · right; obtain ⟨t, hm, ha, hg, hl⟩ := h2 hr; exact ⟨t, by simpa using hm, ha, hg, hl⟩
+    · left; simpa using h1 hr
+
+theorem publish_check_ok (existing : Option publish.Crate) (nm : Slice U8) :
+    ∃ v, publish.publish_check existing nm = ok (publishCheck existing v) ∧ v.val = nm.val := by
+  unfold publish.publish_check
+  obtain ⟨v, hv⟩ := ok_of (sub_spec nm 0#usize nm.len (by simp) (by simp [Slice.length]))
+  have hvv := post_of_ok (sub_spec nm 0#usize nm.len (by simp) (by simp [Slice.length])) hv
+  refine ⟨v, ?_, by rw [hvv]; simp [Slice.length]⟩
+  rcases existing with _ | k <;> simp [hv, publishCheck]
+
+theorem trustpub_only_eq (existing : Option publish.Crate) :
+    publish.trustpub_only existing = ok (match existing with | none => false | some k => k.trustpub_only) := by
+  cases existing <;> rfl
+
+theorem user_publish_ok {nm : Slice U8} {existing : Option publish.Crate} {ow : Option (alloc.vec.Vec rights.Owner)}
+    {allowed : Slice U64} {users : Slice auth.User} {tokens : alloc.vec.Vec auth.ApiToken}
+    {req : auth.Request} {now : I64} {gh : Option Bool × Bool}
+    {answers : Slice (I64 × rights.Membership)} {p : publish.Publisher}
+    (h : publish.user_publish nm existing ow allowed users tokens req now gh answers = ok (.Ok p)) :
+    ∃ v a, v.val = nm.val ∧ auth.check (publishCheck existing v) allowed users tokens req now = ok (.Ok a) ∧
+      p = .User (userOf a).id ∧ (∀ k, existing = some k → k.trustpub_only = false) ∧
+      (∀ owners, ow = some owners → rights.Owner.User (userOf a).id ∈ owners.val ∨
+        ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧
+          gh.1 = some true ∧ gh.2 = true) := by
+  unfold publish.user_publish at h
+  obtain ⟨v, hc, hv⟩ := publish_check_ok existing nm
+  rw [hc] at h
+  simp only [bind_tc_ok, trustpub_only_eq, auth_user_eq] at h
+  h5i_invert h
+  obtain ⟨hp, ho⟩ := owner_ok_ok h
+  refine ⟨v, _, hv, ‹_›, hp, fun k e => ?_, ho⟩
+  cases e
+  simp_all
+
 /-- What a granted publish establishes. -/
-theorem publish_ok {name : Slice U8} {existing : Option publish.Crate} {ow : Option (alloc.vec.Vec rights.Owner)}
+theorem publish_ok {nm : Slice U8} {existing : Option publish.Crate} {ow : Option (alloc.vec.Vec rights.Owner)}
     {allowed : Slice U64} {users : Slice auth.User} {tokens : alloc.vec.Vec auth.ApiToken}
     {tp : alloc.vec.Vec publish.TrustpubToken} {req : auth.Request} {now : I64} {gh : Option Bool × Bool}
     {answers : Slice (I64 × rights.Membership)} {p : publish.Publisher}
-    (h : publish.publish_auth name existing ow allowed users tokens tp req now gh answers = ok (.Ok p)) :
+    (h : publish.publish_auth nm existing ow allowed users tokens tp req now gh answers = ok (.Ok p)) :
     match p with
     | .TrustPub id => ∃ hd t, req.authorization = some hd ∧ auth.parse_auth_header hd.deref = ok (.Ok t) ∧
         ∃ k raw, existing = some k ∧ id = k.id ∧ publish.parse_access_token t.deref = ok (some raw) ∧
           ∃ i, ∃ hi : i < tp.val.length, TpLive (tp.val[i]) raw.val now.val ∧ some k.id ∈ (tp.val[i]).crate_ids.val
-    | .User uid => ∃ v a, v.val = name.val ∧
-        auth.check { allow_token := true,
-          endpoint_scope := some (match existing with | none => .PublishNew | some _ => .PublishUpdate),
-          crate_name := some v, allow_any_crate_scope := false } allowed users tokens req now = ok (.Ok a) ∧
+    | .User uid => ∃ v a, v.val = nm.val ∧
+        auth.check (publishCheck existing v) allowed users tokens req now = ok (.Ok a) ∧
         uid = (userOf a).id ∧ (∀ k, existing = some k → k.trustpub_only = false) ∧
         (∀ owners, ow = some owners → rights.Owner.User uid ∈ owners.val ∨
           ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧
             gh.1 = some true ∧ gh.2 = true) := by
   unfold publish.publish_auth at h
-  h5i_invert h
-  all_goals done
+  rcases ha : req.authorization with _ | hd <;> simp only [ha] at h
+  · obtain ⟨v, a, hv, hc, hp, ht, ho⟩ := user_publish_ok h
+    subst hp; exact ⟨v, a, hv, hc, rfl, ht, ho⟩
+  · h5i_invert h
+    · obtain ⟨k, raw, hk, hp, hraw, i, hi, hl, hm⟩ := trustpub_auth_ok h
+      subst hp; exact ⟨hd, _, rfl, ‹_›, k, raw, hk, rfl, hraw, i, hi, hl, hm⟩
+    · obtain ⟨v, a, hv, hc, hp, ht, ho⟩ := user_publish_ok h
+      subst hp; exact ⟨v, a, hv, hc, rfl, ht, ho⟩
 
 end cratesio_kernel.Verified.Publish

@@ -1435,6 +1435,35 @@ def publish.auth_user (a : auth.Authentication) : Result auth.User := do
   | auth.Authentication.Cookie u => ok u
   | auth.Authentication.Token _ u => ok u
 
+/-- [cratesio_kernel::publish::publish_check]:
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 183:0-194:1
+    Visibility: public -/
+def publish.publish_check
+  (existing : Option publish.Crate) («name» : Slice Std.U8) :
+  Result auth.AuthCheck
+  := do
+  let scope ←
+    match existing with
+    | none => ok scopes.EndpointScope.PublishNew
+    | some _ => ok scopes.EndpointScope.PublishUpdate
+  let i := Slice.len «name»
+  let v ← bytes.sub «name» 0#usize i
+  ok
+    {
+      allow_token := true,
+      endpoint_scope := (some scope),
+      crate_name := (some v),
+      allow_any_crate_scope := false
+    }
+
+/-- [cratesio_kernel::publish::trustpub_only]:
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 197:0-202:1
+    Visibility: public -/
+def publish.trustpub_only (existing : Option publish.Crate) : Result Bool := do
+  match existing with
+  | none => ok false
+  | some k => ok k.trustpub_only
+
 /-- [cratesio_kernel::rights::Membership]
     Source: 'prove/ports/cratesio/kernel/src/rights.rs', lines 17:0-26:1
     Visibility: public -/
@@ -1623,8 +1652,58 @@ def rights.rank (r : rights.Rights) : Result Std.U8 := do
   | rights.Rights.Publish => ok 1#u8
   | rights.Rights.Full => ok 2#u8
 
+/-- [cratesio_kernel::publish::owner_ok]:
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 207:0-229:1
+    Visibility: public -/
+def publish.owner_ok
+  (user_id : Std.I32) (owners_at_write : Option (alloc.vec.Vec rights.Owner))
+  (actor_gh : ((Option Bool) × Bool))
+  (answers : Slice (Std.I64 × rights.Membership)) :
+  Result (core.result.Result publish.Publisher publish.PublishError)
+  := do
+  match owners_at_write with
+  | none => ok (core.result.Result.Ok (publish.Publisher.User user_id))
+  | some owners =>
+    let (o, b) := actor_gh
+    let s := alloc.vec.Vec.deref owners
+    let r ←
+      rights.rights { id := user_id, gh_token := o, gh_login := b } s answers
+    match r with
+    | core.result.Result.Ok r1 =>
+      let i ← rights.rank r1
+      if i < 1#u8
+      then ok (core.result.Result.Err publish.PublishError.NotOwner)
+      else ok (core.result.Result.Ok (publish.Publisher.User user_id))
+    | core.result.Result.Err e =>
+      ok (core.result.Result.Err (publish.PublishError.Rights e))
+
+/-- [cratesio_kernel::publish::user_publish]:
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 233:0-254:1
+    Visibility: public -/
+def publish.user_publish
+  («name» : Slice Std.U8) (existing : Option publish.Crate)
+  (owners_at_write : Option (alloc.vec.Vec rights.Owner))
+  (allowed_origins : Slice Std.U64) (users : Slice auth.User)
+  (tokens : alloc.vec.Vec auth.ApiToken) (req : auth.Request) (now : Std.I64)
+  (actor_gh : ((Option Bool) × Bool))
+  (answers : Slice (Std.I64 × rights.Membership)) :
+  Result (core.result.Result publish.Publisher publish.PublishError)
+  := do
+  let ac ← publish.publish_check existing «name»
+  let r ← auth.check ac allowed_origins users tokens req now
+  match r with
+  | core.result.Result.Ok a =>
+    let b ← publish.trustpub_only existing
+    if b
+    then ok (core.result.Result.Err publish.PublishError.TrustpubOnly)
+    else
+      let u ← publish.auth_user a
+      publish.owner_ok u.id owners_at_write actor_gh answers
+  | core.result.Result.Err e =>
+    ok (core.result.Result.Err (publish.PublishError.Auth e))
+
 /-- [cratesio_kernel::publish::publish_auth]:
-    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 183:0-253:1
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 266:0-292:1
     Visibility: public -/
 def publish.publish_auth
   («name» : Slice Std.U8) (existing : Option publish.Crate)
@@ -1638,64 +1717,8 @@ def publish.publish_auth
   := do
   match req.authorization with
   | none =>
-    let scope ←
-      match existing with
-      | none => ok scopes.EndpointScope.PublishNew
-      | some _ => ok scopes.EndpointScope.PublishUpdate
-    let i := Slice.len «name»
-    let v ← bytes.sub «name» 0#usize i
-    let r ←
-      auth.check
-        {
-          allow_token := true,
-          endpoint_scope := (some scope),
-          crate_name := (some v),
-          allow_any_crate_scope := false
-        } allowed_origins users tokens req now
-    match r with
-    | core.result.Result.Ok a =>
-      match existing with
-      | none =>
-        let user ← publish.auth_user a
-        match owners_at_write with
-        | none => ok (core.result.Result.Ok (publish.Publisher.User user.id))
-        | some owners =>
-          let (o, b) := actor_gh
-          let s := alloc.vec.Vec.deref owners
-          let r1 ←
-            rights.rights { id := user.id, gh_token := o, gh_login := b } s
-              answers
-          match r1 with
-          | core.result.Result.Ok r2 =>
-            let i1 ← rights.rank r2
-            if i1 < 1#u8
-            then ok (core.result.Result.Err publish.PublishError.NotOwner)
-            else ok (core.result.Result.Ok (publish.Publisher.User user.id))
-          | core.result.Result.Err e =>
-            ok (core.result.Result.Err (publish.PublishError.Rights e))
-      | some k =>
-        if k.trustpub_only
-        then ok (core.result.Result.Err publish.PublishError.TrustpubOnly)
-        else
-          let user ← publish.auth_user a
-          match owners_at_write with
-          | none => ok (core.result.Result.Ok (publish.Publisher.User user.id))
-          | some owners =>
-            let (o, b) := actor_gh
-            let s := alloc.vec.Vec.deref owners
-            let r1 ←
-              rights.rights { id := user.id, gh_token := o, gh_login := b } s
-                answers
-            match r1 with
-            | core.result.Result.Ok r2 =>
-              let i1 ← rights.rank r2
-              if i1 < 1#u8
-              then ok (core.result.Result.Err publish.PublishError.NotOwner)
-              else ok (core.result.Result.Ok (publish.Publisher.User user.id))
-            | core.result.Result.Err e =>
-              ok (core.result.Result.Err (publish.PublishError.Rights e))
-    | core.result.Result.Err e =>
-      ok (core.result.Result.Err (publish.PublishError.Auth e))
+    publish.user_publish «name» existing owners_at_write allowed_origins
+      users tokens req now actor_gh answers
   | some h =>
     let s := alloc.vec.Vec.deref h
     let r ← auth.parse_auth_header s
@@ -1703,75 +1726,14 @@ def publish.publish_auth
     | core.result.Result.Ok t =>
       let s1 := alloc.vec.Vec.deref t
       let s2 ← lift (Array.to_slice publish.TP_PREFIX)
-      let tp ← bytes.starts_with s1 s2
-      if tp
+      let b ← bytes.starts_with s1 s2
+      if b
       then
         let s3 := alloc.vec.Vec.deref t
         publish.trustpub_auth existing tp_tokens s3 now
       else
-        let scope ←
-          match existing with
-          | none => ok scopes.EndpointScope.PublishNew
-          | some _ => ok scopes.EndpointScope.PublishUpdate
-        let i := Slice.len «name»
-        let v ← bytes.sub «name» 0#usize i
-        let r1 ←
-          auth.check
-            {
-              allow_token := true,
-              endpoint_scope := (some scope),
-              crate_name := (some v),
-              allow_any_crate_scope := false
-            } allowed_origins users tokens req now
-        match r1 with
-        | core.result.Result.Ok a =>
-          match existing with
-          | none =>
-            let user ← publish.auth_user a
-            match owners_at_write with
-            | none =>
-              ok (core.result.Result.Ok (publish.Publisher.User user.id))
-            | some owners =>
-              let (o, b) := actor_gh
-              let s3 := alloc.vec.Vec.deref owners
-              let r2 ←
-                rights.rights { id := user.id, gh_token := o, gh_login := b }
-                  s3 answers
-              match r2 with
-              | core.result.Result.Ok r3 =>
-                let i1 ← rights.rank r3
-                if i1 < 1#u8
-                then ok (core.result.Result.Err publish.PublishError.NotOwner)
-                else
-                  ok (core.result.Result.Ok (publish.Publisher.User user.id))
-              | core.result.Result.Err e =>
-                ok (core.result.Result.Err (publish.PublishError.Rights e))
-          | some k =>
-            if k.trustpub_only
-            then ok (core.result.Result.Err publish.PublishError.TrustpubOnly)
-            else
-              let user ← publish.auth_user a
-              match owners_at_write with
-              | none =>
-                ok (core.result.Result.Ok (publish.Publisher.User user.id))
-              | some owners =>
-                let (o, b) := actor_gh
-                let s3 := alloc.vec.Vec.deref owners
-                let r2 ←
-                  rights.rights { id := user.id, gh_token := o, gh_login := b }
-                    s3 answers
-                match r2 with
-                | core.result.Result.Ok r3 =>
-                  let i1 ← rights.rank r3
-                  if i1 < 1#u8
-                  then
-                    ok (core.result.Result.Err publish.PublishError.NotOwner)
-                  else
-                    ok (core.result.Result.Ok (publish.Publisher.User user.id))
-                | core.result.Result.Err e =>
-                  ok (core.result.Result.Err (publish.PublishError.Rights e))
-        | core.result.Result.Err e =>
-          ok (core.result.Result.Err (publish.PublishError.Auth e))
+        publish.user_publish «name» existing owners_at_write allowed_origins
+          users tokens req now actor_gh answers
     | core.result.Result.Err e =>
       ok (core.result.Result.Err (publish.PublishError.Header e))
 
