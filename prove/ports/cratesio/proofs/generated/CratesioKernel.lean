@@ -1735,6 +1735,49 @@ def publish.publish_auth
     | core.result.Result.Err e =>
       ok (core.result.Result.Err (publish.PublishError.Header e))
 
+/-- [cratesio_kernel::rate_limit::Bucket]
+    Source: 'prove/ports/cratesio/kernel/src/rate_limit.rs', lines 14:0-17:1
+    Visibility: public -/
+structure rate_limit.Bucket where
+  tokens : Std.I64
+  last_refill : Std.I64
+
+/-- [cratesio_kernel::rate_limit::take_token]:
+    Source: 'prove/ports/cratesio/kernel/src/rate_limit.rs', lines 22:0-32:1
+    Visibility: public -/
+def rate_limit.take_token
+  (bucket : Option rate_limit.Bucket) (now : Std.I64) (rate : Std.I64)
+  (burst : Std.I64) :
+  Result rate_limit.Bucket
+  := do
+  match bucket with
+  | none => ok { tokens := burst, last_refill := now }
+  | some b =>
+    let i ← now - b.last_refill
+    let add ← i / rate
+    let i1 ← b.tokens - 1#i64
+    let kept ← if i1 > 0#i64
+                 then ok i1
+                 else ok 0#i64
+    let i2 ← burst - kept
+    let tokens ← if add >= i2
+                   then ok burst
+                   else kept + add
+    let i3 ← rate * add
+    let i4 ← b.last_refill + i3
+    ok { tokens, last_refill := i4 }
+
+/-- [cratesio_kernel::rate_limit::check_rate_limit]:
+    Source: 'prove/ports/cratesio/kernel/src/rate_limit.rs', lines 35:0-38:1
+    Visibility: public -/
+def rate_limit.check_rate_limit
+  (bucket : Option rate_limit.Bucket) (now : Std.I64) (rate : Std.I64)
+  (burst : Std.I64) :
+  Result (rate_limit.Bucket × Bool)
+  := do
+  let b ← rate_limit.take_token bucket now rate burst
+  ok (b, b.tokens >= 1#i64)
+
 /-- [cratesio_kernel::validation::rest_ok]: loop body 0:
     Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 41:4-49:1
     Visibility: public -/

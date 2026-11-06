@@ -27,4 +27,5 @@ theorems = [
   "cratesio_kernel.Properties.exchange_jti_single_use",
   "cratesio_kernel.Properties.exchange_replay_rejected",
   "cratesio_kernel.Properties.exchange_rejects_forbidden_events",
+  "cratesio_kernel.Properties.publish_rate_limit_bounded",
 ]
