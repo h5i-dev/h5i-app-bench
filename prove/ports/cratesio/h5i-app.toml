@@ -16,6 +16,7 @@ theorems = [
   "cratesio_kernel.Properties.crate_scoped_token_needs_crate_or_opt_in",
   "cratesio_kernel.Properties.full_rights_only_for_listed_user",
   "cratesio_kernel.Properties.team_rights_need_active_membership",
+  "cratesio_kernel.Properties.rights_decrypt_failure_denies_direct_owner",
   "cratesio_kernel.Properties.trustpub_publish_bound_to_crate",
   "cratesio_kernel.Properties.trustpub_cannot_create_crates",
   "cratesio_kernel.Properties.trustpub_only_rejects_users",
