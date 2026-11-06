@@ -19,40 +19,376 @@ set_option maxRecDepth 2048
 
 namespace anova_oven_kernel
 
-/-- [anova_oven_kernel::State]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 8:0-11:1
+/-- [anova_oven_kernel::OFFLINE_THRESHOLD]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 45:0-45:37
     Visibility: public -/
-structure State where
-  count : Std.U64
-  limit : Std.U64
+@[global_simps, irreducible] def OFFLINE_THRESHOLD : Std.U64 := 3#u64
+
+/-- [anova_oven_kernel::TIER1_FAILS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 47:0-47:31
+    Visibility: public -/
+@[global_simps, irreducible] def TIER1_FAILS : Std.U64 := 5#u64
+
+/-- [anova_oven_kernel::TIER2_FAILS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 48:0-48:32
+    Visibility: public -/
+@[global_simps, irreducible] def TIER2_FAILS : Std.U64 := 10#u64
+
+/-- [anova_oven_kernel::TIER3_FAILS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 49:0-49:32
+    Visibility: public -/
+@[global_simps, irreducible] def TIER3_FAILS : Std.U64 := 15#u64
+
+/-- [anova_oven_kernel::NORMAL_POLL_SECS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 51:0-51:36
+    Visibility: public -/
+@[global_simps, irreducible] def NORMAL_POLL_SECS : Std.U64 := 1#u64
+
+/-- [anova_oven_kernel::TIER1_SECS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 52:0-52:30
+    Visibility: public -/
+@[global_simps, irreducible] def TIER1_SECS : Std.U64 := 5#u64
+
+/-- [anova_oven_kernel::TIER2_SECS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 53:0-53:31
+    Visibility: public -/
+@[global_simps, irreducible] def TIER2_SECS : Std.U64 := 15#u64
+
+/-- [anova_oven_kernel::TIER3_SECS]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 54:0-54:31
+    Visibility: public -/
+@[global_simps, irreducible] def TIER3_SECS : Std.U64 := 30#u64
+
+/-- [anova_oven_kernel::Kind]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 59:0-66:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Kind where
+| PollStatus : Kind
+| PollCurrentCook : Kind
+| PollRecipes : Kind
+| UserStart : Kind
+| UserStop : Kind
+| UserNextStage : Kind
+
+/-- [anova_oven_kernel::priority]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 70:0-79:1
+    Visibility: public -/
+def priority (k : Kind) : Result Std.U8 := do
+  match k with
+  | Kind.PollStatus => ok 1#u8
+  | Kind.PollCurrentCook => ok 1#u8
+  | Kind.PollRecipes => ok 1#u8
+  | Kind.UserStart => ok 0#u8
+  | Kind.UserStop => ok 0#u8
+  | Kind.UserNextStage => ok 0#u8
+
+/-- [anova_oven_kernel::is_user]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 82:0-91:1
+    Visibility: public -/
+def is_user (k : Kind) : Result Bool := do
+  match k with
+  | Kind.PollStatus => ok false
+  | Kind.PollCurrentCook => ok false
+  | Kind.PollRecipes => ok false
+  | Kind.UserStart => ok true
+  | Kind.UserStop => ok true
+  | Kind.UserNextStage => ok true
+
+/-- [anova_oven_kernel::Queue]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 99:0-107:1
+    Visibility: public -/
+structure Queue where
+  status : Option Std.U64
+  cook : Option Std.U64
+  recipes : Option Std.U64
+  start : Option Std.U64
+  stop : Option Std.U64
+  next : Option Std.U64
+  fail_count : Std.U64
+
+/-- [anova_oven_kernel::slot]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 126:0-135:1
+    Visibility: public -/
+def slot (q : Queue) (k : Kind) : Result (Option Std.U64) := do
+  match k with
+  | Kind.PollStatus => ok q.status
+  | Kind.PollCurrentCook => ok q.cook
+  | Kind.PollRecipes => ok q.recipes
+  | Kind.UserStart => ok q.start
+  | Kind.UserStop => ok q.stop
+  | Kind.UserNextStage => ok q.next
+
+/-- [anova_oven_kernel::with_slot]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 138:0-149:1
+    Visibility: public -/
+def with_slot (q : Queue) (k : Kind) (v : Option Std.U64) : Result Queue := do
+  match k with
+  | Kind.PollStatus => ok { q with status := v }
+  | Kind.PollCurrentCook => ok { q with cook := v }
+  | Kind.PollRecipes => ok { q with recipes := v }
+  | Kind.UserStart => ok { q with start := v }
+  | Kind.UserStop => ok { q with stop := v }
+  | Kind.UserNextStage => ok { q with next := v }
+
+/-- [anova_oven_kernel::enqueue]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 153:0-167:1
+    Visibility: public -/
+def enqueue
+  (q : Queue) (k : Kind) (time : Std.U64) (replace : Bool) : Result Queue := do
+  let o ← slot q k
+  let v ←
+    match o with
+    | none => ok time
+    | some existing =>
+      if replace
+      then ok time
+      else if existing < time
+           then ok existing
+           else ok time
+  with_slot q k (some v)
+
+/-- [anova_oven_kernel::better]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 171:0-179:1
+    Visibility: public -/
+def better
+  (ct : Std.U64) (ck : Kind) (bt : Std.U64) (bk : Kind) : Result Bool := do
+  if ct < bt
+  then ok true
+  else
+    if ct > bt
+    then ok false
+    else let i ← priority ck
+         let i1 ← priority bk
+         ok (i < i1)
+
+/-- [anova_oven_kernel::consider]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 182:0-202:1
+    Visibility: public -/
+def consider
+  (best : Option (Std.U64 × Kind)) (s : Option Std.U64) (k : Kind)
+  (now : Std.U64) :
+  Result (Option (Std.U64 × Kind))
+  := do
+  match s with
+  | none => ok best
+  | some t =>
+    if t > now
+    then ok best
+    else
+      match best with
+      | none => ok (some (t, k))
+      | some p =>
+        let (bt, bk) := p
+        let b ← better t k bt bk
+        if b
+        then ok (some (t, k))
+        else ok best
+
+/-- [anova_oven_kernel::soonest_due]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 206:0-217:1
+    Visibility: public -/
+def soonest_due (q : Queue) (now : Std.U64) : Result (Option Kind) := do
+  let b0 ← consider none q.status Kind.PollStatus now
+  let b1 ← consider b0 q.cook Kind.PollCurrentCook now
+  let b2 ← consider b1 q.recipes Kind.PollRecipes now
+  let b3 ← consider b2 q.start Kind.UserStart now
+  let b4 ← consider b3 q.stop Kind.UserStop now
+  let b5 ← consider b4 q.next Kind.UserNextStage now
+  match b5 with
+  | none => ok none
+  | some p => let (_, k) := p
+              ok (some k)
+
+/-- [anova_oven_kernel::pop_due]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 220:0-225:1
+    Visibility: public -/
+def pop_due (q : Queue) (now : Std.U64) : Result (Queue × (Option Kind)) := do
+  let o ← soonest_due q now
+  match o with
+  | none => ok (q, none)
+  | some k => let q1 ← with_slot q k none
+              ok (q1, o)
+
+/-- [anova_oven_kernel::next_poll_interval]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 230:0-240:1
+    Visibility: public -/
+def next_poll_interval (fail_count : Std.U64) : Result Std.U64 := do
+  if fail_count >= TIER3_FAILS
+  then ok TIER3_SECS
+  else
+    if fail_count >= TIER2_FAILS
+    then ok TIER2_SECS
+    else
+      if fail_count >= TIER1_FAILS
+      then ok TIER1_SECS
+      else ok NORMAL_POLL_SECS
+
+/-- [anova_oven_kernel::is_offline]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 243:0-245:1
+    Visibility: public -/
+def is_offline (fail_count : Std.U64) : Result Bool := do
+  ok (fail_count >= OFFLINE_THRESHOLD)
+
+/-- [anova_oven_kernel::incr_sat]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 249:0-255:1
+    Visibility: public -/
+def incr_sat (x : Std.U64) : Result Std.U64 := do
+  if x >= core.num.U64.MAX
+  then ok core.num.U64.MAX
+  else x + 1#u64
 
 /-- [anova_oven_kernel::Command]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 14:0-19:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 258:0-269:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
-| Incr : Command
-| Reset : Command
+| Enqueue : Kind → Std.U64 → Bool → Command
+| PopDue : Std.U64 → Command
+| PollOk : Command
+| PollFail : Command
+| Peek : Command
+
+/-- [anova_oven_kernel::Reply]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 272:0-280:1
+    Visibility: public -/
+@[discriminant isize]
+inductive Reply where
+| Queued : Reply
+| Popped : Option Kind → Reply
+| Health : Std.U64 → Std.U64 → Bool → Reply
 
 /-- [anova_oven_kernel::Error]
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 22:0-24:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 284:0-286:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
-| AtLimit : Error
+| Never : Error
 
 /-- [anova_oven_kernel::transition]:
-    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 27:0-38:1
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 290:0-319:1
     Visibility: public -/
 def transition
-  (s : State) (cmd : Command) : Result (core.result.Result State Error) := do
+  (s : Queue) (cmd : Command) :
+  Result (core.result.Result ((Option Queue) × Reply) Error)
+  := do
   match cmd with
-  | Command.Incr =>
-    if s.count >= s.limit
-    then ok (core.result.Result.Err Error.AtLimit)
+  | Command.Enqueue kind time replace =>
+    let n ← enqueue s kind time replace
+    ok (core.result.Result.Ok (some n, Reply.Queued))
+  | Command.PopDue now =>
+    let (n, popped) ← pop_due s now
+    ok (core.result.Result.Ok (some n, Reply.Popped popped))
+  | Command.PollOk =>
+    ok (core.result.Result.Ok (some { s with fail_count := 0#u64 },
+      Reply.Queued))
+  | Command.PollFail =>
+    let i ← incr_sat s.fail_count
+    ok (core.result.Result.Ok (some { s with fail_count := i }, Reply.Queued))
+  | Command.Peek =>
+    let i ← next_poll_interval s.fail_count
+    let b ← is_offline s.fail_count
+    ok (core.result.Result.Ok (none, Reply.Health s.fail_count i b))
+
+/-- [anova_oven_kernel::apply]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 321:0-326:1
+    Visibility: public -/
+def apply (s : Queue) (w : Option Queue) : Result Queue := do
+  match w with
+  | none => ok s
+  | some n => ok n
+
+/-- [anova_oven_kernel::read_only]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 329:0-334:1
+    Visibility: public -/
+def read_only (cmd : Command) : Result Bool := do
+  match cmd with
+  | Command.Enqueue _ _ _ => ok false
+  | Command.PopDue _ => ok false
+  | Command.PollOk => ok false
+  | Command.PollFail => ok false
+  | Command.Peek => ok true
+
+/-- [anova_oven_kernel::ResetReason]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 342:0-350:1
+    Visibility: public -/
+@[discriminant isize]
+inductive ResetReason where
+| Unknown : ResetReason
+| ColdBoot : ResetReason
+| Panic : ResetReason
+| WatchdogTimeout : ResetReason
+| WatchdogForced : ResetReason
+| OtherSoftReset : ResetReason
+| InitTimeout : ResetReason
+
+/-- [anova_oven_kernel::INIT_STAGE_WIFI]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 352:0-352:37
+    Visibility: public -/
+@[global_simps, irreducible] def INIT_STAGE_WIFI : Std.U32 := 100#u32
+
+/-- [anova_oven_kernel::INIT_STAGE_DHCP]
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 353:0-353:37
+    Visibility: public -/
+@[global_simps, irreducible] def INIT_STAGE_DHCP : Std.U32 := 101#u32
+
+/-- [anova_oven_kernel::is_init_stage]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 355:0-357:1
+    Visibility: public -/
+def is_init_stage (s : Std.U32) : Result Bool := do
+  if s = INIT_STAGE_WIFI
+  then ok true
+  else ok (s = INIT_STAGE_DHCP)
+
+/-- [anova_oven_kernel::reset_from_u32]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 361:0-371:1
+    Visibility: public -/
+def reset_from_u32 (v : Std.U32) : Result ResetReason := do
+  match v with
+  | 1#uscalar => ok ResetReason.ColdBoot
+  | 2#uscalar => ok ResetReason.Panic
+  | 3#uscalar => ok ResetReason.WatchdogTimeout
+  | 4#uscalar => ok ResetReason.WatchdogForced
+  | 5#uscalar => ok ResetReason.OtherSoftReset
+  | 6#uscalar => ok ResetReason.InitTimeout
+  | _ => ok ResetReason.Unknown
+
+/-- [anova_oven_kernel::reset_to_u32]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 374:0-384:1
+    Visibility: public -/
+def reset_to_u32 (r : ResetReason) : Result Std.U32 := do
+  match r with
+  | ResetReason.Unknown => ok 0#u32
+  | ResetReason.ColdBoot => ok 1#u32
+  | ResetReason.Panic => ok 2#u32
+  | ResetReason.WatchdogTimeout => ok 3#u32
+  | ResetReason.WatchdogForced => ok 4#u32
+  | ResetReason.OtherSoftReset => ok 5#u32
+  | ResetReason.InitTimeout => ok 6#u32
+
+/-- [anova_oven_kernel::classify_reset]:
+    Source: 'prove/ports-embed/anova-oven-rs/kernel/src/lib.rs', lines 391:0-411:1
+    Visibility: public -/
+def classify_reset
+  (magic_was_valid : Bool) (panic_count_advanced : Bool)
+  (last_app_state : Std.U32) (watchdog_timer : Bool) (watchdog_force : Bool) :
+  Result ResetReason
+  := do
+  if magic_was_valid
+  then
+    if panic_count_advanced
+    then ok ResetReason.Panic
     else
-      let i ← s.count + 1#u64
-      ok (core.result.Result.Ok { s with count := i })
-  | Command.Reset => ok (core.result.Result.Ok { s with count := 0#u64 })
+      if watchdog_timer
+      then ok ResetReason.WatchdogTimeout
+      else
+        if watchdog_force
+        then ok ResetReason.WatchdogForced
+        else
+          let b ← is_init_stage last_app_state
+          if b
+          then ok ResetReason.InitTimeout
+          else ok ResetReason.OtherSoftReset
+  else ok ResetReason.ColdBoot
 
 end anova_oven_kernel

@@ -3,22 +3,65 @@
 [extract]
 crate = "kernel"
 # Charon starts here and extracts what it reaches.
-start-from = ["transition"]
+start-from = [
+    "transition",
+    "apply",
+    "read_only",
+    "soonest_due",
+    "pop_due",
+    "enqueue",
+    "next_poll_interval",
+    "is_offline",
+    "is_user",
+    "classify_reset",
+    "reset_from_u32",
+    "reset_to_u32",
+]
 
 [check]
 # Must exist and use only Lean's standard axioms. Every theorem in a
 # hand-written module under proofs/ is gated anyway; naming the main ones
 # here catches a rename.
-theorems = ["anova_oven_kernel.inv_preserved", "anova_oven_kernel.incr_below_limit", "anova_oven_kernel.reset_zero"]
+theorems = [
+    "anova_oven_kernel.Proofs.transition_total",
+    "anova_oven_kernel.Proofs.inv_reachable",
+    "anova_oven_kernel.Proofs.enqueue_keeps_others",
+    "anova_oven_kernel.Proofs.user_preempts_poll",
+    "anova_oven_kernel.Proofs.poll_ok_recovers",
+    "anova_oven_kernel.Proofs.backoff_bounded",
+    "anova_oven_kernel.Proofs.backoff_monotone",
+    "anova_oven_kernel.Proofs.panic_never_masked",
+    "anova_oven_kernel.Proofs.coldboot_dominates",
+    "anova_oven_kernel.ReadOnly.sound",
+]
 
 # Bugs the proofs must reject (`h5i app mutate`). Each `old` must occur
 # exactly once in kernel/src/lib.rs (or in `file`).
-[[mutant]]
-name = "off_by_one_limit"
-old = "if s.count >= s.limit {"
-new = "if s.count > s.limit {"
 
+# A user command must outrank a poll at equal execution time; dropping that
+# tie-break lets a Stop be starved behind a same-instant poll.
 [[mutant]]
-name = "reset_keeps_count"
-old = "Command::Reset => Ok(State { count: 0, limit: s.limit }),"
-new = "Command::Reset => Ok(State { count: s.count, limit: s.limit }),"
+name = "user_loses_priority"
+old = "priority(ck) < priority(bk)"
+new = "priority(ck) > priority(bk)"
+
+# The top backoff tier bounds how long the device can go without retrying.
+# Unbounding it (a far larger interval) abandons the server/oven.
+[[mutant]]
+name = "backoff_unbounded"
+old = "TIER3_SECS\n    } else if fail_count >= TIER2_FAILS {"
+new = "TIER3_SECS * 100\n    } else if fail_count >= TIER2_FAILS {"
+
+# A successful poll must clear the failure count; keeping it would trap the
+# device in the offline/backoff regime forever.
+[[mutant]]
+name = "poll_ok_keeps_fail"
+old = "n.fail_count = 0;"
+new = "n.fail_count = s.fail_count;"
+
+# Reset classification: a panic must be attributed to the panic even when the
+# watchdog also fired. Reordering masks the root cause.
+[[mutant]]
+name = "watchdog_masks_panic"
+old = "} else if panic_count_advanced {\n        ResetReason::Panic\n    } else if watchdog_timer {"
+new = "} else if watchdog_timer {\n        ResetReason::WatchdogTimeout\n    } else if panic_count_advanced {"

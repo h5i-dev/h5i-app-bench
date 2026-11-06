@@ -17,4 +17,4 @@ lean_lib Generated where
 
 -- Hand-written specs and proofs.
 @[default_target] lean_lib Proofs where
-  roots := #[`Theorems]
+  roots := #[`Proofs, `ReadOnly]
