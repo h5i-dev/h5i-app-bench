@@ -22,6 +22,7 @@ theorems = [
   "windmill_kernel.Properties.contains_true",
   "windmill_kernel.Properties.delegation_stays_in_domain_and_action",
   "windmill_kernel.Properties.read_delegates_only_read",
+  "windmill_kernel.Properties.extra_perms_true_needs_entry",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). STATUS.md names the theorem that
@@ -109,3 +110,29 @@ name = "contains_ignores_domain"
 file = "kernel/src/scopes.rs"
 old = "    if !eq(&caller.domain, &requested.domain) {"
 new = "    if false && !eq(&caller.domain, &requested.domain) {"
+
+[[mutant]]
+name = "extra_perms_user_false_grants"
+file = "kernel/src/authz.rs"
+old = """    if f {
+        if v {
+            return (true, true);
+        }
+        res_some = true;
+        res = false;
+    }
+    let mut i = 0;"""
+new = """    if f {
+        if true {
+            return (true, true);
+        }
+        res_some = true;
+        res = false;
+    }
+    let mut i = 0;"""
+
+[[mutant]]
+name = "extra_perms_group_key_as_user"
+file = "kernel/src/authz.rs"
+old = "lookup(obj, &key_for(103, &a.groups[i]))"
+new = "lookup(obj, &key_for(117, &a.groups[i]))"

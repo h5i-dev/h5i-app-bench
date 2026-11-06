@@ -511,4 +511,41 @@ theorem not_traversal_of (p : Slice U8) (parts : alloc.vec.Vec (alloc.vec.Vec U8
       · simp_all [vec_deref_val]
   · simp
 
+theorem perm_loop0_sound (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hv : ∀ g ∈ v.val, g.length + 2 < Usize.max) :
+    authz.get_perm_in_extra_perms_loop0 obj v 0#usize ⦃ b => b = true →
+      ∃ e ∈ obj.val, e.is_bool = true ∧ e.value = true ∧ ∃ g ∈ v.val, e.key.val = [103#u8, 47#u8] ++ g.val ⦄ := by
+  unfold authz.get_perm_in_extra_perms_loop0
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => v.length - j.val)
+    (inv := fun j => j.val ≤ v.length)
+  · intro i hi
+    unfold authz.get_perm_in_extra_perms_loop0.body
+    step*
+    · have := hv v1 (by rw [v1_post]; simp)
+      simpa [vec_deref_val] using this
+    · intro _
+      obtain ⟨e, he, hk, hb, hval⟩ := f_post ‹_› ‹_›
+      exact ⟨e, he, hb, hval, v1, by rw [v1_post]; simp, by rw [hk]; simpa [vec_deref_val] using v2_post⟩
+  · simp
+
+theorem perm_loop1_sound (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hv : ∀ g ∈ v.val, g.length + 2 < Usize.max) :
+    authz.get_perm_in_extra_perms_loop1 obj v false 0#usize ⦃ r => r.2 = true →
+      ∃ e ∈ obj.val, e.is_bool = true ∧ e.value = true ∧ ∃ g ∈ v.val, e.key.val = [103#u8, 47#u8] ++ g.val ⦄ := by
+  unfold authz.get_perm_in_extra_perms_loop1
+  apply loop.spec_decr_nat (measure := fun (x : Bool × Usize) => v.length - x.2.val)
+    (inv := fun x => x.2.val ≤ v.length)
+  · rintro ⟨rs, i⟩ hi
+    simp only [] at hi ⊢
+    unfold authz.get_perm_in_extra_perms_loop1.body
+    step*
+    · have := hv v1 (by rw [v1_post]; simp)
+      simpa [vec_deref_val] using this
+    all_goals first
+      | (intro _
+         obtain ⟨e, he, hk, hb, hval⟩ := f_post ‹_› ‹_›
+         exact ⟨e, he, hb, hval, v1, by rw [v1_post]; simp, by rw [hk]; simpa [vec_deref_val] using v2_post⟩)
+      | skip
+  · simp
+
 end windmill_kernel.Lemmas

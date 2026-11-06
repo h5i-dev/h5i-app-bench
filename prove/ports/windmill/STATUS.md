@@ -1,6 +1,6 @@
 # windmill: status
 
-**Theorem classes: S = 12, C = 4, F = 1** (17 theorems in `[check] theorems`).
+**Theorem classes: S = 13, C = 4, F = 1** (18 theorems in `[check] theorems`).
 Upstream pinned at `9dedc42b4ece1fbceae7d695ec51a508caa49710`. Threat model, ported code
 and deviations are in DEVIATIONS.md; findings are in FINDINGS.md.
 
@@ -30,6 +30,7 @@ statement is false. The counterexample is given in brief.
 | `contains_true` | C | an accepted `scope_contains` implies same domain and a covering action | — |
 | `delegation_stays_in_domain_and_action` | S | a minted scope stays in the caller's domain and in an action the caller's covers | `contains_ignores_domain` |
 | `read_delegates_only_read` | S | a `read` caller can only mint `read` | `read_covers_write` |
+| `extra_perms_true_needs_entry` | S | `extra_perms` grants only through an explicit JSON `true` entry for `u/<username>` or `g/<own group>` | `extra_perms_user_false_grants`, `extra_perms_group_key_as_user` |
 
 Helper lemmas (byte loops, `split`, `prefix`, `nth_char_is_slash`, list facts) are in
 `proofs/Lemmas.lean`. They are gated but not listed and not counted.
@@ -59,8 +60,6 @@ mutant under which its statement is false. No equivalent mutants.
   `scope_contains` and a parse spec.
 - W2 as a Lean F theorem. This needs a `resources_match_small/large` spec. W2 is
   currently shown by the difftest only.
-- `get_perm_in_extra_perms`: `Some(true)` only with a matching `u/<user>` or
-  `g/<group>` entry set to `true`.
 - Route-level scope checks (`windmill-api-auth/src/scopes.rs`), job read/cancel
   confinement, and the `check_extra_perms` disagreement.
 
