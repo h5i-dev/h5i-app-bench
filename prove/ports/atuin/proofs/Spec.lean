@@ -43,6 +43,8 @@ def Authenticated (s : Snapshot) (h : Option (alloc.vec.Vec U8)) (u : User) : Pr
 def Verify (c : Crypto) (hash pw : List U8) : Prop :=
   ∃ v ∈ c.verified.val, v.hash.val = hash ∧ v.password.val = pw
 
+instance (c : Crypto) (hash pw : List U8) : Decidable (Verify c hash pw) := by unfold Verify; infer_instance
+
 /-! ## Registration -/
 
 /-- SQLite's `LOWER` on one byte (ASCII letters only). -/
@@ -74,6 +76,8 @@ def Fresh (s : Snapshot) (uname email hash token : List U8) : Prop :=
 
 /-- `len <= max || max == 0`. -/
 def Fits (max : U64) (r : RecordIn) : Prop := r.data.val.length ≤ max.val ∨ max.val = 0
+
+instance (max : U64) (r : RecordIn) : Decidable (Fits max r) := by unfold Fits; infer_instance
 
 /-- The row `ADD_RECORDS` inserts for user `uid`. -/
 def rowOf (uid : U64) (r : RecordIn) : StoreRow :=
