@@ -31,6 +31,8 @@ theorems = [
   "wastebin_kernel.Properties.form_owner_first_or_fresh",
   "wastebin_kernel.Properties.api_owner_token_or_fresh",
   "wastebin_kernel.Properties.magic_link_fixes_owner_of_fresh_browser",
+  "wastebin_kernel.Properties.insert_never_clobbers",
+  "wastebin_kernel.Properties.purge_removes_exactly_expired",
   "wastebin_kernel.Properties.extension_accepts_only_url_safe",
   "wastebin_kernel.Properties.parsed_key_extension_url_safe",
 ]

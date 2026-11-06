@@ -351,9 +351,10 @@ handler chose. -/
 theorem insert_never_clobbers (rows : alloc.vec.Vec Row) (ids : Slice I64) (p : handlers.NewPaste)
     (id : I64) (v : alloc.vec.Vec Row) (h : handlers.insert rows ids p = ok (some (id, v))) :
     id ∈ ids.val.take 11 ∧ (∀ r ∈ rows.val, r.id ≠ id) ∧
-      v.val = rows.val ++ [{ id, uid := some p.uid, burn := p.burn, secret := p.password,
-        expires := p.expires, data := p.data, title := p.title }] :=
-  Verified.Insert.insert_ok rows ids p id v h
+      v.val = rows.val ++ [Verified.Insert.newRow id p] ∧ (Verified.Insert.newRow id p).uid = some p.uid :=
+  ⟨(Verified.Insert.insert_ok rows ids p id v h).1, (Verified.Insert.insert_ok rows ids p id v h).2.1,
+    (Verified.Insert.insert_ok rows ids p id v h).2.2, rfl⟩
+
 
 /-- `wastebin-ctl purge` deletes exactly the expired pastes: every row it
 keeps is unexpired and every unexpired row is kept. -/
