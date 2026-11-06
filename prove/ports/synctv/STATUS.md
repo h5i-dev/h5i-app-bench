@@ -56,8 +56,11 @@ are gated by `h5i app check` but not listed and not counted.
 
 ## Mutation (`h5i app mutate ports/synctv`)
 
-Run 1 (31 hand-written mutants, `-j2`) is recorded in "Gate results" below. Run 2 adds
-`member_reads_admin_columns`, `user_manages_user` and `banned_is_active`.
+- Run 1 (31 hand-written mutants, `-j2`): **31/31 caught, 0 survived, 0 invalid**.
+- Run 2 (`--only member_reads_admin_columns --only user_manages_user --only banned_is_active`,
+  added so that every S theorem has a semantic killer): **3/3 caught**.
+- Total: 34 mutants, all caught. Every S theorem in the table has at least one
+  mutant under which its statement is false.
 
 - **Equivalent mutant:** `calculator_skips_own_override_check` is reported as
   "caught", but only because the proof of `calculator_correct` follows the code's
