@@ -439,4 +439,20 @@ theorem user_token_accepted (now exp : I64) (l : U64) (typ expected : auth.Token
   · simp [hr, core.result.Result.Insts.CoreOpsTry.branch,
       core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual] at h
 
+theorem calc_true {d m s p} (h : perms.calculator_has_permission d m s p = ok true) :
+    calcHas d s m p := by
+  obtain ⟨b, hb, hiff⟩ := calculator_spec d m s p
+  rw [hb, Result.ok.injEq] at h
+  exact hiff.1 h
+
+theorem names_guest_assignable {bits : Nat} {p : perms.RoomPermission} (h : names guestBit bits p) :
+    guestAssignable p := by
+  obtain ⟨j, hj, _⟩ := h
+  simp [guestAssignable, hj]
+
+theorem names_none {space : perms.RoomPermission → Option Nat} {bits p} (h : space p = none) :
+    ¬ names space bits p := by
+  rintro ⟨j, hj, _⟩
+  simp [h] at hj
+
 end synctv_kernel.Lemmas

@@ -4,4 +4,250 @@ crate = "kernel"
 start-from = ["perms", "policy", "auth"]
 
 [check]
-theorems = []
+theorems = [
+  "synctv_kernel.Properties.has_correct",
+  "synctv_kernel.Properties.effective_permissions_correct",
+  "synctv_kernel.Properties.role_default_correct",
+  "synctv_kernel.Properties.calculator_correct",
+  "synctv_kernel.Properties.guest_confined",
+  "synctv_kernel.Properties.guest_effective_confined",
+  "synctv_kernel.Properties.member_overrides_confined",
+  "synctv_kernel.Properties.member_default_confined",
+  "synctv_kernel.Properties.admin_ignores_plain_columns",
+  "synctv_kernel.Properties.non_admin_ignores_admin_columns",
+  "synctv_kernel.Properties.removed_never_held",
+  "synctv_kernel.Properties.creator_holds_all",
+  "synctv_kernel.Properties.default_admin_spec",
+  "synctv_kernel.Properties.default_guest_empty",
+  "synctv_kernel.Properties.default_member_spec",
+  "synctv_kernel.Properties.admin_delete_room_needs_explicit_grant",
+  "synctv_kernel.Properties.member_delete_room_only_from_server_default",
+  "synctv_kernel.Properties.creator_role_never_assignable",
+  "synctv_kernel.Properties.only_creator_admits_admins",
+  "synctv_kernel.Properties.role_change_only_by_creator",
+  "synctv_kernel.Properties.overrides_stay_in_role_space",
+  "synctv_kernel.Properties.override_channel_matches_role",
+  "synctv_kernel.Properties.update_needs_existing_member",
+  "synctv_kernel.Properties.kick_cooldown_bounded",
+  "synctv_kernel.Properties.can_manage_eq",
+  "synctv_kernel.Properties.manage_needs_higher_role",
+  "synctv_kernel.Properties.manager_is_admin_or_above",
+  "synctv_kernel.Properties.banned_cannot_login",
+  "synctv_kernel.Properties.expiration_correct",
+  "synctv_kernel.Properties.expired_token_rejected",
+  "synctv_kernel.Properties.zero_leeway_strict",
+  "synctv_kernel.Properties.token_type_enforced",
+  "synctv_kernel.Properties.guest_revocation_effective",
+  "synctv_kernel.Properties.guest_access_requires",
+  "synctv_kernel.Properties.pipeline_accepts_only_valid",
+]
+
+# Bugs the proofs must reject (`h5i app mutate`). See STATUS.md for which theorem
+# kills each one.
+[[mutant]]
+name = "guest_base_unmasked"
+file = "kernel/src/perms.rs"
+old = "((role_default & guest_assignable()) | guest_to_permissions(m.added_permissions))"
+new = "(role_default | guest_to_permissions(m.added_permissions))"
+
+[[mutant]]
+name = "settings_guest_unmasked"
+file = "kernel/src/perms.rs"
+old = "((global_default & guest_assignable()) | guest_to_permissions(s.guest_added_permissions))"
+new = "(global_default | guest_to_permissions(s.guest_added_permissions))"
+
+[[mutant]]
+name = "member_uses_admin_map"
+file = "kernel/src/perms.rs"
+old = "(role_default | member_to_permissions(m.added_permissions))"
+new = "(role_default | admin_to_permissions(m.added_permissions))"
+
+[[mutant]]
+name = "member_deny_ignored"
+file = "kernel/src/perms.rs"
+old = "& !member_to_permissions(m.removed_permissions)"
+new = ""
+
+[[mutant]]
+name = "admin_reads_plain_columns"
+file = "kernel/src/perms.rs"
+old = "(role_default | admin_to_permissions(m.admin_added_permissions))"
+new = "(role_default | admin_to_permissions(m.added_permissions))"
+
+[[mutant]]
+name = "creator_gets_admin_default"
+file = "kernel/src/perms.rs"
+old = """        Role::Creator => all(),
+        Role::Admin => {"""
+new = """        Role::Creator => default_admin(),
+        Role::Admin => {"""
+
+[[mutant]]
+name = "admin_default_includes_delete_room"
+file = "kernel/src/perms.rs"
+old = "pub const A_DEFAULT: u64 = 0x1bffff;"
+new = "pub const A_DEFAULT: u64 = 0x1fffff;"
+
+[[mutant]]
+name = "guest_default_nonzero"
+file = "kernel/src/perms.rs"
+old = "pub const G_DEFAULT: u64 = 0;"
+new = "pub const G_DEFAULT: u64 = 0x1_0000_0000;"
+
+[[mutant]]
+name = "member_p2p_maps_to_delete_media"
+file = "kernel/src/perms.rs"
+old = """        | map_bit(bits, M_USE_P2P_MEDIA, A_USE_P2P_MEDIA)
+}
+
+/// `RoomMemberPermissionBits::from_permissions`."""
+new = """        | map_bit(bits, M_USE_P2P_MEDIA, A_DELETE_MEDIA)
+}
+
+/// `RoomMemberPermissionBits::from_permissions`."""
+
+[[mutant]]
+name = "guest_p2p_maps_to_delete_room"
+file = "kernel/src/perms.rs"
+old = "        | map_bit(bits, G_USE_P2P_MEDIA, A_USE_P2P_MEDIA)"
+new = "        | map_bit(bits, G_USE_P2P_MEDIA, A_DELETE_ROOM)"
+
+[[mutant]]
+name = "calculator_skips_own_override_check"
+file = "kernel/src/perms.rs"
+old = "    if !member_has_permission(m, p, all()) {"
+new = "    if false && !member_has_permission(m, p, all()) {"
+
+[[mutant]]
+name = "creator_role_assignable"
+file = "kernel/src/policy.rs"
+old = """    if role == Role::Creator {
+        return Err(PolicyError::InvalidInput);"""
+new = """    if role == Role::Creator && false {
+        return Err(PolicyError::InvalidInput);"""
+
+[[mutant]]
+name = "admin_grant_by_anyone"
+file = "kernel/src/policy.rs"
+old = "    if role == Role::Admin && room_created_by != actor_id {"
+new = "    if role == Role::Member && room_created_by != actor_id {"
+
+[[mutant]]
+name = "role_update_by_non_creator"
+file = "kernel/src/policy.rs"
+old = """    if room_created_by != actor_id {
+        return Err(PolicyError::Authorization);
+    }
+    validate_admin_member_role_update"""
+new = """    if room_created_by == 0 && room_created_by != actor_id {
+        return Err(PolicyError::Authorization);
+    }
+    validate_admin_member_role_update"""
+
+[[mutant]]
+name = "role_update_may_target_creator"
+file = "kernel/src/policy.rs"
+old = "    if target_user_id == room_created_by {"
+new = "    if target_user_id == room_created_by && false {"
+
+[[mutant]]
+name = "plan_skips_role_space_check"
+file = "kernel/src/policy.rs"
+old = "        validate_override_bits_for_role(effective_role, u.added_permissions, u.removed_permissions)?;"
+new = "        let _ = validate_override_bits_for_role(effective_role, u.added_permissions, u.removed_permissions);"
+
+[[mutant]]
+name = "plan_skips_admin_bits_check"
+file = "kernel/src/policy.rs"
+old = """    validate_admin_override_bits(u.admin_added_permissions, u.admin_removed_permissions)?;
+    if !current_exists"""
+new = """    let _ = validate_admin_override_bits(u.admin_added_permissions, u.admin_removed_permissions);
+    if !current_exists"""
+
+[[mutant]]
+name = "plan_uses_current_role"
+file = "kernel/src/policy.rs"
+old = "    let effective_role = effective_role_of(u.has_role, u.role, current_role);"
+new = "    let effective_role = current_role;"
+
+[[mutant]]
+name = "channel_admin_check_dropped"
+file = "kernel/src/policy.rs"
+old = "    if effective_is_admin && (added_permissions > 0 || removed_permissions > 0) {"
+new = "    if effective_is_admin && false && (added_permissions > 0 || removed_permissions > 0) {"
+
+[[mutant]]
+name = "plan_ignores_missing_member"
+file = "kernel/src/policy.rs"
+old = """    if !current_exists {
+        return Err(PolicyError::NotFound);"""
+new = """    if !current_exists && false {
+        return Err(PolicyError::NotFound);"""
+
+[[mutant]]
+name = "kick_cooldown_zero_allowed"
+file = "kernel/src/policy.rs"
+old = "    if cooldown_seconds <= 0 {"
+new = "    if cooldown_seconds < 0 {"
+
+[[mutant]]
+name = "admin_manages_admin"
+file = "kernel/src/auth.rs"
+old = """            UserRole::Admin => false,
+        },"""
+new = """            UserRole::Admin => true,
+        },"""
+
+[[mutant]]
+name = "leeway_always_max"
+file = "kernel/src/auth.rs"
+old = "    if leeway_secs <= 9223372036854775807 { leeway_secs as i64 }"
+new = "    if false { leeway_secs as i64 }"
+
+[[mutant]]
+name = "expiry_off_by_one"
+file = "kernel/src/auth.rs"
+old = "    if now > expires_with_leeway {"
+new = "    if now > expires_with_leeway && now - 1 > expires_with_leeway {"
+
+[[mutant]]
+name = "token_type_unchecked"
+file = "kernel/src/auth.rs"
+old = "    if typ != expected {"
+new = "    if typ != expected && false {"
+
+[[mutant]]
+name = "guest_version_unchecked"
+file = "kernel/src/auth.rs"
+old = "    if gv < current_room_guest_version {"
+new = "    if gv < current_room_guest_version && gv < 0 {"
+
+[[mutant]]
+name = "guest_password_room_allowed"
+file = "kernel/src/auth.rs"
+old = "    if f.password_enabled {"
+new = "    if f.password_enabled && false {"
+
+[[mutant]]
+name = "guest_settings_fail_open"
+file = "kernel/src/auth.rs"
+old = "    if !f.has_runtime_settings {"
+new = "    if !f.has_runtime_settings && false {"
+
+[[mutant]]
+name = "pipeline_skips_password_version"
+file = "kernel/src/auth.rs"
+old = "    if f.claims_pv != f.password_version {"
+new = "    if f.claims_pv != f.password_version && false {"
+
+[[mutant]]
+name = "pipeline_blacklist_fail_open"
+file = "kernel/src/auth.rs"
+old = "    if f.blacklist_unavailable {"
+new = "    if f.blacklist_unavailable && false {"
+
+[[mutant]]
+name = "pipeline_skips_two_factor"
+file = "kernel/src/auth.rs"
+old = "    if f.two_factor_enabled && !f.token_has_second_factor {"
+new = "    if f.two_factor_enabled && !f.token_has_second_factor && false {"
