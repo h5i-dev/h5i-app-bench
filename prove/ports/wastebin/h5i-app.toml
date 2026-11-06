@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["ext", "id", "store"]
+start-from = ["ext::valid_extension", "id::to_i64", "id::encode", "id::decode", "id::parse_key", "id::key_path", "store::delete_for", "store::can_delete"]
 
 [check]
 theorems = []
