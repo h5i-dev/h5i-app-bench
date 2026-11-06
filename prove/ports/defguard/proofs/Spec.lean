@@ -92,3 +92,12 @@ def PairwiseDisjoint (l : List ranges.Range) : Prop :=
   l.Pairwise (fun a b => a.end.val < b.start.val ∨ b.end.val < a.start.val)
 
 end defguard_kernel.Spec
+
+namespace defguard_kernel.Spec
+
+/-- Each range ends at least two values before the next one starts: the
+ranges are sorted, disjoint and not adjacent (adjacent ones would merge). -/
+def Separated (l : List ranges.Range) : Prop :=
+  l.Pairwise (fun a b => a.end.val + 1 < b.start.val)
+
+end defguard_kernel.Spec

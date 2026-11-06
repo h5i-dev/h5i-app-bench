@@ -322,6 +322,112 @@ theorem u128_add_lit (a b c : U128) (hc : c.val = a.val + b.val) : a + b = ok c 
   · apply UScalar.eq_of_val_eq; omega
   · have := c.hBounds; simp_all; omega
 
+/-- The sweep keeps the finished ranges separated from each other and from
+the current one, while no range ends at `max`. -/
+def SepInv (rs : alloc.vec.Vec ranges.Range) (max : U128)
+    (x : alloc.vec.Vec ranges.Range × U128 × U128 × U128 × Usize) : Prop :=
+  1 ≤ x.2.2.2.2.val ∧ x.2.1.val ≤ x.2.2.1.val ∧ x.2.2.1.val < max.val ∧
+    (x.2.2.2.1.val = if max.val ≤ x.2.2.1.val then 0 else x.2.2.1.val + 1) ∧
+    Separated x.1.val ∧ (∀ m ∈ x.1.val, m.end.val + 1 < x.2.1.val)
+
+theorem separated_append_one {l : List ranges.Range} {r : ranges.Range} (h : Separated l)
+    (hr : ∀ m ∈ l, m.end.val + 1 < r.start.val) : Separated (l ++ [r]) := by
+  unfold Separated at *
+  rw [List.pairwise_append]
+  refine ⟨h, List.pairwise_singleton _ _, fun a ha b hb => ?_⟩
+  rw [List.mem_singleton] at hb; subst hb; exact hr a ha
+
+theorem sweep_loop_sep (rs : alloc.vec.Vec ranges.Range) (max : U128)
+    (hwf : ∀ r ∈ rs.val, r.start.val ≤ r.end.val ∧ r.end.val < max.val)
+    (x0 : alloc.vec.Vec ranges.Range × U128 × U128 × U128 × Usize) (y : alloc.vec.Vec ranges.Range × U128 × U128)
+    (hI : SepInv rs max x0) (hil : x0.2.2.2.2.val ≤ rs.val.length)
+    (h : ranges.sweep_loop rs max x0.1 x0.2.1 x0.2.2.1 x0.2.2.2.1 x0.2.2.2.2 = ok y) :
+    y.2.1.val ≤ y.2.2.val ∧ Separated y.1.val ∧ (∀ m ∈ y.1.val, m.end.val + 1 < y.2.1.val) := by
+  unfold ranges.sweep_loop at h
+  refine H5iAppLib.loop_idx_ok _ (fun x => x.2.2.2.2) rs.val.length (SepInv rs max)
+    (fun y => y.2.1.val ≤ y.2.2.val ∧ Separated y.1.val ∧ (∀ m ∈ y.1.val, m.end.val + 1 < y.2.1.val))
+    ?_ x0 y hI hil h
+  rintro ⟨merged, cs, ce, nu, i⟩ r ⟨hi1, hle, hce, hnu, hsep, hlast⟩ hil hb
+  simp only [] at hi1 hle hce hnu hsep hlast hil hb
+  unfold ranges.sweep_loop.body at hb
+  h5i_invert hb
+  · have hl : i.val < rs.val.length := by scalar_tac
+    rw [vec_index_eq _ _ hl] at hr_1
+    have e := (H5iAppLib.Result.ok.inj hr_1); subst e
+    obtain ⟨m1, a1, b1, c1⟩ := x
+    obtain ⟨j, hj, hb3⟩ := H5iAppLib.bind_tc_eq_ok.1 hb
+    have := (H5iAppLib.Result.ok.inj hb3).symm; subst this
+    have hjv := H5iAppLib.add_ok_val hj
+    simp only [UScalar.ofNatCore_val_eq] at hjv
+    dsimp only
+    have hwfi := hwf _ (List.getElem_mem hl)
+    unfold SepInv
+    simp only [hjv]
+    refine ⟨⟨by omega, ?_⟩, by omega, by omega⟩
+    split at hx
+    · obtain ⟨⟨p1, p2⟩, hp, hq⟩ := H5iAppLib.bind_tc_eq_ok.1 hx
+      have e := H5iAppLib.Result.ok.inj hq
+      simp only [Prod.mk.injEq] at e
+      obtain ⟨rfl, rfl, rfl, rfl⟩ := e
+      split at hp
+      · rename_i hB
+        have hB' : ce.val ≤ rs.val[i.val].end.val := by scalar_tac
+        obtain ⟨n2, hn2, hq2⟩ := H5iAppLib.bind_tc_eq_ok.1 hp
+        have e := H5iAppLib.Result.ok.inj hq2
+        simp only [Prod.mk.injEq] at e
+        obtain ⟨rfl, rfl⟩ := e
+        exact ⟨by omega, hwfi.2, next_ok hn2, hsep, hlast⟩
+      · have e := H5iAppLib.Result.ok.inj hp
+        simp only [Prod.mk.injEq] at e
+        obtain ⟨rfl, rfl⟩ := e
+        exact ⟨hle, hce, hnu, hsep, hlast⟩
+    · rename_i hA
+      have hA' : nu.val < rs.val[i.val].start.val := by scalar_tac
+      have hgap : ce.val + 1 < rs.val[i.val].start.val := by
+        rw [if_neg (by omega)] at hnu; omega
+      obtain ⟨m2, hm2, hq2⟩ := H5iAppLib.bind_tc_eq_ok.1 hx
+      obtain ⟨n2, hn2, hq3⟩ := H5iAppLib.bind_tc_eq_ok.1 hq2
+      have e := H5iAppLib.Result.ok.inj hq3
+      simp only [Prod.mk.injEq] at e
+      obtain ⟨rfl, rfl, rfl, rfl⟩ := e
+      have hv := push_ok_val hm2
+      refine ⟨hwfi.1, hwfi.2, next_ok hn2, ?_, fun m hm => ?_⟩
+      · rw [hv]; exact separated_append_one hsep (fun m hm => by have := hlast m hm; simp only []; omega)
+      · rw [hv, List.mem_append, List.mem_singleton] at hm
+        rcases hm with hm | rfl
+        · have := hlast m hm; omega
+        · simp only []; omega
+  · exact ⟨hle, hsep, hlast⟩
+
+/-- When no range ends at `max`, `merge_ranges` returns separated ranges:
+sorted, disjoint and not adjacent. -/
+theorem merge_ranges_separated (input out : alloc.vec.Vec ranges.Range) (max : U128)
+    (hwf : ∀ r ∈ input.val, r.start.val ≤ r.end.val ∧ r.end.val < max.val)
+    (h : ranges.merge_ranges input max = ok out) : Separated out.val := by
+  unfold ranges.merge_ranges at h
+  simp only [] at h
+  split at h
+  · have e := (H5iAppLib.Result.ok.inj h).symm; subst e
+    simp [Separated]
+  · obtain ⟨sorted, hs, h2⟩ := H5iAppLib.bind_tc_eq_ok.1 h
+    obtain ⟨_, hmem⟩ := sort_by_start_ok hs
+    have hne : 0 < sorted.val.length := by
+      have hl : 0 < input.val.length := by scalar_tac
+      exact List.length_pos_of_mem ((hmem _).2 (List.getElem_mem hl))
+    have hwf' : ∀ r ∈ sorted.val, r.start.val ≤ r.end.val ∧ r.end.val < max.val := fun r hr => hwf r ((hmem r).1 hr)
+    unfold ranges.sweep at h2
+    rw [vec_index_eq _ (0#usize) (by simpa using hne)] at h2
+    obtain ⟨r0, hr0, h3⟩ := H5iAppLib.bind_tc_eq_ok.1 h2
+    have e := (H5iAppLib.Result.ok.inj hr0).symm; subst e
+    obtain ⟨nu, hnu, h4⟩ := H5iAppLib.bind_tc_eq_ok.1 h3
+    obtain ⟨⟨m, a, b⟩, hl, h5⟩ := H5iAppLib.bind_tc_eq_ok.1 h4
+    have hv := push_ok_val h5
+    have hw0 := hwf' _ (List.getElem_mem hne)
+    obtain ⟨hab, hsep, hlast⟩ := sweep_loop_sep sorted max hwf' (alloc.vec.Vec.new ranges.Range, sorted.val[0].start, sorted.val[0].end, nu, 1#usize)
+      (m, a, b) ⟨by simp, hw0.1, hw0.2, next_ok hnu, by simp [Separated], by simp⟩ (by simp; omega) hl
+    rw [hv]
+    exact separated_append_one hsep hlast
+
 def ex_in : alloc.vec.Vec ranges.Range :=
   alloc.vec.Vec.from [⟨1024#u128, 65535#u128⟩, ⟨2000#u128, 2000#u128⟩] (by simp; scalar_tac)
 

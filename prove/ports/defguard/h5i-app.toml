@@ -24,6 +24,7 @@ theorems = [
   "defguard_kernel.Properties.kept_address_unchecked",
   "defguard_kernel.Properties.keeps_gateway_address",
   "defguard_kernel.Properties.merge_ranges_exact",
+  "defguard_kernel.Properties.merge_ranges_separated",
   "defguard_kernel.Properties.merge_ranges_overlap",
   "defguard_kernel.Verified.verify_username_ok",
   "defguard_kernel.Verified.log_failed_attempt_ok",
@@ -161,6 +162,12 @@ name = "merge_always"
 file = "kernel/src/ranges.rs"
 old = "if next_up >= s {"
 new = "if true {"
+
+[[mutant]]
+name = "adjacent_not_merged"
+file = "kernel/src/ranges.rs"
+old = "if next_up >= s {"
+new = "if cur_end >= s {"
 
 [[mutant]]
 name = "merge_end_shrinks"

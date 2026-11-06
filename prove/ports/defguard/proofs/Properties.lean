@@ -196,6 +196,15 @@ theorem merge_ranges_exact (input out : alloc.vec.Vec ranges.Range) (max : U128)
     ∀ x, InRanges out.val x ↔ InRanges input.val x :=
   Verified.merge_ranges_ok input out max hwf h
 
+/-- When no range ends at the maximum, the merged ranges are sorted,
+disjoint and not adjacent. With `merge_ranges_exact` this fixes the output:
+it is the one separated list of ranges covering the input's values. -/
+theorem merge_ranges_separated (input out : alloc.vec.Vec ranges.Range) (max : U128)
+    (hwf : ∀ r ∈ input.val, r.start.val ≤ r.end.val ∧ r.end.val < max.val)
+    (h : ranges.merge_ranges input max = ok out) :
+    Separated out.val :=
+  Verified.merge_ranges_separated input out max hwf h
+
 /-- Finding: the merged ranges can overlap. With ports `1024-65535` and
 `2000`, `next(65535)` wraps to 0, so `2000` is not merged in. -/
 theorem merge_ranges_overlap :
