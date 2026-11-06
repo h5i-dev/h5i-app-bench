@@ -1,0 +1,25 @@
+[package]
+name = "wastebin-difftest"
+description = "Differential test: the wastebin kernel against wastebin's own code at c0ec968"
+edition = "2024"
+version = "0.1.0"
+publish = false
+license = "MIT"
+
+[dependencies]
+wastebin-kernel = { path = "../kernel" }
+# The pinned upstream library itself (`../upstream-src` links the checkout).
+wastebin_core = { path = "../upstream-src/crates/wastebin_core" }
+http = "1"
+tokio = { version = "1", features = ["full"] }
+rusqlite = { version = "0.40", features = ["bundled"] }
+tempfile = "3"
+
+[workspace]
+
+[profile.release]
+overflow-checks = true
+debug-assertions = true
+
+[profile.dev.package.rust-argon2]
+opt-level = 3
