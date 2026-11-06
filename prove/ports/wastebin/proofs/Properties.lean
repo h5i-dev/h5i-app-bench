@@ -5,6 +5,7 @@ import Verified.Burn
 import Verified.View
 import Verified.Owner
 import Verified.Ids
+import Verified.Insert
 import Spec
 /-!
 # wastebin: the security properties
@@ -340,6 +341,30 @@ theorem magic_link_fixes_owner_of_fresh_browser (c fresh : I64) :
   simp only [Verified.Owner.cookieList, hv] at hm
   obtain ⟨rfl, hl'⟩ := hm
   exact ⟨l', hx, hl'⟩
+
+/-! ## Insert and purge -/
+
+/-- An insert never reuses the id of an existing paste (so it can neither
+overwrite nor take over another user's paste), tries at most the first
+eleven random ids, and appends exactly the new row, owned by the uid the
+handler chose. -/
+theorem insert_never_clobbers (rows : alloc.vec.Vec Row) (ids : Slice I64) (p : handlers.NewPaste)
+    (id : I64) (v : alloc.vec.Vec Row) (h : handlers.insert rows ids p = ok (some (id, v))) :
+    id ∈ ids.val.take 11 ∧ (∀ r ∈ rows.val, r.id ≠ id) ∧
+      v.val = rows.val ++ [{ id, uid := some p.uid, burn := p.burn, secret := p.password,
+        expires := p.expires, data := p.data, title := p.title }] :=
+  Verified.Insert.insert_ok rows ids p id v h
+
+/-- `wastebin-ctl purge` deletes exactly the expired pastes: every row it
+keeps is unexpired and every unexpired row is kept. -/
+theorem purge_removes_exactly_expired (rows : alloc.vec.Vec Row) (now : I64) (v : alloc.vec.Vec Row)
+    (h : store.purge rows now = ok v) :
+    (∀ r ∈ v.val, ¬ Expired r now.val) ∧ (∀ r ∈ rows.val, ¬ Expired r now.val → r ∈ v.val) := by
+  have hv := post_of_ok (Verified.Insert.purge_spec rows now) h
+  rw [hv]
+  refine ⟨fun r hr => ?_, fun r hr he => ?_⟩
+  · simp only [List.mem_filter, Bool.not_eq_true', decide_eq_false_iff_not] at hr; exact hr.2
+  · simp only [List.mem_filter, Bool.not_eq_true', decide_eq_false_iff_not]; exact ⟨hr, he⟩
 
 /-! ## Extensions -/
 
