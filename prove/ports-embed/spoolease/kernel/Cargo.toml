@@ -1,0 +1,19 @@
+[package]
+name = "spoolease-kernel"
+description = "SpoolEase's on-SD-card inventory allocator and NFC-tag index (bberrevoets/SpoolEase @ 3532f8d) as an h5i-app kernel: non-aliasing storage slots and tag uniqueness proven in Lean"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+version = "0.1.0"
+publish = false
+
+# Extracted to Lean by Charon + Aeneas (`h5i app extract`). Uses `alloc` only
+# (the device runs with a heap on PSRAM); no I/O, no other dependencies.
+[dependencies]
+
+[workspace]
+
+# The Aeneas subset: explicit comparisons and matches.
+[lints.clippy]
+manual_range_contains = "allow"
+match_like_matches_macro = "allow"
+needless_return = "allow"

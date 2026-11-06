@@ -1,0 +1,35 @@
+# Read by `h5i app` (extract, check, prove, mutate, doctor).
+
+[extract]
+crate = "kernel"
+start-from = ["transition", "apply", "read_only", "place"]
+
+[check]
+# Every theorem in a hand-written module under proofs/ is gated; the main ones
+# are named here so a rename is caught.
+theorems = [
+    "spoolease_kernel.Properties.transition_total",
+    "spoolease_kernel.Properties.place_capacity",
+    "spoolease_kernel.Properties.place_local",
+    "spoolease_kernel.Properties.place_inplace_fits",
+    "spoolease_kernel.Properties.inv_reachable",
+    "spoolease_kernel.Properties.no_clobber",
+    "spoolease_kernel.Properties.fresh_id_is_new",
+    "spoolease_kernel.Properties.tag_unique_reachable",
+    "spoolease_kernel.ReadOnly.sound",
+]
+
+[[mutant]]
+name = "inplace_boundary"
+old = "if len <= p.length {"
+new = "if len < p.length {"
+
+[[mutant]]
+name = "capacity_off_by_one"
+old = "if file_len > MAX_FILE - len {"
+new = "if file_len >= MAX_FILE - len {"
+
+[[mutant]]
+name = "fresh_id_reuse"
+old = "let id = s.last_id + 1;"
+new = "let id = s.last_id;"
