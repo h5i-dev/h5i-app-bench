@@ -68,7 +68,7 @@ new = "if *offset != expected && false {"
 
 [[mutant]]
 name = "auth_public_bypass"
-old = "!is_https && !allow_http_tokens"
+old = "!is_https & !allow_http_tokens"
 new = "false"
 
 [[mutant]]
@@ -78,8 +78,8 @@ new = "ct_eq8(&slot.token, token) && !is_zero8(&slot.token)"
 
 [[mutant]]
 name = "auth_empty_secret"
-old = "let bearer_ok = bearer_present && cfg.bearer_set && bearer_match;"
-new = "let bearer_ok = bearer_present && bearer_match;"
+old = "let bearer_ok = bearer_present & cfg.bearer_set & bearer_match;"
+new = "let bearer_ok = bearer_present & bearer_match;"
 
 [[mutant]]
 name = "ota_begin_no_admin"

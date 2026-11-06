@@ -398,12 +398,10 @@ def validate_session
     Visibility: public -/
 def transport_blocks
   (is_https : Bool) (allow_http_tokens : Bool) : Result Bool := do
-  if is_https
-  then ok false
-  else ok (¬ allow_http_tokens)
+  ok ((¬ is_https) && (¬ allow_http_tokens))
 
 /-- [m5airq_kernel::check_auth]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 381:0-432:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 381:0-434:1
     Visibility: public -/
 def check_auth
   (cfg : AuthCfg) (store : SessionStore) (now : Std.U32)
@@ -415,61 +413,31 @@ def check_auth
   := do
   let blocked ← transport_blocks is_https cfg.allow_http_tokens
   let vs ← validate_session store cookie_token now
-  let valid_cookie ← if cookie_present
-                       then ok vs
-                       else ok false
-  let bearer_block ← if bearer_present
-                       then ok blocked
-                       else ok false
-  let bearer_ok ←
-    if bearer_present
-    then if cfg.bearer_set
-         then ok bearer_match
-         else ok false
-    else ok false
-  let akh_block ← if akh_present
-                    then ok blocked
-                    else ok false
-  let (b, akh_ok) ←
-    if akh_present
-    then if cfg.apikey_set
-         then ok (true, akh_match)
-         else ok (false, false)
-    else ok (cfg.apikey_set, false)
-  let akq_block ← if akq_present
-                    then ok blocked
-                    else ok false
-  let akq_ok ←
-    if akq_present
-    then if b
-         then ok akq_match
-         else ok false
-    else ok false
   if cfg.public_access
   then ok AuthDecision.Allowed
   else
     if is_health
     then ok AuthDecision.Allowed
     else
-      if valid_cookie
+      if cookie_present && vs
       then ok AuthDecision.Allowed
       else
-        if bearer_block
+        if bearer_present && blocked
         then ok AuthDecision.Forbidden
         else
-          if bearer_ok
+          if (bearer_present && cfg.bearer_set) && bearer_match
           then ok AuthDecision.Allowed
           else
-            if akh_block
+            if akh_present && blocked
             then ok AuthDecision.Forbidden
             else
-              if akh_ok
+              if (akh_present && cfg.apikey_set) && akh_match
               then ok AuthDecision.Allowed
               else
-                if akq_block
+                if akq_present && blocked
                 then ok AuthDecision.Forbidden
                 else
-                  if akq_ok
+                  if (akq_present && cfg.apikey_set) && akq_match
                   then ok AuthDecision.Allowed
                   else
                     if digest_ok

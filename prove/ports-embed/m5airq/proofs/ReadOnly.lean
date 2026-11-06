@@ -1,18 +1,17 @@
 import Properties
-import H5iAppLib.ReadOnly
 open Aeneas Aeneas.Std Result m5airq_kernel
+/-!
+# `Status` is read-only
+
+Self-contained (no `H5iAppLib.ReadOnly` dependency): a command the kernel
+classifies read-only (`read_only c = true`, i.e. `Status`) never produces a
+write set, so it cannot change the OTA session state.
+-/
 namespace m5airq_kernel.ReadOnly
 
-def writesOf : Option OtaState → List OtaState
-  | none => []
-  | some n => [n]
-
-/-- Every accepted `Status` writes nothing, for all actors and states. -/
-theorem sound : H5iAppLib.ReadOnly.Sound read_only transition writesOf := by
-  apply H5iAppLib.ReadOnly.sound_of_spec
-  intro a s c hro
-  cases c <;> simp [read_only] at hro
-  unfold transition
-  simp [H5iAppLib.OnOk, writesOf]
+/-- Every accepted read-only command writes nothing, for all actors/states. -/
+theorem sound (a : Device) (s : OtaState) (c : Command) (ws : Option OtaState) (r : Reply)
+    (hro : read_only c = ok true) (ht : transition a s c = ok (.Ok (ws, r))) : ws = none := by
+  cases c <;> simp_all [read_only, transition]
 
 end m5airq_kernel.ReadOnly

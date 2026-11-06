@@ -129,9 +129,10 @@ theorem end_accepts_any_matching_crc (s : OtaState) (crc : U32)
     (hactive : s.active = true) (hdone : s.written = s.total) :
     ∃ n r, transition { admin := true } s (.End crc crc true) = ok (.Ok (some n, r))
       ∧ n.active = false := by
+  refine ⟨{ s with active := false, error := false },
+          Reply.State { s with active := false, error := false }, ?_, rfl⟩
   unfold transition
-  simp only [hactive, hdone]
-  refine ⟨_, _, by simp, by simp⟩
+  simp [hactive, hdone]
 
 -- --- Reachability invariant over a whole run ---
 
@@ -276,7 +277,7 @@ theorem unauth_never_granted
       step* <;> simp_all
     · simp only [Bool.not_eq_true] at hc
       step* <;> simp_all
-  exact H5iAppLib.post_of_ok hspec hr
+  exact H5iAppLib.post_of_ok (P := fun x => ¬ granted x) hspec hr
 
 /-- SECURITY (S): an expired session cookie never grants access. -/
 theorem expired_session_never_grants
@@ -307,6 +308,6 @@ theorem empty_secret_no_bypass
       ⦃ x => x ≠ AuthDecision.Allowed ⦄ := by
     unfold check_auth transport_blocks
     step* <;> simp_all
-  exact H5iAppLib.post_of_ok hspec hr
+  exact H5iAppLib.post_of_ok (P := fun x => x ≠ AuthDecision.Allowed) hspec hr
 
 end m5airq_kernel.Properties

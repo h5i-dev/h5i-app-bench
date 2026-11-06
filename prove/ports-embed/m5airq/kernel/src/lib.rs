@@ -360,7 +360,7 @@ pub fn validate_session(store: &SessionStore, token: &[u8; 8], now: u32) -> bool
 /// Whether a token credential must be refused on this transport:
 /// plaintext HTTP with token-over-HTTP disabled (`!is_https && !allow`).
 pub fn transport_blocks(is_https: bool, allow_http_tokens: bool) -> bool {
-    !is_https && !allow_http_tokens
+    !is_https & !allow_http_tokens
 }
 
 /// The authentication decision (`check_auth`), pure and total.
@@ -399,13 +399,15 @@ pub fn check_auth(
     // code binds it directly (its result is only consulted when a cookie is
     // present, exactly as upstream short-circuits `cookie && validate`).
     let vs = validate_session(store, cookie_token, now);
-    let valid_cookie = cookie_present && vs;
-    let bearer_block = bearer_present && blocked;
-    let bearer_ok = bearer_present && cfg.bearer_set && bearer_match;
-    let akh_block = akh_present && blocked;
-    let akh_ok = akh_present && cfg.apikey_set && akh_match;
-    let akq_block = akq_present && blocked;
-    let akq_ok = akq_present && cfg.apikey_set && akq_match;
+    // Non-short-circuit `&`: all operands are already evaluated, so this is
+    // the same logical AND as `&&` but extracts without an inner branch.
+    let valid_cookie = cookie_present & vs;
+    let bearer_block = bearer_present & blocked;
+    let bearer_ok = bearer_present & cfg.bearer_set & bearer_match;
+    let akh_block = akh_present & blocked;
+    let akh_ok = akh_present & cfg.apikey_set & akh_match;
+    let akq_block = akq_present & blocked;
+    let akq_ok = akq_present & cfg.apikey_set & akq_match;
     if cfg.public_access {
         AuthDecision::Allowed
     } else if is_health {
