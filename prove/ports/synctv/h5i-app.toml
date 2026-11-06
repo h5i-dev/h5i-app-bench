@@ -41,6 +41,7 @@ theorems = [
   "synctv_kernel.Properties.guest_revocation_effective",
   "synctv_kernel.Properties.guest_access_requires",
   "synctv_kernel.Properties.pipeline_accepts_only_valid",
+  "synctv_kernel.Properties.bearer_token_after_scheme",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). See STATUS.md for which theorem
@@ -290,3 +291,15 @@ new = """        UserStatus::Active => true,
 }
 
 /// `UserStatus::is_banned`."""
+
+[[mutant]]
+name = "bearer_empty_token_accepted"
+file = "kernel/src/auth.rs"
+old = "    if start == end {"
+new = "    if start == end && false {"
+
+[[mutant]]
+name = "bearer_scheme_unchecked"
+file = "kernel/src/auth.rs"
+old = "    if v.len() <= 7 || !bearer_prefix(v) {"
+new = "    if v.len() <= 7 {"

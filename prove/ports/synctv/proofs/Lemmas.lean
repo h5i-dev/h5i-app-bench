@@ -455,4 +455,68 @@ theorem names_none {space : perms.RoomPermission → Option Nat} {bits p} (h : s
   rintro ⟨j, hj, _⟩
   simp [h] at hj
 
+/-! ## Bearer header parsing -/
+
+@[step] theorem is_ascii_ws_spec (b : U8) : auth.is_ascii_ws b ⦃ _ => True ⦄ := by
+  unfold auth.is_ascii_ws; split <;> simp; split <;> simp
+
+theorem loop0_spec (v : Slice U8) (s : Usize) (hs : s.val ≤ v.length) :
+    auth.extract_bearer_token_loop0 v s ⦃ r => s.val ≤ r.val ∧ r.val ≤ v.length ⦄ := by
+  unfold auth.extract_bearer_token_loop0
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => v.length - j.val)
+    (inv := fun j => s.val ≤ j.val ∧ j.val ≤ v.length)
+  · rintro j ⟨h1, h2⟩
+    unfold auth.extract_bearer_token_loop0.body
+    step*
+    all_goals scalar_tac
+  · exact ⟨le_refl _, hs⟩
+
+theorem loop1_spec (v : Slice U8) (s e : Usize) (hs : s.val ≤ e.val) (he : e.val ≤ v.length) :
+    auth.extract_bearer_token_loop1 v s e ⦃ r => s.val ≤ r.val ∧ r.val ≤ e.val ⦄ := by
+  unfold auth.extract_bearer_token_loop1
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => j.val)
+    (inv := fun j => s.val ≤ j.val ∧ j.val ≤ e.val)
+  · rintro j ⟨h1, h2⟩
+    unfold auth.extract_bearer_token_loop1.body
+    step*
+    all_goals scalar_tac
+  · exact ⟨hs, le_refl _⟩
+
+theorem ascii_lower_eq (b : U8) : auth.ascii_lower b = ok (lowerB b) := by
+  unfold auth.ascii_lower lowerB
+  split_ifs with h1 h2 h3 <;> first | (simp_all; done) | skip
+  obtain ⟨z, hz, hzv⟩ := WP.spec_imp_exists (UScalar.add_spec (x := b) (y := 32#u8) (by scalar_tac))
+  rw [hz]
+  congr 1
+  apply UScalar.eq_of_val_eq
+  simp [hzv]
+
+theorem slice_get? {s : Slice U8} {i : Usize} {x : U8} (h : s.index_usize i = ok x) :
+    s.val[i.val]? = some x := by
+  obtain ⟨hi, e⟩ := slice_index_ok h
+  rw [List.getElem?_eq_getElem hi, e]
+
+theorem bearer_prefix_true (v : Slice U8) (h : auth.bearer_prefix v = ok true) :
+    (v.val.take 7).map lowerB = [98#u8, 101#u8, 97#u8, 114#u8, 101#u8, 114#u8, 32#u8] := by
+  unfold auth.bearer_prefix at h
+  simp only [ascii_lower_eq] at h
+  h5i_invert h
+  have g0 := slice_get? hi
+  have g1 := slice_get? hi2
+  have g2 := slice_get? hi4
+  have g3 := slice_get? hi6
+  have g4 := slice_get? hi8
+  have g5 := slice_get? hi10
+  have g6 := slice_get? hi12
+  simp only [UScalar.ofNatCore_val_eq] at g0 g1 g2 g3 g4 g5 g6
+  simp only [decide_eq_true_eq] at h
+  subst h
+  match hv : v.val, g0, g1, g2, g3, g4, g5, g6 with
+  | a0 :: a1 :: a2 :: a3 :: a4 :: a5 :: a6 :: rest, g0, g1, g2, g3, g4, g5, g6 =>
+    simp only [List.getElem?_cons_zero, List.getElem?_cons_succ, Option.some.injEq] at g0 g1 g2 g3 g4 g5 g6
+    subst g0 g1 g2 g3 g4 g5 g6
+    simp [hc, hc_1, hc_2, hc_3, hc_4, hc_5]
+    simp [lowerB]
+
+
 end synctv_kernel.Lemmas

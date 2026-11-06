@@ -361,4 +361,22 @@ theorem pipeline_accepts_only_valid (f : auth.PipelineFacts) (h : auth.pipeline_
   unfold auth.pipeline_check at h
   split_ifs at h <;> simp_all <;> exact IScalar.eq_of_val_eq (by assumption)
 
+/-! ## Authorization header -/
+
+/-- An accepted `Authorization` header starts with `Bearer ` (any case), and the token
+is the non-empty range after it. -/
+theorem bearer_token_after_scheme (v : Slice U8) (st en : Usize)
+    (h : auth.extract_bearer_token v = ok (.Ok (st, en))) :
+    7 < v.length ∧ (v.val.take 7).map lowerB = [98#u8, 101#u8, 97#u8, 114#u8, 101#u8, 114#u8, 32#u8] ∧
+      7 ≤ st.val ∧ st.val < en.val ∧ en.val ≤ v.length := by
+  unfold auth.extract_bearer_token at h
+  h5i_invert h
+  have hp := bearer_prefix_true v (by simpa [*] using hb)
+  obtain ⟨rfl, rfl⟩ := h
+  have h0 := post_of_ok (loop0_spec v 7#usize (by scalar_tac)) hstart
+  have h1 := post_of_ok (loop1_spec v start v.len (by scalar_tac) (by scalar_tac)) hend1
+  refine ⟨by scalar_tac, hp, by simpa using h0.1, ?_, by scalar_tac⟩
+  have : start.val ≠ end1.val := fun e => hc_2 (UScalar.eq_of_val_eq e)
+  scalar_tac
+
 end synctv_kernel.Properties

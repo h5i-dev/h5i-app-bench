@@ -1,6 +1,6 @@
 # synctv: status
 
-**Theorem classes: S = 26, C = 9, F = 1** (36 theorems in `[check] theorems`).
+**Theorem classes: S = 27, C = 9, F = 1** (37 theorems in `[check] theorems`).
 Upstream pinned at `38970e0215753a034de6b6659be577fd7e0479c2`. Threat model, ported code
 and deviations are in DEVIATIONS.md; findings are in FINDINGS.md.
 
@@ -49,6 +49,7 @@ counterexample is given in brief.
 | `token_type_enforced` | S | a token is accepted only as the requested type (refresh ≠ access) | `token_type_unchecked` |
 | `guest_revocation_effective` | S | a guest token older than the room's guest version is rejected | `guest_version_unchecked` |
 | `guest_access_requires` | S | guests enter only with guest mode on server-wide (fail closed without settings), allowed by the room, and no room password | `guest_password_room_allowed`, `guest_settings_fail_open` |
+| `bearer_token_after_scheme` | S | an accepted `Authorization` value starts with `Bearer ` (any case) and the token is a non-empty range after it | `bearer_empty_token_accepted`, `bearer_scheme_unchecked` |
 | `pipeline_accepts_only_valid` | S | `SecurityPipeline::check` accepts only existing, non-deleted, non-banned users with matching password version, 2FA when required, non-revoked JTI; blacklist outage fails closed | `pipeline_skips_password_version`, `pipeline_blacklist_fail_open`, `pipeline_skips_two_factor` |
 
 Helper lemmas (bit tables, validators, loop-free specs) are in `proofs/Lemmas.lean`. They
