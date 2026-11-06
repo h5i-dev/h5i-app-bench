@@ -77,16 +77,68 @@ h5i_derive_all
     · simp
 
 
-/-- `split` returns `Spec.segments`. -/
-@[step] theorem split_spec (s : Slice U8) (sep : U8) :
+/-- `split` returns `Spec.segments` (for inputs shorter than `usize::MAX`). -/
+@[step] theorem split_spec (s : Slice U8) (sep : U8) (hs : s.length < Usize.max) :
     bytes.split s sep ⦃ r => r.val.map (·.val) = segments sep s.val ⦄ := by
   unfold bytes.split bytes.split_loop
   have h := loop_fold2 (l := s.val) (abs := fun (o : alloc.vec.Vec (alloc.vec.Vec U8)) (c : alloc.vec.Vec U8) =>
       (o.val.map (·.val), c.val)) (g := H5iAppLib.splitStep sep)
-    (Inv := fun o c i => o.length ≤ i ∧ c.length ≤ i ∧ i ≤ s.length)
+    (Inv := fun o c i => o.length + c.length ≤ i)
     (body := fun x => bytes.split_loop.body s sep x.1 x.2.1 x.2.2) ?_
     (alloc.vec.Vec.new _) (alloc.vec.Vec.new _) 0#usize (by simp) (by simp)
-  · sorry
-  · sorry
+  · apply WP.spec_bind (Pₘ := fun r => _) (by simpa using h)
+    rintro ⟨o, c⟩ ⟨habs, hinv⟩
+    have hlen : o.length < Usize.max := by scalar_tac
+    apply WP.spec_mono (alloc.vec.Vec.push_spec o c hlen)
+    intro r hr
+    rw [hr, List.map_append]
+    have := H5iAppLib.foldl_splitStep sep s.val [] []
+    rw [← habs] at this
+    simp only [List.nil_append, List.reverse_nil] at this
+    simp only [List.map_cons, List.map_nil]
+    rw [this]
+    rfl
+  · intro o c i hi hinv
+    unfold bytes.split_loop.body
+    simp only []
+    split
+    · step*
+      split
+      · step*
+        refine ⟨by scalar_tac, ?_, by scalar_tac, by simp; scalar_tac⟩
+        simp_all [H5iAppLib.splitStep]
+      · step*
+        refine ⟨by scalar_tac, ?_, by scalar_tac, by simp; scalar_tac⟩
+        simp_all [H5iAppLib.splitStep]
+    · simp only [WP.spec_ok]
+      exact ⟨by scalar_tac, rfl, rfl⟩
+
+@[step] theorem is_owner_loop_spec (v : alloc.vec.Vec authz.Folder) (n : Slice U8) :
+    authz.is_owner_loop v n 0#usize ⦃ b => b = v.val.any (fun f => decide (f.name.val = n.val) && f.is_owner) ⦄ := by
+  unfold authz.is_owner_loop
+  h5i_search_any v.val (fun f => decide (f.name.val = n.val) && f.is_owner)
+  all_goals simp_all [vec_deref_val]
+  all_goals scalar_tac
+
+@[step] theorem has_folder_loop_spec (a : authz.Authed) (n : Slice U8) :
+    authz.has_folder_loop a n 0#usize ⦃ b => b = a.folders.val.any (fun f => decide (f.name.val = n.val)) ⦄ := by
+  unfold authz.has_folder_loop
+  h5i_search_any a.folders.val (fun f => decide (f.name.val = n.val))
+  all_goals simp_all [vec_deref_val]
+  all_goals scalar_tac
+
+theorem dotdot_iff (l : List U8) : l = dotdot ↔ l.length = 2 ∧ l[0]? = some 46#u8 ∧ l[1]? = some 46#u8 := by
+  constructor
+  · rintro rfl; simp [dotdot]
+  · rintro ⟨h2, h0, h1⟩
+    match l, h2 with
+    | [x, y], _ => simp_all [dotdot]
+
+@[step] theorem is_dotdot_spec (s : Slice U8) : authz.is_dotdot s ⦃ b => b = decide (s.val = dotdot) ⦄ := by
+  unfold authz.is_dotdot
+  step*
+  all_goals simp only [dotdot_iff]
+  all_goals simp_all [List.getElem?_eq_getElem]
+  all_goals scalar_tac
 
 end windmill_kernel.Lemmas
