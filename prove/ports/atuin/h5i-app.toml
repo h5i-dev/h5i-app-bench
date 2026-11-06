@@ -18,6 +18,9 @@ theorems = [
   "atuin_kernel.Properties.other_accounts_untouched",
   "atuin_kernel.Properties.account_deletion_purges",
   "atuin_kernel.Properties.records_append_only",
+  "atuin_kernel.Properties.no_orphans",
+  "atuin_kernel.Properties.new_account_starts_empty",
+  "atuin_kernel.Properties.token_identifies_one_account",
   "atuin_kernel.Properties.password_change_keeps_sessions",
   "atuin_kernel.Properties.next_huge_count_is_unlimited",
   "atuin_kernel.Properties.next_start_wraps",
@@ -28,6 +31,8 @@ theorems = [
   "atuin_kernel.Verified.status_eq",
   "atuin_kernel.Verified.next_records_eq",
   "atuin_kernel.Verified.loop_eq_foldlM",
+  "atuin_kernel.Verified.reachable_inv",
+  "atuin_kernel.Verified.inv_step",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). Each `old` occurs exactly
@@ -116,6 +121,21 @@ new = "sessions: without_user_sessions(&s.sessions, 0),"
 name = "insert_overwrites"
 old = "store: if store_conflict(&s.store, r) { s.store.clone() } else { push_row(&s.store, r) },"
 new = "store: if store_conflict(&s.store, r) { push_row(&without_user_store(&s.store, r.user_id), r) } else { push_row(&s.store, r) },"
+
+[[mutant]]
+name = "delete_account_keeps_records"
+old = "history: without_user_history(&s.history, *id),\n            store: without_user_store(&s.store, *id),"
+new = "history: without_user_history(&s.history, *id),\n            store: s.store.clone(),"
+
+[[mutant]]
+name = "user_counter_not_advanced"
+old = "next_user_id: if u.id >= s.next_user_id && u.id < u64::MAX { u.id + 1 } else { s.next_user_id },"
+new = "next_user_id: s.next_user_id,"
+
+[[mutant]]
+name = "duplicate_tokens_allowed"
+old = "if user_conflict(&s.users, username, email, new_hash) || token_taken(&s.sessions, token) {"
+new = "if user_conflict(&s.users, username, email, new_hash) {"
 
 # Fixing a finding must break its theorem.
 [[mutant]]

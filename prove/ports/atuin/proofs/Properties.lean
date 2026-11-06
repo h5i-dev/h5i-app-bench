@@ -1,4 +1,5 @@
 import Verified.Effects
+import Verified.Invariant
 /-!
 # atuin's sync server: the security properties
 
@@ -166,6 +167,33 @@ theorem records_append_only (cfg : Config) (c : Crypto) (s s' : Snapshot) (req :
     (h : transition cfg c s req = ok (.Ok (ws, rep))) (ha : apply s ws = ok s') :
     s.store.val <+: s'.store.val :=
   Verified.records_append_only hd hs h ha
+
+/-! ## Every reachable database -/
+
+/-- No orphans: in every database the server can reach from an empty one,
+every session, history row and record belongs to an existing user. (An
+earlier upstream version left records of deleted users behind; migration
+20260828000000_purge-orphaned-store.sql cleans them up.) -/
+theorem no_orphans (s : Snapshot) (h : Reachable s) :
+    (∀ x ∈ s.sessions.val, ∃ u ∈ s.users.val, u.id = x.user_id) ∧
+    (∀ r ∈ s.store.val, ∃ u ∈ s.users.val, u.id = r.user_id) ∧
+    (∀ x ∈ s.history.val, ∃ u ∈ s.users.val, u.id = x.user_id) :=
+  Verified.no_orphans h
+
+/-- A new account starts empty: it inherits no record, history row or
+session of an earlier (deleted) account; its only session is the new one. -/
+theorem new_account_starts_empty (cfg : Config) (c : Crypto) (s s' : Snapshot) (req : Request)
+    (ws : alloc.vec.Vec Write) (rep : Reply) (n e hh t : alloc.vec.Vec U8)
+    (hr : Reachable s) (hcmd : req.command = .Register n e hh t)
+    (h : transition cfg c s req = ok (.Ok (ws, rep))) (ha : apply s ws = ok s') :
+    ownRows s' s.next_user_id = [] ∧ ownHistory s' s.next_user_id = [] ∧
+    ownSessions s' s.next_user_id = [{ id := s.next_session_id, user_id := s.next_user_id, token := t }] :=
+  Verified.new_account_starts_empty hr hcmd h ha
+
+/-- In every reachable database a session token authenticates at most one account. -/
+theorem token_identifies_one_account (s : Snapshot) (h : Option (alloc.vec.Vec U8)) (u u' : User)
+    (hr : Reachable s) (hu : Authenticated s h u) (hu' : Authenticated s h u') : u = u' :=
+  Verified.token_identifies_one_account hr hu hu'
 
 /-! ## Findings -/
 
