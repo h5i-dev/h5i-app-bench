@@ -1,4 +1,4 @@
-import Verified.OrgConsistency
+import Verified.Grpc
 /-!
 # Security properties of OpenObserve's delegated (`o2dt.`) tokens
 
@@ -165,6 +165,109 @@ theorem delegated_org_is_rbac_org {env o now t path pfx m d}
   have hs := Verified.extractor_org_id_spec path hp
   obtain ⟨e, he⟩ := H5iAppLib.ok_of hs
   exact ⟨e, he, by rw [H5iAppLib.post_of_ok hs he, hc]⟩
+
+/-! ## gRPC authentication (`api/grpc/src/handler/grpc/auth/mod.rs`) -/
+
+/-- S: node-to-node RPCs (`check_internal_auth`) accept only the internal or
+super-cluster token, never an empty one, an org ingestion token or a user
+credential. -/
+theorem internal_rpc_only_internal_token {env tok a}
+    (h : grpc.check_internal_auth env tok = ok (.Ok a)) :
+    ∃ t, tok = some t ∧ t.val ≠ [] ∧
+      (nats t.val = nats env.internal_token.val ∨ ∃ x, env.super_cluster_token = some x ∧ nats x.val = nats t.val) :=
+  (Verified.check_internal_auth_ok h).2
+
+/-- S: an empty `authorization` value never authenticates, even when the
+internal token is unset (empty). -/
+theorem grpc_empty_token_never_authenticates {env tok org creds allow a}
+    (h : grpc.check_auth_inner env tok org creds allow = ok (.Ok a)) : ∃ t, tok = some t ∧ t.val ≠ [] := by
+  cases a with
+  | Internal => obtain ⟨t, ht, hn, -⟩ := Verified.check_auth_inner_internal h; exact ⟨t, ht, hn⟩
+  | User uid => obtain ⟨t, -, -, ht, hn, -⟩ := Verified.check_auth_inner_user h; exact ⟨t, ht, hn⟩
+
+/-- S: a blank password never authenticates a user, so it can never match a
+token or hash that is stored blank. The attached `user_id` is the one presented. -/
+theorem grpc_empty_password_never_authenticates {env tok org creds allow uid}
+    (h : grpc.check_auth_inner env tok org creds allow = ok (.Ok (.User uid))) :
+    ∃ c, creds = some c ∧ c.password.val ≠ [] ∧ nats uid.val = nats c.user_id.val := by
+  obtain ⟨-, -, c, -, -, -, hc, hp, hu, -⟩ := Verified.check_auth_inner_user h
+  exact ⟨c, hc, hp, hu⟩
+
+/-- S: an org ingestion token (`o2oi_…`) authenticates only in the org whose
+cache holds it: the key `"{org header}/{token}"` is in `ORG_INGESTION_TOKENS`. -/
+theorem ingestion_token_scoped_to_header_org {env tok org creds uid}
+    (h : grpc.check_auth_inner env tok org creds true = ok (.Ok (.User uid))) :
+    ∃ o c, org = .Value o ∧ creds = some c ∧
+      ([111, 50, 111, 105, 95] <+: nats c.password.val →
+        joinKey (nats o.val) (nats c.password.val) ∈ env.ingestion_keys.val.map (fun k => nats k.val)) := by
+  obtain ⟨-, o, c, -, -, ho, hc, -, -, hcase⟩ := Verified.check_auth_inner_user h
+  refine ⟨o, c, ho, hc, fun hp => ?_⟩
+  rcases hcase with ⟨-, -, hk⟩ | ⟨hn, -⟩
+  · exact hk
+  · exact absurd hp (hn rfl)
+
+/-- S: outside the OTLP services (`allow_org_ingestion_token = false`), the
+ingestion-token table plays no part: every accepted user credential matched a
+user record's token or password. -/
+theorem ingestion_token_only_on_otlp {env tok org creds uid}
+    (h : grpc.check_auth_inner env tok org creds false = ok (.Ok (.User uid))) :
+    ∃ o c u, org = .Value o ∧ creds = some c ∧
+      Verified.UserFacts env (nats o.val) (nats c.user_id.val) u ∧ Verified.CredentialOk env u c := by
+  obtain ⟨-, o, c, -, -, ho, hc, -, -, hcase⟩ := Verified.check_auth_inner_user h
+  rcases hcase with ⟨hf, -⟩ | ⟨-, u, hu, hok⟩
+  · cases hf
+  · exact ⟨o, c, u, ho, hc, hu, hok⟩
+
+/-- S (cross-org isolation): a non-root user credential authenticates only
+through the membership record of the header org (`"{org}/{lowercased id}"`),
+with that record's token or the user's password. -/
+theorem grpc_user_is_member_of_header_org {env tok org creds allow uid}
+    (h : grpc.check_auth_inner env tok org creds allow = ok (.Ok (.User uid))) :
+    ∃ o c, org = .Value o ∧ creds = some c ∧
+      ((allow = true ∧ joinKey (nats o.val) (nats c.password.val) ∈ env.ingestion_keys.val.map (fun k => nats k.val)) ∨
+       Verified.IsRoot env (nats c.user_id.val) ∨
+       ∃ ou ∈ env.org_users.val, nats ou.key.val = joinKey (nats o.val) (asciiLower (nats c.user_id.val)) ∧
+         ∃ ur ∈ env.users.val, nats ur.key.val = asciiLower (nats c.user_id.val) ∧
+           (nats ou.token.val = nats c.password.val ∨
+            (nats c.user_id.val = nats ur.email.val ∧ ∃ hv,
+              ((env.hashes.val.find? (Verified.hashP (nats c.password.val) (nats ur.salt.val))).map (·.hash)).getD none = some hv ∧
+              nats hv.val = nats ur.password.val))) := by
+  obtain ⟨-, o, c, -, -, ho, hc, -, -, hcase⟩ := Verified.check_auth_inner_user h
+  refine ⟨o, c, ho, hc, ?_⟩
+  rcases hcase with ⟨ha, -, hk⟩ | ⟨-, u, hu, hok⟩
+  · exact Or.inl ⟨ha, hk⟩
+  · rcases hu with ⟨hr, -⟩ | ⟨-, ou, hou, hk, ur, hur, hk2, rfl⟩
+    · exact Or.inr (Or.inl hr)
+    · exact Or.inr (Or.inr ⟨ou, hou, hk, ur, hur, hk2, hok⟩)
+
+/-- S: an SSO user (stored with an empty salt, which `try_get_hash` refuses)
+authenticates only with its API token, never with a password. -/
+theorem sso_credential_is_token {env : grpc.GrpcEnv} {c : grpc.Credentials} {u : grpc.User}
+    (hsalt : u.salt.val = [])
+    (hnone : ∀ r ∈ env.hashes.val, r.salt.val = [] → r.hash = none)
+    (hok : Verified.CredentialOk env u c) : nats u.token.val = nats c.password.val := by
+  rcases hok with ht | ⟨-, hv, hf, -⟩
+  · exact ht
+  · exfalso
+    cases hfind : env.hashes.val.find? (Verified.hashP (nats c.password.val) (nats u.salt.val)) with
+    | none => rw [hfind] at hf; cases hf
+    | some r =>
+      rw [hfind] at hf
+      have hm := List.mem_of_find?_eq_some hfind
+      have hp := List.find?_some hfind
+      simp only [Verified.hashP, Bool.and_eq_true, decide_eq_true_eq, hsalt] at hp
+      have hs : r.salt.val = [] := by simpa [nats] using hp.2
+      simp [hnone r hm hs] at hf
+
+/-- S: an SSO user (stored with an empty salt, which `try_get_hash` refuses)
+authenticates outside OTLP only with its API token, never with a password. -/
+theorem sso_user_needs_token {env tok org creds uid}
+    (hnone : ∀ r ∈ env.hashes.val, r.salt.val = [] → r.hash = none)
+    (h : grpc.check_auth_inner env tok org creds false = ok (.Ok (.User uid))) :
+    ∃ o c u, org = .Value o ∧ creds = some c ∧ Verified.UserFacts env (nats o.val) (nats c.user_id.val) u ∧
+      (u.salt.val = [] → nats u.token.val = nats c.password.val) := by
+  obtain ⟨o, c, u, ho, hc, hu, hok⟩ := ingestion_token_only_on_otlp h
+  exact ⟨o, c, u, ho, hc, hu, fun hs => sso_credential_is_token hs hnone hok⟩
 
 /-- F: the kernel's (and upstream's) lifetime check computes `exp - iat` in
 `i64`. For `exp = i64::MAX, iat = -10` that overflows: the extracted kernel

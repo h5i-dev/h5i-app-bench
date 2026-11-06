@@ -20,6 +20,13 @@ theorems = [
   "openobserve_kernel.Properties.delegated_never_on_proxy",
   "openobserve_kernel.Properties.slack_action_only_alerts_and_oncall",
   "openobserve_kernel.Properties.delegated_org_is_rbac_org",
+  "openobserve_kernel.Properties.internal_rpc_only_internal_token",
+  "openobserve_kernel.Properties.grpc_empty_token_never_authenticates",
+  "openobserve_kernel.Properties.grpc_empty_password_never_authenticates",
+  "openobserve_kernel.Properties.ingestion_token_scoped_to_header_org",
+  "openobserve_kernel.Properties.ingestion_token_only_on_otlp",
+  "openobserve_kernel.Properties.grpc_user_is_member_of_header_org",
+  "openobserve_kernel.Properties.sso_user_needs_token",
   # F: finding
   "openobserve_kernel.Properties.lifetime_check_overflows",
   # C: correspondence and foundations
@@ -32,6 +39,14 @@ theorems = [
   "openobserve_kernel.Verified.checkRoute_org_consistent",
   "openobserve_kernel.Verified.org_from_path_prefix_spec",
   "openobserve_kernel.Verified.extractor_org_id_spec",
+  "openobserve_kernel.Properties.sso_credential_is_token",
+  "openobserve_kernel.Verified.check_auth_inner_user",
+  "openobserve_kernel.Verified.check_auth_inner_internal",
+  "openobserve_kernel.Verified.check_internal_auth_ok",
+  "openobserve_kernel.Verified.lookup_user_ok",
+  "openobserve_kernel.Verified.get_cached_user_org_ok",
+  "openobserve_kernel.Verified.join_key_ok",
+  "openobserve_kernel.Verified.ascii_lower_ok",
   "openobserve_kernel.Verified.validate_delegated_ok",
   "openobserve_kernel.Verified.verify_ok",
   "openobserve_kernel.Verified.verify_spec",
@@ -160,3 +175,45 @@ name = "downtimes_not_a_v2_org_module"  # delegated_org_is_rbac_org
 file = "kernel/src/auth.rs"
 old = 'out.push(lit(b"downtimes"));'
 new = ""
+
+[[mutant]]
+name = "empty_token_allowed"  # grpc_empty_token_never_authenticates
+file = "kernel/src/grpc.rs"
+old = "            if t.len() == 0 {"
+new = "            if false {"
+
+[[mutant]]
+name = "any_token_is_internal"  # internal_rpc_only_internal_token
+file = "kernel/src/grpc.rs"
+old = "    if bytes_eq(token, internal) {"
+new = "    if true {"
+
+[[mutant]]
+name = "blank_password_allowed"  # grpc_empty_password_never_authenticates
+file = "kernel/src/grpc.rs"
+old = "    if c.password.len() == 0 {"
+new = "    if false {"
+
+[[mutant]]
+name = "ingestion_token_any_org"  # ingestion_token_scoped_to_header_org
+file = "kernel/src/grpc.rs"
+old = "        if contains(&env.ingestion_keys, &join_key(org, &c.password)) {"
+new = "        if true {"
+
+[[mutant]]
+name = "ingestion_token_on_all_services"  # ingestion_token_only_on_otlp
+file = "kernel/src/grpc.rs"
+old = "    if allow_org_ingestion_token && starts_with(&c.password, ORG_INGESTION_TOKEN_PREFIX) {"
+new = "    if starts_with(&c.password, ORG_INGESTION_TOKEN_PREFIX) {"
+
+[[mutant]]
+name = "membership_in_default_org"  # grpc_user_is_member_of_header_org
+file = "kernel/src/grpc.rs"
+old = "    match find_org_user(&env.org_users, &join_key(org, &key)) {"
+new = "    match find_org_user(&env.org_users, &join_key(DEFAULT_ORG, &key)) {"
+
+[[mutant]]
+name = "any_hash_matches"  # grpc_user_is_member_of_header_org, sso_user_needs_token
+file = "kernel/src/grpc.rs"
+old = "        Some(h) => bytes_eq(&h, &user.password),"
+new = "        Some(_) => true,"
