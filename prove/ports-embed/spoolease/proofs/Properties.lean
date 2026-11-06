@@ -192,4 +192,13 @@ theorem fresh_id_is_new (a : Device) (s : Store) (tag len : U32)
   have hv : sl.id.val = id.val := by rw [heq]
   omega
 
+/-- (S) An unauthenticated caller (`admin = false`) can never mutate: every
+write command is refused with `Forbidden`, before any state change. Rules out
+dropping the `actor.admin` guard. -/
+theorem unauth_refused (s : Store) (tag len id : U32) :
+    transition ⟨false⟩ s (.AddSpool tag len) = ok (.Err .Forbidden) ∧
+    transition ⟨false⟩ s (.EditSpool id tag len) = ok (.Err .Forbidden) ∧
+    transition ⟨false⟩ s (.DeleteSpool id) = ok (.Err .Forbidden) := by
+  refine ⟨?_, ?_, ?_⟩ <;> (unfold transition; simp)
+
 end spoolease_kernel.Properties

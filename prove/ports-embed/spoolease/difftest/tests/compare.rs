@@ -101,6 +101,17 @@ fn query_is_read_only() {
 }
 
 #[test]
+fn unauthenticated_cannot_mutate() {
+    let guest = Device { admin: false };
+    let store = Store::default();
+    assert!(transition(&guest, &store, &Command::AddSpool { tag: 1, len: 10 }).is_err());
+    assert!(transition(&guest, &store, &Command::EditSpool { id: 1, tag: 1, len: 10 }).is_err());
+    assert!(transition(&guest, &store, &Command::DeleteSpool { id: 1 }).is_err());
+    // but reading is open
+    assert!(transition(&guest, &store, &Command::Query).is_ok());
+}
+
+#[test]
 fn tag_is_unique_after_claim() {
     // Two spools claiming the same NFC tag: the second claim strikes the first.
     let mut store = Store::default();

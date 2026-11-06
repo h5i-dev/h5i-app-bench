@@ -13,7 +13,7 @@ read-only).
 
 ## Theorems (S / C / F)
 
-Counts: **S = 5, C = 9, F = 2** (F are notes, not gate theorems). S ≥ C/3. ✓
+Counts: **S = 6, C = 9, F = 2** (F are notes, not gate theorems). S ≥ C/3. ✓
 
 | Theorem (module `Properties`/`ReadOnly`) | Class | What it rules out |
 |---|---|---|
@@ -22,6 +22,7 @@ Counts: **S = 5, C = 9, F = 2** (F are notes, not gate theorems). S ≥ C/3. ✓
 | `place_inplace_fits` | **S** | an in-place overwrite when the record does *not* fit its old slot (would spill into the next record); pins in-place writes to exactly the old slot |
 | `fresh_id_is_new` | **S** | `AddSpool` reusing an existing id, which would let a new spool shadow an old record |
 | `ReadOnly.sound` | **S** | a `Query` (GET) mutating the store |
+| `unauth_refused` | **S** | an unauthenticated caller (`admin=false`) mutating — every write command is refused with `Forbidden` |
 | `transition_total` | C | any command panicking / overflowing (a device reset); needs record count < `usize::MAX` |
 | `addspool_id` | C | — (foundation: `AddSpool` assigns `last_id + 1`) |
 | `lookup_spec` | C | — (loop = `List.find?`) |
@@ -37,8 +38,9 @@ Each **S** theorem is backed by a mutant it kills:
 - `fresh_id_reuse` (`last_id + 1` → `last_id`) → killed by `fresh_id_is_new` / `addspool_id`.
 - `inplace_data_len` (in-place data region `len: p.length` → `len`) → killed by `place_inplace_fits`.
 - `append_data_offset` (append data `off: file_len` → `off: p.offset`) → killed by `place_local`.
-All 3 caught; 0 survived. `place_capacity`/`ReadOnly.sound` are additionally
-exercised by the difftest's disjointness and read-only checks.
+All 3 caught; 0 survived. `place_capacity`/`ReadOnly.sound`/`unauth_refused` are
+additionally exercised by the difftest's disjointness, read-only and
+auth-refusal behaviour.
 
 ### F (findings — see DEVIATIONS.md)
 - **F1** orphaned free space on in-place shrink in `CsvDb::insert` (info, space leak).

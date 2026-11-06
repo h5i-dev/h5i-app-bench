@@ -14,6 +14,7 @@ theorems = [
     "spoolease_kernel.Properties.place_local",
     "spoolease_kernel.Properties.place_inplace_fits",
     "spoolease_kernel.Properties.fresh_id_is_new",
+    "spoolease_kernel.Properties.unauth_refused",
     # C — foundations
     "spoolease_kernel.Properties.transition_total",
     "spoolease_kernel.Properties.addspool_id",
@@ -41,3 +42,4 @@ new = "data: Region { off: p.offset, len }"
 name = "append_data_offset"
 old = "data: Region { off: file_len, len },"
 new = "data: Region { off: p.offset, len },"
+
