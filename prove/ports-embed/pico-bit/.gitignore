@@ -1,2 +1,4 @@
 target/
 proofs/.lake/
+
+.h5i/

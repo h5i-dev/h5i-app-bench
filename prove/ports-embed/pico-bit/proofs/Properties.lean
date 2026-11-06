@@ -168,8 +168,6 @@ theorem decode_filename_wp (raw out : Slice Std.U8) :
       ∀ n out', r = (some n, out') → Spec.SafeNameAt out'.val n.val ⦄ := by
   unfold decode_filename
   step*
-  all_goals intro n out' heq
-  all_goals simp_all [Prod.ext_iff]
 
 /-- `decode_filename` is total (never panics). (C) -/
 theorem decode_filename_total (raw out : Slice Std.U8) :
@@ -193,25 +191,47 @@ theorem decode_filename_confined (raw out out' : Slice Std.U8) (n : Std.Usize)
 
 /-! ## classify -/
 
-/-- `starts_with` prefix loop is total when the prefix fits in `bytes`. -/
+/-- `starts_with` prefix loop: if it accepts, `bytes` and `prefix` agree on
+every index in `[i, prefix.len)`. -/
 @[step]
-theorem starts_with_loop_total (bytes «prefix» : Slice Std.U8) (i : Std.Usize)
-    (hb : «prefix».val.length ≤ bytes.val.length) :
-    starts_with_loop bytes «prefix» i ⦃ _ => True ⦄ := by
+theorem starts_with_loop_sound (bytes «prefix» : Slice Std.U8) (i : Std.Usize)
+    (hb : «prefix».val.length ≤ bytes.val.length) (hile : i.val ≤ «prefix».val.length) :
+    starts_with_loop bytes «prefix» i ⦃ r =>
+      r = true → ∀ k, i.val ≤ k → k < «prefix».val.length →
+        bytes.val[k]! = «prefix».val[k]! ⦄ := by
   unfold starts_with_loop
   apply loop.spec_decr_nat
     (measure := fun (j : Std.Usize) => «prefix».val.length - j.val)
-    (inv := fun _ => True) (post := fun _ => True)
-  · intro j _
+    (inv := fun (j : Std.Usize) =>
+      j.val ≤ «prefix».val.length ∧
+      ∀ k, i.val ≤ k → k < j.val → bytes.val[k]! = «prefix».val[k]!)
+    (post := fun r =>
+      r = true → ∀ k, i.val ≤ k → k < «prefix».val.length →
+        bytes.val[k]! = «prefix».val[k]!)
+  · intro j hj
+    obtain ⟨hjle, hagree⟩ := hj
     unfold starts_with_loop.body
-    step* <;> first | trivial | scalar_tac
-  · trivial
+    step*
+    refine ⟨by scalar_tac, ?_, by scalar_tac⟩
+    intro k hik hklt
+    by_cases hkj : k < j.val
+    · exact hagree k hik hkj
+    · have hkeq : k = j.val := by omega
+      subst hkeq
+      have hjbb : j.val < bytes.val.length := by scalar_tac
+      have hjbp : j.val < «prefix».val.length := by scalar_tac
+      rw [getElem!_pos bytes.val j.val hjbb, getElem!_pos «prefix».val j.val hjbp]
+      scalar_tac
+  · exact ⟨hile, by intro k _ hk; omega⟩
 
-/-- `starts_with` is total. -/
+/-- `starts_with` is total, and when it accepts, `bytes` matches `prefix` on
+every index of `prefix`. -/
 @[step]
-theorem starts_with_total (bytes «prefix» : Slice Std.U8) :
-    starts_with bytes «prefix» ⦃ _ => True ⦄ := by
-  unfold starts_with; step*
+theorem starts_with_spec (bytes «prefix» : Slice Std.U8) :
+    starts_with bytes «prefix» ⦃ r =>
+      r = true → ∀ k, k < «prefix».val.length → bytes.val[k]! = «prefix».val[k]! ⦄ := by
+  unfold starts_with
+  step*
 
 /-- `classify` is total (never panics), for any input. (C) -/
 theorem classify_total (bytes : Slice Std.U8) :

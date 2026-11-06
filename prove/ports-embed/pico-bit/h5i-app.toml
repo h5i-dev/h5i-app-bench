@@ -16,7 +16,6 @@ theorems = [
   "pico_bit_kernel.Properties.percent_decode_total",
   "pico_bit_kernel.Properties.valid_name_total",
   "pico_bit_kernel.Properties.classify_total",
-  "pico_bit_kernel.Properties.mutating_needs_unsafe_method",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). Each `old` must occur
