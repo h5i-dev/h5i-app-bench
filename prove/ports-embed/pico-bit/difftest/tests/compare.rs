@@ -122,7 +122,9 @@ fn accepted_names_never_escape_armory() {
             let path = up::armory_storage_path_unrestricted(&name)
                 .expect("accepted name must build a path");
             assert!(path.starts_with(b"/armory/"));
-            assert!(!path.windows(3).any(|w| w == b"/.."));
+            // The part after the prefix is a single component with no separator.
+            let leaf = &path[b"/armory/".len()..];
+            assert!(!leaf.contains(&b'/') && leaf != b".." && leaf != b".");
         }
     }
 }
