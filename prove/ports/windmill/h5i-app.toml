@@ -26,6 +26,8 @@ theorems = [
   "windmill_kernel.Properties.check_scopes_ok",
   "windmill_kernel.Properties.scoped_token_needs_matching_scope",
   "windmill_kernel.Properties.scoped_token_rejects_malformed_requirement",
+  "windmill_kernel.Properties.covered_fields",
+  "windmill_kernel.Properties.intersect_never_widens",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). STATUS.md names the theorem that
@@ -157,3 +159,9 @@ name = "check_scopes_denial_dropped"
 file = "kernel/src/authz.rs"
 old = "        return Err(AuthzError::PermissionDenied);"
 new = "        return Ok(());"
+
+[[mutant]]
+name = "intersect_keeps_uncovered"
+file = "kernel/src/scopes.rs"
+old = "        if covered_by(&raw[i], by) && !list_contains(out, &raw[i]) {"
+new = "        if !list_contains(out, &raw[i]) {"
