@@ -51,10 +51,10 @@ pub fn parsed_includes(s: &[u8], req: &Scope) -> bool {
 
 /// Some scope other than a tag filter parses and grants `req` (the loop of
 /// `check_scopes`, which returns `Ok` at the first such scope).
-pub fn any_grants(scopes: &[Vec<u8>], req: &Scope) -> bool {
+pub fn any_grants(list: &[Vec<u8>], req: &Scope) -> bool {
     let mut i = 0;
-    while i < scopes.len() {
-        if !is_filter_tags(&scopes[i]) && parsed_includes(&scopes[i], req) {
+    while i < list.len() {
+        if !is_filter_tags(&list[i]) && parsed_includes(&list[i], req) {
             return true;
         }
         i += 1;
@@ -84,13 +84,13 @@ pub fn check_scopes(a: &Authed, required: &[u8]) -> Result<(), AuthzError> {
 }
 
 /// `is_effectively_unscoped(scopes)`: no scope other than `if_jobs:filter_tags:` ones.
-pub fn is_effectively_unscoped(has_scopes: bool, scopes: &[Vec<u8>]) -> bool {
+pub fn is_effectively_unscoped(has_scopes: bool, list: &[Vec<u8>]) -> bool {
     if !has_scopes {
         return true;
     }
     let mut i = 0;
-    while i < scopes.len() {
-        if !is_filter_tags(&scopes[i]) {
+    while i < list.len() {
+        if !is_filter_tags(&list[i]) {
             return false;
         }
         i += 1;

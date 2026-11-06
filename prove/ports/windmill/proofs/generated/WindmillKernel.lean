@@ -1369,14 +1369,13 @@ def authz.parsed_includes
     Visibility: public -/
 @[rust_loop_body]
 def authz.any_grants_loop.body
-  (scopes : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) (i : Std.Usize)
-  :
+  (list : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Bool)
   := do
-  let i1 := Slice.len scopes
+  let i1 := Slice.len list
   if i < i1
   then
-    let v ← Slice.index_usize scopes i
+    let v ← Slice.index_usize list i
     let s := alloc.vec.Vec.deref v
     let b ← authz.is_filter_tags s
     if b
@@ -1396,12 +1395,11 @@ def authz.any_grants_loop.body
     Visibility: public -/
 @[rust_loop]
 def authz.any_grants_loop
-  (scopes : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) (i : Std.Usize)
-  :
+  (list : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) (i : Std.Usize) :
   Result Bool
   := do
   loop
-    (fun i1 => authz.any_grants_loop.body scopes req i1)
+    (fun i1 => authz.any_grants_loop.body list req i1)
     i
 
 /-- [windmill_kernel::authz::any_grants]:
@@ -1409,23 +1407,23 @@ def authz.any_grants_loop
     Visibility: public -/
 @[reducible]
 def authz.any_grants
-  (scopes : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) :
+  (list : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) :
   Result Bool
   := do
-  authz.any_grants_loop scopes req 0#usize
+  authz.any_grants_loop list req 0#usize
 
 /-- [windmill_kernel::authz::is_effectively_unscoped]: loop body 0:
     Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 92:4-99:1
     Visibility: public -/
 @[rust_loop_body]
 def authz.is_effectively_unscoped_loop.body
-  (scopes : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  (list : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
   Result (ControlFlow Std.Usize Bool)
   := do
-  let i1 := Slice.len scopes
+  let i1 := Slice.len list
   if i < i1
   then
-    let v ← Slice.index_usize scopes i
+    let v ← Slice.index_usize list i
     let s := alloc.vec.Vec.deref v
     let b ← authz.is_filter_tags s
     if b
@@ -1439,20 +1437,18 @@ def authz.is_effectively_unscoped_loop.body
     Visibility: public -/
 @[rust_loop]
 def authz.is_effectively_unscoped_loop
-  (scopes : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
+  (list : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
   loop
-    (fun i1 => authz.is_effectively_unscoped_loop.body scopes i1)
+    (fun i1 => authz.is_effectively_unscoped_loop.body list i1)
     i
 
 /-- [windmill_kernel::authz::is_effectively_unscoped]:
     Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 87:0-99:1
     Visibility: public -/
 def authz.is_effectively_unscoped
-  (has_scopes : Bool) (scopes : Slice (alloc.vec.Vec Std.U8)) :
-  Result Bool
-  := do
+  (has_scopes : Bool) (list : Slice (alloc.vec.Vec Std.U8)) : Result Bool := do
   if has_scopes
-  then authz.is_effectively_unscoped_loop scopes 0#usize
+  then authz.is_effectively_unscoped_loop list 0#usize
   else ok true
 
 /-- [windmill_kernel::authz::check_scopes]:
