@@ -27,10 +27,10 @@ pub fn scope_eq(a: EndpointScope, b: EndpointScope) -> bool {
 }
 
 /// `token_scopes.contains(endpoint_scope)`.
-pub fn contains_scope(scopes: &[EndpointScope], s: EndpointScope) -> bool {
+pub fn contains_scope(ss: &[EndpointScope], s: EndpointScope) -> bool {
     let mut i = 0;
-    while i < scopes.len() {
-        if scope_eq(scopes[i], s) {
+    while i < ss.len() {
+        if scope_eq(ss[i], s) {
             return true;
         }
         i += 1;
@@ -79,10 +79,10 @@ pub fn scope_matches(p: &[u8], crate_name: &[u8]) -> bool {
 }
 
 /// `token_scopes.iter().any(|token_scope| token_scope.matches(crate_name))`.
-pub fn any_scope_matches(scopes: &Vec<Vec<u8>>, crate_name: &[u8]) -> bool {
+pub fn any_scope_matches(ss: &Vec<Vec<u8>>, crate_name: &[u8]) -> bool {
     let mut i = 0;
-    while i < scopes.len() {
-        if scope_matches(&scopes[i], crate_name) {
+    while i < ss.len() {
+        if scope_matches(&ss[i], crate_name) {
             return true;
         }
         i += 1;

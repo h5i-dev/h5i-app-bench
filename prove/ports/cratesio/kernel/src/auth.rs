@@ -95,19 +95,23 @@ pub enum Authentication {
     Token(ApiToken, User),
 }
 
-/// `verify_origin`: every `Origin` value is allowed.
+/// `allowed_origins.contains(value)`.
+pub fn contains_u64(xs: &[u64], x: u64) -> bool {
+    let mut j = 0;
+    while j < xs.len() {
+        if xs[j] == x {
+            return true;
+        }
+        j += 1;
+    }
+    false
+}
+
+/// `verify_origin`: no `Origin` value outside `allowed_origins`.
 pub fn origins_ok(origins: &[u64], allowed: &[u64]) -> bool {
     let mut i = 0;
     while i < origins.len() {
-        let mut found = false;
-        let mut j = 0;
-        while j < allowed.len() {
-            if allowed[j] == origins[i] {
-                found = true;
-            }
-            j += 1;
-        }
-        if !found {
+        if !contains_u64(allowed, origins[i]) {
             return false;
         }
         i += 1;
@@ -296,10 +300,10 @@ pub struct AuthCheck {
 }
 
 /// `AuthCheck::endpoint_scope_matches`.
-pub fn endpoint_scope_matches(check: &AuthCheck, token_scopes: &Option<Vec<EndpointScope>>) -> bool {
+pub fn endpoint_scope_matches(ac: &AuthCheck, token_scopes: &Option<Vec<EndpointScope>>) -> bool {
     match token_scopes {
         None => true,
-        Some(ts) => match check.endpoint_scope {
+        Some(ts) => match ac.endpoint_scope {
             None => false,
             Some(s) => contains_scope(ts, s),
         },
@@ -307,15 +311,15 @@ pub fn endpoint_scope_matches(check: &AuthCheck, token_scopes: &Option<Vec<Endpo
 }
 
 /// `AuthCheck::crate_scope_matches`.
-pub fn crate_scope_matches(check: &AuthCheck, token_scopes: &Option<Vec<Vec<u8>>>) -> bool {
+pub fn crate_scope_matches(ac: &AuthCheck, token_scopes: &Option<Vec<Vec<u8>>>) -> bool {
     match token_scopes {
         None => true,
         Some(ts) => {
             if ts.len() == 0 {
                 true
             } else {
-                match &check.crate_name {
-                    None => check.allow_any_crate_scope,
+                match &ac.crate_name {
+                    None => ac.allow_any_crate_scope,
                     Some(name) => any_scope_matches(ts, name),
                 }
             }
@@ -325,30 +329,30 @@ pub fn crate_scope_matches(check: &AuthCheck, token_scopes: &Option<Vec<Vec<u8>>
 
 /// `AuthCheck::check`.
 pub fn check(
-    check: &AuthCheck,
+    ac: &AuthCheck,
     allowed_origins: &[u64],
     users: &[User],
     tokens: &Vec<ApiToken>,
     req: &Request,
     now: i64,
 ) -> Result<Authentication, AuthError> {
-    let auth = match authenticate(allowed_origins, users, tokens, req, now) {
+    let a = match authenticate(allowed_origins, users, tokens, req, now) {
         Err(e) => return Err(e),
         Ok(a) => a,
     };
-    match &auth {
+    match &a {
         Authentication::Cookie(_) => {}
         Authentication::Token(t, _) => {
-            if !check.allow_token {
+            if !ac.allow_token {
                 return Err(AuthError::TokenDisallowed);
             }
-            if !endpoint_scope_matches(check, &t.endpoint_scopes) {
+            if !endpoint_scope_matches(ac, &t.endpoint_scopes) {
                 return Err(AuthError::EndpointScopeMismatch);
             }
-            if !crate_scope_matches(check, &t.crate_scopes) {
+            if !crate_scope_matches(ac, &t.crate_scopes) {
                 return Err(AuthError::CrateScopeMismatch);
             }
         }
     }
-    Ok(auth)
+    Ok(a)
 }
