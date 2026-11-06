@@ -1,0 +1,89 @@
+# Read by `h5i app` (extract, check, prove, mutate, doctor).
+# Port of andrico21/M5AirQ-Rust @ f7e35cb (ESP32-S3, picoserve 0.18).
+
+[extract]
+crate = "kernel"
+start-from = [
+    "transition",
+    "apply",
+    "read_only",
+    "check_auth",
+    "validate_session",
+    "ct_eq",
+    "is_zero8",
+    "age_ok",
+    "OTA_INITIAL",
+]
+
+[check]
+# Every theorem here is gated: no sorry, native_decide, or extra axioms.
+theorems = [
+    # --- OTA state machine (C: foundations) ---
+    "m5airq_kernel.Properties.transition_total",
+    "m5airq_kernel.ReadOnly.sound",
+    # --- OTA state machine (S: security/safety) ---
+    "m5airq_kernel.Properties.write_bounded",
+    "m5airq_kernel.Properties.write_sequential",
+    "m5airq_kernel.Properties.end_integrity",
+    "m5airq_kernel.Properties.begin_targets_other_slot",
+    "m5airq_kernel.Properties.mutating_needs_admin",
+    "m5airq_kernel.Properties.inv_reachable",
+    # --- OTA (F: finding) ---
+    "m5airq_kernel.Properties.end_accepts_any_matching_crc",
+    # --- auth gate (C) ---
+    "m5airq_kernel.Properties.check_auth_total",
+    "m5airq_kernel.Properties.validate_session_sound",
+    # --- auth gate (S) ---
+    "m5airq_kernel.Properties.unauth_never_granted",
+    "m5airq_kernel.Properties.token_over_http_forbidden",
+    "m5airq_kernel.Properties.expired_session_never_grants",
+    "m5airq_kernel.Properties.empty_secret_no_bypass",
+    # --- auth (F: finding) ---
+    "m5airq_kernel.Properties.public_access_opens_everything",
+]
+
+# -- Mutants: each must break at least one checked theorem. --
+
+[[mutant]]
+name = "write_exceeds_declared"
+old = "if *len > s.total - *offset {"
+new = "if *len > s.total - *offset + 1 {"
+
+[[mutant]]
+name = "end_skip_crc"
+old = "if *actual_crc != *expected_crc {"
+new = "if *actual_crc != *expected_crc && false {"
+
+[[mutant]]
+name = "begin_same_slot"
+old = "let target = 1 - s.running_slot;"
+new = "let target = s.running_slot;"
+
+[[mutant]]
+name = "write_non_sequential"
+old = "if *offset != expected {"
+new = "if *offset != expected && false {"
+
+[[mutant]]
+name = "auth_public_bypass"
+old = "if !is_https && !cfg.allow_http_tokens {"
+new = "if false {"
+
+[[mutant]]
+name = "auth_skip_expiry"
+old = "ct_eq(&s.token, token) && !is_zero8(&s.token) && age_ok(now, s.created)"
+new = "ct_eq(&s.token, token) && !is_zero8(&s.token)"
+
+[[mutant]]
+name = "auth_empty_secret"
+old = "if cfg.bearer_set && ct_eq(bearer, bearer_key) {"
+new = "if ct_eq(bearer, bearer_key) {"
+
+[[mutant]]
+name = "ota_begin_no_admin"
+old = """
+Command::Begin { size } => {
+            if !actor.admin {"""
+new = """
+Command::Begin { size } => {
+            if false {"""
