@@ -21,7 +21,10 @@ fn show(repo: &str, path: &str) -> String {
 }
 
 fn before_tests(src: &str) -> String {
-    let i = src.find("\n#[cfg(test)]\nmod tests").expect("test module");
+    let i = src
+        .find("\n#[cfg(test)]\nmod tests")
+        .or_else(|| src.find("\n#[cfg(test)]\npub(crate) mod tests"))
+        .expect("test module");
     src[..i + 1].to_string()
 }
 
@@ -133,6 +136,18 @@ fn main() {
         + &take_item(&a, "pub fn is_license_path_without_org")
         + &take_item(&a, "pub fn routed_path");
     fs::write(out.join("core_auth.rs"), format!("{head}{a}")).unwrap();
+
+    // api/grpc/src/handler/grpc/auth/mod.rs whole, and the cache readers it calls.
+    let g = before_tests(&show(&repo, "src/api/grpc/src/handler/grpc/auth/mod.rs"));
+    fs::write(out.join("grpc_auth.rs"), format!("{head}{g}")).unwrap();
+    let ou = show(&repo, "src/db/src/org_users.rs");
+    fs::write(out.join("db_org_users.rs"), format!("{head}{}", take_item(&ou, "pub fn get_cached_user_org"))).unwrap();
+    let us = show(&repo, "src/db/src/user.rs");
+    fs::write(out.join("db_user.rs"), format!("{head}{}", take_item(&us, "pub fn is_root_user"))).unwrap();
+    let it = show(&repo, "src/db/src/org_ingestion_tokens.rs");
+    fs::write(out.join("db_ingestion.rs"), format!("{head}{}", take_item(&it, "pub fn cache_key"))).unwrap();
+    let ti = show(&repo, "src/infra/src/table/org_ingestion_tokens.rs");
+    fs::write(out.join("infra_ingestion.rs"), format!("{head}{}", take_item(&ti, "pub const ORG_INGESTION_TOKEN_PREFIX"))).unwrap();
 
     // api/common/src/auth/delegation.rs: route scopes and link facts.
     let mut api = before_tests(&show(&repo, "src/api/common/src/auth/delegation.rs"));

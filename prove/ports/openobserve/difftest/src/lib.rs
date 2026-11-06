@@ -135,6 +135,153 @@ pub mod core_auth {
     }
 }
 
+/// The gRPC interceptor (`api/grpc/src/handler/grpc/auth/mod.rs`, whole file)
+/// with the caches it reads as DashMaps, and the cache readers verbatim.
+pub mod grpc_world {
+    pub mod common {
+        pub mod infra {
+            pub mod config {
+                use std::sync::LazyLock;
+
+                use dashmap::DashMap;
+
+                use super::super::super::config::meta::user::User;
+                use super::super::super::infra::table::{org_users::OrgUserRecord, users::UserRecord};
+                pub static ORG_INGESTION_TOKENS: LazyLock<DashMap<String, String>> = LazyLock::new(DashMap::new);
+                pub static ROOT_USER: LazyLock<DashMap<String, User>> = LazyLock::new(DashMap::new);
+                pub static ORG_USERS: LazyLock<DashMap<String, OrgUserRecord>> = LazyLock::new(DashMap::new);
+                pub static USERS: LazyLock<DashMap<String, UserRecord>> = LazyLock::new(DashMap::new);
+            }
+        }
+    }
+    pub mod config {
+        pub const DEFAULT_ORG: &str = "default";
+        pub struct Grpc {
+            pub org_header_key: String,
+        }
+        pub struct Cfg {
+            pub grpc: Grpc,
+        }
+        pub fn get_config() -> Cfg {
+            Cfg { grpc: Grpc { org_header_key: "organization".to_string() } }
+        }
+        pub mod meta {
+            pub mod cluster {
+                pub static INTERNAL: std::sync::Mutex<String> = std::sync::Mutex::new(String::new());
+                pub fn get_internal_grpc_token() -> String {
+                    INTERNAL.lock().unwrap().clone()
+                }
+            }
+            pub mod user {
+                #[derive(Clone, Debug, PartialEq, Eq)]
+                pub enum UserRole {
+                    Root,
+                    Admin,
+                    Editor,
+                    Viewer,
+                    User,
+                    ServiceAccount,
+                    SreAgent,
+                }
+                #[derive(Clone, Debug, PartialEq, Eq)]
+                pub enum UserType {
+                    Internal,
+                    External,
+                }
+                impl UserType {
+                    pub fn is_external(&self) -> bool {
+                        matches!(self, UserType::External)
+                    }
+                }
+                #[derive(Clone, Debug, PartialEq, Eq)]
+                pub struct User {
+                    pub email: String,
+                    pub first_name: String,
+                    pub last_name: String,
+                    pub password: String,
+                    pub salt: String,
+                    pub token: String,
+                    pub rum_token: Option<String>,
+                    pub role: UserRole,
+                    pub org: String,
+                    pub is_external: bool,
+                    pub password_ext: Option<String>,
+                }
+            }
+        }
+    }
+    pub mod infra {
+        pub mod table {
+            pub mod org_ingestion_tokens {
+                include!(concat!(env!("OUT_DIR"), "/infra_ingestion.rs"));
+            }
+            pub mod org_users {
+                use super::super::super::config::meta::user::UserRole;
+                #[derive(Clone, Debug)]
+                pub struct OrgUserRecord {
+                    pub email: String,
+                    pub org_id: String,
+                    pub role: UserRole,
+                    pub token: String,
+                    pub rum_token: Option<String>,
+                }
+            }
+            pub mod users {
+                use super::super::super::config::meta::user::UserType;
+                #[derive(Clone, Debug)]
+                pub struct UserRecord {
+                    pub email: String,
+                    pub first_name: String,
+                    pub last_name: String,
+                    pub password: String,
+                    pub salt: String,
+                    pub password_ext: Option<String>,
+                    pub user_type: UserType,
+                }
+            }
+        }
+    }
+    pub mod db {
+        pub mod org_users {
+            use super::super::common::infra::config::{ORG_USERS, USERS};
+            use super::super::config::meta::user::User;
+            include!(concat!(env!("OUT_DIR"), "/db_org_users.rs"));
+        }
+        pub mod user {
+            use super::super::common::infra::config::ORG_USERS;
+            use super::super::config::{DEFAULT_ORG, meta::user::UserRole};
+            include!(concat!(env!("OUT_DIR"), "/db_user.rs"));
+        }
+        pub mod org_ingestion_tokens {
+            include!(concat!(env!("OUT_DIR"), "/db_ingestion.rs"));
+        }
+    }
+    pub mod openobserve_core {
+        pub mod auth {
+            /// The hash oracle the kernel also reads: `(password, salt) -> hash`.
+            pub static HASHES: std::sync::Mutex<Vec<(String, String, Option<String>)>> =
+                std::sync::Mutex::new(Vec::new());
+            pub fn try_get_hash(pass: &str, salt: &str) -> Option<String> {
+                HASHES.lock().unwrap().iter().find(|(p, s, _)| p == pass && s == salt).and_then(|(_, _, h)| h.clone())
+            }
+            pub fn get_hash(pass: &str, salt: &str) -> String {
+                try_get_hash(pass, salt).unwrap()
+            }
+        }
+    }
+    pub mod grpc_auth {
+        use super::{common, config, db, infra, openobserve_core};
+        include!(concat!(env!("OUT_DIR"), "/grpc_auth.rs"));
+
+        pub fn seam_check_auth_inner(req: Request<()>, allow: bool) -> Result<Request<()>, Status> {
+            check_auth_inner(req, allow)
+        }
+        pub fn seam_token_matches(t: &str, i: &str, s: Option<&str>) -> bool {
+            token_matches(t, i, s)
+        }
+    }
+}
+
 /// Captures upstream's `log::debug!` reasons, which are the only place it
 /// says why a delegated token was refused.
 pub mod logcap {

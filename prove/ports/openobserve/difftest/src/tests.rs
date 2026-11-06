@@ -517,3 +517,257 @@ fn upstream_route_org_is_extractor_org() {
     }
     assert!(accepted > 10_000, "{accepted}");
 }
+
+mod grpc {
+    use super::Rng;
+    use crate::grpc_world::{
+        common::infra::config::{ORG_INGESTION_TOKENS, ORG_USERS, ROOT_USER, USERS},
+        config::meta::{cluster::INTERNAL, user::{User, UserRole, UserType}},
+        grpc_auth::{seam_check_auth_inner, seam_token_matches},
+        infra::table::{org_users::OrgUserRecord, users::UserRecord},
+        openobserve_core::auth::HASHES,
+    };
+    use base64::{Engine, prelude::BASE64_STANDARD};
+    use openobserve_kernel::grpc as k;
+    use tonic::metadata::AsciiMetadataValue;
+
+    const ORGS: &[&str] = &["default", "acme", "a/b", "a", "ACME"];
+    const EMAILS: &[&str] = &["alice@x.io", "Alice@x.io", "root@x.io", "b/c", "c", "bob@x.io", "", "zoë@x.io", "a\u{1}b"];
+    const PASSWORDS: &[&str] = &["pw1", "pw2", "tok1", "tok2", "o2oi_good", "o2oi_bad", "", "H(pw1,s1)"];
+    const SALTS: &[&str] = &["s1", "s2", ""];
+
+    fn hash(pw: &str, salt: &str) -> Option<String> {
+        (!salt.is_empty()).then(|| format!("H({pw},{salt})"))
+    }
+
+    fn kreject(s: &tonic::Status) -> k::Reject {
+        let m = s.message();
+        if m.contains("[1]") {
+            k::Reject::NoToken
+        } else if m.contains("[2]") {
+            k::Reject::EmptyToken
+        } else if m.contains("[3]") {
+            k::Reject::BadCredentials
+        } else if m.contains("[4]") {
+            k::Reject::NoUser
+        } else if m.contains("[5]") {
+            k::Reject::BadPassword
+        } else if m.contains("[6]") {
+            k::Reject::NotInternal
+        } else if m.starts_with("Please specify organization id") {
+            k::Reject::MissingOrg
+        } else if m.contains("must be visible ASCII") {
+            k::Reject::OrgNotAscii
+        } else if m.contains("not a valid metadata value") {
+            k::Reject::BadUserId
+        } else {
+            panic!("unknown status {s:?}")
+        }
+    }
+
+    #[test]
+    fn check_auth_inner_agrees() {
+        let mut r = Rng::new(0x0b5e_0009);
+        let mut kinds = std::collections::BTreeMap::<String, usize>::new();
+        {
+            let mut h = HASHES.lock().unwrap();
+            for pw in PASSWORDS {
+                for s in SALTS {
+                    h.push((pw.to_string(), s.to_string(), hash(pw, s)));
+                }
+            }
+        }
+        let khashes: Vec<k::HashRow> = HASHES
+            .lock()
+            .unwrap()
+            .iter()
+            .map(|(p, s, h)| k::HashRow {
+                password: p.as_bytes().to_vec(),
+                salt: s.as_bytes().to_vec(),
+                hash: h.as_ref().map(|h| h.as_bytes().to_vec()),
+            })
+            .collect();
+        for case in 0..60_000 {
+            ORG_USERS.clear();
+            USERS.clear();
+            ROOT_USER.clear();
+            ORG_INGESTION_TOKENS.clear();
+            let internal = r.pick(&["", "itok"]).to_string();
+            *INTERNAL.lock().unwrap() = internal.clone();
+            let mut korg_users = Vec::new();
+            let mut kusers = Vec::new();
+            for _ in 0..r.below(6) {
+                let org = *r.pick(ORGS);
+                let email = *r.pick(EMAILS);
+                let key = format!("{org}/{}", if r.chance(3, 4) { email.to_lowercase() } else { email.to_string() });
+                let role = if r.chance(1, 4) { UserRole::Root } else { UserRole::Admin };
+                let token = r.pick(&["tok1", "tok2", "", "o2oi_good"]).to_string();
+                korg_users.push(k::OrgUserRow {
+                    key: key.as_bytes().to_vec(),
+                    is_root: role == UserRole::Root,
+                    token: token.as_bytes().to_vec(),
+                });
+                ORG_USERS.entry(key.clone()).or_insert(OrgUserRecord {
+                    email: email.to_string(),
+                    org_id: org.to_string(),
+                    role,
+                    token,
+                    rum_token: None,
+                });
+            }
+            // DashMap keeps the first row per key; so does the kernel's search.
+            for _ in 0..r.below(5) {
+                let email = *r.pick(EMAILS);
+                let key = if r.chance(3, 4) { email.to_lowercase() } else { email.to_string() };
+                let pw = *r.pick(&["pw1", "pw2"]);
+                let salt = *r.pick(SALTS);
+                let stored = hash(pw, salt).unwrap_or_default();
+                kusers.push(k::UserRow {
+                    key: key.as_bytes().to_vec(),
+                    email: email.as_bytes().to_vec(),
+                    password: stored.as_bytes().to_vec(),
+                    salt: salt.as_bytes().to_vec(),
+                });
+                USERS.entry(key).or_insert(UserRecord {
+                    email: email.to_string(),
+                    first_name: String::new(),
+                    last_name: String::new(),
+                    password: stored,
+                    salt: salt.to_string(),
+                    password_ext: None,
+                    user_type: UserType::Internal,
+                });
+            }
+            let root = r.chance(1, 2).then(|| {
+                let salt = *r.pick(SALTS);
+                User {
+                    email: "root@x.io".to_string(),
+                    first_name: String::new(),
+                    last_name: String::new(),
+                    password: hash("pw1", salt).unwrap_or_default(),
+                    salt: salt.to_string(),
+                    token: r.pick(&["tok1", "rtok", ""]).to_string(),
+                    rum_token: None,
+                    role: UserRole::Root,
+                    org: "default".to_string(),
+                    is_external: false,
+                    password_ext: None,
+                }
+            });
+            if let Some(u) = &root {
+                ROOT_USER.insert("root".to_string(), u.clone());
+            }
+            let mut kingest = Vec::new();
+            for key in ["acme/o2oi_good", "a/o2oi_good"] {
+                if r.chance(1, 2) {
+                    ORG_INGESTION_TOKENS.insert(key.to_string(), "t".to_string());
+                    kingest.push(key.as_bytes().to_vec());
+                }
+            }
+            let env = k::GrpcEnv {
+                internal_token: internal.as_bytes().to_vec(),
+                super_cluster_token: None,
+                ingestion_keys: kingest,
+                org_users: korg_users,
+                users: kusers,
+                root_user: root.map(|u| k::User {
+                    email: u.email.into_bytes(),
+                    token: u.token.into_bytes(),
+                    password: u.password.into_bytes(),
+                    salt: u.salt.into_bytes(),
+                }),
+                hashes: khashes.clone(),
+            };
+
+            // The request.
+            let mut req = tonic::Request::new(());
+            let auth: Option<Vec<u8>> = match r.below(10) {
+                0 => None,
+                1 => Some(vec![b'B', 0xE9]),
+                2 => Some(Vec::new()),
+                3 => Some(r.pick(&["itok", "tok1", "Basic", "Basic !!"]).as_bytes().to_vec()),
+                _ => {
+                    let user = *r.pick(EMAILS);
+                    let pw = *r.pick(PASSWORDS);
+                    let sep = if r.chance(9, 10) { ":" } else { "" };
+                    let pre = if r.chance(9, 10) { "Basic " } else { "Bearer " };
+                    Some(format!("{pre}{}", BASE64_STANDARD.encode(format!("{user}{sep}{pw}"))).into_bytes())
+                }
+            };
+            if let Some(a) = &auth {
+                req.metadata_mut().insert("authorization", AsciiMetadataValue::try_from(&a[..]).unwrap());
+            }
+            let org: k::OrgHeader = match r.below(8) {
+                0 => k::OrgHeader::Missing,
+                1 => {
+                    req.metadata_mut().insert("organization", AsciiMetadataValue::try_from(&[b'a', 0xE9][..]).unwrap());
+                    k::OrgHeader::NotAscii
+                }
+                _ => {
+                    let o = *r.pick(ORGS);
+                    req.metadata_mut().insert("organization", AsciiMetadataValue::try_from(o).unwrap());
+                    k::OrgHeader::Value(o.as_bytes().to_vec())
+                }
+            };
+            let allow = r.chance(1, 2);
+
+            // The shell's half: `to_str()` of the token and the Basic decoding.
+            let token = auth.as_ref().and_then(|a| {
+                AsciiMetadataValue::try_from(&a[..]).ok().and_then(|v| v.to_str().ok().map(|s| s.as_bytes().to_vec()))
+            });
+            let creds = token.as_ref().and_then(|t| {
+                http_auth_basic::Credentials::from_header(String::from_utf8(t.clone()).unwrap()).ok().map(|c| k::Credentials {
+                    user_id: c.user_id.into_bytes(),
+                    password: c.password.into_bytes(),
+                })
+            });
+
+            let up = seam_check_auth_inner(req, allow);
+            let expect = match &up {
+                Ok(req) => {
+                    let ids: Vec<Vec<u8>> = req.metadata().get_all("user_id").iter().map(|v| v.as_encoded_bytes().to_vec()).collect();
+                    match ids.as_slice() {
+                        [] => Ok(k::Accept::Internal),
+                        [id] => Ok(k::Accept::User(id.clone())),
+                        _ => panic!("several user ids"),
+                    }
+                }
+                Err(s) => Err(kreject(s)),
+            };
+            let got = k::check_auth_inner(&env, &token, &org, &creds, allow);
+            assert_eq!(got, expect, "case {case}: auth {:?} org {org:?} allow {allow}", auth.as_ref().map(|a| String::from_utf8_lossy(a).to_string()));
+            *kinds.entry(format!("{:?}", expect.map(|a| matches!(a, k::Accept::Internal)))).or_default() += 1;
+        }
+        eprintln!("check_auth_inner outcomes: {kinds:?}");
+        assert!(kinds.len() >= 7, "{kinds:?}");
+    }
+
+    #[test]
+    fn token_matches_agrees() {
+        let mut r = Rng::new(0x0b5e_000a);
+        for _ in 0..20_000 {
+            let t = *r.pick(&["", "a", "b", "itok"]);
+            let i = *r.pick(&["", "a", "itok"]);
+            let s = r.chance(1, 2).then(|| *r.pick(&["", "b", "itok"]));
+            assert_eq!(
+                k::token_matches(t.as_bytes(), i.as_bytes(), &s.map(|s| s.as_bytes().to_vec())),
+                seam_token_matches(t, i, s)
+            );
+        }
+    }
+
+    #[test]
+    fn metadata_validity_agrees() {
+        for b in 0u8..=255 {
+            let s = [b'a', b];
+            let up = std::str::from_utf8(&s).ok().map(|st| tonic::metadata::MetadataValue::try_from(st).is_ok());
+            if let Some(up) = up {
+                assert_eq!(k::valid_metadata(&s), up, "byte {b}");
+            }
+        }
+        for c in ['é', '\u{7f}', '\t', 'z'] {
+            let st = format!("a{c}");
+            assert_eq!(k::valid_metadata(st.as_bytes()), tonic::metadata::MetadataValue::try_from(st.as_str()).is_ok(), "{c:?}");
+        }
+    }
+}

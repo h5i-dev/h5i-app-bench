@@ -3736,4 +3736,677 @@ def delegation.validate_delegated
     | core.result.Result.Err e => ok (core.result.Result.Err e)
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
+/-- [openobserve_kernel::grpc::OrgHeader]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 10:0-15:1
+    Visibility: public -/
+@[discriminant isize]
+inductive grpc.OrgHeader where
+| Missing : grpc.OrgHeader
+| NotAscii : grpc.OrgHeader
+| Value : alloc.vec.Vec Std.U8 → grpc.OrgHeader
+
+/-- [openobserve_kernel::grpc::Credentials]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 19:0-22:1
+    Visibility: public -/
+structure grpc.Credentials where
+  user_id : alloc.vec.Vec Std.U8
+  password : alloc.vec.Vec Std.U8
+
+/-- [openobserve_kernel::grpc::OrgUserRow]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 26:0-30:1
+    Visibility: public -/
+structure grpc.OrgUserRow where
+  key : alloc.vec.Vec Std.U8
+  is_root : Bool
+  token : alloc.vec.Vec Std.U8
+
+/-- [openobserve_kernel::grpc::{impl core::clone::Clone for openobserve_kernel::grpc::OrgUserRow}::clone]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 25:9-25:14
+    Visibility: public -/
+def grpc.OrgUserRow.Insts.CoreCloneClone.clone
+  (self : grpc.OrgUserRow) : Result grpc.OrgUserRow := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.key
+  let b ← lift (core.clone.impls.CloneBool.clone self.is_root)
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.token
+  ok { key := v, is_root := b, token := v1 }
+
+/-- [openobserve_kernel::grpc::UserRow]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 34:0-39:1
+    Visibility: public -/
+structure grpc.UserRow where
+  key : alloc.vec.Vec Std.U8
+  email : alloc.vec.Vec Std.U8
+  password : alloc.vec.Vec Std.U8
+  salt : alloc.vec.Vec Std.U8
+
+/-- [openobserve_kernel::grpc::{impl core::clone::Clone for openobserve_kernel::grpc::UserRow}::clone]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 33:9-33:14
+    Visibility: public -/
+def grpc.UserRow.Insts.CoreCloneClone.clone
+  (self : grpc.UserRow) : Result grpc.UserRow := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.key
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.email
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.salt
+  ok { key := v, email := v1, password := v2, salt := v3 }
+
+/-- [openobserve_kernel::grpc::User]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 43:0-48:1
+    Visibility: public -/
+structure grpc.User where
+  email : alloc.vec.Vec Std.U8
+  token : alloc.vec.Vec Std.U8
+  password : alloc.vec.Vec Std.U8
+  salt : alloc.vec.Vec Std.U8
+
+/-- [openobserve_kernel::grpc::{impl core::clone::Clone for openobserve_kernel::grpc::User}::clone]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 42:9-42:14
+    Visibility: public -/
+def grpc.User.Insts.CoreCloneClone.clone
+  (self : grpc.User) : Result grpc.User := do
+  let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.email
+  let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.token
+  let v2 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.password
+  let v3 ← alloc.vec.CloneVec.clone core.clone.CloneU8 self.salt
+  ok { email := v, token := v1, password := v2, salt := v3 }
+
+/-- [openobserve_kernel::grpc::HashRow]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 52:0-56:1
+    Visibility: public -/
+structure grpc.HashRow where
+  password : alloc.vec.Vec Std.U8
+  salt : alloc.vec.Vec Std.U8
+  hash : Option (alloc.vec.Vec Std.U8)
+
+/-- [openobserve_kernel::grpc::GrpcEnv]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 59:0-72:1
+    Visibility: public -/
+structure grpc.GrpcEnv where
+  internal_token : alloc.vec.Vec Std.U8
+  super_cluster_token : Option (alloc.vec.Vec Std.U8)
+  ingestion_keys : alloc.vec.Vec (alloc.vec.Vec Std.U8)
+  org_users : alloc.vec.Vec grpc.OrgUserRow
+  users : alloc.vec.Vec grpc.UserRow
+  root_user : Option grpc.User
+  hashes : alloc.vec.Vec grpc.HashRow
+
+/-- [openobserve_kernel::grpc::Reject]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 76:0-95:1
+    Visibility: public -/
+@[discriminant isize]
+inductive grpc.Reject where
+| NoToken : grpc.Reject
+| EmptyToken : grpc.Reject
+| BadCredentials : grpc.Reject
+| NoUser : grpc.Reject
+| BadPassword : grpc.Reject
+| NotInternal : grpc.Reject
+| MissingOrg : grpc.Reject
+| OrgNotAscii : grpc.Reject
+| BadUserId : grpc.Reject
+
+/-- [openobserve_kernel::grpc::Accept]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 99:0-102:1
+    Visibility: public -/
+@[discriminant isize]
+inductive grpc.Accept where
+| Internal : grpc.Accept
+| User : alloc.vec.Vec Std.U8 → grpc.Accept
+
+/-- [openobserve_kernel::grpc::ORG_INGESTION_TOKEN_PREFIX]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 104:0-104:55
+    Visibility: public -/
+@[global_simps, irreducible]
+def grpc.ORG_INGESTION_TOKEN_PREFIX : Slice Std.U8 :=
+  Array.to_slice (Array.make 5#usize [ 111#u8, 50#u8, 111#u8, 105#u8, 95#u8 ])
+
+/-- [openobserve_kernel::grpc::DEFAULT_ORG]
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 105:0-105:42
+    Visibility: public -/
+@[global_simps, irreducible]
+def grpc.DEFAULT_ORG : Slice Std.U8 :=
+  Array.to_slice
+    (Array.make 7#usize [
+      100#u8, 101#u8, 102#u8, 97#u8, 117#u8, 108#u8, 116#u8
+      ])
+
+/-- [openobserve_kernel::grpc::auth_token]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 108:0-119:1
+    Visibility: public -/
+def grpc.auth_token
+  (token : Option (alloc.vec.Vec Std.U8)) :
+  Result (core.result.Result (alloc.vec.Vec Std.U8) grpc.Reject)
+  := do
+  match token with
+  | none => ok (core.result.Result.Err grpc.Reject.NoToken)
+  | some t =>
+    let i := alloc.vec.Vec.len t
+    if i = 0#usize
+    then ok (core.result.Result.Err grpc.Reject.EmptyToken)
+    else
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 t
+      ok (core.result.Result.Ok v)
+
+/-- [openobserve_kernel::grpc::token_matches]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 122:0-130:1
+    Visibility: public -/
+def grpc.token_matches
+  (token : Slice Std.U8) (internal : Slice Std.U8)
+  (super_cluster : Option (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  let b ← bytes.bytes_eq token internal
+  if b
+  then ok true
+  else
+    match super_cluster with
+    | none => ok false
+    | some t => let s := alloc.vec.Vec.deref t
+                bytes.bytes_eq s token
+
+/-- [openobserve_kernel::grpc::check_internal_auth]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 133:0-143:1
+    Visibility: public -/
+def grpc.check_internal_auth
+  (env : grpc.GrpcEnv) (token : Option (alloc.vec.Vec Std.U8)) :
+  Result (core.result.Result grpc.Accept grpc.Reject)
+  := do
+  let r ← grpc.auth_token token
+  match r with
+  | core.result.Result.Ok t =>
+    let s := alloc.vec.Vec.deref t
+    let s1 := alloc.vec.Vec.deref env.internal_token
+    let b ← grpc.token_matches s s1 env.super_cluster_token
+    if b
+    then ok (core.result.Result.Ok grpc.Accept.Internal)
+    else ok (core.result.Result.Err grpc.Reject.NotInternal)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
+/-- [openobserve_kernel::grpc::join_key]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 149:4-152:5
+    Visibility: public -/
+@[rust_loop_body]
+def grpc.join_key_loop0.body
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [openobserve_kernel::grpc::join_key]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 149:4-152:5
+    Visibility: public -/
+@[rust_loop]
+def grpc.join_key_loop0
+  (a : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => grpc.join_key_loop0.body a out1 i1)
+    (out, i)
+
+/-- [openobserve_kernel::grpc::join_key]: loop body 1:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 155:4-158:5
+    Visibility: public -/
+@[rust_loop_body]
+def grpc.join_key_loop1.body
+  (b : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i := Slice.len b
+  if j < i
+  then
+    let i1 ← Slice.index_usize b j
+    let out1 ← alloc.vec.Vec.push out i1
+    let j1 ← j + 1#usize
+    ok (cont (out1, j1))
+  else ok (done out)
+
+/-- [openobserve_kernel::grpc::join_key]: loop 1:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 155:4-158:5
+    Visibility: public -/
+@[rust_loop]
+def grpc.join_key_loop1
+  (b : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (j : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, j1) => grpc.join_key_loop1.body b out1 j1)
+    (out, j)
+
+/-- [openobserve_kernel::grpc::join_key]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 146:0-160:1
+    Visibility: public -/
+def grpc.join_key
+  (a : Slice Std.U8) (b : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let out ← grpc.join_key_loop0 a (alloc.vec.Vec.new Std.U8) 0#usize
+  let out1 ← alloc.vec.Vec.push out 47#u8
+  grpc.join_key_loop1 b out1 0#usize
+
+/-- [openobserve_kernel::grpc::ascii_lower]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 166:4-174:5
+    Visibility: public -/
+@[rust_loop_body]
+def grpc.ascii_lower_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let c ← Slice.index_usize s i
+    let out1 ←
+      if c >= 65#u8
+      then
+        if c <= 90#u8
+        then do
+             let i2 ← c + 32#u8
+             alloc.vec.Vec.push out i2
+        else alloc.vec.Vec.push out c
+      else alloc.vec.Vec.push out c
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [openobserve_kernel::grpc::ascii_lower]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 166:4-174:5
+    Visibility: public -/
+@[rust_loop]
+def grpc.ascii_lower_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => grpc.ascii_lower_loop.body s out1 i1)
+    (out, i)
+
+/-- [openobserve_kernel::grpc::ascii_lower]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 163:0-176:1
+    Visibility: public -/
+@[reducible]
+def grpc.ascii_lower (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  grpc.ascii_lower_loop s (alloc.vec.Vec.new Std.U8) 0#usize
+
+/-- [openobserve_kernel::grpc::find_org_user]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 180:4-187:1 -/
+@[rust_loop_body]
+def grpc.find_org_user_loop.body
+  (rows : Slice grpc.OrgUserRow) (key : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option grpc.OrgUserRow))
+  := do
+  let i1 := Slice.len rows
+  if i < i1
+  then
+    let our ← Slice.index_usize rows i
+    let s := alloc.vec.Vec.deref our.key
+    let b ← bytes.bytes_eq s key
+    if b
+    then
+      let our1 ← grpc.OrgUserRow.Insts.CoreCloneClone.clone our
+      ok (done (some our1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [openobserve_kernel::grpc::find_org_user]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 180:4-187:1 -/
+@[rust_loop]
+def grpc.find_org_user_loop
+  (rows : Slice grpc.OrgUserRow) (key : Slice Std.U8) (i : Std.Usize) :
+  Result (Option grpc.OrgUserRow)
+  := do
+  loop
+    (fun i1 => grpc.find_org_user_loop.body rows key i1)
+    i
+
+/-- [openobserve_kernel::grpc::find_org_user]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 178:0-187:1 -/
+@[reducible]
+def grpc.find_org_user
+  (rows : Slice grpc.OrgUserRow) (key : Slice Std.U8) :
+  Result (Option grpc.OrgUserRow)
+  := do
+  grpc.find_org_user_loop rows key 0#usize
+
+/-- [openobserve_kernel::grpc::find_user]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 191:4-198:1 -/
+@[rust_loop_body]
+def grpc.find_user_loop.body
+  (rows : Slice grpc.UserRow) (key : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option grpc.UserRow))
+  := do
+  let i1 := Slice.len rows
+  if i < i1
+  then
+    let ur ← Slice.index_usize rows i
+    let s := alloc.vec.Vec.deref ur.key
+    let b ← bytes.bytes_eq s key
+    if b
+    then
+      let ur1 ← grpc.UserRow.Insts.CoreCloneClone.clone ur
+      ok (done (some ur1))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [openobserve_kernel::grpc::find_user]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 191:4-198:1 -/
+@[rust_loop]
+def grpc.find_user_loop
+  (rows : Slice grpc.UserRow) (key : Slice Std.U8) (i : Std.Usize) :
+  Result (Option grpc.UserRow)
+  := do
+  loop
+    (fun i1 => grpc.find_user_loop.body rows key i1)
+    i
+
+/-- [openobserve_kernel::grpc::find_user]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 189:0-198:1 -/
+@[reducible]
+def grpc.find_user
+  (rows : Slice grpc.UserRow) (key : Slice Std.U8) :
+  Result (Option grpc.UserRow)
+  := do
+  grpc.find_user_loop rows key 0#usize
+
+/-- [openobserve_kernel::grpc::is_root_user]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 201:0-206:1
+    Visibility: public -/
+def grpc.is_root_user
+  (env : grpc.GrpcEnv) (user_id : Slice Std.U8) : Result Bool := do
+  let s := alloc.vec.Vec.deref env.org_users
+  let v ← grpc.join_key grpc.DEFAULT_ORG user_id
+  let s1 := alloc.vec.Vec.deref v
+  let o ← grpc.find_org_user s s1
+  match o with
+  | none => ok false
+  | some r => ok r.is_root
+
+/-- [openobserve_kernel::grpc::get_cached_user_org]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 209:0-218:1
+    Visibility: public -/
+def grpc.get_cached_user_org
+  (env : grpc.GrpcEnv) (org : Slice Std.U8) (email : Slice Std.U8) :
+  Result (Option grpc.User)
+  := do
+  let key ← grpc.ascii_lower email
+  let s := alloc.vec.Vec.deref env.org_users
+  let s1 := alloc.vec.Vec.deref key
+  let v ← grpc.join_key org s1
+  let s2 := alloc.vec.Vec.deref v
+  let o ← grpc.find_org_user s s2
+  match o with
+  | none => ok none
+  | some ou =>
+    let s3 := alloc.vec.Vec.deref env.users
+    let s4 := alloc.vec.Vec.deref key
+    let o1 ← grpc.find_user s3 s4
+    match o1 with
+    | none => ok none
+    | some u =>
+      ok (some
+        {
+          email := u.email,
+          token := ou.token,
+          password := u.password,
+          salt := u.salt
+        })
+
+/-- [openobserve_kernel::grpc::try_get_hash]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 223:4-233:1
+    Visibility: public -/
+@[rust_loop_body]
+def grpc.try_get_hash_loop.body
+  (env : grpc.GrpcEnv) (password : Slice Std.U8) (salt : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := alloc.vec.Vec.len env.hashes
+  if i < i1
+  then
+    let hr ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice grpc.HashRow)
+        env.hashes i
+    let s := alloc.vec.Vec.deref hr.password
+    let b ← bytes.bytes_eq s password
+    if b
+    then
+      let s1 := alloc.vec.Vec.deref hr.salt
+      let b1 ← bytes.bytes_eq s1 salt
+      if b1
+      then
+        match hr.hash with
+        | none => ok (done none)
+        | some h =>
+          let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 h
+          ok (done (some v))
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [openobserve_kernel::grpc::try_get_hash]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 223:4-233:1
+    Visibility: public -/
+@[rust_loop]
+def grpc.try_get_hash_loop
+  (env : grpc.GrpcEnv) (password : Slice Std.U8) (salt : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun i1 => grpc.try_get_hash_loop.body env password salt i1)
+    i
+
+/-- [openobserve_kernel::grpc::try_get_hash]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 221:0-233:1
+    Visibility: public -/
+@[reducible]
+def grpc.try_get_hash
+  (env : grpc.GrpcEnv) (password : Slice Std.U8) (salt : Slice Std.U8) :
+  Result (Option (alloc.vec.Vec Std.U8))
+  := do
+  grpc.try_get_hash_loop env password salt 0#usize
+
+/-- [openobserve_kernel::grpc::valid_metadata]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 238:4-246:1
+    Visibility: public -/
+@[rust_loop_body]
+def grpc.valid_metadata_loop.body
+  (s : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let c ← Slice.index_usize s i
+    if c >= 32#u8
+    then
+      if c < 127#u8
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else
+        if c = 9#u8
+        then let i2 ← i + 1#usize
+             ok (cont i2)
+        else ok (done false)
+    else
+      if c = 9#u8
+      then let i2 ← i + 1#usize
+           ok (cont i2)
+      else ok (done false)
+  else ok (done true)
+
+/-- [openobserve_kernel::grpc::valid_metadata]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 238:4-246:1
+    Visibility: public -/
+@[rust_loop]
+def grpc.valid_metadata_loop
+  (s : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => grpc.valid_metadata_loop.body s i1)
+    i
+
+/-- [openobserve_kernel::grpc::valid_metadata]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 236:0-246:1
+    Visibility: public -/
+@[reducible]
+def grpc.valid_metadata (s : Slice Std.U8) : Result Bool := do
+  grpc.valid_metadata_loop s 0#usize
+
+/-- [openobserve_kernel::grpc::attach_user_id]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 249:0-255:1
+    Visibility: public -/
+def grpc.attach_user_id
+  (user_id : Slice Std.U8) :
+  Result (core.result.Result grpc.Accept grpc.Reject)
+  := do
+  let b ← grpc.valid_metadata user_id
+  if b
+  then
+    let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 user_id
+    ok (core.result.Result.Ok (grpc.Accept.User v))
+  else ok (core.result.Result.Err grpc.Reject.BadUserId)
+
+/-- [openobserve_kernel::grpc::password_matches]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 319:0-327:1
+    Visibility: public -/
+def grpc.password_matches
+  (env : grpc.GrpcEnv) (user : grpc.User) (c : grpc.Credentials) :
+  Result Bool
+  := do
+  let s := alloc.vec.Vec.deref c.user_id
+  let s1 := alloc.vec.Vec.deref user.email
+  let b ← bytes.bytes_eq s s1
+  if b
+  then
+    let s2 := alloc.vec.Vec.deref c.password
+    let s3 := alloc.vec.Vec.deref user.salt
+    let o ← grpc.try_get_hash env s2 s3
+    match o with
+    | none => ok false
+    | some h =>
+      let s4 := alloc.vec.Vec.deref h
+      let s5 := alloc.vec.Vec.deref user.password
+      bytes.bytes_eq s4 s5
+  else ok false
+
+/-- [openobserve_kernel::grpc::lookup_user]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 307:0-316:1
+    Visibility: public -/
+def grpc.lookup_user
+  (env : grpc.GrpcEnv) (org : Slice Std.U8) (user_id : Slice Std.U8) :
+  Result (Option grpc.User)
+  := do
+  let b ← grpc.is_root_user env user_id
+  if b
+  then
+    match env.root_user with
+    | none => ok none
+    | some u => let u1 ← grpc.User.Insts.CoreCloneClone.clone u
+                ok (some u1)
+  else grpc.get_cached_user_org env org user_id
+
+/-- [openobserve_kernel::grpc::check_auth_inner]:
+    Source: 'prove/ports/openobserve/kernel/src/grpc.rs', lines 259:0-303:1
+    Visibility: public -/
+def grpc.check_auth_inner
+  (env : grpc.GrpcEnv) (token : Option (alloc.vec.Vec Std.U8))
+  (org_header : grpc.OrgHeader) (creds : Option grpc.Credentials)
+  (allow_org_ingestion_token : Bool) :
+  Result (core.result.Result grpc.Accept grpc.Reject)
+  := do
+  let r ← grpc.auth_token token
+  match r with
+  | core.result.Result.Ok t =>
+    let s := alloc.vec.Vec.deref t
+    let s1 := alloc.vec.Vec.deref env.internal_token
+    let b ← grpc.token_matches s s1 env.super_cluster_token
+    if b
+    then ok (core.result.Result.Ok grpc.Accept.Internal)
+    else
+      match org_header with
+      | grpc.OrgHeader.Missing =>
+        ok (core.result.Result.Err grpc.Reject.MissingOrg)
+      | grpc.OrgHeader.NotAscii =>
+        ok (core.result.Result.Err grpc.Reject.OrgNotAscii)
+      | grpc.OrgHeader.Value o =>
+        match creds with
+        | none => ok (core.result.Result.Err grpc.Reject.BadCredentials)
+        | some c =>
+          let i := alloc.vec.Vec.len c.password
+          if i = 0#usize
+          then ok (core.result.Result.Err grpc.Reject.BadPassword)
+          else
+            if allow_org_ingestion_token
+            then
+              let s2 := alloc.vec.Vec.deref c.password
+              let b1 ← bytes.starts_with s2 grpc.ORG_INGESTION_TOKEN_PREFIX
+              if b1
+              then
+                let s3 := alloc.vec.Vec.deref env.ingestion_keys
+                let s4 := alloc.vec.Vec.deref o
+                let s5 := alloc.vec.Vec.deref c.password
+                let v ← grpc.join_key s4 s5
+                let s6 := alloc.vec.Vec.deref v
+                let b2 ← bytes.contains s3 s6
+                if b2
+                then
+                  let s7 := alloc.vec.Vec.deref c.user_id
+                  grpc.attach_user_id s7
+                else ok (core.result.Result.Err grpc.Reject.BadPassword)
+              else
+                let s3 := alloc.vec.Vec.deref o
+                let s4 := alloc.vec.Vec.deref c.user_id
+                let o1 ← grpc.lookup_user env s3 s4
+                match o1 with
+                | none => ok (core.result.Result.Err grpc.Reject.NoUser)
+                | some u =>
+                  let s5 := alloc.vec.Vec.deref u.token
+                  let s6 := alloc.vec.Vec.deref c.password
+                  let b2 ← bytes.bytes_eq s5 s6
+                  if b2
+                  then
+                    let s7 := alloc.vec.Vec.deref c.user_id
+                    grpc.attach_user_id s7
+                  else
+                    let b3 ← grpc.password_matches env u c
+                    if b3
+                    then
+                      let s7 := alloc.vec.Vec.deref c.user_id
+                      grpc.attach_user_id s7
+                    else ok (core.result.Result.Err grpc.Reject.BadPassword)
+            else
+              let s2 := alloc.vec.Vec.deref o
+              let s3 := alloc.vec.Vec.deref c.user_id
+              let o1 ← grpc.lookup_user env s2 s3
+              match o1 with
+              | none => ok (core.result.Result.Err grpc.Reject.NoUser)
+              | some u =>
+                let s4 := alloc.vec.Vec.deref u.token
+                let s5 := alloc.vec.Vec.deref c.password
+                let b1 ← bytes.bytes_eq s4 s5
+                if b1
+                then
+                  let s6 := alloc.vec.Vec.deref c.user_id
+                  grpc.attach_user_id s6
+                else
+                  let b2 ← grpc.password_matches env u c
+                  if b2
+                  then
+                    let s6 := alloc.vec.Vec.deref c.user_id
+                    grpc.attach_user_id s6
+                  else ok (core.result.Result.Err grpc.Reject.BadPassword)
+  | core.result.Result.Err e => ok (core.result.Result.Err e)
+
 end openobserve_kernel

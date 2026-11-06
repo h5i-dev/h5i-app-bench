@@ -4,4 +4,5 @@
 pub mod auth;
 pub mod bytes;
 pub mod delegation;
+pub mod grpc;
 pub mod tables;
