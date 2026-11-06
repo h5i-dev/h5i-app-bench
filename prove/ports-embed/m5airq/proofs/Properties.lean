@@ -218,6 +218,24 @@ theorem validate_session_sound (store : SessionStore) (token : Array U8 8#usize)
     · exact Or.inr (Or.inl hb1)
   · exact Or.inl hb0
 
+/-- SECURITY (S): a slot accepts a token only while it is within its TTL —
+`slot_valid` genuinely checks `age_ok`. Kills a kernel that drops the expiry
+check. -/
+theorem slot_valid_fresh (slot : SessionSlot) (token : Array U8 8#usize) (now : U32)
+    (h : slot_valid slot token now = ok true) : age_ok now slot.created = ok true := by
+  unfold slot_valid at h
+  rw [H5iAppLib.bind_eq_ok] at h
+  obtain ⟨b, _hb, h⟩ := h
+  cases b
+  case false => simp at h
+  case true =>
+    simp only [reduceIte] at h
+    rw [H5iAppLib.bind_eq_ok] at h
+    obtain ⟨b1, _hb1, h⟩ := h
+    cases b1
+    case false => simpa using h
+    case true => simp at h
+
 /-- A decision counts as granting access. -/
 def granted : AuthDecision → Prop
   | AuthDecision.Allowed => True

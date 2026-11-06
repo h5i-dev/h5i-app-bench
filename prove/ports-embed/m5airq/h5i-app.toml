@@ -35,6 +35,7 @@ theorems = [
     # --- auth gate (C) ---
     "m5airq_kernel.Properties.check_auth_total",
     "m5airq_kernel.Properties.validate_session_sound",
+    "m5airq_kernel.Properties.slot_valid_fresh",
     # --- auth gate (S) ---
     "m5airq_kernel.Properties.unauth_never_granted",
     "m5airq_kernel.Properties.token_over_http_forbidden",

@@ -1,0 +1,18 @@
+[package]
+name = "m5airq-app"
+description = "M5AirQ-Rust OTA + auth HTTP API on the h5i-app-embedded shell (host + firmware)"
+edition = "2024"
+license = "Apache-2.0"
+version = "0.1.0"
+publish = false
+
+# The h5i crates are referenced by absolute path to the toolchain checkout at
+# /root/h5i (this port lives in the h5i-app-bench repo, not inside h5i). See
+# DEVIATIONS.md. Swap for a git/crates.io dependency to build elsewhere.
+[dependencies]
+m5airq-kernel = { path = "../kernel" }
+h5i-app-core = { path = "/root/h5i/crates/h5i-app-core", default-features = false }
+h5i-app-embedded = { path = "/root/h5i/crates/h5i-app-embedded" }
+
+[lints.clippy]
+manual_range_contains = "allow"

@@ -1,0 +1,14 @@
+[package]
+name = "m5airq-difftest"
+description = "Differential tests: the m5airq kernel vs a faithful reimplementation of the upstream decision logic"
+edition = "2024"
+license = "Apache-2.0"
+version = "0.1.0"
+publish = false
+
+[[bin]]
+name = "m5airq-difftest"
+path = "src/main.rs"
+
+[dependencies]
+m5airq-kernel = { path = "../kernel" }
