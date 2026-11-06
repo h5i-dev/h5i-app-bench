@@ -40,4 +40,20 @@ fn main() {
         "                let _ = transaction;\n",
     );
     fs::write(out.join("token_impl.rs"), format!("impl Token {{\n{body}}}\n")).unwrap();
+
+    // defguard_common db/models/device.rs `assign_next_network_ip`: its address
+    // loop, up to the relation insert (the shell's).
+    let dv = upstream("crates/defguard_common/src/db/models/device.rs");
+    let a = dv.find("    pub async fn assign_next_network_ip(").expect("assign_next_network_ip");
+    let s0 = dv[a..].find("        let mut ips = Vec::new();").expect("loop start") + a;
+    let e0 = dv[s0..].find("        // Create relation record").expect("loop end") + s0;
+    fs::write(
+        out.join("assign_impl.rs"),
+        format!(
+            "impl Device {{\n    pub fn assign_ips(&self, network: &Location, used_ips: &HashSet<IpAddr>, \
+             reserved_ips: Option<&[IpAddr]>, current_ips: Option<&[IpAddr]>) -> Result<Vec<IpAddr>, DeviceError> {{\n{}        Ok(ips)\n    }}\n}}\n",
+            &dv[s0..e0]
+        ),
+    )
+    .unwrap();
 }

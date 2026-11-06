@@ -65,6 +65,35 @@ pub mod enrollment {
     include!(concat!(env!("OUT_DIR"), "/token_impl.rs"));
 }
 
+pub mod device {
+    use std::{collections::HashSet, net::IpAddr};
+
+    use ipnetwork::IpNetwork;
+    use tracing::{debug, error};
+
+    pub struct Device {
+        pub name: String,
+    }
+
+    pub struct Location {
+        pub name: String,
+        pub address: Vec<IpNetwork>,
+    }
+
+    impl Location {
+        pub fn address(&self) -> &[IpNetwork] {
+            self.address.as_slice()
+        }
+    }
+
+    #[derive(Debug, PartialEq, Eq)]
+    pub enum DeviceError {
+        NetworkFull(String),
+    }
+
+    include!(concat!(env!("OUT_DIR"), "/assign_impl.rs"));
+}
+
 /// The comparisons; `main` runs them.
 pub mod diff {
     use std::ops::RangeInclusive;
@@ -142,6 +171,97 @@ pub mod diff {
             assert_eq!(uu, kt2.used_at, "case {case}: used_at");
         }
         cases
+    }
+
+    fn kip(ip: std::net::IpAddr) -> k::ipalloc::Ip {
+        match ip {
+            std::net::IpAddr::V4(a) => k::ipalloc::Ip { v4: true, bits: a.to_bits() as u128 },
+            std::net::IpAddr::V6(a) => k::ipalloc::Ip { v4: false, bits: a.to_bits() },
+        }
+    }
+
+    /// `assign_next_network_ip`'s address loop on random locations (one or
+    /// two subnets, small IPv4 and IPv6 prefixes so that subnets fill up),
+    /// used and reserved sets, and current addresses (inside, outside, at the
+    /// gateway, network or broadcast address).
+    pub fn ipalloc(seed: u64, cases: usize) -> (usize, usize, usize) {
+        use std::collections::HashSet;
+        use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+
+        use ipnetwork::IpNetwork;
+
+        use crate::device::{Device, DeviceError, Location};
+        let mut rng = ChaCha8Rng::seed_from_u64(seed);
+        let (mut ok, mut full, mut kept_bad) = (0, 0, 0);
+        for case in 0..cases {
+            let mut nets = Vec::new();
+            for _ in 0..rng.gen_range(1..3) {
+                if rng.gen_bool(0.6) {
+                    let p = rng.gen_range(26..=32u8);
+                    let ip = Ipv4Addr::new(10, 0, rng.gen_range(0..2), rng.gen_range(0..=255));
+                    nets.push(IpNetwork::new(IpAddr::V4(ip), p).unwrap());
+                } else {
+                    let p = rng.gen_range(122..=128u8);
+                    let ip = Ipv6Addr::new(0xfd00, 0, 0, 0, 0, 0, 0, rng.gen_range(0..300));
+                    nets.push(IpNetwork::new(IpAddr::V6(ip), p).unwrap());
+                }
+            }
+            let pick_ip = |rng: &mut ChaCha8Rng, n: &IpNetwork| -> IpAddr {
+                match rng.gen_range(0..5) {
+                    0 => n.ip(),
+                    1 => n.network(),
+                    2 => n.broadcast(),
+                    _ => match n {
+                        IpNetwork::V4(v) => IpAddr::V4(Ipv4Addr::from_bits(v.network().to_bits() + rng.gen_range(0..80))),
+                        IpNetwork::V6(v) => IpAddr::V6(Ipv6Addr::from_bits(v.network().to_bits() + rng.gen_range(0..80))),
+                    },
+                }
+            };
+            let mut used = HashSet::new();
+            let mut reserved = Vec::new();
+            for _ in 0..rng.gen_range(0..40) {
+                let n = nets[rng.gen_range(0..nets.len())];
+                if rng.gen_bool(0.8) { used.insert(pick_ip(&mut rng, &n)); } else { reserved.push(pick_ip(&mut rng, &n)); }
+            }
+            let current: Option<Vec<IpAddr>> = if rng.gen_bool(0.5) {
+                None
+            } else {
+                Some((0..rng.gen_range(0..3)).map(|_| { let n = nets[rng.gen_range(0..nets.len())]; pick_ip(&mut rng, &n) }).collect())
+            };
+            let dev = Device { name: "d".into() };
+            let loc = Location { name: "l".into(), address: nets.clone() };
+            let up = dev.assign_ips(&loc, &used, Some(&reserved), current.as_deref());
+            let knets: Vec<k::ipalloc::Net> = nets
+                .iter()
+                .map(|n| match n {
+                    IpNetwork::V4(v) => k::ipalloc::Net { v4: true, ip: v.ip().to_bits() as u128, prefix: v.prefix() },
+                    IpNetwork::V6(v) => k::ipalloc::Net { v4: false, ip: v.ip().to_bits(), prefix: v.prefix() },
+                })
+                .collect();
+            let mut kused: Vec<k::ipalloc::Ip> = used.iter().copied().map(kip).collect();
+            kused.sort_by_key(|i| (i.v4, i.bits));
+            let kres: Vec<k::ipalloc::Ip> = reserved.iter().copied().map(kip).collect();
+            let kcur = current.as_ref().map(|c| c.iter().copied().map(kip).collect::<Vec<_>>());
+            let kr = k::ipalloc::assign_next_network_ip(&knets, &kused, &kres, &kcur);
+            match (up, kr) {
+                (Ok(u), Ok(kk)) => {
+                    assert_eq!(u.into_iter().map(kip).collect::<Vec<_>>(), kk, "case {case}: {nets:?}");
+                    ok += 1;
+                    for (i, ip) in kk.iter().enumerate() {
+                        let n = &knets[i];
+                        if !k::ipalloc::assignable(n, ip.bits, &kused, &kres) {
+                            kept_bad += 1;
+                        }
+                    }
+                }
+                (Err(DeviceError::NetworkFull(s)), Err(kidx)) => {
+                    assert_eq!(s, nets[kidx].to_string(), "case {case}: full subnet");
+                    full += 1;
+                }
+                (u, kk) => panic!("case {case}: upstream {u:?} kernel {kk:?} for {nets:?}"),
+            }
+        }
+        (ok, full, kept_bad)
     }
 
     fn covered(rs: &[(u128, u128)], x: u128) -> bool {
