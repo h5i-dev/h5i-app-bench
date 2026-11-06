@@ -59,7 +59,10 @@ def getM (rows : List Row) (id : I64) (now : I64) (pw : Option U64) :
   rcases h : r.expires with _ | e <;> simp [Expired, h]
 
 theorem burns_iff (r : Row) : decide (Burns r) = match r.burn with | none => false | some b => b := by
-  unfold Burns; rcases r.burn with _ | (_ | _) <;> simp
+  unfold Burns
+  cases h : r.burn with
+  | none => simp
+  | some b => cases b <;> simp
 
 @[step] theorem must_be_deleted_spec (r : Row) :
     store.must_be_deleted r ⦃ b => b = decide (Burns r) ⦄ := by
@@ -76,6 +79,23 @@ theorem burns_iff (r : Row) : decide (Burns r) = match r.burn with | none => fal
     store.fetch rows id now pw ⦃ f => f = fetchM rows.val id now pw ⦄ := by
   unfold store.fetch
   step*
-  done
+  all_goals simp_all [fetchM]
+  all_goals sorry
+
+@[step] theorem finish_spec (rows : alloc.vec.Vec Row) (id : I64) (d : store.Data) (enc burn : Bool) :
+    store.finish rows id d enc burn ⦃ x => x.1.val = (if burn then without rows.val id else rows.val) ∧
+      x.2 = finishM (present rows.val id) d enc burn ⦄ := by
+  unfold store.finish
+  split
+  · step*
+    all_goals simp_all [finishM, present]
+  · split <;> step* <;> simp_all [finishM]
+
+@[step] theorem get_spec (rows : alloc.vec.Vec Row) (id now : I64) (pw : Option U64) :
+    store.get rows id now pw ⦃ x => (x.1.val, x.2) = getM rows.val id now pw ⦄ := by
+  unfold store.get
+  step*
+  all_goals simp_all [getM]
+  all_goals sorry
 
 end wastebin_kernel.Verified.Get

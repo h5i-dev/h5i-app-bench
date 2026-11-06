@@ -32,9 +32,15 @@ def Burns (r : Row) : Prop := r.burn = some true
 
 instance (r : Row) : Decidable (Burns r) := inferInstanceAs (Decidable (r.burn = some true))
 
+/-- `expires < now`, `NULL` read as false. -/
+def expiredB (r : Row) (now : Int) : Bool :=
+  match r.expires with
+  | none => false
+  | some e => decide (e.val < now)
+
 instance (r : Row) (now : Int) : Decidable (Expired r now) :=
-  decidable_of_iff (match r.expires with | none => False | some e => e.val < now) (by
-    unfold Expired; rcases r.expires with _ | e <;> simp)
+  decidable_of_iff (expiredB r now = true) (by
+    unfold Expired expiredB; rcases r.expires with _ | e <;> simp)
 
 /-- The password a reader presents opens the paste: it is plaintext, or the
 password is the one it was encrypted with. -/
