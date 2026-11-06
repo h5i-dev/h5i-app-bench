@@ -248,4 +248,64 @@ theorem endsSS_iff (l : Bytes) :
   all_goals simp only [endsSS_iff]
   all_goals simp_all [slashB, starB]
 
+theorem prefix_slash {q t : Bytes} (h1 : q <+: t) (h2 : q.length < t.length) (h3 : t[q.length]? = some slashB) :
+    q ++ [slashB] <+: t := by
+  obtain ⟨rest, rfl⟩ := h1
+  cases rest with
+  | nil => simp at h2
+  | cons y ys =>
+    simp only [List.getElem?_append_right (le_refl _), Nat.sub_self, List.getElem?_cons_zero,
+      Option.some.injEq] at h3
+    subst h3
+    exact ⟨ys, by simp⟩
+
+theorem names_wild {q x : Bytes} : names (q ++ [slashB, starB]) x ↔ x = q ++ [slashB, starB] ∨ inSubtree q x := by
+  unfold names
+  constructor
+  · rintro (h | ⟨p, hp, hs⟩)
+    · exact Or.inl h
+    · have : q = p := by
+        have := congrArg (fun l => l.take (l.length - 2)) hp
+        simpa using this
+      subst this; exact Or.inr hs
+  · rintro (h | h)
+    · exact Or.inl h
+    · exact Or.inr ⟨q, rfl, h⟩
+
+theorem names_exact {r x : Bytes} (hr : ¬ endsSS r) : names r x ↔ x = r := by
+  unfold names
+  constructor
+  · rintro (h | ⟨p, hp, _⟩)
+    · exact h
+    · exact absurd ⟨p, hp⟩ hr
+  · exact Or.inl
+
+theorem inSubtree_of_prefix {q x : Bytes} (h : q ++ [slashB] <+: x) : inSubtree q x := Or.inr h
+
+theorem covers_core {c r pre base : Bytes} (hc : endsSS c) (hpre : pre = c.take (c.length - 2))
+    (hbase : (endsSS r ∧ base = r.take (r.length - 2)) ∨ (¬ endsSS r ∧ base = r))
+    (h : base = pre ∨ (pre <+: base ∧ pre.length < base.length ∧ base[pre.length]? = some slashB)) :
+    coversSem c r := by
+  obtain ⟨q, rfl⟩ := hc
+  have hq : pre = q := by rw [hpre]; simp
+  subst hq
+  intro x hx
+  rw [names_wild]
+  rcases hbase with ⟨⟨t, rfl⟩, hb⟩ | ⟨hnr, rfl⟩
+  · have hb' : base = t := by rw [hb]; simp
+    subst hb'
+    rw [names_wild] at hx
+    rcases h with rfl | ⟨h1, h2, h3⟩
+    · exact hx
+    · have hs := prefix_slash h1 h2 h3
+      rcases hx with rfl | (rfl | hx)
+      · exact Or.inr (Or.inr (hs.trans (List.prefix_append _ _)))
+      · exact Or.inr (Or.inr hs)
+      · exact Or.inr (Or.inr (hs.trans ((List.prefix_append _ _).trans hx)))
+  · rw [names_exact hnr] at hx
+    subst hx
+    rcases h with rfl | ⟨h1, h2, h3⟩
+    · exact Or.inr (Or.inl rfl)
+    · exact Or.inr (Or.inr (prefix_slash h1 h2 h3))
+
 end windmill_kernel.Lemmas

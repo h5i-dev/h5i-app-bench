@@ -118,8 +118,40 @@ theorem instance_admin_never_job_token (a : authz.Authed)
 theorem covers_spec (c r : Slice U8) :
     scopes.resource_covers c r ⦃ b => b = true → coversSem c.val r.val ⦄ := by
   unfold scopes.resource_covers
-  step*
-  all_goals trace_state
-  all_goals sorry
+  h5i_steps
+  -- `2 ≤ len` side conditions of the `- 2`
+  all_goals first
+    | (obtain ⟨q, hq⟩ := b1_post.1 ‹_›; have := congrArg List.length hq; simp at this; scalar_tac)
+    | (obtain ⟨q, hq⟩ := b2_post.1 ‹_›; have := congrArg List.length hq; simp at this; scalar_tac)
+    | skip
+  -- equal patterns
+  all_goals first
+    | (intro _; have e : c.val = r.val := by simpa [b_post] using ‹b = true›
+       intro x hx; rw [e]; exact hx)
+    | skip
+  all_goals intro hfin
+  all_goals
+    have hc : endsSS c.val := b1_post.1 ‹_›
+    have hpre : pre.val = c.val.take (c.val.length - 2) := by rw [pre_post, i1_post]; simp
+    apply covers_core hc hpre (base := base.val)
+  all_goals first
+    | exact Or.inl ⟨b2_post.1 ‹_›, by rw [base_post, x_post]; simp⟩
+    | exact Or.inr ⟨fun h => ‹¬b2 = true› (b2_post.2 h), by rw [r_post]; rfl⟩
+    | (left; have h3 := ‹b3 = true›; rw [b3_post] at h3; simpa [vec_deref_val] using h3)
+    | (right
+       have h4 := ‹b4 = true›; rw [b4_post] at h4
+       refine ⟨by simpa [vec_deref_val] using h4, by scalar_tac, ?_⟩
+       have hl : pre.val.length < base.val.length := by scalar_tac
+       rw [List.getElem?_eq_getElem hl]
+       simp only [decide_eq_true_eq] at hfin
+       have : pre.len.val = pre.val.length := by simp
+       simp_all [slashB])
+
+/-- Delegation never widens a path grant: when the minting check `resource_covers`
+accepts a requested resource pattern, every concrete path the requested pattern
+names (itself, or the subtree of a `p/*`) is also named by the caller's pattern. -/
+theorem resource_covers_sound (c r : Slice U8) (h : scopes.resource_covers c r = ok true) :
+    coversSem c.val r.val :=
+  post_of_ok (covers_spec c r) h rfl
 
 end windmill_kernel.Properties
