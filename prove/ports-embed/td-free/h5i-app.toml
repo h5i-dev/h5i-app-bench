@@ -1,0 +1,37 @@
+# Read by `h5i app`: extract, check, prove, mutate, doctor.
+
+[extract]
+crate = "kernel"
+start-from = [
+  "enable_config", "disable_config", "set_gain_config", "set_it_config",
+  "set_bits", "with_high", "with_low", "gain_bits", "it_bits", "config_new",
+]
+
+[check]
+theorems = [
+  "td_free_kernel.Properties.set_bits_preserves_complement",
+  "td_free_kernel.Properties.set_bits_sets_masked",
+  "td_free_kernel.Properties.set_gain_preserves_shutdown",
+  "td_free_kernel.Properties.set_it_preserves_shutdown",
+  "td_free_kernel.Properties.set_it_preserves_gain",
+  "td_free_kernel.Properties.set_gain_preserves_it",
+  "td_free_kernel.Properties.enable_clears_shutdown",
+  "td_free_kernel.Properties.disable_sets_shutdown",
+  "td_free_kernel.Properties.set_bits_total",
+  "td_free_kernel.Properties.it_mask_collision",
+]
+
+[[mutant]]
+name = "set_bits_value_unmasked"
+old = "    Config { bits: (c.bits & !mask) | (value & mask) }"
+new = "    Config { bits: (c.bits & !mask) | value }"
+
+[[mutant]]
+name = "set_gain_wrong_mask"
+old = "    set_bits(c, GAIN_MASK, gain_bits(g))"
+new = "    set_bits(c, SHUTDOWN, gain_bits(g))"
+
+[[mutant]]
+name = "disable_noop"
+old = "    with_high(c, SD0)"
+new = "    with_high(c, 0)"

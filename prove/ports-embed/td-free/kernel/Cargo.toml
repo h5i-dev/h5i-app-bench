@@ -1,0 +1,14 @@
+[package]
+name = "td-free-kernel"
+description = "td-free's VEML3328 config-register bit logic (mawoka-myblock/td-free @ 5e67e73) as an h5i-app kernel"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# Extracted to Lean by Charon + Aeneas (`h5i app extract`). no_std, no alloc,
+# no floating point, no dependencies.
+[dependencies]
+
+[lints.clippy]
+manual_range_contains = "allow"
+match_like_matches_macro = "allow"
