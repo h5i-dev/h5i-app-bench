@@ -116,6 +116,25 @@ pub mod api_delegation {
     }
 }
 
+/// `core/src/auth.rs`: `org_from_path`, `routed_path` and their constants.
+pub mod core_auth {
+    include!(concat!(env!("OUT_DIR"), "/core_auth.rs"));
+
+    /// `AuthExtractor::from_request_parts` (core/src/auth.rs:346-360), retyped:
+    /// it sits inside an async extractor that needs the whole server.
+    pub fn extractor_org_id(uri_path: &str) -> String {
+        let path = routed_path(uri_path);
+        let mut path_columns = path.split('/').collect::<Vec<&str>>();
+        if path_columns.len() > 1
+            && let Some(v) = path_columns.last()
+            && v.is_empty()
+        {
+            path_columns.pop();
+        }
+        org_from_path(&path_columns).to_string()
+    }
+}
+
 /// Captures upstream's `log::debug!` reasons, which are the only place it
 /// says why a delegated token was refused.
 pub mod logcap {

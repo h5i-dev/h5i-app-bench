@@ -57,6 +57,8 @@ fn item_end(src: &str, start: usize) -> usize {
         } else {
             match c {
                 b'"' => in_str = true,
+                b'[' | b'(' if ends_at_semi => depth += 1,
+                b']' | b')' if ends_at_semi => depth -= 1,
                 b'{' => depth += 1,
                 b'}' => {
                     depth -= 1;
@@ -122,6 +124,15 @@ fn main() {
     let e = show(&repo, "src/config/src/utils/encryption.rs");
     let e = take_item(&e, "const AES_256_SIV_KEY_LEN") + &take_item(&e, "pub fn decode_encryption_key");
     fs::write(out.join("config_encryption.rs"), format!("{head}{e}")).unwrap();
+
+    // core/src/auth.rs: the org a path names, as the AuthExtractor reads it.
+    let a = show(&repo, "src/core/src/auth.rs");
+    let a = take_item(&a, "pub const V2_API_PREFIX")
+        + &take_item(&a, "pub const V2_ORG_MODULES")
+        + &take_item(&a, "pub fn org_from_path")
+        + &take_item(&a, "pub fn is_license_path_without_org")
+        + &take_item(&a, "pub fn routed_path");
+    fs::write(out.join("core_auth.rs"), format!("{head}{a}")).unwrap();
 
     // api/common/src/auth/delegation.rs: route scopes and link facts.
     let mut api = before_tests(&show(&repo, "src/api/common/src/auth/delegation.rs"));

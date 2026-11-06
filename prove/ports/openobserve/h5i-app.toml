@@ -1,7 +1,7 @@
 # Standard h5i-app project. Keep every selected theorem in the final gate.
 [extract]
 crate = "kernel"
-start-from = ["delegation::validate_delegated", "delegation::in_assistant_scope", "delegation::in_slack_action_scope", "delegation::touch_due"]
+start-from = ["delegation::validate_delegated", "delegation::in_assistant_scope", "delegation::in_slack_action_scope", "delegation::touch_due", "auth::org_from_path", "auth::extractor_org_id"]
 
 [check]
 theorems = [

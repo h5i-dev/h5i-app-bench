@@ -460,3 +460,60 @@ fn touch_due_agrees() {
         assert_eq!(k::touch_due(last, now), up::seam_touch_due(last, now));
     }
 }
+
+#[test]
+fn org_from_path_agrees() {
+    let pool = segment_pool();
+    let mut r = Rng::new(0x0b5e_0007);
+    let mods = ["alerts", "folders", "reports", "synthetics", "incidents", "downtimes", "workflows",
+        "alert_calibration", "fleets", "v2", "", "acme"];
+    for case in 0..100_000 {
+        let n = r.below(6);
+        let cols: Vec<String> = (0..n)
+            .map(|i| if i == 2 || r.chance(1, 3) { r.pick(&mods).to_string() } else { r.pick(&pool).clone() })
+            .collect();
+        let refs: Vec<&str> = cols.iter().map(|s| s.as_str()).collect();
+        let kcols: Vec<Vec<u8>> = cols.iter().map(|s| s.as_bytes().to_vec()).collect();
+        assert_eq!(
+            openobserve_kernel::auth::org_from_path(&kcols),
+            crate::core_auth::org_from_path(&refs).as_bytes(),
+            "case {case}: {cols:?}"
+        );
+        let mut path = cols.join("/");
+        if r.chance(1, 2) {
+            path = format!("/{path}");
+        }
+        if r.chance(1, 5) {
+            path = format!("{path}/");
+        }
+        assert_eq!(crate::core_auth::routed_path(&path), up::seam_relative_path(&path));
+        assert_eq!(
+            openobserve_kernel::auth::extractor_org_id(path.as_bytes()),
+            crate::core_auth::extractor_org_id(&path).as_bytes(),
+            "case {case}: {path:?}"
+        );
+    }
+}
+
+/// Upstream's own functions: whenever its delegated route check accepts, the
+/// org it checked against the token is the org the AuthExtractor hands to the
+/// permission check. (Proved for the kernel: `delegated_org_is_rbac_org`.)
+#[test]
+fn upstream_route_org_is_extractor_org() {
+    let pool = segment_pool();
+    let mut r = Rng::new(0x0b5e_0008);
+    let mut accepted = 0;
+    for _ in 0..200_000 {
+        let mut claims = rand_claims(&mut r);
+        claims.scope = r.pick(&["assistant", "slack_action"]).to_string();
+        claims.org = r.pick(&["default", "acme", "v2", "api", "alerts", "folders"]).to_string();
+        let (path, method) = rand_path(&mut r, &pool, &claims.org.clone());
+        logcap::start();
+        if up::seam_check_route(&path, "/api/", &method, &claims).is_ok() {
+            accepted += 1;
+            assert_eq!(crate::core_auth::extractor_org_id(&path), claims.org, "{path:?}");
+        }
+        logcap::take();
+    }
+    assert!(accepted > 10_000, "{accepted}");
+}

@@ -19,6 +19,77 @@ set_option maxRecDepth 2048
 
 namespace openobserve_kernel
 
+/-- [openobserve_kernel::auth::lit]:
+    Source: 'prove/ports/openobserve/kernel/src/auth.rs', lines 7:0-9:1 -/
+def auth.lit (s : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  alloc.slice.Slice.to_vec core.clone.CloneU8 s
+
+/-- [openobserve_kernel::auth::v2_org_modules]:
+    Source: 'prove/ports/openobserve/kernel/src/auth.rs', lines 12:0-24:1
+    Visibility: public -/
+def auth.v2_org_modules : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let s ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let v ← auth.lit s
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new (alloc.vec.Vec Std.U8)) v
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let v1 ← auth.lit s1
+  let out1 ← alloc.vec.Vec.push out v1
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        114#u8, 101#u8, 112#u8, 111#u8, 114#u8, 116#u8, 115#u8
+        ]))
+  let v2 ← auth.lit s2
+  let out2 ← alloc.vec.Vec.push out1 v2
+  let s3 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        115#u8, 121#u8, 110#u8, 116#u8, 104#u8, 101#u8, 116#u8, 105#u8, 99#u8,
+        115#u8
+        ]))
+  let v3 ← auth.lit s3
+  let out3 ← alloc.vec.Vec.push out2 v3
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let v4 ← auth.lit s4
+  let out4 ← alloc.vec.Vec.push out3 v4
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        100#u8, 111#u8, 119#u8, 110#u8, 116#u8, 105#u8, 109#u8, 101#u8, 115#u8
+        ]))
+  let v5 ← auth.lit s5
+  let out5 ← alloc.vec.Vec.push out4 v5
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        119#u8, 111#u8, 114#u8, 107#u8, 102#u8, 108#u8, 111#u8, 119#u8, 115#u8
+        ]))
+  let v6 ← auth.lit s6
+  let out6 ← alloc.vec.Vec.push out5 v6
+  let s7 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 95#u8, 99#u8, 97#u8, 108#u8,
+        105#u8, 98#u8, 114#u8, 97#u8, 116#u8, 105#u8, 111#u8, 110#u8
+        ]))
+  let v7 ← auth.lit s7
+  let out7 ← alloc.vec.Vec.push out6 v7
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 102#u8, 108#u8, 101#u8, 101#u8, 116#u8, 115#u8 ]))
+  let v8 ← auth.lit s8
+  alloc.vec.Vec.push out7 v8
+
 /-- [openobserve_kernel::bytes::bytes_eq]: loop body 0:
     Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 10:4-17:1
     Visibility: public -/
@@ -57,6 +128,261 @@ def bytes.bytes_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   if i != i1
   then ok false
   else bytes.bytes_eq_loop a b 0#usize
+
+/-- [openobserve_kernel::bytes::contains]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 123:4-130:1
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.contains_loop.body
+  (list : Slice (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len list
+  if i < i1
+  then
+    let v ← Slice.index_usize list i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.bytes_eq s x
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [openobserve_kernel::bytes::contains]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 123:4-130:1
+    Visibility: public -/
+@[rust_loop]
+def bytes.contains_loop
+  (list : Slice (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => bytes.contains_loop.body list x i1)
+    i
+
+/-- [openobserve_kernel::bytes::contains]:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 121:0-130:1
+    Visibility: public -/
+@[reducible]
+def bytes.contains
+  (list : Slice (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) : Result Bool := do
+  bytes.contains_loop list x 0#usize
+
+/-- [openobserve_kernel::auth::org_from_path_prefix]:
+    Source: 'prove/ports/openobserve/kernel/src/auth.rs', lines 27:0-35:1
+    Visibility: public -/
+def auth.org_from_path_prefix
+  (cols : Slice (alloc.vec.Vec Std.U8)) (n : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  if n >= 3#usize
+  then
+    let v ← Slice.index_usize cols 0#usize
+    let s := alloc.vec.Vec.deref v
+    let s1 ← lift (Array.to_slice (Array.make 2#usize [ 118#u8, 50#u8 ]))
+    let b ← bytes.bytes_eq s s1
+    if b
+    then
+      let v1 ← auth.v2_org_modules
+      let s2 := alloc.vec.Vec.deref v1
+      let v2 ← Slice.index_usize cols 2#usize
+      let s3 := alloc.vec.Vec.deref v2
+      let b1 ← bytes.contains s2 s3
+      if b1
+      then
+        let v3 ← Slice.index_usize cols 1#usize
+        alloc.vec.CloneVec.clone core.clone.CloneU8 v3
+      else
+        if n >= 1#usize
+        then alloc.vec.CloneVec.clone core.clone.CloneU8 v
+        else ok (alloc.vec.Vec.new Std.U8)
+    else
+      if n >= 1#usize
+      then alloc.vec.CloneVec.clone core.clone.CloneU8 v
+      else ok (alloc.vec.Vec.new Std.U8)
+  else
+    if n >= 1#usize
+    then
+      let v ← Slice.index_usize cols 0#usize
+      alloc.vec.CloneVec.clone core.clone.CloneU8 v
+    else ok (alloc.vec.Vec.new Std.U8)
+
+/-- [openobserve_kernel::auth::org_from_path]:
+    Source: 'prove/ports/openobserve/kernel/src/auth.rs', lines 38:0-40:1
+    Visibility: public -/
+def auth.org_from_path
+  (cols : Slice (alloc.vec.Vec Std.U8)) : Result (alloc.vec.Vec Std.U8) := do
+  let i := Slice.len cols
+  auth.org_from_path_prefix cols i
+
+/-- [openobserve_kernel::bytes::suffix]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 53:4-56:5
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.suffix_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [openobserve_kernel::bytes::suffix]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 53:4-56:5
+    Visibility: public -/
+@[rust_loop]
+def bytes.suffix_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => bytes.suffix_loop.body s out1 i1)
+    (out, i)
+
+/-- [openobserve_kernel::bytes::suffix]:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 50:0-58:1
+    Visibility: public -/
+@[reducible]
+def bytes.suffix
+  (s : Slice Std.U8) («from» : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  bytes.suffix_loop s (alloc.vec.Vec.new Std.U8) «from»
+
+/-- [openobserve_kernel::bytes::starts_with]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 40:4-47:1
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.starts_with_loop.body
+  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len p
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let i3 ← Slice.index_usize p i
+    if i2 != i3
+    then ok (done false)
+    else let i4 ← i + 1#usize
+         ok (cont i4)
+  else ok (done true)
+
+/-- [openobserve_kernel::bytes::starts_with]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 40:4-47:1
+    Visibility: public -/
+@[rust_loop]
+def bytes.starts_with_loop
+  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => bytes.starts_with_loop.body s p i1)
+    i
+
+/-- [openobserve_kernel::bytes::starts_with]:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 35:0-47:1
+    Visibility: public -/
+def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
+  let i := Slice.len s
+  let i1 := Slice.len p
+  if i < i1
+  then ok false
+  else bytes.starts_with_loop s p 0#usize
+
+/-- [openobserve_kernel::delegation::relative_path]:
+    Source: 'prove/ports/openobserve/kernel/src/delegation.rs', lines 183:0-189:1
+    Visibility: public -/
+def delegation.relative_path
+  (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let s ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
+  let b ← bytes.starts_with path s
+  if b
+  then bytes.suffix path 1#usize
+  else bytes.suffix path 0#usize
+
+/-- [openobserve_kernel::bytes::split_slash]: loop body 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 107:4-115:5
+    Visibility: public -/
+@[rust_loop_body]
+def bytes.split_slash_loop.body
+  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (cur : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
+    Std.U8) × Std.Usize) ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) ×
+    (alloc.vec.Vec Std.U8)))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let (out1, cur1) ←
+      if i2 = 47#u8
+      then
+        do
+        let out2 ← alloc.vec.Vec.push out cur
+        ok (out2, alloc.vec.Vec.new Std.U8)
+      else do
+           let cur2 ← alloc.vec.Vec.push cur i2
+           ok (out, cur2)
+    let i3 ← i + 1#usize
+    ok (cont (out1, cur1, i3))
+  else ok (done (out, cur))
+
+/-- [openobserve_kernel::bytes::split_slash]: loop 0:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 107:4-115:5
+    Visibility: public -/
+@[rust_loop]
+def bytes.split_slash_loop
+  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (cur : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec Std.U8))
+  := do
+  loop
+    (fun (out1, cur1, i1) => bytes.split_slash_loop.body s out1 cur1 i1)
+    (out, cur, i)
+
+/-- [openobserve_kernel::bytes::split_slash]:
+    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 103:0-118:1
+    Visibility: public -/
+def bytes.split_slash
+  (s : Slice Std.U8) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
+  let (out, cur) ←
+    bytes.split_slash_loop s (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
+      (alloc.vec.Vec.new Std.U8) 0#usize
+  alloc.vec.Vec.push out cur
+
+/-- [openobserve_kernel::auth::extractor_org_id]:
+    Source: 'prove/ports/openobserve/kernel/src/auth.rs', lines 44:0-49:1
+    Visibility: public -/
+def auth.extractor_org_id
+  (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let routed ← delegation.relative_path path
+  let s := alloc.vec.Vec.deref routed
+  let cols ← bytes.split_slash s
+  let i := alloc.vec.Vec.len cols
+  let n ←
+    if i > 1#usize
+    then
+      do
+      let i1 := alloc.vec.Vec.len cols
+      let i2 ← i1 - 1#usize
+      let v ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+          (alloc.vec.Vec Std.U8)) cols i2
+      let i3 := alloc.vec.Vec.len v
+      if i3 = 0#usize
+      then let i4 := alloc.vec.Vec.len cols
+           i4 - 1#usize
+      else ok (alloc.vec.Vec.len cols)
+    else ok (alloc.vec.Vec.len cols)
+  let s1 := alloc.vec.Vec.deref cols
+  auth.org_from_path_prefix s1 n
 
 /-- [openobserve_kernel::bytes::constant_time_eq]: loop body 0:
     Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 27:4-30:5
@@ -101,85 +427,6 @@ def bytes.constant_time_eq
   else
     let diff ← bytes.constant_time_eq_loop a b 0#u8 0#usize
     ok (diff = 0#u8)
-
-/-- [openobserve_kernel::bytes::starts_with]: loop body 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 40:4-47:1
-    Visibility: public -/
-@[rust_loop_body]
-def bytes.starts_with_loop.body
-  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len p
-  if i < i1
-  then
-    let i2 ← Slice.index_usize s i
-    let i3 ← Slice.index_usize p i
-    if i2 != i3
-    then ok (done false)
-    else let i4 ← i + 1#usize
-         ok (cont i4)
-  else ok (done true)
-
-/-- [openobserve_kernel::bytes::starts_with]: loop 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 40:4-47:1
-    Visibility: public -/
-@[rust_loop]
-def bytes.starts_with_loop
-  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => bytes.starts_with_loop.body s p i1)
-    i
-
-/-- [openobserve_kernel::bytes::starts_with]:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 35:0-47:1
-    Visibility: public -/
-def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
-  let i := Slice.len s
-  let i1 := Slice.len p
-  if i < i1
-  then ok false
-  else bytes.starts_with_loop s p 0#usize
-
-/-- [openobserve_kernel::bytes::suffix]: loop body 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 53:4-56:5
-    Visibility: public -/
-@[rust_loop_body]
-def bytes.suffix_loop.body
-  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
-    Std.U8))
-  := do
-  let i1 := Slice.len s
-  if i < i1
-  then
-    let i2 ← Slice.index_usize s i
-    let out1 ← alloc.vec.Vec.push out i2
-    let i3 ← i + 1#usize
-    ok (cont (out1, i3))
-  else ok (done out)
-
-/-- [openobserve_kernel::bytes::suffix]: loop 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 53:4-56:5
-    Visibility: public -/
-@[rust_loop]
-def bytes.suffix_loop
-  (s : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (out1, i1) => bytes.suffix_loop.body s out1 i1)
-    (out, i)
-
-/-- [openobserve_kernel::bytes::suffix]:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 50:0-58:1
-    Visibility: public -/
-@[reducible]
-def bytes.suffix
-  (s : Slice Std.U8) («from» : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  bytes.suffix_loop s (alloc.vec.Vec.new Std.U8) «from»
 
 /-- [openobserve_kernel::bytes::prefix]: loop body 0:
     Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 64:4-67:5
@@ -290,97 +537,6 @@ def bytes.split_once
     let v1 ← bytes.suffix s i2
     ok (some (v, v1))
   else ok none
-
-/-- [openobserve_kernel::bytes::split_slash]: loop body 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 107:4-115:5
-    Visibility: public -/
-@[rust_loop_body]
-def bytes.split_slash_loop.body
-  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (cur : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec
-    Std.U8) × Std.Usize) ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) ×
-    (alloc.vec.Vec Std.U8)))
-  := do
-  let i1 := Slice.len s
-  if i < i1
-  then
-    let i2 ← Slice.index_usize s i
-    let (out1, cur1) ←
-      if i2 = 47#u8
-      then
-        do
-        let out2 ← alloc.vec.Vec.push out cur
-        ok (out2, alloc.vec.Vec.new Std.U8)
-      else do
-           let cur2 ← alloc.vec.Vec.push cur i2
-           ok (out, cur2)
-    let i3 ← i + 1#usize
-    ok (cont (out1, cur1, i3))
-  else ok (done (out, cur))
-
-/-- [openobserve_kernel::bytes::split_slash]: loop 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 107:4-115:5
-    Visibility: public -/
-@[rust_loop]
-def bytes.split_slash_loop
-  (s : Slice Std.U8) (out : alloc.vec.Vec (alloc.vec.Vec Std.U8))
-  (cur : alloc.vec.Vec Std.U8) (i : Std.Usize) :
-  Result ((alloc.vec.Vec (alloc.vec.Vec Std.U8)) × (alloc.vec.Vec Std.U8))
-  := do
-  loop
-    (fun (out1, cur1, i1) => bytes.split_slash_loop.body s out1 cur1 i1)
-    (out, cur, i)
-
-/-- [openobserve_kernel::bytes::split_slash]:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 103:0-118:1
-    Visibility: public -/
-def bytes.split_slash
-  (s : Slice Std.U8) : Result (alloc.vec.Vec (alloc.vec.Vec Std.U8)) := do
-  let (out, cur) ←
-    bytes.split_slash_loop s (alloc.vec.Vec.new (alloc.vec.Vec Std.U8))
-      (alloc.vec.Vec.new Std.U8) 0#usize
-  alloc.vec.Vec.push out cur
-
-/-- [openobserve_kernel::bytes::contains]: loop body 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 123:4-130:1
-    Visibility: public -/
-@[rust_loop_body]
-def bytes.contains_loop.body
-  (list : Slice (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len list
-  if i < i1
-  then
-    let v ← Slice.index_usize list i
-    let s := alloc.vec.Vec.deref v
-    let b ← bytes.bytes_eq s x
-    if b
-    then ok (done true)
-    else let i2 ← i + 1#usize
-         ok (cont i2)
-  else ok (done false)
-
-/-- [openobserve_kernel::bytes::contains]: loop 0:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 123:4-130:1
-    Visibility: public -/
-@[rust_loop]
-def bytes.contains_loop
-  (list : Slice (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) (i : Std.Usize) :
-  Result Bool
-  := do
-  loop
-    (fun i1 => bytes.contains_loop.body list x i1)
-    i
-
-/-- [openobserve_kernel::bytes::contains]:
-    Source: 'prove/ports/openobserve/kernel/src/bytes.rs', lines 121:0-130:1
-    Visibility: public -/
-@[reducible]
-def bytes.contains
-  (list : Slice (alloc.vec.Vec Std.U8)) (x : Slice Std.U8) : Result Bool := do
-  bytes.contains_loop list x 0#usize
 
 /-- [openobserve_kernel::delegation::TOKEN_VERSION]
     Source: 'prove/ports/openobserve/kernel/src/delegation.rs', lines 12:0-12:32
@@ -2480,17 +2636,6 @@ def delegation.scope_routes
     then let v ← tables.slack_action_scope
          ok (some v)
     else ok none
-
-/-- [openobserve_kernel::delegation::relative_path]:
-    Source: 'prove/ports/openobserve/kernel/src/delegation.rs', lines 183:0-189:1
-    Visibility: public -/
-def delegation.relative_path
-  (path : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
-  let s ← lift (Array.to_slice (Array.make 1#usize [ 47#u8 ]))
-  let b ← bytes.starts_with path s
-  if b
-  then bytes.suffix path 1#usize
-  else bytes.suffix path 0#usize
 
 /-- [openobserve_kernel::delegation::path_org]:
     Source: 'prove/ports/openobserve/kernel/src/delegation.rs', lines 193:0-205:1

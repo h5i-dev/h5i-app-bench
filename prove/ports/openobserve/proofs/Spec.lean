@@ -136,4 +136,10 @@ def orgFromPath (cols : List (List Nat)) : List Nat :=
   | v :: _ => v
   | [] => []
 
+/-- The `org_id` the `AuthExtractor` gives the permission check: the routed
+path split at `/`, one trailing empty segment dropped (`core/src/auth.rs:346-360`). -/
+def extractorOrg (path : List Nat) : List Nat :=
+  let cols := splitSlash (relativePath path)
+  orgFromPath (if 1 < cols.length ∧ cols.getLast? = some [] then cols.dropLast else cols)
+
 end openobserve_kernel.Spec
