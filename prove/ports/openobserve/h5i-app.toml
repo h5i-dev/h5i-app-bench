@@ -5,4 +5,115 @@ start-from = ["delegation::validate_delegated", "delegation::in_assistant_scope"
 
 [check]
 theorems = [
+  # S: security properties
+  "openobserve_kernel.Properties.expired_token_never_accepted",
+  "openobserve_kernel.Properties.forged_token_never_accepted",
+  "openobserve_kernel.Properties.previous_key_only_when_configured",
+  "openobserve_kernel.Properties.accepted_token_lifetime_bounded",
+  "openobserve_kernel.Properties.delegated_identity_is_org_member",
+  "openobserve_kernel.Properties.revoked_link_denies",
+  "openobserve_kernel.Properties.delegated_subject_is_linked_user",
+  "openobserve_kernel.Properties.slack_off_denies",
+  "openobserve_kernel.Properties.blocked_external_denied",
+  # F: finding
+  "openobserve_kernel.Properties.lifetime_check_overflows",
+  # C: correspondence and foundations
+  "openobserve_kernel.Properties.accepted_claims",
+  "openobserve_kernel.Verified.validate_delegated_ok",
+  "openobserve_kernel.Verified.verify_ok",
+  "openobserve_kernel.Verified.verify_spec",
+  "openobserve_kernel.Verified.check_claims_spec",
+  "openobserve_kernel.Verified.check_claims_ok",
+  "openobserve_kernel.Verified.constant_time_eq_spec",
+  "openobserve_kernel.Verified.load_link_facts_ok",
+  "openobserve_kernel.Verified.admit_ok",
+  "openobserve_kernel.Verified.split_slash_spec",
+  "openobserve_kernel.Verified.path_org_spec",
+  "openobserve_kernel.Verified.assistant_scope_spec",
+  "openobserve_kernel.Verified.slack_action_scope_spec",
 ]
+
+# Bugs the proofs must reject (`h5i app mutate`); each names the S theorem it targets.
+[[mutant]]
+name = "expiry_off_by_one"  # expired_token_never_accepted
+file = "kernel/src/delegation.rs"
+old = "if claims.exp <= now {"
+new = "if claims.exp < now {"
+
+[[mutant]]
+name = "signature_ignored"  # forged_token_never_accepted
+file = "kernel/src/delegation.rs"
+old = "if !(current_ok || previous_ok) {"
+new = "if !(current_ok || true) {"
+
+[[mutant]]
+name = "missing_previous_key_verifies"  # previous_key_only_when_configured
+file = "kernel/src/delegation.rs"
+old = "        None => false,"
+new = "        None => true,"
+
+[[mutant]]
+name = "no_issued_at_skew_check"  # accepted_token_lifetime_bounded
+file = "kernel/src/delegation.rs"
+old = "if claims.iat > now + MAX_IAT_SKEW_SECS {"
+new = "if claims.iat > now + MAX_IAT_SKEW_SECS + 86400 {"
+
+[[mutant]]
+name = "lifetime_two_hours"  # accepted_token_lifetime_bounded
+file = "kernel/src/delegation.rs"
+old = "pub const MAX_LIFETIME_SECS: i64 = 3660;"
+new = "pub const MAX_LIFETIME_SECS: i64 = 7260;"
+
+[[mutant]]
+name = "member_of_any_org"  # delegated_identity_is_org_member
+file = "kernel/src/delegation.rs"
+old = "if bytes_eq(&members[i].org, org) && bytes_eq(&members[i].email, email) {"
+new = "if bytes_eq(&members[i].email, email) {"
+
+[[mutant]]
+name = "role_escalated_to_root"  # delegated_identity_is_org_member
+file = "kernel/src/delegation.rs"
+old = "user_role: user.role,"
+new = "user_role: UserRole::Root,"
+
+[[mutant]]
+name = "revoked_link_kept"  # revoked_link_denies
+file = "kernel/src/delegation.rs"
+old = "let refusal = if link.revoked {"
+new = "let refusal = if false {"
+
+[[mutant]]
+name = "revoked_installation_kept"  # delegated_subject_is_linked_user
+file = "kernel/src/delegation.rs"
+old = "if i.revoked {"
+new = "if false {"
+
+[[mutant]]
+name = "subject_not_checked"  # delegated_subject_is_linked_user
+file = "kernel/src/delegation.rs"
+old = "if !bytes_eq(&facts.user_email, &claims.sub) {"
+new = "if false {"
+
+[[mutant]]
+name = "org_connection_not_checked"  # delegated_subject_is_linked_user
+file = "kernel/src/delegation.rs"
+old = "if !contains(&facts.orgs, &claims.org) {"
+new = "if false {"
+
+[[mutant]]
+name = "slack_switch_ignored"  # slack_off_denies
+file = "kernel/src/delegation.rs"
+old = "    if !slack_on {"
+new = "    if false {"
+
+[[mutant]]
+name = "disabled_org_ignored"  # slack_off_denies
+file = "kernel/src/delegation.rs"
+old = "if contains(disabled_orgs, &claims.org) {"
+new = "if false {"
+
+[[mutant]]
+name = "blocklist_ignored"  # blocked_external_denied
+file = "kernel/src/delegation.rs"
+old = "if user.is_external && contains(&env.denied, &user.email) {"
+new = "if false && contains(&env.denied, &user.email) {"
