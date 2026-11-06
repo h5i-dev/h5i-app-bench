@@ -3,6 +3,7 @@ import Verified.Delete
 import Verified.Get
 import Verified.Burn
 import Verified.View
+import Verified.Owner
 import Spec
 /-!
 # wastebin: the security properties
@@ -287,5 +288,56 @@ theorem burn_interstitial_shows_title_of_expired_paste (rows : alloc.vec.Vec Row
     (hr : rowOf rows.val i = some r) (hb : Burns r) (hc : req.confirmed = false) (_he : Expired r now.val) :
     ∃ v, handlers.view rows path now req = ok (v, .BurnConfirmation r.title) ∧ v.val = rows.val :=
   view_burn_needs_confirmation rows path now req k i r hcl hk hi hr hb hc
+
+/-! ## Owner identity -/
+
+/-- The `?owner=` handoff adds exactly the uid the signed token verified to
+(unless the cookie already lists it) and keeps every uid the cookie had; it
+adds nothing else. (The list must fit a `Vec`.) -/
+theorem handoff_adds_only_claimed (uids : Option (alloc.vec.Vec I64)) (c : I64)
+    (hmax : (Verified.Owner.cookieList uids).length < Usize.max) :
+    ∃ l, handlers.handoff uids c = ok l ∧
+      l.val = Verified.Owner.cookieList uids ++ (if c ∈ Verified.Owner.cookieList uids then [] else [c]) := by
+  obtain ⟨l, hl⟩ := ok_of (Verified.Owner.handoff_spec uids c hmax)
+  exact ⟨l, hl, post_of_ok (P := fun l => l.val = Verified.Owner.cookieList uids ++
+    (if c ∈ Verified.Owner.cookieList uids then [] else [c])) (Verified.Owner.handoff_spec uids c hmax) hl⟩
+
+/-- A paste created through the form is owned by the cookie's first uid; a
+browser without a (non-empty) verified cookie gets the freshly minted uid,
+and the cookie set afterwards holds exactly it. The cookie's other uids are
+kept. -/
+theorem form_owner_first_or_fresh (uids : Option (alloc.vec.Vec I64)) (fresh : I64)
+    (hmax : (Verified.Owner.cookieList uids).length < Usize.max) :
+    ∃ o l, handlers.form_owner uids fresh = ok (o, l) ∧
+      match Verified.Owner.cookieList uids with
+      | [] => o = fresh ∧ l.val = [fresh]
+      | u :: rest => o = u ∧ l.val = u :: rest := by
+  obtain ⟨⟨o, l⟩, hx⟩ := ok_of (Verified.Owner.form_owner_spec uids fresh hmax)
+  have := post_of_ok (Verified.Owner.form_owner_spec uids fresh hmax) hx
+  exact ⟨o, l, hx, this⟩
+
+/-- A paste created through the JSON API is owned by the uid of a verified
+`owner` token, or else by a freshly minted uid; the request cannot name a uid
+directly. -/
+theorem api_owner_token_or_fresh (token : Option I64) (fresh : I64) :
+    handlers.api_owner token fresh = ok (token.getD fresh) := by
+  cases token <;> rfl
+
+/-- FINDING (upstream behavior, recorded): a browser without a `uid` cookie
+that opens a magic link `/<id>?owner=<token>` for uid `c` receives the cookie
+`[c]`, and every paste it then creates through the form is owned by `c`.
+Whoever holds the token (or a cookie listing `c`) may then delete those
+pastes (`delete_needs_owner`), e.g. the link's author. -/
+theorem magic_link_fixes_owner_of_fresh_browser (c fresh : I64) :
+    ∃ l, handlers.handoff none c = ok l ∧ l.val = [c] ∧
+      ∃ l', handlers.form_owner (some l) fresh = ok (c, l') ∧ l'.val = [c] := by
+  obtain ⟨l, hl, hv⟩ := handoff_adds_only_claimed none c (by simp [Verified.Owner.cookieList]; scalar_tac)
+  simp [Verified.Owner.cookieList] at hv
+  refine ⟨l, hl, hv, ?_⟩
+  obtain ⟨o, l', hx, hm⟩ := form_owner_first_or_fresh (some l) fresh
+    (by simp [Verified.Owner.cookieList, hv]; scalar_tac)
+  simp only [Verified.Owner.cookieList, hv] at hm
+  obtain ⟨rfl, hl'⟩ := hm
+  exact ⟨l', hx, hl'⟩
 
 end wastebin_kernel.Properties
