@@ -30,6 +30,12 @@ def Expired (r : Row) (now : Int) : Prop := ∃ e, r.expires = some e ∧ e.val 
 /-- `burn_after_reading` is set. -/
 def Burns (r : Row) : Prop := r.burn = some true
 
+instance (r : Row) : Decidable (Burns r) := inferInstanceAs (Decidable (r.burn = some true))
+
+instance (r : Row) (now : Int) : Decidable (Expired r now) :=
+  decidable_of_iff (match r.expires with | none => False | some e => e.val < now) (by
+    unfold Expired; rcases r.expires with _ | e <;> simp)
+
 /-- The password a reader presents opens the paste: it is plaintext, or the
 password is the one it was encrypted with. -/
 def Opens (r : Row) (pw : Option U64) : Prop := r.secret = none ∨ (∃ k, r.secret = some k ∧ pw = some k)
