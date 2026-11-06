@@ -1,0 +1,17 @@
+[package]
+name = "spoolease-app"
+description = "SpoolEase inventory kernel wired into the h5i-app-embedded trusted shell (Kernel + Api + Router), mirroring examples/embedded/thermostat/app"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+version = "0.1.0"
+publish = false
+
+# Builds against the h5i embedded crates in the h5i checkout. Adjust the paths
+# to your local h5i tree (here the campaign box's /root/h5i), as the thermostat
+# example does with workspace-relative paths.
+[dependencies]
+spoolease-kernel = { path = "../kernel" }
+h5i-app-core = { path = "/root/h5i/crates/h5i-app-core", default-features = false, features = ["alloc"] }
+h5i-app-embedded = { path = "/root/h5i/crates/h5i-app-embedded" }
+
+[workspace]

@@ -1,0 +1,14 @@
+[package]
+name = "spoolease-difftest"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# Host-side differential test: the kernel's allocator decisions vs a faithful
+# transcription of upstream's core/src/csvdb.rs (bberrevoets/SpoolEase @ 3532f8d).
+# Upstream is firmware (esp-hal); it cannot link on the host, so the reference is
+# transcribed by hand and cited line-by-line in src/reference.rs.
+[dependencies]
+spoolease-kernel = { path = "../kernel" }
+
+[workspace]

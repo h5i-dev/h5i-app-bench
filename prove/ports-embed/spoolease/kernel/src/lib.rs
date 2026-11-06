@@ -79,6 +79,13 @@ pub struct Store {
     pub slots: Vec<Slot>,
 }
 
+impl Default for Store {
+    /// An empty inventory: `last_id = 0`, no records, empty `.db` file.
+    fn default() -> Self {
+        Store { file_len: 0, last_id: 0, slots: Vec::new() }
+    }
+}
+
 /// A byte range in the `.db` file. `len == 0` means "no region" (nothing
 /// written).
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -141,18 +148,6 @@ fn lookup(slots: &[Slot], id: u32) -> Option<Slot> {
         i += 1;
     }
     None
-}
-
-/// Does any slot already hold `id`?
-fn has_id(slots: &[Slot], id: u32) -> bool {
-    let mut i = 0;
-    while i < slots.len() {
-        if slots[i].id == id {
-            return true;
-        }
-        i += 1;
-    }
-    false
 }
 
 /// Decide where a record of serialized length `len` goes, given the slot it may

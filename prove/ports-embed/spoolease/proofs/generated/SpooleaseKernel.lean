@@ -80,21 +80,21 @@ def Store.Insts.CoreCloneClone.clone (self : Store) : Result Store := do
   ok { file_len := i, last_id := i1, slots := v }
 
 /-- [spoolease_kernel::Region]
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 85:0-88:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 92:0-95:1
     Visibility: public -/
 structure Region where
   off : Std.U32
   len : Std.U32
 
 /-- [spoolease_kernel::Plan]
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 94:0-97:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 101:0-104:1
     Visibility: public -/
 structure Plan where
   void : Region
   data : Region
 
 /-- [spoolease_kernel::Command]
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 100:0-110:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 107:0-117:1
     Visibility: public -/
 @[discriminant isize]
 inductive Command where
@@ -104,7 +104,7 @@ inductive Command where
 | Query : Command
 
 /-- [spoolease_kernel::Reply]
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 113:0-118:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 120:0-125:1
     Visibility: public -/
 @[discriminant isize]
 inductive Reply where
@@ -114,7 +114,7 @@ inductive Reply where
 | Listing : Reply
 
 /-- [spoolease_kernel::Error]
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 121:0-130:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 128:0-137:1
     Visibility: public -/
 @[discriminant isize]
 inductive Error where
@@ -124,12 +124,12 @@ inductive Error where
 | Forbidden : Error
 
 /-- [spoolease_kernel::NO_REGION]
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 132:0-132:52 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 139:0-139:52 -/
 @[global_simps, irreducible]
 def NO_REGION : Region := { off := 0#u32, len := 0#u32 }
 
 /-- [spoolease_kernel::lookup]: loop body 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 137:4-144:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 144:4-151:1 -/
 @[rust_loop_body]
 def lookup_loop.body
   (slots : Slice Slot) (id : Std.U32) (i : Std.Usize) :
@@ -146,7 +146,7 @@ def lookup_loop.body
   else ok (done none)
 
 /-- [spoolease_kernel::lookup]: loop 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 137:4-144:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 144:4-151:1 -/
 @[rust_loop]
 def lookup_loop
   (slots : Slice Slot) (id : Std.U32) (i : Std.Usize) :
@@ -157,13 +157,13 @@ def lookup_loop
     i
 
 /-- [spoolease_kernel::lookup]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 135:0-144:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 142:0-151:1 -/
 @[reducible]
 def lookup (slots : Slice Slot) (id : Std.U32) : Result (Option Slot) := do
   lookup_loop slots id 0#usize
 
 /-- [spoolease_kernel::place]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 163:0-196:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 158:0-191:1 -/
 def place
   (file_len : Std.U32) (prev : Option Slot) (len : Std.U32) :
   Result (core.result.Result (Slot × Std.U32 × Plan × Std.U32) Error)
@@ -198,7 +198,7 @@ def place
           }, i1))
 
 /-- [spoolease_kernel::replace_slot]: loop body 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 202:4-210:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 197:4-205:5 -/
 @[rust_loop_body]
 def replace_slot_loop.body
   (slots : Slice Slot) (id : Std.U32) (ns : Slot) (out : alloc.vec.Vec Slot)
@@ -218,7 +218,7 @@ def replace_slot_loop.body
   else ok (done out)
 
 /-- [spoolease_kernel::replace_slot]: loop 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 202:4-210:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 197:4-205:5 -/
 @[rust_loop]
 def replace_slot_loop
   (slots : Slice Slot) (id : Std.U32) (ns : Slot) (out : alloc.vec.Vec Slot)
@@ -230,7 +230,7 @@ def replace_slot_loop
     (out, i)
 
 /-- [spoolease_kernel::replace_slot]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 199:0-212:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 194:0-207:1 -/
 @[reducible]
 def replace_slot
   (slots : Slice Slot) (id : Std.U32) (ns : Slot) :
@@ -239,7 +239,7 @@ def replace_slot
   replace_slot_loop slots id ns (alloc.vec.Vec.new Slot) 0#usize
 
 /-- [spoolease_kernel::remove_id]: loop body 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 218:4-224:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 213:4-219:5 -/
 @[rust_loop_body]
 def remove_id_loop.body
   (slots : Slice Slot) (id : Std.U32) (out : alloc.vec.Vec Slot)
@@ -258,7 +258,7 @@ def remove_id_loop.body
   else ok (done out)
 
 /-- [spoolease_kernel::remove_id]: loop 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 218:4-224:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 213:4-219:5 -/
 @[rust_loop]
 def remove_id_loop
   (slots : Slice Slot) (id : Std.U32) (out : alloc.vec.Vec Slot)
@@ -270,14 +270,14 @@ def remove_id_loop
     (out, i)
 
 /-- [spoolease_kernel::remove_id]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 215:0-226:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 210:0-221:1 -/
 @[reducible]
 def remove_id
   (slots : Slice Slot) (id : Std.U32) : Result (alloc.vec.Vec Slot) := do
   remove_id_loop slots id (alloc.vec.Vec.new Slot) 0#usize
 
 /-- [spoolease_kernel::claim_tag]: loop body 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 1:0-243:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 1:0-238:5 -/
 @[rust_loop_body]
 def claim_tag_loop.body
   (slots : Slice Slot) (keeper : Std.U32) (tag : Std.U32)
@@ -303,7 +303,7 @@ def claim_tag_loop.body
   else ok (done out)
 
 /-- [spoolease_kernel::claim_tag]: loop 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 1:0-243:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 1:0-238:5 -/
 @[rust_loop]
 def claim_tag_loop
   (slots : Slice Slot) (keeper : Std.U32) (tag : Std.U32)
@@ -315,7 +315,7 @@ def claim_tag_loop
     (out, i)
 
 /-- [spoolease_kernel::claim_tag]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 231:0-245:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 226:0-240:1 -/
 @[reducible]
 def claim_tag
   (slots : Slice Slot) (keeper : Std.U32) (tag : Std.U32) :
@@ -324,7 +324,7 @@ def claim_tag
   claim_tag_loop slots keeper tag (alloc.vec.Vec.new Slot) 0#usize
 
 /-- [spoolease_kernel::append_slot]: loop body 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 251:4-254:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 246:4-249:5 -/
 @[rust_loop_body]
 def append_slot_loop.body
   (slots : Slice Slot) (out : alloc.vec.Vec Slot) (i : Std.Usize) :
@@ -340,7 +340,7 @@ def append_slot_loop.body
   else ok (done out)
 
 /-- [spoolease_kernel::append_slot]: loop 0:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 251:4-254:5 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 246:4-249:5 -/
 @[rust_loop]
 def append_slot_loop
   (slots : Slice Slot) (out : alloc.vec.Vec Slot) (i : Std.Usize) :
@@ -351,21 +351,21 @@ def append_slot_loop
     (out, i)
 
 /-- [spoolease_kernel::append_slot]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 248:0-257:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 243:0-252:1 -/
 def append_slot
   (slots : Slice Slot) (slot : Slot) : Result (alloc.vec.Vec Slot) := do
   let out ← append_slot_loop slots (alloc.vec.Vec.new Slot) 0#usize
   alloc.vec.Vec.push out slot
 
 /-- [spoolease_kernel::len_ok]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 259:0-261:1 -/
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 254:0-256:1 -/
 def len_ok (len : Std.U32) : Result Bool := do
   if len >= 1#u32
   then ok (len <= MAX_REC)
   else ok false
 
 /-- [spoolease_kernel::transition]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 265:0-322:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 260:0-317:1
     Visibility: public -/
 def transition
   (actor : Device) (s : Store) (cmd : Command) :
@@ -441,7 +441,7 @@ def transition
   | Command.Query => ok (core.result.Result.Ok (none, Reply.Listing))
 
 /-- [spoolease_kernel::apply]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 325:0-330:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 320:0-325:1
     Visibility: public -/
 def apply (s : Store) (w : Option Store) : Result Store := do
   match w with
@@ -449,7 +449,7 @@ def apply (s : Store) (w : Option Store) : Result Store := do
   | some n => Store.Insts.CoreCloneClone.clone n
 
 /-- [spoolease_kernel::read_only]:
-    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 333:0-338:1
+    Source: 'prove/ports-embed/spoolease/kernel/src/lib.rs', lines 328:0-333:1
     Visibility: public -/
 def read_only (cmd : Command) : Result Bool := do
   match cmd with
