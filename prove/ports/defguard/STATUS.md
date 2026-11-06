@@ -1,13 +1,13 @@
 # defguard: status
 
 Upstream DefGuard/defguard @ `12508b40a49121f5439cdb2701b751df1b72826c`.
-Gate (2026-11-06): `extract --check` ok, `check` ok (167 theorems in 8 modules, only `propext`,
+Gate (2026-11-06): `extract --check` ok, `check` ok (172 theorems in 8 modules, only `propext`,
 `Classical.choice`, `Quot.sound`), `lint` ok.
-Mutation: MUTATION_SUMMARY
+Mutation: 25 declared mutants, 25 caught, 0 survived (runs of 15 + 9 + 1, see below).
 
 ## Theorems
 
-**S / C / F = 15 / 7 / 5** (of the 27 theorems in `[check] theorems`; the gate checks 167 in all,
+**S / C / F = 16 / 7 / 5** (of the 28 theorems in `[check] theorems`; the gate checks 172 in all,
 the rest are helper lemmas, class C).
 
 | Theorem | Class | Statement (informal) | Mutant it kills |
@@ -27,6 +27,7 @@ the rest are helper lemmas, class C).
 | `Properties.fresh_addresses_valid` | S | a fresh assignment gives each subnet its lowest address that is inside it, not the network, broadcast or gateway address, not used, not reserved | `gateway_assignable`, `reserved_ignored`, `used_ignored`, `first_host_skipped` |
 | `Properties.full_only_when_full` | S | `NetworkFull` only for a subnet with no assignable address | `first_host_skipped` |
 | `Properties.merge_ranges_exact` | S | merged firewall ranges cover exactly the input's values (for ranges with `start ≤ end ≤ max`) | `merge_always`, `merge_end_shrinks`, `last_range_dropped` |
+| `Properties.merge_ranges_separated` | S | when no range ends at `max`, the merged ranges are sorted, disjoint and not adjacent (with `merge_ranges_exact` this fixes the output) | `adjacent_not_merged` |
 | `Verified.verify_username_ok` | C | `verify_username` = the tracker's reset/refuse rule | |
 | `Verified.log_failed_attempt_ok` | C | `log_failed_attempt` = the tracker's update rule | |
 | `Verified.find_account_ok` | C | the username-then-email lookup | |
@@ -40,7 +41,7 @@ the rest are helper lemmas, class C).
 | `Properties.kept_address_unchecked` | F | on readdressing, a current address inside the subnet is kept unchecked (F4) | `fix_recheck_kept_address` |
 | `Properties.keeps_gateway_address` | F | a device at the subnet's gateway address keeps it (F4) | `fix_recheck_kept_address` |
 
-S ≥ C/3 holds (15 ≥ 7/3). Every S theorem has at least one mutant that makes it false; the
+S ≥ C/3 holds (16 ≥ 7/3). Every S theorem has at least one mutant that makes it false; the
 mapping above is by what the mutant changes (the mutation run reports only that a proof broke).
 
 Limits of the statements:
@@ -56,7 +57,11 @@ Limits of the statements:
 ## Mutation results
 
 - Run 1 (the 15 lockout, guard and token mutants): 15 caught, 0 survived, 0 invalid.
-- Run 2 (the 9 address and range mutants, `--only`): RUN2_SUMMARY
+- Run 2 (the 9 address and range mutants, `--only`): 9 caught, 0 survived, 0 invalid.
+- Run 3 (`adjacent_not_merged`, after `merge_ranges_separated`): 1 caught.
+
+No survivors. `adjacent_not_merged` keeps the covered set, so only `merge_ranges_separated` rules
+it out.
 
 ## Done
 
@@ -74,7 +79,6 @@ Limits of the statements:
 1. Firewall rule generation (`enterprise/firewall/mod.rs` `create_rules`): allowed and denied
    users/devices per ACL. It is the largest remaining security decision.
 2. Totality: `merge_ranges` and `assign_next_network_ip` do not fail on well-formed input.
-3. Non-overlap of `merge_ranges` output when no range ends at the maximum (the positive side of F3).
 
 ## How to resume
 
