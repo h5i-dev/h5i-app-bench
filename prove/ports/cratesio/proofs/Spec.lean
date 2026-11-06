@@ -56,4 +56,13 @@ name the same environment, ignoring case. -/
 def EnvOk (config claim : Option (List U8)) : Prop :=
   config = none ∨ ∃ c s, config = some c ∧ claim = some s ∧ EqLower c s
 
+/-- One user's requests for one rate-limited action at the times `ts`, in
+order, starting from the bucket `b` (`none`: no row yet): which pass. -/
+def rateRun (rate burst : I64) : List I64 → Option rate_limit.Bucket → Result (List Bool)
+  | [], _ => .ok []
+  | t :: ts, b => do
+    let (b', pass) ← rate_limit.check_rate_limit b t rate burst
+    let r ← rateRun rate burst ts (some b')
+    .ok (pass :: r)
+
 end cratesio_kernel.Spec

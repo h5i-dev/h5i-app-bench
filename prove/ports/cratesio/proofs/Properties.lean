@@ -1,6 +1,7 @@
 import Verified.Authn
 import Verified.Publish
 import Verified.Exchange
+import Verified.RateLimit
 import Spec
 /-!
 # crates.io: the security properties
@@ -332,5 +333,18 @@ theorem exchange_rejects_forbidden_events (used : alloc.vec.Vec (alloc.vec.Vec U
   · exact h2 he
 
 end Exchange
+
+/-! ## Publish rate limit (`RateLimiter::check_rate_limit`) -/
+
+/-- The token bucket bounds a user's actions: of the requests at
+nondecreasing times `t1 ≤ … ≤ tn` (one action, one burst size, starting from
+no bucket row), at most `burst + (tn - t1) / rate` pass. Times, `rate` and
+`burst` are below `2^61` (milliseconds), `rate > 0`. -/
+theorem publish_rate_limit_bounded (rate burst t1 : I64) (rest : List I64) (hr : 0 < rate.val)
+    (hb : 0 ≤ burst.val ∧ burst.val < 2 ^ 61) (ht : ∀ t ∈ t1 :: rest, 0 ≤ t.val ∧ t.val < 2 ^ 61)
+    (hs : List.Pairwise (fun a b : I64 => a.val ≤ b.val) (t1 :: rest)) :
+    ∃ passed, rateRun rate burst (t1 :: rest) none = ok passed ∧
+      (passed.count true : Int) ≤ burst.val + (((t1 :: rest).getLast (by simp)).val - t1.val) / rate.val :=
+  Verified.RateLimit.rate_limit_bounded rate burst t1 rest hr hb ht hs
 
 end cratesio_kernel.Properties

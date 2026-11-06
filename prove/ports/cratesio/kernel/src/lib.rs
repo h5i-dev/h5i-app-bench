@@ -11,6 +11,7 @@
 pub mod auth;
 pub mod bytes;
 pub mod publish;
+pub mod rate_limit;
 pub mod rights;
 pub mod scopes;
 pub mod trustpub;
