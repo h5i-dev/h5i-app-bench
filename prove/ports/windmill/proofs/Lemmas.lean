@@ -82,7 +82,7 @@ h5i_derive_all
     bytes.split s sep ⦃ r => r.val.map (·.val) = segments sep s.val ⦄ := by
   unfold bytes.split bytes.split_loop
   have h := loop_fold2 (l := s.val) (abs := fun (o : alloc.vec.Vec (alloc.vec.Vec U8)) (c : alloc.vec.Vec U8) =>
-      (o.val.map (·.val), c.val)) (g := splitStep sep)
+      (o.val.map (·.val), c.val)) (g := H5iAppLib.splitStep sep)
     (Inv := fun o c i => o.length ≤ i ∧ c.length ≤ i ∧ i ≤ s.length)
     (body := fun x => bytes.split_loop.body s sep x.1 x.2.1 x.2.2) ?_
     (alloc.vec.Vec.new _) (alloc.vec.Vec.new _) 0#usize (by simp) (by simp)

@@ -13,13 +13,9 @@ namespace windmill_kernel.Spec
 
 abbrev Bytes := List U8
 
-/-- `s.split(sep)`: the pieces between separators, always at least one. -/
-def splitStep (sep : U8) (acc : List Bytes × Bytes) (c : U8) : List Bytes × Bytes :=
-  if c = sep then (acc.1 ++ [acc.2], []) else (acc.1, acc.2 ++ [c])
-
-def segments (sep : U8) (s : Bytes) : List Bytes :=
-  let r := s.foldl (splitStep sep) ([], [])
-  r.1 ++ [r.2]
+/-- `s.split(sep)` is `H5iAppLib.splitB sep s` (`List.splitOnP`): the pieces between
+separators, always at least one. -/
+abbrev segments (sep : U8) (s : Bytes) : List Bytes := H5iAppLib.splitB sep s
 
 def slashB : U8 := 47#u8
 def starB : U8 := 42#u8
