@@ -1,0 +1,7 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["bytes", "scopes", "authz"]
+
+[check]
+theorems = []
