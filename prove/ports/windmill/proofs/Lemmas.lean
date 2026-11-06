@@ -328,8 +328,9 @@ theorem leads_at (s : Bytes) (i : Nat) (h : i < s.length) (hl : isLead s[i] = tr
     conv_lhs => rw [← List.take_append_drop i s]
     rw [List.drop_eq_getElem_cons h]
   have : leads s = leads (s.take i) ++ s[i] :: leads (s.drop (i + 1)) := by
-    conv_lhs => rw [hs]
-    simp [leads, List.filter_append, List.filter_cons, hl]
+    have e := congrArg leads hs
+    simp only [leads, List.filter_append, List.filter_cons, hl, if_true] at e
+    exact e
   rw [this, List.getElem?_append_right (le_refl _)]
   simp
 
@@ -341,7 +342,7 @@ theorem leads_at (s : Bytes) (i : Nat) (h : i < s.length) (hl : isLead s[i] = tr
     (inv := fun x => x.2.val ≤ s.length ∧ x.1.val = (leads (s.val.take x.2.val)).length ∧ x.1.val ≤ n.val)
   · rintro ⟨cnt, i⟩ ⟨hi, hc, hn⟩
     unfold bytes.nth_char_is_slash_loop.body
-    simp only []
+    simp only [] at hi hc hn ⊢
     step*
     -- done at a character start with `count = n`
     all_goals first
@@ -352,23 +353,35 @@ theorem leads_at (s : Bytes) (i : Nat) (h : i < s.length) (hl : isLead s[i] = tr
          rw [e]; simp_all)
       | skip
     -- continue past a character start
-    all_goals first
-      | (have hlead : isLead s.val[i.val] = true := by simp only [isLead]; simp_all; omega
-         refine ⟨by scalar_tac, ?_, ?_, by scalar_tac⟩
-         · rw [show i2.val = i.val + 1 by scalar_tac, leads_take_succ _ _ (by scalar_tac)]
-           simp only [hlead, if_true, List.length_append, List.length_singleton]
-           scalar_tac
-         · have : cnt.val ≠ n.val := fun e => ‹¬cnt = n› (UScalar.eq_of_val_eq e)
-           scalar_tac)
-      | skip
+    on_goal 1 =>
+      have hlead : isLead s.val[i.val] = true := by simp only [isLead]; simp_all; omega
+      refine ⟨by scalar_tac, ?_, ?_, by scalar_tac⟩
+      · rw [show i2.val = i.val + 1 by scalar_tac, leads_take_succ _ _ (by scalar_tac)]
+        split_ifs with hh
+        · simp only [List.length_append, List.length_singleton]; scalar_tac
+        · exact absurd hlead hh
+      · have : cnt.val ≠ n.val := fun e => ‹¬cnt = n› (UScalar.eq_of_val_eq e)
+        scalar_tac
+    on_goal 1 =>
+      have hlead : isLead s.val[i.val] = true := by simp only [isLead]; simp_all; omega
+      refine ⟨by scalar_tac, ?_, ?_, by scalar_tac⟩
+      · rw [show i2.val = i.val + 1 by scalar_tac, leads_take_succ _ _ (by scalar_tac)]
+        split_ifs with hh
+        · simp only [List.length_append, List.length_singleton]; scalar_tac
+        · exact absurd hlead hh
+      · have : cnt.val ≠ n.val := fun e => ‹¬cnt = n› (UScalar.eq_of_val_eq e)
+        scalar_tac
     -- continue past a continuation byte
-    all_goals first
-      | (have hnl : isLead s.val[i.val] = false := by simp only [isLead]; simp_all
-         refine ⟨by scalar_tac, ?_, by scalar_tac, by scalar_tac⟩
-         rw [show i2.val = i.val + 1 by scalar_tac, leads_take_succ _ _ (by scalar_tac)]
-         simp only [hnl, Bool.false_eq_true, if_false, List.append_nil]
-         exact hc)
-      | skip
+    on_goal 1 =>
+      have hnl : isLead s.val[i.val] = false := by
+        subst b_post
+        simp only [isLead, Bool.or_eq_false_iff, decide_eq_false_iff_not]
+        constructor <;> scalar_tac
+      refine ⟨by scalar_tac, ?_, by scalar_tac, by scalar_tac⟩
+      rw [show i2.val = i.val + 1 by scalar_tac, leads_take_succ _ _ (by scalar_tac)]
+      split_ifs with hh
+      · exact Bool.noConfusion (hh.symm.trans hnl)
+      · simpa using hc
     -- end of the string
     all_goals
       have hi' : i.val = s.val.length := by scalar_tac
@@ -376,5 +389,18 @@ theorem leads_at (s : Bytes) (i : Nat) (h : i < s.length) (hl : isLead s[i] = tr
       rw [List.getElem?_eq_none (by scalar_tac)]
       simp
   · simp [leads]
+
+/-- What `matches_wildcard pattern resource` computes. -/
+def wildcardModel (pat r : Bytes) : Prop :=
+  endsSS pat ∧ pat.take (pat.length - 2) <+: r ∧
+    (r.length = (pat.take (pat.length - 2)).length ∨
+      (leads r)[(pat.take (pat.length - 2)).length]? = some slashB)
+
+@[step] theorem matches_wildcard_spec (pat r : Slice U8) :
+    scopes.matches_wildcard pat r ⦃ b => (b = true ↔ wildcardModel pat.val r.val) ⦄ := by
+  unfold scopes.matches_wildcard
+  step*
+  all_goals trace_state
+  all_goals sorry
 
 end windmill_kernel.Lemmas
