@@ -1060,6 +1060,419 @@ def auth.pipeline_check
                 else ok (core.result.Result.Ok ())
     else ok (core.result.Result.Err auth.AuthError.Authentication)
 
+/-- [synctv_kernel::pathcheck::hex_val]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 16:0-26:1
+    Visibility: public -/
+def pathcheck.hex_val (b : Std.U8) : Result Std.U8 := do
+  if b >= 48#u8
+  then
+    if b <= 57#u8
+    then b - 48#u8
+    else
+      if b >= 97#u8
+      then
+        if b <= 102#u8
+        then b - 87#u8
+        else
+          if b >= 65#u8
+          then if b <= 70#u8
+               then b - 55#u8
+               else ok 16#u8
+          else ok 16#u8
+      else
+        if b >= 65#u8
+        then if b <= 70#u8
+             then b - 55#u8
+             else ok 16#u8
+        else ok 16#u8
+  else
+    if b >= 97#u8
+    then
+      if b <= 102#u8
+      then b - 87#u8
+      else
+        if b >= 65#u8
+        then if b <= 70#u8
+             then b - 55#u8
+             else ok 16#u8
+        else ok 16#u8
+    else
+      if b >= 65#u8
+      then if b <= 70#u8
+           then b - 55#u8
+           else ok 16#u8
+      else ok 16#u8
+
+/-- [synctv_kernel::pathcheck::hex_pair_is]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 29:0-33:1
+    Visibility: public -/
+def pathcheck.hex_pair_is
+  (a : Std.U8) (b : Std.U8) (target : Std.U8) : Result Bool := do
+  let h ← pathcheck.hex_val a
+  let l ← pathcheck.hex_val b
+  if h < 16#u8
+  then
+    if l < 16#u8
+    then let i ← h * 16#u8
+         let i1 ← i + l
+         ok (i1 = target)
+    else ok false
+  else ok false
+
+/-- [synctv_kernel::pathcheck::contains2]: loop body 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 38:4-45:1
+    Visibility: public -/
+@[rust_loop_body]
+def pathcheck.contains2_loop.body
+  (s : Slice Std.U8) (a : Std.U8) (b : Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 ← i + 1#usize
+  let i2 := Slice.len s
+  if i1 < i2
+  then
+    let i3 ← Slice.index_usize s i
+    if i3 = a
+    then
+      let i4 ← Slice.index_usize s i1
+      if i4 = b
+      then ok (done true)
+      else ok (cont i1)
+    else ok (cont i1)
+  else ok (done false)
+
+/-- [synctv_kernel::pathcheck::contains2]: loop 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 38:4-45:1
+    Visibility: public -/
+@[rust_loop]
+def pathcheck.contains2_loop
+  (s : Slice Std.U8) (a : Std.U8) (b : Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => pathcheck.contains2_loop.body s a b i1)
+    i
+
+/-- [synctv_kernel::pathcheck::contains2]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 36:0-45:1
+    Visibility: public -/
+@[reducible]
+def pathcheck.contains2
+  (s : Slice Std.U8) (a : Std.U8) (b : Std.U8) : Result Bool := do
+  pathcheck.contains2_loop s a b 0#usize
+
+/-- [synctv_kernel::pathcheck::contains3]: loop body 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 49:4-56:1
+    Visibility: public -/
+@[rust_loop_body]
+def pathcheck.contains3_loop.body
+  (s : Slice Std.U8) (a : Std.U8) (b : Std.U8) (c : Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 ← i + 2#usize
+  let i2 := Slice.len s
+  if i1 < i2
+  then
+    let i3 ← Slice.index_usize s i
+    if i3 = a
+    then
+      let i4 ← i + 1#usize
+      let i5 ← Slice.index_usize s i4
+      if i5 = b
+      then
+        let i6 ← Slice.index_usize s i1
+        if i6 = c
+        then ok (done true)
+        else ok (cont i4)
+      else ok (cont i4)
+    else let i4 ← i + 1#usize
+         ok (cont i4)
+  else ok (done false)
+
+/-- [synctv_kernel::pathcheck::contains3]: loop 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 49:4-56:1
+    Visibility: public -/
+@[rust_loop]
+def pathcheck.contains3_loop
+  (s : Slice Std.U8) (a : Std.U8) (b : Std.U8) (c : Std.U8) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => pathcheck.contains3_loop.body s a b c i1)
+    i
+
+/-- [synctv_kernel::pathcheck::contains3]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 47:0-56:1
+    Visibility: public -/
+@[reducible]
+def pathcheck.contains3
+  (s : Slice Std.U8) (a : Std.U8) (b : Std.U8) (c : Std.U8) : Result Bool := do
+  pathcheck.contains3_loop s a b c 0#usize
+
+/-- [synctv_kernel::pathcheck::contains1]: loop body 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 60:4-67:1
+    Visibility: public -/
+@[rust_loop_body]
+def pathcheck.contains1_loop.body
+  (s : Slice Std.U8) (a : Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    if i2 = a
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [synctv_kernel::pathcheck::contains1]: loop 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 60:4-67:1
+    Visibility: public -/
+@[rust_loop]
+def pathcheck.contains1_loop
+  (s : Slice Std.U8) (a : Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => pathcheck.contains1_loop.body s a i1)
+    i
+
+/-- [synctv_kernel::pathcheck::contains1]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 58:0-67:1
+    Visibility: public -/
+@[reducible]
+def pathcheck.contains1 (s : Slice Std.U8) (a : Std.U8) : Result Bool := do
+  pathcheck.contains1_loop s a 0#usize
+
+/-- [synctv_kernel::pathcheck::TraversalError]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 70:0-77:1
+    Visibility: public -/
+@[discriminant isize]
+inductive pathcheck.TraversalError where
+| DotDot : pathcheck.TraversalError
+| NullByte : pathcheck.TraversalError
+| MixedDots : pathcheck.TraversalError
+| EncodedDot : pathcheck.TraversalError
+| DoubleEncodedDot : pathcheck.TraversalError
+| TripleEncodedDot : pathcheck.TraversalError
+
+/-- [synctv_kernel::pathcheck::{impl core::clone::Clone for synctv_kernel::pathcheck::TraversalError}::clone]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:9-69:14
+    Visibility: public -/
+def pathcheck.TraversalError.Insts.CoreCloneClone.clone
+  (self : pathcheck.TraversalError) : Result pathcheck.TraversalError := do
+  ok self
+
+/-- Trait implementation: [synctv_kernel::pathcheck::{impl core::clone::Clone for synctv_kernel::pathcheck::TraversalError}]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:9-69:14 -/
+@[reducible]
+def pathcheck.TraversalError.Insts.CoreCloneClone : core.clone.Clone
+  pathcheck.TraversalError := {
+  clone := pathcheck.TraversalError.Insts.CoreCloneClone.clone
+}
+
+/-- Trait implementation: [synctv_kernel::pathcheck::{impl core::marker::Copy for synctv_kernel::pathcheck::TraversalError}]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:16-69:20 -/
+@[reducible]
+def pathcheck.TraversalError.Insts.CoreMarkerCopy : core.marker.Copy
+  pathcheck.TraversalError := {
+  cloneInst := pathcheck.TraversalError.Insts.CoreCloneClone
+}
+
+/-- [synctv_kernel::pathcheck::{impl core::fmt::Debug for synctv_kernel::pathcheck::TraversalError}::fmt]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:22-69:27
+    Visibility: public -/
+def pathcheck.TraversalError.Insts.CoreFmtDebug.fmt
+  (self : pathcheck.TraversalError) (f : core.fmt.Formatter) :
+  Result ((core.result.Result Unit core.fmt.Error) × core.fmt.Formatter)
+  := do
+  match self with
+  | pathcheck.TraversalError.DotDot =>
+    core.fmt.Formatter.write_str f (toStr "DotDot")
+  | pathcheck.TraversalError.NullByte =>
+    core.fmt.Formatter.write_str f (toStr "NullByte")
+  | pathcheck.TraversalError.MixedDots =>
+    core.fmt.Formatter.write_str f (toStr "MixedDots")
+  | pathcheck.TraversalError.EncodedDot =>
+    core.fmt.Formatter.write_str f (toStr "EncodedDot")
+  | pathcheck.TraversalError.DoubleEncodedDot =>
+    core.fmt.Formatter.write_str f (toStr "DoubleEncodedDot")
+  | pathcheck.TraversalError.TripleEncodedDot =>
+    core.fmt.Formatter.write_str f (toStr "TripleEncodedDot")
+
+/-- Trait implementation: [synctv_kernel::pathcheck::{impl core::fmt::Debug for synctv_kernel::pathcheck::TraversalError}]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:22-69:27 -/
+@[reducible]
+def pathcheck.TraversalError.Insts.CoreFmtDebug : core.fmt.Debug
+  pathcheck.TraversalError := {
+  fmt := pathcheck.TraversalError.Insts.CoreFmtDebug.fmt
+}
+
+/-- Trait implementation: [synctv_kernel::pathcheck::{impl core::marker::StructuralPartialEq for synctv_kernel::pathcheck::TraversalError}]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:29-69:38 -/
+@[reducible]
+def pathcheck.TraversalError.Insts.CoreMarkerStructuralPartialEq :
+  core.marker.StructuralPartialEq pathcheck.TraversalError := {
+}
+
+/-- [synctv_kernel::pathcheck::{impl core::cmp::PartialEq<synctv_kernel::pathcheck::TraversalError> for synctv_kernel::pathcheck::TraversalError}::eq]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:29-69:38
+    Visibility: public -/
+def pathcheck.TraversalError.Insts.CoreCmpPartialEqTraversalError.eq
+  (self : pathcheck.TraversalError) (other : pathcheck.TraversalError) :
+  Result Bool
+  := do
+  let self1 := read_discriminant self
+  let other1 := read_discriminant other
+  ok (self1 = other1)
+
+/-- Trait implementation: [synctv_kernel::pathcheck::{impl core::cmp::PartialEq<synctv_kernel::pathcheck::TraversalError> for synctv_kernel::pathcheck::TraversalError}]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:29-69:38 -/
+@[reducible]
+impl_def pathcheck.TraversalError.Insts.CoreCmpPartialEqTraversalError :
+  core.cmp.PartialEq pathcheck.TraversalError pathcheck.TraversalError := {
+  eq := pathcheck.TraversalError.Insts.CoreCmpPartialEqTraversalError.eq
+  ne := core.cmp.PartialEq.ne.trait_default
+    pathcheck.TraversalError.Insts.CoreCmpPartialEqTraversalError
+}
+
+/-- Trait implementation: [synctv_kernel::pathcheck::{impl core::cmp::Eq for synctv_kernel::pathcheck::TraversalError}]
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 69:40-69:42 -/
+@[reducible]
+impl_def pathcheck.TraversalError.Insts.CoreCmpEq : core.cmp.Eq
+  pathcheck.TraversalError := {
+  partialEqInst :=
+    pathcheck.TraversalError.Insts.CoreCmpPartialEqTraversalError
+  assert_fields_are_eq := core.cmp.Eq.assert_fields_are_eq.default
+    pathcheck.TraversalError.Insts.CoreCmpEq
+}
+
+/-- [synctv_kernel::pathcheck::encoded_at]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 80:0-97:1
+    Visibility: public -/
+def pathcheck.encoded_at
+  (p : Slice Std.U8) (i : Std.Usize) :
+  Result (Option pathcheck.TraversalError)
+  := do
+  let i1 ← Slice.index_usize p i
+  if i1 = 37#u8
+  then
+    let i2 ← i + 2#usize
+    let i3 := Slice.len p
+    if i2 < i3
+    then
+      let i4 ← i + 1#usize
+      let i5 ← Slice.index_usize p i4
+      let i6 ← Slice.index_usize p i2
+      let b ← pathcheck.hex_pair_is i5 i6 46#u8
+      if b
+      then ok (some pathcheck.TraversalError.EncodedDot)
+      else
+        let i7 ← Slice.index_usize p i4
+        let i8 ← Slice.index_usize p i2
+        let b1 ← pathcheck.hex_pair_is i7 i8 37#u8
+        if b1
+        then
+          let i9 ← i + 4#usize
+          let i10 := Slice.len p
+          if i9 < i10
+          then
+            let i11 ← i + 3#usize
+            let i12 ← Slice.index_usize p i11
+            let i13 ← Slice.index_usize p i9
+            let b2 ← pathcheck.hex_pair_is i12 i13 46#u8
+            if b2
+            then ok (some pathcheck.TraversalError.DoubleEncodedDot)
+            else
+              let i14 ← Slice.index_usize p i11
+              let i15 ← Slice.index_usize p i9
+              let b3 ← pathcheck.hex_pair_is i14 i15 37#u8
+              if b3
+              then
+                let i16 ← i + 6#usize
+                let i17 := Slice.len p
+                if i16 < i17
+                then
+                  let i18 ← i + 5#usize
+                  let i19 ← Slice.index_usize p i18
+                  let i20 ← Slice.index_usize p i16
+                  let b4 ← pathcheck.hex_pair_is i19 i20 46#u8
+                  if b4
+                  then ok (some pathcheck.TraversalError.TripleEncodedDot)
+                  else ok none
+                else ok none
+              else ok none
+          else ok none
+        else ok none
+    else ok none
+  else ok none
+
+/-- [synctv_kernel::pathcheck::first_encoded]: loop body 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 102:4-110:1
+    Visibility: public -/
+@[rust_loop_body]
+def pathcheck.first_encoded_loop.body
+  (p : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option pathcheck.TraversalError))
+  := do
+  let i1 := Slice.len p
+  if i < i1
+  then
+    let o ← pathcheck.encoded_at p i
+    match o with
+    | none => let i2 ← i + 1#usize
+              ok (cont i2)
+    | some _ => ok (done o)
+  else ok (done none)
+
+/-- [synctv_kernel::pathcheck::first_encoded]: loop 0:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 102:4-110:1
+    Visibility: public -/
+@[rust_loop]
+def pathcheck.first_encoded_loop
+  (p : Slice Std.U8) (i : Std.Usize) :
+  Result (Option pathcheck.TraversalError)
+  := do
+  loop
+    (fun i1 => pathcheck.first_encoded_loop.body p i1)
+    i
+
+/-- [synctv_kernel::pathcheck::first_encoded]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 100:0-110:1
+    Visibility: public -/
+@[reducible]
+def pathcheck.first_encoded
+  (p : Slice Std.U8) : Result (Option pathcheck.TraversalError) := do
+  pathcheck.first_encoded_loop p 0#usize
+
+/-- [synctv_kernel::pathcheck::validate_path_for_traversal]:
+    Source: 'prove/ports/synctv/kernel/src/pathcheck.rs', lines 113:0-127:1
+    Visibility: public -/
+def pathcheck.validate_path_for_traversal
+  (p : Slice Std.U8) :
+  Result (core.result.Result Unit pathcheck.TraversalError)
+  := do
+  let b ← pathcheck.contains2 p 46#u8 46#u8
+  if b
+  then ok (core.result.Result.Err pathcheck.TraversalError.DotDot)
+  else
+    let b1 ← pathcheck.contains1 p 0#u8
+    if b1
+    then ok (core.result.Result.Err pathcheck.TraversalError.NullByte)
+    else
+      let b2 ← pathcheck.contains3 p 37#u8 48#u8 48#u8
+      if b2
+      then ok (core.result.Result.Err pathcheck.TraversalError.NullByte)
+      else
+        let b3 ← pathcheck.contains3 p 46#u8 47#u8 46#u8
+        if b3
+        then ok (core.result.Result.Err pathcheck.TraversalError.MixedDots)
+        else
+          let o ← pathcheck.first_encoded p
+          match o with
+          | none => ok (core.result.Result.Ok ())
+          | some e => ok (core.result.Result.Err e)
+
 /-- [synctv_kernel::perms::RoomPermission]
     Source: 'prove/ports/synctv/kernel/src/perms.rs', lines 20:0-42:1
     Visibility: public -/

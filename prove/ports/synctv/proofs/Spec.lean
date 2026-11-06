@@ -151,4 +151,34 @@ def notExpired (now exp : Int) (leeway : Nat) : Prop :=
 /-- Visible ASCII whitespace as `str::trim` sees it. -/
 def isWs (b : Nat) : Prop := b = 32 ∨ (9 ≤ b ∧ b ≤ 13)
 
+/-! ## Path traversal (`synctv-common/src/validation.rs`) -/
+
+/-- The value of an ASCII hex digit. -/
+def hexDigit (b : Nat) : Option Nat :=
+  if 48 ≤ b ∧ b ≤ 57 then some (b - 48)
+  else if 97 ≤ b ∧ b ≤ 102 then some (b - 87)
+  else if 65 ≤ b ∧ b ≤ 70 then some (b - 55)
+  else none
+
+/-- The byte `%ab` encodes. -/
+def hexPair (a b : Nat) : Option Nat :=
+  match hexDigit a, hexDigit b with
+  | some h, some l => some (16 * h + l)
+  | _, _ => none
+
+/-- One round of percent-decoding: every `%` followed by two hex digits becomes the
+byte they encode; everything else is kept. -/
+def decodeOnce : List Nat → List Nat
+  | 37 :: a :: b :: rest =>
+    match hexPair a b with
+    | some v => v :: decodeOnce rest
+    | none => 37 :: decodeOnce (a :: b :: rest)
+  | c :: rest => c :: decodeOnce rest
+  | [] => []
+
+/-- A path that is an obvious traversal or injection: a literal `..`, a NUL byte, an
+encoded NUL `%00`, or `./.`. -/
+def literalTraversal (p : List Nat) : Prop :=
+  [46, 46] <:+: p ∨ 0 ∈ p ∨ [37, 48, 48] <:+: p ∨ [46, 47, 46] <:+: p
+
 end synctv_kernel.Spec
