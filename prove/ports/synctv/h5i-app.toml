@@ -252,3 +252,41 @@ name = "pipeline_skips_two_factor"
 file = "kernel/src/auth.rs"
 old = "    if f.two_factor_enabled && !f.token_has_second_factor {"
 new = "    if f.two_factor_enabled && !f.token_has_second_factor && false {"
+
+[[mutant]]
+name = "member_reads_admin_columns"
+file = "kernel/src/perms.rs"
+old = "(role_default | member_to_permissions(m.added_permissions))"
+new = "(role_default | member_to_permissions(m.admin_added_permissions))"
+
+[[mutant]]
+name = "user_manages_user"
+file = "kernel/src/auth.rs"
+old = """        },
+        UserRole::User => false,
+    }
+}
+
+/// `UserRole::is_admin_or_above`."""
+new = """        },
+        UserRole::User => true,
+    }
+}
+
+/// `UserRole::is_admin_or_above`."""
+
+[[mutant]]
+name = "banned_is_active"
+file = "kernel/src/auth.rs"
+old = """        UserStatus::Active => true,
+        UserStatus::Banned => false,
+    }
+}
+
+/// `UserStatus::is_banned`."""
+new = """        UserStatus::Active => true,
+        UserStatus::Banned => true,
+    }
+}
+
+/// `UserStatus::is_banned`."""
