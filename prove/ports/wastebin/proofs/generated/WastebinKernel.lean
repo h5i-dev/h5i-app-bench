@@ -19,6 +19,245 @@ set_option maxRecDepth 2048
 
 namespace wastebin_kernel
 
+/-- [wastebin_kernel::disposition::PREFIX]
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 6:0-9:2
+    Visibility: public -/
+@[global_simps, irreducible]
+def disposition.PREFIX : Array Std.U8 29#usize :=
+  Array.make 29#usize [
+    97#u8, 116#u8, 116#u8, 97#u8, 99#u8, 104#u8, 109#u8, 101#u8, 110#u8,
+    116#u8, 59#u8, 32#u8, 102#u8, 105#u8, 108#u8, 101#u8, 110#u8, 97#u8,
+    109#u8, 101#u8, 42#u8, 61#u8, 85#u8, 84#u8, 70#u8, 45#u8, 56#u8, 39#u8,
+    39#u8
+    ]
+
+/-- [wastebin_kernel::disposition::HEX]
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 12:0-14:2
+    Visibility: public -/
+@[global_simps, irreducible]
+def disposition.HEX : Array Std.U8 16#usize :=
+  Array.make 16#usize [
+    48#u8, 49#u8, 50#u8, 51#u8, 52#u8, 53#u8, 54#u8, 55#u8, 56#u8, 57#u8,
+    65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8
+    ]
+
+/-- [wastebin_kernel::disposition::unreserved]:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 17:0-26:1
+    Visibility: public -/
+def disposition.unreserved (b : Std.U8) : Result Bool := do
+  if b >= 48#u8
+  then
+    if b <= 57#u8
+    then ok true
+    else
+      if b >= 65#u8
+      then
+        if b <= 90#u8
+        then ok true
+        else
+          if b >= 97#u8
+          then
+            if b <= 122#u8
+            then ok true
+            else
+              if b = 46#u8
+              then ok true
+              else
+                if b = 45#u8
+                then ok true
+                else
+                  if b = 95#u8
+                  then ok true
+                  else if b = 126#u8
+                       then ok true
+                       else ok (b = 43#u8)
+          else
+            if b = 46#u8
+            then ok true
+            else
+              if b = 45#u8
+              then ok true
+              else
+                if b = 95#u8
+                then ok true
+                else if b = 126#u8
+                     then ok true
+                     else ok (b = 43#u8)
+      else
+        if b >= 97#u8
+        then
+          if b <= 122#u8
+          then ok true
+          else
+            if b = 46#u8
+            then ok true
+            else
+              if b = 45#u8
+              then ok true
+              else
+                if b = 95#u8
+                then ok true
+                else if b = 126#u8
+                     then ok true
+                     else ok (b = 43#u8)
+        else
+          if b = 46#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 126#u8
+                   then ok true
+                   else ok (b = 43#u8)
+  else
+    if b >= 65#u8
+    then
+      if b <= 90#u8
+      then ok true
+      else
+        if b >= 97#u8
+        then
+          if b <= 122#u8
+          then ok true
+          else
+            if b = 46#u8
+            then ok true
+            else
+              if b = 45#u8
+              then ok true
+              else
+                if b = 95#u8
+                then ok true
+                else if b = 126#u8
+                     then ok true
+                     else ok (b = 43#u8)
+        else
+          if b = 46#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 126#u8
+                   then ok true
+                   else ok (b = 43#u8)
+    else
+      if b >= 97#u8
+      then
+        if b <= 122#u8
+        then ok true
+        else
+          if b = 46#u8
+          then ok true
+          else
+            if b = 45#u8
+            then ok true
+            else
+              if b = 95#u8
+              then ok true
+              else if b = 126#u8
+                   then ok true
+                   else ok (b = 43#u8)
+      else
+        if b = 46#u8
+        then ok true
+        else
+          if b = 45#u8
+          then ok true
+          else
+            if b = 95#u8
+            then ok true
+            else if b = 126#u8
+                 then ok true
+                 else ok (b = 43#u8)
+
+/-- [wastebin_kernel::disposition::content_disposition]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 33:4-36:5
+    Visibility: public -/
+@[rust_loop_body]
+def disposition.content_disposition_loop0.body
+  (v : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  if i < 29#usize
+  then
+    let i1 ← Array.index_usize disposition.PREFIX i
+    let v1 ← alloc.vec.Vec.push v i1
+    let i2 ← i + 1#usize
+    ok (cont (v1, i2))
+  else ok (done v)
+
+/-- [wastebin_kernel::disposition::content_disposition]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 33:4-36:5
+    Visibility: public -/
+@[rust_loop]
+def disposition.content_disposition_loop0
+  (v : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (v1, i1) => disposition.content_disposition_loop0.body v1 i1)
+    (v, i)
+
+/-- [wastebin_kernel::disposition::content_disposition]: loop body 1:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 38:4-48:5
+    Visibility: public -/
+@[rust_loop_body]
+def disposition.content_disposition_loop1.body
+  (filename : Slice Std.U8) (v : alloc.vec.Vec Std.U8) (j : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  let i := Slice.len filename
+  if j < i
+  then
+    let b ← Slice.index_usize filename j
+    let b1 ← disposition.unreserved b
+    let v1 ←
+      if b1
+      then alloc.vec.Vec.push v b
+      else
+        do
+        let v2 ← alloc.vec.Vec.push v 37#u8
+        let i1 ← b >>> 4#i32
+        let i2 ← lift (UScalar.cast .Usize i1)
+        let i3 ← Array.index_usize disposition.HEX i2
+        let v3 ← alloc.vec.Vec.push v2 i3
+        let i4 ← lift (b &&& 15#u8)
+        let i5 ← lift (UScalar.cast .Usize i4)
+        let i6 ← Array.index_usize disposition.HEX i5
+        alloc.vec.Vec.push v3 i6
+    let j1 ← j + 1#usize
+    ok (cont (v1, j1))
+  else ok (done v)
+
+/-- [wastebin_kernel::disposition::content_disposition]: loop 1:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 38:4-48:5
+    Visibility: public -/
+@[rust_loop]
+def disposition.content_disposition_loop1
+  (filename : Slice Std.U8) (v : alloc.vec.Vec Std.U8) (j : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (v1, j1) => disposition.content_disposition_loop1.body filename v1 j1)
+    (v, j)
+
+/-- [wastebin_kernel::disposition::content_disposition]:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 30:0-50:1
+    Visibility: public -/
+def disposition.content_disposition
+  (filename : Slice Std.U8) : Result (alloc.vec.Vec Std.U8) := do
+  let v ←
+    disposition.content_disposition_loop0 (alloc.vec.Vec.new Std.U8) 0#usize
+  disposition.content_disposition_loop1 filename v 0#usize
+
 /-- [wastebin_kernel::ext::MAX_EXTENSION_LEN]
     Source: 'prove/ports/wastebin/kernel/src/ext.rs', lines 4:0-4:40
     Visibility: public -/
@@ -107,6 +346,550 @@ def ext.valid_extension (extension : Slice Std.U8) : Result Bool := do
   then ok false
   else ext.valid_extension_loop extension 0#usize
 
+/-- [wastebin_kernel::handlers::Status]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 18:0-25:1
+    Visibility: public -/
+@[discriminant isize]
+inductive handlers.Status where
+| BadRequest : handlers.Status
+| Forbidden : handlers.Status
+| NotFound : handlers.Status
+
+/-- [wastebin_kernel::store::DbError]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 34:0-43:1
+    Visibility: public -/
+@[discriminant isize]
+inductive store.DbError where
+| Delete : store.DbError
+| NotFound : store.DbError
+| NoPassword : store.DbError
+| Crypto : store.DbError
+
+/-- [wastebin_kernel::handlers::db_status]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 28:0-35:1
+    Visibility: public -/
+def handlers.db_status (e : store.DbError) : Result handlers.Status := do
+  match e with
+  | store.DbError.Delete => ok handlers.Status.Forbidden
+  | store.DbError.NotFound => ok handlers.Status.NotFound
+  | store.DbError.NoPassword => ok handlers.Status.BadRequest
+  | store.DbError.Crypto => ok handlers.Status.Forbidden
+
+/-- [wastebin_kernel::store::contains_uid]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 224:4-231:1
+    Visibility: public -/
+@[rust_loop_body]
+def store.contains_uid_loop.body
+  (uids : Slice Std.I64) (x : Std.I64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len uids
+  if i < i1
+  then
+    let i2 ← Slice.index_usize uids i
+    if i2 = x
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
+
+/-- [wastebin_kernel::store::contains_uid]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 224:4-231:1
+    Visibility: public -/
+@[rust_loop]
+def store.contains_uid_loop
+  (uids : Slice Std.I64) (x : Std.I64) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => store.contains_uid_loop.body uids x i1)
+    i
+
+/-- [wastebin_kernel::store::contains_uid]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 222:0-231:1
+    Visibility: public -/
+@[reducible]
+def store.contains_uid (uids : Slice Std.I64) (x : Std.I64) : Result Bool := do
+  store.contains_uid_loop uids x 0#usize
+
+/-- [wastebin_kernel::handlers::can_delete]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 38:0-46:1
+    Visibility: public -/
+def handlers.can_delete
+  (uids : Option (alloc.vec.Vec Std.I64)) (owner : Option Std.I64) :
+  Result Bool
+  := do
+  match uids with
+  | none => ok false
+  | some us =>
+    match owner with
+    | none => ok false
+    | some o => let s := alloc.vec.Vec.deref us
+                store.contains_uid s o
+
+/-- [wastebin_kernel::handlers::ViewRequest]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 50:0-62:1
+    Visibility: public -/
+structure handlers.ViewRequest where
+  claim : Option Std.I64
+  password : Option Std.U64
+  confirmed : Bool
+  uids : Option (alloc.vec.Vec Std.I64)
+  cached : Bool
+
+/-- [wastebin_kernel::handlers::PastePage]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 66:0-77:1
+    Visibility: public -/
+structure handlers.PastePage where
+  data : Std.U64
+  title : Option Std.U64
+  can_delete : Bool
+  is_available : Bool
+  no_store : Bool
+  cache_put : Bool
+
+/-- [wastebin_kernel::handlers::View]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 81:0-90:1
+    Visibility: public -/
+@[discriminant isize]
+inductive handlers.View where
+| Handoff : alloc.vec.Vec Std.I64 → handlers.View
+| BurnConfirmation : Option Std.U64 → handlers.View
+| PasswordInput : handlers.View
+| Paste : handlers.PastePage → handlers.View
+| Error : handlers.Status → handlers.View
+
+/-- [wastebin_kernel::handlers::handoff]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 100:12-103:13
+    Visibility: public -/
+@[rust_loop_body]
+def handlers.handoff_loop.body
+  (us : alloc.vec.Vec Std.I64) (out : alloc.vec.Vec Std.I64) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I64) × Std.Usize) (alloc.vec.Vec
+    Std.I64))
+  := do
+  let i1 := alloc.vec.Vec.len us
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I64) us i
+    let out1 ← alloc.vec.Vec.push out i2
+    let i3 ← i + 1#usize
+    ok (cont (out1, i3))
+  else ok (done out)
+
+/-- [wastebin_kernel::handlers::handoff]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 100:12-103:13
+    Visibility: public -/
+@[rust_loop]
+def handlers.handoff_loop
+  (us : alloc.vec.Vec Std.I64) (out : alloc.vec.Vec Std.I64) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.I64)
+  := do
+  loop
+    (fun (out1, i1) => handlers.handoff_loop.body us out1 i1)
+    (out, i)
+
+/-- [wastebin_kernel::handlers::handoff]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 94:0-110:1
+    Visibility: public -/
+def handlers.handoff
+  (uids : Option (alloc.vec.Vec Std.I64)) (claimed : Std.I64) :
+  Result (alloc.vec.Vec Std.I64)
+  := do
+  match uids with
+  | none =>
+    let s := alloc.vec.Vec.deref (alloc.vec.Vec.new Std.I64)
+    let b ← store.contains_uid s claimed
+    if b
+    then ok (alloc.vec.Vec.new Std.I64)
+    else alloc.vec.Vec.push (alloc.vec.Vec.new Std.I64) claimed
+  | some us =>
+    let out ← handlers.handoff_loop us (alloc.vec.Vec.new Std.I64) 0#usize
+    let s := alloc.vec.Vec.deref out
+    let b ← store.contains_uid s claimed
+    if b
+    then ok out
+    else alloc.vec.Vec.push out claimed
+
+/-- [wastebin_kernel::store::Row]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 14:0-30:1
+    Visibility: public -/
+structure store.Row where
+  id : Std.I64
+  uid : Option Std.I64
+  burn : Option Bool
+  secret : Option Std.U64
+  expires : Option Std.I64
+  data : Std.U64
+  title : Option Std.U64
+
+/-- [wastebin_kernel::store::delete]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 118:4-126:5
+    Visibility: public -/
+@[rust_loop_body]
+def store.delete_loop.body
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64)
+  (out : alloc.vec.Vec store.Row) (hit : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec store.Row) × Bool × Std.Usize)
+    ((alloc.vec.Vec store.Row) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let r ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice store.Row)
+        rows i
+    let (out1, hit1) ←
+      if r.id = id
+      then ok (out, true)
+      else do
+           let out2 ← alloc.vec.Vec.push out r
+           ok (out2, hit)
+    let i2 ← i + 1#usize
+    ok (cont (out1, hit1, i2))
+  else ok (done (out, hit))
+
+/-- [wastebin_kernel::store::delete]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 118:4-126:5
+    Visibility: public -/
+@[rust_loop]
+def store.delete_loop
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64)
+  (out : alloc.vec.Vec store.Row) (hit : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec store.Row) × Bool)
+  := do
+  loop
+    (fun (out1, hit1, i1) => store.delete_loop.body rows id out1 hit1 i1)
+    (out, hit, i)
+
+/-- [wastebin_kernel::store::delete]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 114:0-128:1
+    Visibility: public -/
+@[reducible]
+def store.delete
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) :
+  Result ((alloc.vec.Vec store.Row) × Bool)
+  := do
+  store.delete_loop rows id (alloc.vec.Vec.new store.Row) false 0#usize
+
+/-- [wastebin_kernel::store::Metadata]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 49:0-54:1
+    Visibility: public -/
+structure store.Metadata where
+  uid : Option Std.I64
+  title : Option Std.U64
+  expires : Option Std.I64
+  must_be_deleted : Bool
+
+/-- [wastebin_kernel::store::Data]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 58:0-61:1
+    Visibility: public -/
+structure store.Data where
+  data : Std.U64
+  metadata : store.Metadata
+
+/-- [wastebin_kernel::store::Entry]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 65:0-69:1
+    Visibility: public -/
+@[discriminant isize]
+inductive store.Entry where
+| Regular : store.Data → store.Entry
+| Burned : store.Data → store.Entry
+| Encrypted : store.Data → store.Entry
+
+/-- [wastebin_kernel::store::{impl core::clone::Clone for wastebin_kernel::store::Row}::clone]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 13:9-13:14
+    Visibility: public -/
+def store.Row.Insts.CoreCloneClone.clone
+  (self : store.Row) : Result store.Row := do
+  ok self
+
+/-- Trait implementation: [wastebin_kernel::store::{impl core::clone::Clone for wastebin_kernel::store::Row}]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 13:9-13:14 -/
+@[reducible]
+def store.Row.Insts.CoreCloneClone : core.clone.Clone store.Row := {
+  clone := store.Row.Insts.CoreCloneClone.clone
+}
+
+/-- [wastebin_kernel::store::finish]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 193:0-205:1
+    Visibility: public -/
+def store.finish
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (data : store.Data)
+  (encrypted : Bool) (burn : Bool) :
+  Result ((alloc.vec.Vec store.Row) × (core.result.Result store.Entry
+    store.DbError))
+  := do
+  if burn
+  then
+    let (out, hit) ← store.delete rows id
+    if hit
+    then
+      if encrypted
+      then ok (out, core.result.Result.Ok (store.Entry.Encrypted data))
+      else ok (out, core.result.Result.Ok (store.Entry.Burned data))
+    else ok (out, core.result.Result.Err store.DbError.NotFound)
+  else
+    if encrypted
+    then
+      let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+      ok (v, core.result.Result.Ok (store.Entry.Encrypted data))
+    else
+      let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+      ok (v, core.result.Result.Ok (store.Entry.Regular data))
+
+/-- [wastebin_kernel::store::Fetch]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 152:0-161:1
+    Visibility: public -/
+@[discriminant isize]
+inductive store.Fetch where
+| Missing : store.Fetch
+| Expired : store.Fetch
+| Refused : store.DbError → store.Fetch
+| Ready : store.Data → Bool → Bool → store.Fetch
+
+/-- [wastebin_kernel::store::decrypt]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 133:0-147:1
+    Visibility: public -/
+def store.decrypt
+  (secret : Option Std.U64) (password : Option Std.U64) :
+  Result (core.result.Result Unit store.DbError)
+  := do
+  match secret with
+  | none => ok (core.result.Result.Ok ())
+  | some k =>
+    match password with
+    | none => ok (core.result.Result.Err store.DbError.NoPassword)
+    | some p =>
+      if p = k
+      then ok (core.result.Result.Ok ())
+      else ok (core.result.Result.Err store.DbError.Crypto)
+
+/-- [wastebin_kernel::store::must_be_deleted]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 92:0-97:1
+    Visibility: public -/
+def store.must_be_deleted (r : store.Row) : Result Bool := do
+  match r.burn with
+  | none => ok false
+  | some b => ok b
+
+/-- [wastebin_kernel::store::metadata_of]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 100:0-102:1
+    Visibility: public -/
+def store.metadata_of (r : store.Row) : Result store.Metadata := do
+  let b ← store.must_be_deleted r
+  ok
+    {
+      uid := r.uid,
+      title := r.title,
+      expires := r.expires,
+      must_be_deleted := b
+    }
+
+/-- [wastebin_kernel::store::is_expired]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 84:0-89:1
+    Visibility: public -/
+def store.is_expired (r : store.Row) (now : Std.I64) : Result Bool := do
+  match r.expires with
+  | none => ok false
+  | some e => ok (e < now)
+
+/-- [wastebin_kernel::store::find_row]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 74:4-81:1
+    Visibility: public -/
+@[rust_loop_body]
+def store.find_row_loop.body
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option store.Row))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let r ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice store.Row)
+        rows i
+    if r.id = id
+    then ok (done (some r))
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [wastebin_kernel::store::find_row]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 74:4-81:1
+    Visibility: public -/
+@[rust_loop]
+def store.find_row_loop
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (i : Std.Usize) :
+  Result (Option store.Row)
+  := do
+  loop
+    (fun i1 => store.find_row_loop.body rows id i1)
+    i
+
+/-- [wastebin_kernel::store::find_row]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 72:0-81:1
+    Visibility: public -/
+@[reducible]
+def store.find_row
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) :
+  Result (Option store.Row)
+  := do
+  store.find_row_loop rows id 0#usize
+
+/-- [wastebin_kernel::store::fetch]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 165:0-187:1
+    Visibility: public -/
+def store.fetch
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (now : Std.I64)
+  (password : Option Std.U64) :
+  Result store.Fetch
+  := do
+  let o ← store.find_row rows id
+  match o with
+  | none => ok store.Fetch.Missing
+  | some r =>
+    let b ← store.is_expired r now
+    if b
+    then ok store.Fetch.Expired
+    else
+      let r1 ← store.decrypt r.secret password
+      match r1 with
+      | core.result.Result.Ok _ =>
+        let mbd ← store.must_be_deleted r
+        let m ← store.metadata_of r
+        match r.secret with
+        | none =>
+          ok (store.Fetch.Ready { data := r.data, metadata := m } false mbd)
+        | some _ =>
+          ok (store.Fetch.Ready { data := r.data, metadata := m } true mbd)
+      | core.result.Result.Err e => ok (store.Fetch.Refused e)
+
+/-- [wastebin_kernel::store::get]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 209:0-219:1
+    Visibility: public -/
+def store.get
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (now : Std.I64)
+  (password : Option Std.U64) :
+  Result ((alloc.vec.Vec store.Row) × (core.result.Result store.Entry
+    store.DbError))
+  := do
+  let f ← store.fetch rows id now password
+  match f with
+  | store.Fetch.Missing =>
+    let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+    ok (v, core.result.Result.Err store.DbError.NotFound)
+  | store.Fetch.Expired =>
+    let (out, _) ← store.delete rows id
+    ok (out, core.result.Result.Err store.DbError.NotFound)
+  | store.Fetch.Refused e =>
+    let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+    ok (v, core.result.Result.Err e)
+  | store.Fetch.Ready data encrypted burn =>
+    store.finish rows id data encrypted burn
+
+/-- [wastebin_kernel::store::get_metadata]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 105:0-110:1
+    Visibility: public -/
+def store.get_metadata
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) :
+  Result (core.result.Result store.Metadata store.DbError)
+  := do
+  let o ← store.find_row rows id
+  match o with
+  | none => ok (core.result.Result.Err store.DbError.NotFound)
+  | some r => let m ← store.metadata_of r
+              ok (core.result.Result.Ok m)
+
+/-- [wastebin_kernel::id::sub]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 177:4-180:5
+    Visibility: public -/
+@[rust_loop_body]
+def id.sub_loop.body
+  (s : Slice Std.U8) («to» : Std.Usize) (out : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
+    Std.U8))
+  := do
+  if i < «to»
+  then
+    let i1 ← Slice.index_usize s i
+    let out1 ← alloc.vec.Vec.push out i1
+    let i2 ← i + 1#usize
+    ok (cont (out1, i2))
+  else ok (done out)
+
+/-- [wastebin_kernel::id::sub]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 177:4-180:5
+    Visibility: public -/
+@[rust_loop]
+def id.sub_loop
+  (s : Slice Std.U8) («to» : Std.Usize) (out : alloc.vec.Vec Std.U8)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  loop
+    (fun (out1, i1) => id.sub_loop.body s «to» out1 i1)
+    (out, i)
+
+/-- [wastebin_kernel::id::sub]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 174:0-182:1
+    Visibility: public -/
+@[reducible]
+def id.sub
+  (s : Slice Std.U8) («from» : Std.Usize) («to» : Std.Usize) :
+  Result (alloc.vec.Vec Std.U8)
+  := do
+  id.sub_loop s «to» (alloc.vec.Vec.new Std.U8) «from»
+
+/-- [wastebin_kernel::id::find_dot]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 164:4-171:1
+    Visibility: public -/
+@[rust_loop_body]
+def id.find_dot_loop.body
+  (s : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    if i2 = 46#u8
+    then ok (done (some i))
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done none)
+
+/-- [wastebin_kernel::id::find_dot]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 164:4-171:1
+    Visibility: public -/
+@[rust_loop]
+def id.find_dot_loop
+  (s : Slice Std.U8) (i : Std.Usize) : Result (Option Std.Usize) := do
+  loop
+    (fun i1 => id.find_dot_loop.body s i1)
+    i
+
+/-- [wastebin_kernel::id::find_dot]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 162:0-171:1
+    Visibility: public -/
+@[reducible]
+def id.find_dot (s : Slice Std.U8) : Result (Option Std.Usize) := do
+  id.find_dot_loop s 0#usize
+
+/-- [wastebin_kernel::id::Id]
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 23:0-28:1
+    Visibility: public -/
+@[discriminant isize]
+inductive id.Id where
+| Id32 : Std.U32 → id.Id
+| Id64 : Std.I64 → id.Id
+
+/-- [wastebin_kernel::id::Key]
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 156:0-159:1
+    Visibility: public -/
+structure id.Key where
+  id : id.Id
+  ext : Option (alloc.vec.Vec Std.U8)
+
 /-- [wastebin_kernel::id::CHAR_TABLE]
     Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 7:0-12:2
     Visibility: public -/
@@ -121,30 +904,6 @@ def id.CHAR_TABLE : Array Std.U8 64#usize :=
     86#u8, 87#u8, 88#u8, 89#u8, 90#u8, 48#u8, 49#u8, 50#u8, 51#u8, 52#u8,
     53#u8, 54#u8, 55#u8, 56#u8, 57#u8, 45#u8, 43#u8
     ]
-
-/-- [wastebin_kernel::id::IdError]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 16:0-19:1
-    Visibility: public -/
-@[discriminant isize]
-inductive id.IdError where
-| IllegalCharacters : id.IdError
-| WrongSize : id.IdError
-
-/-- [wastebin_kernel::id::Id]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 23:0-28:1
-    Visibility: public -/
-@[discriminant isize]
-inductive id.Id where
-| Id32 : Std.U32 → id.Id
-| Id64 : Std.I64 → id.Id
-
-/-- [wastebin_kernel::id::to_i64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 31:0-36:1
-    Visibility: public -/
-def id.to_i64 (id : id.Id) : Result Std.I64 := do
-  match id with
-  | id.Id.Id32 n => ok (UScalar.hcast .I64 n)
-  | id.Id.Id64 n => ok n
 
 /-- [wastebin_kernel::id::char_bits]: loop body 0:
     Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 41:4-48:1
@@ -180,6 +939,693 @@ def id.char_bits_loop
 @[reducible]
 def id.char_bits (c : Std.U8) : Result (Option Std.U8) := do
   id.char_bits_loop c 0#usize
+
+/-- [wastebin_kernel::id::acc64]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 96:0-101:1 -/
+def id.acc64
+  (n : Std.I64) (c : Std.U8) (shift : Std.U32) : Result (Option Std.I64) := do
+  let o ← id.char_bits c
+  match o with
+  | none => ok none
+  | some bits =>
+    let i ← n <<< shift
+    let i1 ← lift (UScalar.hcast .I64 bits)
+    let i2 ← lift (i ||| i1)
+    ok (some i2)
+
+/-- [wastebin_kernel::id::decode64]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 124:4-133:1 -/
+@[rust_loop_body]
+def id.decode64_loop.body
+  (s : Slice Std.U8) (n : Std.I64) (pos : Std.Usize) :
+  Result (ControlFlow (Std.I64 × Std.Usize) (Option Std.I64))
+  := do
+  if pos < 11#usize
+  then
+    let shift ← if pos < 10#usize
+                  then ok 6#u32
+                  else ok 4#u32
+    let i ← Slice.index_usize s pos
+    let o ← id.acc64 n i shift
+    match o with
+    | none => ok (done none)
+    | some m => let pos1 ← pos + 1#usize
+                ok (cont (m, pos1))
+  else ok (done (some n))
+
+/-- [wastebin_kernel::id::decode64]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 124:4-133:1 -/
+@[rust_loop]
+def id.decode64_loop
+  (s : Slice Std.U8) (n : Std.I64) (pos : Std.Usize) :
+  Result (Option Std.I64)
+  := do
+  loop
+    (fun (n1, pos1) => id.decode64_loop.body s n1 pos1)
+    (n, pos)
+
+/-- [wastebin_kernel::id::decode64]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 121:0-133:1 -/
+@[reducible]
+def id.decode64 (s : Slice Std.U8) : Result (Option Std.I64) := do
+  id.decode64_loop s 0#i64 0#usize
+
+/-- [wastebin_kernel::id::acc32]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 88:0-93:1 -/
+def id.acc32
+  (n : Std.U32) (c : Std.U8) (shift : Std.U32) : Result (Option Std.U32) := do
+  let o ← id.char_bits c
+  match o with
+  | none => ok none
+  | some bits =>
+    let i ← n <<< shift
+    let i1 ← lift (UScalar.cast .U32 bits)
+    let i2 ← lift (i ||| i1)
+    ok (some i2)
+
+/-- [wastebin_kernel::id::decode32]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 108:4-117:1 -/
+@[rust_loop_body]
+def id.decode32_loop.body
+  (s : Slice Std.U8) (n : Std.U32) (pos : Std.Usize) :
+  Result (ControlFlow (Std.U32 × Std.Usize) (Option Std.U32))
+  := do
+  if pos < 6#usize
+  then
+    let shift ← if pos < 5#usize
+                  then ok 6#u32
+                  else ok 2#u32
+    let i ← Slice.index_usize s pos
+    let o ← id.acc32 n i shift
+    match o with
+    | none => ok (done none)
+    | some m => let pos1 ← pos + 1#usize
+                ok (cont (m, pos1))
+  else ok (done (some n))
+
+/-- [wastebin_kernel::id::decode32]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 108:4-117:1 -/
+@[rust_loop]
+def id.decode32_loop
+  (s : Slice Std.U8) (n : Std.U32) (pos : Std.Usize) :
+  Result (Option Std.U32)
+  := do
+  loop
+    (fun (n1, pos1) => id.decode32_loop.body s n1 pos1)
+    (n, pos)
+
+/-- [wastebin_kernel::id::decode32]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 105:0-117:1 -/
+@[reducible]
+def id.decode32 (s : Slice Std.U8) : Result (Option Std.U32) := do
+  id.decode32_loop s 0#u32 0#usize
+
+/-- [wastebin_kernel::id::IdError]
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 16:0-19:1
+    Visibility: public -/
+@[discriminant isize]
+inductive id.IdError where
+| IllegalCharacters : id.IdError
+| WrongSize : id.IdError
+
+/-- [wastebin_kernel::id::decode]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 138:0-152:1
+    Visibility: public -/
+def id.decode
+  (value : Slice Std.U8) : Result (core.result.Result id.Id id.IdError) := do
+  let i := Slice.len value
+  if i = 6#usize
+  then
+    let o ← id.decode32 value
+    match o with
+    | none => ok (core.result.Result.Err id.IdError.IllegalCharacters)
+    | some n => ok (core.result.Result.Ok (id.Id.Id32 n))
+  else
+    let i1 := Slice.len value
+    if i1 = 11#usize
+    then
+      let o ← id.decode64 value
+      match o with
+      | none => ok (core.result.Result.Err id.IdError.IllegalCharacters)
+      | some n => ok (core.result.Result.Ok (id.Id.Id64 n))
+    else ok (core.result.Result.Err id.IdError.WrongSize)
+
+/-- [wastebin_kernel::id::parse_key]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 188:0-206:1
+    Visibility: public -/
+def id.parse_key
+  (value : Slice Std.U8) : Result (core.result.Result id.Key id.IdError) := do
+  let o ← id.find_dot value
+  match o with
+  | none =>
+    let r ← id.decode value
+    match r with
+    | core.result.Result.Ok id =>
+      ok (core.result.Result.Ok { id, ext := none })
+    | core.result.Result.Err e => ok (core.result.Result.Err e)
+  | some i =>
+    let i1 ← i + 1#usize
+    let i2 := Slice.len value
+    let ext ← id.sub value i1 i2
+    let s := alloc.vec.Vec.deref ext
+    let b ← ext.valid_extension s
+    if b
+    then
+      let head ← id.sub value 0#usize i
+      let s1 := alloc.vec.Vec.deref head
+      let r ← id.decode s1
+      match r with
+      | core.result.Result.Ok id =>
+        ok (core.result.Result.Ok { id, ext := (some ext) })
+      | core.result.Result.Err e => ok (core.result.Result.Err e)
+    else ok (core.result.Result.Err id.IdError.IllegalCharacters)
+
+/-- [wastebin_kernel::id::to_i64]:
+    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 31:0-36:1
+    Visibility: public -/
+def id.to_i64 (id : id.Id) : Result Std.I64 := do
+  match id with
+  | id.Id.Id32 n => ok (UScalar.hcast .I64 n)
+  | id.Id.Id64 n => ok n
+
+/-- [wastebin_kernel::handlers::view]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 114:0-152:1
+    Visibility: public -/
+def handlers.view
+  (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8) (now : Std.I64)
+  (req : handlers.ViewRequest) :
+  Result ((alloc.vec.Vec store.Row) × handlers.View)
+  := do
+  match req.claim with
+  | none =>
+    let (o, no_password) ←
+      match req.password with
+      | none => ok (none, true)
+      | some _ => ok (req.password, false)
+    let r ← id.parse_key path
+    match r with
+    | core.result.Result.Ok k =>
+      let id ← id.to_i64 k.id
+      let r1 ← store.get_metadata rows id
+      match r1 with
+      | core.result.Result.Ok m =>
+        if m.must_be_deleted
+        then
+          if req.confirmed
+          then
+            let (after, result) ← store.get rows id now o
+            match result with
+            | core.result.Result.Ok e =>
+              let (data, is_available, encrypted) ←
+                match e with
+                | store.Entry.Regular d => ok (d, true, false)
+                | store.Entry.Burned d => ok (d, false, false)
+                | store.Entry.Encrypted d =>
+                  ok (d, ¬ d.metadata.must_be_deleted, true)
+              let b ← handlers.can_delete req.uids data.metadata.uid
+              if req.cached
+              then
+                ok (after, handlers.View.Paste
+                  {
+                    data := data.data,
+                    title := data.metadata.title,
+                    can_delete := b,
+                    is_available,
+                    no_store := encrypted,
+                    cache_put := false
+                  })
+              else
+                if is_available
+                then
+                  ok (after, handlers.View.Paste
+                    {
+                      data := data.data,
+                      title := data.metadata.title,
+                      can_delete := b,
+                      is_available := true,
+                      no_store := encrypted,
+                      cache_put := no_password
+                    })
+                else
+                  ok (after, handlers.View.Paste
+                    {
+                      data := data.data,
+                      title := data.metadata.title,
+                      can_delete := b,
+                      is_available := false,
+                      no_store := encrypted,
+                      cache_put := false
+                    })
+            | core.result.Result.Err de =>
+              match de with
+              | store.DbError.Delete =>
+                let s ← handlers.db_status store.DbError.Delete
+                ok (after, handlers.View.Error s)
+              | store.DbError.NotFound =>
+                let s ← handlers.db_status store.DbError.NotFound
+                ok (after, handlers.View.Error s)
+              | store.DbError.NoPassword =>
+                ok (after, handlers.View.PasswordInput)
+              | store.DbError.Crypto =>
+                let s ← handlers.db_status store.DbError.Crypto
+                ok (after, handlers.View.Error s)
+          else
+            let v ←
+              alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+            ok (v, handlers.View.BurnConfirmation m.title)
+        else
+          let (after, result) ← store.get rows id now o
+          match result with
+          | core.result.Result.Ok e =>
+            let (data, is_available, encrypted) ←
+              match e with
+              | store.Entry.Regular d => ok (d, true, false)
+              | store.Entry.Burned d => ok (d, false, false)
+              | store.Entry.Encrypted d =>
+                ok (d, ¬ d.metadata.must_be_deleted, true)
+            let b ← handlers.can_delete req.uids data.metadata.uid
+            if req.cached
+            then
+              ok (after, handlers.View.Paste
+                {
+                  data := data.data,
+                  title := data.metadata.title,
+                  can_delete := b,
+                  is_available,
+                  no_store := encrypted,
+                  cache_put := false
+                })
+            else
+              if is_available
+              then
+                ok (after, handlers.View.Paste
+                  {
+                    data := data.data,
+                    title := data.metadata.title,
+                    can_delete := b,
+                    is_available := true,
+                    no_store := encrypted,
+                    cache_put := no_password
+                  })
+              else
+                ok (after, handlers.View.Paste
+                  {
+                    data := data.data,
+                    title := data.metadata.title,
+                    can_delete := b,
+                    is_available := false,
+                    no_store := encrypted,
+                    cache_put := false
+                  })
+          | core.result.Result.Err de =>
+            match de with
+            | store.DbError.Delete =>
+              let s ← handlers.db_status store.DbError.Delete
+              ok (after, handlers.View.Error s)
+            | store.DbError.NotFound =>
+              let s ← handlers.db_status store.DbError.NotFound
+              ok (after, handlers.View.Error s)
+            | store.DbError.NoPassword =>
+              ok (after, handlers.View.PasswordInput)
+            | store.DbError.Crypto =>
+              let s ← handlers.db_status store.DbError.Crypto
+              ok (after, handlers.View.Error s)
+      | core.result.Result.Err e =>
+        let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+        let s ← handlers.db_status e
+        ok (v, handlers.View.Error s)
+    | core.result.Result.Err _ =>
+      let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+      ok (v, handlers.View.Error handlers.Status.BadRequest)
+  | some c =>
+    let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+    let v1 ← handlers.handoff req.uids c
+    ok (v, handlers.View.Handoff v1)
+
+/-- [wastebin_kernel::handlers::Raw]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 156:0-162:1
+    Visibility: public -/
+@[discriminant isize]
+inductive handlers.Raw where
+| Content : Std.U64 → Option Std.U64 → Bool → handlers.Raw
+| PasswordInput : handlers.Raw
+| Error : handlers.Status → handlers.Raw
+
+/-- [wastebin_kernel::handlers::raw]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 167:0-180:1
+    Visibility: public -/
+def handlers.raw
+  (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8) (now : Std.I64)
+  (password : Option Std.U64) :
+  Result ((alloc.vec.Vec store.Row) × handlers.Raw)
+  := do
+  let r ← id.parse_key path
+  match r with
+  | core.result.Result.Ok k =>
+    let i ← id.to_i64 k.id
+    let (after, result) ← store.get rows i now password
+    match result with
+    | core.result.Result.Ok e =>
+      match e with
+      | store.Entry.Regular d =>
+        ok (after, handlers.Raw.Content d.data d.metadata.title false)
+      | store.Entry.Burned d =>
+        ok (after, handlers.Raw.Content d.data d.metadata.title false)
+      | store.Entry.Encrypted d =>
+        ok (after, handlers.Raw.Content d.data d.metadata.title true)
+    | core.result.Result.Err de =>
+      match de with
+      | store.DbError.Delete =>
+        let s ← handlers.db_status store.DbError.Delete
+        ok (after, handlers.Raw.Error s)
+      | store.DbError.NotFound =>
+        let s ← handlers.db_status store.DbError.NotFound
+        ok (after, handlers.Raw.Error s)
+      | store.DbError.NoPassword => ok (after, handlers.Raw.PasswordInput)
+      | store.DbError.Crypto =>
+        let s ← handlers.db_status store.DbError.Crypto
+        ok (after, handlers.Raw.Error s)
+  | core.result.Result.Err _ =>
+    let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+    ok (v, handlers.Raw.Error handlers.Status.BadRequest)
+
+/-- [wastebin_kernel::handlers::Qr]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 184:0-188:1
+    Visibility: public -/
+@[discriminant isize]
+inductive handlers.Qr where
+| Page : Option Std.U64 → Option Std.I64 → Bool → handlers.Qr
+| Error : handlers.Status → handlers.Qr
+
+/-- [wastebin_kernel::handlers::qr]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 192:0-201:1
+    Visibility: public -/
+def handlers.qr
+  (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8)
+  (uids : Option (alloc.vec.Vec Std.I64)) :
+  Result handlers.Qr
+  := do
+  let r ← id.parse_key path
+  match r with
+  | core.result.Result.Ok k =>
+    let i ← id.to_i64 k.id
+    let r1 ← store.get_metadata rows i
+    match r1 with
+    | core.result.Result.Ok m =>
+      let b ← handlers.can_delete uids m.uid
+      ok (handlers.Qr.Page m.title m.expires b)
+    | core.result.Result.Err e =>
+      let s ← handlers.db_status e
+      ok (handlers.Qr.Error s)
+  | core.result.Result.Err _ =>
+    ok (handlers.Qr.Error handlers.Status.BadRequest)
+
+/-- [wastebin_kernel::store::owned_by]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 234:0-239:1
+    Visibility: public -/
+def store.owned_by
+  (uid : Option Std.I64) (uids : Slice Std.I64) : Result Bool := do
+  match uid with
+  | none => ok false
+  | some u => store.contains_uid uids u
+
+/-- [wastebin_kernel::store::delete_for]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 250:4-258:5
+    Visibility: public -/
+@[rust_loop_body]
+def store.delete_for_loop.body
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (uids : Slice Std.I64)
+  (out : alloc.vec.Vec store.Row) (hit : Bool) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec store.Row) × Bool × Std.Usize)
+    ((alloc.vec.Vec store.Row) × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let r ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice store.Row)
+        rows i
+    let (out1, hit1) ←
+      if r.id = id
+      then
+        do
+        let b ← store.owned_by r.uid uids
+        if b
+        then ok (out, true)
+        else let out2 ← alloc.vec.Vec.push out r
+             ok (out2, hit)
+      else do
+           let out2 ← alloc.vec.Vec.push out r
+           ok (out2, hit)
+    let i2 ← i + 1#usize
+    ok (cont (out1, hit1, i2))
+  else ok (done (out, hit))
+
+/-- [wastebin_kernel::store::delete_for]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 250:4-258:5
+    Visibility: public -/
+@[rust_loop]
+def store.delete_for_loop
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (uids : Slice Std.I64)
+  (out : alloc.vec.Vec store.Row) (hit : Bool) (i : Std.Usize) :
+  Result ((alloc.vec.Vec store.Row) × Bool)
+  := do
+  loop
+    (fun (out1, hit1, i1) => store.delete_for_loop.body rows id uids out1 hit1
+      i1)
+    (out, hit, i)
+
+/-- [wastebin_kernel::store::delete_for]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 243:0-260:1
+    Visibility: public -/
+def store.delete_for
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (uids : Slice Std.I64) :
+  Result (core.result.Result (alloc.vec.Vec store.Row) store.DbError)
+  := do
+  let i := Slice.len uids
+  if i = 0#usize
+  then ok (core.result.Result.Err store.DbError.Delete)
+  else
+    let (out, hit) ←
+      store.delete_for_loop rows id uids (alloc.vec.Vec.new store.Row) false
+        0#usize
+    if hit
+    then ok (core.result.Result.Ok out)
+    else ok (core.result.Result.Err store.DbError.Delete)
+
+/-- [wastebin_kernel::handlers::delete_paste]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 207:0-220:1
+    Visibility: public -/
+def handlers.delete_paste
+  (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8)
+  (uids : Option (alloc.vec.Vec Std.I64)) :
+  Result ((alloc.vec.Vec store.Row) × (core.result.Result Unit
+    handlers.Status))
+  := do
+  match uids with
+  | none =>
+    let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+    ok (v, core.result.Result.Err handlers.Status.Forbidden)
+  | some us =>
+    let r ← id.decode path
+    match r with
+    | core.result.Result.Ok id =>
+      let i ← id.to_i64 id
+      let s := alloc.vec.Vec.deref us
+      let r1 ← store.delete_for rows i s
+      match r1 with
+      | core.result.Result.Ok out => ok (out, core.result.Result.Ok ())
+      | core.result.Result.Err e =>
+        let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+        let s1 ← handlers.db_status e
+        ok (v, core.result.Result.Err s1)
+    | core.result.Result.Err _ =>
+      let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+      ok (v, core.result.Result.Err handlers.Status.BadRequest)
+
+/-- [wastebin_kernel::handlers::form_owner]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 230:12-233:13
+    Visibility: public -/
+@[rust_loop_body]
+def handlers.form_owner_loop.body
+  (us : alloc.vec.Vec Std.I64) (list : alloc.vec.Vec Std.I64) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I64) × Std.Usize) (alloc.vec.Vec
+    Std.I64))
+  := do
+  let i1 := alloc.vec.Vec.len us
+  if i < i1
+  then
+    let i2 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I64) us i
+    let list1 ← alloc.vec.Vec.push list i2
+    let i3 ← i + 1#usize
+    ok (cont (list1, i3))
+  else ok (done list)
+
+/-- [wastebin_kernel::handlers::form_owner]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 230:12-233:13
+    Visibility: public -/
+@[rust_loop]
+def handlers.form_owner_loop
+  (us : alloc.vec.Vec Std.I64) (list : alloc.vec.Vec Std.I64) (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.I64)
+  := do
+  loop
+    (fun (list1, i1) => handlers.form_owner_loop.body us list1 i1)
+    (list, i)
+
+/-- [wastebin_kernel::handlers::form_owner]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 224:0-243:1
+    Visibility: public -/
+def handlers.form_owner
+  (uids : Option (alloc.vec.Vec Std.I64)) (fresh : Std.I64) :
+  Result (Std.I64 × (alloc.vec.Vec Std.I64))
+  := do
+  match uids with
+  | none =>
+    let i := alloc.vec.Vec.len (alloc.vec.Vec.new Std.I64)
+    if i > 0#usize
+    then
+      let primary ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I64)
+          (alloc.vec.Vec.new Std.I64) 0#usize
+      ok (primary, alloc.vec.Vec.new Std.I64)
+    else
+      let list ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.I64) fresh
+      ok (fresh, list)
+  | some us =>
+    let list ←
+      handlers.form_owner_loop us (alloc.vec.Vec.new Std.I64) 0#usize
+    let i := alloc.vec.Vec.len list
+    if i > 0#usize
+    then
+      let primary ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.I64)
+          list 0#usize
+      ok (primary, list)
+    else let list1 ← alloc.vec.Vec.push list fresh
+         ok (fresh, list1)
+
+/-- [wastebin_kernel::handlers::api_owner]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 247:0-252:1
+    Visibility: public -/
+def handlers.api_owner
+  (token : Option Std.I64) (fresh : Std.I64) : Result Std.I64 := do
+  match token with
+  | none => ok fresh
+  | some u => ok u
+
+/-- [wastebin_kernel::handlers::NewPaste]
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 257:0-264:1
+    Visibility: public -/
+structure handlers.NewPaste where
+  uid : Std.I64
+  burn : Option Bool
+  password : Option Std.U64
+  expires : Option Std.I64
+  data : Std.U64
+  title : Option Std.U64
+
+/-- [wastebin_kernel::handlers::id_taken]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 269:4-276:1
+    Visibility: public -/
+@[rust_loop_body]
+def handlers.id_taken_loop.body
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len rows
+  if i < i1
+  then
+    let r ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice store.Row)
+        rows i
+    if r.id = id
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [wastebin_kernel::handlers::id_taken]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 269:4-276:1
+    Visibility: public -/
+@[rust_loop]
+def handlers.id_taken_loop
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => handlers.id_taken_loop.body rows id i1)
+    i
+
+/-- [wastebin_kernel::handlers::id_taken]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 267:0-276:1
+    Visibility: public -/
+@[reducible]
+def handlers.id_taken
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) : Result Bool := do
+  handlers.id_taken_loop rows id 0#usize
+
+/-- [wastebin_kernel::handlers::insert]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 283:4-304:1
+    Visibility: public -/
+@[rust_loop_body]
+def handlers.insert_loop.body
+  (rows : alloc.vec.Vec store.Row) (ids : Slice Std.I64)
+  (p : handlers.NewPaste) (counter : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option (Std.I64 × (alloc.vec.Vec
+    store.Row))))
+  := do
+  let i := Slice.len ids
+  if counter < i
+  then
+    let id ← Slice.index_usize ids counter
+    let b ← handlers.id_taken rows id
+    if b
+    then
+      if counter >= 10#usize
+      then ok (done none)
+      else let counter1 ← counter + 1#usize
+           ok (cont counter1)
+    else
+      let out ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+      let out1 ←
+        alloc.vec.Vec.push out
+          ({
+             id,
+             uid := (some p.uid),
+             burn := p.burn,
+             secret := p.password,
+             expires := p.expires,
+             data := p.data,
+             title := p.title
+           } : store.Row)
+      ok (done (some (id, out1)))
+  else ok (done none)
+
+/-- [wastebin_kernel::handlers::insert]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 283:4-304:1
+    Visibility: public -/
+@[rust_loop]
+def handlers.insert_loop
+  (rows : alloc.vec.Vec store.Row) (ids : Slice Std.I64)
+  (p : handlers.NewPaste) (counter : Std.Usize) :
+  Result (Option (Std.I64 × (alloc.vec.Vec store.Row)))
+  := do
+  loop
+    (fun counter1 => handlers.insert_loop.body rows ids p counter1)
+    counter
+
+/-- [wastebin_kernel::handlers::insert]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 281:0-304:1
+    Visibility: public -/
+@[reducible]
+def handlers.insert
+  (rows : alloc.vec.Vec store.Row) (ids : Slice Std.I64)
+  (p : handlers.NewPaste) :
+  Result (Option (Std.I64 × (alloc.vec.Vec store.Row)))
+  := do
+  handlers.insert_loop rows ids p 0#usize
 
 /-- [wastebin_kernel::id::encode32]:
     Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 51:0-60:1
@@ -282,241 +1728,6 @@ def id.encode (id : id.Id) : Result (alloc.vec.Vec Std.U8) := do
   | id.Id.Id32 n => id.encode32 n
   | id.Id.Id64 n => id.encode64 n
 
-/-- [wastebin_kernel::id::acc32]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 88:0-93:1 -/
-def id.acc32
-  (n : Std.U32) (c : Std.U8) (shift : Std.U32) : Result (Option Std.U32) := do
-  let o ← id.char_bits c
-  match o with
-  | none => ok none
-  | some bits =>
-    let i ← n <<< shift
-    let i1 ← lift (UScalar.cast .U32 bits)
-    let i2 ← lift (i ||| i1)
-    ok (some i2)
-
-/-- [wastebin_kernel::id::acc64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 96:0-101:1 -/
-def id.acc64
-  (n : Std.I64) (c : Std.U8) (shift : Std.U32) : Result (Option Std.I64) := do
-  let o ← id.char_bits c
-  match o with
-  | none => ok none
-  | some bits =>
-    let i ← n <<< shift
-    let i1 ← lift (UScalar.hcast .I64 bits)
-    let i2 ← lift (i ||| i1)
-    ok (some i2)
-
-/-- [wastebin_kernel::id::decode32]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 108:4-117:1 -/
-@[rust_loop_body]
-def id.decode32_loop.body
-  (s : Slice Std.U8) (n : Std.U32) (pos : Std.Usize) :
-  Result (ControlFlow (Std.U32 × Std.Usize) (Option Std.U32))
-  := do
-  if pos < 6#usize
-  then
-    let shift ← if pos < 5#usize
-                  then ok 6#u32
-                  else ok 2#u32
-    let i ← Slice.index_usize s pos
-    let o ← id.acc32 n i shift
-    match o with
-    | none => ok (done none)
-    | some m => let pos1 ← pos + 1#usize
-                ok (cont (m, pos1))
-  else ok (done (some n))
-
-/-- [wastebin_kernel::id::decode32]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 108:4-117:1 -/
-@[rust_loop]
-def id.decode32_loop
-  (s : Slice Std.U8) (n : Std.U32) (pos : Std.Usize) :
-  Result (Option Std.U32)
-  := do
-  loop
-    (fun (n1, pos1) => id.decode32_loop.body s n1 pos1)
-    (n, pos)
-
-/-- [wastebin_kernel::id::decode32]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 105:0-117:1 -/
-@[reducible]
-def id.decode32 (s : Slice Std.U8) : Result (Option Std.U32) := do
-  id.decode32_loop s 0#u32 0#usize
-
-/-- [wastebin_kernel::id::decode64]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 124:4-133:1 -/
-@[rust_loop_body]
-def id.decode64_loop.body
-  (s : Slice Std.U8) (n : Std.I64) (pos : Std.Usize) :
-  Result (ControlFlow (Std.I64 × Std.Usize) (Option Std.I64))
-  := do
-  if pos < 11#usize
-  then
-    let shift ← if pos < 10#usize
-                  then ok 6#u32
-                  else ok 4#u32
-    let i ← Slice.index_usize s pos
-    let o ← id.acc64 n i shift
-    match o with
-    | none => ok (done none)
-    | some m => let pos1 ← pos + 1#usize
-                ok (cont (m, pos1))
-  else ok (done (some n))
-
-/-- [wastebin_kernel::id::decode64]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 124:4-133:1 -/
-@[rust_loop]
-def id.decode64_loop
-  (s : Slice Std.U8) (n : Std.I64) (pos : Std.Usize) :
-  Result (Option Std.I64)
-  := do
-  loop
-    (fun (n1, pos1) => id.decode64_loop.body s n1 pos1)
-    (n, pos)
-
-/-- [wastebin_kernel::id::decode64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 121:0-133:1 -/
-@[reducible]
-def id.decode64 (s : Slice Std.U8) : Result (Option Std.I64) := do
-  id.decode64_loop s 0#i64 0#usize
-
-/-- [wastebin_kernel::id::decode]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 138:0-152:1
-    Visibility: public -/
-def id.decode
-  (value : Slice Std.U8) : Result (core.result.Result id.Id id.IdError) := do
-  let i := Slice.len value
-  if i = 6#usize
-  then
-    let o ← id.decode32 value
-    match o with
-    | none => ok (core.result.Result.Err id.IdError.IllegalCharacters)
-    | some n => ok (core.result.Result.Ok (id.Id.Id32 n))
-  else
-    let i1 := Slice.len value
-    if i1 = 11#usize
-    then
-      let o ← id.decode64 value
-      match o with
-      | none => ok (core.result.Result.Err id.IdError.IllegalCharacters)
-      | some n => ok (core.result.Result.Ok (id.Id.Id64 n))
-    else ok (core.result.Result.Err id.IdError.WrongSize)
-
-/-- [wastebin_kernel::id::Key]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 156:0-159:1
-    Visibility: public -/
-structure id.Key where
-  id : id.Id
-  ext : Option (alloc.vec.Vec Std.U8)
-
-/-- [wastebin_kernel::id::find_dot]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 164:4-171:1
-    Visibility: public -/
-@[rust_loop_body]
-def id.find_dot_loop.body
-  (s : Slice Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize (Option Std.Usize))
-  := do
-  let i1 := Slice.len s
-  if i < i1
-  then
-    let i2 ← Slice.index_usize s i
-    if i2 = 46#u8
-    then ok (done (some i))
-    else let i3 ← i + 1#usize
-         ok (cont i3)
-  else ok (done none)
-
-/-- [wastebin_kernel::id::find_dot]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 164:4-171:1
-    Visibility: public -/
-@[rust_loop]
-def id.find_dot_loop
-  (s : Slice Std.U8) (i : Std.Usize) : Result (Option Std.Usize) := do
-  loop
-    (fun i1 => id.find_dot_loop.body s i1)
-    i
-
-/-- [wastebin_kernel::id::find_dot]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 162:0-171:1
-    Visibility: public -/
-@[reducible]
-def id.find_dot (s : Slice Std.U8) : Result (Option Std.Usize) := do
-  id.find_dot_loop s 0#usize
-
-/-- [wastebin_kernel::id::sub]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 177:4-180:5
-    Visibility: public -/
-@[rust_loop_body]
-def id.sub_loop.body
-  (s : Slice Std.U8) («to» : Std.Usize) (out : alloc.vec.Vec Std.U8)
-  (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
-    Std.U8))
-  := do
-  if i < «to»
-  then
-    let i1 ← Slice.index_usize s i
-    let out1 ← alloc.vec.Vec.push out i1
-    let i2 ← i + 1#usize
-    ok (cont (out1, i2))
-  else ok (done out)
-
-/-- [wastebin_kernel::id::sub]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 177:4-180:5
-    Visibility: public -/
-@[rust_loop]
-def id.sub_loop
-  (s : Slice Std.U8) («to» : Std.Usize) (out : alloc.vec.Vec Std.U8)
-  (i : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  loop
-    (fun (out1, i1) => id.sub_loop.body s «to» out1 i1)
-    (out, i)
-
-/-- [wastebin_kernel::id::sub]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 174:0-182:1
-    Visibility: public -/
-@[reducible]
-def id.sub
-  (s : Slice Std.U8) («from» : Std.Usize) («to» : Std.Usize) :
-  Result (alloc.vec.Vec Std.U8)
-  := do
-  id.sub_loop s «to» (alloc.vec.Vec.new Std.U8) «from»
-
-/-- [wastebin_kernel::id::parse_key]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 188:0-206:1
-    Visibility: public -/
-def id.parse_key
-  (value : Slice Std.U8) : Result (core.result.Result id.Key id.IdError) := do
-  let o ← id.find_dot value
-  match o with
-  | none =>
-    let r ← id.decode value
-    match r with
-    | core.result.Result.Ok id =>
-      ok (core.result.Result.Ok { id, ext := none })
-    | core.result.Result.Err e => ok (core.result.Result.Err e)
-  | some i =>
-    let i1 ← i + 1#usize
-    let i2 := Slice.len value
-    let ext ← id.sub value i1 i2
-    let s := alloc.vec.Vec.deref ext
-    let b ← ext.valid_extension s
-    if b
-    then
-      let head ← id.sub value 0#usize i
-      let s1 := alloc.vec.Vec.deref head
-      let r ← id.decode s1
-      match r with
-      | core.result.Result.Ok id =>
-        ok (core.result.Result.Ok { id, ext := (some ext) })
-      | core.result.Result.Err e => ok (core.result.Result.Err e)
-    else ok (core.result.Result.Err id.IdError.IllegalCharacters)
-
 /-- [wastebin_kernel::id::key_path]: loop body 0:
     Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 217:12-220:13
     Visibility: public -/
@@ -559,81 +1770,15 @@ def id.key_path (key : id.Key) : Result (alloc.vec.Vec Std.U8) := do
     let s1 ← alloc.vec.Vec.push s 46#u8
     id.key_path_loop s1 ext 0#usize
 
-/-- [wastebin_kernel::store::Row]
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 13:0-29:1
-    Visibility: public -/
-structure store.Row where
-  id : Std.I64
-  uid : Option Std.I64
-  burn : Option Bool
-  secret : Option Std.U64
-  expires : Option Std.I64
-  data : Std.U64
-  title : Option Std.U64
-
-/-- [wastebin_kernel::store::DbError]
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 33:0-42:1
-    Visibility: public -/
-@[discriminant isize]
-inductive store.DbError where
-| Delete : store.DbError
-| NotFound : store.DbError
-| NoPassword : store.DbError
-| Crypto : store.DbError
-
-/-- [wastebin_kernel::store::contains_uid]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 47:4-54:1
+/-- [wastebin_kernel::store::purge]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 267:4-273:5
     Visibility: public -/
 @[rust_loop_body]
-def store.contains_uid_loop.body
-  (uids : Slice Std.I64) (x : Std.I64) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len uids
-  if i < i1
-  then
-    let i2 ← Slice.index_usize uids i
-    if i2 = x
-    then ok (done true)
-    else let i3 ← i + 1#usize
-         ok (cont i3)
-  else ok (done false)
-
-/-- [wastebin_kernel::store::contains_uid]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 47:4-54:1
-    Visibility: public -/
-@[rust_loop]
-def store.contains_uid_loop
-  (uids : Slice Std.I64) (x : Std.I64) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => store.contains_uid_loop.body uids x i1)
-    i
-
-/-- [wastebin_kernel::store::contains_uid]:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 45:0-54:1
-    Visibility: public -/
-@[reducible]
-def store.contains_uid (uids : Slice Std.I64) (x : Std.I64) : Result Bool := do
-  store.contains_uid_loop uids x 0#usize
-
-/-- [wastebin_kernel::store::owned_by]:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 57:0-62:1
-    Visibility: public -/
-def store.owned_by
-  (uid : Option Std.I64) (uids : Slice Std.I64) : Result Bool := do
-  match uid with
-  | none => ok false
-  | some u => store.contains_uid uids u
-
-/-- [wastebin_kernel::store::delete_for]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 73:4-81:5
-    Visibility: public -/
-@[rust_loop_body]
-def store.delete_for_loop.body
-  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (uids : Slice Std.I64)
-  (out : alloc.vec.Vec store.Row) (hit : Bool) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec store.Row) × Bool × Std.Usize)
-    ((alloc.vec.Vec store.Row) × Bool))
+def store.purge_loop.body
+  (rows : alloc.vec.Vec store.Row) (now : Std.I64)
+  (out : alloc.vec.Vec store.Row) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec store.Row) × Std.Usize) (alloc.vec.Vec
+    store.Row))
   := do
   let i1 := alloc.vec.Vec.len rows
   if i < i1
@@ -641,67 +1786,35 @@ def store.delete_for_loop.body
     let r ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice store.Row)
         rows i
-    let (out1, hit1) ←
-      if r.id = id
-      then
-        do
-        let b ← store.owned_by r.uid uids
-        if b
-        then ok (out, true)
-        else let out2 ← alloc.vec.Vec.push out r
-             ok (out2, hit)
-      else do
-           let out2 ← alloc.vec.Vec.push out r
-           ok (out2, hit)
+    let b ← store.is_expired r now
+    let out1 ← if b
+                 then ok out
+                 else alloc.vec.Vec.push out r
     let i2 ← i + 1#usize
-    ok (cont (out1, hit1, i2))
-  else ok (done (out, hit))
+    ok (cont (out1, i2))
+  else ok (done out)
 
-/-- [wastebin_kernel::store::delete_for]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 73:4-81:5
+/-- [wastebin_kernel::store::purge]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 267:4-273:5
     Visibility: public -/
 @[rust_loop]
-def store.delete_for_loop
-  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (uids : Slice Std.I64)
-  (out : alloc.vec.Vec store.Row) (hit : Bool) (i : Std.Usize) :
-  Result ((alloc.vec.Vec store.Row) × Bool)
+def store.purge_loop
+  (rows : alloc.vec.Vec store.Row) (now : Std.I64)
+  (out : alloc.vec.Vec store.Row) (i : Std.Usize) :
+  Result (alloc.vec.Vec store.Row)
   := do
   loop
-    (fun (out1, hit1, i1) => store.delete_for_loop.body rows id uids out1 hit1
-      i1)
-    (out, hit, i)
+    (fun (out1, i1) => store.purge_loop.body rows now out1 i1)
+    (out, i)
 
-/-- [wastebin_kernel::store::delete_for]:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 66:0-83:1
+/-- [wastebin_kernel::store::purge]:
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 264:0-275:1
     Visibility: public -/
-def store.delete_for
-  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (uids : Slice Std.I64) :
-  Result (core.result.Result (alloc.vec.Vec store.Row) store.DbError)
+@[reducible]
+def store.purge
+  (rows : alloc.vec.Vec store.Row) (now : Std.I64) :
+  Result (alloc.vec.Vec store.Row)
   := do
-  let i := Slice.len uids
-  if i = 0#usize
-  then ok (core.result.Result.Err store.DbError.Delete)
-  else
-    let (out, hit) ←
-      store.delete_for_loop rows id uids (alloc.vec.Vec.new store.Row) false
-        0#usize
-    if hit
-    then ok (core.result.Result.Ok out)
-    else ok (core.result.Result.Err store.DbError.Delete)
-
-/-- [wastebin_kernel::store::can_delete]:
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 87:0-95:1
-    Visibility: public -/
-def store.can_delete
-  (uids : Option (alloc.vec.Vec Std.I64)) (owner : Option Std.I64) :
-  Result Bool
-  := do
-  match uids with
-  | none => ok false
-  | some us =>
-    match owner with
-    | none => ok false
-    | some o => let s := alloc.vec.Vec.deref us
-                store.contains_uid s o
+  store.purge_loop rows now (alloc.vec.Vec.new store.Row) 0#usize
 
 end wastebin_kernel
