@@ -4908,6 +4908,7 @@ name = "windmill-difftest"
 version = "0.1.0"
 dependencies = [
  "serde_json",
+ "uuid",
  "windmill-api-auth",
  "windmill-common",
  "windmill-kernel",

@@ -7,9 +7,9 @@
 //! Inputs come from a fixed-seed splitmix64, so every run checks the same cases. This
 //! is evidence of agreement on the tested inputs, not a proof of equivalence.
 
-pub mod upstream_private {
-    include!(concat!(env!("OUT_DIR"), "/scopes_private.rs"));
-}
+// The private matchers live at the crate root so that the test modules (children) may
+// call them.
+include!(concat!(env!("OUT_DIR"), "/scopes_private.rs"));
 
 /// splitmix64.
 pub struct Rng(pub u64);

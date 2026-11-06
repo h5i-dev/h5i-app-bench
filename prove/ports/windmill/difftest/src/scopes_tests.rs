@@ -1,5 +1,5 @@
 //! `scopes` against `windmill_common::scopes`.
-use crate::upstream_private as up;
+use crate as up;
 use crate::{b, bl, random_resources, random_scope, Rng};
 use windmill_common::scopes::{intersect_job_token_scopes, scope_contains, ScopeDefinition};
 use windmill_kernel::scopes as k;
