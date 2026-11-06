@@ -61,20 +61,26 @@ pub fn alert_id_literals() -> Vec<Vec<u8>> {
     out
 }
 
-fn assistant_scope_0(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r0() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"_search"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r1() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
     s.push(lit(b"_values"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r2() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -82,7 +88,10 @@ fn assistant_scope_0(out: &mut Vec<ScopeRoute>) {
     let mut m = Vec::new();
     m.push(Method::Get);
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r3() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"prometheus"));
@@ -92,7 +101,10 @@ fn assistant_scope_0(out: &mut Vec<ScopeRoute>) {
     let mut m = Vec::new();
     m.push(Method::Get);
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r4() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"prometheus"));
@@ -102,13 +114,19 @@ fn assistant_scope_0(out: &mut Vec<ScopeRoute>) {
     let mut m = Vec::new();
     m.push(Method::Get);
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r5() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"streams"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r6() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"streams"));
@@ -116,36 +134,48 @@ fn assistant_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"schema"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r7() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"functions"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
 }
 
-fn assistant_scope_1(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r8() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"dashboards"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r9() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"dashboards"));
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r10() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"folders"));
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r11() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"folders"));
@@ -153,7 +183,10 @@ fn assistant_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r12() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"folders"));
@@ -162,20 +195,29 @@ fn assistant_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r13() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r14() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r15() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -183,10 +225,10 @@ fn assistant_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"groups"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
 }
 
-fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r16() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -195,7 +237,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"transitions"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r17() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -204,7 +249,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"events"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r18() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -214,7 +262,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"runs"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r19() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -225,7 +276,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r20() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -234,7 +288,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"update"));
     let mut m = Vec::new();
     m.push(Method::Patch);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r21() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -244,7 +301,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"comment"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r22() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -252,7 +312,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r23() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -260,10 +323,10 @@ fn assistant_scope_2(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"latest"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
 }
 
-fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r24() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -271,7 +334,10 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"latest_stream"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r25() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -279,7 +345,10 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"session"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r26() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -288,7 +357,10 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"details"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r27() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -296,7 +368,10 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"user"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r28() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -304,7 +379,10 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"time_range"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r29() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -313,7 +391,10 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"details"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r30() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(Seg::Stream);
@@ -322,17 +403,20 @@ fn assistant_scope_3(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"dag"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
-    let mut s = Vec::new();
-    s.push(Seg::Param);
-    s.push(lit(b"oncall"));
-    s.push(lit(b"teams"));
-    let mut m = Vec::new();
-    m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
 }
 
-fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r31() -> ScopeRoute {
+    let mut s = Vec::new();
+    s.push(Seg::Param);
+    s.push(lit(b"oncall"));
+    s.push(lit(b"teams"));
+    let mut m = Vec::new();
+    m.push(Method::Get);
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r32() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -340,7 +424,10 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r33() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -349,7 +436,10 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"members"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r34() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -358,7 +448,10 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"schedule"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r35() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -367,7 +460,10 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"on-call"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r36() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -376,7 +472,10 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"overrides"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r37() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -385,7 +484,10 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"resolved-schedule"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r38() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -394,17 +496,20 @@ fn assistant_scope_4(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"overview"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
-    let mut s = Vec::new();
-    s.push(Seg::Param);
-    s.push(lit(b"oncall"));
-    s.push(lit(b"responses"));
-    let mut m = Vec::new();
-    m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
 }
 
-fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r39() -> ScopeRoute {
+    let mut s = Vec::new();
+    s.push(Seg::Param);
+    s.push(lit(b"oncall"));
+    s.push(lit(b"responses"));
+    let mut m = Vec::new();
+    m.push(Method::Get);
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r40() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -412,7 +517,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r41() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -421,7 +529,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"history"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r42() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -430,7 +541,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"escalation"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r43() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -439,7 +553,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"responses"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r44() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -448,7 +565,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"acknowledge"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r45() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -457,7 +577,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"snooze"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r46() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -466,7 +589,10 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"unsnooze"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r47() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -475,31 +601,40 @@ fn assistant_scope_5(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"resolve"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
 }
 
-fn assistant_scope_6(out: &mut Vec<ScopeRoute>) {
+fn assistant_scope_r48() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"ai"));
     s.push(lit(b"chat"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r49() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"ai"));
     s.push(lit(b"chat_stream"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r50() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"ai"));
     s.push(lit(b"feedback"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r51() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"ai"));
@@ -507,7 +642,10 @@ fn assistant_scope_6(out: &mut Vec<ScopeRoute>) {
     s.push(Seg::Param);
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r52() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"ai"));
@@ -516,20 +654,29 @@ fn assistant_scope_6(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"cancel"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r53() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"mcp"));
     let mut m = Vec::new();
     m.push(Method::Get);
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn assistant_scope_r54() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"downtimes"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn assistant_scope_r55() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"downtimes"));
@@ -537,29 +684,81 @@ fn assistant_scope_6(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"cancel"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
 }
 
 pub fn assistant_scope() -> Vec<ScopeRoute> {
     let mut out = Vec::new();
-    assistant_scope_0(&mut out);
-    assistant_scope_1(&mut out);
-    assistant_scope_2(&mut out);
-    assistant_scope_3(&mut out);
-    assistant_scope_4(&mut out);
-    assistant_scope_5(&mut out);
-    assistant_scope_6(&mut out);
+    out.push(assistant_scope_r0());
+    out.push(assistant_scope_r1());
+    out.push(assistant_scope_r2());
+    out.push(assistant_scope_r3());
+    out.push(assistant_scope_r4());
+    out.push(assistant_scope_r5());
+    out.push(assistant_scope_r6());
+    out.push(assistant_scope_r7());
+    out.push(assistant_scope_r8());
+    out.push(assistant_scope_r9());
+    out.push(assistant_scope_r10());
+    out.push(assistant_scope_r11());
+    out.push(assistant_scope_r12());
+    out.push(assistant_scope_r13());
+    out.push(assistant_scope_r14());
+    out.push(assistant_scope_r15());
+    out.push(assistant_scope_r16());
+    out.push(assistant_scope_r17());
+    out.push(assistant_scope_r18());
+    out.push(assistant_scope_r19());
+    out.push(assistant_scope_r20());
+    out.push(assistant_scope_r21());
+    out.push(assistant_scope_r22());
+    out.push(assistant_scope_r23());
+    out.push(assistant_scope_r24());
+    out.push(assistant_scope_r25());
+    out.push(assistant_scope_r26());
+    out.push(assistant_scope_r27());
+    out.push(assistant_scope_r28());
+    out.push(assistant_scope_r29());
+    out.push(assistant_scope_r30());
+    out.push(assistant_scope_r31());
+    out.push(assistant_scope_r32());
+    out.push(assistant_scope_r33());
+    out.push(assistant_scope_r34());
+    out.push(assistant_scope_r35());
+    out.push(assistant_scope_r36());
+    out.push(assistant_scope_r37());
+    out.push(assistant_scope_r38());
+    out.push(assistant_scope_r39());
+    out.push(assistant_scope_r40());
+    out.push(assistant_scope_r41());
+    out.push(assistant_scope_r42());
+    out.push(assistant_scope_r43());
+    out.push(assistant_scope_r44());
+    out.push(assistant_scope_r45());
+    out.push(assistant_scope_r46());
+    out.push(assistant_scope_r47());
+    out.push(assistant_scope_r48());
+    out.push(assistant_scope_r49());
+    out.push(assistant_scope_r50());
+    out.push(assistant_scope_r51());
+    out.push(assistant_scope_r52());
+    out.push(assistant_scope_r53());
+    out.push(assistant_scope_r54());
+    out.push(assistant_scope_r55());
     out
 }
 
-fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
+fn slack_action_scope_r0() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
     s.push(Seg::AlertId);
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r1() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -567,7 +766,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"acks"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r2() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -575,7 +777,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"groups"));
     let mut m = Vec::new();
     m.push(Method::Get);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r3() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -583,7 +788,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"ack"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r4() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -591,7 +799,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"unack"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r5() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -599,7 +810,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"mute"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r6() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -609,7 +823,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"extend"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r7() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -619,10 +836,10 @@ fn slack_action_scope_0(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"cancel"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
 }
 
-fn slack_action_scope_1(out: &mut Vec<ScopeRoute>) {
+fn slack_action_scope_r8() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"alerts"));
@@ -631,7 +848,10 @@ fn slack_action_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"update"));
     let mut m = Vec::new();
     m.push(Method::Patch);
-    out.push(ScopeRoute { v2: true, segments: s, methods: m });
+    ScopeRoute { v2: true, segments: s, methods: m }
+}
+
+fn slack_action_scope_r9() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -640,7 +860,10 @@ fn slack_action_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"resolve"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn slack_action_scope_r10() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -649,7 +872,10 @@ fn slack_action_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"snooze"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn slack_action_scope_r11() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -658,7 +884,10 @@ fn slack_action_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"acknowledge"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
+}
+
+fn slack_action_scope_r12() -> ScopeRoute {
     let mut s = Vec::new();
     s.push(Seg::Param);
     s.push(lit(b"oncall"));
@@ -667,12 +896,23 @@ fn slack_action_scope_1(out: &mut Vec<ScopeRoute>) {
     s.push(lit(b"unacknowledge"));
     let mut m = Vec::new();
     m.push(Method::Post);
-    out.push(ScopeRoute { v2: false, segments: s, methods: m });
+    ScopeRoute { v2: false, segments: s, methods: m }
 }
 
 pub fn slack_action_scope() -> Vec<ScopeRoute> {
     let mut out = Vec::new();
-    slack_action_scope_0(&mut out);
-    slack_action_scope_1(&mut out);
+    out.push(slack_action_scope_r0());
+    out.push(slack_action_scope_r1());
+    out.push(slack_action_scope_r2());
+    out.push(slack_action_scope_r3());
+    out.push(slack_action_scope_r4());
+    out.push(slack_action_scope_r5());
+    out.push(slack_action_scope_r6());
+    out.push(slack_action_scope_r7());
+    out.push(slack_action_scope_r8());
+    out.push(slack_action_scope_r9());
+    out.push(slack_action_scope_r10());
+    out.push(slack_action_scope_r11());
+    out.push(slack_action_scope_r12());
     out
 }

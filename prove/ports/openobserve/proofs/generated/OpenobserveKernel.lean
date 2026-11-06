@@ -637,12 +637,129 @@ def tables.lit (s : Slice Std.U8) : Result delegation.Seg := do
   let v ← alloc.slice.Slice.to_vec core.clone.CloneU8 s
   ok (delegation.Seg.Lit v)
 
-/-- [openobserve_kernel::tables::slack_action_scope_1]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 625:0-671:1 -/
-def tables.slack_action_scope_1
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::slack_action_scope_r12]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 890:0-900:1 -/
+def tables.slack_action_scope_r12 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 13#usize [
+        117#u8, 110#u8, 97#u8, 99#u8, 107#u8, 110#u8, 111#u8, 119#u8, 108#u8,
+        101#u8, 100#u8, 103#u8, 101#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r11]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 878:0-888:1 -/
+def tables.slack_action_scope_r11 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        97#u8, 99#u8, 107#u8, 110#u8, 111#u8, 119#u8, 108#u8, 101#u8, 100#u8,
+        103#u8, 101#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r10]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 866:0-876:1 -/
+def tables.slack_action_scope_r10 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 115#u8, 110#u8, 111#u8, 111#u8, 122#u8, 101#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r9]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 854:0-864:1 -/
+def tables.slack_action_scope_r9 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        114#u8, 101#u8, 115#u8, 111#u8, 108#u8, 118#u8, 101#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r8]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 842:0-852:1 -/
+def tables.slack_action_scope_r8 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -666,110 +783,168 @@ def tables.slack_action_scope_1
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Patch
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := true, segments := s10, methods := m } :
-      delegation.ScopeRoute)
-  let s11 ←
+  ok { v2 := true, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r7]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 829:0-840:1 -/
+def tables.slack_action_scope_r7 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s12 ← tables.lit s11
-  let s13 ← alloc.vec.Vec.push s s12
-  let s14 ←
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
     lift (Array.to_slice
-      (Array.make 9#usize [
-        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
-        ]))
-  let s15 ← tables.lit s14
-  let s16 ← alloc.vec.Vec.push s13 s15
-  let s17 ← alloc.vec.Vec.push s16 delegation.Seg.Param
-  let s18 ←
+      (Array.make 4#usize [ 109#u8, 117#u8, 116#u8, 101#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let s8 ← alloc.vec.Vec.push s7 delegation.Seg.Param
+  let s9 ←
     lift (Array.to_slice
-      (Array.make 7#usize [
-        114#u8, 101#u8, 115#u8, 111#u8, 108#u8, 118#u8, 101#u8
-        ]))
-  let s19 ← tables.lit s18
-  let s20 ← alloc.vec.Vec.push s17 s19
-  let m1 ←
+      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ]))
+  let s10 ← tables.lit s9
+  let s11 ← alloc.vec.Vec.push s8 s10
+  let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Post
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s20, methods := m1 } :
-      delegation.ScopeRoute)
-  let s21 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s22 ← tables.lit s21
-  let s23 ← alloc.vec.Vec.push s s22
-  let s24 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
-        ]))
-  let s25 ← tables.lit s24
-  let s26 ← alloc.vec.Vec.push s23 s25
-  let s27 ← alloc.vec.Vec.push s26 delegation.Seg.Param
-  let s28 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 115#u8, 110#u8, 111#u8, 111#u8, 122#u8, 101#u8 ]))
-  let s29 ← tables.lit s28
-  let s30 ← alloc.vec.Vec.push s27 s29
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := false, segments := s30, methods := m1 } :
-      delegation.ScopeRoute)
-  let s31 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s32 ← tables.lit s31
-  let s33 ← alloc.vec.Vec.push s s32
-  let s34 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
-        ]))
-  let s35 ← tables.lit s34
-  let s36 ← alloc.vec.Vec.push s33 s35
-  let s37 ← alloc.vec.Vec.push s36 delegation.Seg.Param
-  let s38 ←
-    lift (Array.to_slice
-      (Array.make 11#usize [
-        97#u8, 99#u8, 107#u8, 110#u8, 111#u8, 119#u8, 108#u8, 101#u8, 100#u8,
-        103#u8, 101#u8
-        ]))
-  let s39 ← tables.lit s38
-  let s40 ← alloc.vec.Vec.push s37 s39
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := false, segments := s40, methods := m1 } :
-      delegation.ScopeRoute)
-  let s41 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s42 ← tables.lit s41
-  let s43 ← alloc.vec.Vec.push s s42
-  let s44 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
-        ]))
-  let s45 ← tables.lit s44
-  let s46 ← alloc.vec.Vec.push s43 s45
-  let s47 ← alloc.vec.Vec.push s46 delegation.Seg.Param
-  let s48 ←
-    lift (Array.to_slice
-      (Array.make 13#usize [
-        117#u8, 110#u8, 97#u8, 99#u8, 107#u8, 110#u8, 111#u8, 119#u8, 108#u8,
-        101#u8, 100#u8, 103#u8, 101#u8
-        ]))
-  let s49 ← tables.lit s48
-  let s50 ← alloc.vec.Vec.push s47 s49
-  alloc.vec.Vec.push out4 ({ v2 := false, segments := s50, methods := m1 } :
-    delegation.ScopeRoute)
+  ok { v2 := true, segments := s11, methods := m }
 
-/-- [openobserve_kernel::tables::slack_action_scope_0]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 555:0-623:1 -/
-def tables.slack_action_scope_0
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::slack_action_scope_r6]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 816:0-827:1 -/
+def tables.slack_action_scope_r6 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 109#u8, 117#u8, 116#u8, 101#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let s8 ← alloc.vec.Vec.push s7 delegation.Seg.Param
+  let s9 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 100#u8 ]))
+  let s10 ← tables.lit s9
+  let s11 ← alloc.vec.Vec.push s8 s10
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s11, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r5]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 805:0-814:1 -/
+def tables.slack_action_scope_r5 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 109#u8, 117#u8, 116#u8, 101#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r4]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 794:0-803:1 -/
+def tables.slack_action_scope_r4 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 117#u8, 110#u8, 97#u8, 99#u8, 107#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r3]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 783:0-792:1 -/
+def tables.slack_action_scope_r3 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
+    lift (Array.to_slice (Array.make 3#usize [ 97#u8, 99#u8, 107#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r2]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 772:0-781:1 -/
+def tables.slack_action_scope_r2 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r1]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 761:0-770:1 -/
+def tables.slack_action_scope_r1 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.AlertId
+  let s5 ←
+    lift (Array.to_slice (Array.make 4#usize [ 97#u8, 99#u8, 107#u8, 115#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::slack_action_scope_r0]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 751:0-759:1 -/
+def tables.slack_action_scope_r0 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -781,135 +956,184 @@ def tables.slack_action_scope_0
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Get
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := true, segments := s4, methods := m } :
-      delegation.ScopeRoute)
-  let s5 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s6 ← tables.lit s5
-  let s7 ← alloc.vec.Vec.push s s6
-  let s8 ← alloc.vec.Vec.push s7 delegation.Seg.AlertId
-  let s9 ←
-    lift (Array.to_slice (Array.make 4#usize [ 97#u8, 99#u8, 107#u8, 115#u8 ]))
-  let s10 ← tables.lit s9
-  let s11 ← alloc.vec.Vec.push s8 s10
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := true, segments := s11, methods := m } :
-      delegation.ScopeRoute)
-  let s12 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s13 ← tables.lit s12
-  let s14 ← alloc.vec.Vec.push s s13
-  let s15 ← alloc.vec.Vec.push s14 delegation.Seg.AlertId
-  let s16 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8 ]))
-  let s17 ← tables.lit s16
-  let s18 ← alloc.vec.Vec.push s15 s17
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := true, segments := s18, methods := m } :
-      delegation.ScopeRoute)
-  let s19 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s20 ← tables.lit s19
-  let s21 ← alloc.vec.Vec.push s s20
-  let s22 ← alloc.vec.Vec.push s21 delegation.Seg.AlertId
-  let s23 ←
-    lift (Array.to_slice (Array.make 3#usize [ 97#u8, 99#u8, 107#u8 ]))
-  let s24 ← tables.lit s23
-  let s25 ← alloc.vec.Vec.push s22 s24
-  let m1 ←
-    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
-      delegation.Method.Post
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := true, segments := s25, methods := m1 } :
-      delegation.ScopeRoute)
-  let s26 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s27 ← tables.lit s26
-  let s28 ← alloc.vec.Vec.push s s27
-  let s29 ← alloc.vec.Vec.push s28 delegation.Seg.AlertId
-  let s30 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 117#u8, 110#u8, 97#u8, 99#u8, 107#u8 ]))
-  let s31 ← tables.lit s30
-  let s32 ← alloc.vec.Vec.push s29 s31
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := true, segments := s32, methods := m1 } :
-      delegation.ScopeRoute)
-  let s33 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s34 ← tables.lit s33
-  let s35 ← alloc.vec.Vec.push s s34
-  let s36 ← alloc.vec.Vec.push s35 delegation.Seg.AlertId
-  let s37 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 109#u8, 117#u8, 116#u8, 101#u8 ]))
-  let s38 ← tables.lit s37
-  let s39 ← alloc.vec.Vec.push s36 s38
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := true, segments := s39, methods := m1 } :
-      delegation.ScopeRoute)
-  let s40 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s41 ← tables.lit s40
-  let s42 ← alloc.vec.Vec.push s s41
-  let s43 ← alloc.vec.Vec.push s42 delegation.Seg.AlertId
-  let s44 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 109#u8, 117#u8, 116#u8, 101#u8 ]))
-  let s45 ← tables.lit s44
-  let s46 ← alloc.vec.Vec.push s43 s45
-  let s47 ← alloc.vec.Vec.push s46 delegation.Seg.Param
-  let s48 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 101#u8, 120#u8, 116#u8, 101#u8, 110#u8, 100#u8 ]))
-  let s49 ← tables.lit s48
-  let s50 ← alloc.vec.Vec.push s47 s49
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := true, segments := s50, methods := m1 } :
-      delegation.ScopeRoute)
-  let s51 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s52 ← tables.lit s51
-  let s53 ← alloc.vec.Vec.push s s52
-  let s54 ← alloc.vec.Vec.push s53 delegation.Seg.AlertId
-  let s55 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 109#u8, 117#u8, 116#u8, 101#u8 ]))
-  let s56 ← tables.lit s55
-  let s57 ← alloc.vec.Vec.push s54 s56
-  let s58 ← alloc.vec.Vec.push s57 delegation.Seg.Param
-  let s59 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ]))
-  let s60 ← tables.lit s59
-  let s61 ← alloc.vec.Vec.push s58 s60
-  alloc.vec.Vec.push out7 ({ v2 := true, segments := s61, methods := m1 } :
-    delegation.ScopeRoute)
+  ok { v2 := true, segments := s4, methods := m }
 
 /-- [openobserve_kernel::tables::slack_action_scope]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 673:0-678:1
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 902:0-918:1
     Visibility: public -/
 def tables.slack_action_scope
   : Result (alloc.vec.Vec delegation.ScopeRoute) := do
-  let out ←
-    tables.slack_action_scope_0 (alloc.vec.Vec.new delegation.ScopeRoute)
-  tables.slack_action_scope_1 out
+  let sr ← tables.slack_action_scope_r0
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new delegation.ScopeRoute) sr
+  let sr1 ← tables.slack_action_scope_r1
+  let out1 ← alloc.vec.Vec.push out sr1
+  let sr2 ← tables.slack_action_scope_r2
+  let out2 ← alloc.vec.Vec.push out1 sr2
+  let sr3 ← tables.slack_action_scope_r3
+  let out3 ← alloc.vec.Vec.push out2 sr3
+  let sr4 ← tables.slack_action_scope_r4
+  let out4 ← alloc.vec.Vec.push out3 sr4
+  let sr5 ← tables.slack_action_scope_r5
+  let out5 ← alloc.vec.Vec.push out4 sr5
+  let sr6 ← tables.slack_action_scope_r6
+  let out6 ← alloc.vec.Vec.push out5 sr6
+  let sr7 ← tables.slack_action_scope_r7
+  let out7 ← alloc.vec.Vec.push out6 sr7
+  let sr8 ← tables.slack_action_scope_r8
+  let out8 ← alloc.vec.Vec.push out7 sr8
+  let sr9 ← tables.slack_action_scope_r9
+  let out9 ← alloc.vec.Vec.push out8 sr9
+  let sr10 ← tables.slack_action_scope_r10
+  let out10 ← alloc.vec.Vec.push out9 sr10
+  let sr11 ← tables.slack_action_scope_r11
+  let out11 ← alloc.vec.Vec.push out10 sr11
+  let sr12 ← tables.slack_action_scope_r12
+  alloc.vec.Vec.push out11 sr12
 
-/-- [openobserve_kernel::tables::assistant_scope_6]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 481:0-541:1 -/
-def tables.assistant_scope_6
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r55]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 679:0-688:1 -/
+def tables.assistant_scope_r55 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        100#u8, 111#u8, 119#u8, 110#u8, 116#u8, 105#u8, 109#u8, 101#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r54]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 670:0-677:1 -/
+def tables.assistant_scope_r54 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        100#u8, 111#u8, 119#u8, 110#u8, 116#u8, 105#u8, 109#u8, 101#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s3, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r53]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 660:0-668:1 -/
+def tables.assistant_scope_r53 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice (Array.make 3#usize [ 109#u8, 99#u8, 112#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  let m1 ← alloc.vec.Vec.push m delegation.Method.Post
+  ok { v2 := false, segments := s3, methods := m1 }
+
+/-- [openobserve_kernel::tables::assistant_scope_r52]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 648:0-658:1 -/
+def tables.assistant_scope_r52 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 99#u8, 104#u8, 97#u8, 116#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r51]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 637:0-646:1 -/
+def tables.assistant_scope_r51 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 114#u8, 109#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r50]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 627:0-635:1 -/
+def tables.assistant_scope_r50 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        102#u8, 101#u8, 101#u8, 100#u8, 98#u8, 97#u8, 99#u8, 107#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s6, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r49]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 617:0-625:1 -/
+def tables.assistant_scope_r49 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 11#usize [
+        99#u8, 104#u8, 97#u8, 116#u8, 95#u8, 115#u8, 116#u8, 114#u8, 101#u8,
+        97#u8, 109#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s6, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r48]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 607:0-615:1 -/
+def tables.assistant_scope_r48 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
@@ -922,110 +1146,11 @@ def tables.assistant_scope_6
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Post
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := false, segments := s6, methods := m } :
-      delegation.ScopeRoute)
-  let s7 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
-  let s8 ← tables.lit s7
-  let s9 ← alloc.vec.Vec.push s s8
-  let s10 ←
-    lift (Array.to_slice
-      (Array.make 11#usize [
-        99#u8, 104#u8, 97#u8, 116#u8, 95#u8, 115#u8, 116#u8, 114#u8, 101#u8,
-        97#u8, 109#u8
-        ]))
-  let s11 ← tables.lit s10
-  let s12 ← alloc.vec.Vec.push s9 s11
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s12, methods := m } :
-      delegation.ScopeRoute)
-  let s13 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
-  let s14 ← tables.lit s13
-  let s15 ← alloc.vec.Vec.push s s14
-  let s16 ←
-    lift (Array.to_slice
-      (Array.make 8#usize [
-        102#u8, 101#u8, 101#u8, 100#u8, 98#u8, 97#u8, 99#u8, 107#u8
-        ]))
-  let s17 ← tables.lit s16
-  let s18 ← alloc.vec.Vec.push s15 s17
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := false, segments := s18, methods := m } :
-      delegation.ScopeRoute)
-  let s19 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
-  let s20 ← tables.lit s19
-  let s21 ← alloc.vec.Vec.push s s20
-  let s22 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        99#u8, 111#u8, 110#u8, 102#u8, 105#u8, 114#u8, 109#u8
-        ]))
-  let s23 ← tables.lit s22
-  let s24 ← alloc.vec.Vec.push s21 s23
-  let s25 ← alloc.vec.Vec.push s24 delegation.Seg.Param
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := false, segments := s25, methods := m } :
-      delegation.ScopeRoute)
-  let s26 ← lift (Array.to_slice (Array.make 2#usize [ 97#u8, 105#u8 ]))
-  let s27 ← tables.lit s26
-  let s28 ← alloc.vec.Vec.push s s27
-  let s29 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 99#u8, 104#u8, 97#u8, 116#u8, 115#u8 ]))
-  let s30 ← tables.lit s29
-  let s31 ← alloc.vec.Vec.push s28 s30
-  let s32 ← alloc.vec.Vec.push s31 delegation.Seg.Param
-  let s33 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ]))
-  let s34 ← tables.lit s33
-  let s35 ← alloc.vec.Vec.push s32 s34
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := false, segments := s35, methods := m } :
-      delegation.ScopeRoute)
-  let s36 ←
-    lift (Array.to_slice (Array.make 3#usize [ 109#u8, 99#u8, 112#u8 ]))
-  let s37 ← tables.lit s36
-  let s38 ← alloc.vec.Vec.push s s37
-  let m1 ←
-    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
-      delegation.Method.Get
-  let m2 ← alloc.vec.Vec.push m1 delegation.Method.Post
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := false, segments := s38, methods := m2 } :
-      delegation.ScopeRoute)
-  let s39 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        100#u8, 111#u8, 119#u8, 110#u8, 116#u8, 105#u8, 109#u8, 101#u8, 115#u8
-        ]))
-  let s40 ← tables.lit s39
-  let s41 ← alloc.vec.Vec.push s s40
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := true, segments := s41, methods := m } :
-      delegation.ScopeRoute)
-  let s42 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        100#u8, 111#u8, 119#u8, 110#u8, 116#u8, 105#u8, 109#u8, 101#u8, 115#u8
-        ]))
-  let s43 ← tables.lit s42
-  let s44 ← alloc.vec.Vec.push s s43
-  let s45 ← alloc.vec.Vec.push s44 delegation.Seg.Param
-  let s46 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ]))
-  let s47 ← tables.lit s46
-  let s48 ← alloc.vec.Vec.push s45 s47
-  alloc.vec.Vec.push out7 ({ v2 := true, segments := s48, methods := m } :
-    delegation.ScopeRoute)
+  ok { v2 := false, segments := s6, methods := m }
 
-/-- [openobserve_kernel::tables::assistant_scope_5]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 407:0-479:1 -/
-def tables.assistant_scope_5
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r47]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 595:0-605:1 -/
+def tables.assistant_scope_r47 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -1041,182 +1166,415 @@ def tables.assistant_scope_5
   let s5 ← tables.lit s4
   let s6 ← alloc.vec.Vec.push s3 s5
   let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
-  let m ←
-    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
-      delegation.Method.Get
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := false, segments := s7, methods := m } :
-      delegation.ScopeRoute)
   let s8 ←
     lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s9 ← tables.lit s8
-  let s10 ← alloc.vec.Vec.push s s9
-  let s11 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
-        ]))
-  let s12 ← tables.lit s11
-  let s13 ← alloc.vec.Vec.push s10 s12
-  let s14 ← alloc.vec.Vec.push s13 delegation.Seg.Param
-  let s15 ←
-    lift (Array.to_slice
       (Array.make 7#usize [
-        104#u8, 105#u8, 115#u8, 116#u8, 111#u8, 114#u8, 121#u8
+        114#u8, 101#u8, 115#u8, 111#u8, 108#u8, 118#u8, 101#u8
         ]))
-  let s16 ← tables.lit s15
-  let s17 ← alloc.vec.Vec.push s14 s16
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s17, methods := m } :
-      delegation.ScopeRoute)
-  let s18 ←
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r46]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 583:0-593:1 -/
+def tables.assistant_scope_r46 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s19 ← tables.lit s18
-  let s20 ← alloc.vec.Vec.push s s19
-  let s21 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
     lift (Array.to_slice
       (Array.make 9#usize [
         114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
         ]))
-  let s22 ← tables.lit s21
-  let s23 ← alloc.vec.Vec.push s20 s22
-  let s24 ← alloc.vec.Vec.push s23 delegation.Seg.Param
-  let s25 ←
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
     lift (Array.to_slice
-      (Array.make 10#usize [
-        101#u8, 115#u8, 99#u8, 97#u8, 108#u8, 97#u8, 116#u8, 105#u8, 111#u8,
-        110#u8
+      (Array.make 8#usize [
+        117#u8, 110#u8, 115#u8, 110#u8, 111#u8, 111#u8, 122#u8, 101#u8
         ]))
-  let s26 ← tables.lit s25
-  let s27 ← alloc.vec.Vec.push s24 s26
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := false, segments := s27, methods := m } :
-      delegation.ScopeRoute)
-  let s28 ←
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r45]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 571:0-581:1 -/
+def tables.assistant_scope_r45 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s29 ← tables.lit s28
-  let s30 ← alloc.vec.Vec.push s s29
-  let s31 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s32 ← tables.lit s31
-  let s33 ← alloc.vec.Vec.push s30 s32
-  let s34 ← alloc.vec.Vec.push s33 delegation.Seg.Param
-  let s35 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
     lift (Array.to_slice
       (Array.make 9#usize [
         114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
         ]))
-  let s36 ← tables.lit s35
-  let s37 ← alloc.vec.Vec.push s34 s36
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := false, segments := s37, methods := m } :
-      delegation.ScopeRoute)
-  let s38 ←
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 115#u8, 110#u8, 111#u8, 111#u8, 122#u8, 101#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r44]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 559:0-569:1 -/
+def tables.assistant_scope_r44 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s39 ← tables.lit s38
-  let s40 ← alloc.vec.Vec.push s s39
-  let s41 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
     lift (Array.to_slice
       (Array.make 9#usize [
         114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
         ]))
-  let s42 ← tables.lit s41
-  let s43 ← alloc.vec.Vec.push s40 s42
-  let s44 ← alloc.vec.Vec.push s43 delegation.Seg.Param
-  let s45 ←
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
     lift (Array.to_slice
       (Array.make 11#usize [
         97#u8, 99#u8, 107#u8, 110#u8, 111#u8, 119#u8, 108#u8, 101#u8, 100#u8,
         103#u8, 101#u8
         ]))
-  let s46 ← tables.lit s45
-  let s47 ← alloc.vec.Vec.push s44 s46
-  let m1 ←
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Post
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := false, segments := s47, methods := m1 } :
-      delegation.ScopeRoute)
-  let s48 ←
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r43]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 547:0-557:1 -/
+def tables.assistant_scope_r43 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s49 ← tables.lit s48
-  let s50 ← alloc.vec.Vec.push s s49
-  let s51 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
     lift (Array.to_slice
       (Array.make 9#usize [
         114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
         ]))
-  let s52 ← tables.lit s51
-  let s53 ← alloc.vec.Vec.push s50 s52
-  let s54 ← alloc.vec.Vec.push s53 delegation.Seg.Param
-  let s55 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 115#u8, 110#u8, 111#u8, 111#u8, 122#u8, 101#u8 ]))
-  let s56 ← tables.lit s55
-  let s57 ← alloc.vec.Vec.push s54 s56
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := false, segments := s57, methods := m1 } :
-      delegation.ScopeRoute)
-  let s58 ←
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r42]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 535:0-545:1 -/
+def tables.assistant_scope_r42 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s59 ← tables.lit s58
-  let s60 ← alloc.vec.Vec.push s s59
-  let s61 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
     lift (Array.to_slice
       (Array.make 9#usize [
         114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
         ]))
-  let s62 ← tables.lit s61
-  let s63 ← alloc.vec.Vec.push s60 s62
-  let s64 ← alloc.vec.Vec.push s63 delegation.Seg.Param
-  let s65 ←
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
     lift (Array.to_slice
-      (Array.make 8#usize [
-        117#u8, 110#u8, 115#u8, 110#u8, 111#u8, 111#u8, 122#u8, 101#u8
+      (Array.make 10#usize [
+        101#u8, 115#u8, 99#u8, 97#u8, 108#u8, 97#u8, 116#u8, 105#u8, 111#u8,
+        110#u8
         ]))
-  let s66 ← tables.lit s65
-  let s67 ← alloc.vec.Vec.push s64 s66
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := false, segments := s67, methods := m1 } :
-      delegation.ScopeRoute)
-  let s68 ←
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r41]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 523:0-533:1 -/
+def tables.assistant_scope_r41 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s69 ← tables.lit s68
-  let s70 ← alloc.vec.Vec.push s s69
-  let s71 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
     lift (Array.to_slice
       (Array.make 9#usize [
         114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
         ]))
-  let s72 ← tables.lit s71
-  let s73 ← alloc.vec.Vec.push s70 s72
-  let s74 ← alloc.vec.Vec.push s73 delegation.Seg.Param
-  let s75 ←
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
     lift (Array.to_slice
       (Array.make 7#usize [
-        114#u8, 101#u8, 115#u8, 111#u8, 108#u8, 118#u8, 101#u8
+        104#u8, 105#u8, 115#u8, 116#u8, 111#u8, 114#u8, 121#u8
         ]))
-  let s76 ← tables.lit s75
-  let s77 ← alloc.vec.Vec.push s74 s76
-  alloc.vec.Vec.push out7 ({ v2 := false, segments := s77, methods := m1 } :
-    delegation.ScopeRoute)
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
 
-/-- [openobserve_kernel::tables::assistant_scope_4]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 335:0-405:1 -/
-def tables.assistant_scope_4
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r40]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 512:0-521:1 -/
+def tables.assistant_scope_r40 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r39]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 502:0-510:1 -/
+def tables.assistant_scope_r39 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s6, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r38]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 490:0-500:1 -/
+def tables.assistant_scope_r38 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        111#u8, 118#u8, 101#u8, 114#u8, 118#u8, 105#u8, 101#u8, 119#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r37]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 478:0-488:1 -/
+def tables.assistant_scope_r37 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 17#usize [
+        114#u8, 101#u8, 115#u8, 111#u8, 108#u8, 118#u8, 101#u8, 100#u8, 45#u8,
+        115#u8, 99#u8, 104#u8, 101#u8, 100#u8, 117#u8, 108#u8, 101#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r36]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 466:0-476:1 -/
+def tables.assistant_scope_r36 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        111#u8, 118#u8, 101#u8, 114#u8, 114#u8, 105#u8, 100#u8, 101#u8, 115#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r35]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 454:0-464:1 -/
+def tables.assistant_scope_r35 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        111#u8, 110#u8, 45#u8, 99#u8, 97#u8, 108#u8, 108#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r34]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 442:0-452:1 -/
+def tables.assistant_scope_r34 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 8#usize [
+        115#u8, 99#u8, 104#u8, 101#u8, 100#u8, 117#u8, 108#u8, 101#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r33]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 430:0-440:1 -/
+def tables.assistant_scope_r33 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r32]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 419:0-428:1 -/
+def tables.assistant_scope_r32 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -1233,157 +1591,174 @@ def tables.assistant_scope_4
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Get
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := false, segments := s7, methods := m } :
-      delegation.ScopeRoute)
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r31]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 409:0-417:1 -/
+def tables.assistant_scope_r31 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s6, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r30]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 397:0-407:1 -/
+def tables.assistant_scope_r30 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ← alloc.vec.Vec.push s4 delegation.Seg.Param
+  let s6 ←
+    lift (Array.to_slice (Array.make 3#usize [ 100#u8, 97#u8, 103#u8 ]))
+  let s7 ← tables.lit s6
+  let s8 ← alloc.vec.Vec.push s5 s7
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s8, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r29]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 385:0-395:1 -/
+def tables.assistant_scope_r29 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ← alloc.vec.Vec.push s4 delegation.Seg.Param
+  let s6 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        100#u8, 101#u8, 116#u8, 97#u8, 105#u8, 108#u8, 115#u8
+        ]))
+  let s7 ← tables.lit s6
+  let s8 ← alloc.vec.Vec.push s5 s7
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s8, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r28]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 374:0-383:1 -/
+def tables.assistant_scope_r28 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        116#u8, 105#u8, 109#u8, 101#u8, 95#u8, 114#u8, 97#u8, 110#u8, 103#u8,
+        101#u8
+        ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r27]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 363:0-372:1 -/
+def tables.assistant_scope_r27 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r26]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 351:0-361:1 -/
+def tables.assistant_scope_r26 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8
+        ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
   let s8 ←
     lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
+      (Array.make 7#usize [
+        100#u8, 101#u8, 116#u8, 97#u8, 105#u8, 108#u8, 115#u8
+        ]))
   let s9 ← tables.lit s8
-  let s10 ← alloc.vec.Vec.push s s9
-  let s11 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s12 ← tables.lit s11
-  let s13 ← alloc.vec.Vec.push s10 s12
-  let s14 ← alloc.vec.Vec.push s13 delegation.Seg.Param
-  let s15 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        109#u8, 101#u8, 109#u8, 98#u8, 101#u8, 114#u8, 115#u8
-        ]))
-  let s16 ← tables.lit s15
-  let s17 ← alloc.vec.Vec.push s14 s16
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s17, methods := m } :
-      delegation.ScopeRoute)
-  let s18 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s19 ← tables.lit s18
-  let s20 ← alloc.vec.Vec.push s s19
-  let s21 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s22 ← tables.lit s21
-  let s23 ← alloc.vec.Vec.push s20 s22
-  let s24 ← alloc.vec.Vec.push s23 delegation.Seg.Param
-  let s25 ←
-    lift (Array.to_slice
-      (Array.make 8#usize [
-        115#u8, 99#u8, 104#u8, 101#u8, 100#u8, 117#u8, 108#u8, 101#u8
-        ]))
-  let s26 ← tables.lit s25
-  let s27 ← alloc.vec.Vec.push s24 s26
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := false, segments := s27, methods := m } :
-      delegation.ScopeRoute)
-  let s28 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s29 ← tables.lit s28
-  let s30 ← alloc.vec.Vec.push s s29
-  let s31 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s32 ← tables.lit s31
-  let s33 ← alloc.vec.Vec.push s30 s32
-  let s34 ← alloc.vec.Vec.push s33 delegation.Seg.Param
-  let s35 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        111#u8, 110#u8, 45#u8, 99#u8, 97#u8, 108#u8, 108#u8
-        ]))
-  let s36 ← tables.lit s35
-  let s37 ← alloc.vec.Vec.push s34 s36
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := false, segments := s37, methods := m } :
-      delegation.ScopeRoute)
-  let s38 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s39 ← tables.lit s38
-  let s40 ← alloc.vec.Vec.push s s39
-  let s41 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s42 ← tables.lit s41
-  let s43 ← alloc.vec.Vec.push s40 s42
-  let s44 ← alloc.vec.Vec.push s43 delegation.Seg.Param
-  let s45 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        111#u8, 118#u8, 101#u8, 114#u8, 114#u8, 105#u8, 100#u8, 101#u8, 115#u8
-        ]))
-  let s46 ← tables.lit s45
-  let s47 ← alloc.vec.Vec.push s44 s46
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := false, segments := s47, methods := m } :
-      delegation.ScopeRoute)
-  let s48 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s49 ← tables.lit s48
-  let s50 ← alloc.vec.Vec.push s s49
-  let s51 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s52 ← tables.lit s51
-  let s53 ← alloc.vec.Vec.push s50 s52
-  let s54 ← alloc.vec.Vec.push s53 delegation.Seg.Param
-  let s55 ←
-    lift (Array.to_slice
-      (Array.make 17#usize [
-        114#u8, 101#u8, 115#u8, 111#u8, 108#u8, 118#u8, 101#u8, 100#u8, 45#u8,
-        115#u8, 99#u8, 104#u8, 101#u8, 100#u8, 117#u8, 108#u8, 101#u8
-        ]))
-  let s56 ← tables.lit s55
-  let s57 ← alloc.vec.Vec.push s54 s56
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := false, segments := s57, methods := m } :
-      delegation.ScopeRoute)
-  let s58 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s59 ← tables.lit s58
-  let s60 ← alloc.vec.Vec.push s s59
-  let s61 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s62 ← tables.lit s61
-  let s63 ← alloc.vec.Vec.push s60 s62
-  let s64 ← alloc.vec.Vec.push s63 delegation.Seg.Param
-  let s65 ←
-    lift (Array.to_slice
-      (Array.make 8#usize [
-        111#u8, 118#u8, 101#u8, 114#u8, 118#u8, 105#u8, 101#u8, 119#u8
-        ]))
-  let s66 ← tables.lit s65
-  let s67 ← alloc.vec.Vec.push s64 s66
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := false, segments := s67, methods := m } :
-      delegation.ScopeRoute)
-  let s68 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s69 ← tables.lit s68
-  let s70 ← alloc.vec.Vec.push s s69
-  let s71 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        114#u8, 101#u8, 115#u8, 112#u8, 111#u8, 110#u8, 115#u8, 101#u8, 115#u8
-        ]))
-  let s72 ← tables.lit s71
-  let s73 ← alloc.vec.Vec.push s70 s72
-  alloc.vec.Vec.push out7 ({ v2 := false, segments := s73, methods := m } :
-    delegation.ScopeRoute)
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s10, methods := m }
 
-/-- [openobserve_kernel::tables::assistant_scope_3]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 266:0-333:1 -/
-def tables.assistant_scope_3
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r25]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 340:0-349:1 -/
+def tables.assistant_scope_r25 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8
+        ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r24]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 329:0-338:1 -/
+def tables.assistant_scope_r24 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
@@ -1403,129 +1778,211 @@ def tables.assistant_scope_3
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Get
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := false, segments := s7, methods := m } :
-      delegation.ScopeRoute)
-  let s8 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s9 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s10 ← tables.lit s9
-  let s11 ← alloc.vec.Vec.push s8 s10
-  let s12 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8
-        ]))
-  let s13 ← tables.lit s12
-  let s14 ← alloc.vec.Vec.push s11 s13
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s14, methods := m } :
-      delegation.ScopeRoute)
-  let s15 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s16 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s17 ← tables.lit s16
-  let s18 ← alloc.vec.Vec.push s15 s17
-  let s19 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        115#u8, 101#u8, 115#u8, 115#u8, 105#u8, 111#u8, 110#u8
-        ]))
-  let s20 ← tables.lit s19
-  let s21 ← alloc.vec.Vec.push s18 s20
-  let s22 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        100#u8, 101#u8, 116#u8, 97#u8, 105#u8, 108#u8, 115#u8
-        ]))
-  let s23 ← tables.lit s22
-  let s24 ← alloc.vec.Vec.push s21 s23
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := false, segments := s24, methods := m } :
-      delegation.ScopeRoute)
-  let s25 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s26 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s27 ← tables.lit s26
-  let s28 ← alloc.vec.Vec.push s25 s27
-  let s29 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 117#u8, 115#u8, 101#u8, 114#u8 ]))
-  let s30 ← tables.lit s29
-  let s31 ← alloc.vec.Vec.push s28 s30
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := false, segments := s31, methods := m } :
-      delegation.ScopeRoute)
-  let s32 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s33 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s34 ← tables.lit s33
-  let s35 ← alloc.vec.Vec.push s32 s34
-  let s36 ←
-    lift (Array.to_slice
-      (Array.make 10#usize [
-        116#u8, 105#u8, 109#u8, 101#u8, 95#u8, 114#u8, 97#u8, 110#u8, 103#u8,
-        101#u8
-        ]))
-  let s37 ← tables.lit s36
-  let s38 ← alloc.vec.Vec.push s35 s37
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := false, segments := s38, methods := m } :
-      delegation.ScopeRoute)
-  let s39 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s40 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s41 ← tables.lit s40
-  let s42 ← alloc.vec.Vec.push s39 s41
-  let s43 ← alloc.vec.Vec.push s42 delegation.Seg.Param
-  let s44 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        100#u8, 101#u8, 116#u8, 97#u8, 105#u8, 108#u8, 115#u8
-        ]))
-  let s45 ← tables.lit s44
-  let s46 ← alloc.vec.Vec.push s43 s45
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := false, segments := s46, methods := m } :
-      delegation.ScopeRoute)
-  let s47 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s48 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s49 ← tables.lit s48
-  let s50 ← alloc.vec.Vec.push s47 s49
-  let s51 ← alloc.vec.Vec.push s50 delegation.Seg.Param
-  let s52 ←
-    lift (Array.to_slice (Array.make 3#usize [ 100#u8, 97#u8, 103#u8 ]))
-  let s53 ← tables.lit s52
-  let s54 ← alloc.vec.Vec.push s51 s53
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := false, segments := s54, methods := m } :
-      delegation.ScopeRoute)
-  let s55 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 111#u8, 110#u8, 99#u8, 97#u8, 108#u8, 108#u8 ]))
-  let s56 ← tables.lit s55
-  let s57 ← alloc.vec.Vec.push s s56
-  let s58 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 116#u8, 101#u8, 97#u8, 109#u8, 115#u8 ]))
-  let s59 ← tables.lit s58
-  let s60 ← alloc.vec.Vec.push s57 s59
-  alloc.vec.Vec.push out7 ({ v2 := false, segments := s60, methods := m } :
-    delegation.ScopeRoute)
+  ok { v2 := false, segments := s7, methods := m }
 
-/-- [openobserve_kernel::tables::assistant_scope_2]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 189:0-264:1 -/
-def tables.assistant_scope_2
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r23]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 318:0-327:1 -/
+def tables.assistant_scope_r23 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 108#u8, 97#u8, 116#u8, 101#u8, 115#u8, 116#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r22]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 307:0-316:1 -/
+def tables.assistant_scope_r22 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r21]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 294:0-305:1 -/
+def tables.assistant_scope_r21 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 101#u8, 118#u8, 101#u8, 110#u8, 116#u8, 115#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+        ]))
+  let s12 ← tables.lit s11
+  let s13 ← alloc.vec.Vec.push s10 s12
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Post
+  ok { v2 := true, segments := s13, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r20]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 282:0-292:1 -/
+def tables.assistant_scope_r20 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Patch
+  ok { v2 := true, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r19]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 268:0-280:1 -/
+def tables.assistant_scope_r19 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 99#u8, 97#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 114#u8, 117#u8, 110#u8, 115#u8 ]))
+  let s12 ← tables.lit s11
+  let s13 ← alloc.vec.Vec.push s10 s12
+  let s14 ← alloc.vec.Vec.push s13 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s14, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r18]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 255:0-266:1 -/
+def tables.assistant_scope_r18 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 99#u8, 97#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let s11 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 114#u8, 117#u8, 110#u8, 115#u8 ]))
+  let s12 ← tables.lit s11
+  let s13 ← alloc.vec.Vec.push s10 s12
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s13, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r17]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 243:0-253:1 -/
+def tables.assistant_scope_r17 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
+        ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
+  let s8 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 101#u8, 118#u8, 101#u8, 110#u8, 116#u8, 115#u8 ]))
+  let s9 ← tables.lit s8
+  let s10 ← alloc.vec.Vec.push s7 s9
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r16]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 231:0-241:1 -/
+def tables.assistant_scope_r16 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -1550,172 +2007,143 @@ def tables.assistant_scope_2
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Get
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := true, segments := s10, methods := m } :
-      delegation.ScopeRoute)
-  let s11 ←
+  ok { v2 := true, segments := s10, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r15]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 220:0-229:1 -/
+def tables.assistant_scope_r15 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s12 ← tables.lit s11
-  let s13 ← alloc.vec.Vec.push s s12
-  let s14 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let s5 ←
     lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s15 ← tables.lit s14
-  let s16 ← alloc.vec.Vec.push s13 s15
-  let s17 ← alloc.vec.Vec.push s16 delegation.Seg.Param
-  let s18 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 101#u8, 118#u8, 101#u8, 110#u8, 116#u8, 115#u8 ]))
-  let s19 ← tables.lit s18
-  let s20 ← alloc.vec.Vec.push s17 s19
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := true, segments := s20, methods := m } :
-      delegation.ScopeRoute)
-  let s21 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s22 ← tables.lit s21
-  let s23 ← alloc.vec.Vec.push s s22
-  let s24 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s25 ← tables.lit s24
-  let s26 ← alloc.vec.Vec.push s23 s25
-  let s27 ← alloc.vec.Vec.push s26 delegation.Seg.Param
-  let s28 ←
-    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 99#u8, 97#u8 ]))
-  let s29 ← tables.lit s28
-  let s30 ← alloc.vec.Vec.push s27 s29
-  let s31 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 114#u8, 117#u8, 110#u8, 115#u8 ]))
-  let s32 ← tables.lit s31
-  let s33 ← alloc.vec.Vec.push s30 s32
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := true, segments := s33, methods := m } :
-      delegation.ScopeRoute)
-  let s34 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s35 ← tables.lit s34
-  let s36 ← alloc.vec.Vec.push s s35
-  let s37 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s38 ← tables.lit s37
-  let s39 ← alloc.vec.Vec.push s36 s38
-  let s40 ← alloc.vec.Vec.push s39 delegation.Seg.Param
-  let s41 ←
-    lift (Array.to_slice (Array.make 3#usize [ 114#u8, 99#u8, 97#u8 ]))
-  let s42 ← tables.lit s41
-  let s43 ← alloc.vec.Vec.push s40 s42
-  let s44 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 114#u8, 117#u8, 110#u8, 115#u8 ]))
-  let s45 ← tables.lit s44
-  let s46 ← alloc.vec.Vec.push s43 s45
-  let s47 ← alloc.vec.Vec.push s46 delegation.Seg.Param
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := true, segments := s47, methods := m } :
-      delegation.ScopeRoute)
-  let s48 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s49 ← tables.lit s48
-  let s50 ← alloc.vec.Vec.push s s49
-  let s51 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s52 ← tables.lit s51
-  let s53 ← alloc.vec.Vec.push s50 s52
-  let s54 ← alloc.vec.Vec.push s53 delegation.Seg.Param
-  let s55 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 117#u8, 112#u8, 100#u8, 97#u8, 116#u8, 101#u8 ]))
-  let s56 ← tables.lit s55
-  let s57 ← alloc.vec.Vec.push s54 s56
-  let m1 ←
+      (Array.make 6#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
-      delegation.Method.Patch
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := true, segments := s57, methods := m1 } :
-      delegation.ScopeRoute)
-  let s58 ←
+      delegation.Method.Get
+  ok { v2 := true, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r14]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 210:0-218:1 -/
+def tables.assistant_scope_r14 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s59 ← tables.lit s58
-  let s60 ← alloc.vec.Vec.push s s59
-  let s61 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s4, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r13]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 201:0-208:1 -/
+def tables.assistant_scope_r13 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s62 ← tables.lit s61
-  let s63 ← alloc.vec.Vec.push s60 s62
-  let s64 ← alloc.vec.Vec.push s63 delegation.Seg.Param
-  let s65 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 101#u8, 118#u8, 101#u8, 110#u8, 116#u8, 115#u8 ]))
-  let s66 ← tables.lit s65
-  let s67 ← alloc.vec.Vec.push s64 s66
-  let s68 ←
+      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s3, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r12]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 189:0-199:1 -/
+def tables.assistant_scope_r12 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 7#usize [
-        99#u8, 111#u8, 109#u8, 109#u8, 101#u8, 110#u8, 116#u8
+        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
         ]))
-  let s69 ← tables.lit s68
-  let s70 ← alloc.vec.Vec.push s67 s69
-  let m2 ←
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let s8 ← alloc.vec.Vec.push s7 delegation.Seg.Param
+  let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
-      delegation.Method.Post
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := true, segments := s70, methods := m2 } :
-      delegation.ScopeRoute)
-  let s71 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s72 ← tables.lit s71
-  let s73 ← alloc.vec.Vec.push s s72
-  let s74 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        105#u8, 110#u8, 99#u8, 105#u8, 100#u8, 101#u8, 110#u8, 116#u8, 115#u8
-        ]))
-  let s75 ← tables.lit s74
-  let s76 ← alloc.vec.Vec.push s73 s75
-  let s77 ← alloc.vec.Vec.push s76 delegation.Seg.Param
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := true, segments := s77, methods := m } :
-      delegation.ScopeRoute)
-  let s78 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s79 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 116#u8, 114#u8, 97#u8, 99#u8, 101#u8, 115#u8 ]))
-  let s80 ← tables.lit s79
-  let s81 ← alloc.vec.Vec.push s78 s80
-  let s82 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 108#u8, 97#u8, 116#u8, 101#u8, 115#u8, 116#u8 ]))
-  let s83 ← tables.lit s82
-  let s84 ← alloc.vec.Vec.push s81 s83
-  alloc.vec.Vec.push out7 ({ v2 := false, segments := s84, methods := m } :
-    delegation.ScopeRoute)
+      delegation.Method.Get
+  ok { v2 := true, segments := s8, methods := m }
 
-/-- [openobserve_kernel::tables::assistant_scope_1]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 128:0-187:1 -/
-def tables.assistant_scope_1
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r11]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 178:0-187:1 -/
+def tables.assistant_scope_r11 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let s5 ← alloc.vec.Vec.push s4 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s5, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r10]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 168:0-176:1 -/
+def tables.assistant_scope_r10 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := true, segments := s4, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r9]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 158:0-166:1 -/
+def tables.assistant_scope_r9 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        100#u8, 97#u8, 115#u8, 104#u8, 98#u8, 111#u8, 97#u8, 114#u8, 100#u8,
+        115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s4, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r8]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 149:0-156:1 -/
+def tables.assistant_scope_r8 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -1729,98 +2157,170 @@ def tables.assistant_scope_1
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Get
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := false, segments := s3, methods := m } :
-      delegation.ScopeRoute)
-  let s4 ←
+  ok { v2 := false, segments := s3, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r7]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 140:0-147:1 -/
+def tables.assistant_scope_r7 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 9#usize [
+        102#u8, 117#u8, 110#u8, 99#u8, 116#u8, 105#u8, 111#u8, 110#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s3, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r6]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 129:0-138:1 -/
+def tables.assistant_scope_r6 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        115#u8, 116#u8, 114#u8, 101#u8, 97#u8, 109#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ← alloc.vec.Vec.push s3 delegation.Seg.Param
+  let s5 ←
+    lift (Array.to_slice
+      (Array.make 6#usize [ 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8 ]))
+  let s6 ← tables.lit s5
+  let s7 ← alloc.vec.Vec.push s4 s6
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s7, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r5]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 120:0-127:1 -/
+def tables.assistant_scope_r5 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        115#u8, 116#u8, 114#u8, 101#u8, 97#u8, 109#u8, 115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s3, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r4]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 107:0-118:1 -/
+def tables.assistant_scope_r4 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
     lift (Array.to_slice
       (Array.make 10#usize [
-        100#u8, 97#u8, 115#u8, 104#u8, 98#u8, 111#u8, 97#u8, 114#u8, 100#u8,
+        112#u8, 114#u8, 111#u8, 109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8,
         115#u8
         ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice (Array.make 3#usize [ 97#u8, 112#u8, 105#u8 ]))
   let s5 ← tables.lit s4
-  let s6 ← alloc.vec.Vec.push s s5
-  let s7 ← alloc.vec.Vec.push s6 delegation.Seg.Param
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s7, methods := m } :
-      delegation.ScopeRoute)
-  let s8 ←
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← lift (Array.to_slice (Array.make 2#usize [ 118#u8, 49#u8 ]))
+  let s8 ← tables.lit s7
+  let s9 ← alloc.vec.Vec.push s6 s8
+  let s10 ←
     lift (Array.to_slice
-      (Array.make 7#usize [
-        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
+      (Array.make 11#usize [
+        113#u8, 117#u8, 101#u8, 114#u8, 121#u8, 95#u8, 114#u8, 97#u8, 110#u8,
+        103#u8, 101#u8
         ]))
-  let s9 ← tables.lit s8
-  let s10 ← alloc.vec.Vec.push s s9
-  let s11 ← alloc.vec.Vec.push s10 delegation.Seg.Param
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := true, segments := s11, methods := m } :
-      delegation.ScopeRoute)
-  let s12 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
-        ]))
-  let s13 ← tables.lit s12
-  let s14 ← alloc.vec.Vec.push s s13
-  let s15 ← alloc.vec.Vec.push s14 delegation.Seg.Param
-  let s16 ← alloc.vec.Vec.push s15 delegation.Seg.Param
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := true, segments := s16, methods := m } :
-      delegation.ScopeRoute)
-  let s17 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        102#u8, 111#u8, 108#u8, 100#u8, 101#u8, 114#u8, 115#u8
-        ]))
-  let s18 ← tables.lit s17
-  let s19 ← alloc.vec.Vec.push s s18
-  let s20 ← alloc.vec.Vec.push s19 delegation.Seg.Param
-  let s21 ←
-    lift (Array.to_slice
-      (Array.make 4#usize [ 110#u8, 97#u8, 109#u8, 101#u8 ]))
-  let s22 ← tables.lit s21
-  let s23 ← alloc.vec.Vec.push s20 s22
-  let s24 ← alloc.vec.Vec.push s23 delegation.Seg.Param
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := true, segments := s24, methods := m } :
-      delegation.ScopeRoute)
-  let s25 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s26 ← tables.lit s25
-  let s27 ← alloc.vec.Vec.push s s26
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := true, segments := s27, methods := m } :
-      delegation.ScopeRoute)
-  let s28 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s29 ← tables.lit s28
-  let s30 ← alloc.vec.Vec.push s s29
-  let s31 ← alloc.vec.Vec.push s30 delegation.Seg.Param
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := true, segments := s31, methods := m } :
-      delegation.ScopeRoute)
-  let s32 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 97#u8, 108#u8, 101#u8, 114#u8, 116#u8, 115#u8 ]))
-  let s33 ← tables.lit s32
-  let s34 ← alloc.vec.Vec.push s s33
-  let s35 ← alloc.vec.Vec.push s34 delegation.Seg.Param
-  let s36 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 103#u8, 114#u8, 111#u8, 117#u8, 112#u8, 115#u8 ]))
-  let s37 ← tables.lit s36
-  let s38 ← alloc.vec.Vec.push s35 s37
-  alloc.vec.Vec.push out7 ({ v2 := true, segments := s38, methods := m } :
-    delegation.ScopeRoute)
+  let s11 ← tables.lit s10
+  let s12 ← alloc.vec.Vec.push s9 s11
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  let m1 ← alloc.vec.Vec.push m delegation.Method.Post
+  ok { v2 := false, segments := s12, methods := m1 }
 
-/-- [openobserve_kernel::tables::assistant_scope_0]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 64:0-126:1 -/
-def tables.assistant_scope_0
-  (out : alloc.vec.Vec delegation.ScopeRoute) :
-  Result (alloc.vec.Vec delegation.ScopeRoute)
-  := do
+/-- [openobserve_kernel::tables::assistant_scope_r3]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 94:0-105:1 -/
+def tables.assistant_scope_r3 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 10#usize [
+        112#u8, 114#u8, 111#u8, 109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8,
+        115#u8
+        ]))
+  let s2 ← tables.lit s1
+  let s3 ← alloc.vec.Vec.push s s2
+  let s4 ←
+    lift (Array.to_slice (Array.make 3#usize [ 97#u8, 112#u8, 105#u8 ]))
+  let s5 ← tables.lit s4
+  let s6 ← alloc.vec.Vec.push s3 s5
+  let s7 ← lift (Array.to_slice (Array.make 2#usize [ 118#u8, 49#u8 ]))
+  let s8 ← tables.lit s7
+  let s9 ← alloc.vec.Vec.push s6 s8
+  let s10 ←
+    lift (Array.to_slice
+      (Array.make 5#usize [ 113#u8, 117#u8, 101#u8, 114#u8, 121#u8 ]))
+  let s11 ← tables.lit s10
+  let s12 ← alloc.vec.Vec.push s9 s11
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  let m1 ← alloc.vec.Vec.push m delegation.Method.Post
+  ok { v2 := false, segments := s12, methods := m1 }
+
+/-- [openobserve_kernel::tables::assistant_scope_r2]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 83:0-92:1 -/
+def tables.assistant_scope_r2 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        95#u8, 97#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8
+        ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  let m1 ← alloc.vec.Vec.push m delegation.Method.Post
+  ok { v2 := false, segments := s4, methods := m1 }
+
+/-- [openobserve_kernel::tables::assistant_scope_r1]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 73:0-81:1 -/
+def tables.assistant_scope_r1 : Result delegation.ScopeRoute := do
+  let s ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
+  let s1 ← alloc.vec.Vec.push s delegation.Seg.Stream
+  let s2 ←
+    lift (Array.to_slice
+      (Array.make 7#usize [
+        95#u8, 118#u8, 97#u8, 108#u8, 117#u8, 101#u8, 115#u8
+        ]))
+  let s3 ← tables.lit s2
+  let s4 ← alloc.vec.Vec.push s1 s3
+  let m ←
+    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
+      delegation.Method.Get
+  ok { v2 := false, segments := s4, methods := m }
+
+/-- [openobserve_kernel::tables::assistant_scope_r0]:
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 64:0-71:1 -/
+def tables.assistant_scope_r0 : Result delegation.ScopeRoute := do
   let s ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Seg) delegation.Seg.Param
   let s1 ←
@@ -1833,134 +2333,124 @@ def tables.assistant_scope_0
   let m ←
     alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
       delegation.Method.Post
-  let out1 ←
-    alloc.vec.Vec.push out ({ v2 := false, segments := s3, methods := m } :
-      delegation.ScopeRoute)
-  let s4 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s5 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        95#u8, 118#u8, 97#u8, 108#u8, 117#u8, 101#u8, 115#u8
-        ]))
-  let s6 ← tables.lit s5
-  let s7 ← alloc.vec.Vec.push s4 s6
-  let m1 ←
-    alloc.vec.Vec.push (alloc.vec.Vec.new delegation.Method)
-      delegation.Method.Get
-  let out2 ←
-    alloc.vec.Vec.push out1 ({ v2 := false, segments := s7, methods := m1 } :
-      delegation.ScopeRoute)
-  let s8 ← alloc.vec.Vec.push s delegation.Seg.Stream
-  let s9 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        95#u8, 97#u8, 114#u8, 111#u8, 117#u8, 110#u8, 100#u8
-        ]))
-  let s10 ← tables.lit s9
-  let s11 ← alloc.vec.Vec.push s8 s10
-  let m2 ← alloc.vec.Vec.push m1 delegation.Method.Post
-  let out3 ←
-    alloc.vec.Vec.push out2 ({ v2 := false, segments := s11, methods := m2 } :
-      delegation.ScopeRoute)
-  let s12 ←
-    lift (Array.to_slice
-      (Array.make 10#usize [
-        112#u8, 114#u8, 111#u8, 109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8,
-        115#u8
-        ]))
-  let s13 ← tables.lit s12
-  let s14 ← alloc.vec.Vec.push s s13
-  let s15 ←
-    lift (Array.to_slice (Array.make 3#usize [ 97#u8, 112#u8, 105#u8 ]))
-  let s16 ← tables.lit s15
-  let s17 ← alloc.vec.Vec.push s14 s16
-  let s18 ← lift (Array.to_slice (Array.make 2#usize [ 118#u8, 49#u8 ]))
-  let s19 ← tables.lit s18
-  let s20 ← alloc.vec.Vec.push s17 s19
-  let s21 ←
-    lift (Array.to_slice
-      (Array.make 5#usize [ 113#u8, 117#u8, 101#u8, 114#u8, 121#u8 ]))
-  let s22 ← tables.lit s21
-  let s23 ← alloc.vec.Vec.push s20 s22
-  let m3 ← alloc.vec.Vec.push m1 delegation.Method.Post
-  let out4 ←
-    alloc.vec.Vec.push out3 ({ v2 := false, segments := s23, methods := m3 } :
-      delegation.ScopeRoute)
-  let s24 ←
-    lift (Array.to_slice
-      (Array.make 10#usize [
-        112#u8, 114#u8, 111#u8, 109#u8, 101#u8, 116#u8, 104#u8, 101#u8, 117#u8,
-        115#u8
-        ]))
-  let s25 ← tables.lit s24
-  let s26 ← alloc.vec.Vec.push s s25
-  let s27 ←
-    lift (Array.to_slice (Array.make 3#usize [ 97#u8, 112#u8, 105#u8 ]))
-  let s28 ← tables.lit s27
-  let s29 ← alloc.vec.Vec.push s26 s28
-  let s30 ← lift (Array.to_slice (Array.make 2#usize [ 118#u8, 49#u8 ]))
-  let s31 ← tables.lit s30
-  let s32 ← alloc.vec.Vec.push s29 s31
-  let s33 ←
-    lift (Array.to_slice
-      (Array.make 11#usize [
-        113#u8, 117#u8, 101#u8, 114#u8, 121#u8, 95#u8, 114#u8, 97#u8, 110#u8,
-        103#u8, 101#u8
-        ]))
-  let s34 ← tables.lit s33
-  let s35 ← alloc.vec.Vec.push s32 s34
-  let m4 ← alloc.vec.Vec.push m1 delegation.Method.Post
-  let out5 ←
-    alloc.vec.Vec.push out4 ({ v2 := false, segments := s35, methods := m4 } :
-      delegation.ScopeRoute)
-  let s36 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        115#u8, 116#u8, 114#u8, 101#u8, 97#u8, 109#u8, 115#u8
-        ]))
-  let s37 ← tables.lit s36
-  let s38 ← alloc.vec.Vec.push s s37
-  let out6 ←
-    alloc.vec.Vec.push out5 ({ v2 := false, segments := s38, methods := m1 } :
-      delegation.ScopeRoute)
-  let s39 ←
-    lift (Array.to_slice
-      (Array.make 7#usize [
-        115#u8, 116#u8, 114#u8, 101#u8, 97#u8, 109#u8, 115#u8
-        ]))
-  let s40 ← tables.lit s39
-  let s41 ← alloc.vec.Vec.push s s40
-  let s42 ← alloc.vec.Vec.push s41 delegation.Seg.Param
-  let s43 ←
-    lift (Array.to_slice
-      (Array.make 6#usize [ 115#u8, 99#u8, 104#u8, 101#u8, 109#u8, 97#u8 ]))
-  let s44 ← tables.lit s43
-  let s45 ← alloc.vec.Vec.push s42 s44
-  let out7 ←
-    alloc.vec.Vec.push out6 ({ v2 := false, segments := s45, methods := m1 } :
-      delegation.ScopeRoute)
-  let s46 ←
-    lift (Array.to_slice
-      (Array.make 9#usize [
-        102#u8, 117#u8, 110#u8, 99#u8, 116#u8, 105#u8, 111#u8, 110#u8, 115#u8
-        ]))
-  let s47 ← tables.lit s46
-  let s48 ← alloc.vec.Vec.push s s47
-  alloc.vec.Vec.push out7 ({ v2 := false, segments := s48, methods := m1 } :
-    delegation.ScopeRoute)
+  ok { v2 := false, segments := s3, methods := m }
 
 /-- [openobserve_kernel::tables::assistant_scope]:
-    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 543:0-553:1
+    Source: 'prove/ports/openobserve/kernel/src/tables.rs', lines 690:0-749:1
     Visibility: public -/
 def tables.assistant_scope : Result (alloc.vec.Vec delegation.ScopeRoute) := do
-  let out ←
-    tables.assistant_scope_0 (alloc.vec.Vec.new delegation.ScopeRoute)
-  let out1 ← tables.assistant_scope_1 out
-  let out2 ← tables.assistant_scope_2 out1
-  let out3 ← tables.assistant_scope_3 out2
-  let out4 ← tables.assistant_scope_4 out3
-  let out5 ← tables.assistant_scope_5 out4
-  tables.assistant_scope_6 out5
+  let sr ← tables.assistant_scope_r0
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new delegation.ScopeRoute) sr
+  let sr1 ← tables.assistant_scope_r1
+  let out1 ← alloc.vec.Vec.push out sr1
+  let sr2 ← tables.assistant_scope_r2
+  let out2 ← alloc.vec.Vec.push out1 sr2
+  let sr3 ← tables.assistant_scope_r3
+  let out3 ← alloc.vec.Vec.push out2 sr3
+  let sr4 ← tables.assistant_scope_r4
+  let out4 ← alloc.vec.Vec.push out3 sr4
+  let sr5 ← tables.assistant_scope_r5
+  let out5 ← alloc.vec.Vec.push out4 sr5
+  let sr6 ← tables.assistant_scope_r6
+  let out6 ← alloc.vec.Vec.push out5 sr6
+  let sr7 ← tables.assistant_scope_r7
+  let out7 ← alloc.vec.Vec.push out6 sr7
+  let sr8 ← tables.assistant_scope_r8
+  let out8 ← alloc.vec.Vec.push out7 sr8
+  let sr9 ← tables.assistant_scope_r9
+  let out9 ← alloc.vec.Vec.push out8 sr9
+  let sr10 ← tables.assistant_scope_r10
+  let out10 ← alloc.vec.Vec.push out9 sr10
+  let sr11 ← tables.assistant_scope_r11
+  let out11 ← alloc.vec.Vec.push out10 sr11
+  let sr12 ← tables.assistant_scope_r12
+  let out12 ← alloc.vec.Vec.push out11 sr12
+  let sr13 ← tables.assistant_scope_r13
+  let out13 ← alloc.vec.Vec.push out12 sr13
+  let sr14 ← tables.assistant_scope_r14
+  let out14 ← alloc.vec.Vec.push out13 sr14
+  let sr15 ← tables.assistant_scope_r15
+  let out15 ← alloc.vec.Vec.push out14 sr15
+  let sr16 ← tables.assistant_scope_r16
+  let out16 ← alloc.vec.Vec.push out15 sr16
+  let sr17 ← tables.assistant_scope_r17
+  let out17 ← alloc.vec.Vec.push out16 sr17
+  let sr18 ← tables.assistant_scope_r18
+  let out18 ← alloc.vec.Vec.push out17 sr18
+  let sr19 ← tables.assistant_scope_r19
+  let out19 ← alloc.vec.Vec.push out18 sr19
+  let sr20 ← tables.assistant_scope_r20
+  let out20 ← alloc.vec.Vec.push out19 sr20
+  let sr21 ← tables.assistant_scope_r21
+  let out21 ← alloc.vec.Vec.push out20 sr21
+  let sr22 ← tables.assistant_scope_r22
+  let out22 ← alloc.vec.Vec.push out21 sr22
+  let sr23 ← tables.assistant_scope_r23
+  let out23 ← alloc.vec.Vec.push out22 sr23
+  let sr24 ← tables.assistant_scope_r24
+  let out24 ← alloc.vec.Vec.push out23 sr24
+  let sr25 ← tables.assistant_scope_r25
+  let out25 ← alloc.vec.Vec.push out24 sr25
+  let sr26 ← tables.assistant_scope_r26
+  let out26 ← alloc.vec.Vec.push out25 sr26
+  let sr27 ← tables.assistant_scope_r27
+  let out27 ← alloc.vec.Vec.push out26 sr27
+  let sr28 ← tables.assistant_scope_r28
+  let out28 ← alloc.vec.Vec.push out27 sr28
+  let sr29 ← tables.assistant_scope_r29
+  let out29 ← alloc.vec.Vec.push out28 sr29
+  let sr30 ← tables.assistant_scope_r30
+  let out30 ← alloc.vec.Vec.push out29 sr30
+  let sr31 ← tables.assistant_scope_r31
+  let out31 ← alloc.vec.Vec.push out30 sr31
+  let sr32 ← tables.assistant_scope_r32
+  let out32 ← alloc.vec.Vec.push out31 sr32
+  let sr33 ← tables.assistant_scope_r33
+  let out33 ← alloc.vec.Vec.push out32 sr33
+  let sr34 ← tables.assistant_scope_r34
+  let out34 ← alloc.vec.Vec.push out33 sr34
+  let sr35 ← tables.assistant_scope_r35
+  let out35 ← alloc.vec.Vec.push out34 sr35
+  let sr36 ← tables.assistant_scope_r36
+  let out36 ← alloc.vec.Vec.push out35 sr36
+  let sr37 ← tables.assistant_scope_r37
+  let out37 ← alloc.vec.Vec.push out36 sr37
+  let sr38 ← tables.assistant_scope_r38
+  let out38 ← alloc.vec.Vec.push out37 sr38
+  let sr39 ← tables.assistant_scope_r39
+  let out39 ← alloc.vec.Vec.push out38 sr39
+  let sr40 ← tables.assistant_scope_r40
+  let out40 ← alloc.vec.Vec.push out39 sr40
+  let sr41 ← tables.assistant_scope_r41
+  let out41 ← alloc.vec.Vec.push out40 sr41
+  let sr42 ← tables.assistant_scope_r42
+  let out42 ← alloc.vec.Vec.push out41 sr42
+  let sr43 ← tables.assistant_scope_r43
+  let out43 ← alloc.vec.Vec.push out42 sr43
+  let sr44 ← tables.assistant_scope_r44
+  let out44 ← alloc.vec.Vec.push out43 sr44
+  let sr45 ← tables.assistant_scope_r45
+  let out45 ← alloc.vec.Vec.push out44 sr45
+  let sr46 ← tables.assistant_scope_r46
+  let out46 ← alloc.vec.Vec.push out45 sr46
+  let sr47 ← tables.assistant_scope_r47
+  let out47 ← alloc.vec.Vec.push out46 sr47
+  let sr48 ← tables.assistant_scope_r48
+  let out48 ← alloc.vec.Vec.push out47 sr48
+  let sr49 ← tables.assistant_scope_r49
+  let out49 ← alloc.vec.Vec.push out48 sr49
+  let sr50 ← tables.assistant_scope_r50
+  let out50 ← alloc.vec.Vec.push out49 sr50
+  let sr51 ← tables.assistant_scope_r51
+  let out51 ← alloc.vec.Vec.push out50 sr51
+  let sr52 ← tables.assistant_scope_r52
+  let out52 ← alloc.vec.Vec.push out51 sr52
+  let sr53 ← tables.assistant_scope_r53
+  let out53 ← alloc.vec.Vec.push out52 sr53
+  let sr54 ← tables.assistant_scope_r54
+  let out54 ← alloc.vec.Vec.push out53 sr54
+  let sr55 ← tables.assistant_scope_r55
+  alloc.vec.Vec.push out54 sr55
 
 /-- [openobserve_kernel::delegation::scope_routes]:
     Source: 'prove/ports/openobserve/kernel/src/delegation.rs', lines 172:0-180:1
