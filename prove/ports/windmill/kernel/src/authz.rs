@@ -3,7 +3,7 @@
 //! `require_is_owner`, `require_owner_of_path`, `require_path_read_access_for_preview`,
 //! `get_perm_in_extra_perms_for_authed`, `is_instance_admin`, `require_instance_admin`.
 use crate::bytes::{eq, split, starts_with};
-use crate::scopes::{from_scope_string, includes};
+use crate::scopes::{from_scope_string, includes, Scope};
 
 /// One `(name, can_write, is_owner)` entry of `ApiAuthed::folders`.
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -35,9 +35,37 @@ pub enum AuthzError {
     RequireAdmin,
 }
 
-pub const FILTER_TAGS: &[u8] = b"if_jobs:filter_tags:";
+/// `s.starts_with("if_jobs:filter_tags:")`.
+pub fn is_filter_tags(s: &[u8]) -> bool {
+    let p: Vec<u8> = b"if_jobs:filter_tags:".to_vec();
+    starts_with(s, &p)
+}
 
-/// `check_scopes(authed, || required)`.
+/// `s` parses to a scope that `includes` `req`.
+pub fn parsed_includes(s: &[u8], req: &Scope) -> bool {
+    match from_scope_string(s) {
+        Some(s) => includes(&s, req),
+        None => false,
+    }
+}
+
+/// Some scope other than a tag filter parses and grants `req` (the loop of
+/// `check_scopes`, which returns `Ok` at the first such scope).
+pub fn any_grants(scopes: &[Vec<u8>], req: &Scope) -> bool {
+    let mut i = 0;
+    while i < scopes.len() {
+        if !is_filter_tags(&scopes[i]) && parsed_includes(&scopes[i], req) {
+            return true;
+        }
+        i += 1;
+    }
+    false
+}
+
+/// `check_scopes(authed, || required)`. Upstream's loop sets `is_scoped_token` at the
+/// first scope that is not a tag filter and returns `Ok` at the first one that grants
+/// `required`; afterwards it denies iff `is_scoped_token`. Here those are the two
+/// helpers `any_grants` and `!is_effectively_unscoped`.
 pub fn check_scopes(a: &Authed, required: &[u8]) -> Result<(), AuthzError> {
     if !a.has_scopes {
         return Ok(());
@@ -46,23 +74,10 @@ pub fn check_scopes(a: &Authed, required: &[u8]) -> Result<(), AuthzError> {
         Some(r) => r,
         None => return Err(AuthzError::BadRequest),
     };
-    let mut is_scoped_token = false;
-    let mut i = 0;
-    while i < a.scopes.len() {
-        if !starts_with(&a.scopes[i], FILTER_TAGS) {
-            is_scoped_token = true;
-            match from_scope_string(&a.scopes[i]) {
-                Some(s) => {
-                    if includes(&s, &req) {
-                        return Ok(());
-                    }
-                }
-                None => {}
-            }
-        }
-        i += 1;
+    if any_grants(&a.scopes, &req) {
+        return Ok(());
     }
-    if is_scoped_token {
+    if !is_effectively_unscoped(true, &a.scopes) {
         return Err(AuthzError::PermissionDenied);
     }
     Ok(())
@@ -75,7 +90,7 @@ pub fn is_effectively_unscoped(has_scopes: bool, scopes: &[Vec<u8>]) -> bool {
     }
     let mut i = 0;
     while i < scopes.len() {
-        if !starts_with(&scopes[i], FILTER_TAGS) {
+        if !is_filter_tags(&scopes[i]) {
             return false;
         }
         i += 1;
@@ -106,7 +121,10 @@ pub fn require_is_owner(a: &Authed, name: &[u8]) -> Result<(), AuthzError> {
 pub const U: &[u8] = b"u";
 pub const F: &[u8] = b"f";
 pub const HUB: &[u8] = b"hub";
-pub const DOTDOT: &[u8] = b"..";
+/// `seg == ".."`.
+pub fn is_dotdot(seg: &[u8]) -> bool {
+    seg.len() == 2 && seg[0] == 46 && seg[1] == 46
+}
 
 /// `require_owner_of_path(authed, path)`.
 pub fn require_owner_of_path(a: &Authed, path: &[u8]) -> Result<(), AuthzError> {
@@ -133,7 +151,7 @@ pub fn require_owner_of_path(a: &Authed, path: &[u8]) -> Result<(), AuthzError> 
 pub fn has_dotdot_segment(parts: &[Vec<u8>]) -> bool {
     let mut i = 0;
     while i < parts.len() {
-        if eq(&parts[i], DOTDOT) {
+        if is_dotdot(&parts[i]) {
             return true;
         }
         i += 1;
@@ -212,9 +230,11 @@ pub fn lookup(obj: &[PermEntry], k: &[u8]) -> (bool, bool) {
     (false, false)
 }
 
-/// `prefix ++ name`.
-pub fn concat(p: &[u8], name: &[u8]) -> Vec<u8> {
-    let mut out = p.to_vec();
+/// `format!("{kind}/{name}")` for a one-byte `kind`.
+pub fn key_for(kind: u8, name: &[u8]) -> Vec<u8> {
+    let mut out = Vec::new();
+    out.push(kind);
+    out.push(47);
     let mut i = 0;
     while i < name.len() {
         out.push(name[i]);
@@ -222,9 +242,6 @@ pub fn concat(p: &[u8], name: &[u8]) -> Vec<u8> {
     }
     out
 }
-
-pub const U_SLASH: &[u8] = b"u/";
-pub const G_SLASH: &[u8] = b"g/";
 
 /// `get_perm_in_extra_perms_for_authed(v, authed)`. `is_object` is whether `v` is a JSON
 /// object; the result is `(is_some, value)`.
@@ -234,7 +251,7 @@ pub fn get_perm_in_extra_perms(is_object: bool, obj: &[PermEntry], a: &Authed) -
     }
     let mut res_some = false;
     let mut res = false;
-    let (f, v) = lookup(obj, &concat(U_SLASH, &a.username));
+    let (f, v) = lookup(obj, &key_for(117, &a.username));
     if f {
         if v {
             return (true, true);
@@ -244,7 +261,7 @@ pub fn get_perm_in_extra_perms(is_object: bool, obj: &[PermEntry], a: &Authed) -
     }
     let mut i = 0;
     while i < a.groups.len() {
-        let (f, v) = lookup(obj, &concat(G_SLASH, &a.groups[i]));
+        let (f, v) = lookup(obj, &key_for(103, &a.groups[i]));
         if f {
             if v {
                 return (true, true);

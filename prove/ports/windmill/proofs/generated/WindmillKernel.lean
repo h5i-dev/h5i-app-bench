@@ -17,13 +17,10 @@ set_option maxHeartbeats 1000000
 /- You can set the `maxRecDepth` value with the `-max-recdepth` CLI option -/
 set_option maxRecDepth 2048
 
-/- You can remove the following line by using the CLI option `-all-computable`: -/
-noncomputable section
-
 namespace windmill_kernel
 
 /-- [windmill_kernel::authz::Folder]
-    Source: 'src/authz.rs', lines 10:0-14:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 10:0-14:1
     Visibility: public -/
 structure authz.Folder where
   «name» : alloc.vec.Vec Std.U8
@@ -31,7 +28,7 @@ structure authz.Folder where
   is_owner : Bool
 
 /-- [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::Folder}::clone]:
-    Source: 'src/authz.rs', lines 9:9-9:14
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:9-9:14
     Visibility: public -/
 def authz.Folder.Insts.CoreCloneClone.clone
   (self : authz.Folder) : Result authz.Folder := do
@@ -41,14 +38,14 @@ def authz.Folder.Insts.CoreCloneClone.clone
   ok { «name» := v, can_write := b, is_owner := b1 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::Folder}]
-    Source: 'src/authz.rs', lines 9:9-9:14 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:9-9:14 -/
 @[reducible]
 def authz.Folder.Insts.CoreCloneClone : core.clone.Clone authz.Folder := {
   clone := authz.Folder.Insts.CoreCloneClone.clone
 }
 
 /-- [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::Folder}::fmt]:
-    Source: 'src/authz.rs', lines 9:16-9:21
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:16-9:21
     Visibility: public -/
 def authz.Folder.Insts.CoreFmtDebug.fmt
   (self : authz.Folder) (f : core.fmt.Formatter) :
@@ -61,21 +58,21 @@ def authz.Folder.Insts.CoreFmtDebug.fmt
     "name") dyn (toStr "can_write") dyn1 (toStr "is_owner") dyn2
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::Folder}]
-    Source: 'src/authz.rs', lines 9:16-9:21 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:16-9:21 -/
 @[reducible]
 def authz.Folder.Insts.CoreFmtDebug : core.fmt.Debug authz.Folder := {
   fmt := authz.Folder.Insts.CoreFmtDebug.fmt
 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::marker::StructuralPartialEq for windmill_kernel::authz::Folder}]
-    Source: 'src/authz.rs', lines 9:23-9:32 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:23-9:32 -/
 @[reducible]
 def authz.Folder.Insts.CoreMarkerStructuralPartialEq :
   core.marker.StructuralPartialEq authz.Folder := {
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::Folder> for windmill_kernel::authz::Folder}::eq]:
-    Source: 'src/authz.rs', lines 9:23-9:32
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:23-9:32
     Visibility: public -/
 def authz.Folder.Insts.CoreCmpPartialEqFolder.eq
   (self : authz.Folder) (other : authz.Folder) : Result Bool := do
@@ -89,7 +86,7 @@ def authz.Folder.Insts.CoreCmpPartialEqFolder.eq
   else ok false
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::Folder> for windmill_kernel::authz::Folder}]
-    Source: 'src/authz.rs', lines 9:23-9:32 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:23-9:32 -/
 @[reducible]
 def authz.Folder.Insts.CoreCmpPartialEqFolder : core.cmp.PartialEq authz.Folder
   authz.Folder := {
@@ -97,14 +94,14 @@ def authz.Folder.Insts.CoreCmpPartialEqFolder : core.cmp.PartialEq authz.Folder
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::Folder}::assert_fields_are_eq]:
-    Source: 'src/authz.rs', lines 9:34-9:36
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:34-9:36
     Visibility: public -/
 def authz.Folder.Insts.CoreCmpEq.assert_fields_are_eq
   (self : authz.Folder) : Result Unit := do
   ok ()
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::Folder}]
-    Source: 'src/authz.rs', lines 9:34-9:36 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 9:34-9:36 -/
 @[reducible]
 def authz.Folder.Insts.CoreCmpEq : core.cmp.Eq authz.Folder := {
   partialEqInst := authz.Folder.Insts.CoreCmpPartialEqFolder
@@ -112,7 +109,7 @@ def authz.Folder.Insts.CoreCmpEq : core.cmp.Eq authz.Folder := {
 }
 
 /-- [windmill_kernel::authz::Authed]
-    Source: 'src/authz.rs', lines 18:0-28:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 18:0-28:1
     Visibility: public -/
 structure authz.Authed where
   username : alloc.vec.Vec Std.U8
@@ -124,7 +121,7 @@ structure authz.Authed where
   has_job_id : Bool
 
 /-- [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::Authed}::clone]:
-    Source: 'src/authz.rs', lines 17:9-17:14
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:9-17:14
     Visibility: public -/
 def authz.Authed.Insts.CoreCloneClone.clone
   (self : authz.Authed) : Result authz.Authed := do
@@ -152,14 +149,14 @@ def authz.Authed.Insts.CoreCloneClone.clone
     }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::Authed}]
-    Source: 'src/authz.rs', lines 17:9-17:14 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:9-17:14 -/
 @[reducible]
 def authz.Authed.Insts.CoreCloneClone : core.clone.Clone authz.Authed := {
   clone := authz.Authed.Insts.CoreCloneClone.clone
 }
 
 /-- [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::Authed}::fmt]:
-    Source: 'src/authz.rs', lines 17:16-17:21
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:16-17:21
     Visibility: public -/
 def authz.Authed.Insts.CoreFmtDebug.fmt
   (self : authz.Authed) (f : core.fmt.Formatter) :
@@ -190,21 +187,21 @@ def authz.Authed.Insts.CoreFmtDebug.fmt
   core.fmt.Formatter.debug_struct_fields_finish f (toStr "Authed") s values
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::Authed}]
-    Source: 'src/authz.rs', lines 17:16-17:21 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:16-17:21 -/
 @[reducible]
 def authz.Authed.Insts.CoreFmtDebug : core.fmt.Debug authz.Authed := {
   fmt := authz.Authed.Insts.CoreFmtDebug.fmt
 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::marker::StructuralPartialEq for windmill_kernel::authz::Authed}]
-    Source: 'src/authz.rs', lines 17:23-17:32 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:23-17:32 -/
 @[reducible]
 def authz.Authed.Insts.CoreMarkerStructuralPartialEq :
   core.marker.StructuralPartialEq authz.Authed := {
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::Authed> for windmill_kernel::authz::Authed}::eq]:
-    Source: 'src/authz.rs', lines 17:23-17:32
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:23-17:32
     Visibility: public -/
 def authz.Authed.Insts.CoreCmpPartialEqAuthed.eq
   (self : authz.Authed) (other : authz.Authed) : Result Bool := do
@@ -240,7 +237,7 @@ def authz.Authed.Insts.CoreCmpPartialEqAuthed.eq
   else ok false
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::Authed> for windmill_kernel::authz::Authed}]
-    Source: 'src/authz.rs', lines 17:23-17:32 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:23-17:32 -/
 @[reducible]
 def authz.Authed.Insts.CoreCmpPartialEqAuthed : core.cmp.PartialEq authz.Authed
   authz.Authed := {
@@ -248,14 +245,14 @@ def authz.Authed.Insts.CoreCmpPartialEqAuthed : core.cmp.PartialEq authz.Authed
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::Authed}::assert_fields_are_eq]:
-    Source: 'src/authz.rs', lines 17:34-17:36
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:34-17:36
     Visibility: public -/
 def authz.Authed.Insts.CoreCmpEq.assert_fields_are_eq
   (self : authz.Authed) : Result Unit := do
   ok ()
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::Authed}]
-    Source: 'src/authz.rs', lines 17:34-17:36 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 17:34-17:36 -/
 @[reducible]
 def authz.Authed.Insts.CoreCmpEq : core.cmp.Eq authz.Authed := {
   partialEqInst := authz.Authed.Insts.CoreCmpPartialEqAuthed
@@ -263,7 +260,7 @@ def authz.Authed.Insts.CoreCmpEq : core.cmp.Eq authz.Authed := {
 }
 
 /-- [windmill_kernel::authz::AuthzError]
-    Source: 'src/authz.rs', lines 31:0-36:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 31:0-36:1
     Visibility: public -/
 @[discriminant isize]
 inductive authz.AuthzError where
@@ -273,14 +270,14 @@ inductive authz.AuthzError where
 | RequireAdmin : authz.AuthzError
 
 /-- [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::AuthzError}::clone]:
-    Source: 'src/authz.rs', lines 30:9-30:14
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:9-30:14
     Visibility: public -/
 def authz.AuthzError.Insts.CoreCloneClone.clone
   (self : authz.AuthzError) : Result authz.AuthzError := do
   ok self
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::AuthzError}]
-    Source: 'src/authz.rs', lines 30:9-30:14 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:9-30:14 -/
 @[reducible]
 def authz.AuthzError.Insts.CoreCloneClone : core.clone.Clone authz.AuthzError
   := {
@@ -288,7 +285,7 @@ def authz.AuthzError.Insts.CoreCloneClone : core.clone.Clone authz.AuthzError
 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::marker::Copy for windmill_kernel::authz::AuthzError}]
-    Source: 'src/authz.rs', lines 30:16-30:20 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:16-30:20 -/
 @[reducible]
 def authz.AuthzError.Insts.CoreMarkerCopy : core.marker.Copy authz.AuthzError
   := {
@@ -296,7 +293,7 @@ def authz.AuthzError.Insts.CoreMarkerCopy : core.marker.Copy authz.AuthzError
 }
 
 /-- [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::AuthzError}::fmt]:
-    Source: 'src/authz.rs', lines 30:22-30:27
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:22-30:27
     Visibility: public -/
 def authz.AuthzError.Insts.CoreFmtDebug.fmt
   (self : authz.AuthzError) (f : core.fmt.Formatter) :
@@ -313,21 +310,21 @@ def authz.AuthzError.Insts.CoreFmtDebug.fmt
     core.fmt.Formatter.write_str f (toStr "RequireAdmin")
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::AuthzError}]
-    Source: 'src/authz.rs', lines 30:22-30:27 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:22-30:27 -/
 @[reducible]
 def authz.AuthzError.Insts.CoreFmtDebug : core.fmt.Debug authz.AuthzError := {
   fmt := authz.AuthzError.Insts.CoreFmtDebug.fmt
 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::marker::StructuralPartialEq for windmill_kernel::authz::AuthzError}]
-    Source: 'src/authz.rs', lines 30:29-30:38 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:29-30:38 -/
 @[reducible]
 def authz.AuthzError.Insts.CoreMarkerStructuralPartialEq :
   core.marker.StructuralPartialEq authz.AuthzError := {
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::AuthzError> for windmill_kernel::authz::AuthzError}::eq]:
-    Source: 'src/authz.rs', lines 30:29-30:38
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:29-30:38
     Visibility: public -/
 def authz.AuthzError.Insts.CoreCmpPartialEqAuthzError.eq
   (self : authz.AuthzError) (other : authz.AuthzError) : Result Bool := do
@@ -336,7 +333,7 @@ def authz.AuthzError.Insts.CoreCmpPartialEqAuthzError.eq
   ok (self1 = other1)
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::AuthzError> for windmill_kernel::authz::AuthzError}]
-    Source: 'src/authz.rs', lines 30:29-30:38 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:29-30:38 -/
 @[reducible]
 def authz.AuthzError.Insts.CoreCmpPartialEqAuthzError : core.cmp.PartialEq
   authz.AuthzError authz.AuthzError := {
@@ -344,7 +341,7 @@ def authz.AuthzError.Insts.CoreCmpPartialEqAuthzError : core.cmp.PartialEq
 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::AuthzError}]
-    Source: 'src/authz.rs', lines 30:40-30:42 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 30:40-30:42 -/
 @[reducible]
 impl_def authz.AuthzError.Insts.CoreCmpEq : core.cmp.Eq authz.AuthzError := {
   partialEqInst := authz.AuthzError.Insts.CoreCmpPartialEqAuthzError
@@ -352,20 +349,62 @@ impl_def authz.AuthzError.Insts.CoreCmpEq : core.cmp.Eq authz.AuthzError := {
     authz.AuthzError.Insts.CoreCmpEq
 }
 
-/-- [windmill_kernel::authz::FILTER_TAGS]
-    Source: 'src/authz.rs', lines 38:0-38:55
+/-- [windmill_kernel::bytes::starts_with]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 24:4-31:1
     Visibility: public -/
-@[global_simps, irreducible]
-def authz.FILTER_TAGS : Slice Std.U8 :=
-  Array.to_slice
-    (Array.make 20#usize [
-      105#u8, 102#u8, 95#u8, 106#u8, 111#u8, 98#u8, 115#u8, 58#u8, 102#u8,
-      105#u8, 108#u8, 116#u8, 101#u8, 114#u8, 95#u8, 116#u8, 97#u8, 103#u8,
-      115#u8, 58#u8
-      ])
+@[rust_loop_body]
+def bytes.starts_with_loop.body
+  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len p
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let i3 ← Slice.index_usize p i
+    if i2 != i3
+    then ok (done false)
+    else let i4 ← i + 1#usize
+         ok (cont i4)
+  else ok (done true)
+
+/-- [windmill_kernel::bytes::starts_with]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 24:4-31:1
+    Visibility: public -/
+@[rust_loop]
+def bytes.starts_with_loop
+  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => bytes.starts_with_loop.body s p i1)
+    i
+
+/-- [windmill_kernel::bytes::starts_with]:
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 19:0-31:1
+    Visibility: public -/
+def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
+  let i := Slice.len s
+  let i1 := Slice.len p
+  if i < i1
+  then ok false
+  else bytes.starts_with_loop s p 0#usize
+
+/-- [windmill_kernel::authz::is_filter_tags]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 39:0-42:1
+    Visibility: public -/
+def authz.is_filter_tags (s : Slice Std.U8) : Result Bool := do
+  let s1 ←
+    lift (Array.to_slice
+      (Array.make 20#usize [
+        105#u8, 102#u8, 95#u8, 106#u8, 111#u8, 98#u8, 115#u8, 58#u8, 102#u8,
+        105#u8, 108#u8, 116#u8, 101#u8, 114#u8, 95#u8, 116#u8, 97#u8, 103#u8,
+        115#u8, 58#u8
+        ]))
+  let p ← alloc.slice.Slice.to_vec core.clone.CloneU8 s1
+  let s2 := alloc.vec.Vec.deref p
+  bytes.starts_with s s2
 
 /-- [windmill_kernel::bytes::nth_char_is_slash]: loop body 0:
-    Source: 'src/bytes.rs', lines 90:4-101:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 90:4-101:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.nth_char_is_slash_loop.body
@@ -398,7 +437,7 @@ def bytes.nth_char_is_slash_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::bytes::nth_char_is_slash]: loop 0:
-    Source: 'src/bytes.rs', lines 90:4-101:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 90:4-101:1
     Visibility: public -/
 @[rust_loop]
 def bytes.nth_char_is_slash_loop
@@ -410,7 +449,7 @@ def bytes.nth_char_is_slash_loop
     (count, i)
 
 /-- [windmill_kernel::bytes::nth_char_is_slash]:
-    Source: 'src/bytes.rs', lines 87:0-101:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 87:0-101:1
     Visibility: public -/
 @[reducible]
 def bytes.nth_char_is_slash
@@ -418,7 +457,7 @@ def bytes.nth_char_is_slash
   bytes.nth_char_is_slash_loop s n 0#usize 0#usize
 
 /-- [windmill_kernel::bytes::prefix]: loop body 0:
-    Source: 'src/bytes.rs', lines 54:4-57:5
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 54:4-57:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.prefix_loop.body
@@ -440,7 +479,7 @@ def bytes.prefix_loop.body
   else ok (done out)
 
 /-- [windmill_kernel::bytes::prefix]: loop 0:
-    Source: 'src/bytes.rs', lines 54:4-57:5
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 54:4-57:5
     Visibility: public -/
 @[rust_loop]
 def bytes.prefix_loop
@@ -453,7 +492,7 @@ def bytes.prefix_loop
     (out, i)
 
 /-- [windmill_kernel::bytes::prefix]:
-    Source: 'src/bytes.rs', lines 51:0-59:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 51:0-59:1
     Visibility: public -/
 @[reducible]
 def bytes.prefix
@@ -461,7 +500,7 @@ def bytes.prefix
   bytes.prefix_loop s n (alloc.vec.Vec.new Std.U8) 0#usize
 
 /-- [windmill_kernel::bytes::ends_with_slash_star]:
-    Source: 'src/bytes.rs', lines 34:0-36:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 34:0-36:1
     Visibility: public -/
 def bytes.ends_with_slash_star (s : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -479,47 +518,8 @@ def bytes.ends_with_slash_star (s : Slice Std.U8) : Result Bool := do
     else ok false
   else ok false
 
-/-- [windmill_kernel::bytes::starts_with]: loop body 0:
-    Source: 'src/bytes.rs', lines 24:4-31:1
-    Visibility: public -/
-@[rust_loop_body]
-def bytes.starts_with_loop.body
-  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) :
-  Result (ControlFlow Std.Usize Bool)
-  := do
-  let i1 := Slice.len p
-  if i < i1
-  then
-    let i2 ← Slice.index_usize s i
-    let i3 ← Slice.index_usize p i
-    if i2 != i3
-    then ok (done false)
-    else let i4 ← i + 1#usize
-         ok (cont i4)
-  else ok (done true)
-
-/-- [windmill_kernel::bytes::starts_with]: loop 0:
-    Source: 'src/bytes.rs', lines 24:4-31:1
-    Visibility: public -/
-@[rust_loop]
-def bytes.starts_with_loop
-  (s : Slice Std.U8) (p : Slice Std.U8) (i : Std.Usize) : Result Bool := do
-  loop
-    (fun i1 => bytes.starts_with_loop.body s p i1)
-    i
-
-/-- [windmill_kernel::bytes::starts_with]:
-    Source: 'src/bytes.rs', lines 19:0-31:1
-    Visibility: public -/
-def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
-  let i := Slice.len s
-  let i1 := Slice.len p
-  if i < i1
-  then ok false
-  else bytes.starts_with_loop s p 0#usize
-
 /-- [windmill_kernel::scopes::matches_wildcard]:
-    Source: 'src/scopes.rs', lines 97:0-109:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 97:0-109:1
     Visibility: public -/
 def scopes.matches_wildcard
   (pattern : Slice Std.U8) (resource : Slice Std.U8) : Result Bool := do
@@ -543,7 +543,7 @@ def scopes.matches_wildcard
   else ok false
 
 /-- [windmill_kernel::bytes::eq]: loop body 0:
-    Source: 'src/bytes.rs', lines 9:4-16:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 9:4-16:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.eq_loop.body
@@ -562,7 +562,7 @@ def bytes.eq_loop.body
   else ok (done true)
 
 /-- [windmill_kernel::bytes::eq]: loop 0:
-    Source: 'src/bytes.rs', lines 9:4-16:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 9:4-16:1
     Visibility: public -/
 @[rust_loop]
 def bytes.eq_loop
@@ -572,7 +572,7 @@ def bytes.eq_loop
     i
 
 /-- [windmill_kernel::bytes::eq]:
-    Source: 'src/bytes.rs', lines 4:0-16:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 4:0-16:1
     Visibility: public -/
 def bytes.eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -582,7 +582,7 @@ def bytes.eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else bytes.eq_loop a b 0#usize
 
 /-- [windmill_kernel::scopes::resource_matches_pattern]:
-    Source: 'src/scopes.rs', lines 112:0-118:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 112:0-118:1
     Visibility: public -/
 def scopes.resource_matches_pattern
   (scope_resource : Slice Std.U8) (accepted_resource : Slice Std.U8) :
@@ -598,7 +598,7 @@ def scopes.resource_matches_pattern
     else scopes.matches_wildcard accepted_resource scope_resource
 
 /-- [windmill_kernel::bytes::contains_byte]: loop body 0:
-    Source: 'src/bytes.rs', lines 41:4-48:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 41:4-48:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.contains_byte_loop.body
@@ -616,7 +616,7 @@ def bytes.contains_byte_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::bytes::contains_byte]: loop 0:
-    Source: 'src/bytes.rs', lines 41:4-48:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 41:4-48:1
     Visibility: public -/
 @[rust_loop]
 def bytes.contains_byte_loop
@@ -626,14 +626,14 @@ def bytes.contains_byte_loop
     i
 
 /-- [windmill_kernel::bytes::contains_byte]:
-    Source: 'src/bytes.rs', lines 39:0-48:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 39:0-48:1
     Visibility: public -/
 @[reducible]
 def bytes.contains_byte (s : Slice Std.U8) (c : Std.U8) : Result Bool := do
   bytes.contains_byte_loop s c 0#usize
 
 /-- [windmill_kernel::scopes::pattern_matches]: loop body 0:
-    Source: 'src/scopes.rs', lines 151:4-160:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 159:4-168:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.pattern_matches_loop.body
@@ -660,7 +660,7 @@ def scopes.pattern_matches_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::scopes::pattern_matches]: loop 0:
-    Source: 'src/scopes.rs', lines 151:4-160:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 159:4-168:1
     Visibility: public -/
 @[rust_loop]
 def scopes.pattern_matches_loop
@@ -673,7 +673,7 @@ def scopes.pattern_matches_loop
     j
 
 /-- [windmill_kernel::scopes::pattern_matches]:
-    Source: 'src/scopes.rs', lines 149:0-160:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 157:0-168:1
     Visibility: public -/
 @[reducible]
 def scopes.pattern_matches
@@ -683,7 +683,7 @@ def scopes.pattern_matches
   scopes.pattern_matches_loop scope_resources accepted 0#usize
 
 /-- [windmill_kernel::scopes::exact_contains]: loop body 0:
-    Source: 'src/scopes.rs', lines 139:4-146:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 147:4-154:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.exact_contains_loop.body
@@ -710,7 +710,7 @@ def scopes.exact_contains_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::scopes::exact_contains]: loop 0:
-    Source: 'src/scopes.rs', lines 139:4-146:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 147:4-154:1
     Visibility: public -/
 @[rust_loop]
 def scopes.exact_contains_loop
@@ -723,7 +723,7 @@ def scopes.exact_contains_loop
     j
 
 /-- [windmill_kernel::scopes::exact_contains]:
-    Source: 'src/scopes.rs', lines 137:0-146:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 145:0-154:1
     Visibility: public -/
 @[reducible]
 def scopes.exact_contains
@@ -733,7 +733,7 @@ def scopes.exact_contains
   scopes.exact_contains_loop scope_resources accepted 0#usize
 
 /-- [windmill_kernel::scopes::resources_match_large]: loop body 0:
-    Source: 'src/scopes.rs', lines 165:4-175:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 173:4-183:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.resources_match_large_loop.body
@@ -759,7 +759,7 @@ def scopes.resources_match_large_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::scopes::resources_match_large]: loop 0:
-    Source: 'src/scopes.rs', lines 165:4-175:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 173:4-183:1
     Visibility: public -/
 @[rust_loop]
 def scopes.resources_match_large_loop
@@ -773,7 +773,7 @@ def scopes.resources_match_large_loop
     i
 
 /-- [windmill_kernel::scopes::resources_match_large]:
-    Source: 'src/scopes.rs', lines 163:0-175:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 171:0-183:1
     Visibility: public -/
 @[reducible]
 def scopes.resources_match_large
@@ -783,15 +783,98 @@ def scopes.resources_match_large
   := do
   scopes.resources_match_large_loop scope_resources accepted 0#usize
 
-/-- [windmill_kernel::scopes::resources_match_small]:
-    Source: 'src/scopes.rs', lines 121:0-134:1
+/-- [windmill_kernel::scopes::any_scope_matches]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 123:4-130:1
     Visibility: public -/
-axiom scopes.resources_match_small
-  :
-  Slice (alloc.vec.Vec Std.U8) → Slice (alloc.vec.Vec Std.U8) → Result Bool
+@[rust_loop_body]
+def scopes.any_scope_matches_loop.body
+  (scope_resources : Slice (alloc.vec.Vec Std.U8)) (required : Slice Std.U8)
+  (j : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i := Slice.len scope_resources
+  if j < i
+  then
+    let v ← Slice.index_usize scope_resources j
+    let s := alloc.vec.Vec.deref v
+    let b ← scopes.resource_matches_pattern s required
+    if b
+    then ok (done true)
+    else let j1 ← j + 1#usize
+         ok (cont j1)
+  else ok (done false)
+
+/-- [windmill_kernel::scopes::any_scope_matches]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 123:4-130:1
+    Visibility: public -/
+@[rust_loop]
+def scopes.any_scope_matches_loop
+  (scope_resources : Slice (alloc.vec.Vec Std.U8)) (required : Slice Std.U8)
+  (j : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun j1 => scopes.any_scope_matches_loop.body scope_resources required j1)
+    j
+
+/-- [windmill_kernel::scopes::any_scope_matches]:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 121:0-130:1
+    Visibility: public -/
+@[reducible]
+def scopes.any_scope_matches
+  (scope_resources : Slice (alloc.vec.Vec Std.U8)) (required : Slice Std.U8) :
+  Result Bool
+  := do
+  scopes.any_scope_matches_loop scope_resources required 0#usize
+
+/-- [windmill_kernel::scopes::resources_match_small]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 135:4-142:1
+    Visibility: public -/
+@[rust_loop_body]
+def scopes.resources_match_small_loop.body
+  (scope_resources : Slice (alloc.vec.Vec Std.U8))
+  (accepted : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len accepted
+  if i < i1
+  then
+    let v ← Slice.index_usize accepted i
+    let s := alloc.vec.Vec.deref v
+    let b ← scopes.any_scope_matches scope_resources s
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [windmill_kernel::scopes::resources_match_small]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 135:4-142:1
+    Visibility: public -/
+@[rust_loop]
+def scopes.resources_match_small_loop
+  (scope_resources : Slice (alloc.vec.Vec Std.U8))
+  (accepted : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => scopes.resources_match_small_loop.body scope_resources accepted
+      i1)
+    i
+
+/-- [windmill_kernel::scopes::resources_match_small]:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 133:0-142:1
+    Visibility: public -/
+@[reducible]
+def scopes.resources_match_small
+  (scope_resources : Slice (alloc.vec.Vec Std.U8))
+  (accepted : Slice (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  scopes.resources_match_small_loop scope_resources accepted 0#usize
 
 /-- [windmill_kernel::bytes::is_star]:
-    Source: 'src/bytes.rs', lines 62:0-64:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 62:0-64:1
     Visibility: public -/
 def bytes.is_star (s : Slice Std.U8) : Result Bool := do
   let i := Slice.len s
@@ -801,7 +884,7 @@ def bytes.is_star (s : Slice Std.U8) : Result Bool := do
   else ok false
 
 /-- [windmill_kernel::bytes::list_has_star]: loop body 0:
-    Source: 'src/bytes.rs', lines 118:4-125:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 118:4-125:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.list_has_star_loop.body
@@ -821,7 +904,7 @@ def bytes.list_has_star_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::bytes::list_has_star]: loop 0:
-    Source: 'src/bytes.rs', lines 118:4-125:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 118:4-125:1
     Visibility: public -/
 @[rust_loop]
 def bytes.list_has_star_loop
@@ -831,7 +914,7 @@ def bytes.list_has_star_loop
     i
 
 /-- [windmill_kernel::bytes::list_has_star]:
-    Source: 'src/bytes.rs', lines 116:0-125:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 116:0-125:1
     Visibility: public -/
 @[reducible]
 def bytes.list_has_star
@@ -839,7 +922,7 @@ def bytes.list_has_star
   bytes.list_has_star_loop list 0#usize
 
 /-- [windmill_kernel::scopes::resources_match]:
-    Source: 'src/scopes.rs', lines 178:0-186:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 186:0-194:1
     Visibility: public -/
 def scopes.resources_match
   (scope_resources : Slice (alloc.vec.Vec Std.U8))
@@ -864,14 +947,14 @@ def scopes.resources_match
       else scopes.resources_match_large scope_resources accepted
 
 /-- [windmill_kernel::scopes::APPS]
-    Source: 'src/scopes.rs', lines 33:0-33:32
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 33:0-33:32
     Visibility: public -/
 @[global_simps, irreducible]
 def scopes.APPS : Slice Std.U8 :=
   Array.to_slice (Array.make 4#usize [ 97#u8, 112#u8, 112#u8, 115#u8 ])
 
 /-- [windmill_kernel::scopes::CANCEL]
-    Source: 'src/scopes.rs', lines 32:0-32:36
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 32:0-32:36
     Visibility: public -/
 @[global_simps, irreducible]
 def scopes.CANCEL : Slice Std.U8 :=
@@ -879,7 +962,7 @@ def scopes.CANCEL : Slice Std.U8 :=
     (Array.make 6#usize [ 99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8 ])
 
 /-- [windmill_kernel::scopes::WRITE]
-    Source: 'src/scopes.rs', lines 31:0-31:34
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 31:0-31:34
     Visibility: public -/
 @[global_simps, irreducible]
 def scopes.WRITE : Slice Std.U8 :=
@@ -887,28 +970,28 @@ def scopes.WRITE : Slice Std.U8 :=
     (Array.make 5#usize [ 119#u8, 114#u8, 105#u8, 116#u8, 101#u8 ])
 
 /-- [windmill_kernel::scopes::READ]
-    Source: 'src/scopes.rs', lines 30:0-30:32
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 30:0-30:32
     Visibility: public -/
 @[global_simps, irreducible]
 def scopes.READ : Slice Std.U8 :=
   Array.to_slice (Array.make 4#usize [ 114#u8, 101#u8, 97#u8, 100#u8 ])
 
 /-- [windmill_kernel::scopes::RUN]
-    Source: 'src/scopes.rs', lines 29:0-29:30
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 29:0-29:30
     Visibility: public -/
 @[global_simps, irreducible]
 def scopes.RUN : Slice Std.U8 :=
   Array.to_slice (Array.make 3#usize [ 114#u8, 117#u8, 110#u8 ])
 
 /-- [windmill_kernel::scopes::JOBS]
-    Source: 'src/scopes.rs', lines 28:0-28:32
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 28:0-28:32
     Visibility: public -/
 @[global_simps, irreducible]
 def scopes.JOBS : Slice Std.U8 :=
   Array.to_slice (Array.make 4#usize [ 106#u8, 111#u8, 98#u8, 115#u8 ])
 
 /-- [windmill_kernel::scopes::action_covers]:
-    Source: 'src/scopes.rs', lines 85:0-93:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 85:0-93:1
     Visibility: public -/
 def scopes.action_covers
   (domain : Slice Std.U8) (a : Slice Std.U8) (b : Slice Std.U8) :
@@ -996,7 +1079,7 @@ def scopes.action_covers
         else ok false
 
 /-- [windmill_kernel::scopes::Scope]
-    Source: 'src/scopes.rs', lines 19:0-26:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 19:0-26:1
     Visibility: public -/
 structure scopes.Scope where
   domain : alloc.vec.Vec Std.U8
@@ -1007,7 +1090,7 @@ structure scopes.Scope where
   resource : alloc.vec.Vec (alloc.vec.Vec Std.U8)
 
 /-- [windmill_kernel::scopes::includes]:
-    Source: 'src/scopes.rs', lines 189:0-218:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 197:0-226:1
     Visibility: public -/
 def scopes.includes (s : scopes.Scope) (o : scopes.Scope) : Result Bool := do
   let s1 := alloc.vec.Vec.deref s.domain
@@ -1079,7 +1162,7 @@ def scopes.includes (s : scopes.Scope) (o : scopes.Scope) : Result Bool := do
   else ok false
 
 /-- [windmill_kernel::bytes::split]: loop body 0:
-    Source: 'src/bytes.rs', lines 71:4-79:5
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 71:4-79:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.split_loop.body
@@ -1108,7 +1191,7 @@ def bytes.split_loop.body
   else ok (done (out, cur))
 
 /-- [windmill_kernel::bytes::split]: loop 0:
-    Source: 'src/bytes.rs', lines 71:4-79:5
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 71:4-79:5
     Visibility: public -/
 @[rust_loop]
 def bytes.split_loop
@@ -1122,7 +1205,7 @@ def bytes.split_loop
     (out, cur, i)
 
 /-- [windmill_kernel::bytes::split]:
-    Source: 'src/bytes.rs', lines 67:0-82:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 67:0-82:1
     Visibility: public -/
 def bytes.split
   (s : Slice Std.U8) (sep : Std.U8) :
@@ -1134,7 +1217,7 @@ def bytes.split
   alloc.vec.Vec.push out cur
 
 /-- [windmill_kernel::scopes::from_scope_string]:
-    Source: 'src/scopes.rs', lines 36:0-82:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 36:0-82:1
     Visibility: public -/
 def scopes.from_scope_string
   (s : Slice Std.U8) : Result (Option scopes.Scope) := do
@@ -1271,25 +1354,134 @@ def scopes.from_scope_string
         else ok none
       else ok none
 
-/-- [windmill_kernel::authz::check_scopes]:
-    Source: 'src/authz.rs', lines 41:0-69:1
+/-- [windmill_kernel::authz::parsed_includes]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 45:0-50:1
     Visibility: public -/
-axiom authz.check_scopes
+def authz.parsed_includes
+  (s : Slice Std.U8) (req : scopes.Scope) : Result Bool := do
+  let o ← scopes.from_scope_string s
+  match o with
+  | none => ok false
+  | some s1 => scopes.includes s1 req
+
+/-- [windmill_kernel::authz::any_grants]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 56:4-63:1
+    Visibility: public -/
+@[rust_loop_body]
+def authz.any_grants_loop.body
+  (scopes : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) (i : Std.Usize)
   :
-  authz.Authed → Slice Std.U8 → Result (core.result.Result Unit
-    authz.AuthzError)
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len scopes
+  if i < i1
+  then
+    let v ← Slice.index_usize scopes i
+    let s := alloc.vec.Vec.deref v
+    let b ← authz.is_filter_tags s
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else
+      let s1 := alloc.vec.Vec.deref v
+      let b1 ← authz.parsed_includes s1 req
+      if b1
+      then ok (done true)
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+  else ok (done false)
+
+/-- [windmill_kernel::authz::any_grants]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 56:4-63:1
+    Visibility: public -/
+@[rust_loop]
+def authz.any_grants_loop
+  (scopes : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) (i : Std.Usize)
+  :
+  Result Bool
+  := do
+  loop
+    (fun i1 => authz.any_grants_loop.body scopes req i1)
+    i
+
+/-- [windmill_kernel::authz::any_grants]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 54:0-63:1
+    Visibility: public -/
+@[reducible]
+def authz.any_grants
+  (scopes : Slice (alloc.vec.Vec Std.U8)) (req : scopes.Scope) :
+  Result Bool
+  := do
+  authz.any_grants_loop scopes req 0#usize
+
+/-- [windmill_kernel::authz::is_effectively_unscoped]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 92:4-99:1
+    Visibility: public -/
+@[rust_loop_body]
+def authz.is_effectively_unscoped_loop.body
+  (scopes : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len scopes
+  if i < i1
+  then
+    let v ← Slice.index_usize scopes i
+    let s := alloc.vec.Vec.deref v
+    let b ← authz.is_filter_tags s
+    if b
+    then let i2 ← i + 1#usize
+         ok (cont i2)
+    else ok (done false)
+  else ok (done true)
+
+/-- [windmill_kernel::authz::is_effectively_unscoped]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 92:4-99:1
+    Visibility: public -/
+@[rust_loop]
+def authz.is_effectively_unscoped_loop
+  (scopes : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => authz.is_effectively_unscoped_loop.body scopes i1)
+    i
 
 /-- [windmill_kernel::authz::is_effectively_unscoped]:
-    Source: 'src/authz.rs', lines 72:0-84:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 87:0-99:1
     Visibility: public -/
 def authz.is_effectively_unscoped
   (has_scopes : Bool) (scopes : Slice (alloc.vec.Vec Std.U8)) :
   Result Bool
   := do
-  sorry
+  if has_scopes
+  then authz.is_effectively_unscoped_loop scopes 0#usize
+  else ok true
+
+/-- [windmill_kernel::authz::check_scopes]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 69:0-84:1
+    Visibility: public -/
+def authz.check_scopes
+  (a : authz.Authed) (required : Slice Std.U8) :
+  Result (core.result.Result Unit authz.AuthzError)
+  := do
+  if a.has_scopes
+  then
+    let o ← scopes.from_scope_string required
+    match o with
+    | none => ok (core.result.Result.Err authz.AuthzError.BadRequest)
+    | some r =>
+      let s := alloc.vec.Vec.deref a.scopes
+      let b ← authz.any_grants s r
+      if b
+      then ok (core.result.Result.Ok ())
+      else
+        let s1 := alloc.vec.Vec.deref a.scopes
+        let b1 ← authz.is_effectively_unscoped true s1
+        if b1
+        then ok (core.result.Result.Ok ())
+        else ok (core.result.Result.Err authz.AuthzError.PermissionDenied)
+  else ok (core.result.Result.Ok ())
 
 /-- [windmill_kernel::authz::is_owner]: loop body 0:
-    Source: 'src/authz.rs', lines 92:4-99:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 107:4-114:1
     Visibility: public -/
 @[rust_loop_body]
 def authz.is_owner_loop.body
@@ -1315,7 +1507,7 @@ def authz.is_owner_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::authz::is_owner]: loop 0:
-    Source: 'src/authz.rs', lines 92:4-99:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 107:4-114:1
     Visibility: public -/
 @[rust_loop]
 def authz.is_owner_loop
@@ -1327,7 +1519,7 @@ def authz.is_owner_loop
     i
 
 /-- [windmill_kernel::authz::is_owner]:
-    Source: 'src/authz.rs', lines 87:0-99:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 102:0-114:1
     Visibility: public -/
 def authz.is_owner
   (a : authz.Authed) («name» : Slice Std.U8) : Result Bool := do
@@ -1336,7 +1528,7 @@ def authz.is_owner
   else authz.is_owner_loop a.folders «name» 0#usize
 
 /-- [windmill_kernel::authz::require_is_owner]:
-    Source: 'src/authz.rs', lines 102:0-104:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 117:0-119:1
     Visibility: public -/
 def authz.require_is_owner
   (a : authz.Authed) («name» : Slice Std.U8) :
@@ -1348,33 +1540,40 @@ def authz.require_is_owner
   else ok (core.result.Result.Err authz.AuthzError.NotAuthorized)
 
 /-- [windmill_kernel::authz::U]
-    Source: 'src/authz.rs', lines 106:0-106:26
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 121:0-121:26
     Visibility: public -/
 @[global_simps, irreducible]
 def authz.U : Slice Std.U8 := Array.to_slice (Array.make 1#usize [ 117#u8 ])
 
 /-- [windmill_kernel::authz::F]
-    Source: 'src/authz.rs', lines 107:0-107:26
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 122:0-122:26
     Visibility: public -/
 @[global_simps, irreducible]
 def authz.F : Slice Std.U8 := Array.to_slice (Array.make 1#usize [ 102#u8 ])
 
 /-- [windmill_kernel::authz::HUB]
-    Source: 'src/authz.rs', lines 108:0-108:30
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 123:0-123:30
     Visibility: public -/
 @[global_simps, irreducible]
 def authz.HUB : Slice Std.U8 :=
   Array.to_slice (Array.make 3#usize [ 104#u8, 117#u8, 98#u8 ])
 
-/-- [windmill_kernel::authz::DOTDOT]
-    Source: 'src/authz.rs', lines 109:0-109:32
+/-- [windmill_kernel::authz::is_dotdot]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 125:0-127:1
     Visibility: public -/
-@[global_simps, irreducible]
-def authz.DOTDOT : Slice Std.U8 :=
-  Array.to_slice (Array.make 2#usize [ 46#u8, 46#u8 ])
+def authz.is_dotdot (seg : Slice Std.U8) : Result Bool := do
+  let i := Slice.len seg
+  if i = 2#usize
+  then
+    let i1 ← Slice.index_usize seg 0#usize
+    if i1 = 46#u8
+    then let i2 ← Slice.index_usize seg 1#usize
+         ok (i2 = 46#u8)
+    else ok false
+  else ok false
 
 /-- [windmill_kernel::authz::require_owner_of_path]:
-    Source: 'src/authz.rs', lines 112:0-130:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 130:0-148:1
     Visibility: public -/
 def authz.require_owner_of_path
   (a : authz.Authed) (path : Slice Std.U8) :
@@ -1420,15 +1619,46 @@ def authz.require_owner_of_path
             authz.require_is_owner a s2
           else ok (core.result.Result.Err authz.AuthzError.BadRequest)
 
-/-- [windmill_kernel::authz::has_dotdot_segment]:
-    Source: 'src/authz.rs', lines 133:0-142:1
+/-- [windmill_kernel::authz::has_dotdot_segment]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 153:4-160:1
     Visibility: public -/
+@[rust_loop_body]
+def authz.has_dotdot_segment_loop.body
+  (parts : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len parts
+  if i < i1
+  then
+    let v ← Slice.index_usize parts i
+    let s := alloc.vec.Vec.deref v
+    let b ← authz.is_dotdot s
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [windmill_kernel::authz::has_dotdot_segment]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 153:4-160:1
+    Visibility: public -/
+@[rust_loop]
+def authz.has_dotdot_segment_loop
+  (parts : Slice (alloc.vec.Vec Std.U8)) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => authz.has_dotdot_segment_loop.body parts i1)
+    i
+
+/-- [windmill_kernel::authz::has_dotdot_segment]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 151:0-160:1
+    Visibility: public -/
+@[reducible]
 def authz.has_dotdot_segment
   (parts : Slice (alloc.vec.Vec Std.U8)) : Result Bool := do
-  sorry
+  authz.has_dotdot_segment_loop parts 0#usize
 
 /-- [windmill_kernel::authz::has_nul]: loop body 0:
-    Source: 'src/authz.rs', lines 147:4-154:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 165:4-172:1
     Visibility: public -/
 @[rust_loop_body]
 def authz.has_nul_loop.body
@@ -1446,7 +1676,7 @@ def authz.has_nul_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::authz::has_nul]: loop 0:
-    Source: 'src/authz.rs', lines 147:4-154:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 165:4-172:1
     Visibility: public -/
 @[rust_loop]
 def authz.has_nul_loop
@@ -1456,14 +1686,14 @@ def authz.has_nul_loop
     i
 
 /-- [windmill_kernel::authz::has_nul]:
-    Source: 'src/authz.rs', lines 145:0-154:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 163:0-172:1
     Visibility: public -/
 @[reducible]
 def authz.has_nul (path : Slice Std.U8) : Result Bool := do
   authz.has_nul_loop path 0#usize
 
 /-- [windmill_kernel::authz::has_folder]: loop body 0:
-    Source: 'src/authz.rs', lines 159:4-166:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 177:4-184:1
     Visibility: public -/
 @[rust_loop_body]
 def authz.has_folder_loop.body
@@ -1485,7 +1715,7 @@ def authz.has_folder_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::authz::has_folder]: loop 0:
-    Source: 'src/authz.rs', lines 159:4-166:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 177:4-184:1
     Visibility: public -/
 @[rust_loop]
 def authz.has_folder_loop
@@ -1497,7 +1727,7 @@ def authz.has_folder_loop
     i
 
 /-- [windmill_kernel::authz::has_folder]:
-    Source: 'src/authz.rs', lines 157:0-166:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 175:0-184:1
     Visibility: public -/
 @[reducible]
 def authz.has_folder
@@ -1505,7 +1735,7 @@ def authz.has_folder
   authz.has_folder_loop a «name» 0#usize
 
 /-- [windmill_kernel::authz::require_path_read_access_for_preview]:
-    Source: 'src/authz.rs', lines 169:0-192:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 187:0-210:1
     Visibility: public -/
 def authz.require_path_read_access_for_preview
   (a : authz.Authed) (path : Slice Std.U8) :
@@ -1635,7 +1865,7 @@ def authz.require_path_read_access_for_preview
                   else ok (core.result.Result.Err authz.AuthzError.BadRequest)
 
 /-- [windmill_kernel::authz::PermEntry]
-    Source: 'src/authz.rs', lines 197:0-201:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 215:0-219:1
     Visibility: public -/
 structure authz.PermEntry where
   key : alloc.vec.Vec Std.U8
@@ -1643,7 +1873,7 @@ structure authz.PermEntry where
   value : Bool
 
 /-- [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::PermEntry}::clone]:
-    Source: 'src/authz.rs', lines 196:9-196:14
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:9-214:14
     Visibility: public -/
 def authz.PermEntry.Insts.CoreCloneClone.clone
   (self : authz.PermEntry) : Result authz.PermEntry := do
@@ -1653,7 +1883,7 @@ def authz.PermEntry.Insts.CoreCloneClone.clone
   ok { key := v, is_bool := b, value := b1 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::clone::Clone for windmill_kernel::authz::PermEntry}]
-    Source: 'src/authz.rs', lines 196:9-196:14 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:9-214:14 -/
 @[reducible]
 def authz.PermEntry.Insts.CoreCloneClone : core.clone.Clone authz.PermEntry
   := {
@@ -1661,7 +1891,7 @@ def authz.PermEntry.Insts.CoreCloneClone : core.clone.Clone authz.PermEntry
 }
 
 /-- [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::PermEntry}::fmt]:
-    Source: 'src/authz.rs', lines 196:16-196:21
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:16-214:21
     Visibility: public -/
 def authz.PermEntry.Insts.CoreFmtDebug.fmt
   (self : authz.PermEntry) (f : core.fmt.Formatter) :
@@ -1674,21 +1904,21 @@ def authz.PermEntry.Insts.CoreFmtDebug.fmt
     "key") dyn (toStr "is_bool") dyn1 (toStr "value") dyn2
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::fmt::Debug for windmill_kernel::authz::PermEntry}]
-    Source: 'src/authz.rs', lines 196:16-196:21 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:16-214:21 -/
 @[reducible]
 def authz.PermEntry.Insts.CoreFmtDebug : core.fmt.Debug authz.PermEntry := {
   fmt := authz.PermEntry.Insts.CoreFmtDebug.fmt
 }
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::marker::StructuralPartialEq for windmill_kernel::authz::PermEntry}]
-    Source: 'src/authz.rs', lines 196:23-196:32 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:23-214:32 -/
 @[reducible]
 def authz.PermEntry.Insts.CoreMarkerStructuralPartialEq :
   core.marker.StructuralPartialEq authz.PermEntry := {
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::PermEntry> for windmill_kernel::authz::PermEntry}::eq]:
-    Source: 'src/authz.rs', lines 196:23-196:32
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:23-214:32
     Visibility: public -/
 def authz.PermEntry.Insts.CoreCmpPartialEqPermEntry.eq
   (self : authz.PermEntry) (other : authz.PermEntry) : Result Bool := do
@@ -1702,7 +1932,7 @@ def authz.PermEntry.Insts.CoreCmpPartialEqPermEntry.eq
   else ok false
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::PartialEq<windmill_kernel::authz::PermEntry> for windmill_kernel::authz::PermEntry}]
-    Source: 'src/authz.rs', lines 196:23-196:32 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:23-214:32 -/
 @[reducible]
 def authz.PermEntry.Insts.CoreCmpPartialEqPermEntry : core.cmp.PartialEq
   authz.PermEntry authz.PermEntry := {
@@ -1710,14 +1940,14 @@ def authz.PermEntry.Insts.CoreCmpPartialEqPermEntry : core.cmp.PartialEq
 }
 
 /-- [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::PermEntry}::assert_fields_are_eq]:
-    Source: 'src/authz.rs', lines 196:34-196:36
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:34-214:36
     Visibility: public -/
 def authz.PermEntry.Insts.CoreCmpEq.assert_fields_are_eq
   (self : authz.PermEntry) : Result Unit := do
   ok ()
 
 /-- Trait implementation: [windmill_kernel::authz::{impl core::cmp::Eq for windmill_kernel::authz::PermEntry}]
-    Source: 'src/authz.rs', lines 196:34-196:36 -/
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 214:34-214:36 -/
 @[reducible]
 def authz.PermEntry.Insts.CoreCmpEq : core.cmp.Eq authz.PermEntry := {
   partialEqInst := authz.PermEntry.Insts.CoreCmpPartialEqPermEntry
@@ -1725,7 +1955,7 @@ def authz.PermEntry.Insts.CoreCmpEq : core.cmp.Eq authz.PermEntry := {
 }
 
 /-- [windmill_kernel::authz::lookup]: loop body 0:
-    Source: 'src/authz.rs', lines 206:4-213:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 224:4-231:1
     Visibility: public -/
 @[rust_loop_body]
 def authz.lookup_loop.body
@@ -1745,7 +1975,7 @@ def authz.lookup_loop.body
   else ok (done (false, false))
 
 /-- [windmill_kernel::authz::lookup]: loop 0:
-    Source: 'src/authz.rs', lines 206:4-213:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 224:4-231:1
     Visibility: public -/
 @[rust_loop]
 def authz.lookup_loop
@@ -1757,7 +1987,7 @@ def authz.lookup_loop
     i
 
 /-- [windmill_kernel::authz::lookup]:
-    Source: 'src/authz.rs', lines 204:0-213:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 222:0-231:1
     Visibility: public -/
 @[reducible]
 def authz.lookup
@@ -1766,11 +1996,11 @@ def authz.lookup
   := do
   authz.lookup_loop obj k 0#usize
 
-/-- [windmill_kernel::authz::concat]: loop body 0:
-    Source: 'src/authz.rs', lines 219:4-222:5
+/-- [windmill_kernel::authz::key_for]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 239:4-242:5
     Visibility: public -/
 @[rust_loop_body]
-def authz.concat_loop.body
+def authz.key_for_loop.body
   («name» : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
     Std.U8))
@@ -1784,53 +2014,138 @@ def authz.concat_loop.body
     ok (cont (out1, i3))
   else ok (done out)
 
-/-- [windmill_kernel::authz::concat]: loop 0:
-    Source: 'src/authz.rs', lines 219:4-222:5
+/-- [windmill_kernel::authz::key_for]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 239:4-242:5
     Visibility: public -/
 @[rust_loop]
-def authz.concat_loop
+def authz.key_for_loop
   («name» : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
   loop
-    (fun (out1, i1) => authz.concat_loop.body «name» out1 i1)
+    (fun (out1, i1) => authz.key_for_loop.body «name» out1 i1)
     (out, i)
 
-/-- [windmill_kernel::authz::concat]:
-    Source: 'src/authz.rs', lines 216:0-224:1
+/-- [windmill_kernel::authz::key_for]:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 234:0-244:1
     Visibility: public -/
-def authz.concat
-  (p : Slice Std.U8) («name» : Slice Std.U8) :
+def authz.key_for
+  (kind : Std.U8) («name» : Slice Std.U8) :
   Result (alloc.vec.Vec Std.U8)
   := do
-  let out ← alloc.slice.Slice.to_vec core.clone.CloneU8 p
-  authz.concat_loop «name» out 0#usize
+  let out ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) kind
+  let out1 ← alloc.vec.Vec.push out 47#u8
+  authz.key_for_loop «name» out1 0#usize
 
-/-- [windmill_kernel::authz::U_SLASH]
-    Source: 'src/authz.rs', lines 226:0-226:33
+/-- [windmill_kernel::authz::get_perm_in_extra_perms]: loop body 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 263:4-275:1
     Visibility: public -/
-@[global_simps, irreducible]
-def authz.U_SLASH : Slice Std.U8 :=
-  Array.to_slice (Array.make 2#usize [ 117#u8, 47#u8 ])
+@[rust_loop_body]
+def authz.get_perm_in_extra_perms_loop0.body
+  (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) v i
+    let s := alloc.vec.Vec.deref v1
+    let v2 ← authz.key_for 103#u8 s
+    let s1 := alloc.vec.Vec.deref v2
+    let (f, v3) ← authz.lookup obj s1
+    if f
+    then if v3
+         then ok (done true)
+         else let i2 ← i + 1#usize
+              ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
 
-/-- [windmill_kernel::authz::G_SLASH]
-    Source: 'src/authz.rs', lines 227:0-227:33
+/-- [windmill_kernel::authz::get_perm_in_extra_perms]: loop 0:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 263:4-275:1
     Visibility: public -/
-@[global_simps, irreducible]
-def authz.G_SLASH : Slice Std.U8 :=
-  Array.to_slice (Array.make 2#usize [ 103#u8, 47#u8 ])
+@[rust_loop]
+def authz.get_perm_in_extra_perms_loop0
+  (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => authz.get_perm_in_extra_perms_loop0.body obj v i1)
+    i
+
+/-- [windmill_kernel::authz::get_perm_in_extra_perms]: loop body 1:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 263:4-275:1
+    Visibility: public -/
+@[rust_loop_body]
+def authz.get_perm_in_extra_perms_loop1.body
+  (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (res_some : Bool) (i : Std.Usize) :
+  Result (ControlFlow (Bool × Std.Usize) (Bool × Bool))
+  := do
+  let i1 := alloc.vec.Vec.len v
+  if i < i1
+  then
+    let v1 ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) v i
+    let s := alloc.vec.Vec.deref v1
+    let v2 ← authz.key_for 103#u8 s
+    let s1 := alloc.vec.Vec.deref v2
+    let (f, v3) ← authz.lookup obj s1
+    if f
+    then
+      if v3
+      then ok (done (true, true))
+      else let i2 ← i + 1#usize
+           ok (cont (true, i2))
+    else let i2 ← i + 1#usize
+         ok (cont (res_some, i2))
+  else ok (done (res_some, false))
+
+/-- [windmill_kernel::authz::get_perm_in_extra_perms]: loop 1:
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 263:4-275:1
+    Visibility: public -/
+@[rust_loop]
+def authz.get_perm_in_extra_perms_loop1
+  (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (res_some : Bool) (i : Std.Usize) :
+  Result (Bool × Bool)
+  := do
+  loop
+    (fun (res_some1, i1) => authz.get_perm_in_extra_perms_loop1.body obj v
+      res_some1 i1)
+    (res_some, i)
 
 /-- [windmill_kernel::authz::get_perm_in_extra_perms]:
-    Source: 'src/authz.rs', lines 231:0-258:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 248:0-275:1
     Visibility: public -/
 def authz.get_perm_in_extra_perms
   (is_object : Bool) (obj : Slice authz.PermEntry) (a : authz.Authed) :
   Result (Bool × Bool)
   := do
-  sorry
+  if is_object
+  then
+    let s := alloc.vec.Vec.deref a.username
+    let v ← authz.key_for 117#u8 s
+    let s1 := alloc.vec.Vec.deref v
+    let (f, v1) ← authz.lookup obj s1
+    if f
+    then
+      if v1
+      then ok (true, true)
+      else
+        let b ← authz.get_perm_in_extra_perms_loop0 obj a.groups 0#usize
+        ok (true, b)
+    else authz.get_perm_in_extra_perms_loop1 obj a.groups false 0#usize
+  else ok (false, false)
 
 /-- [windmill_kernel::authz::is_instance_admin]:
-    Source: 'src/authz.rs', lines 261:0-263:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 278:0-280:1
     Visibility: public -/
 def authz.is_instance_admin (a : authz.Authed) : Result Bool := do
   if a.is_admin
@@ -1838,7 +2153,7 @@ def authz.is_instance_admin (a : authz.Authed) : Result Bool := do
   else ok false
 
 /-- [windmill_kernel::authz::require_instance_admin]:
-    Source: 'src/authz.rs', lines 266:0-274:1
+    Source: 'prove/ports/windmill/kernel/src/authz.rs', lines 283:0-291:1
     Visibility: public -/
 def authz.require_instance_admin
   (a : authz.Authed) : Result (core.result.Result Unit authz.AuthzError) := do
@@ -1850,7 +2165,7 @@ def authz.require_instance_admin
     else ok (core.result.Result.Err authz.AuthzError.RequireAdmin)
 
 /-- [windmill_kernel::bytes::list_contains]: loop body 0:
-    Source: 'src/bytes.rs', lines 106:4-113:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 106:4-113:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.list_contains_loop.body
@@ -1870,7 +2185,7 @@ def bytes.list_contains_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::bytes::list_contains]: loop 0:
-    Source: 'src/bytes.rs', lines 106:4-113:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 106:4-113:1
     Visibility: public -/
 @[rust_loop]
 def bytes.list_contains_loop
@@ -1882,7 +2197,7 @@ def bytes.list_contains_loop
     i
 
 /-- [windmill_kernel::bytes::list_contains]:
-    Source: 'src/bytes.rs', lines 104:0-113:1
+    Source: 'prove/ports/windmill/kernel/src/bytes.rs', lines 104:0-113:1
     Visibility: public -/
 @[reducible]
 def bytes.list_contains
@@ -1890,7 +2205,7 @@ def bytes.list_contains
   bytes.list_contains_loop list s 0#usize
 
 /-- [windmill_kernel::scopes::{impl core::clone::Clone for windmill_kernel::scopes::Scope}::clone]:
-    Source: 'src/scopes.rs', lines 18:9-18:14
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:9-18:14
     Visibility: public -/
 def scopes.Scope.Insts.CoreCloneClone.clone
   (self : scopes.Scope) : Result scopes.Scope := do
@@ -1913,14 +2228,14 @@ def scopes.Scope.Insts.CoreCloneClone.clone
     }
 
 /-- Trait implementation: [windmill_kernel::scopes::{impl core::clone::Clone for windmill_kernel::scopes::Scope}]
-    Source: 'src/scopes.rs', lines 18:9-18:14 -/
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:9-18:14 -/
 @[reducible]
 def scopes.Scope.Insts.CoreCloneClone : core.clone.Clone scopes.Scope := {
   clone := scopes.Scope.Insts.CoreCloneClone.clone
 }
 
 /-- [windmill_kernel::scopes::{impl core::fmt::Debug for windmill_kernel::scopes::Scope}::fmt]:
-    Source: 'src/scopes.rs', lines 18:16-18:21
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:16-18:21
     Visibility: public -/
 def scopes.Scope.Insts.CoreFmtDebug.fmt
   (self : scopes.Scope) (f : core.fmt.Formatter) :
@@ -1945,21 +2260,21 @@ def scopes.Scope.Insts.CoreFmtDebug.fmt
   core.fmt.Formatter.debug_struct_fields_finish f (toStr "Scope") s values
 
 /-- Trait implementation: [windmill_kernel::scopes::{impl core::fmt::Debug for windmill_kernel::scopes::Scope}]
-    Source: 'src/scopes.rs', lines 18:16-18:21 -/
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:16-18:21 -/
 @[reducible]
 def scopes.Scope.Insts.CoreFmtDebug : core.fmt.Debug scopes.Scope := {
   fmt := scopes.Scope.Insts.CoreFmtDebug.fmt
 }
 
 /-- Trait implementation: [windmill_kernel::scopes::{impl core::marker::StructuralPartialEq for windmill_kernel::scopes::Scope}]
-    Source: 'src/scopes.rs', lines 18:23-18:32 -/
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:23-18:32 -/
 @[reducible]
 def scopes.Scope.Insts.CoreMarkerStructuralPartialEq :
   core.marker.StructuralPartialEq scopes.Scope := {
 }
 
 /-- [windmill_kernel::scopes::{impl core::cmp::PartialEq<windmill_kernel::scopes::Scope> for windmill_kernel::scopes::Scope}::eq]:
-    Source: 'src/scopes.rs', lines 18:23-18:32
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:23-18:32
     Visibility: public -/
 def scopes.Scope.Insts.CoreCmpPartialEqScope.eq
   (self : scopes.Scope) (other : scopes.Scope) : Result Bool := do
@@ -1991,7 +2306,7 @@ def scopes.Scope.Insts.CoreCmpPartialEqScope.eq
   else ok false
 
 /-- Trait implementation: [windmill_kernel::scopes::{impl core::cmp::PartialEq<windmill_kernel::scopes::Scope> for windmill_kernel::scopes::Scope}]
-    Source: 'src/scopes.rs', lines 18:23-18:32 -/
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:23-18:32 -/
 @[reducible]
 def scopes.Scope.Insts.CoreCmpPartialEqScope : core.cmp.PartialEq scopes.Scope
   scopes.Scope := {
@@ -1999,14 +2314,14 @@ def scopes.Scope.Insts.CoreCmpPartialEqScope : core.cmp.PartialEq scopes.Scope
 }
 
 /-- [windmill_kernel::scopes::{impl core::cmp::Eq for windmill_kernel::scopes::Scope}::assert_fields_are_eq]:
-    Source: 'src/scopes.rs', lines 18:34-18:36
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:34-18:36
     Visibility: public -/
 def scopes.Scope.Insts.CoreCmpEq.assert_fields_are_eq
   (self : scopes.Scope) : Result Unit := do
   ok ()
 
 /-- Trait implementation: [windmill_kernel::scopes::{impl core::cmp::Eq for windmill_kernel::scopes::Scope}]
-    Source: 'src/scopes.rs', lines 18:34-18:36 -/
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 18:34-18:36 -/
 @[reducible]
 def scopes.Scope.Insts.CoreCmpEq : core.cmp.Eq scopes.Scope := {
   partialEqInst := scopes.Scope.Insts.CoreCmpPartialEqScope
@@ -2014,7 +2329,7 @@ def scopes.Scope.Insts.CoreCmpEq : core.cmp.Eq scopes.Scope := {
 }
 
 /-- [windmill_kernel::scopes::resource_covers]:
-    Source: 'src/scopes.rs', lines 221:0-238:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 229:0-246:1
     Visibility: public -/
 def scopes.resource_covers
   (caller : Slice Std.U8) (requested : Slice Std.U8) : Result Bool := do
@@ -2062,7 +2377,7 @@ def scopes.resource_covers
     else ok false
 
 /-- [windmill_kernel::scopes::some_covers]: loop body 0:
-    Source: 'src/scopes.rs', lines 243:4-250:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 251:4-258:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.some_covers_loop.body
@@ -2083,7 +2398,7 @@ def scopes.some_covers_loop.body
   else ok (done false)
 
 /-- [windmill_kernel::scopes::some_covers]: loop 0:
-    Source: 'src/scopes.rs', lines 243:4-250:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 251:4-258:1
     Visibility: public -/
 @[rust_loop]
 def scopes.some_covers_loop
@@ -2096,7 +2411,7 @@ def scopes.some_covers_loop
     j
 
 /-- [windmill_kernel::scopes::some_covers]:
-    Source: 'src/scopes.rs', lines 241:0-250:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 249:0-258:1
     Visibility: public -/
 @[reducible]
 def scopes.some_covers
@@ -2106,7 +2421,7 @@ def scopes.some_covers
   scopes.some_covers_loop caller req 0#usize
 
 /-- [windmill_kernel::scopes::resource_set_contains]: loop body 0:
-    Source: 'src/scopes.rs', lines 258:4-265:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 266:4-273:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.resource_set_contains_loop.body
@@ -2132,7 +2447,7 @@ def scopes.resource_set_contains_loop.body
   else ok (done true)
 
 /-- [windmill_kernel::scopes::resource_set_contains]: loop 0:
-    Source: 'src/scopes.rs', lines 258:4-265:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 266:4-273:1
     Visibility: public -/
 @[rust_loop]
 def scopes.resource_set_contains_loop
@@ -2145,7 +2460,7 @@ def scopes.resource_set_contains_loop
     i
 
 /-- [windmill_kernel::scopes::resource_set_contains]:
-    Source: 'src/scopes.rs', lines 253:0-265:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 261:0-273:1
     Visibility: public -/
 def scopes.resource_set_contains
   (caller : Slice (alloc.vec.Vec Std.U8))
@@ -2158,7 +2473,7 @@ def scopes.resource_set_contains
   else scopes.resource_set_contains_loop caller requested 0#usize
 
 /-- [windmill_kernel::scopes::scope_contains]:
-    Source: 'src/scopes.rs', lines 268:0-291:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 276:0-299:1
     Visibility: public -/
 def scopes.scope_contains
   (caller : scopes.Scope) (requested : scopes.Scope) : Result Bool := do
@@ -2242,8 +2557,18 @@ def scopes.scope_contains
     else ok false
   else ok false
 
+/-- [windmill_kernel::scopes::parsed_contains]:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 302:0-307:1
+    Visibility: public -/
+def scopes.parsed_contains
+  (b : Slice Std.U8) (p : scopes.Scope) : Result Bool := do
+  let o ← scopes.from_scope_string b
+  match o with
+  | none => ok false
+  | some b1 => scopes.scope_contains b1 p
+
 /-- [windmill_kernel::scopes::some_contains]: loop body 0:
-    Source: 'src/scopes.rs', lines 296:4-308:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 312:4-319:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.some_contains_loop.body
@@ -2255,20 +2580,15 @@ def scopes.some_contains_loop.body
   then
     let v ← Slice.index_usize «by» j
     let s := alloc.vec.Vec.deref v
-    let o ← scopes.from_scope_string s
-    match o with
-    | none => let j1 ← j + 1#usize
-              ok (cont j1)
-    | some b =>
-      let b1 ← scopes.scope_contains b p
-      if b1
-      then ok (done true)
-      else let j1 ← j + 1#usize
-           ok (cont j1)
+    let b ← scopes.parsed_contains s p
+    if b
+    then ok (done true)
+    else let j1 ← j + 1#usize
+         ok (cont j1)
   else ok (done false)
 
 /-- [windmill_kernel::scopes::some_contains]: loop 0:
-    Source: 'src/scopes.rs', lines 296:4-308:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 312:4-319:1
     Visibility: public -/
 @[rust_loop]
 def scopes.some_contains_loop
@@ -2280,7 +2600,7 @@ def scopes.some_contains_loop
     j
 
 /-- [windmill_kernel::scopes::some_contains]:
-    Source: 'src/scopes.rs', lines 294:0-308:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 310:0-319:1
     Visibility: public -/
 @[reducible]
 def scopes.some_contains
@@ -2289,8 +2609,20 @@ def scopes.some_contains
   := do
   scopes.some_contains_loop «by» p 0#usize
 
+/-- [windmill_kernel::scopes::covered_by]:
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 322:0-327:1
+    Visibility: public -/
+def scopes.covered_by
+  (raw : Slice Std.U8) («by» : Slice (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  let o ← scopes.from_scope_string raw
+  match o with
+  | none => ok false
+  | some p => scopes.some_contains «by» p
+
 /-- [windmill_kernel::scopes::keep_covered]: loop body 0:
-    Source: 'src/scopes.rs', lines 313:4-323:5
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 332:4-337:5
     Visibility: public -/
 @[rust_loop_body]
 def scopes.keep_covered_loop.body
@@ -2304,30 +2636,26 @@ def scopes.keep_covered_loop.body
   then
     let v ← Slice.index_usize raw i
     let s := alloc.vec.Vec.deref v
-    let o ← scopes.from_scope_string s
+    let b ← scopes.covered_by s «by»
     let out1 ←
-      match o with
-      | none => ok out
-      | some p =>
+      if b
+      then
         do
-        let b ← scopes.some_contains «by» p
-        if b
-        then
-          let s1 := alloc.vec.Vec.deref out
-          let s2 := alloc.vec.Vec.deref v
-          let b1 ← bytes.list_contains s1 s2
-          if b1
-          then ok out
-          else
-            let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
-            alloc.vec.Vec.push out v1
-        else ok out
+        let s1 := alloc.vec.Vec.deref out
+        let s2 := alloc.vec.Vec.deref v
+        let b1 ← bytes.list_contains s1 s2
+        if b1
+        then ok out
+        else
+          let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 v
+          alloc.vec.Vec.push out v1
+      else ok out
     let i2 ← i + 1#usize
     ok (cont (out1, i2))
   else ok (done out)
 
 /-- [windmill_kernel::scopes::keep_covered]: loop 0:
-    Source: 'src/scopes.rs', lines 313:4-323:5
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 332:4-337:5
     Visibility: public -/
 @[rust_loop]
 def scopes.keep_covered_loop
@@ -2341,7 +2669,7 @@ def scopes.keep_covered_loop
     (out, i)
 
 /-- [windmill_kernel::scopes::keep_covered]:
-    Source: 'src/scopes.rs', lines 311:0-324:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 330:0-338:1
     Visibility: public -/
 @[reducible]
 def scopes.keep_covered
@@ -2353,7 +2681,7 @@ def scopes.keep_covered
   scopes.keep_covered_loop out raw «by» 0#usize
 
 /-- [windmill_kernel::scopes::intersect_job_token_scopes]:
-    Source: 'src/scopes.rs', lines 328:0-333:1
+    Source: 'prove/ports/windmill/kernel/src/scopes.rs', lines 342:0-347:1
     Visibility: public -/
 def scopes.intersect_job_token_scopes
   (ceiling : Slice (alloc.vec.Vec Std.U8)) (own : Slice (alloc.vec.Vec Std.U8))

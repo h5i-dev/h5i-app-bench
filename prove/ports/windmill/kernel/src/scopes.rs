@@ -117,16 +117,24 @@ pub fn resource_matches_pattern(scope_resource: &[u8], accepted_resource: &[u8])
         || matches_wildcard(accepted_resource, scope_resource)
 }
 
+/// The inner loop of `resources_match_small`: some scope resource matches `required`.
+pub fn any_scope_matches(scope_resources: &[Vec<u8>], required: &[u8]) -> bool {
+    let mut j = 0;
+    while j < scope_resources.len() {
+        if resource_matches_pattern(&scope_resources[j], required) {
+            return true;
+        }
+        j += 1;
+    }
+    false
+}
+
 /// `resources_match_small`.
 pub fn resources_match_small(scope_resources: &[Vec<u8>], accepted: &[Vec<u8>]) -> bool {
     let mut i = 0;
     while i < accepted.len() {
-        let mut j = 0;
-        while j < scope_resources.len() {
-            if resource_matches_pattern(&scope_resources[j], &accepted[i]) {
-                return true;
-            }
-            j += 1;
+        if any_scope_matches(scope_resources, &accepted[i]) {
+            return true;
         }
         i += 1;
     }
@@ -290,34 +298,40 @@ pub fn scope_contains(caller: &Scope, requested: &Scope) -> bool {
     resource_set_contains(&caller.resource, &requested.resource)
 }
 
+/// `b` parses and `scope_contains(b, p)`.
+pub fn parsed_contains(b: &[u8], p: &Scope) -> bool {
+    match from_scope_string(b) {
+        Some(b) => scope_contains(&b, p),
+        None => false,
+    }
+}
+
 /// `by.iter().flatten().any(|b| scope_contains(b, p))`.
 pub fn some_contains(by: &[Vec<u8>], p: &Scope) -> bool {
     let mut j = 0;
     while j < by.len() {
-        match from_scope_string(&by[j]) {
-            Some(b) => {
-                if scope_contains(&b, p) {
-                    return true;
-                }
-            }
-            None => {}
+        if parsed_contains(&by[j], p) {
+            return true;
         }
         j += 1;
     }
     false
 }
 
+/// `raw` parses to some `p` with `by.iter().flatten().any(|b| scope_contains(b, p))`.
+pub fn covered_by(raw: &[u8], by: &[Vec<u8>]) -> bool {
+    match from_scope_string(raw) {
+        Some(p) => some_contains(by, &p),
+        None => false,
+    }
+}
+
 /// The `keep_covered` closure of `intersect_job_token_scopes`.
 pub fn keep_covered(out: &mut Vec<Vec<u8>>, raw: &[Vec<u8>], by: &[Vec<u8>]) {
     let mut i = 0;
     while i < raw.len() {
-        match from_scope_string(&raw[i]) {
-            Some(p) => {
-                if some_contains(by, &p) && !list_contains(out, &raw[i]) {
-                    out.push(raw[i].clone());
-                }
-            }
-            None => {}
+        if covered_by(&raw[i], by) && !list_contains(out, &raw[i]) {
+            out.push(raw[i].clone());
         }
         i += 1;
     }

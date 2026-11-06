@@ -11,6 +11,7 @@ windmill-kernel = { path = "../kernel" }
 windmill-common = { path = "../upstream-src/backend/windmill-common", default-features = false }
 windmill-api-auth = { path = "../upstream-src/backend/windmill-api-auth", default-features = false }
 serde_json = "1"
+uuid = "1"
 
 [workspace]
 
