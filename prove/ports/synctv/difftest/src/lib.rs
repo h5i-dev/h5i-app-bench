@@ -78,3 +78,5 @@ mod perms_tests;
 mod auth_tests;
 #[cfg(test)]
 mod pathcheck_tests;
+#[cfg(test)]
+mod user_tests;

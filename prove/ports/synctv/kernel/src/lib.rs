@@ -6,3 +6,4 @@ pub mod auth;
 pub mod pathcheck;
 pub mod perms;
 pub mod policy;
+pub mod user;
