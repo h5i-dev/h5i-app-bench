@@ -581,24 +581,37 @@ pub fn in_series(r: &StoreRow, user_id: u64, host: u128, tag: &[u8], start: u64)
     r.user_id == user_id && bytes_eq(&r.tag, tag) && r.host == host && signed_key(r.idx) >= signed_key(start)
 }
 
-/// `out` sorted by `signed_key(idx)`, with `r` put after every row whose key
-/// is not greater.
-pub fn insert_sorted(out: &Vec<StoreRow>, r: &StoreRow) -> Vec<StoreRow> {
-    let mut res = Vec::new();
-    let mut placed = false;
+/// The first index of `out` whose row sorts after a row with key `k`, or
+/// the length: where `insert_sorted` puts the new row.
+pub fn insert_pos(out: &Vec<StoreRow>, k: u64) -> usize {
     let mut i = 0;
     while i < out.len() {
-        if !placed && signed_key(r.idx) < signed_key(out[i].idx) {
-            res.push(r.clone());
-            placed = true;
+        if k < signed_key(out[i].idx) {
+            return i;
         }
-        res.push(out[i].clone());
         i += 1;
     }
-    if !placed {
-        res.push(r.clone());
+    out.len()
+}
+
+/// `res` followed by `out[from..to]`.
+pub fn extend_rows(res: Vec<StoreRow>, out: &Vec<StoreRow>, from: usize, to: usize) -> Vec<StoreRow> {
+    let mut acc = res;
+    let mut i = from;
+    while i < to && i < out.len() {
+        acc.push(out[i].clone());
+        i += 1;
     }
-    res
+    acc
+}
+
+/// `out` sorted by `signed_key(idx)`, with `r` put after every row whose key
+/// is not greater (a stable insertion).
+pub fn insert_sorted(out: &Vec<StoreRow>, r: &StoreRow) -> Vec<StoreRow> {
+    let p = insert_pos(out, signed_key(r.idx));
+    let mut res = extend_rows(Vec::new(), out, 0, p);
+    res.push(r.clone());
+    extend_rows(res, out, p, out.len())
 }
 
 /// The first `n` rows.
@@ -635,28 +648,36 @@ pub fn next_records(s: &Snapshot, user_id: u64, host: u128, tag: &Bytes, start: 
     }
 }
 
-/// Fold one row into the `(host, tag)` maxima.
-pub fn bump(ps: &Vec<StatusPoint>, r: &StoreRow) -> Vec<StatusPoint> {
-    let mut res = Vec::new();
-    let mut found = false;
+/// The index of the point of series `(host, tag)`.
+pub fn find_point(ps: &Vec<StatusPoint>, host: u128, tag: &[u8]) -> Option<usize> {
     let mut i = 0;
     while i < ps.len() {
-        if ps[i].host == r.host && bytes_eq(&ps[i].tag, &r.tag) {
-            found = true;
-            if signed_key(r.idx) > signed_key(ps[i].idx) {
-                res.push(StatusPoint { host: r.host, tag: r.tag.clone(), idx: r.idx });
-            } else {
-                res.push(ps[i].clone());
-            }
-        } else {
-            res.push(ps[i].clone());
+        if ps[i].host == host && bytes_eq(&ps[i].tag, tag) {
+            return Some(i);
         }
         i += 1;
     }
-    if !found {
-        res.push(StatusPoint { host: r.host, tag: r.tag.clone(), idx: r.idx });
+    None
+}
+
+/// Fold one row into the `(host, tag)` maxima (signed, as `MAX(idx)`).
+pub fn bump(ps: &Vec<StatusPoint>, r: &StoreRow) -> Vec<StatusPoint> {
+    match find_point(ps, r.host, &r.tag) {
+        None => {
+            let mut res = ps.clone();
+            res.push(StatusPoint { host: r.host, tag: r.tag.clone(), idx: r.idx });
+            res
+        }
+        Some(j) => {
+            if signed_key(r.idx) > signed_key(ps[j].idx) {
+                let mut res = ps.clone();
+                res[j] = StatusPoint { host: r.host, tag: r.tag.clone(), idx: r.idx };
+                res
+            } else {
+                ps.clone()
+            }
+        }
     }
-    res
 }
 
 /// `STATUS`: `SELECT host, tag, MAX(idx) FROM store WHERE user_id = $1 GROUP BY host, tag`.

@@ -484,6 +484,13 @@ def StatusPoint.Insts.CoreCloneClone.clone
   let i1 ← lift (core.clone.impls.CloneU64.clone self.idx)
   ok { host := i, tag := v, idx := i1 }
 
+/-- Trait implementation: [atuin_kernel::{impl core::clone::Clone for atuin_kernel::StatusPoint}]
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 157:9-157:14 -/
+@[reducible]
+def StatusPoint.Insts.CoreCloneClone : core.clone.Clone StatusPoint := {
+  clone := StatusPoint.Insts.CoreCloneClone.clone
+}
+
 /-- [atuin_kernel::Reply]
     Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 165:0-178:1
     Visibility: public -/
@@ -1530,78 +1537,114 @@ def in_series
     else ok false
   else ok false
 
-/-- [atuin_kernel::insert_sorted]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-597:5
+/-- [atuin_kernel::insert_pos]: loop body 0:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 588:4-595:1
     Visibility: public -/
 @[rust_loop_body]
-def insert_sorted_loop.body
-  (out : alloc.vec.Vec StoreRow) (r : StoreRow) (res : alloc.vec.Vec StoreRow)
-  (placed : Bool) (i : Std.Usize) :
-  Result (ControlFlow (StoreRow × (alloc.vec.Vec StoreRow) × Bool ×
-    Std.Usize) (StoreRow × (alloc.vec.Vec StoreRow) × Bool))
+def insert_pos_loop.body
+  (out : alloc.vec.Vec StoreRow) (k : Std.U64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Std.Usize)
   := do
   let i1 := alloc.vec.Vec.len out
   if i < i1
   then
-    let (r1, res1, placed1) ←
-      if placed
-      then ok (r, res, true)
-      else
-        do
-        let i2 ← signed_key r.idx
-        let sr ←
-          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice StoreRow)
-            out i
-        let i3 ← signed_key sr.idx
-        let (v, b) ←
-          if i2 < i3
-          then
-            do
-            let sr1 ← StoreRow.Insts.CoreCloneClone.clone r
-            let res2 ← alloc.vec.Vec.push res sr1
-            ok (res2, true)
-          else ok (res, false)
-        ok (r, v, b)
     let sr ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice StoreRow) out
         i
-    let sr1 ← StoreRow.Insts.CoreCloneClone.clone sr
-    let res2 ← alloc.vec.Vec.push res1 sr1
-    let i2 ← i + 1#usize
-    ok (cont (r1, res2, placed1, i2))
-  else ok (done (r, res, placed))
+    let i2 ← signed_key sr.idx
+    if k < i2
+    then ok (done i)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else let i2 := alloc.vec.Vec.len out
+       ok (done i2)
 
-/-- [atuin_kernel::insert_sorted]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-597:5
+/-- [atuin_kernel::insert_pos]: loop 0:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 588:4-595:1
     Visibility: public -/
 @[rust_loop]
-def insert_sorted_loop
-  (out : alloc.vec.Vec StoreRow) (r : StoreRow) (res : alloc.vec.Vec StoreRow)
-  (placed : Bool) (i : Std.Usize) :
-  Result (StoreRow × (alloc.vec.Vec StoreRow) × Bool)
+def insert_pos_loop
+  (out : alloc.vec.Vec StoreRow) (k : Std.U64) (i : Std.Usize) :
+  Result Std.Usize
   := do
   loop
-    (fun (r1, res1, placed1, i1) => insert_sorted_loop.body out r1 res1 placed1
-      i1)
-    (r, res, placed, i)
+    (fun i1 => insert_pos_loop.body out k i1)
+    i
+
+/-- [atuin_kernel::insert_pos]:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 586:0-595:1
+    Visibility: public -/
+@[reducible]
+def insert_pos
+  (out : alloc.vec.Vec StoreRow) (k : Std.U64) : Result Std.Usize := do
+  insert_pos_loop out k 0#usize
+
+/-- [atuin_kernel::extend_rows]: loop body 0:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-604:5
+    Visibility: public -/
+@[rust_loop_body]
+def extend_rows_loop.body
+  (out : alloc.vec.Vec StoreRow) («to» : Std.Usize)
+  (acc : alloc.vec.Vec StoreRow) (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec StoreRow) × Std.Usize) (alloc.vec.Vec
+    StoreRow))
+  := do
+  if i < «to»
+  then
+    let i1 := alloc.vec.Vec.len out
+    if i < i1
+    then
+      let sr ←
+        alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice StoreRow)
+          out i
+      let sr1 ← StoreRow.Insts.CoreCloneClone.clone sr
+      let acc1 ← alloc.vec.Vec.push acc sr1
+      let i2 ← i + 1#usize
+      ok (cont (acc1, i2))
+    else ok (done acc)
+  else ok (done acc)
+
+/-- [atuin_kernel::extend_rows]: loop 0:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-604:5
+    Visibility: public -/
+@[rust_loop]
+def extend_rows_loop
+  (out : alloc.vec.Vec StoreRow) («to» : Std.Usize)
+  (acc : alloc.vec.Vec StoreRow) (i : Std.Usize) :
+  Result (alloc.vec.Vec StoreRow)
+  := do
+  loop
+    (fun (acc1, i1) => extend_rows_loop.body out «to» acc1 i1)
+    (acc, i)
+
+/-- [atuin_kernel::extend_rows]:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 598:0-606:1
+    Visibility: public -/
+@[reducible]
+def extend_rows
+  (res : alloc.vec.Vec StoreRow) (out : alloc.vec.Vec StoreRow)
+  («from» : Std.Usize) («to» : Std.Usize) :
+  Result (alloc.vec.Vec StoreRow)
+  := do
+  extend_rows_loop out «to» res «from»
 
 /-- [atuin_kernel::insert_sorted]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 586:0-602:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 610:0-615:1
     Visibility: public -/
 def insert_sorted
   (out : alloc.vec.Vec StoreRow) (r : StoreRow) :
   Result (alloc.vec.Vec StoreRow)
   := do
-  let (r1, res, placed) ←
-    insert_sorted_loop out r (alloc.vec.Vec.new StoreRow) false 0#usize
-  if placed
-  then ok res
-  else
-    let sr ← StoreRow.Insts.CoreCloneClone.clone r1
-    alloc.vec.Vec.push res sr
+  let i ← signed_key r.idx
+  let p ← insert_pos out i
+  let res ← extend_rows (alloc.vec.Vec.new StoreRow) out 0#usize p
+  let sr ← StoreRow.Insts.CoreCloneClone.clone r
+  let res1 ← alloc.vec.Vec.push res sr
+  let i1 := alloc.vec.Vec.len out
+  extend_rows res1 out p i1
 
 /-- [atuin_kernel::take]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-611:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-624:5
     Visibility: public -/
 @[rust_loop_body]
 def take_loop.body
@@ -1627,7 +1670,7 @@ def take_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::take]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-611:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-624:5
     Visibility: public -/
 @[rust_loop]
 def take_loop
@@ -1640,7 +1683,7 @@ def take_loop
     (res, i)
 
 /-- [atuin_kernel::take]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 605:0-613:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 618:0-626:1
     Visibility: public -/
 @[reducible]
 def take
@@ -1650,7 +1693,7 @@ def take
   take_loop v n (alloc.vec.Vec.new StoreRow) 0#usize
 
 /-- [atuin_kernel::next_records]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 625:4-630:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 638:4-643:5
     Visibility: public -/
 @[rust_loop_body]
 def next_records_loop.body
@@ -1676,7 +1719,7 @@ def next_records_loop.body
   else ok (done sorted)
 
 /-- [atuin_kernel::next_records]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 625:4-630:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 638:4-643:5
     Visibility: public -/
 @[rust_loop]
 def next_records_loop
@@ -1691,7 +1734,7 @@ def next_records_loop
     (sorted, i)
 
 /-- [atuin_kernel::next_records]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 618:0-636:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 631:0-649:1
     Visibility: public -/
 def next_records
   (s : Snapshot) (user_id : Std.U64) (host : Std.U128)
@@ -1708,15 +1751,14 @@ def next_records
   then ok sorted
   else take sorted count
 
-/-- [atuin_kernel::bump]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 643:4-655:5
+/-- [atuin_kernel::find_point]: loop body 0:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-661:1
     Visibility: public -/
 @[rust_loop_body]
-def bump_loop.body
-  (ps : alloc.vec.Vec StatusPoint) (r : StoreRow)
-  (res : alloc.vec.Vec StatusPoint) (found : Bool) (i : Std.Usize) :
-  Result (ControlFlow ((alloc.vec.Vec StatusPoint) × Bool × Std.Usize)
-    (StoreRow × (alloc.vec.Vec StatusPoint) × Bool))
+def find_point_loop.body
+  (ps : alloc.vec.Vec StatusPoint) (host : Std.U128) (tag : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
   := do
   let i1 := alloc.vec.Vec.len ps
   if i < i1
@@ -1724,73 +1766,74 @@ def bump_loop.body
     let sp ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice StatusPoint)
         ps i
-    let (res1, found1) ←
-      if sp.host = r.host
-      then
-        do
-        let s := alloc.vec.Vec.deref sp.tag
-        let s1 := alloc.vec.Vec.deref r.tag
-        let b ← bytes_eq s s1
-        if b
-        then
-          let i2 ← signed_key r.idx
-          let i3 ← signed_key sp.idx
-          let v ←
-            if i2 > i3
-            then
-              do
-              let v1 ← alloc.vec.CloneVec.clone core.clone.CloneU8 r.tag
-              alloc.vec.Vec.push res
-                ({ host := r.host, tag := v1, idx := r.idx } : StatusPoint)
-            else
-              do
-              let sp1 ← StatusPoint.Insts.CoreCloneClone.clone sp
-              alloc.vec.Vec.push res sp1
-          ok (v, true)
-        else
-          let sp1 ← StatusPoint.Insts.CoreCloneClone.clone sp
-          let res2 ← alloc.vec.Vec.push res sp1
-          ok (res2, found)
-      else
-        do
-        let sp1 ← StatusPoint.Insts.CoreCloneClone.clone sp
-        let res2 ← alloc.vec.Vec.push res sp1
-        ok (res2, found)
-    let i2 ← i + 1#usize
-    ok (cont (res1, found1, i2))
-  else ok (done (r, res, found))
+    if sp.host = host
+    then
+      let s := alloc.vec.Vec.deref sp.tag
+      let b ← bytes_eq s tag
+      if b
+      then ok (done (some i))
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
 
-/-- [atuin_kernel::bump]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 643:4-655:5
+/-- [atuin_kernel::find_point]: loop 0:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-661:1
     Visibility: public -/
 @[rust_loop]
-def bump_loop
-  (ps : alloc.vec.Vec StatusPoint) (r : StoreRow)
-  (res : alloc.vec.Vec StatusPoint) (found : Bool) (i : Std.Usize) :
-  Result (StoreRow × (alloc.vec.Vec StatusPoint) × Bool)
+def find_point_loop
+  (ps : alloc.vec.Vec StatusPoint) (host : Std.U128) (tag : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (Option Std.Usize)
   := do
   loop
-    (fun (res1, found1, i1) => bump_loop.body ps r res1 found1 i1)
-    (res, found, i)
+    (fun i1 => find_point_loop.body ps host tag i1)
+    i
+
+/-- [atuin_kernel::find_point]:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 652:0-661:1
+    Visibility: public -/
+@[reducible]
+def find_point
+  (ps : alloc.vec.Vec StatusPoint) (host : Std.U128) (tag : Slice Std.U8) :
+  Result (Option Std.Usize)
+  := do
+  find_point_loop ps host tag 0#usize
 
 /-- [atuin_kernel::bump]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 639:0-660:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 664:0-681:1
     Visibility: public -/
 def bump
   (ps : alloc.vec.Vec StatusPoint) (r : StoreRow) :
   Result (alloc.vec.Vec StatusPoint)
   := do
-  let (r1, res, found) ←
-    bump_loop ps r (alloc.vec.Vec.new StatusPoint) false 0#usize
-  if found
-  then ok res
-  else
-    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 r1.tag
-    alloc.vec.Vec.push res ({ host := r1.host, tag := v, idx := r1.idx } :
+  let s := alloc.vec.Vec.deref r.tag
+  let o ← find_point ps r.host s
+  match o with
+  | none =>
+    let res ← alloc.vec.CloneVec.clone StatusPoint.Insts.CoreCloneClone ps
+    let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 r.tag
+    alloc.vec.Vec.push res ({ host := r.host, tag := v, idx := r.idx } :
       StatusPoint)
+  | some j =>
+    let i ← signed_key r.idx
+    let sp ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice StatusPoint)
+        ps j
+    let i1 ← signed_key sp.idx
+    if i > i1
+    then
+      let res ← alloc.vec.CloneVec.clone StatusPoint.Insts.CoreCloneClone ps
+      let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 r.tag
+      let (_, index_mut_back) ←
+        alloc.vec.Vec.index_mut (core.slice.index.SliceIndexUsizeSlice
+          StatusPoint) res j
+      ok (index_mut_back { host := r.host, tag := v, idx := r.idx })
+    else alloc.vec.CloneVec.clone StatusPoint.Insts.CoreCloneClone ps
 
 /-- [atuin_kernel::status]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 666:4-671:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 687:4-692:5
     Visibility: public -/
 @[rust_loop_body]
 def status_loop.body
@@ -1813,7 +1856,7 @@ def status_loop.body
   else ok (done ps)
 
 /-- [atuin_kernel::status]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 666:4-671:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 687:4-692:5
     Visibility: public -/
 @[rust_loop]
 def status_loop
@@ -1826,7 +1869,7 @@ def status_loop
     (ps, i)
 
 /-- [atuin_kernel::status]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 663:0-673:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 684:0-694:1
     Visibility: public -/
 @[reducible]
 def status
@@ -1834,7 +1877,7 @@ def status
   status_loop s user_id (alloc.vec.Vec.new StatusPoint) 0#usize
 
 /-- [atuin_kernel::authed]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 676:0-694:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 697:0-715:1
     Visibility: public -/
 def authed
   (cfg : Config) (c : Crypto) (s : Snapshot) (u : User) (cmd : Command) :
@@ -1864,7 +1907,7 @@ def authed
     ok (core.result.Result.Ok (ws, Reply.Unit))
 
 /-- [atuin_kernel::transition]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 708:0-718:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 729:0-739:1
     Visibility: public -/
 def transition
   (cfg : Config) (c : Crypto) (s : Snapshot) (req : Request) :
@@ -1912,7 +1955,7 @@ def transition
     | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [atuin_kernel::without_user_sessions]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 725:4-730:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 746:4-751:5 -/
 @[rust_loop_body]
 def without_user_sessions_loop.body
   (v : alloc.vec.Vec Session) (id : Std.U64) (res : alloc.vec.Vec Session)
@@ -1937,7 +1980,7 @@ def without_user_sessions_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user_sessions]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 725:4-730:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 746:4-751:5 -/
 @[rust_loop]
 def without_user_sessions_loop
   (v : alloc.vec.Vec Session) (id : Std.U64) (res : alloc.vec.Vec Session)
@@ -1949,7 +1992,7 @@ def without_user_sessions_loop
     (res, i)
 
 /-- [atuin_kernel::without_user_sessions]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 722:0-732:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 743:0-753:1 -/
 @[reducible]
 def without_user_sessions
   (v : alloc.vec.Vec Session) (id : Std.U64) :
@@ -1958,7 +2001,7 @@ def without_user_sessions
   without_user_sessions_loop v id (alloc.vec.Vec.new Session) 0#usize
 
 /-- [atuin_kernel::without_user_history]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 737:4-742:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 758:4-763:5 -/
 @[rust_loop_body]
 def without_user_history_loop.body
   (v : alloc.vec.Vec HistoryRow) (id : Std.U64)
@@ -1980,7 +2023,7 @@ def without_user_history_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user_history]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 737:4-742:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 758:4-763:5 -/
 @[rust_loop]
 def without_user_history_loop
   (v : alloc.vec.Vec HistoryRow) (id : Std.U64)
@@ -1992,7 +2035,7 @@ def without_user_history_loop
     (res, i)
 
 /-- [atuin_kernel::without_user_history]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 734:0-744:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 755:0-765:1 -/
 @[reducible]
 def without_user_history
   (v : alloc.vec.Vec HistoryRow) (id : Std.U64) :
@@ -2001,7 +2044,7 @@ def without_user_history
   without_user_history_loop v id (alloc.vec.Vec.new HistoryRow) 0#usize
 
 /-- [atuin_kernel::without_user_store]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 749:4-754:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 770:4-775:5
     Visibility: public -/
 @[rust_loop_body]
 def without_user_store_loop.body
@@ -2027,7 +2070,7 @@ def without_user_store_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user_store]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 749:4-754:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 770:4-775:5
     Visibility: public -/
 @[rust_loop]
 def without_user_store_loop
@@ -2040,7 +2083,7 @@ def without_user_store_loop
     (res, i)
 
 /-- [atuin_kernel::without_user_store]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 746:0-756:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 767:0-777:1
     Visibility: public -/
 @[reducible]
 def without_user_store
@@ -2050,7 +2093,7 @@ def without_user_store
   without_user_store_loop v id (alloc.vec.Vec.new StoreRow) 0#usize
 
 /-- [atuin_kernel::without_user]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 761:4-766:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 782:4-787:5 -/
 @[rust_loop_body]
 def without_user_loop.body
   (v : alloc.vec.Vec User) (id : Std.U64) (res : alloc.vec.Vec User)
@@ -2074,7 +2117,7 @@ def without_user_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 761:4-766:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 782:4-787:5 -/
 @[rust_loop]
 def without_user_loop
   (v : alloc.vec.Vec User) (id : Std.U64) (res : alloc.vec.Vec User)
@@ -2086,14 +2129,14 @@ def without_user_loop
     (res, i)
 
 /-- [atuin_kernel::without_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 758:0-768:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 779:0-789:1 -/
 @[reducible]
 def without_user
   (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
   without_user_loop v id (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::with_password]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 773:4-780:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 794:4-801:5 -/
 @[rust_loop_body]
 def with_password_loop.body
   (v : alloc.vec.Vec User) (id : Std.U64) (hash : alloc.vec.Vec Std.U8)
@@ -2123,7 +2166,7 @@ def with_password_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::with_password]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 773:4-780:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 794:4-801:5 -/
 @[rust_loop]
 def with_password_loop
   (v : alloc.vec.Vec User) (id : Std.U64) (hash : alloc.vec.Vec Std.U8)
@@ -2135,7 +2178,7 @@ def with_password_loop
     (res, i)
 
 /-- [atuin_kernel::with_password]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 770:0-782:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 791:0-803:1 -/
 @[reducible]
 def with_password
   (v : alloc.vec.Vec User) (id : Std.U64) (hash : alloc.vec.Vec Std.U8) :
@@ -2144,7 +2187,7 @@ def with_password
   with_password_loop v id hash (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::store_conflict]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-794:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-815:1
     Visibility: public -/
 @[rust_loop_body]
 def store_conflict_loop.body
@@ -2178,7 +2221,7 @@ def store_conflict_loop.body
   else ok (done false)
 
 /-- [atuin_kernel::store_conflict]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-794:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-815:1
     Visibility: public -/
 @[rust_loop]
 def store_conflict_loop
@@ -2190,7 +2233,7 @@ def store_conflict_loop
     i
 
 /-- [atuin_kernel::store_conflict]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 785:0-794:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 806:0-815:1
     Visibility: public -/
 @[reducible]
 def store_conflict
@@ -2198,7 +2241,7 @@ def store_conflict
   store_conflict_loop v r 0#usize
 
 /-- [atuin_kernel::push_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 796:0-800:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 817:0-821:1 -/
 def push_user
   (v : alloc.vec.Vec User) (u : User) : Result (alloc.vec.Vec User) := do
   let res ← alloc.vec.CloneVec.clone User.Insts.CoreCloneClone v
@@ -2206,7 +2249,7 @@ def push_user
   alloc.vec.Vec.push res u1
 
 /-- [atuin_kernel::push_session]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 802:0-806:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 823:0-827:1 -/
 def push_session
   (v : alloc.vec.Vec Session) (x : Session) :
   Result (alloc.vec.Vec Session)
@@ -2216,7 +2259,7 @@ def push_session
   alloc.vec.Vec.push res s
 
 /-- [atuin_kernel::push_row]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 808:0-812:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 829:0-833:1 -/
 def push_row
   (v : alloc.vec.Vec StoreRow) (r : StoreRow) :
   Result (alloc.vec.Vec StoreRow)
@@ -2226,7 +2269,7 @@ def push_row
   alloc.vec.Vec.push res sr
 
 /-- [atuin_kernel::apply_write]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 815:0-866:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 836:0-887:1
     Visibility: public -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
@@ -2311,7 +2354,7 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
     ok { s with users := v, sessions := v1, history := v2, store := v3 }
 
 /-- [atuin_kernel::apply]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 872:4-875:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 893:4-896:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -2329,7 +2372,7 @@ def apply_loop.body
   else ok (done cur)
 
 /-- [atuin_kernel::apply]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 872:4-875:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 893:4-896:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -2341,7 +2384,7 @@ def apply_loop
     (cur, i)
 
 /-- [atuin_kernel::apply]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 869:0-877:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 890:0-898:1
     Visibility: public -/
 def apply (s : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let cur ← Snapshot.Insts.CoreCloneClone.clone s

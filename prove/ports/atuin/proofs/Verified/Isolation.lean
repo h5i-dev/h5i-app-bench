@@ -69,9 +69,11 @@ theorem transition_isolated (cfg : Config) (c : Crypto) (s s' : Snapshot) (req :
   | Login n pw => simp only []; unfold login; rw [hu, hs]
   | _ =>
     simp only []
-    rw [hr, hr', bind_tc_ok, bind_tc_ok]
+    rw [hr, hr']
+    simp only [bind_ok, bind_tc_ok]
+    rw [hc] at hauth
     cases r with
-    | Ok u => simp only []; rw [← hc]; exact hauth u rfl
+    | Ok u => exact hauth u rfl
     | Err e => rfl
 
 end atuin_kernel.Verified

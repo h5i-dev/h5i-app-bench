@@ -516,6 +516,19 @@ impl Harness {
                 self.tokens.push(t);
             }
         }
+        if let Ok((_, k::Reply::Records(rs))) = &out {
+            if rs.len() >= 2 {
+                self.bump("(Next returned >= 2 rows)");
+            }
+            if rs.iter().any(|r| r.idx >= 1 << 63) && rs.iter().any(|r| r.idx < 1 << 63) {
+                self.bump("(Next mixed idx >= 2^63 with idx < 2^63)");
+            }
+        }
+        if let Ok((_, k::Reply::Status(ps))) = &out {
+            if ps.iter().any(|p| p.idx >= 1 << 63) {
+                self.bump("(Status max idx >= 2^63)");
+            }
+        }
         let kind = format!("{:?}", req.command).split([' ', '{', '(']).next().unwrap().to_owned();
         let outcome = match &out {
             Ok((ws, _)) if ws.is_empty() => "ok".to_owned(),
