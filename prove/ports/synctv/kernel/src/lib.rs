@@ -3,5 +3,6 @@
 //! override policy, global roles, and token / guest / session acceptance.
 //! See `../DEVIATIONS.md` for the mapping to upstream.
 pub mod auth;
+pub mod pathcheck;
 pub mod perms;
 pub mod policy;

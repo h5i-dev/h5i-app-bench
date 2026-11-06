@@ -76,3 +76,5 @@ impl Rng {
 mod perms_tests;
 #[cfg(test)]
 mod auth_tests;
+#[cfg(test)]
+mod pathcheck_tests;
