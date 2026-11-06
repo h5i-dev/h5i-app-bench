@@ -242,6 +242,19 @@ pub fn eq_lower(a: &[u8], b: &[u8]) -> bool {
     true
 }
 
+/// `c.is_ascii_alphanumeric() || c == '-'`.
+pub fn is_name_char(c: u8) -> bool {
+    if c >= b'a' && c <= b'z' {
+        true
+    } else if c >= b'A' && c <= b'Z' {
+        true
+    } else if c >= b'0' && c <= b'9' {
+        true
+    } else {
+        c == b'-'
+    }
+}
+
 /// `models.rs` `NewUsername::from_str`: non-empty, every char an ASCII
 /// letter, digit or `-`. On UTF-8 bytes this is the same test: every byte of
 /// a non-ASCII char is >= 0x80.
@@ -251,9 +264,7 @@ pub fn valid_username(u: &[u8]) -> bool {
     }
     let mut i = 0;
     while i < u.len() {
-        let c = u[i];
-        let ok = (c >= b'a' && c <= b'z') || (c >= b'A' && c <= b'Z') || (c >= b'0' && c <= b'9') || c == b'-';
-        if !ok {
+        if !is_name_char(u[i]) {
             return false;
         }
         i += 1;

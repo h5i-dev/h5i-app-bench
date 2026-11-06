@@ -603,8 +603,51 @@ def eq_lower (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   then ok false
   else eq_lower_loop a b 0#usize
 
+/-- [atuin_kernel::is_name_char]:
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 246:0-256:1
+    Visibility: public -/
+def is_name_char (c : Std.U8) : Result Bool := do
+  if c >= 97#u8
+  then
+    if c <= 122#u8
+    then ok true
+    else
+      if c >= 65#u8
+      then
+        if c <= 90#u8
+        then ok true
+        else
+          if c >= 48#u8
+          then if c <= 57#u8
+               then ok true
+               else ok (c = 45#u8)
+          else ok (c = 45#u8)
+      else
+        if c >= 48#u8
+        then if c <= 57#u8
+             then ok true
+             else ok (c = 45#u8)
+        else ok (c = 45#u8)
+  else
+    if c >= 65#u8
+    then
+      if c <= 90#u8
+      then ok true
+      else
+        if c >= 48#u8
+        then if c <= 57#u8
+             then ok true
+             else ok (c = 45#u8)
+        else ok (c = 45#u8)
+    else
+      if c >= 48#u8
+      then if c <= 57#u8
+           then ok true
+           else ok (c = 45#u8)
+      else ok (c = 45#u8)
+
 /-- [atuin_kernel::valid_username]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 253:4-262:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 266:4-273:1
     Visibility: public -/
 @[rust_loop_body]
 def valid_username_loop.body
@@ -614,54 +657,16 @@ def valid_username_loop.body
   let i1 := Slice.len u
   if i < i1
   then
-    let c ← Slice.index_usize u i
-    let ok1 ←
-      if c >= 97#u8
-      then
-        if c <= 122#u8
-        then ok true
-        else
-          if c >= 65#u8
-          then
-            if c <= 90#u8
-            then ok true
-            else
-              if c >= 48#u8
-              then if c <= 57#u8
-                   then ok true
-                   else ok (c = 45#u8)
-              else ok (c = 45#u8)
-          else
-            if c >= 48#u8
-            then if c <= 57#u8
-                 then ok true
-                 else ok (c = 45#u8)
-            else ok (c = 45#u8)
-      else
-        if c >= 65#u8
-        then
-          if c <= 90#u8
-          then ok true
-          else
-            if c >= 48#u8
-            then if c <= 57#u8
-                 then ok true
-                 else ok (c = 45#u8)
-            else ok (c = 45#u8)
-        else
-          if c >= 48#u8
-          then if c <= 57#u8
-               then ok true
-               else ok (c = 45#u8)
-          else ok (c = 45#u8)
-    if ok1
-    then let i2 ← i + 1#usize
-         ok (cont i2)
+    let i2 ← Slice.index_usize u i
+    let b ← is_name_char i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
     else ok (done false)
   else ok (done true)
 
 /-- [atuin_kernel::valid_username]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 253:4-262:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 266:4-273:1
     Visibility: public -/
 @[rust_loop]
 def valid_username_loop (u : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -670,7 +675,7 @@ def valid_username_loop (u : Slice Std.U8) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [atuin_kernel::valid_username]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 248:0-262:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 261:0-273:1
     Visibility: public -/
 def valid_username (u : Slice Std.U8) : Result Bool := do
   let i := Slice.len u
@@ -679,7 +684,7 @@ def valid_username (u : Slice Std.U8) : Result Bool := do
   else valid_username_loop u 0#usize
 
 /-- [atuin_kernel::header_is_ascii]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-277:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-288:1
     Visibility: public -/
 @[rust_loop_body]
 def header_is_ascii_loop.body
@@ -704,7 +709,7 @@ def header_is_ascii_loop.body
   else ok (done true)
 
 /-- [atuin_kernel::header_is_ascii]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-277:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-288:1
     Visibility: public -/
 @[rust_loop]
 def header_is_ascii_loop (v : Slice Std.U8) (i : Std.Usize) : Result Bool := do
@@ -713,14 +718,14 @@ def header_is_ascii_loop (v : Slice Std.U8) (i : Std.Usize) : Result Bool := do
     i
 
 /-- [atuin_kernel::header_is_ascii]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 267:0-277:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 278:0-288:1
     Visibility: public -/
 @[reducible]
 def header_is_ascii (v : Slice Std.U8) : Result Bool := do
   header_is_ascii_loop v 0#usize
 
 /-- [atuin_kernel::first_space]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 282:4-289:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 293:4-300:1
     Visibility: public -/
 @[rust_loop_body]
 def first_space_loop.body
@@ -738,7 +743,7 @@ def first_space_loop.body
   else ok (done none)
 
 /-- [atuin_kernel::first_space]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 282:4-289:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 293:4-300:1
     Visibility: public -/
 @[rust_loop]
 def first_space_loop
@@ -748,14 +753,14 @@ def first_space_loop
     i
 
 /-- [atuin_kernel::first_space]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 280:0-289:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 291:0-300:1
     Visibility: public -/
 @[reducible]
 def first_space (v : Slice Std.U8) : Result (Option Std.Usize) := do
   first_space_loop v 0#usize
 
 /-- [atuin_kernel::copy_from]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 294:4-297:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 305:4-308:5 -/
 @[rust_loop_body]
 def copy_from_loop.body
   (v : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -772,7 +777,7 @@ def copy_from_loop.body
   else ok (done out)
 
 /-- [atuin_kernel::copy_from]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 294:4-297:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 305:4-308:5 -/
 @[rust_loop]
 def copy_from_loop
   (v : Slice Std.U8) (out : alloc.vec.Vec Std.U8) (i : Std.Usize) :
@@ -783,14 +788,14 @@ def copy_from_loop
     (out, i)
 
 /-- [atuin_kernel::copy_from]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 291:0-299:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 302:0-310:1 -/
 @[reducible]
 def copy_from
   (v : Slice Std.U8) (start : Std.Usize) : Result (alloc.vec.Vec Std.U8) := do
   copy_from_loop v (alloc.vec.Vec.new Std.U8) start
 
 /-- [atuin_kernel::is_token_scheme]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 302:0-304:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 313:0-315:1 -/
 def is_token_scheme (v : Slice Std.U8) (n : Std.Usize) : Result Bool := do
   if n = 5#usize
   then
@@ -814,7 +819,7 @@ def is_token_scheme (v : Slice Std.U8) (n : Std.Usize) : Result Bool := do
   else ok false
 
 /-- [atuin_kernel::parse_authorization]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 308:0-328:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 319:0-339:1
     Visibility: public -/
 def parse_authorization
   (h : Option (alloc.vec.Vec Std.U8)) :
@@ -844,7 +849,7 @@ def parse_authorization
     else ok (core.result.Result.Err Error.InvalidAuthorization)
 
 /-- [atuin_kernel::find_session_by_token]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 332:4-339:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 343:4-350:1
     Visibility: public -/
 @[rust_loop_body]
 def find_session_by_token_loop.body
@@ -866,7 +871,7 @@ def find_session_by_token_loop.body
   else ok (done none)
 
 /-- [atuin_kernel::find_session_by_token]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 332:4-339:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 343:4-350:1
     Visibility: public -/
 @[rust_loop]
 def find_session_by_token_loop
@@ -878,7 +883,7 @@ def find_session_by_token_loop
     i
 
 /-- [atuin_kernel::find_session_by_token]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 330:0-339:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 341:0-350:1
     Visibility: public -/
 @[reducible]
 def find_session_by_token
@@ -888,7 +893,7 @@ def find_session_by_token
   find_session_by_token_loop ss token 0#usize
 
 /-- [atuin_kernel::find_session_by_user]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 343:4-350:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 354:4-361:1
     Visibility: public -/
 @[rust_loop_body]
 def find_session_by_user_loop.body
@@ -908,7 +913,7 @@ def find_session_by_user_loop.body
   else ok (done none)
 
 /-- [atuin_kernel::find_session_by_user]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 343:4-350:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 354:4-361:1
     Visibility: public -/
 @[rust_loop]
 def find_session_by_user_loop
@@ -920,7 +925,7 @@ def find_session_by_user_loop
     i
 
 /-- [atuin_kernel::find_session_by_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 341:0-350:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 352:0-361:1
     Visibility: public -/
 @[reducible]
 def find_session_by_user
@@ -930,7 +935,7 @@ def find_session_by_user
   find_session_by_user_loop ss user_id 0#usize
 
 /-- [atuin_kernel::find_user_by_id]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 354:4-361:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 365:4-372:1
     Visibility: public -/
 @[rust_loop_body]
 def find_user_by_id_loop.body
@@ -950,7 +955,7 @@ def find_user_by_id_loop.body
   else ok (done none)
 
 /-- [atuin_kernel::find_user_by_id]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 354:4-361:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 365:4-372:1
     Visibility: public -/
 @[rust_loop]
 def find_user_by_id_loop
@@ -962,7 +967,7 @@ def find_user_by_id_loop
     i
 
 /-- [atuin_kernel::find_user_by_id]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 352:0-361:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 363:0-372:1
     Visibility: public -/
 @[reducible]
 def find_user_by_id
@@ -970,7 +975,7 @@ def find_user_by_id
   find_user_by_id_loop us id 0#usize
 
 /-- [atuin_kernel::find_user_by_name]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 366:4-373:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 377:4-384:1
     Visibility: public -/
 @[rust_loop_body]
 def find_user_by_name_loop.body
@@ -992,7 +997,7 @@ def find_user_by_name_loop.body
   else ok (done none)
 
 /-- [atuin_kernel::find_user_by_name]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 366:4-373:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 377:4-384:1
     Visibility: public -/
 @[rust_loop]
 def find_user_by_name_loop
@@ -1004,7 +1009,7 @@ def find_user_by_name_loop
     i
 
 /-- [atuin_kernel::find_user_by_name]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 364:0-373:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 375:0-384:1
     Visibility: public -/
 @[reducible]
 def find_user_by_name
@@ -1014,7 +1019,7 @@ def find_user_by_name
   find_user_by_name_loop us «name» 0#usize
 
 /-- [atuin_kernel::session_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 376:0-381:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 387:0-392:1
     Visibility: public -/
 def session_user
   (s : Snapshot) (token : Slice Std.U8) : Result (Option User) := do
@@ -1024,7 +1029,7 @@ def session_user
   | some sess => find_user_by_id s.users sess.user_id
 
 /-- [atuin_kernel::authenticate]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 384:0-392:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 395:0-403:1
     Visibility: public -/
 def authenticate
   (s : Snapshot) (h : Option (alloc.vec.Vec Std.U8)) :
@@ -1041,7 +1046,7 @@ def authenticate
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [atuin_kernel::verify]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-404:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-415:1
     Visibility: public -/
 @[rust_loop_body]
 def verify_loop.body
@@ -1070,7 +1075,7 @@ def verify_loop.body
   else ok (done false)
 
 /-- [atuin_kernel::verify]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-404:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-415:1
     Visibility: public -/
 @[rust_loop]
 def verify_loop
@@ -1083,7 +1088,7 @@ def verify_loop
     i
 
 /-- [atuin_kernel::verify]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 395:0-404:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 406:0-415:1
     Visibility: public -/
 @[reducible]
 def verify
@@ -1093,7 +1098,7 @@ def verify
   verify_loop c hash password 0#usize
 
 /-- [atuin_kernel::user_conflict]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 412:4-419:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 423:4-430:1
     Visibility: public -/
 @[rust_loop_body]
 def user_conflict_loop.body
@@ -1125,7 +1130,7 @@ def user_conflict_loop.body
   else ok (done false)
 
 /-- [atuin_kernel::user_conflict]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 412:4-419:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 423:4-430:1
     Visibility: public -/
 @[rust_loop]
 def user_conflict_loop
@@ -1138,7 +1143,7 @@ def user_conflict_loop
     i
 
 /-- [atuin_kernel::user_conflict]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 410:0-419:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 421:0-430:1
     Visibility: public -/
 @[reducible]
 def user_conflict
@@ -1149,7 +1154,7 @@ def user_conflict
   user_conflict_loop us username email hash 0#usize
 
 /-- [atuin_kernel::token_taken]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 424:4-431:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 435:4-442:1
     Visibility: public -/
 @[rust_loop_body]
 def token_taken_loop.body
@@ -1170,7 +1175,7 @@ def token_taken_loop.body
   else ok (done false)
 
 /-- [atuin_kernel::token_taken]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 424:4-431:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 435:4-442:1
     Visibility: public -/
 @[rust_loop]
 def token_taken_loop
@@ -1182,7 +1187,7 @@ def token_taken_loop
     i
 
 /-- [atuin_kernel::token_taken]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 422:0-431:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 433:0-442:1
     Visibility: public -/
 @[reducible]
 def token_taken
@@ -1190,7 +1195,7 @@ def token_taken
   token_taken_loop ss token 0#usize
 
 /-- [atuin_kernel::hash_taken_by_other]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-443:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-454:1
     Visibility: public -/
 @[rust_loop_body]
 def hash_taken_by_other_loop.body
@@ -1216,7 +1221,7 @@ def hash_taken_by_other_loop.body
   else ok (done false)
 
 /-- [atuin_kernel::hash_taken_by_other]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-443:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-454:1
     Visibility: public -/
 @[rust_loop]
 def hash_taken_by_other_loop
@@ -1229,7 +1234,7 @@ def hash_taken_by_other_loop
     i
 
 /-- [atuin_kernel::hash_taken_by_other]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 434:0-443:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 445:0-454:1
     Visibility: public -/
 @[reducible]
 def hash_taken_by_other
@@ -1239,7 +1244,7 @@ def hash_taken_by_other
   hash_taken_by_other_loop us id hash 0#usize
 
 /-- [atuin_kernel::register]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 446:0-465:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 457:0-476:1
     Visibility: public -/
 def register
   (cfg : Config) (s : Snapshot) (username : alloc.vec.Vec Std.U8)
@@ -1295,7 +1300,7 @@ def register
   else ok (core.result.Result.Err Error.RegistrationClosed)
 
 /-- [atuin_kernel::login]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 468:0-482:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 479:0-493:1
     Visibility: public -/
 def login
   (c : Crypto) (s : Snapshot) (username : alloc.vec.Vec Std.U8)
@@ -1321,7 +1326,7 @@ def login
       else ok (core.result.Result.Err Error.WrongPassword)
 
 /-- [atuin_kernel::get_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 485:0-490:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 496:0-501:1
     Visibility: public -/
 def get_user
   (s : Snapshot) (username : alloc.vec.Vec Std.U8) :
@@ -1336,7 +1341,7 @@ def get_user
       u.username))
 
 /-- [atuin_kernel::delete_account]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 493:0-500:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 504:0-511:1
     Visibility: public -/
 def delete_account
   (c : Crypto) (u : User) (password : alloc.vec.Vec Std.U8) :
@@ -1353,7 +1358,7 @@ def delete_account
   else ok (core.result.Result.Err Error.WrongPassword)
 
 /-- [atuin_kernel::change_password]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 503:0-513:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 514:0-524:1
     Visibility: public -/
 def change_password
   (c : Crypto) (s : Snapshot) (u : User) (current : alloc.vec.Vec Std.U8)
@@ -1377,7 +1382,7 @@ def change_password
   else ok (core.result.Result.Err Error.WrongPassword)
 
 /-- [atuin_kernel::records_fit]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 520:4-527:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 531:4-538:1
     Visibility: public -/
 @[rust_loop_body]
 def records_fit_loop.body
@@ -1402,7 +1407,7 @@ def records_fit_loop.body
   else ok (done true)
 
 /-- [atuin_kernel::records_fit]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 520:4-527:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 531:4-538:1
     Visibility: public -/
 @[rust_loop]
 def records_fit_loop
@@ -1414,7 +1419,7 @@ def records_fit_loop
     i
 
 /-- [atuin_kernel::records_fit]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 518:0-527:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 529:0-538:1
     Visibility: public -/
 @[reducible]
 def records_fit
@@ -1422,7 +1427,7 @@ def records_fit
   records_fit_loop rs max 0#usize
 
 /-- [atuin_kernel::to_row]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 529:0-541:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 540:0-552:1
     Visibility: public -/
 def to_row (user_id : Std.U64) (r : RecordIn) : Result StoreRow := do
   let v ← alloc.vec.CloneVec.clone core.clone.CloneU8 r.version
@@ -1443,7 +1448,7 @@ def to_row (user_id : Std.U64) (r : RecordIn) : Result StoreRow := do
     }
 
 /-- [atuin_kernel::record_writes]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 546:4-549:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 557:4-560:5 -/
 @[rust_loop_body]
 def record_writes_loop.body
   (user_id : Std.U64) (rs : alloc.vec.Vec RecordIn) (ws : alloc.vec.Vec Write)
@@ -1463,7 +1468,7 @@ def record_writes_loop.body
   else ok (done ws)
 
 /-- [atuin_kernel::record_writes]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 546:4-549:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 557:4-560:5 -/
 @[rust_loop]
 def record_writes_loop
   (user_id : Std.U64) (rs : alloc.vec.Vec RecordIn) (ws : alloc.vec.Vec Write)
@@ -1475,7 +1480,7 @@ def record_writes_loop
     (ws, i)
 
 /-- [atuin_kernel::record_writes]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 543:0-551:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 554:0-562:1 -/
 @[reducible]
 def record_writes
   (user_id : Std.U64) (rs : alloc.vec.Vec RecordIn) :
@@ -1484,7 +1489,7 @@ def record_writes
   record_writes_loop user_id rs (alloc.vec.Vec.new Write) 0#usize
 
 /-- [atuin_kernel::post_records]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 554:0-559:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 565:0-570:1
     Visibility: public -/
 def post_records
   (cfg : Config) (u : User) (rs : alloc.vec.Vec RecordIn) :
@@ -1498,13 +1503,13 @@ def post_records
   else ok (core.result.Result.Err Error.RecordTooLarge)
 
 /-- [atuin_kernel::signed_key]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 564:0-566:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 575:0-577:1
     Visibility: public -/
 def signed_key (x : Std.U64) : Result Std.U64 := do
   ok (x ^^^ 9223372036854775808#u64)
 
 /-- [atuin_kernel::in_series]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 569:0-571:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 580:0-582:1
     Visibility: public -/
 def in_series
   (r : StoreRow) (user_id : Std.U64) (host : Std.U128) (tag : Slice Std.U8)
@@ -1526,7 +1531,7 @@ def in_series
   else ok false
 
 /-- [atuin_kernel::insert_sorted]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-586:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-597:5
     Visibility: public -/
 @[rust_loop_body]
 def insert_sorted_loop.body
@@ -1567,7 +1572,7 @@ def insert_sorted_loop.body
   else ok (done (r, res, placed))
 
 /-- [atuin_kernel::insert_sorted]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-586:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-597:5
     Visibility: public -/
 @[rust_loop]
 def insert_sorted_loop
@@ -1581,7 +1586,7 @@ def insert_sorted_loop
     (r, res, placed, i)
 
 /-- [atuin_kernel::insert_sorted]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 575:0-591:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 586:0-602:1
     Visibility: public -/
 def insert_sorted
   (out : alloc.vec.Vec StoreRow) (r : StoreRow) :
@@ -1596,7 +1601,7 @@ def insert_sorted
     alloc.vec.Vec.push res sr
 
 /-- [atuin_kernel::take]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-600:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-611:5
     Visibility: public -/
 @[rust_loop_body]
 def take_loop.body
@@ -1622,7 +1627,7 @@ def take_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::take]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-600:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-611:5
     Visibility: public -/
 @[rust_loop]
 def take_loop
@@ -1635,7 +1640,7 @@ def take_loop
     (res, i)
 
 /-- [atuin_kernel::take]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 594:0-602:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 605:0-613:1
     Visibility: public -/
 @[reducible]
 def take
@@ -1645,7 +1650,7 @@ def take
   take_loop v n (alloc.vec.Vec.new StoreRow) 0#usize
 
 /-- [atuin_kernel::next_records]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 614:4-619:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 625:4-630:5
     Visibility: public -/
 @[rust_loop_body]
 def next_records_loop.body
@@ -1671,7 +1676,7 @@ def next_records_loop.body
   else ok (done sorted)
 
 /-- [atuin_kernel::next_records]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 614:4-619:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 625:4-630:5
     Visibility: public -/
 @[rust_loop]
 def next_records_loop
@@ -1686,7 +1691,7 @@ def next_records_loop
     (sorted, i)
 
 /-- [atuin_kernel::next_records]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 607:0-625:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 618:0-636:1
     Visibility: public -/
 def next_records
   (s : Snapshot) (user_id : Std.U64) (host : Std.U128)
@@ -1704,7 +1709,7 @@ def next_records
   else take sorted count
 
 /-- [atuin_kernel::bump]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 632:4-644:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 643:4-655:5
     Visibility: public -/
 @[rust_loop_body]
 def bump_loop.body
@@ -1756,7 +1761,7 @@ def bump_loop.body
   else ok (done (r, res, found))
 
 /-- [atuin_kernel::bump]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 632:4-644:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 643:4-655:5
     Visibility: public -/
 @[rust_loop]
 def bump_loop
@@ -1769,7 +1774,7 @@ def bump_loop
     (res, found, i)
 
 /-- [atuin_kernel::bump]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 628:0-649:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 639:0-660:1
     Visibility: public -/
 def bump
   (ps : alloc.vec.Vec StatusPoint) (r : StoreRow) :
@@ -1785,7 +1790,7 @@ def bump
       StatusPoint)
 
 /-- [atuin_kernel::status]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 655:4-660:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 666:4-671:5
     Visibility: public -/
 @[rust_loop_body]
 def status_loop.body
@@ -1808,7 +1813,7 @@ def status_loop.body
   else ok (done ps)
 
 /-- [atuin_kernel::status]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 655:4-660:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 666:4-671:5
     Visibility: public -/
 @[rust_loop]
 def status_loop
@@ -1821,7 +1826,7 @@ def status_loop
     (ps, i)
 
 /-- [atuin_kernel::status]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 652:0-662:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 663:0-673:1
     Visibility: public -/
 @[reducible]
 def status
@@ -1829,7 +1834,7 @@ def status
   status_loop s user_id (alloc.vec.Vec.new StatusPoint) 0#usize
 
 /-- [atuin_kernel::authed]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 665:0-683:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 676:0-694:1
     Visibility: public -/
 def authed
   (cfg : Config) (c : Crypto) (s : Snapshot) (u : User) (cmd : Command) :
@@ -1859,7 +1864,7 @@ def authed
     ok (core.result.Result.Ok (ws, Reply.Unit))
 
 /-- [atuin_kernel::transition]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 697:0-707:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 708:0-718:1
     Visibility: public -/
 def transition
   (cfg : Config) (c : Crypto) (s : Snapshot) (req : Request) :
@@ -1907,7 +1912,7 @@ def transition
     | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [atuin_kernel::without_user_sessions]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 714:4-719:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 725:4-730:5 -/
 @[rust_loop_body]
 def without_user_sessions_loop.body
   (v : alloc.vec.Vec Session) (id : Std.U64) (res : alloc.vec.Vec Session)
@@ -1932,7 +1937,7 @@ def without_user_sessions_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user_sessions]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 714:4-719:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 725:4-730:5 -/
 @[rust_loop]
 def without_user_sessions_loop
   (v : alloc.vec.Vec Session) (id : Std.U64) (res : alloc.vec.Vec Session)
@@ -1944,7 +1949,7 @@ def without_user_sessions_loop
     (res, i)
 
 /-- [atuin_kernel::without_user_sessions]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 711:0-721:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 722:0-732:1 -/
 @[reducible]
 def without_user_sessions
   (v : alloc.vec.Vec Session) (id : Std.U64) :
@@ -1953,7 +1958,7 @@ def without_user_sessions
   without_user_sessions_loop v id (alloc.vec.Vec.new Session) 0#usize
 
 /-- [atuin_kernel::without_user_history]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 726:4-731:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 737:4-742:5 -/
 @[rust_loop_body]
 def without_user_history_loop.body
   (v : alloc.vec.Vec HistoryRow) (id : Std.U64)
@@ -1975,7 +1980,7 @@ def without_user_history_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user_history]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 726:4-731:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 737:4-742:5 -/
 @[rust_loop]
 def without_user_history_loop
   (v : alloc.vec.Vec HistoryRow) (id : Std.U64)
@@ -1987,7 +1992,7 @@ def without_user_history_loop
     (res, i)
 
 /-- [atuin_kernel::without_user_history]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 723:0-733:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 734:0-744:1 -/
 @[reducible]
 def without_user_history
   (v : alloc.vec.Vec HistoryRow) (id : Std.U64) :
@@ -1996,7 +2001,7 @@ def without_user_history
   without_user_history_loop v id (alloc.vec.Vec.new HistoryRow) 0#usize
 
 /-- [atuin_kernel::without_user_store]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 738:4-743:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 749:4-754:5
     Visibility: public -/
 @[rust_loop_body]
 def without_user_store_loop.body
@@ -2022,7 +2027,7 @@ def without_user_store_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user_store]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 738:4-743:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 749:4-754:5
     Visibility: public -/
 @[rust_loop]
 def without_user_store_loop
@@ -2035,7 +2040,7 @@ def without_user_store_loop
     (res, i)
 
 /-- [atuin_kernel::without_user_store]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 735:0-745:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 746:0-756:1
     Visibility: public -/
 @[reducible]
 def without_user_store
@@ -2045,7 +2050,7 @@ def without_user_store
   without_user_store_loop v id (alloc.vec.Vec.new StoreRow) 0#usize
 
 /-- [atuin_kernel::without_user]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 750:4-755:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 761:4-766:5 -/
 @[rust_loop_body]
 def without_user_loop.body
   (v : alloc.vec.Vec User) (id : Std.U64) (res : alloc.vec.Vec User)
@@ -2069,7 +2074,7 @@ def without_user_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::without_user]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 750:4-755:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 761:4-766:5 -/
 @[rust_loop]
 def without_user_loop
   (v : alloc.vec.Vec User) (id : Std.U64) (res : alloc.vec.Vec User)
@@ -2081,14 +2086,14 @@ def without_user_loop
     (res, i)
 
 /-- [atuin_kernel::without_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 747:0-757:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 758:0-768:1 -/
 @[reducible]
 def without_user
   (v : alloc.vec.Vec User) (id : Std.U64) : Result (alloc.vec.Vec User) := do
   without_user_loop v id (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::with_password]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 762:4-769:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 773:4-780:5 -/
 @[rust_loop_body]
 def with_password_loop.body
   (v : alloc.vec.Vec User) (id : Std.U64) (hash : alloc.vec.Vec Std.U8)
@@ -2118,7 +2123,7 @@ def with_password_loop.body
   else ok (done res)
 
 /-- [atuin_kernel::with_password]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 762:4-769:5 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 773:4-780:5 -/
 @[rust_loop]
 def with_password_loop
   (v : alloc.vec.Vec User) (id : Std.U64) (hash : alloc.vec.Vec Std.U8)
@@ -2130,7 +2135,7 @@ def with_password_loop
     (res, i)
 
 /-- [atuin_kernel::with_password]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 759:0-771:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 770:0-782:1 -/
 @[reducible]
 def with_password
   (v : alloc.vec.Vec User) (id : Std.U64) (hash : alloc.vec.Vec Std.U8) :
@@ -2139,7 +2144,7 @@ def with_password
   with_password_loop v id hash (alloc.vec.Vec.new User) 0#usize
 
 /-- [atuin_kernel::store_conflict]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-783:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-794:1
     Visibility: public -/
 @[rust_loop_body]
 def store_conflict_loop.body
@@ -2173,7 +2178,7 @@ def store_conflict_loop.body
   else ok (done false)
 
 /-- [atuin_kernel::store_conflict]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-783:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 1:0-794:1
     Visibility: public -/
 @[rust_loop]
 def store_conflict_loop
@@ -2185,7 +2190,7 @@ def store_conflict_loop
     i
 
 /-- [atuin_kernel::store_conflict]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 774:0-783:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 785:0-794:1
     Visibility: public -/
 @[reducible]
 def store_conflict
@@ -2193,7 +2198,7 @@ def store_conflict
   store_conflict_loop v r 0#usize
 
 /-- [atuin_kernel::push_user]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 785:0-789:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 796:0-800:1 -/
 def push_user
   (v : alloc.vec.Vec User) (u : User) : Result (alloc.vec.Vec User) := do
   let res ← alloc.vec.CloneVec.clone User.Insts.CoreCloneClone v
@@ -2201,7 +2206,7 @@ def push_user
   alloc.vec.Vec.push res u1
 
 /-- [atuin_kernel::push_session]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 791:0-795:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 802:0-806:1 -/
 def push_session
   (v : alloc.vec.Vec Session) (x : Session) :
   Result (alloc.vec.Vec Session)
@@ -2211,7 +2216,7 @@ def push_session
   alloc.vec.Vec.push res s
 
 /-- [atuin_kernel::push_row]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 797:0-801:1 -/
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 808:0-812:1 -/
 def push_row
   (v : alloc.vec.Vec StoreRow) (r : StoreRow) :
   Result (alloc.vec.Vec StoreRow)
@@ -2221,7 +2226,7 @@ def push_row
   alloc.vec.Vec.push res sr
 
 /-- [atuin_kernel::apply_write]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 804:0-855:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 815:0-866:1
     Visibility: public -/
 def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
   match w with
@@ -2306,7 +2311,7 @@ def apply_write (s : Snapshot) (w : Write) : Result Snapshot := do
     ok { s with users := v, sessions := v1, history := v2, store := v3 }
 
 /-- [atuin_kernel::apply]: loop body 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 861:4-864:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 872:4-875:5
     Visibility: public -/
 @[rust_loop_body]
 def apply_loop.body
@@ -2324,7 +2329,7 @@ def apply_loop.body
   else ok (done cur)
 
 /-- [atuin_kernel::apply]: loop 0:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 861:4-864:5
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 872:4-875:5
     Visibility: public -/
 @[rust_loop]
 def apply_loop
@@ -2336,7 +2341,7 @@ def apply_loop
     (cur, i)
 
 /-- [atuin_kernel::apply]:
-    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 858:0-866:1
+    Source: 'prove/ports/atuin/kernel/src/lib.rs', lines 869:0-877:1
     Visibility: public -/
 def apply (s : Snapshot) (ws : alloc.vec.Vec Write) : Result Snapshot := do
   let cur ← Snapshot.Insts.CoreCloneClone.clone s
