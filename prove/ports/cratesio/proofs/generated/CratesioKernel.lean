@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace cratesio_kernel
 
 /-- [cratesio_kernel::auth::User]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 16:0-23:1
+    Source: 'src/auth.rs', lines 16:0-23:1
     Visibility: public -/
 structure auth.User where
   id : Std.I32
@@ -29,7 +29,7 @@ structure auth.User where
   session_epoch : Std.I32
 
 /-- [cratesio_kernel::scopes::EndpointScope]
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 9:0-15:1
+    Source: 'src/scopes.rs', lines 9:0-15:1
     Visibility: public -/
 @[discriminant isize]
 inductive scopes.EndpointScope where
@@ -40,7 +40,7 @@ inductive scopes.EndpointScope where
 | ChangeOwners : scopes.EndpointScope
 
 /-- [cratesio_kernel::auth::ApiToken]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 27:0-38:1
+    Source: 'src/auth.rs', lines 27:0-38:1
     Visibility: public -/
 structure auth.ApiToken where
   id : Std.I32
@@ -52,7 +52,7 @@ structure auth.ApiToken where
   endpoint_scopes : Option (alloc.vec.Vec scopes.EndpointScope)
 
 /-- [cratesio_kernel::auth::Epoch]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 42:0-48:1
+    Source: 'src/auth.rs', lines 42:0-48:1
     Visibility: public -/
 @[discriminant isize]
 inductive auth.Epoch where
@@ -61,7 +61,7 @@ inductive auth.Epoch where
 | Value : Std.I32 → auth.Epoch
 
 /-- [cratesio_kernel::auth::Request]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 52:0-60:1
+    Source: 'src/auth.rs', lines 52:0-60:1
     Visibility: public -/
 structure auth.Request where
   origins : alloc.vec.Vec Std.U64
@@ -70,7 +70,7 @@ structure auth.Request where
   authorization : Option (alloc.vec.Vec Std.U8)
 
 /-- [cratesio_kernel::auth::AuthError]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 64:0-89:1
+    Source: 'src/auth.rs', lines 64:0-89:1
     Visibility: public -/
 @[discriminant isize]
 inductive auth.AuthError where
@@ -89,7 +89,7 @@ inductive auth.AuthError where
 | CrateScopeMismatch : auth.AuthError
 
 /-- [cratesio_kernel::auth::Authentication]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 94:0-97:1
+    Source: 'src/auth.rs', lines 94:0-97:1
     Visibility: public -/
 @[discriminant isize]
 inductive auth.Authentication where
@@ -97,7 +97,7 @@ inductive auth.Authentication where
 | Token : Std.Usize → auth.User → auth.Authentication
 
 /-- [cratesio_kernel::auth::contains_u64]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 102:4-109:1
+    Source: 'src/auth.rs', lines 102:4-109:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.contains_u64_loop.body
@@ -115,7 +115,7 @@ def auth.contains_u64_loop.body
   else ok (done false)
 
 /-- [cratesio_kernel::auth::contains_u64]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 102:4-109:1
+    Source: 'src/auth.rs', lines 102:4-109:1
     Visibility: public -/
 @[rust_loop]
 def auth.contains_u64_loop
@@ -125,14 +125,14 @@ def auth.contains_u64_loop
     j
 
 /-- [cratesio_kernel::auth::contains_u64]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 100:0-109:1
+    Source: 'src/auth.rs', lines 100:0-109:1
     Visibility: public -/
 @[reducible]
 def auth.contains_u64 (xs : Slice Std.U64) (x : Std.U64) : Result Bool := do
   auth.contains_u64_loop xs x 0#usize
 
 /-- [cratesio_kernel::auth::origins_ok]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 114:4-121:1
+    Source: 'src/auth.rs', lines 114:4-121:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.origins_ok_loop.body
@@ -151,7 +151,7 @@ def auth.origins_ok_loop.body
   else ok (done true)
 
 /-- [cratesio_kernel::auth::origins_ok]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 114:4-121:1
+    Source: 'src/auth.rs', lines 114:4-121:1
     Visibility: public -/
 @[rust_loop]
 def auth.origins_ok_loop
@@ -163,7 +163,7 @@ def auth.origins_ok_loop
     i
 
 /-- [cratesio_kernel::auth::origins_ok]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 112:0-121:1
+    Source: 'src/auth.rs', lines 112:0-121:1
     Visibility: public -/
 @[reducible]
 def auth.origins_ok
@@ -171,7 +171,7 @@ def auth.origins_ok
   auth.origins_ok_loop origins allowed 0#usize
 
 /-- [cratesio_kernel::auth::find_user]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 126:4-133:1
+    Source: 'src/auth.rs', lines 126:4-133:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.find_user_loop.body
@@ -189,7 +189,7 @@ def auth.find_user_loop.body
   else ok (done none)
 
 /-- [cratesio_kernel::auth::find_user]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 126:4-133:1
+    Source: 'src/auth.rs', lines 126:4-133:1
     Visibility: public -/
 @[rust_loop]
 def auth.find_user_loop
@@ -201,7 +201,7 @@ def auth.find_user_loop
     i
 
 /-- [cratesio_kernel::auth::find_user]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 124:0-133:1
+    Source: 'src/auth.rs', lines 124:0-133:1
     Visibility: public -/
 @[reducible]
 def auth.find_user
@@ -209,7 +209,7 @@ def auth.find_user
   auth.find_user_loop users id 0#usize
 
 /-- [cratesio_kernel::auth::is_locked]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 137:0-145:1
+    Source: 'src/auth.rs', lines 137:0-145:1
     Visibility: public -/
 def auth.is_locked (u : auth.User) (now : Std.I64) : Result Bool := do
   if u.lock_reason
@@ -220,7 +220,7 @@ def auth.is_locked (u : auth.User) (now : Std.I64) : Result Bool := do
   else ok false
 
 /-- [cratesio_kernel::auth::visible]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 148:0-150:1
+    Source: 'src/auth.rs', lines 148:0-150:1
     Visibility: public -/
 def auth.visible (b : Std.U8) : Result Bool := do
   if b >= 32#u8
@@ -230,7 +230,7 @@ def auth.visible (b : Std.U8) : Result Bool := do
   else ok (b = 9#u8)
 
 /-- [cratesio_kernel::auth::ascii_ws]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 153:0-155:1
+    Source: 'src/auth.rs', lines 153:0-155:1
     Visibility: public -/
 def auth.ascii_ws (b : Std.U8) : Result Bool := do
   if b = 32#u8
@@ -246,14 +246,14 @@ def auth.ascii_ws (b : Std.U8) : Result Bool := do
            else ok (b = 13#u8)
 
 /-- [cratesio_kernel::auth::BEARER]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 158:0-158:65
+    Source: 'src/auth.rs', lines 158:0-158:65
     Visibility: public -/
 @[global_simps, irreducible]
 def auth.BEARER : Array Std.U8 6#usize :=
   Array.make 6#usize [ 66#u8, 101#u8, 97#u8, 114#u8, 101#u8, 114#u8 ]
 
 /-- [cratesio_kernel::bytes::lower]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 45:0-47:1
+    Source: 'src/bytes.rs', lines 45:0-47:1
     Visibility: public -/
 def bytes.lower (b : Std.U8) : Result Std.U8 := do
   if b >= 65#u8
@@ -263,7 +263,7 @@ def bytes.lower (b : Std.U8) : Result Std.U8 := do
   else ok b
 
 /-- [cratesio_kernel::bytes::eq_ignore_ascii_case]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 55:4-62:1
+    Source: 'src/bytes.rs', lines 55:4-62:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.eq_ignore_ascii_case_loop.body
@@ -284,7 +284,7 @@ def bytes.eq_ignore_ascii_case_loop.body
   else ok (done true)
 
 /-- [cratesio_kernel::bytes::eq_ignore_ascii_case]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 55:4-62:1
+    Source: 'src/bytes.rs', lines 55:4-62:1
     Visibility: public -/
 @[rust_loop]
 def bytes.eq_ignore_ascii_case_loop
@@ -294,7 +294,7 @@ def bytes.eq_ignore_ascii_case_loop
     i
 
 /-- [cratesio_kernel::bytes::eq_ignore_ascii_case]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 50:0-62:1
+    Source: 'src/bytes.rs', lines 50:0-62:1
     Visibility: public -/
 def bytes.eq_ignore_ascii_case
   (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
@@ -305,7 +305,7 @@ def bytes.eq_ignore_ascii_case
   else bytes.eq_ignore_ascii_case_loop a b 0#usize
 
 /-- [cratesio_kernel::bytes::sub]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 37:4-40:5
+    Source: 'src/bytes.rs', lines 37:4-40:5
     Visibility: public -/
 @[rust_loop_body]
 def bytes.sub_loop.body
@@ -323,7 +323,7 @@ def bytes.sub_loop.body
   else ok (done out)
 
 /-- [cratesio_kernel::bytes::sub]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 37:4-40:5
+    Source: 'src/bytes.rs', lines 37:4-40:5
     Visibility: public -/
 @[rust_loop]
 def bytes.sub_loop
@@ -336,7 +336,7 @@ def bytes.sub_loop
     (out, i)
 
 /-- [cratesio_kernel::bytes::sub]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 34:0-42:1
+    Source: 'src/bytes.rs', lines 34:0-42:1
     Visibility: public -/
 @[reducible]
 def bytes.sub
@@ -346,7 +346,7 @@ def bytes.sub
   bytes.sub_loop s «to» (alloc.vec.Vec.new Std.U8) «from»
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop body 1:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 173:4-179:5
+    Source: 'src/auth.rs', lines 173:4-179:5
     Visibility: public -/
 @[rust_loop_body]
 def auth.parse_auth_header_loop0_loop0.body
@@ -364,7 +364,7 @@ def auth.parse_auth_header_loop0_loop0.body
   else ok (done sp)
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop 1:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 173:4-179:5
+    Source: 'src/auth.rs', lines 173:4-179:5
     Visibility: public -/
 @[rust_loop]
 def auth.parse_auth_header_loop0_loop0
@@ -374,7 +374,7 @@ def auth.parse_auth_header_loop0_loop0
     j
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop body 2:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 189:4-191:5
+    Source: 'src/auth.rs', lines 189:4-191:5
     Visibility: public -/
 @[rust_loop_body]
 def auth.parse_auth_header_loop0_loop1.body
@@ -395,7 +395,7 @@ def auth.parse_auth_header_loop0_loop1.body
   else ok (done lo)
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop 2:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 189:4-191:5
+    Source: 'src/auth.rs', lines 189:4-191:5
     Visibility: public -/
 @[rust_loop]
 def auth.parse_auth_header_loop0_loop1
@@ -405,7 +405,7 @@ def auth.parse_auth_header_loop0_loop1
     lo
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop body 3:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 193:4-195:5
+    Source: 'src/auth.rs', lines 193:4-195:5
     Visibility: public -/
 @[rust_loop_body]
 def auth.parse_auth_header_loop0_loop2.body
@@ -425,7 +425,7 @@ def auth.parse_auth_header_loop0_loop2.body
   else ok (done hi)
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop 3:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 193:4-195:5
+    Source: 'src/auth.rs', lines 193:4-195:5
     Visibility: public -/
 @[rust_loop]
 def auth.parse_auth_header_loop0_loop2
@@ -437,7 +437,7 @@ def auth.parse_auth_header_loop0_loop2
     hi
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop body 4:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 189:4-191:5
+    Source: 'src/auth.rs', lines 189:4-191:5
     Visibility: public -/
 @[rust_loop_body]
 def auth.parse_auth_header_loop0_loop3.body
@@ -458,7 +458,7 @@ def auth.parse_auth_header_loop0_loop3.body
   else ok (done lo)
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop 4:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 189:4-191:5
+    Source: 'src/auth.rs', lines 189:4-191:5
     Visibility: public -/
 @[rust_loop]
 def auth.parse_auth_header_loop0_loop3
@@ -468,7 +468,7 @@ def auth.parse_auth_header_loop0_loop3
     lo
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop body 5:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 193:4-195:5
+    Source: 'src/auth.rs', lines 193:4-195:5
     Visibility: public -/
 @[rust_loop_body]
 def auth.parse_auth_header_loop0_loop4.body
@@ -488,7 +488,7 @@ def auth.parse_auth_header_loop0_loop4.body
   else ok (done hi)
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop 5:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 193:4-195:5
+    Source: 'src/auth.rs', lines 193:4-195:5
     Visibility: public -/
 @[rust_loop]
 def auth.parse_auth_header_loop0_loop4
@@ -500,7 +500,7 @@ def auth.parse_auth_header_loop0_loop4
     hi
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 165:4-187:5
+    Source: 'src/auth.rs', lines 165:4-187:5
     Visibility: public -/
 @[rust_loop_body]
 def auth.parse_auth_header_loop0.body
@@ -559,7 +559,7 @@ def auth.parse_auth_header_loop0.body
       else ok (done (core.result.Result.Err auth.AuthError.HeaderScheme))
 
 /-- [cratesio_kernel::auth::parse_auth_header]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 165:4-187:5
+    Source: 'src/auth.rs', lines 165:4-187:5
     Visibility: public -/
 @[rust_loop]
 def auth.parse_auth_header_loop0
@@ -571,7 +571,7 @@ def auth.parse_auth_header_loop0
     i
 
 /-- [cratesio_kernel::auth::parse_auth_header]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 163:0-197:1
+    Source: 'src/auth.rs', lines 163:0-197:1
     Visibility: public -/
 @[reducible]
 def auth.parse_auth_header
@@ -581,14 +581,14 @@ def auth.parse_auth_header
   auth.parse_auth_header_loop0 h 0#usize
 
 /-- [cratesio_kernel::auth::TOKEN_PREFIX]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 200:0-200:53
+    Source: 'src/auth.rs', lines 200:0-200:53
     Visibility: public -/
 @[global_simps, irreducible]
 def auth.TOKEN_PREFIX : Array Std.U8 3#usize :=
   Array.make 3#usize [ 99#u8, 105#u8, 111#u8 ]
 
 /-- [cratesio_kernel::bytes::eq]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 9:4-16:1
+    Source: 'src/bytes.rs', lines 9:4-16:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.eq_loop.body
@@ -607,7 +607,7 @@ def bytes.eq_loop.body
   else ok (done true)
 
 /-- [cratesio_kernel::bytes::eq]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 9:4-16:1
+    Source: 'src/bytes.rs', lines 9:4-16:1
     Visibility: public -/
 @[rust_loop]
 def bytes.eq_loop
@@ -617,7 +617,7 @@ def bytes.eq_loop
     i
 
 /-- [cratesio_kernel::bytes::eq]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 4:0-16:1
+    Source: 'src/bytes.rs', lines 4:0-16:1
     Visibility: public -/
 def bytes.eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   let i := Slice.len a
@@ -627,7 +627,7 @@ def bytes.eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
   else bytes.eq_loop a b 0#usize
 
 /-- [cratesio_kernel::auth::token_live]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 203:0-212:1
+    Source: 'src/auth.rs', lines 203:0-212:1
     Visibility: public -/
 def auth.token_live
   (t : auth.ApiToken) (secret : Slice Std.U8) (now : Std.I64) :
@@ -646,7 +646,7 @@ def auth.token_live
     else ok false
 
 /-- [cratesio_kernel::auth::find_token]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 217:4-224:1
+    Source: 'src/auth.rs', lines 217:4-224:1
     Visibility: public -/
 @[rust_loop_body]
 def auth.find_token_loop.body
@@ -668,7 +668,7 @@ def auth.find_token_loop.body
   else ok (done none)
 
 /-- [cratesio_kernel::auth::find_token]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 217:4-224:1
+    Source: 'src/auth.rs', lines 217:4-224:1
     Visibility: public -/
 @[rust_loop]
 def auth.find_token_loop
@@ -681,7 +681,7 @@ def auth.find_token_loop
     i
 
 /-- [cratesio_kernel::auth::find_token]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 215:0-224:1
+    Source: 'src/auth.rs', lines 215:0-224:1
     Visibility: public -/
 @[reducible]
 def auth.find_token
@@ -692,7 +692,7 @@ def auth.find_token
   auth.find_token_loop tokens secret now 0#usize
 
 /-- [cratesio_kernel::auth::cookie_user]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 227:0-244:1
+    Source: 'src/auth.rs', lines 227:0-244:1
     Visibility: public -/
 def auth.cookie_user
   (users : Slice auth.User) (uid : Std.I32) (epoch : auth.Epoch)
@@ -720,7 +720,7 @@ def auth.cookie_user
         else ok (core.result.Result.Ok u)
 
 /-- [cratesio_kernel::bytes::starts_with]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 24:4-31:1
+    Source: 'src/bytes.rs', lines 24:4-31:1
     Visibility: public -/
 @[rust_loop_body]
 def bytes.starts_with_loop.body
@@ -739,7 +739,7 @@ def bytes.starts_with_loop.body
   else ok (done true)
 
 /-- [cratesio_kernel::bytes::starts_with]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 24:4-31:1
+    Source: 'src/bytes.rs', lines 24:4-31:1
     Visibility: public -/
 @[rust_loop]
 def bytes.starts_with_loop
@@ -749,7 +749,7 @@ def bytes.starts_with_loop
     i
 
 /-- [cratesio_kernel::bytes::starts_with]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 19:0-31:1
+    Source: 'src/bytes.rs', lines 19:0-31:1
     Visibility: public -/
 def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len p
@@ -759,7 +759,7 @@ def bytes.starts_with (s : Slice Std.U8) (p : Slice Std.U8) : Result Bool := do
   else bytes.starts_with_loop s p 0#usize
 
 /-- [cratesio_kernel::auth::token_user]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 247:0-267:1
+    Source: 'src/auth.rs', lines 247:0-267:1
     Visibility: public -/
 def auth.token_user
   (users : Slice auth.User) (tokens : alloc.vec.Vec auth.ApiToken)
@@ -794,7 +794,7 @@ def auth.token_user
   | core.result.Result.Err e => ok (core.result.Result.Err e)
 
 /-- [cratesio_kernel::auth::authenticate]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 271:0-292:1
+    Source: 'src/auth.rs', lines 271:0-292:1
     Visibility: public -/
 def auth.authenticate
   (allowed_origins : Slice Std.U64) (users : Slice auth.User)
@@ -821,7 +821,7 @@ def auth.authenticate
   else ok (core.result.Result.Err auth.AuthError.InvalidOrigin)
 
 /-- [cratesio_kernel::auth::AuthCheck]
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 296:0-301:1
+    Source: 'src/auth.rs', lines 296:0-301:1
     Visibility: public -/
 structure auth.AuthCheck where
   allow_token : Bool
@@ -830,7 +830,7 @@ structure auth.AuthCheck where
   allow_any_crate_scope : Bool
 
 /-- [cratesio_kernel::scopes::scope_eq]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 18:0-27:1
+    Source: 'src/scopes.rs', lines 18:0-27:1
     Visibility: public -/
 def scopes.scope_eq
   (a : scopes.EndpointScope) (b : scopes.EndpointScope) : Result Bool := do
@@ -872,7 +872,7 @@ def scopes.scope_eq
     | scopes.EndpointScope.ChangeOwners => ok true
 
 /-- [cratesio_kernel::scopes::contains_scope]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 32:4-39:1
+    Source: 'src/scopes.rs', lines 32:4-39:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.contains_scope_loop.body
@@ -892,7 +892,7 @@ def scopes.contains_scope_loop.body
   else ok (done false)
 
 /-- [cratesio_kernel::scopes::contains_scope]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 32:4-39:1
+    Source: 'src/scopes.rs', lines 32:4-39:1
     Visibility: public -/
 @[rust_loop]
 def scopes.contains_scope_loop
@@ -905,7 +905,7 @@ def scopes.contains_scope_loop
     i
 
 /-- [cratesio_kernel::scopes::contains_scope]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 30:0-39:1
+    Source: 'src/scopes.rs', lines 30:0-39:1
     Visibility: public -/
 @[reducible]
 def scopes.contains_scope
@@ -915,7 +915,7 @@ def scopes.contains_scope
   scopes.contains_scope_loop ss s 0#usize
 
 /-- [cratesio_kernel::auth::endpoint_scope_matches]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 304:0-312:1
+    Source: 'src/auth.rs', lines 304:0-312:1
     Visibility: public -/
 def auth.endpoint_scope_matches
   (ac : auth.AuthCheck)
@@ -931,7 +931,7 @@ def auth.endpoint_scope_matches
                 scopes.contains_scope s1 s
 
 /-- [cratesio_kernel::scopes::is_star]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 47:0-49:1
+    Source: 'src/scopes.rs', lines 47:0-49:1
     Visibility: public -/
 def scopes.is_star (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len p
@@ -941,7 +941,7 @@ def scopes.is_star (p : Slice Std.U8) : Result Bool := do
   else ok false
 
 /-- [cratesio_kernel::scopes::ends_with_star]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 42:0-44:1
+    Source: 'src/scopes.rs', lines 42:0-44:1
     Visibility: public -/
 def scopes.ends_with_star (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len p
@@ -954,7 +954,7 @@ def scopes.ends_with_star (p : Slice Std.U8) : Result Bool := do
   else ok false
 
 /-- [cratesio_kernel::scopes::scope_matches]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 69:0-79:1
+    Source: 'src/scopes.rs', lines 69:0-79:1
     Visibility: public -/
 def scopes.scope_matches
   (p : Slice Std.U8) (crate_name : Slice Std.U8) : Result Bool := do
@@ -973,7 +973,7 @@ def scopes.scope_matches
     else bytes.eq crate_name p
 
 /-- [cratesio_kernel::scopes::any_scope_matches]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 84:4-91:1
+    Source: 'src/scopes.rs', lines 84:4-91:1
     Visibility: public -/
 @[rust_loop_body]
 def scopes.any_scope_matches_loop.body
@@ -996,7 +996,7 @@ def scopes.any_scope_matches_loop.body
   else ok (done false)
 
 /-- [cratesio_kernel::scopes::any_scope_matches]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 84:4-91:1
+    Source: 'src/scopes.rs', lines 84:4-91:1
     Visibility: public -/
 @[rust_loop]
 def scopes.any_scope_matches_loop
@@ -1009,7 +1009,7 @@ def scopes.any_scope_matches_loop
     i
 
 /-- [cratesio_kernel::scopes::any_scope_matches]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 82:0-91:1
+    Source: 'src/scopes.rs', lines 82:0-91:1
     Visibility: public -/
 @[reducible]
 def scopes.any_scope_matches
@@ -1019,7 +1019,7 @@ def scopes.any_scope_matches
   scopes.any_scope_matches_loop ss crate_name 0#usize
 
 /-- [cratesio_kernel::auth::crate_scope_matches]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 315:0-329:1
+    Source: 'src/auth.rs', lines 315:0-329:1
     Visibility: public -/
 def auth.crate_scope_matches
   (ac : auth.AuthCheck)
@@ -1040,7 +1040,7 @@ def auth.crate_scope_matches
         scopes.any_scope_matches ts s
 
 /-- [cratesio_kernel::auth::check]:
-    Source: 'prove/ports/cratesio/kernel/src/auth.rs', lines 332:0-360:1
+    Source: 'src/auth.rs', lines 332:0-360:1
     Visibility: public -/
 def auth.check
   (ac : auth.AuthCheck) (allowed_origins : Slice Std.U64)
@@ -1071,7 +1071,7 @@ def auth.check
   | core.result.Result.Err _ => ok r
 
 /-- [cratesio_kernel::bytes::is_alnum]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 65:0-67:1
+    Source: 'src/bytes.rs', lines 65:0-67:1
     Visibility: public -/
 def bytes.is_alnum (b : Std.U8) : Result Bool := do
   if b >= 48#u8
@@ -1102,7 +1102,7 @@ def bytes.is_alnum (b : Std.U8) : Result Bool := do
          else ok false
 
 /-- [cratesio_kernel::bytes::is_alpha]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 70:0-72:1
+    Source: 'src/bytes.rs', lines 70:0-72:1
     Visibility: public -/
 def bytes.is_alpha (b : Std.U8) : Result Bool := do
   if b >= 65#u8
@@ -1117,15 +1117,575 @@ def bytes.is_alpha (b : Std.U8) : Result Bool := do
        else ok false
 
 /-- [cratesio_kernel::bytes::is_digit]:
-    Source: 'prove/ports/cratesio/kernel/src/bytes.rs', lines 75:0-77:1
+    Source: 'src/bytes.rs', lines 75:0-77:1
     Visibility: public -/
 def bytes.is_digit (b : Std.U8) : Result Bool := do
   if b >= 48#u8
   then ok (b <= 57#u8)
   else ok false
 
+/-- [cratesio_kernel::publish::Crate]
+    Source: 'src/publish.rs', lines 19:0-22:1
+    Visibility: public -/
+structure publish.Crate where
+  id : Std.I32
+  trustpub_only : Bool
+
+/-- [cratesio_kernel::publish::TrustpubToken]
+    Source: 'src/publish.rs', lines 27:0-31:1
+    Visibility: public -/
+structure publish.TrustpubToken where
+  raw : alloc.vec.Vec Std.U8
+  expires_at : Std.I64
+  crate_ids : alloc.vec.Vec (Option Std.I32)
+
+/-- [cratesio_kernel::rights::RightsError]
+    Source: 'src/rights.rs', lines 38:0-45:1
+    Visibility: public -/
+@[discriminant isize]
+inductive rights.RightsError where
+| Decrypt : rights.RightsError
+| OrgRestricted : rights.RightsError
+| GitHub : rights.RightsError
+
+/-- [cratesio_kernel::publish::PublishError]
+    Source: 'src/publish.rs', lines 35:0-54:1
+    Visibility: public -/
+@[discriminant isize]
+inductive publish.PublishError where
+| Header : auth.AuthError → publish.PublishError
+| TrustpubParse : publish.PublishError
+| TrustpubNewCrate : publish.PublishError
+| TrustpubInvalid : publish.PublishError
+| TrustpubWrongCrate : publish.PublishError
+| Auth : auth.AuthError → publish.PublishError
+| TrustpubOnly : publish.PublishError
+| Rights : rights.RightsError → publish.PublishError
+| NotOwner : publish.PublishError
+
+/-- [cratesio_kernel::publish::Publisher]
+    Source: 'src/publish.rs', lines 58:0-63:1
+    Visibility: public -/
+@[discriminant isize]
+inductive publish.Publisher where
+| TrustPub : Std.I32 → publish.Publisher
+| User : Std.I32 → publish.Publisher
+
+/-- [cratesio_kernel::publish::TP_PREFIX]
+    Source: 'src/publish.rs', lines 66:0-66:74
+    Visibility: public -/
+@[global_simps, irreducible]
+def publish.TP_PREFIX : Array Std.U8 7#usize :=
+  Array.make 7#usize [ 99#u8, 105#u8, 111#u8, 95#u8, 116#u8, 112#u8, 95#u8 ]
+
+/-- [cratesio_kernel::publish::CHECKSUM_ALPHABET]
+    Source: 'src/publish.rs', lines 69:0-74:2
+    Visibility: public -/
+@[global_simps, irreducible]
+def publish.CHECKSUM_ALPHABET : Array Std.U8 62#usize :=
+  Array.make 62#usize [
+    65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8, 71#u8, 72#u8, 73#u8, 74#u8,
+    75#u8, 76#u8, 77#u8, 78#u8, 79#u8, 80#u8, 81#u8, 82#u8, 83#u8, 84#u8,
+    85#u8, 86#u8, 87#u8, 88#u8, 89#u8, 90#u8, 97#u8, 98#u8, 99#u8, 100#u8,
+    101#u8, 102#u8, 103#u8, 104#u8, 105#u8, 106#u8, 107#u8, 108#u8, 109#u8,
+    110#u8, 111#u8, 112#u8, 113#u8, 114#u8, 115#u8, 116#u8, 117#u8, 118#u8,
+    119#u8, 120#u8, 121#u8, 122#u8, 48#u8, 49#u8, 50#u8, 51#u8, 52#u8, 53#u8,
+    54#u8, 55#u8, 56#u8, 57#u8
+    ]
+
+/-- [cratesio_kernel::publish::checksum]: loop body 0:
+    Source: 'src/publish.rs', lines 80:4-83:5
+    Visibility: public -/
+@[rust_loop_body]
+def publish.checksum_loop.body
+  (raw : Slice Std.U8) (acc : Std.U8) (i : Std.Usize) :
+  Result (ControlFlow (Std.U8 × Std.Usize) Std.U8)
+  := do
+  let i1 := Slice.len raw
+  if i < i1
+  then
+    let i2 ← Slice.index_usize raw i
+    let acc1 ← lift (acc ^^^ i2)
+    let i3 ← i + 1#usize
+    ok (cont (acc1, i3))
+  else ok (done acc)
+
+/-- [cratesio_kernel::publish::checksum]: loop 0:
+    Source: 'src/publish.rs', lines 80:4-83:5
+    Visibility: public -/
+@[rust_loop]
+def publish.checksum_loop
+  (raw : Slice Std.U8) (acc : Std.U8) (i : Std.Usize) : Result Std.U8 := do
+  loop
+    (fun (acc1, i1) => publish.checksum_loop.body raw acc1 i1)
+    (acc, i)
+
+/-- [cratesio_kernel::publish::checksum]:
+    Source: 'src/publish.rs', lines 77:0-85:1
+    Visibility: public -/
+def publish.checksum (raw : Slice Std.U8) : Result Std.U8 := do
+  let acc ← publish.checksum_loop raw 0#u8 0#usize
+  let i ← lift (UScalar.cast .Usize acc)
+  let i1 ← i % 62#usize
+  Array.index_usize publish.CHECKSUM_ALPHABET i1
+
+/-- [cratesio_kernel::publish::all_alnum]: loop body 0:
+    Source: 'src/publish.rs', lines 90:4-97:1
+    Visibility: public -/
+@[rust_loop_body]
+def publish.all_alnum_loop.body
+  (s : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    let b ← bytes.is_alnum i2
+    if b
+    then let i3 ← i + 1#usize
+         ok (cont i3)
+    else ok (done false)
+  else ok (done true)
+
+/-- [cratesio_kernel::publish::all_alnum]: loop 0:
+    Source: 'src/publish.rs', lines 90:4-97:1
+    Visibility: public -/
+@[rust_loop]
+def publish.all_alnum_loop
+  (s : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => publish.all_alnum_loop.body s i1)
+    i
+
+/-- [cratesio_kernel::publish::all_alnum]:
+    Source: 'src/publish.rs', lines 88:0-97:1
+    Visibility: public -/
+@[reducible]
+def publish.all_alnum (s : Slice Std.U8) : Result Bool := do
+  publish.all_alnum_loop s 0#usize
+
+/-- [cratesio_kernel::publish::parse_access_token]:
+    Source: 'src/publish.rs', lines 101:0-117:1
+    Visibility: public -/
+def publish.parse_access_token
+  (s : Slice Std.U8) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  let s1 ← lift (Array.to_slice publish.TP_PREFIX)
+  let b ← bytes.starts_with s s1
+  if b
+  then
+    let i := Slice.len s
+    let suffix ← bytes.sub s 7#usize i
+    let i1 := alloc.vec.Vec.len suffix
+    if i1 != 32#usize
+    then ok none
+    else
+      let s2 := alloc.vec.Vec.deref suffix
+      let b1 ← publish.all_alnum s2
+      if b1
+      then
+        let s3 := alloc.vec.Vec.deref suffix
+        let raw ← bytes.sub s3 0#usize 31#usize
+        let s4 := alloc.vec.Vec.deref raw
+        let i2 ← publish.checksum s4
+        let i3 ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8)
+            suffix 31#usize
+        if i2 != i3
+        then ok none
+        else ok (some raw)
+      else ok none
+  else ok none
+
+/-- [cratesio_kernel::publish::find_tp_token]: loop body 0:
+    Source: 'src/publish.rs', lines 123:4-130:1
+    Visibility: public -/
+@[rust_loop_body]
+def publish.find_tp_token_loop.body
+  (tokens : alloc.vec.Vec publish.TrustpubToken) (raw : Slice Std.U8)
+  (now : Std.I64) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := alloc.vec.Vec.len tokens
+  if i < i1
+  then
+    let tt ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        publish.TrustpubToken) tokens i
+    if tt.expires_at > now
+    then
+      let s := alloc.vec.Vec.deref tt.raw
+      let b ← bytes.eq s raw
+      if b
+      then ok (done (some i))
+      else let i2 ← i + 1#usize
+           ok (cont i2)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done none)
+
+/-- [cratesio_kernel::publish::find_tp_token]: loop 0:
+    Source: 'src/publish.rs', lines 123:4-130:1
+    Visibility: public -/
+@[rust_loop]
+def publish.find_tp_token_loop
+  (tokens : alloc.vec.Vec publish.TrustpubToken) (raw : Slice Std.U8)
+  (now : Std.I64) (i : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun i1 => publish.find_tp_token_loop.body tokens raw now i1)
+    i
+
+/-- [cratesio_kernel::publish::find_tp_token]:
+    Source: 'src/publish.rs', lines 121:0-130:1
+    Visibility: public -/
+@[reducible]
+def publish.find_tp_token
+  (tokens : alloc.vec.Vec publish.TrustpubToken) (raw : Slice Std.U8)
+  (now : Std.I64) :
+  Result (Option Std.Usize)
+  := do
+  publish.find_tp_token_loop tokens raw now 0#usize
+
+/-- [cratesio_kernel::publish::is_id]:
+    Source: 'src/publish.rs', lines 133:0-138:1
+    Visibility: public -/
+def publish.is_id (o : Option Std.I32) (id : Std.I32) : Result Bool := do
+  match o with
+  | none => ok false
+  | some x => ok (x = id)
+
+/-- [cratesio_kernel::publish::has_crate]: loop body 0:
+    Source: 'src/publish.rs', lines 143:4-150:1
+    Visibility: public -/
+@[rust_loop_body]
+def publish.has_crate_loop.body
+  (ids : Slice (Option Std.I32)) (id : Std.I32) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len ids
+  if i < i1
+  then
+    let o ← Slice.index_usize ids i
+    let b ← publish.is_id o id
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [cratesio_kernel::publish::has_crate]: loop 0:
+    Source: 'src/publish.rs', lines 143:4-150:1
+    Visibility: public -/
+@[rust_loop]
+def publish.has_crate_loop
+  (ids : Slice (Option Std.I32)) (id : Std.I32) (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => publish.has_crate_loop.body ids id i1)
+    i
+
+/-- [cratesio_kernel::publish::has_crate]:
+    Source: 'src/publish.rs', lines 141:0-150:1
+    Visibility: public -/
+@[reducible]
+def publish.has_crate
+  (ids : Slice (Option Std.I32)) (id : Std.I32) : Result Bool := do
+  publish.has_crate_loop ids id 0#usize
+
+/-- [cratesio_kernel::publish::trustpub_auth]:
+    Source: 'src/publish.rs', lines 154:0-171:1
+    Visibility: public -/
+def publish.trustpub_auth
+  (existing : Option publish.Crate)
+  (tp_tokens : alloc.vec.Vec publish.TrustpubToken) (token : Slice Std.U8)
+  (now : Std.I64) :
+  Result (core.result.Result publish.Publisher publish.PublishError)
+  := do
+  let o ← publish.parse_access_token token
+  match o with
+  | none => ok (core.result.Result.Err publish.PublishError.TrustpubParse)
+  | some r =>
+    match existing with
+    | none => ok (core.result.Result.Err publish.PublishError.TrustpubNewCrate)
+    | some k =>
+      let s := alloc.vec.Vec.deref r
+      let o1 ← publish.find_tp_token tp_tokens s now
+      match o1 with
+      | none =>
+        ok (core.result.Result.Err publish.PublishError.TrustpubInvalid)
+      | some i =>
+        let tt ←
+          alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+            publish.TrustpubToken) tp_tokens i
+        let s1 := alloc.vec.Vec.deref tt.crate_ids
+        let b ← publish.has_crate s1 k.id
+        if b
+        then ok (core.result.Result.Ok (publish.Publisher.TrustPub k.id))
+        else
+          ok (core.result.Result.Err publish.PublishError.TrustpubWrongCrate)
+
+/-- [cratesio_kernel::publish::auth_user]:
+    Source: 'src/publish.rs', lines 174:0-179:1
+    Visibility: public -/
+def publish.auth_user (a : auth.Authentication) : Result auth.User := do
+  match a with
+  | auth.Authentication.Cookie u => ok u
+  | auth.Authentication.Token _ u => ok u
+
+/-- [cratesio_kernel::rights::Membership]
+    Source: 'src/rights.rs', lines 17:0-26:1
+    Visibility: public -/
+@[discriminant isize]
+inductive rights.Membership where
+| Active : rights.Membership
+| Inactive : rights.Membership
+| NotMember : rights.Membership
+| Forbidden : rights.Membership
+| Failed : rights.Membership
+
+/-- [cratesio_kernel::rights::membership_of]: loop body 0:
+    Source: 'src/rights.rs', lines 61:4-68:1
+    Visibility: public -/
+@[rust_loop_body]
+def rights.membership_of_loop.body
+  (answers : Slice (Std.I64 × rights.Membership)) (team : Std.I64)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize rights.Membership)
+  := do
+  let i1 := Slice.len answers
+  if i < i1
+  then
+    let (i2, m) ← Slice.index_usize answers i
+    if i2 = team
+    then ok (done m)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done rights.Membership.NotMember)
+
+/-- [cratesio_kernel::rights::membership_of]: loop 0:
+    Source: 'src/rights.rs', lines 61:4-68:1
+    Visibility: public -/
+@[rust_loop]
+def rights.membership_of_loop
+  (answers : Slice (Std.I64 × rights.Membership)) (team : Std.I64)
+  (i : Std.Usize) :
+  Result rights.Membership
+  := do
+  loop
+    (fun i1 => rights.membership_of_loop.body answers team i1)
+    i
+
+/-- [cratesio_kernel::rights::membership_of]:
+    Source: 'src/rights.rs', lines 59:0-68:1
+    Visibility: public -/
+@[reducible]
+def rights.membership_of
+  (answers : Slice (Std.I64 × rights.Membership)) (team : Std.I64) :
+  Result rights.Membership
+  := do
+  rights.membership_of_loop answers team 0#usize
+
+/-- [cratesio_kernel::rights::Actor]
+    Source: 'src/rights.rs', lines 49:0-56:1
+    Visibility: public -/
+structure rights.Actor where
+  id : Std.I32
+  gh_token : Option Bool
+  gh_login : Bool
+
+/-- [cratesio_kernel::rights::Rights]
+    Source: 'src/rights.rs', lines 30:0-34:1
+    Visibility: public -/
+@[discriminant isize]
+inductive rights.Rights where
+| None : rights.Rights
+| Publish : rights.Rights
+| Full : rights.Rights
+
+/-- [cratesio_kernel::rights::Owner]
+    Source: 'src/rights.rs', lines 9:0-13:1
+    Visibility: public -/
+@[discriminant isize]
+inductive rights.Owner where
+| User : Std.I32 → rights.Owner
+| Team : Std.I64 → rights.Owner
+
+/-- [cratesio_kernel::rights::rights]:
+    Source: 'src/rights.rs', lines 80:0-114:1
+    Visibility: public -/
+def rights.rights
+  (user : rights.Actor) (owners : Slice rights.Owner)
+  (answers : Slice (Std.I64 × rights.Membership)) :
+  Result (core.result.Result rights.Rights rights.RightsError)
+  := do
+  sorry
+
+/-- [cratesio_kernel::rights::rank]:
+    Source: 'src/rights.rs', lines 71:0-77:1
+    Visibility: public -/
+def rights.rank (r : rights.Rights) : Result Std.U8 := do
+  match r with
+  | rights.Rights.None => ok 0#u8
+  | rights.Rights.Publish => ok 1#u8
+  | rights.Rights.Full => ok 2#u8
+
+/-- [cratesio_kernel::publish::publish_auth]:
+    Source: 'src/publish.rs', lines 183:0-253:1
+    Visibility: public -/
+def publish.publish_auth
+  («name» : Slice Std.U8) (existing : Option publish.Crate)
+  (owners_at_write : Option (alloc.vec.Vec rights.Owner))
+  (allowed_origins : Slice Std.U64) (users : Slice auth.User)
+  (tokens : alloc.vec.Vec auth.ApiToken)
+  (tp_tokens : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request)
+  (now : Std.I64) (actor_gh : ((Option Bool) × Bool))
+  (answers : Slice (Std.I64 × rights.Membership)) :
+  Result (core.result.Result publish.Publisher publish.PublishError)
+  := do
+  match req.authorization with
+  | none =>
+    let scope ←
+      match existing with
+      | none => ok scopes.EndpointScope.PublishNew
+      | some _ => ok scopes.EndpointScope.PublishUpdate
+    let i := Slice.len «name»
+    let v ← bytes.sub «name» 0#usize i
+    let r ←
+      auth.check
+        {
+          allow_token := true,
+          endpoint_scope := (some scope),
+          crate_name := (some v),
+          allow_any_crate_scope := false
+        } allowed_origins users tokens req now
+    match r with
+    | core.result.Result.Ok a =>
+      match existing with
+      | none =>
+        let user ← publish.auth_user a
+        match owners_at_write with
+        | none => ok (core.result.Result.Ok (publish.Publisher.User user.id))
+        | some owners =>
+          let (o, b) := actor_gh
+          let s := alloc.vec.Vec.deref owners
+          let r1 ←
+            rights.rights { id := user.id, gh_token := o, gh_login := b } s
+              answers
+          match r1 with
+          | core.result.Result.Ok r2 =>
+            let i1 ← rights.rank r2
+            if i1 < 1#u8
+            then ok (core.result.Result.Err publish.PublishError.NotOwner)
+            else ok (core.result.Result.Ok (publish.Publisher.User user.id))
+          | core.result.Result.Err e =>
+            ok (core.result.Result.Err (publish.PublishError.Rights e))
+      | some k =>
+        if k.trustpub_only
+        then ok (core.result.Result.Err publish.PublishError.TrustpubOnly)
+        else
+          let user ← publish.auth_user a
+          match owners_at_write with
+          | none => ok (core.result.Result.Ok (publish.Publisher.User user.id))
+          | some owners =>
+            let (o, b) := actor_gh
+            let s := alloc.vec.Vec.deref owners
+            let r1 ←
+              rights.rights { id := user.id, gh_token := o, gh_login := b } s
+                answers
+            match r1 with
+            | core.result.Result.Ok r2 =>
+              let i1 ← rights.rank r2
+              if i1 < 1#u8
+              then ok (core.result.Result.Err publish.PublishError.NotOwner)
+              else ok (core.result.Result.Ok (publish.Publisher.User user.id))
+            | core.result.Result.Err e =>
+              ok (core.result.Result.Err (publish.PublishError.Rights e))
+    | core.result.Result.Err e =>
+      ok (core.result.Result.Err (publish.PublishError.Auth e))
+  | some h =>
+    let s := alloc.vec.Vec.deref h
+    let r ← auth.parse_auth_header s
+    match r with
+    | core.result.Result.Ok t =>
+      let s1 := alloc.vec.Vec.deref t
+      let s2 ← lift (Array.to_slice publish.TP_PREFIX)
+      let tp ← bytes.starts_with s1 s2
+      if tp
+      then
+        let s3 := alloc.vec.Vec.deref t
+        publish.trustpub_auth existing tp_tokens s3 now
+      else
+        let scope ←
+          match existing with
+          | none => ok scopes.EndpointScope.PublishNew
+          | some _ => ok scopes.EndpointScope.PublishUpdate
+        let i := Slice.len «name»
+        let v ← bytes.sub «name» 0#usize i
+        let r1 ←
+          auth.check
+            {
+              allow_token := true,
+              endpoint_scope := (some scope),
+              crate_name := (some v),
+              allow_any_crate_scope := false
+            } allowed_origins users tokens req now
+        match r1 with
+        | core.result.Result.Ok a =>
+          match existing with
+          | none =>
+            let user ← publish.auth_user a
+            match owners_at_write with
+            | none =>
+              ok (core.result.Result.Ok (publish.Publisher.User user.id))
+            | some owners =>
+              let (o, b) := actor_gh
+              let s3 := alloc.vec.Vec.deref owners
+              let r2 ←
+                rights.rights { id := user.id, gh_token := o, gh_login := b }
+                  s3 answers
+              match r2 with
+              | core.result.Result.Ok r3 =>
+                let i1 ← rights.rank r3
+                if i1 < 1#u8
+                then ok (core.result.Result.Err publish.PublishError.NotOwner)
+                else
+                  ok (core.result.Result.Ok (publish.Publisher.User user.id))
+              | core.result.Result.Err e =>
+                ok (core.result.Result.Err (publish.PublishError.Rights e))
+          | some k =>
+            if k.trustpub_only
+            then ok (core.result.Result.Err publish.PublishError.TrustpubOnly)
+            else
+              let user ← publish.auth_user a
+              match owners_at_write with
+              | none =>
+                ok (core.result.Result.Ok (publish.Publisher.User user.id))
+              | some owners =>
+                let (o, b) := actor_gh
+                let s3 := alloc.vec.Vec.deref owners
+                let r2 ←
+                  rights.rights { id := user.id, gh_token := o, gh_login := b }
+                    s3 answers
+                match r2 with
+                | core.result.Result.Ok r3 =>
+                  let i1 ← rights.rank r3
+                  if i1 < 1#u8
+                  then
+                    ok (core.result.Result.Err publish.PublishError.NotOwner)
+                  else
+                    ok (core.result.Result.Ok (publish.Publisher.User user.id))
+                | core.result.Result.Err e =>
+                  ok (core.result.Result.Err (publish.PublishError.Rights e))
+        | core.result.Result.Err e =>
+          ok (core.result.Result.Err (publish.PublishError.Auth e))
+    | core.result.Result.Err e =>
+      ok (core.result.Result.Err (publish.PublishError.Header e))
+
 /-- [cratesio_kernel::validation::rest_ok]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 41:4-49:1
+    Source: 'src/validation.rs', lines 41:4-49:1
     Visibility: public -/
 @[rust_loop_body]
 def validation.rest_ok_loop.body
@@ -1152,7 +1712,7 @@ def validation.rest_ok_loop.body
   else ok (done true)
 
 /-- [cratesio_kernel::validation::rest_ok]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 41:4-49:1
+    Source: 'src/validation.rs', lines 41:4-49:1
     Visibility: public -/
 @[rust_loop]
 def validation.rest_ok_loop
@@ -1162,14 +1722,14 @@ def validation.rest_ok_loop
     i
 
 /-- [cratesio_kernel::validation::rest_ok]:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 39:0-49:1
+    Source: 'src/validation.rs', lines 39:0-49:1
     Visibility: public -/
 @[reducible]
 def validation.rest_ok («name» : Slice Std.U8) : Result Bool := do
   validation.rest_ok_loop «name» 1#usize
 
 /-- [cratesio_kernel::validation::char_count]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 29:4-34:5
+    Source: 'src/validation.rs', lines 29:4-34:5
     Visibility: public -/
 @[rust_loop_body]
 def validation.char_count_loop.body
@@ -1189,7 +1749,7 @@ def validation.char_count_loop.body
   else ok (done n)
 
 /-- [cratesio_kernel::validation::char_count]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 29:4-34:5
+    Source: 'src/validation.rs', lines 29:4-34:5
     Visibility: public -/
 @[rust_loop]
 def validation.char_count_loop
@@ -1201,14 +1761,14 @@ def validation.char_count_loop
     (n, i)
 
 /-- [cratesio_kernel::validation::char_count]:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 26:0-36:1
+    Source: 'src/validation.rs', lines 26:0-36:1
     Visibility: public -/
 @[reducible]
 def validation.char_count («name» : Slice Std.U8) : Result Std.Usize := do
   validation.char_count_loop «name» 0#usize 0#usize
 
 /-- [cratesio_kernel::validation::InvalidName]
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 17:0-23:1
+    Source: 'src/validation.rs', lines 17:0-23:1
     Visibility: public -/
 @[discriminant isize]
 inductive validation.InvalidName where
@@ -1219,13 +1779,13 @@ inductive validation.InvalidName where
 | Char : validation.InvalidName
 
 /-- [cratesio_kernel::validation::MAX_NAME_LENGTH]
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 13:0-13:38
+    Source: 'src/validation.rs', lines 13:0-13:38
     Visibility: public -/
 @[global_simps, irreducible]
 def validation.MAX_NAME_LENGTH : Std.Usize := 64#usize
 
 /-- [cratesio_kernel::validation::validate_crate_name]:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 53:0-71:1
+    Source: 'src/validation.rs', lines 53:0-71:1
     Visibility: public -/
 def validation.validate_crate_name
   («name» : Slice Std.U8) :
@@ -1254,7 +1814,7 @@ def validation.validate_crate_name
         else ok (core.result.Result.Err validation.InvalidName.Start)
 
 /-- [cratesio_kernel::scopes::is_valid_pattern]:
-    Source: 'prove/ports/cratesio/kernel/src/scopes.rs', lines 53:0-65:1
+    Source: 'src/scopes.rs', lines 53:0-65:1
     Visibility: public -/
 def scopes.is_valid_pattern (p : Slice Std.U8) : Result Bool := do
   let i := Slice.len p
@@ -1281,8 +1841,757 @@ def scopes.is_valid_pattern (p : Slice Std.U8) : Result Bool := do
       | core.result.Result.Ok _ => ok true
       | core.result.Result.Err _ => ok false
 
+/-- [cratesio_kernel::trustpub::GitHubClaims]
+    Source: 'src/trustpub.rs', lines 15:0-22:1
+    Visibility: public -/
+structure trustpub.GitHubClaims where
+  jti : alloc.vec.Vec Std.U8
+  event_name : alloc.vec.Vec Std.U8
+  repository : alloc.vec.Vec Std.U8
+  workflow_ref : alloc.vec.Vec Std.U8
+  repository_owner_id : alloc.vec.Vec Std.U8
+  environment : Option (alloc.vec.Vec Std.U8)
+
+/-- [cratesio_kernel::trustpub::GitHubConfig]
+    Source: 'src/trustpub.rs', lines 26:0-33:1
+    Visibility: public -/
+structure trustpub.GitHubConfig where
+  crate_id : Std.I32
+  repository_owner : alloc.vec.Vec Std.U8
+  repository_name : alloc.vec.Vec Std.U8
+  repository_owner_id : Std.I32
+  workflow_filename : alloc.vec.Vec Std.U8
+  environment : Option (alloc.vec.Vec Std.U8)
+
+/-- [cratesio_kernel::trustpub::ExchangeError]
+    Source: 'src/trustpub.rs', lines 37:0-49:1
+    Visibility: public -/
+@[discriminant isize]
+inductive trustpub.ExchangeError where
+| JtiReused : trustpub.ExchangeError
+| ForbiddenEvent : trustpub.ExchangeError
+| BadRepository : trustpub.ExchangeError
+| BadWorkflowRef : trustpub.ExchangeError
+| BadOwnerId : trustpub.ExchangeError
+| NoConfig : trustpub.ExchangeError
+| OwnerIdMismatch : trustpub.ExchangeError
+| WorkflowMismatch : trustpub.ExchangeError
+| EnvironmentMismatch : trustpub.ExchangeError
+
+/-- [cratesio_kernel::trustpub::eq_lower]: loop body 0:
+    Source: 'src/trustpub.rs', lines 57:4-64:1
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.eq_lower_loop.body
+  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := Slice.len a
+  if i < i1
+  then
+    let i2 ← Slice.index_usize a i
+    let i3 ← bytes.lower i2
+    let i4 ← Slice.index_usize b i
+    let i5 ← bytes.lower i4
+    if i3 != i5
+    then ok (done false)
+    else let i6 ← i + 1#usize
+         ok (cont i6)
+  else ok (done true)
+
+/-- [cratesio_kernel::trustpub::eq_lower]: loop 0:
+    Source: 'src/trustpub.rs', lines 57:4-64:1
+    Visibility: public -/
+@[rust_loop]
+def trustpub.eq_lower_loop
+  (a : Slice Std.U8) (b : Slice Std.U8) (i : Std.Usize) : Result Bool := do
+  loop
+    (fun i1 => trustpub.eq_lower_loop.body a b i1)
+    i
+
+/-- [cratesio_kernel::trustpub::eq_lower]:
+    Source: 'src/trustpub.rs', lines 52:0-64:1
+    Visibility: public -/
+def trustpub.eq_lower (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
+  let i := Slice.len a
+  let i1 := Slice.len b
+  if i != i1
+  then ok false
+  else trustpub.eq_lower_loop a b 0#usize
+
+/-- [cratesio_kernel::trustpub::PULL_REQUEST_TARGET]
+    Source: 'src/trustpub.rs', lines 67:0-70:2
+    Visibility: public -/
+@[global_simps, irreducible]
+def trustpub.PULL_REQUEST_TARGET : Array Std.U8 19#usize :=
+  Array.make 19#usize [
+    112#u8, 117#u8, 108#u8, 108#u8, 95#u8, 114#u8, 101#u8, 113#u8, 117#u8,
+    101#u8, 115#u8, 116#u8, 95#u8, 116#u8, 97#u8, 114#u8, 103#u8, 101#u8,
+    116#u8
+    ]
+
+/-- [cratesio_kernel::trustpub::WORKFLOW_RUN]
+    Source: 'src/trustpub.rs', lines 72:0-72:108
+    Visibility: public -/
+@[global_simps, irreducible]
+def trustpub.WORKFLOW_RUN : Array Std.U8 12#usize :=
+  Array.make 12#usize [
+    119#u8, 111#u8, 114#u8, 107#u8, 102#u8, 108#u8, 111#u8, 119#u8, 95#u8,
+    114#u8, 117#u8, 110#u8
+    ]
+
+/-- [cratesio_kernel::trustpub::yml_end]:
+    Source: 'src/trustpub.rs', lines 76:0-86:1
+    Visibility: public -/
+def trustpub.yml_end
+  (s : Slice Std.U8) (seg : Std.Usize) (k : Std.Usize) : Result Bool := do
+  let i ← seg + 5#usize
+  if k >= i
+  then
+    let i1 ← k - 4#usize
+    let i2 ← Slice.index_usize s i1
+    if i2 = 46#u8
+    then
+      let i3 ← k - 3#usize
+      let i4 ← Slice.index_usize s i3
+      if i4 = 121#u8
+      then
+        let i5 ← k - 2#usize
+        let i6 ← Slice.index_usize s i5
+        if i6 = 109#u8
+        then
+          let i7 ← k - 1#usize
+          let i8 ← Slice.index_usize s i7
+          if i8 = 108#u8
+          then ok true
+          else
+            let i9 ← seg + 6#usize
+            if k >= i9
+            then
+              let i10 ← k - 5#usize
+              let i11 ← Slice.index_usize s i10
+              if i11 = 46#u8
+              then
+                let i12 ← Slice.index_usize s i1
+                if i12 = 121#u8
+                then
+                  let i13 ← Slice.index_usize s i3
+                  if i13 = 97#u8
+                  then
+                    let i14 ← Slice.index_usize s i5
+                    if i14 = 109#u8
+                    then let i15 ← Slice.index_usize s i7
+                         ok (i15 = 108#u8)
+                    else ok false
+                  else ok false
+                else ok false
+              else ok false
+            else ok false
+        else
+          let i7 ← seg + 6#usize
+          if k >= i7
+          then
+            let i8 ← k - 5#usize
+            let i9 ← Slice.index_usize s i8
+            if i9 = 46#u8
+            then
+              let i10 ← Slice.index_usize s i1
+              if i10 = 121#u8
+              then
+                let i11 ← Slice.index_usize s i3
+                if i11 = 97#u8
+                then
+                  let i12 ← Slice.index_usize s i5
+                  if i12 = 109#u8
+                  then
+                    let i13 ← k - 1#usize
+                    let i14 ← Slice.index_usize s i13
+                    ok (i14 = 108#u8)
+                  else ok false
+                else ok false
+              else ok false
+            else ok false
+          else ok false
+      else
+        let i5 ← seg + 6#usize
+        if k >= i5
+        then
+          let i6 ← k - 5#usize
+          let i7 ← Slice.index_usize s i6
+          if i7 = 46#u8
+          then
+            let i8 ← Slice.index_usize s i1
+            if i8 = 121#u8
+            then
+              let i9 ← Slice.index_usize s i3
+              if i9 = 97#u8
+              then
+                let i10 ← k - 2#usize
+                let i11 ← Slice.index_usize s i10
+                if i11 = 109#u8
+                then
+                  let i12 ← k - 1#usize
+                  let i13 ← Slice.index_usize s i12
+                  ok (i13 = 108#u8)
+                else ok false
+              else ok false
+            else ok false
+          else ok false
+        else ok false
+    else
+      let i3 ← seg + 6#usize
+      if k >= i3
+      then
+        let i4 ← k - 5#usize
+        let i5 ← Slice.index_usize s i4
+        if i5 = 46#u8
+        then
+          let i6 ← Slice.index_usize s i1
+          if i6 = 121#u8
+          then
+            let i7 ← k - 3#usize
+            let i8 ← Slice.index_usize s i7
+            if i8 = 97#u8
+            then
+              let i9 ← k - 2#usize
+              let i10 ← Slice.index_usize s i9
+              if i10 = 109#u8
+              then
+                let i11 ← k - 1#usize
+                let i12 ← Slice.index_usize s i11
+                ok (i12 = 108#u8)
+              else ok false
+            else ok false
+          else ok false
+        else ok false
+      else ok false
+  else
+    let i1 ← seg + 6#usize
+    if k >= i1
+    then
+      let i2 ← k - 5#usize
+      let i3 ← Slice.index_usize s i2
+      if i3 = 46#u8
+      then
+        let i4 ← k - 4#usize
+        let i5 ← Slice.index_usize s i4
+        if i5 = 121#u8
+        then
+          let i6 ← k - 3#usize
+          let i7 ← Slice.index_usize s i6
+          if i7 = 97#u8
+          then
+            let i8 ← k - 2#usize
+            let i9 ← Slice.index_usize s i8
+            if i9 = 109#u8
+            then
+              let i10 ← k - 1#usize
+              let i11 ← Slice.index_usize s i10
+              ok (i11 = 108#u8)
+            else ok false
+          else ok false
+        else ok false
+      else ok false
+    else ok false
+
+/-- [cratesio_kernel::trustpub::seg_end]: loop body 0:
+    Source: 'src/trustpub.rs', lines 91:4-93:5
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.seg_end_loop.body
+  (s : Slice Std.U8) (e : Std.Usize) :
+  Result (ControlFlow Std.Usize Std.Usize)
+  := do
+  let i := Slice.len s
+  if e < i
+  then
+    let i1 ← Slice.index_usize s e
+    if i1 != 47#u8
+    then let e1 ← e + 1#usize
+         ok (cont e1)
+    else ok (done e)
+  else ok (done e)
+
+/-- [cratesio_kernel::trustpub::seg_end]: loop 0:
+    Source: 'src/trustpub.rs', lines 91:4-93:5
+    Visibility: public -/
+@[rust_loop]
+def trustpub.seg_end_loop
+  (s : Slice Std.U8) (e : Std.Usize) : Result Std.Usize := do
+  loop
+    (fun e1 => trustpub.seg_end_loop.body s e1)
+    e
+
+/-- [cratesio_kernel::trustpub::seg_end]:
+    Source: 'src/trustpub.rs', lines 89:0-95:1
+    Visibility: public -/
+@[reducible]
+def trustpub.seg_end
+  (s : Slice Std.U8) (seg : Std.Usize) : Result Std.Usize := do
+  trustpub.seg_end_loop s seg
+
+/-- [cratesio_kernel::trustpub::match_in_segment]: loop body 0:
+    Source: 'src/trustpub.rs', lines 101:4-109:1
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.match_in_segment_loop.body
+  (s : Slice Std.U8) (seg : Std.Usize) (k : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  if k > seg
+  then
+    let «at» ← k - 1#usize
+    let i ← Slice.index_usize s «at»
+    if i = 64#u8
+    then
+      let i1 ← «at» + 1#usize
+      let i2 := Slice.len s
+      if i1 < i2
+      then
+        let i3 ← Slice.index_usize s i1
+        if i3 != 10#u8
+        then
+          let b ← trustpub.yml_end s seg «at»
+          if b
+          then ok (done (some «at»))
+          else ok (cont «at»)
+        else ok (cont «at»)
+      else ok (cont «at»)
+    else ok (cont «at»)
+  else ok (done none)
+
+/-- [cratesio_kernel::trustpub::match_in_segment]: loop 0:
+    Source: 'src/trustpub.rs', lines 101:4-109:1
+    Visibility: public -/
+@[rust_loop]
+def trustpub.match_in_segment_loop
+  (s : Slice Std.U8) (seg : Std.Usize) (k : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  loop
+    (fun k1 => trustpub.match_in_segment_loop.body s seg k1)
+    k
+
+/-- [cratesio_kernel::trustpub::match_in_segment]:
+    Source: 'src/trustpub.rs', lines 99:0-109:1
+    Visibility: public -/
+@[reducible]
+def trustpub.match_in_segment
+  (s : Slice Std.U8) (seg : Std.Usize) (e : Std.Usize) :
+  Result (Option Std.Usize)
+  := do
+  trustpub.match_in_segment_loop s seg e
+
+/-- [cratesio_kernel::trustpub::first_match]: loop body 0:
+    Source: 'src/trustpub.rs', lines 114:4-123:1
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.first_match_loop.body
+  (s : Slice Std.U8) (seg : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option (Std.Usize × Std.Usize)))
+  := do
+  let i := Slice.len s
+  if seg < i
+  then
+    let e ← trustpub.seg_end s seg
+    let o ← trustpub.match_in_segment s seg e
+    match o with
+    | none => let seg1 ← e + 1#usize
+              ok (cont seg1)
+    | some «at» => ok (done (some (seg, «at»)))
+  else ok (done none)
+
+/-- [cratesio_kernel::trustpub::first_match]: loop 0:
+    Source: 'src/trustpub.rs', lines 114:4-123:1
+    Visibility: public -/
+@[rust_loop]
+def trustpub.first_match_loop
+  (s : Slice Std.U8) (seg : Std.Usize) :
+  Result (Option (Std.Usize × Std.Usize))
+  := do
+  loop
+    (fun seg1 => trustpub.first_match_loop.body s seg1)
+    seg
+
+/-- [cratesio_kernel::trustpub::first_match]:
+    Source: 'src/trustpub.rs', lines 112:0-123:1
+    Visibility: public -/
+@[reducible]
+def trustpub.first_match
+  (s : Slice Std.U8) (seg : Std.Usize) :
+  Result (Option (Std.Usize × Std.Usize))
+  := do
+  trustpub.first_match_loop s seg
+
+/-- [cratesio_kernel::trustpub::workflow_filename]:
+    Source: 'src/trustpub.rs', lines 129:0-134:1
+    Visibility: public -/
+def trustpub.workflow_filename
+  (s : Slice Std.U8) : Result (Option (alloc.vec.Vec Std.U8)) := do
+  let o ← trustpub.first_match s 0#usize
+  match o with
+  | none => ok none
+  | some p =>
+    let (seg, «at») := p
+    let v ← bytes.sub s seg «at»
+    ok (some v)
+
+/-- [cratesio_kernel::trustpub::digits_value]: loop body 0:
+    Source: 'src/trustpub.rs', lines 141:4-153:1
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.digits_value_loop.body
+  (s : Slice Std.U8) (acc : Std.I64) (i : Std.Usize) :
+  Result (ControlFlow (Std.I64 × Std.Usize) (Option Std.I64))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let b ← Slice.index_usize s i
+    if b >= 48#u8
+    then
+      if b <= 57#u8
+      then
+        let i2 ← acc * 10#i64
+        let i3 ← b - 48#u8
+        let i4 ← lift (UScalar.hcast .I64 i3)
+        let acc1 ← i2 + i4
+        if acc1 > 2147483648#i64
+        then ok (done none)
+        else let i5 ← i + 1#usize
+             ok (cont (acc1, i5))
+      else ok (done none)
+    else ok (done none)
+  else ok (done (some acc))
+
+/-- [cratesio_kernel::trustpub::digits_value]: loop 0:
+    Source: 'src/trustpub.rs', lines 141:4-153:1
+    Visibility: public -/
+@[rust_loop]
+def trustpub.digits_value_loop
+  (s : Slice Std.U8) (acc : Std.I64) (i : Std.Usize) :
+  Result (Option Std.I64)
+  := do
+  loop
+    (fun (acc1, i1) => trustpub.digits_value_loop.body s acc1 i1)
+    (acc, i)
+
+/-- [cratesio_kernel::trustpub::digits_value]:
+    Source: 'src/trustpub.rs', lines 138:0-153:1
+    Visibility: public -/
+@[reducible]
+def trustpub.digits_value
+  (s : Slice Std.U8) (start : Std.Usize) : Result (Option Std.I64) := do
+  trustpub.digits_value_loop s 0#i64 start
+
+/-- [cratesio_kernel::trustpub::parse_i32]:
+    Source: 'src/trustpub.rs', lines 156:0-177:1
+    Visibility: public -/
+def trustpub.parse_i32 (s : Slice Std.U8) : Result (Option Std.I32) := do
+  let i := Slice.len s
+  if i = 0#usize
+  then ok none
+  else
+    let i1 ← Slice.index_usize s 0#usize
+    let start ←
+      if i1 = 45#u8
+      then ok 1#usize
+      else if i1 = 43#u8
+           then ok 1#usize
+           else ok 0#usize
+    let i2 := Slice.len s
+    if start = i2
+    then ok none
+    else
+      let o ← trustpub.digits_value s start
+      match o with
+      | none => ok none
+      | some acc =>
+        if i1 = 45#u8
+        then
+          let i3 ← -. acc
+          let i4 ← lift (IScalar.cast .I32 i3)
+          ok (some i4)
+        else
+          if acc > 2147483647#i64
+          then ok none
+          else let i3 ← lift (IScalar.cast .I32 acc)
+               ok (some i3)
+
+/-- [cratesio_kernel::trustpub::first_slash]: loop body 0:
+    Source: 'src/trustpub.rs', lines 182:4-189:1
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.first_slash_loop.body
+  (s : Slice Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize (Option Std.Usize))
+  := do
+  let i1 := Slice.len s
+  if i < i1
+  then
+    let i2 ← Slice.index_usize s i
+    if i2 = 47#u8
+    then ok (done (some i))
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done none)
+
+/-- [cratesio_kernel::trustpub::first_slash]: loop 0:
+    Source: 'src/trustpub.rs', lines 182:4-189:1
+    Visibility: public -/
+@[rust_loop]
+def trustpub.first_slash_loop
+  (s : Slice Std.U8) (i : Std.Usize) : Result (Option Std.Usize) := do
+  loop
+    (fun i1 => trustpub.first_slash_loop.body s i1)
+    i
+
+/-- [cratesio_kernel::trustpub::first_slash]:
+    Source: 'src/trustpub.rs', lines 180:0-189:1
+    Visibility: public -/
+@[reducible]
+def trustpub.first_slash (s : Slice Std.U8) : Result (Option Std.Usize) := do
+  trustpub.first_slash_loop s 0#usize
+
+/-- [cratesio_kernel::trustpub::jti_used]: loop body 0:
+    Source: 'src/trustpub.rs', lines 194:4-201:1
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.jti_used_loop.body
+  (used : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (jti : Slice Std.U8)
+  (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
+  := do
+  let i1 := alloc.vec.Vec.len used
+  if i < i1
+  then
+    let v ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec
+        Std.U8)) used i
+    let s := alloc.vec.Vec.deref v
+    let b ← bytes.eq s jti
+    if b
+    then ok (done true)
+    else let i2 ← i + 1#usize
+         ok (cont i2)
+  else ok (done false)
+
+/-- [cratesio_kernel::trustpub::jti_used]: loop 0:
+    Source: 'src/trustpub.rs', lines 194:4-201:1
+    Visibility: public -/
+@[rust_loop]
+def trustpub.jti_used_loop
+  (used : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (jti : Slice Std.U8)
+  (i : Std.Usize) :
+  Result Bool
+  := do
+  loop
+    (fun i1 => trustpub.jti_used_loop.body used jti i1)
+    i
+
+/-- [cratesio_kernel::trustpub::jti_used]:
+    Source: 'src/trustpub.rs', lines 192:0-201:1
+    Visibility: public -/
+@[reducible]
+def trustpub.jti_used
+  (used : alloc.vec.Vec (alloc.vec.Vec Std.U8)) (jti : Slice Std.U8) :
+  Result Bool
+  := do
+  trustpub.jti_used_loop used jti 0#usize
+
+/-- [cratesio_kernel::trustpub::env_ok]:
+    Source: 'src/trustpub.rs', lines 205:0-213:1
+    Visibility: public -/
+def trustpub.env_ok
+  (config_env : Option (alloc.vec.Vec Std.U8))
+  (claim_env : Option (alloc.vec.Vec Std.U8)) :
+  Result Bool
+  := do
+  match config_env with
+  | none => ok true
+  | some c =>
+    match claim_env with
+    | none => ok false
+    | some s =>
+      let s1 := alloc.vec.Vec.deref c
+      let s2 := alloc.vec.Vec.deref s
+      trustpub.eq_lower s1 s2
+
+/-- [cratesio_kernel::trustpub::filter_configs]: loop body 0:
+    Source: 'src/trustpub.rs', lines 231:4-245:5
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.filter_configs_loop.body
+  (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
+  («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) (repo : Std.Usize) (by_id : Std.Usize)
+  (by_workflow : Std.Usize) (ids : alloc.vec.Vec Std.I32) (i : Std.Usize) :
+  Result (ControlFlow (Std.Usize × Std.Usize × Std.Usize × (alloc.vec.Vec
+    Std.I32) × Std.Usize) (Std.Usize × Std.Usize × Std.Usize ×
+    (alloc.vec.Vec Std.I32)))
+  := do
+  let i1 := alloc.vec.Vec.len configs
+  if i < i1
+  then
+    let ghc ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        trustpub.GitHubConfig) configs i
+    let s := alloc.vec.Vec.deref ghc.repository_owner
+    let b ← trustpub.eq_lower s owner
+    let (repo1, by_id1, by_workflow1, ids1) ←
+      if b
+      then
+        do
+        let s1 := alloc.vec.Vec.deref ghc.repository_name
+        let b1 ← trustpub.eq_lower s1 «name»
+        if b1
+        then
+          let repo2 ← repo + 1#usize
+          let (i2, i3, v) ←
+            if ghc.repository_owner_id = owner_id
+            then
+              do
+              let by_id2 ← by_id + 1#usize
+              let s2 := alloc.vec.Vec.deref ghc.workflow_filename
+              let b2 ← bytes.eq s2 workflow
+              let (i4, v1) ←
+                if b2
+                then
+                  do
+                  let by_workflow2 ← by_workflow + 1#usize
+                  let b3 ← trustpub.env_ok ghc.environment env
+                  let v2 ←
+                    if b3
+                    then alloc.vec.Vec.push ids ghc.crate_id
+                    else ok ids
+                  ok (by_workflow2, v2)
+                else ok (by_workflow, ids)
+              ok (by_id2, i4, v1)
+            else ok (by_id, by_workflow, ids)
+          ok (repo2, i2, i3, v)
+        else ok (repo, by_id, by_workflow, ids)
+      else ok (repo, by_id, by_workflow, ids)
+    let i2 ← i + 1#usize
+    ok (cont (repo1, by_id1, by_workflow1, ids1, i2))
+  else ok (done (repo, by_id, by_workflow, ids))
+
+/-- [cratesio_kernel::trustpub::filter_configs]: loop 0:
+    Source: 'src/trustpub.rs', lines 231:4-245:5
+    Visibility: public -/
+@[rust_loop]
+def trustpub.filter_configs_loop
+  (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
+  («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) (repo : Std.Usize) (by_id : Std.Usize)
+  (by_workflow : Std.Usize) (ids : alloc.vec.Vec Std.I32) (i : Std.Usize) :
+  Result (Std.Usize × Std.Usize × Std.Usize × (alloc.vec.Vec Std.I32))
+  := do
+  loop
+    (fun (repo1, by_id1, by_workflow1, ids1, i1) =>
+      trustpub.filter_configs_loop.body configs owner «name» owner_id
+      workflow env repo1 by_id1 by_workflow1 ids1 i1)
+    (repo, by_id, by_workflow, ids, i)
+
+/-- [cratesio_kernel::trustpub::filter_configs]:
+    Source: 'src/trustpub.rs', lines 218:0-247:1
+    Visibility: public -/
+@[reducible]
+def trustpub.filter_configs
+  (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
+  («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) :
+  Result (Std.Usize × Std.Usize × Std.Usize × (alloc.vec.Vec Std.I32))
+  := do
+  trustpub.filter_configs_loop configs owner «name» owner_id workflow env
+    0#usize 0#usize 0#usize (alloc.vec.Vec.new Std.I32) 0#usize
+
+/-- [cratesio_kernel::trustpub::exchange_github]:
+    Source: 'src/trustpub.rs', lines 252:0-293:1
+    Visibility: public -/
+def trustpub.exchange_github
+  (used : alloc.vec.Vec (alloc.vec.Vec Std.U8))
+  (configs : alloc.vec.Vec trustpub.GitHubConfig)
+  (claims : trustpub.GitHubClaims) :
+  Result (core.result.Result ((alloc.vec.Vec Std.I32) × (alloc.vec.Vec
+    (alloc.vec.Vec Std.U8))) trustpub.ExchangeError)
+  := do
+  let s := alloc.vec.Vec.deref claims.jti
+  let b ← trustpub.jti_used used s
+  if b
+  then ok (core.result.Result.Err trustpub.ExchangeError.JtiReused)
+  else
+    let s1 := alloc.vec.Vec.deref claims.event_name
+    let s2 ← lift (Array.to_slice trustpub.PULL_REQUEST_TARGET)
+    let b1 ← bytes.eq s1 s2
+    if b1
+    then ok (core.result.Result.Err trustpub.ExchangeError.ForbiddenEvent)
+    else
+      let s3 := alloc.vec.Vec.deref claims.event_name
+      let s4 ← lift (Array.to_slice trustpub.WORKFLOW_RUN)
+      let b2 ← bytes.eq s3 s4
+      if b2
+      then ok (core.result.Result.Err trustpub.ExchangeError.ForbiddenEvent)
+      else
+        let s5 := alloc.vec.Vec.deref claims.repository
+        let o ← trustpub.first_slash s5
+        match o with
+        | none =>
+          ok (core.result.Result.Err trustpub.ExchangeError.BadRepository)
+        | some i =>
+          let s6 := alloc.vec.Vec.deref claims.repository
+          let owner ← bytes.sub s6 0#usize i
+          let s7 := alloc.vec.Vec.deref claims.repository
+          let i1 ← i + 1#usize
+          let i2 := alloc.vec.Vec.len claims.repository
+          let «name» ← bytes.sub s7 i1 i2
+          let s8 := alloc.vec.Vec.deref claims.workflow_ref
+          let o1 ← trustpub.workflow_filename s8
+          match o1 with
+          | none =>
+            ok (core.result.Result.Err trustpub.ExchangeError.BadWorkflowRef)
+          | some w =>
+            let s9 := alloc.vec.Vec.deref claims.repository_owner_id
+            let o2 ← trustpub.parse_i32 s9
+            match o2 with
+            | none =>
+              ok (core.result.Result.Err trustpub.ExchangeError.BadOwnerId)
+            | some v =>
+              let s10 := alloc.vec.Vec.deref owner
+              let s11 := alloc.vec.Vec.deref «name»
+              let s12 := alloc.vec.Vec.deref w
+              let (repo, by_id, by_workflow, ids) ←
+                trustpub.filter_configs configs s10 s11 v s12
+                  claims.environment
+              if repo = 0#usize
+              then ok (core.result.Result.Err trustpub.ExchangeError.NoConfig)
+              else
+                if by_id = 0#usize
+                then
+                  ok (core.result.Result.Err
+                    trustpub.ExchangeError.OwnerIdMismatch)
+                else
+                  if by_workflow = 0#usize
+                  then
+                    ok (core.result.Result.Err
+                      trustpub.ExchangeError.WorkflowMismatch)
+                  else
+                    let i3 := alloc.vec.Vec.len ids
+                    if i3 = 0#usize
+                    then
+                      ok (core.result.Result.Err
+                        trustpub.ExchangeError.EnvironmentMismatch)
+                    else
+                      let out ←
+                        alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec
+                          core.clone.CloneU8) used
+                      let s13 := alloc.vec.Vec.deref claims.jti
+                      let i4 := alloc.vec.Vec.len claims.jti
+                      let v1 ← bytes.sub s13 0#usize i4
+                      let out1 ← alloc.vec.Vec.push out v1
+                      ok (core.result.Result.Ok (ids, out1))
+
 /-- [cratesio_kernel::validation::validate_dependency_name]:
-    Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 74:0-92:1
+    Source: 'src/validation.rs', lines 74:0-92:1
     Visibility: public -/
 def validation.validate_dependency_name
   («name» : Slice Std.U8) :

@@ -10,5 +10,8 @@
 
 pub mod auth;
 pub mod bytes;
+pub mod publish;
+pub mod rights;
 pub mod scopes;
+pub mod trustpub;
 pub mod validation;
