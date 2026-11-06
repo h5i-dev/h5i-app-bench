@@ -96,4 +96,58 @@ theorem change_password_ok {c : Crypto} {s : Snapshot} {u : User} {cur h : alloc
   have h2' := h2.symm; simp [hc_1] at h2'
   exact h2' x hx (fun h => hne (UScalar.eq_of_val_eq h))
 
+@[step] theorem to_row_spec (uid : U64) (r : RecordIn) : to_row uid r ⦃ x => x = rowOf uid r ⦄ := by
+  unfold to_row rowOf
+  step*
+
+@[step] theorem record_writes_spec (uid : U64) (rs : alloc.vec.Vec RecordIn) :
+    record_writes uid rs ⦃ ws => ws.val = rs.val.map (fun r => Write.InsertRecord (rowOf uid r)) ⦄ := by
+  unfold record_writes record_writes_loop
+  apply WP.spec_mono (H5iAppLib.loop_fold rs.val (fun (o : alloc.vec.Vec Write) => o.val)
+    (fun acc r => acc ++ [Write.InsertRecord (rowOf uid r)])
+    (fun o i => o.val.length ≤ i) _ ?step (alloc.vec.Vec.new Write) 0#usize (by simp) (by simp))
+  · intro r hr; rw [hr, H5iAppLib.foldl_map]; simp
+  case step =>
+    intro o j hj hinv; unfold record_writes_loop.body; h5i_step
+
+theorem post_records_ok {cfg : Config} {u : User} {rs : alloc.vec.Vec RecordIn} {ws rep}
+    (hr : post_records cfg u rs = ok (.Ok (ws, rep))) :
+      (∀ r ∈ rs.val, Fits cfg.max_record_size r) ∧
+      ws.val = rs.val.map (fun r => Write.InsertRecord (rowOf u.id r)) ∧ rep = .Unit := by
+  unfold post_records at hr
+  h5i_invert hr
+  obtain ⟨rfl, rfl⟩ := hr
+  have h1 := post_of_ok (records_fit_spec _ _) hb
+  have h2 := post_of_ok (record_writes_spec _ _) hv
+  exact ⟨by simpa [hc] using h1.symm, h2, rfl⟩
+
+/-- What `authed` writes, by command. -/
+def AuthedWrites (cfg : Config) (c : Crypto) (s : Snapshot) (u : User) : Command → List Write → Prop
+  | .DeleteAccount pw, ws => Verify c u.password.val pw.val ∧ ws = [.DeleteUser u.id]
+  | .ChangePassword cur h, ws => Verify c u.password.val cur.val ∧
+      (∀ x ∈ s.users.val, x.id ≠ u.id → x.password.val ≠ h.val) ∧ ws = [.SetPassword u.id h]
+  | .PostRecords rs, ws => (∀ r ∈ rs.val, Fits cfg.max_record_size r) ∧
+      ws = rs.val.map (fun r => Write.InsertRecord (rowOf u.id r))
+  | .DeleteStore, ws => ws = [.DeleteStore u.id]
+  | _, ws => ws = []
+
+theorem authed_ok {cfg : Config} {c : Crypto} {s : Snapshot} {u : User} {cmd : Command} {ws rep}
+    (hr : authed cfg c s u cmd = ok (.Ok (ws, rep))) : AuthedWrites cfg c s u cmd ws.val := by
+  unfold authed at hr
+  cases cmd with
+  | DeleteAccount pw => have := delete_account_ok hr; exact ⟨this.1, this.2.1⟩
+  | ChangePassword cur h => have := change_password_ok hr; exact ⟨this.1, this.2.1, this.2.2.1⟩
+  | PostRecords rs => have := post_records_ok hr; exact ⟨this.1, this.2.1⟩
+  | DeleteStore =>
+    simp only [] at hr
+    h5i_invert hr
+    obtain ⟨rfl, rfl⟩ := hr
+    simp [AuthedWrites, push_ok_val hws_1]
+  | Me | Status | Next _ _ _ _ =>
+    simp only [] at hr
+    h5i_invert hr
+    obtain ⟨rfl, rfl⟩ := hr
+    simp [AuthedWrites]
+  | GetUser _ | Register _ _ _ _ | Login _ _ => simp at hr
+
 end atuin_kernel.Verified

@@ -4,4 +4,76 @@ crate = "kernel"
 start-from = ["transition", "apply", "client_ip::resolve_client_ip"]
 
 [check]
-theorems = []
+theorems = [
+  "atuin_kernel.Properties.authorized",
+  "atuin_kernel.Properties.unauthenticated_never_writes",
+  "atuin_kernel.Properties.writes_owned",
+  "atuin_kernel.Properties.delete_account_needs_password",
+  "atuin_kernel.Properties.change_password_needs_password",
+  "atuin_kernel.Properties.closed_registration",
+  "atuin_kernel.Properties.stored_records_fit",
+  "atuin_kernel.Properties.writes_authorized",
+  "atuin_kernel.Properties.login_needs_password",
+]
+
+# Bugs the proofs must reject (`h5i app mutate`). Each `old` occurs exactly
+# once in kernel/src/lib.rs.
+[[mutant]]
+name = "any_auth_scheme"
+old = "if is_token_scheme(v, n) {"
+new = "if true {"
+
+[[mutant]]
+name = "session_token_ignored"
+old = "if bytes_eq(&ss[i].token, token) {"
+new = "if bytes_eq(token, token) {"
+
+[[mutant]]
+name = "session_user_ignored"
+old = "Some(sess) => find_user_by_id(&s.users, sess.user_id),"
+new = "Some(_sess) => find_user_by_id(&s.users, 1),"
+
+[[mutant]]
+name = "registration_always_open"
+old = "if !cfg.open_registration {"
+new = "if false {"
+
+[[mutant]]
+name = "email_uniqueness_dropped"
+old = "if eq_lower(&us[i].username, username) || eq_lower(&us[i].email, email) || bytes_eq(&us[i].password, hash) {"
+new = "if eq_lower(&us[i].username, username) || bytes_eq(&us[i].password, hash) {"
+
+[[mutant]]
+name = "login_without_password"
+old = "if verify(c, &u.password, password) {"
+new = "if true {"
+
+[[mutant]]
+name = "delete_without_password"
+old = "if !verify(c, &u.password, password) {"
+new = "if false {"
+
+[[mutant]]
+name = "change_password_without_password"
+old = "if !verify(c, &u.password, current) {"
+new = "if false {"
+
+[[mutant]]
+name = "records_for_user_zero"
+old = "ws.push(Write::InsertRecord(to_row(user_id, &rs[i])));"
+new = "ws.push(Write::InsertRecord(to_row(0, &rs[i])));"
+
+[[mutant]]
+name = "delete_store_of_user_zero"
+old = "ws.push(Write::DeleteStore(u.id));"
+new = "ws.push(Write::DeleteStore(0));"
+
+[[mutant]]
+name = "size_limit_ignored"
+old = "if !((rs[i].data.len() as u64) <= max || max == 0) {"
+new = "if !((rs[i].data.len() as u64) <= max || max != 0) {"
+
+[[mutant]]
+name = "size_limit_strict"
+old = "if !((rs[i].data.len() as u64) <= max || max == 0) {"
+new = "if !((rs[i].data.len() as u64) < max || max == 0) {"

@@ -119,7 +119,7 @@ def allowed (cfg : Config) (c : Crypto) (s : Snapshot) (req : Request) : Write �
       req.command = .DeleteStore
 
 /-- The user a write belongs to. -/
-def Write.owner : Write → U64
+def ownerOf : Write → U64
   | .AddUser u => u.id
   | .AddSession x => x.user_id
   | .SetPassword uid _ => uid
