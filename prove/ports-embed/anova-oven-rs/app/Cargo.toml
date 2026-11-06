@@ -1,0 +1,18 @@
+[package]
+name = "anova-oven-app"
+description = "The Anova-oven scheduler kernel behind the verified h5i-app-embedded shell"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+version = "0.1.0"
+publish = false
+
+# h5i-app-embedded / h5i-app-core are referenced by absolute path into the h5i
+# checkout at /root/h5i (not vendored). This crate is the trusted glue (A2/A3):
+# command decoding and reply encoding. The kernel's theorems hold for every
+# command, so a bad decoding can do no more than a client could ask for.
+[workspace]
+
+[dependencies]
+anova-oven-kernel = { path = "../kernel" }
+h5i-app-core = { path = "/root/h5i/crates/h5i-app-core", default-features = false }
+h5i-app-embedded = { path = "/root/h5i/crates/h5i-app-embedded" }
