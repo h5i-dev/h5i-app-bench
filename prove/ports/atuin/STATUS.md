@@ -1,13 +1,13 @@
 # atuin: status
 
 Upstream atuinsh/atuin @ `df152cd4d68b4dbc2a6f13732b31b0e013470c70`, `crates/atuin-server` (SQLite).
-Gate (2026-11-06): `doctor` ok, `extract --check` ok, `check` ok (208 theorems in 12 modules, only
+Gate (2026-11-06): `doctor` ok, `extract --check` ok, `check` ok (238 theorems in 13 modules, only
 `propext`, `Classical.choice`, `Quot.sound`), `lint` ok ("authorization: proven (schema)").
-Mutation: see the table below; the full run is in progress (`h5i app mutate --keep ports/atuin`).
+Mutation: 23 declared mutants, 23 caught, 0 survived (runs of 20 + 3, see below).
 
 ## Theorems
 
-**S / C / F = 12 / 8 / 3** (of the 23 theorems in `[check] theorems`; the gate checks 208 in all,
+**S / C / F = 15 / 10 / 3** (of the 28 theorems in `[check] theorems`; the gate checks 238 in all,
 the rest are helper lemmas, class C).
 
 | Theorem | Class | Statement (informal) | Bug it rules out / mutant it kills |
@@ -24,6 +24,9 @@ the rest are helper lemmas, class C).
 | `Properties.other_accounts_untouched` | S | after a successful request, every account other than the requester's (and the next registration id) has the same user row, sessions, history and records | `delete_account_wrong_sessions` |
 | `Properties.account_deletion_purges` | S | after account deletion no user row, session, history row or record with that id remains | `delete_account_keeps_history`, `delete_account_wrong_sessions` |
 | `Properties.records_append_only` | S | except account/store deletion, the old store is a prefix of the new one (no overwrite) | `insert_overwrites` |
+| `Properties.no_orphans` | S | in every reachable database each session, history row and record belongs to an existing user (an earlier upstream version left orphaned records; see migration `20260828000000_purge-orphaned-store.sql`) | `delete_account_keeps_records` |
+| `Properties.new_account_starts_empty` | S | a newly registered account has no records or history and exactly its one new session (it cannot inherit a deleted account's data) | `user_counter_not_advanced` |
+| `Properties.token_identifies_one_account` | S | in every reachable database a token authenticates at most one account | `duplicate_tokens_allowed` |
 | `Properties.writes_authorized` | C | `authorized`/`writes_owned` restated in `H5iAppLib.WritesAuthorized` form for `h5i app lint` | (restatement) |
 | `Verified.parse_authorization_spec` | C | header parser = `Spec.presentedToken` | |
 | `Verified.authenticate_spec` | C | a found user is `Spec.Authenticated` | |
@@ -32,11 +35,13 @@ the rest are helper lemmas, class C).
 | `Verified.status_eq` | C | `status` = a monadic fold over the store | |
 | `Verified.next_records_eq` | C | `next_records` = a monadic fold over the store, then `take` | |
 | `Verified.loop_eq_foldlM` | C | index loops are `List.foldlM` (generic) | |
+| `Verified.reachable_inv` | C | `Spec.Inv` holds in every reachable database | |
+| `Verified.inv_step` | C | every successful request keeps `Spec.Inv` | |
 | `Properties.password_change_keeps_sessions` | F | a password change leaves all sessions valid (FINDINGS F1) | fix mutant `fix_password_change_revokes_sessions` breaks it |
 | `Properties.next_huge_count_is_unlimited` | F | every `count > i64::MAX` returns the whole series (F2) | `fix_count_limit` |
 | `Properties.next_start_wraps` | F | `start = 2^63` selects `idx = 0` (signed comparison, F3) | `fix_unsigned_start` |
 
-S ≥ C/3 holds (12 ≥ 8/3).
+S ≥ C/3 holds (15 ≥ 10/3).
 
 Mutants without an S theorem: `size_limit_strict` (rejects records of exactly the limit) makes no
 S statement false, because a stricter limit is safe; it is caught only by the C lemma
@@ -44,9 +49,12 @@ S statement false, because a stricter limit is safe; it is caught only by the C 
 
 ## Mutation results
 
-First run (12 mutants, before the isolation/purge theorems): 11 caught, 0 survived, 1 invalid
-(`session_token_ignored`: its `old` text occurred twice; fixed). The second run with all 20
-mutants is in progress; results will be recorded here.
+- Run 1 (12 mutants, before the isolation/purge theorems): 11 caught, 0 survived, 1 invalid
+  (`session_token_ignored`: its `old` text occurred twice; fixed).
+- Run 2 (20 mutants): 20 caught, 0 survived, 0 invalid.
+- Run 3 (the 3 invariant mutants, `--only`): 3 caught.
+
+No survivors. `size_limit_strict` is caught only by the C lemma `records_fit_spec` (see above).
 
 ## Done
 
@@ -58,13 +66,13 @@ mutants is in progress; results will be recorded here.
 
 ## Next
 
-1. Record the second mutation run; add S theorems for any survivor.
-2. Reachability invariants (`Spec.Inv`): no orphaned sessions/records in any reachable state (the
-   upstream bug fixed by the 2026-08-28 purge migration), a new account starts empty, tokens unique.
-3. `client_ip`: untrusted peer is the client; a non-peer result is only reported by a trusted chain.
-   Difftest it against the pinned `client_ip.rs`.
-4. Totality of `transition` (no panic or overflow).
-5. Then defguard.
+1. `client_ip`: untrusted peer is the client; a non-peer result is only reported by a trusted chain.
+   Difftest it against the pinned `client_ip.rs`. (Low security weight: upstream only logs the
+   address.)
+2. Totality of `transition` (no panic or overflow).
+3. The full ordering spec of `next_records` (sorted by signed index, a prefix of the series).
+
+Done since: reachability invariants (no orphans, fresh accounts empty, unique tokens).
 
 ## How to resume
 
