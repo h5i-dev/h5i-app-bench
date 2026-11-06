@@ -10,7 +10,7 @@
 //! cookie is missing or its HMAC does not verify) and the password (`None`
 //! when not given). A signed owner token arrives as the uid it verified to.
 
-use crate::ids::{Key, decode, parse_key, to_i64};
+use crate::ids::{decode, parse_key, to_i64};
 use crate::store::{DbError, Entry, Row, contains_uid, delete_for, get, get_metadata};
 
 /// The status codes the decisions produce (`impl From<Error> for StatusCode`).
@@ -109,22 +109,37 @@ pub fn handoff(uids: &Option<Vec<i64>>, claimed: i64) -> Vec<i64> {
     out
 }
 
-/// `html::paste::get` (and `html::rendered::get`, which has no handoff):
-/// the table afterwards and the response.
-pub fn view(rows: &Vec<Row>, path: &[u8], now: i64, req: &ViewRequest) -> (Vec<Row>, View) {
-    match req.claim {
-        Some(c) => return (rows.clone(), View::Handoff(handoff(&req.uids, c))),
-        None => {}
-    }
-    let no_password = match req.password {
+/// No password was given.
+pub fn no_password(password: &Option<u64>) -> bool {
+    match password {
         None => true,
         Some(_) => false,
+    }
+}
+
+/// The page for an entry `Database::get` returned: an encrypted paste is
+/// available again unless it burned, and is `no-store`; the HTML is cached
+/// only for a paste that stays available and was read without a password,
+/// on a cache miss.
+pub fn page_of(e: Entry, req: &ViewRequest) -> PastePage {
+    let (d, is_available, encrypted) = match e {
+        Entry::Regular(d) => (d, true, false),
+        Entry::Burned(d) => (d, false, false),
+        Entry::Encrypted(d) => (d, !d.metadata.must_be_deleted, true),
     };
-    let key: Key = match parse_key(path) {
-        Err(_) => return (rows.clone(), View::Error(Status::BadRequest)),
-        Ok(k) => k,
-    };
-    let id = to_i64(key.id);
+    PastePage {
+        data: d.data,
+        title: d.metadata.title,
+        can_delete: can_delete(&req.uids, d.metadata.uid),
+        is_available,
+        no_store: encrypted,
+        cache_put: !req.cached && is_available && no_password(&req.password),
+    }
+}
+
+/// The paste view after the key is parsed: `get_metadata`, the burn
+/// interstitial, `Database::get`.
+pub fn view_id(rows: &Vec<Row>, id: i64, now: i64, req: &ViewRequest) -> (Vec<Row>, View) {
     let metadata = match get_metadata(rows, id) {
         Err(e) => return (rows.clone(), View::Error(db_status(e))),
         Ok(m) => m,
@@ -133,22 +148,24 @@ pub fn view(rows: &Vec<Row>, path: &[u8], now: i64, req: &ViewRequest) -> (Vec<R
         return (rows.clone(), View::BurnConfirmation(metadata.title));
     }
     let (after, result) = get(rows, id, now, req.password);
-    let (data, is_available, encrypted) = match result {
-        Ok(Entry::Regular(d)) => (d, true, false),
-        Ok(Entry::Burned(d)) => (d, false, false),
-        Ok(Entry::Encrypted(d)) => (d, !d.metadata.must_be_deleted, true),
-        Err(DbError::NoPassword) => return (after, View::PasswordInput),
-        Err(e) => return (after, View::Error(db_status(e))),
-    };
-    let page = PastePage {
-        data: data.data,
-        title: data.metadata.title,
-        can_delete: can_delete(&req.uids, data.metadata.uid),
-        is_available,
-        no_store: encrypted,
-        cache_put: !req.cached && is_available && no_password,
-    };
-    (after, View::Paste(page))
+    match result {
+        Ok(e) => (after, View::Paste(page_of(e, req))),
+        Err(DbError::NoPassword) => (after, View::PasswordInput),
+        Err(e) => (after, View::Error(db_status(e))),
+    }
+}
+
+/// `html::paste::get` (and `html::rendered::get`, which has no handoff):
+/// the table afterwards and the response. A verified `?owner=` token is
+/// handled first and touches no paste.
+pub fn view(rows: &Vec<Row>, path: &[u8], now: i64, req: &ViewRequest) -> (Vec<Row>, View) {
+    match req.claim {
+        Some(c) => (rows.clone(), View::Handoff(handoff(&req.uids, c))),
+        None => match parse_key(path) {
+            Err(_) => (rows.clone(), View::Error(Status::BadRequest)),
+            Ok(k) => view_id(rows, to_i64(k.id), now, req),
+        },
+    }
 }
 
 /// The responses of `raw::get` and `download::get`.
@@ -161,21 +178,25 @@ pub enum Raw {
     Error(Status),
 }
 
-/// `raw::get` / `download::get`: no burn interstitial, no cache. `password`
-/// is the `wastebin-password` header or the form's `password`, empty
-/// strings included.
-pub fn raw(rows: &Vec<Row>, path: &[u8], now: i64, password: Option<u64>) -> (Vec<Row>, Raw) {
-    let key: Key = match parse_key(path) {
-        Err(_) => return (rows.clone(), Raw::Error(Status::BadRequest)),
-        Ok(k) => k,
-    };
-    let (after, result) = get(rows, to_i64(key.id), now, password);
+/// `raw::get` / `download::get` after the key is parsed.
+pub fn raw_id(rows: &Vec<Row>, id: i64, now: i64, password: Option<u64>) -> (Vec<Row>, Raw) {
+    let (after, result) = get(rows, id, now, password);
     match result {
         Ok(Entry::Regular(d)) => (after, Raw::Content(d.data, d.metadata.title, false)),
         Ok(Entry::Burned(d)) => (after, Raw::Content(d.data, d.metadata.title, false)),
         Ok(Entry::Encrypted(d)) => (after, Raw::Content(d.data, d.metadata.title, true)),
         Err(DbError::NoPassword) => (after, Raw::PasswordInput),
         Err(e) => (after, Raw::Error(db_status(e))),
+    }
+}
+
+/// `raw::get` / `download::get`: no burn interstitial, no cache. `password`
+/// is the `wastebin-password` header or the form's `password`, empty
+/// strings included.
+pub fn raw(rows: &Vec<Row>, path: &[u8], now: i64, password: Option<u64>) -> (Vec<Row>, Raw) {
+    match parse_key(path) {
+        Err(_) => (rows.clone(), Raw::Error(Status::BadRequest)),
+        Ok(k) => raw_id(rows, to_i64(k.id), now, password),
     }
 }
 
@@ -187,16 +208,19 @@ pub enum Qr {
     Error(Status),
 }
 
-/// `html::qr::get` (the QR code itself is not modeled): reads only
-/// `get_metadata`.
-pub fn qr(rows: &Vec<Row>, path: &[u8], uids: &Option<Vec<i64>>) -> Qr {
-    let key: Key = match parse_key(path) {
-        Err(_) => return Qr::Error(Status::BadRequest),
-        Ok(k) => k,
-    };
-    match get_metadata(rows, to_i64(key.id)) {
+/// `html::qr::get` after the key is parsed: only `get_metadata`.
+pub fn qr_id(rows: &Vec<Row>, id: i64, uids: &Option<Vec<i64>>) -> Qr {
+    match get_metadata(rows, id) {
         Err(e) => Qr::Error(db_status(e)),
         Ok(m) => Qr::Page(m.title, m.expires, can_delete(uids, m.uid)),
+    }
+}
+
+/// `html::qr::get` (the QR code itself is not modeled).
+pub fn qr(rows: &Vec<Row>, path: &[u8], uids: &Option<Vec<i64>>) -> Qr {
+    match parse_key(path) {
+        Err(_) => Qr::Error(Status::BadRequest),
+        Ok(k) => qr_id(rows, to_i64(k.id), uids),
     }
 }
 

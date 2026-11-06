@@ -1,7 +1,9 @@
 import Verified.Get
 import Verified.Delete
 /-!
-# The paste view (`html::paste::get`, `html::rendered::get`)
+# The paste view (`html::paste::get`, `html::rendered::get`), raw/download, QR
+
+`viewIdM`, `rawIdM` and `qrIdM` restate the id-level decisions over lists.
 -/
 open Aeneas Aeneas.Std Result wastebin_kernel wastebin_kernel.Spec
 open H5iAppLib
@@ -14,29 +16,66 @@ namespace wastebin_kernel.Verified.View
 def CookieOwns (uids : Option (alloc.vec.Vec I64)) (owner : Option I64) : Prop :=
   ∃ us, uids = some us ∧ Owns us.val owner
 
+def cookieOwnsB : Option (alloc.vec.Vec I64) → Option I64 → Bool
+  | some us, some o => decide (o ∈ us.val)
+  | _, _ => false
+
+instance (uids : Option (alloc.vec.Vec I64)) (owner : Option I64) : Decidable (CookieOwns uids owner) :=
+  decidable_of_iff (cookieOwnsB uids owner = true) (by
+    unfold CookieOwns Owns cookieOwnsB
+    rcases uids with _ | us <;> rcases owner with _ | o <;> simp)
+
 @[step] theorem can_delete_spec (uids : Option (alloc.vec.Vec I64)) (owner : Option I64) :
-    handlers.can_delete uids owner ⦃ b => b = decide (CookieOwns uids owner) ⦄ := by
+    handlers.can_delete uids owner ⦃ b => decide (CookieOwns uids owner) = b ⦄ := by
   unfold handlers.can_delete
   rcases uids with _ | us <;> rcases owner with _ | o <;> step* <;> simp_all [CookieOwns, Owns]
 
-theorem get_facts {rows : alloc.vec.Vec Row} {id now : I64} {pw : Option U64}
-    {v : alloc.vec.Vec Row} {e : store.Entry} (h : store.get rows id now pw = ok (v, .Ok e)) :
-    ∃ r, rowOf rows.val id = some r ∧ ¬ Expired r now.val ∧ Opens r pw ∧
-      entryData e = ⟨r.data, metaM r⟩ ∧ v.val = (if Burns r then without rows.val id else rows.val) ∧
-      (isEncrypted e = r.secret.isSome) :=
-  getM_ok (get_eq rows id now pw v _ h).symm
+def statusM : store.DbError → handlers.Status
+  | .NotFound => .NotFound
+  | .Delete => .Forbidden
+  | .Crypto => .Forbidden
+  | .NoPassword => .BadRequest
 
-theorem paste_ok (rows : alloc.vec.Vec Row) (path : Slice U8) (now : I64) (req : handlers.ViewRequest)
-    (v : alloc.vec.Vec Row) (p : handlers.PastePage)
-    (h : handlers.view rows path now req = ok (v, .Paste p)) :
-    req.claim = none ∧ ∃ k i, ids.parse_key path = ok (.Ok k) ∧ ids.to_i64 k.id = ok i ∧
-      ∃ r, rowOf rows.val i = some r ∧ ¬ Expired r now.val ∧ Opens r req.password ∧
-        p.data = r.data ∧ p.title = r.title ∧ (Burns r → req.confirmed = true) ∧
-        p.no_store = r.secret.isSome ∧ (p.can_delete = true ↔ CookieOwns req.uids r.uid) ∧
-        (p.cache_put = true → r.secret = none ∧ ¬ Burns r ∧ req.password = none ∧ req.cached = false) ∧
-        v.val = (if Burns r then without rows.val i else rows.val) := by
-  unfold handlers.view at h
-  h5i_invert h
-  all_goals sorry
+@[step] theorem db_status_spec (e : store.DbError) : handlers.db_status e ⦃ s => statusM e = s ⦄ := by
+  unfold handlers.db_status; cases e <;> simp [statusM]
+
+def availM : store.Entry → Bool
+  | .Regular _ => true
+  | .Burned _ => false
+  | .Encrypted d => !d.metadata.must_be_deleted
+
+def pageM (e : store.Entry) (req : handlers.ViewRequest) : handlers.PastePage :=
+  { data := (entryData e).data, title := (entryData e).metadata.title,
+    can_delete := decide (CookieOwns req.uids (entryData e).metadata.uid),
+    is_available := availM e, no_store := isEncrypted e,
+    cache_put := !req.cached && availM e && req.password.isNone }
+
+@[step] theorem no_password_spec (p : Option U64) : handlers.no_password p ⦃ b => p.isNone = b ⦄ := by
+  unfold handlers.no_password; cases p <;> simp
+
+@[step] theorem page_of_spec (e : store.Entry) (req : handlers.ViewRequest) :
+    handlers.page_of e req ⦃ p => pageM e req = p ⦄ := by
+  unfold handlers.page_of
+  cases e with
+  | Regular d | Burned d | Encrypted d =>
+    step* <;> (subst_vars; cases hm : d.metadata.must_be_deleted <;> cases hp : req.password <;>
+      simp_all [pageM, availM, entryData, isEncrypted])
+
+def viewIdM (rows : List Row) (id now : I64) (req : handlers.ViewRequest) : List Row × handlers.View :=
+  match rowOf rows id with
+  | none => (rows, .Error .NotFound)
+  | some r =>
+    if Burns r ∧ req.confirmed = false then (rows, .BurnConfirmation r.title)
+    else match getM rows id now req.password with
+      | (v, .Ok e) => (v, .Paste (pageM e req))
+      | (v, .Err .NoPassword) => (v, .PasswordInput)
+      | (v, .Err e) => (v, .Error (statusM e))
+
+@[step] theorem view_id_spec (rows : alloc.vec.Vec Row) (id now : I64) (req : handlers.ViewRequest) :
+    handlers.view_id rows id now req ⦃ x => viewIdM rows.val id now req = (x.1.val, x.2) ⦄ := by
+  unfold handlers.view_id
+  rcases hr : rowOf rows.val id with _ | row
+  all_goals step*
+  all_goals simp_all [viewIdM, metaM]
 
 end wastebin_kernel.Verified.View

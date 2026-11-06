@@ -510,6 +510,87 @@ def handlers.handoff
     then ok out
     else alloc.vec.Vec.push out claimed
 
+/-- [wastebin_kernel::handlers::no_password]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 113:0-118:1
+    Visibility: public -/
+def handlers.no_password (password : Option Std.U64) : Result Bool := do
+  match password with
+  | none => ok true
+  | some _ => ok false
+
+/-- [wastebin_kernel::store::Metadata]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 49:0-54:1
+    Visibility: public -/
+structure store.Metadata where
+  uid : Option Std.I64
+  title : Option Std.U64
+  expires : Option Std.I64
+  must_be_deleted : Bool
+
+/-- [wastebin_kernel::store::Data]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 58:0-61:1
+    Visibility: public -/
+structure store.Data where
+  data : Std.U64
+  metadata : store.Metadata
+
+/-- [wastebin_kernel::store::Entry]
+    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 65:0-69:1
+    Visibility: public -/
+@[discriminant isize]
+inductive store.Entry where
+| Regular : store.Data → store.Entry
+| Burned : store.Data → store.Entry
+| Encrypted : store.Data → store.Entry
+
+/-- [wastebin_kernel::handlers::page_of]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 124:0-138:1
+    Visibility: public -/
+def handlers.page_of
+  (e : store.Entry) (req : handlers.ViewRequest) :
+  Result handlers.PastePage
+  := do
+  let (d, is_available, encrypted) ←
+    match e with
+    | store.Entry.Regular d1 => ok (d1, true, false)
+    | store.Entry.Burned d1 => ok (d1, false, false)
+    | store.Entry.Encrypted d1 => ok (d1, ¬ d1.metadata.must_be_deleted, true)
+  let b ← handlers.can_delete req.uids d.metadata.uid
+  if req.cached
+  then
+    ok
+      {
+        data := d.data,
+        title := d.metadata.title,
+        can_delete := b,
+        is_available,
+        no_store := encrypted,
+        cache_put := false
+      }
+  else
+    if is_available
+    then
+      let b1 ← handlers.no_password req.password
+      ok
+        {
+          data := d.data,
+          title := d.metadata.title,
+          can_delete := b,
+          is_available := true,
+          no_store := encrypted,
+          cache_put := b1
+        }
+    else
+      ok
+        {
+          data := d.data,
+          title := d.metadata.title,
+          can_delete := b,
+          is_available := false,
+          no_store := encrypted,
+          cache_put := false
+        }
+
 /-- [wastebin_kernel::store::Row]
     Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 14:0-30:1
     Visibility: public -/
@@ -570,31 +651,6 @@ def store.delete
   Result ((alloc.vec.Vec store.Row) × Bool)
   := do
   store.delete_loop rows id (alloc.vec.Vec.new store.Row) false 0#usize
-
-/-- [wastebin_kernel::store::Metadata]
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 49:0-54:1
-    Visibility: public -/
-structure store.Metadata where
-  uid : Option Std.I64
-  title : Option Std.U64
-  expires : Option Std.I64
-  must_be_deleted : Bool
-
-/-- [wastebin_kernel::store::Data]
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 58:0-61:1
-    Visibility: public -/
-structure store.Data where
-  data : Std.U64
-  metadata : store.Metadata
-
-/-- [wastebin_kernel::store::Entry]
-    Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 65:0-69:1
-    Visibility: public -/
-@[discriminant isize]
-inductive store.Entry where
-| Regular : store.Data → store.Entry
-| Burned : store.Data → store.Entry
-| Encrypted : store.Data → store.Entry
 
 /-- [wastebin_kernel::store::{impl core::clone::Clone for wastebin_kernel::store::Row}::clone]:
     Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 13:9-13:14
@@ -798,6 +854,64 @@ def store.get_metadata
   | none => ok (core.result.Result.Err store.DbError.NotFound)
   | some r => let m ← store.metadata_of r
               ok (core.result.Result.Ok m)
+
+/-- [wastebin_kernel::handlers::view_id]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 142:0-156:1
+    Visibility: public -/
+def handlers.view_id
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (now : Std.I64)
+  (req : handlers.ViewRequest) :
+  Result ((alloc.vec.Vec store.Row) × handlers.View)
+  := do
+  let r ← store.get_metadata rows id
+  match r with
+  | core.result.Result.Ok m =>
+    if m.must_be_deleted
+    then
+      if req.confirmed
+      then
+        let (after, result) ← store.get rows id now req.password
+        match result with
+        | core.result.Result.Ok e =>
+          let pp ← handlers.page_of e req
+          ok (after, handlers.View.Paste pp)
+        | core.result.Result.Err de =>
+          match de with
+          | store.DbError.Delete =>
+            let s ← handlers.db_status store.DbError.Delete
+            ok (after, handlers.View.Error s)
+          | store.DbError.NotFound =>
+            let s ← handlers.db_status store.DbError.NotFound
+            ok (after, handlers.View.Error s)
+          | store.DbError.NoPassword => ok (after, handlers.View.PasswordInput)
+          | store.DbError.Crypto =>
+            let s ← handlers.db_status store.DbError.Crypto
+            ok (after, handlers.View.Error s)
+      else
+        let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+        ok (v, handlers.View.BurnConfirmation m.title)
+    else
+      let (after, result) ← store.get rows id now req.password
+      match result with
+      | core.result.Result.Ok e =>
+        let pp ← handlers.page_of e req
+        ok (after, handlers.View.Paste pp)
+      | core.result.Result.Err de =>
+        match de with
+        | store.DbError.Delete =>
+          let s ← handlers.db_status store.DbError.Delete
+          ok (after, handlers.View.Error s)
+        | store.DbError.NotFound =>
+          let s ← handlers.db_status store.DbError.NotFound
+          ok (after, handlers.View.Error s)
+        | store.DbError.NoPassword => ok (after, handlers.View.PasswordInput)
+        | store.DbError.Crypto =>
+          let s ← handlers.db_status store.DbError.Crypto
+          ok (after, handlers.View.Error s)
+  | core.result.Result.Err e =>
+    let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
+    let s ← handlers.db_status e
+    ok (v, handlers.View.Error s)
 
 /-- [wastebin_kernel::ids::sub]: loop body 0:
     Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 177:4-180:5
@@ -1111,7 +1225,7 @@ def ids.to_i64 (id : ids.Id) : Result Std.I64 := do
   | ids.Id.Id64 n => ok n
 
 /-- [wastebin_kernel::handlers::view]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 114:0-152:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 161:0-169:1
     Visibility: public -/
 def handlers.view
   (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8) (now : Std.I64)
@@ -1120,142 +1234,11 @@ def handlers.view
   := do
   match req.claim with
   | none =>
-    let (o, no_password) ←
-      match req.password with
-      | none => ok (none, true)
-      | some _ => ok (req.password, false)
     let r ← ids.parse_key path
     match r with
     | core.result.Result.Ok k =>
-      let id ← ids.to_i64 k.id
-      let r1 ← store.get_metadata rows id
-      match r1 with
-      | core.result.Result.Ok m =>
-        if m.must_be_deleted
-        then
-          if req.confirmed
-          then
-            let (after, result) ← store.get rows id now o
-            match result with
-            | core.result.Result.Ok e =>
-              let (data, is_available, encrypted) ←
-                match e with
-                | store.Entry.Regular d => ok (d, true, false)
-                | store.Entry.Burned d => ok (d, false, false)
-                | store.Entry.Encrypted d =>
-                  ok (d, ¬ d.metadata.must_be_deleted, true)
-              let b ← handlers.can_delete req.uids data.metadata.uid
-              if req.cached
-              then
-                ok (after, handlers.View.Paste
-                  {
-                    data := data.data,
-                    title := data.metadata.title,
-                    can_delete := b,
-                    is_available,
-                    no_store := encrypted,
-                    cache_put := false
-                  })
-              else
-                if is_available
-                then
-                  ok (after, handlers.View.Paste
-                    {
-                      data := data.data,
-                      title := data.metadata.title,
-                      can_delete := b,
-                      is_available := true,
-                      no_store := encrypted,
-                      cache_put := no_password
-                    })
-                else
-                  ok (after, handlers.View.Paste
-                    {
-                      data := data.data,
-                      title := data.metadata.title,
-                      can_delete := b,
-                      is_available := false,
-                      no_store := encrypted,
-                      cache_put := false
-                    })
-            | core.result.Result.Err de =>
-              match de with
-              | store.DbError.Delete =>
-                let s ← handlers.db_status store.DbError.Delete
-                ok (after, handlers.View.Error s)
-              | store.DbError.NotFound =>
-                let s ← handlers.db_status store.DbError.NotFound
-                ok (after, handlers.View.Error s)
-              | store.DbError.NoPassword =>
-                ok (after, handlers.View.PasswordInput)
-              | store.DbError.Crypto =>
-                let s ← handlers.db_status store.DbError.Crypto
-                ok (after, handlers.View.Error s)
-          else
-            let v ←
-              alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
-            ok (v, handlers.View.BurnConfirmation m.title)
-        else
-          let (after, result) ← store.get rows id now o
-          match result with
-          | core.result.Result.Ok e =>
-            let (data, is_available, encrypted) ←
-              match e with
-              | store.Entry.Regular d => ok (d, true, false)
-              | store.Entry.Burned d => ok (d, false, false)
-              | store.Entry.Encrypted d =>
-                ok (d, ¬ d.metadata.must_be_deleted, true)
-            let b ← handlers.can_delete req.uids data.metadata.uid
-            if req.cached
-            then
-              ok (after, handlers.View.Paste
-                {
-                  data := data.data,
-                  title := data.metadata.title,
-                  can_delete := b,
-                  is_available,
-                  no_store := encrypted,
-                  cache_put := false
-                })
-            else
-              if is_available
-              then
-                ok (after, handlers.View.Paste
-                  {
-                    data := data.data,
-                    title := data.metadata.title,
-                    can_delete := b,
-                    is_available := true,
-                    no_store := encrypted,
-                    cache_put := no_password
-                  })
-              else
-                ok (after, handlers.View.Paste
-                  {
-                    data := data.data,
-                    title := data.metadata.title,
-                    can_delete := b,
-                    is_available := false,
-                    no_store := encrypted,
-                    cache_put := false
-                  })
-          | core.result.Result.Err de =>
-            match de with
-            | store.DbError.Delete =>
-              let s ← handlers.db_status store.DbError.Delete
-              ok (after, handlers.View.Error s)
-            | store.DbError.NotFound =>
-              let s ← handlers.db_status store.DbError.NotFound
-              ok (after, handlers.View.Error s)
-            | store.DbError.NoPassword =>
-              ok (after, handlers.View.PasswordInput)
-            | store.DbError.Crypto =>
-              let s ← handlers.db_status store.DbError.Crypto
-              ok (after, handlers.View.Error s)
-      | core.result.Result.Err e =>
-        let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
-        let s ← handlers.db_status e
-        ok (v, handlers.View.Error s)
+      let i ← ids.to_i64 k.id
+      handlers.view_id rows i now req
     | core.result.Result.Err _ =>
       let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
       ok (v, handlers.View.Error handlers.Status.BadRequest)
@@ -1265,7 +1248,7 @@ def handlers.view
     ok (v, handlers.View.Handoff v1)
 
 /-- [wastebin_kernel::handlers::Raw]
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 156:0-162:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 173:0-179:1
     Visibility: public -/
 @[discriminant isize]
 inductive handlers.Raw where
@@ -1273,8 +1256,39 @@ inductive handlers.Raw where
 | PasswordInput : handlers.Raw
 | Error : handlers.Status → handlers.Raw
 
+/-- [wastebin_kernel::handlers::raw_id]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 182:0-191:1
+    Visibility: public -/
+def handlers.raw_id
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64) (now : Std.I64)
+  (password : Option Std.U64) :
+  Result ((alloc.vec.Vec store.Row) × handlers.Raw)
+  := do
+  let (after, result) ← store.get rows id now password
+  match result with
+  | core.result.Result.Ok e =>
+    match e with
+    | store.Entry.Regular d =>
+      ok (after, handlers.Raw.Content d.data d.metadata.title false)
+    | store.Entry.Burned d =>
+      ok (after, handlers.Raw.Content d.data d.metadata.title false)
+    | store.Entry.Encrypted d =>
+      ok (after, handlers.Raw.Content d.data d.metadata.title true)
+  | core.result.Result.Err de =>
+    match de with
+    | store.DbError.Delete =>
+      let s ← handlers.db_status store.DbError.Delete
+      ok (after, handlers.Raw.Error s)
+    | store.DbError.NotFound =>
+      let s ← handlers.db_status store.DbError.NotFound
+      ok (after, handlers.Raw.Error s)
+    | store.DbError.NoPassword => ok (after, handlers.Raw.PasswordInput)
+    | store.DbError.Crypto =>
+      let s ← handlers.db_status store.DbError.Crypto
+      ok (after, handlers.Raw.Error s)
+
 /-- [wastebin_kernel::handlers::raw]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 167:0-180:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 196:0-201:1
     Visibility: public -/
 def handlers.raw
   (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8) (now : Std.I64)
@@ -1285,42 +1299,38 @@ def handlers.raw
   match r with
   | core.result.Result.Ok k =>
     let i ← ids.to_i64 k.id
-    let (after, result) ← store.get rows i now password
-    match result with
-    | core.result.Result.Ok e =>
-      match e with
-      | store.Entry.Regular d =>
-        ok (after, handlers.Raw.Content d.data d.metadata.title false)
-      | store.Entry.Burned d =>
-        ok (after, handlers.Raw.Content d.data d.metadata.title false)
-      | store.Entry.Encrypted d =>
-        ok (after, handlers.Raw.Content d.data d.metadata.title true)
-    | core.result.Result.Err de =>
-      match de with
-      | store.DbError.Delete =>
-        let s ← handlers.db_status store.DbError.Delete
-        ok (after, handlers.Raw.Error s)
-      | store.DbError.NotFound =>
-        let s ← handlers.db_status store.DbError.NotFound
-        ok (after, handlers.Raw.Error s)
-      | store.DbError.NoPassword => ok (after, handlers.Raw.PasswordInput)
-      | store.DbError.Crypto =>
-        let s ← handlers.db_status store.DbError.Crypto
-        ok (after, handlers.Raw.Error s)
+    handlers.raw_id rows i now password
   | core.result.Result.Err _ =>
     let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
     ok (v, handlers.Raw.Error handlers.Status.BadRequest)
 
 /-- [wastebin_kernel::handlers::Qr]
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 184:0-188:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 205:0-209:1
     Visibility: public -/
 @[discriminant isize]
 inductive handlers.Qr where
 | Page : Option Std.U64 → Option Std.I64 → Bool → handlers.Qr
 | Error : handlers.Status → handlers.Qr
 
+/-- [wastebin_kernel::handlers::qr_id]:
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 212:0-217:1
+    Visibility: public -/
+def handlers.qr_id
+  (rows : alloc.vec.Vec store.Row) (id : Std.I64)
+  (uids : Option (alloc.vec.Vec Std.I64)) :
+  Result handlers.Qr
+  := do
+  let r ← store.get_metadata rows id
+  match r with
+  | core.result.Result.Ok m =>
+    let b ← handlers.can_delete uids m.uid
+    ok (handlers.Qr.Page m.title m.expires b)
+  | core.result.Result.Err e =>
+    let s ← handlers.db_status e
+    ok (handlers.Qr.Error s)
+
 /-- [wastebin_kernel::handlers::qr]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 192:0-201:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 220:0-225:1
     Visibility: public -/
 def handlers.qr
   (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8)
@@ -1331,14 +1341,7 @@ def handlers.qr
   match r with
   | core.result.Result.Ok k =>
     let i ← ids.to_i64 k.id
-    let r1 ← store.get_metadata rows i
-    match r1 with
-    | core.result.Result.Ok m =>
-      let b ← handlers.can_delete uids m.uid
-      ok (handlers.Qr.Page m.title m.expires b)
-    | core.result.Result.Err e =>
-      let s ← handlers.db_status e
-      ok (handlers.Qr.Error s)
+    handlers.qr_id rows i uids
   | core.result.Result.Err _ =>
     ok (handlers.Qr.Error handlers.Status.BadRequest)
 
@@ -1416,7 +1419,7 @@ def store.delete_for
     else ok (core.result.Result.Err store.DbError.Delete)
 
 /-- [wastebin_kernel::handlers::delete_paste]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 207:0-220:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 231:0-244:1
     Visibility: public -/
 def handlers.delete_paste
   (rows : alloc.vec.Vec store.Row) (path : Slice Std.U8)
@@ -1446,7 +1449,7 @@ def handlers.delete_paste
       ok (v, core.result.Result.Err handlers.Status.BadRequest)
 
 /-- [wastebin_kernel::handlers::form_owner]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 230:12-233:13
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 254:12-257:13
     Visibility: public -/
 @[rust_loop_body]
 def handlers.form_owner_loop.body
@@ -1465,7 +1468,7 @@ def handlers.form_owner_loop.body
   else ok (done list)
 
 /-- [wastebin_kernel::handlers::form_owner]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 230:12-233:13
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 254:12-257:13
     Visibility: public -/
 @[rust_loop]
 def handlers.form_owner_loop
@@ -1477,7 +1480,7 @@ def handlers.form_owner_loop
     (list, i)
 
 /-- [wastebin_kernel::handlers::form_owner]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 224:0-243:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 248:0-267:1
     Visibility: public -/
 def handlers.form_owner
   (uids : Option (alloc.vec.Vec Std.I64)) (fresh : Std.I64) :
@@ -1509,7 +1512,7 @@ def handlers.form_owner
          ok (fresh, list1)
 
 /-- [wastebin_kernel::handlers::api_owner]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 247:0-252:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 271:0-276:1
     Visibility: public -/
 def handlers.api_owner
   (token : Option Std.I64) (fresh : Std.I64) : Result Std.I64 := do
@@ -1518,7 +1521,7 @@ def handlers.api_owner
   | some u => ok u
 
 /-- [wastebin_kernel::handlers::NewPaste]
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 257:0-264:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 281:0-288:1
     Visibility: public -/
 structure handlers.NewPaste where
   uid : Std.I64
@@ -1529,7 +1532,7 @@ structure handlers.NewPaste where
   title : Option Std.U64
 
 /-- [wastebin_kernel::handlers::id_taken]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 269:4-276:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 293:4-300:1
     Visibility: public -/
 @[rust_loop_body]
 def handlers.id_taken_loop.body
@@ -1549,7 +1552,7 @@ def handlers.id_taken_loop.body
   else ok (done false)
 
 /-- [wastebin_kernel::handlers::id_taken]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 269:4-276:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 293:4-300:1
     Visibility: public -/
 @[rust_loop]
 def handlers.id_taken_loop
@@ -1561,7 +1564,7 @@ def handlers.id_taken_loop
     i
 
 /-- [wastebin_kernel::handlers::id_taken]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 267:0-276:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 291:0-300:1
     Visibility: public -/
 @[reducible]
 def handlers.id_taken
@@ -1569,7 +1572,7 @@ def handlers.id_taken
   handlers.id_taken_loop rows id 0#usize
 
 /-- [wastebin_kernel::handlers::insert]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 283:4-304:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 307:4-328:1
     Visibility: public -/
 @[rust_loop_body]
 def handlers.insert_loop.body
@@ -1606,7 +1609,7 @@ def handlers.insert_loop.body
   else ok (done none)
 
 /-- [wastebin_kernel::handlers::insert]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 283:4-304:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 307:4-328:1
     Visibility: public -/
 @[rust_loop]
 def handlers.insert_loop
@@ -1619,7 +1622,7 @@ def handlers.insert_loop
     counter
 
 /-- [wastebin_kernel::handlers::insert]:
-    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 281:0-304:1
+    Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 305:0-328:1
     Visibility: public -/
 @[reducible]
 def handlers.insert

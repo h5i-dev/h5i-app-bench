@@ -85,8 +85,15 @@ def getM (rows : List Row) (id : I64) (now : I64) (pw : Option U64) :
     all_goals simp_all [finishM, present]
   · split <;> step* <;> simp_all [finishM]
 
+@[step] theorem get_metadata_spec (rows : alloc.vec.Vec Row) (id : I64) :
+    store.get_metadata rows id ⦃ x =>
+      (match rowOf rows.val id with | none => .Err .NotFound | some r => .Ok (metaM r)) = x ⦄ := by
+  unfold store.get_metadata
+  step*
+  all_goals simp_all
+
 @[step] theorem get_spec (rows : alloc.vec.Vec Row) (id now : I64) (pw : Option U64) :
-    store.get rows id now pw ⦃ x => (x.1.val, x.2) = getM rows.val id now pw ⦄ := by
+    store.get rows id now pw ⦃ x => getM rows.val id now pw = (x.1.val, x.2) ⦄ := by
   unfold store.get
   step*
   all_goals simp_all [getM]
@@ -172,6 +179,6 @@ theorem rowOf_none_of_present {rows : List Row} {id : I64} (h : present rows id 
 theorem get_eq (rows : alloc.vec.Vec Row) (id now : I64) (pw : Option U64)
     (v : alloc.vec.Vec Row) (res : core.result.Result store.Entry store.DbError)
     (h : store.get rows id now pw = ok (v, res)) : (v.val, res) = getM rows.val id now pw :=
-  post_of_ok (P := fun x => (x.1.val, x.2) = getM rows.val id now pw) (get_spec rows id now pw) h
+  (post_of_ok (P := fun x => getM rows.val id now pw = (x.1.val, x.2)) (get_spec rows id now pw) h).symm
 
 end wastebin_kernel.Verified.Get
