@@ -15,10 +15,19 @@ theorems = [
   "openobserve_kernel.Properties.delegated_subject_is_linked_user",
   "openobserve_kernel.Properties.slack_off_denies",
   "openobserve_kernel.Properties.blocked_external_denied",
+  "openobserve_kernel.Properties.delegated_route_in_token_org",
+  "openobserve_kernel.Properties.delegated_methods_limited",
+  "openobserve_kernel.Properties.delegated_never_on_proxy",
+  "openobserve_kernel.Properties.slack_action_only_alerts_and_oncall",
   # F: finding
   "openobserve_kernel.Properties.lifetime_check_overflows",
   # C: correspondence and foundations
   "openobserve_kernel.Properties.accepted_claims",
+  "openobserve_kernel.Properties.accepted_route",
+  "openobserve_kernel.Verified.check_route_spec",
+  "openobserve_kernel.Verified.in_scope_spec",
+  "openobserve_kernel.Verified.segments_match_spec",
+  "openobserve_kernel.Verified.checkRoute_ok",
   "openobserve_kernel.Verified.validate_delegated_ok",
   "openobserve_kernel.Verified.verify_ok",
   "openobserve_kernel.Verified.verify_spec",
@@ -117,3 +126,27 @@ name = "blocklist_ignored"  # blocked_external_denied
 file = "kernel/src/delegation.rs"
 old = "if user.is_external && contains(&env.denied, &user.email) {"
 new = "if false && contains(&env.denied, &user.email) {"
+
+[[mutant]]
+name = "path_org_not_compared"  # delegated_route_in_token_org
+file = "kernel/src/delegation.rs"
+old = "if !bytes_eq(&org, &claims.org) {"
+new = "if false {"
+
+[[mutant]]
+name = "any_method_on_any_route"  # delegated_methods_limited
+file = "kernel/src/delegation.rs"
+old = "if methods[i] == m {"
+new = "if true {"
+
+[[mutant]]
+name = "proxy_allowed"  # delegated_never_on_proxy
+file = "kernel/src/delegation.rs"
+old = 'if bytes_eq(path_prefix, b"/proxy/") {'
+new = "if false {"
+
+[[mutant]]
+name = "slack_action_gets_assistant_scope"  # slack_action_only_alerts_and_oncall
+file = "kernel/src/delegation.rs"
+old = "Some(slack_action_scope())"
+new = "Some(assistant_scope())"
