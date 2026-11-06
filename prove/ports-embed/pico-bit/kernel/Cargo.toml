@@ -1,10 +1,16 @@
 [package]
 name = "pico-bit-kernel"
+description = "pico-bit's armory filename handling and request classification (anapeksha/pico-bit @ b6349e2) as an h5i-app kernel"
 edition = "2024"
 version = "0.1.0"
 publish = false
 
-# Extracted to Lean by `h5i app extract`. Keep it to the Rust that Charon and
-# Aeneas translate, and its dependencies to crates that are extracted with it
-# (h5i-app-std, h5i-app-sql, h5i-app-schema), never I/O.
+# Extracted to Lean by Charon + Aeneas (`h5i app extract`). no_std, no alloc,
+# no dependencies.
 [dependencies]
+
+# The Aeneas subset: explicit comparisons and matches.
+[lints.clippy]
+manual_range_contains = "allow"
+match_like_matches_macro = "allow"
+comparison_chain = "allow"

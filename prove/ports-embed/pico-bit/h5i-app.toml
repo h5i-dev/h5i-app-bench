@@ -3,22 +3,35 @@
 [extract]
 crate = "kernel"
 # Charon starts here and extracts what it reaches.
-start-from = ["transition"]
+start-from = ["decode_filename", "percent_decode", "valid_name", "classify", "is_mutating", "is_dot_name"]
 
 [check]
 # Must exist and use only Lean's standard axioms. Every theorem in a
 # hand-written module under proofs/ is gated anyway; naming the main ones
 # here catches a rename.
-theorems = ["pico_bit_kernel.inv_preserved", "pico_bit_kernel.incr_below_limit", "pico_bit_kernel.reset_zero"]
+theorems = [
+  "pico_bit_kernel.Properties.valid_name_no_traversal",
+  "pico_bit_kernel.Properties.decode_filename_confined",
+  "pico_bit_kernel.Properties.decode_filename_total",
+  "pico_bit_kernel.Properties.percent_decode_total",
+  "pico_bit_kernel.Properties.valid_name_total",
+  "pico_bit_kernel.Properties.classify_total",
+  "pico_bit_kernel.Properties.mutating_needs_unsafe_method",
+]
 
 # Bugs the proofs must reject (`h5i app mutate`). Each `old` must occur
 # exactly once in kernel/src/lib.rs (or in `file`).
 [[mutant]]
-name = "off_by_one_limit"
-old = "if s.count >= s.limit {"
-new = "if s.count > s.limit {"
+name = "drop_slash_check"
+old = "    b == SLASH || b == BACKSLASH || b == NUL"
+new = "    b == BACKSLASH || b == NUL"
 
 [[mutant]]
-name = "reset_keeps_count"
-old = "Command::Reset => Ok(State { count: 0, limit: s.limit }),"
-new = "Command::Reset => Ok(State { count: s.count, limit: s.limit }),"
+name = "drop_dotdot_check"
+old = "        return buf[0] == DOT && buf[1] == DOT;"
+new = "        return false;"
+
+[[mutant]]
+name = "validate_before_decode"
+old = "            if valid_name_prefix(out, n) {"
+new = "            if valid_name_prefix(raw, raw.len()) {"
