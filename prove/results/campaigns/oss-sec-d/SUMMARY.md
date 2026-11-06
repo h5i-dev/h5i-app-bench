@@ -2,9 +2,9 @@
 
 | Project | Upstream (pinned) | S / C / F | Gate | Mutants | Difftests |
 |---|---|---|---|---|---|
-| synctv | synctv-org/synctv @ `38970e0` | **26 / 9 / 1** | doctor, extract --check, check (442 theorems in the gate), lint: pass | 34/34 caught (1 equivalent, see below) | 13 pass |
-| windmill | windmill-labs/windmill @ `9dedc42` | **12 / 4 / 1** | doctor, extract --check, check (143 theorems in the gate), lint: pass | 13/13 caught | 9 pass |
-| **Total** | | **38 / 13 / 2** | | | |
+| synctv | synctv-org/synctv @ `38970e0` | **30 / 9 / 2** | doctor, extract --check, check (516 theorems in the gate), lint: pass | 41/41 caught (1 equivalent, see below) | 15 pass |
+| windmill | windmill-labs/windmill @ `9dedc42` | **15 / 5 / 1** | doctor, extract --check, check, lint: pass (see STATUS for the latest run) | 13/13 caught + 5 new (see STATUS) | 9 pass |
+| **Total** | | **45 / 14 / 3** | | | |
 
 Per-theorem tables, with the mutant that falsifies each S statement, are in
 `prove/ports/{synctv,windmill}/STATUS.md`. Threat models, ported functions
@@ -30,7 +30,11 @@ Per-theorem tables, with the mutant that falsifies each S statement, are in
   separated; room-wide guest revocation works; guests are admitted only with guest
   mode on (fail closed), room consent and no room password. `SecurityPipeline::check`
   accepts only live, unbanned users with a matching password version, 2FA and a
-  non-revoked JTI, and fails closed on blacklist outage.
+  non-revoked JTI, and fails closed on blacklist outage. An accepted
+  `Authorization` value starts with `Bearer ` and carries a non-empty token.
+- Path validation (`validate_path_for_traversal`): accepted paths have no literal
+  `..`, NUL, `%00`, `./.` or recognised encoded dot, and one round of
+  percent-decoding never yields `..`.
 
 **windmill** (`windmill-common` scopes, `windmill-api-auth` path checks)
 - Path ownership: non-admins act only on `u/<self>/...` or folders they own.
@@ -41,6 +45,10 @@ Per-theorem tables, with the mutant that falsifies each S statement, are in
   jobs. Delegation (`scope_contains`) stays in domain and action, and
   `resource_covers` never widens a path grant: full path-set semantics over
   arbitrary byte strings. ASCII wildcards respect the `/` boundary.
+- `check_scopes`: a genuinely scoped token passes only if one of its scope strings
+  has the requirement's domain field and a covering action field. A malformed
+  requirement is rejected. `extra_perms` grants only through an explicit `true` entry
+  for the user or one of their groups.
 
 ## Findings
 
@@ -54,6 +62,9 @@ No upstream issues were filed.
 - **windmill W2 (low):** `resources_match` matches symmetrically for at most 4
   resources and asymmetrically above, so token minting is not monotone (upstream
   difftest; Lean statement open).
+- **synctv F3 (low):** `validate_path_for_traversal` misses double encodings of the
+  hex digits. `%2%65%2%65` is accepted and decodes twice to `..` (Lean F theorem plus
+  an upstream difftest). It matters only for a consumer that decodes twice.
 - **synctv F1 (info, latent):** `JwtValidator::extract_bearer_token` panics on
   non-ASCII input at byte 7. It is unreachable through the current callers, which pass
   `HeaderValue::to_str()` output.
@@ -69,9 +80,8 @@ No upstream issues were filed.
 - Three synctv decisions (`plan_member_update`, `check_guest_allowed`,
   `pipeline_check`) are transcriptions of async, database-backed code and are not
   difftested.
-- windmill: `check_scopes`, `intersect_job_token_scopes`, `extra_perms` and the
-  route-level scope checks are ported and difftested (the route checks are not
-  ported) but have no S theorems yet. W2 has no Lean statement.
+- windmill: `intersect_job_token_scopes` is ported and difftested but has no S
+  theorem yet. The route-level scope checks are not ported. W2 has no Lean statement.
 - Mutation "caught" means some proof broke. For each S theorem the STATUS tables name
   a mutant that makes the *statement* false, not just its proof.
 - **Harness proposal:** `h5i app lint` walks the gitignored `upstream-src` symlink and

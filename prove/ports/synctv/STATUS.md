@@ -64,7 +64,8 @@ are gated by `h5i app check` but not listed and not counted.
 - Run 1 (31 hand-written mutants, `-j2`): **31/31 caught, 0 survived, 0 invalid**.
 - Run 2 (`--only member_reads_admin_columns --only user_manages_user --only banned_is_active`,
   added so that every S theorem has a semantic killer): **3/3 caught**.
-- Total: 34 mutants, all caught. Every S theorem in the table has at least one
+- Run 3 (`--only` the 2 bearer and 5 path-traversal mutants): **7/7 caught**.
+- Total: 41 mutants, all caught. Every S theorem in the table has at least one
   mutant under which its statement is false.
 
 - **Equivalent mutant:** `calculator_skips_own_override_check` is reported as
@@ -76,7 +77,7 @@ are gated by `h5i app check` but not listed and not counted.
 
 - `h5i app doctor ports/synctv`: 0 failed, 0 warnings.
 - `h5i app extract --check ports/synctv`: extraction is up to date.
-- `h5i app check ports/synctv`: proofs ok. The gate checked 442 theorems in 3 modules
+- `h5i app check ports/synctv`: proofs ok. The latest gate checked 516 theorems in 4 modules
   against propext, Classical.choice and Quot.sound. No sorry, no extra axioms, no
   native_decide.
 - `h5i app lint ports/synctv`: **lint ok** when run without the `upstream-src` symlink.
@@ -84,7 +85,7 @@ are gated by `h5i app check` but not listed and not counted.
   axum routes of synctv itself. Those routes are outside this kernel.
   **Harness proposal:** `h5i app lint` should skip gitignored paths, or at least
   `upstream-src/`.
-- `cargo test` in `difftest/` (`SQLX_OFFLINE=true`): 13 passed.
+- `cargo test` in `difftest/` (`SQLX_OFFLINE=true`): 15 passed.
 
 ## Coverage
 
