@@ -43,6 +43,32 @@ def SignatureOk (o : VerifyOracle) : Prop :=
 def TokenShape (t : List Nat) : Prop :=
   lit "o2dt." <+: t ∧ 46 ∈ t.drop 5
 
+/-- `verify`'s checks after the signature, in upstream's order, over `Int`. -/
+def checkClaims (c : Claims) (now : Int) : core.result.Result Claims DelegationError :=
+  if c.v.val ≠ 1 then .Err (.UnsupportedVersion c.v)
+  else if c.exp.val ≤ now then .Err .Expired
+  else if now + 60 < c.iat.val then .Err (.Malformed .IssuedInFuture)
+  else if 3660 < c.exp.val - c.iat.val then .Err (.Malformed .LifetimeOverAnHour)
+  else .Ok c
+
+/-- The MAC under the previous key, if one is configured, matches. -/
+def previousMatches (o : VerifyOracle) (g : List Nat) : Bool :=
+  match o.mac_previous with
+  | none => false
+  | some p => nats p.val = g
+
+/-- `verify(keys, token, now)`, in upstream's order. -/
+def verifySpec (t : List Nat) (o : VerifyOracle) (now : Int) : core.result.Result Claims DelegationError :=
+  if ¬ (lit "o2dt." <+: t ∧ 46 ∈ t.drop 5) then .Err (.Malformed .Shape) else
+  match o.given_mac with
+  | none => .Err (.Malformed .MacEncoding)
+  | some g =>
+    if nats o.mac_current.val = nats g.val ∨ previousMatches o (nats g.val) then
+      match o.claims with
+      | none => .Err (.Malformed .ClaimsEncoding)
+      | some c => checkClaims c now
+    else .Err .BadSignature
+
 /-! ## Route scopes (`check_route`) -/
 
 /-- `relative_path`: one leading `/` stripped. -/
