@@ -78,22 +78,18 @@ def Matches (c : trustpub.GitHubConfig) (owner nm : List U8) (oid : I32) (wf : L
   EqLower c.repository_owner.val owner ∧ EqLower c.repository_name.val nm ∧
     c.repository_owner_id = oid ∧ c.workflow_filename.val = wf ∧ EnvOk (c.environment.map (·.val)) env
 
-theorem filter_configs_ids (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner nm : Slice U8) (oid : I32)
-    (wf : Slice U8) (env : Option (alloc.vec.Vec U8)) (x : Usize × Usize × Usize × alloc.vec.Vec I32)
-    (h : trustpub.filter_configs configs owner nm oid wf env = ok x) :
-    ∀ id ∈ x.2.2.2.val, ∃ c ∈ configs.val, c.crate_id = id ∧
-      Matches c owner.val nm.val oid wf.val (env.map (·.val)) := by
-  unfold trustpub.filter_configs trustpub.filter_configs_loop at h
-  refine loop_ok (fun y => trustpub.filter_configs_loop.body configs owner nm oid wf env
-      y.1 y.2.1 y.2.2.1 y.2.2.2.1 y.2.2.2.2)
-    (fun y => y.2.2.2.2.val ≤ configs.val.length ∧ y.2.2.2.1.val.length ≤ y.2.2.2.2.val ∧
-      ∀ id ∈ y.2.2.2.1.val, ∃ c ∈ configs.val, c.crate_id = id ∧
-        Matches c owner.val nm.val oid wf.val (env.map (·.val)))
-    (fun x => ∀ id ∈ x.2.2.2.val, ∃ c ∈ configs.val, c.crate_id = id ∧
-        Matches c owner.val nm.val oid wf.val (env.map (·.val)))
-    (fun y => configs.val.length - y.2.2.2.2.val) ?_ _ x (by simp [vec_new_val]) h
-  rintro ⟨r, bi, bw, ids, i⟩ res ⟨hi, hl, hinv⟩ hb
-  unfold trustpub.filter_configs_loop.body at hb
-  done
+theorem config_level_full (c : trustpub.GitHubConfig) (owner nm : Slice U8) (oid : I32) (wf : Slice U8)
+    (env : Option (alloc.vec.Vec U8)) (k : U8)
+    (h : trustpub.config_level c owner nm oid wf env = ok k) (hk : 4 ≤ k.val) :
+    Matches c owner.val nm.val oid wf.val (env.map (·.val)) := by
+  unfold trustpub.config_level at h
+  h5i_invert h
+  all_goals try (simp at hk)
+  have h1 := post_of_ok (eq_lower_spec _ _) ‹trustpub.eq_lower c.repository_owner.deref owner = ok _›
+  have h2 := post_of_ok (eq_lower_spec _ _) ‹trustpub.eq_lower c.repository_name.deref nm = ok _›
+  have h3 := post_of_ok (eq_spec _ _) ‹bytes.eq c.workflow_filename.deref wf = ok _›
+  have h4 := post_of_ok (env_ok_spec _ _) ‹trustpub.env_ok c.environment env = ok _›
+  subst hc hc_1 hc_3
+  refine ⟨by simpa using h1, by simpa using h2, by simp at hc_2; scalar_tac, by simpa using h3, h4.1 hc_4⟩
 
 end cratesio_kernel.Verified.Exchange

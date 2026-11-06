@@ -2468,18 +2468,47 @@ def trustpub.env_ok
       let s2 := alloc.vec.Vec.deref s
       trustpub.eq_lower s1 s2
 
-/-- [cratesio_kernel::trustpub::filter_configs]: loop body 0:
-    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 231:4-245:5
+/-- [cratesio_kernel::trustpub::config_level]:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 218:0-232:1
+    Visibility: public -/
+def trustpub.config_level
+  (c : trustpub.GitHubConfig) (owner : Slice Std.U8) («name» : Slice Std.U8)
+  (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) :
+  Result Std.U8
+  := do
+  let s := alloc.vec.Vec.deref c.repository_owner
+  let b ← trustpub.eq_lower s owner
+  if b
+  then
+    let s1 := alloc.vec.Vec.deref c.repository_name
+    let b1 ← trustpub.eq_lower s1 «name»
+    if b1
+    then
+      if c.repository_owner_id != owner_id
+      then ok 1#u8
+      else
+        let s2 := alloc.vec.Vec.deref c.workflow_filename
+        let b2 ← bytes.eq s2 workflow
+        if b2
+        then
+          let b3 ← trustpub.env_ok c.environment env
+          if b3
+          then ok 4#u8
+          else ok 3#u8
+        else ok 2#u8
+    else ok 0#u8
+  else ok 0#u8
+
+/-- [cratesio_kernel::trustpub::any_level]: loop body 0:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 238:4-245:1
     Visibility: public -/
 @[rust_loop_body]
-def trustpub.filter_configs_loop.body
+def trustpub.any_level_loop.body
   (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
   («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
-  (env : Option (alloc.vec.Vec Std.U8)) (repo : Std.Usize) (by_id : Std.Usize)
-  (by_workflow : Std.Usize) (ids : alloc.vec.Vec Std.I32) (i : Std.Usize) :
-  Result (ControlFlow (Std.Usize × Std.Usize × Std.Usize × (alloc.vec.Vec
-    Std.I32) × Std.Usize) (Std.Usize × Std.Usize × Std.Usize ×
-    (alloc.vec.Vec Std.I32)))
+  (env : Option (alloc.vec.Vec Std.U8)) (k : Std.U8) (i : Std.Usize) :
+  Result (ControlFlow Std.Usize Bool)
   := do
   let i1 := alloc.vec.Vec.len configs
   if i < i1
@@ -2487,77 +2516,99 @@ def trustpub.filter_configs_loop.body
     let ghc ←
       alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
         trustpub.GitHubConfig) configs i
-    let s := alloc.vec.Vec.deref ghc.repository_owner
-    let b ← trustpub.eq_lower s owner
-    let (repo1, by_id1, by_workflow1, ids1) ←
-      if b
-      then
-        do
-        let s1 := alloc.vec.Vec.deref ghc.repository_name
-        let b1 ← trustpub.eq_lower s1 «name»
-        if b1
-        then
-          let repo2 ← repo + 1#usize
-          let (i2, i3, v) ←
-            if ghc.repository_owner_id = owner_id
-            then
-              do
-              let by_id2 ← by_id + 1#usize
-              let s2 := alloc.vec.Vec.deref ghc.workflow_filename
-              let b2 ← bytes.eq s2 workflow
-              let (i4, v1) ←
-                if b2
-                then
-                  do
-                  let by_workflow2 ← by_workflow + 1#usize
-                  let b3 ← trustpub.env_ok ghc.environment env
-                  let v2 ←
-                    if b3
-                    then alloc.vec.Vec.push ids ghc.crate_id
-                    else ok ids
-                  ok (by_workflow2, v2)
-                else ok (by_workflow, ids)
-              ok (by_id2, i4, v1)
-            else ok (by_id, by_workflow, ids)
-          ok (repo2, i2, i3, v)
-        else ok (repo, by_id, by_workflow, ids)
-      else ok (repo, by_id, by_workflow, ids)
-    let i2 ← i + 1#usize
-    ok (cont (repo1, by_id1, by_workflow1, ids1, i2))
-  else ok (done (repo, by_id, by_workflow, ids))
+    let i2 ← trustpub.config_level ghc owner «name» owner_id workflow env
+    if i2 >= k
+    then ok (done true)
+    else let i3 ← i + 1#usize
+         ok (cont i3)
+  else ok (done false)
 
-/-- [cratesio_kernel::trustpub::filter_configs]: loop 0:
-    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 231:4-245:5
+/-- [cratesio_kernel::trustpub::any_level]: loop 0:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 238:4-245:1
     Visibility: public -/
 @[rust_loop]
-def trustpub.filter_configs_loop
+def trustpub.any_level_loop
   (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
   («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
-  (env : Option (alloc.vec.Vec Std.U8)) (repo : Std.Usize) (by_id : Std.Usize)
-  (by_workflow : Std.Usize) (ids : alloc.vec.Vec Std.I32) (i : Std.Usize) :
-  Result (Std.Usize × Std.Usize × Std.Usize × (alloc.vec.Vec Std.I32))
+  (env : Option (alloc.vec.Vec Std.U8)) (k : Std.U8) (i : Std.Usize) :
+  Result Bool
   := do
   loop
-    (fun (repo1, by_id1, by_workflow1, ids1, i1) =>
-      trustpub.filter_configs_loop.body configs owner «name» owner_id
-      workflow env repo1 by_id1 by_workflow1 ids1 i1)
-    (repo, by_id, by_workflow, ids, i)
+    (fun i1 => trustpub.any_level_loop.body configs owner «name» owner_id
+      workflow env k i1)
+    i
 
-/-- [cratesio_kernel::trustpub::filter_configs]:
-    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 218:0-247:1
+/-- [cratesio_kernel::trustpub::any_level]:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 236:0-245:1
     Visibility: public -/
 @[reducible]
-def trustpub.filter_configs
+def trustpub.any_level
+  (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
+  («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) (k : Std.U8) :
+  Result Bool
+  := do
+  trustpub.any_level_loop configs owner «name» owner_id workflow env k
+    0#usize
+
+/-- [cratesio_kernel::trustpub::matching_ids]: loop body 0:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 251:4-256:5
+    Visibility: public -/
+@[rust_loop_body]
+def trustpub.matching_ids_loop.body
+  (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
+  («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) (ids : alloc.vec.Vec Std.I32)
+  (i : Std.Usize) :
+  Result (ControlFlow ((alloc.vec.Vec Std.I32) × Std.Usize) (alloc.vec.Vec
+    Std.I32))
+  := do
+  let i1 := alloc.vec.Vec.len configs
+  if i < i1
+  then
+    let ghc ←
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice
+        trustpub.GitHubConfig) configs i
+    let i2 ← trustpub.config_level ghc owner «name» owner_id workflow env
+    let ids1 ←
+      if i2 >= 4#u8
+      then alloc.vec.Vec.push ids ghc.crate_id
+      else ok ids
+    let i3 ← i + 1#usize
+    ok (cont (ids1, i3))
+  else ok (done ids)
+
+/-- [cratesio_kernel::trustpub::matching_ids]: loop 0:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 251:4-256:5
+    Visibility: public -/
+@[rust_loop]
+def trustpub.matching_ids_loop
+  (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
+  («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
+  (env : Option (alloc.vec.Vec Std.U8)) (ids : alloc.vec.Vec Std.I32)
+  (i : Std.Usize) :
+  Result (alloc.vec.Vec Std.I32)
+  := do
+  loop
+    (fun (ids1, i1) => trustpub.matching_ids_loop.body configs owner «name»
+      owner_id workflow env ids1 i1)
+    (ids, i)
+
+/-- [cratesio_kernel::trustpub::matching_ids]:
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 248:0-258:1
+    Visibility: public -/
+@[reducible]
+def trustpub.matching_ids
   (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner : Slice Std.U8)
   («name» : Slice Std.U8) (owner_id : Std.I32) (workflow : Slice Std.U8)
   (env : Option (alloc.vec.Vec Std.U8)) :
-  Result (Std.Usize × Std.Usize × Std.Usize × (alloc.vec.Vec Std.I32))
+  Result (alloc.vec.Vec Std.I32)
   := do
-  trustpub.filter_configs_loop configs owner «name» owner_id workflow env
-    0#usize 0#usize 0#usize (alloc.vec.Vec.new Std.I32) 0#usize
+  trustpub.matching_ids_loop configs owner «name» owner_id workflow env
+    (alloc.vec.Vec.new Std.I32) 0#usize
 
 /-- [cratesio_kernel::trustpub::exchange_github]:
-    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 252:0-293:1
+    Source: 'prove/ports/cratesio/kernel/src/trustpub.rs', lines 263:0-305:1
     Visibility: public -/
 def trustpub.exchange_github
   (used : alloc.vec.Vec (alloc.vec.Vec Std.U8))
@@ -2610,22 +2661,33 @@ def trustpub.exchange_github
               let s10 := alloc.vec.Vec.deref owner
               let s11 := alloc.vec.Vec.deref «name»
               let s12 := alloc.vec.Vec.deref w
-              let (repo, by_id, by_workflow, ids) ←
-                trustpub.filter_configs configs s10 s11 v s12
-                  claims.environment
-              if repo = 0#usize
-              then ok (core.result.Result.Err trustpub.ExchangeError.NoConfig)
-              else
-                if by_id = 0#usize
+              let b3 ←
+                trustpub.any_level configs s10 s11 v s12 claims.environment
+                  1#u8
+              if b3
+              then
+                let s13 := alloc.vec.Vec.deref owner
+                let s14 := alloc.vec.Vec.deref «name»
+                let s15 := alloc.vec.Vec.deref w
+                let b4 ←
+                  trustpub.any_level configs s13 s14 v s15 claims.environment
+                    2#u8
+                if b4
                 then
-                  ok (core.result.Result.Err
-                    trustpub.ExchangeError.OwnerIdMismatch)
-                else
-                  if by_workflow = 0#usize
+                  let s16 := alloc.vec.Vec.deref owner
+                  let s17 := alloc.vec.Vec.deref «name»
+                  let s18 := alloc.vec.Vec.deref w
+                  let b5 ←
+                    trustpub.any_level configs s16 s17 v s18 claims.environment
+                      3#u8
+                  if b5
                   then
-                    ok (core.result.Result.Err
-                      trustpub.ExchangeError.WorkflowMismatch)
-                  else
+                    let s19 := alloc.vec.Vec.deref owner
+                    let s20 := alloc.vec.Vec.deref «name»
+                    let s21 := alloc.vec.Vec.deref w
+                    let ids ←
+                      trustpub.matching_ids configs s19 s20 v s21
+                        claims.environment
                     let i3 := alloc.vec.Vec.len ids
                     if i3 = 0#usize
                     then
@@ -2635,11 +2697,18 @@ def trustpub.exchange_github
                       let out ←
                         alloc.vec.CloneVec.clone (core.clone.CloneallocvecVec
                           core.clone.CloneU8) used
-                      let s13 := alloc.vec.Vec.deref claims.jti
+                      let s22 := alloc.vec.Vec.deref claims.jti
                       let i4 := alloc.vec.Vec.len claims.jti
-                      let v1 ← bytes.sub s13 0#usize i4
+                      let v1 ← bytes.sub s22 0#usize i4
                       let out1 ← alloc.vec.Vec.push out v1
                       ok (core.result.Result.Ok (ids, out1))
+                  else
+                    ok (core.result.Result.Err
+                      trustpub.ExchangeError.WorkflowMismatch)
+                else
+                  ok (core.result.Result.Err
+                    trustpub.ExchangeError.OwnerIdMismatch)
+              else ok (core.result.Result.Err trustpub.ExchangeError.NoConfig)
 
 /-- [cratesio_kernel::validation::validate_dependency_name]:
     Source: 'prove/ports/cratesio/kernel/src/validation.rs', lines 74:0-92:1

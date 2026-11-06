@@ -212,38 +212,49 @@ pub fn env_ok(config_env: &Option<Vec<u8>>, claim_env: &Option<Vec<u8>>) -> bool
     }
 }
 
-/// The repository's configs, then the three `extract_if` filters: how many
-/// configs match the repository, then also the owner id, then also the
-/// workflow, and the crate ids of those that also match the environment.
-pub fn filter_configs(
-    configs: &Vec<GitHubConfig>,
-    owner: &[u8],
-    name: &[u8],
-    owner_id: i32,
-    workflow: &[u8],
-    env: &Option<Vec<u8>>,
-) -> (usize, usize, usize, Vec<i32>) {
-    let mut repo: usize = 0;
-    let mut by_id: usize = 0;
-    let mut by_workflow: usize = 0;
-    let mut ids = Vec::new();
+/// How far a config matches the token: `0` other repository, `1` same
+/// repository (owner and name, ignoring case), `2` and same owner id, `3` and
+/// same workflow file, `4` and an accepted environment.
+pub fn config_level(c: &GitHubConfig, owner: &[u8], name: &[u8], owner_id: i32, workflow: &[u8], env: &Option<Vec<u8>>) -> u8 {
+    if !(eq_lower(&c.repository_owner, owner) && eq_lower(&c.repository_name, name)) {
+        return 0;
+    }
+    if c.repository_owner_id != owner_id {
+        return 1;
+    }
+    if !eq(&c.workflow_filename, workflow) {
+        return 2;
+    }
+    if !env_ok(&c.environment, env) {
+        return 3;
+    }
+    4
+}
+
+/// Some config reaches level `k` (upstream: the list left after the
+/// `k`-th `extract_if` is non-empty).
+pub fn any_level(configs: &Vec<GitHubConfig>, owner: &[u8], name: &[u8], owner_id: i32, workflow: &[u8], env: &Option<Vec<u8>>, k: u8) -> bool {
     let mut i = 0;
     while i < configs.len() {
-        if eq_lower(&configs[i].repository_owner, owner) && eq_lower(&configs[i].repository_name, name) {
-            repo += 1;
-            if configs[i].repository_owner_id == owner_id {
-                by_id += 1;
-                if eq(&configs[i].workflow_filename, workflow) {
-                    by_workflow += 1;
-                    if env_ok(&configs[i].environment, env) {
-                        ids.push(configs[i].crate_id);
-                    }
-                }
-            }
+        if config_level(&configs[i], owner, name, owner_id, workflow, env) >= k {
+            return true;
         }
         i += 1;
     }
-    (repo, by_id, by_workflow, ids)
+    false
+}
+
+/// The crate ids of the configs that match fully, in order.
+pub fn matching_ids(configs: &Vec<GitHubConfig>, owner: &[u8], name: &[u8], owner_id: i32, workflow: &[u8], env: &Option<Vec<u8>>) -> Vec<i32> {
+    let mut ids = Vec::new();
+    let mut i = 0;
+    while i < configs.len() {
+        if config_level(&configs[i], owner, name, owner_id, workflow, env) >= 4 {
+            ids.push(configs[i].crate_id);
+        }
+        i += 1;
+    }
+    ids
 }
 
 /// `handle_github_token_inner`: on success the crate ids the new access
@@ -274,16 +285,17 @@ pub fn exchange_github(
         None => return Err(ExchangeError::BadOwnerId),
         Some(v) => v,
     };
-    let (repo, by_id, by_workflow, ids) = filter_configs(configs, &owner, &name, owner_id, &workflow, &claims.environment);
-    if repo == 0 {
+    let env = &claims.environment;
+    if !any_level(configs, &owner, &name, owner_id, &workflow, env, 1) {
         return Err(ExchangeError::NoConfig);
     }
-    if by_id == 0 {
+    if !any_level(configs, &owner, &name, owner_id, &workflow, env, 2) {
         return Err(ExchangeError::OwnerIdMismatch);
     }
-    if by_workflow == 0 {
+    if !any_level(configs, &owner, &name, owner_id, &workflow, env, 3) {
         return Err(ExchangeError::WorkflowMismatch);
     }
+    let ids = matching_ids(configs, &owner, &name, owner_id, &workflow, env);
     if ids.len() == 0 {
         return Err(ExchangeError::EnvironmentMismatch);
     }
