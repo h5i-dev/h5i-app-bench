@@ -154,4 +154,46 @@ theorem resource_covers_sound (c r : Slice U8) (h : scopes.resource_covers c r =
     coversSem c.val r.val :=
   post_of_ok (covers_spec c r) h rfl
 
+theorem leads_ascii {r : Bytes} (h : ascii r) : leads r = r := by
+  unfold leads
+  rw [List.filter_eq_self]
+  intro b hb
+  simp [isLead, h b hb]
+
+/-- For ASCII resources, a `p/*` wildcard matches only paths in the subtree of `p`:
+`p` itself or `p/...`, never a sibling such as `p-x/...` or `px/...`. -/
+theorem wildcard_ascii_boundary (pat r : Slice U8) (ha : ascii r.val)
+    (h : scopes.matches_wildcard pat r = ok true) : names pat.val r.val := by
+  obtain ⟨⟨q, hq⟩, hp, hrest⟩ := (post_of_ok (matches_wildcard_spec pat r) h).1 rfl
+  have hqt : pat.val.take (pat.val.length - 2) = q := by rw [hq]; simp
+  rw [hqt] at hp hrest
+  rw [hq, names_wild]
+  right
+  rcases hrest with hl | hs
+  · left; exact (hp.eq_of_length hl.symm).symm
+  · right
+    rw [leads_ascii ha] at hs
+    exact prefix_slash hp (by
+      rcases Nat.lt_or_ge q.length r.val.length with h1 | h1
+      · exact h1
+      · rw [List.getElem?_eq_none h1] at hs; simp at hs) hs
+
+/-- FINDING (W1): with a multi-byte character in the wildcard's prefix, the `/`
+boundary check of `resource_matches_pattern` reads a character index as a byte offset.
+The grant `f/dé/*` then matches `f/déx/y`, a path outside its subtree. -/
+theorem wildcard_unicode_crosses_boundary (pat r : Slice U8)
+    (hpat : pat.val = [102#u8, 47#u8, 100#u8, 195#u8, 169#u8, 47#u8, 42#u8])
+    (hr : r.val = [102#u8, 47#u8, 100#u8, 195#u8, 169#u8, 120#u8, 47#u8, 121#u8]) :
+    scopes.matches_wildcard pat r = ok true ∧ ¬ names pat.val r.val := by
+  obtain ⟨b, hb, hiff⟩ := WP.spec_imp_exists (matches_wildcard_spec pat r)
+  have hm : wildcardModel pat.val r.val := by
+    rw [hpat, hr]
+    refine ⟨⟨[102#u8, 47#u8, 100#u8, 195#u8, 169#u8], by simp [slashB, starB]⟩, by decide, Or.inr ?_⟩
+    decide
+  refine ⟨by rw [hb, hiff.2 hm], ?_⟩
+  rw [hpat, hr, show [102#u8, 47#u8, 100#u8, 195#u8, 169#u8, 47#u8, 42#u8] =
+    [102#u8, 47#u8, 100#u8, 195#u8, 169#u8] ++ [slashB, starB] by simp [slashB, starB], names_wild]
+  simp only [inSubtree]
+  decide
+
 end windmill_kernel.Properties

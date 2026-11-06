@@ -400,7 +400,34 @@ def wildcardModel (pat r : Bytes) : Prop :=
     scopes.matches_wildcard pat r ⦃ b => (b = true ↔ wildcardModel pat.val r.val) ⦄ := by
   unfold scopes.matches_wildcard
   step*
-  all_goals trace_state
-  all_goals sorry
+  all_goals first
+    | (obtain ⟨q, hq⟩ := b_post.1 ‹_›; have := congrArg List.length hq; simp at this; scalar_tac)
+    | skip
+  -- `ends_with("/*")` failed
+  all_goals first
+    | (have hn : ¬ endsSS pat.val := fun h => ‹¬b = true› (b_post.2 h)
+       simp only [Bool.false_eq_true, false_iff, wildcardModel]
+       exact fun h => hn h.1)
+    | skip
+  all_goals
+    have hpv : pre.val = pat.val.take (pat.val.length - 2) := by rw [pre_post, i1_post]; simp
+    have hends : endsSS pat.val := by tauto
+    have hpre_iff : (pat.val.take (pat.val.length - 2) <+: r.val) ↔ b1 = true := by
+      rw [b1_post, ← hpv]; simp [vec_deref_val]
+    have hlen : pre.len.val = (pat.val.take (pat.val.length - 2)).length := by rw [← hpv]; simp
+    simp only [wildcardModel, hends, true_and]
+  all_goals first
+    | (simp only [true_iff]
+       refine ⟨hpre_iff.2 ‹_›, Or.inl ?_⟩
+       rw [← hlen]; scalar_tac)
+    | (simp only [Bool.false_eq_true, false_iff, not_and]
+       intro hp; exact absurd (hpre_iff.1 hp) ‹_›)
+    | (rw [b_post, hlen]
+       simp only [decide_eq_true_eq]
+       constructor
+       · intro h; exact ⟨hpre_iff.2 ‹_›, Or.inr h⟩
+       · rintro ⟨_, h | h⟩
+         · exfalso; apply ‹¬r.len = pre.len›; apply UScalar.eq_of_val_eq; scalar_tac
+         · exact h)
 
 end windmill_kernel.Lemmas
