@@ -10,6 +10,8 @@ kernel's *types* (`Method`, `Claims`, error enums) are reused as plain data.
 -/
 open Aeneas Aeneas.Std openobserve_kernel openobserve_kernel.delegation
 
+deriving instance DecidableEq for openobserve_kernel.delegation.Method
+
 namespace openobserve_kernel.Spec
 
 /-- A byte string as numbers. -/
@@ -73,7 +75,7 @@ def segsMatch (ps : List SSeg) (cs : List (List Nat)) : Bool :=
 /-- `in_scope`: never DELETE; a `v2/` prefix selects the v2 routes. -/
 def inScope (routes : List SRoute) (m : Method) (path : List Nat) : Bool :=
   let (v2, rest) := if lit "v2/" <+: path then (true, path.drop 3) else (false, path)
-  m ≠ .Delete ∧ routes.any (fun r => r.v2 = v2 ∧ m ∈ r.methods ∧ segsMatch r.segs (splitSlash rest))
+  decide (m ≠ .Delete) && routes.any (fun r => decide (r.v2 = v2) && decide (m ∈ r.methods) && segsMatch r.segs (splitSlash rest))
 
 def scopeRoutes (s : List Nat) : Option (List SRoute) :=
   if s = lit "assistant" then some assistantScope
