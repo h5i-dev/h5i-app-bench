@@ -192,14 +192,14 @@ pub fn parse_key(value: &[u8]) -> Result<Key, IdError> {
             Ok(id) => Ok(Key { id, ext: None }),
         },
         Some(i) => {
-            let ext = sub(value, i + 1, value.len());
-            if !valid_extension(&ext) {
+            let tail = sub(value, i + 1, value.len());
+            if !valid_extension(&tail) {
                 return Err(IdError::IllegalCharacters);
             }
             let head = sub(value, 0, i);
             match decode(&head) {
                 Err(e) => Err(e),
-                Ok(id) => Ok(Key { id, ext: Some(ext) }),
+                Ok(id) => Ok(Key { id, ext: Some(tail) }),
             }
         }
     }
@@ -211,11 +211,11 @@ pub fn key_path(key: &Key) -> Vec<u8> {
     let mut s = encode(key.id);
     match &key.ext {
         None => {}
-        Some(ext) => {
+        Some(e) => {
             s.push(b'.');
             let mut i = 0;
-            while i < ext.len() {
-                s.push(ext[i]);
+            while i < e.len() {
+                s.push(e[i]);
                 i += 1;
             }
         }

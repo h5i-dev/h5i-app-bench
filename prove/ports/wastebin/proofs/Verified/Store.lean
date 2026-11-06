@@ -17,8 +17,8 @@ namespace wastebin_kernel.Verified.Store
   apply WP.spec_mono (loop_search uids.val (fun u => decide (u = x)) (fun b : Bool => b)
     (fun _ _ => true) false _ ?_ 0#usize (by simp))
   · intro r hr
-    rw [hr, searchFrom_const]
-    simp [eq_comm]
+    rw [search_any _ _ _ hr, Bool.eq_iff_iff]
+    simp [List.any_eq_true]
   · intro j hj; unfold store.contains_uid_loop.body; h5i_step
 
 @[step] theorem owned_by_spec (uid : Option I64) (uids : Slice I64) :
@@ -54,9 +54,9 @@ theorem foldl_delStep (id : I64) (l acc : List Row) (h : Bool) :
   unfold store.delete store.delete_loop
   apply WP.spec_mono (loop_fold2 rows.val (fun (a : alloc.vec.Vec Row) (b : Bool) => (a.val, b))
     (delStep id) (fun a _ i => a.val.length ≤ i) _ ?_ (alloc.vec.Vec.new Row) false 0#usize
-    (by simp) (by simp [vec_new_val]))
+    (by simp) (by simp))
   · rintro ⟨a, b⟩ ⟨h1, -⟩
-    simp only [List.drop_zero, vec_new_val, foldl_delStep, List.nil_append, Bool.false_or] at h1
+    simp only [vec_new_val, foldl_delStep, List.nil_append, Bool.false_or] at h1
     simp only [Prod.mk.injEq] at h1
     exact ⟨h1.1, h1.2⟩
   · intro a b i hi hinv
@@ -64,10 +64,11 @@ theorem foldl_delStep (id : I64) (l acc : List Row) (h : Bool) :
     simp only [bind_ite]
     split
     · step*
-      split <;> step* <;> simp_all [FoldStep2, delStep] <;> scalar_tac
+      all_goals (try simp_all [FoldStep2, delStep])
+      all_goals scalar_tac
     · step*
       simp_all [FoldStep2]
-      scalar_tac
+      all_goals scalar_tac
 
 /-- The model step of `delete_for`'s loop. -/
 def delForStep (id : I64) (uids : List I64) (acc : List Row × Bool) (r : Row) : List Row × Bool :=
@@ -90,17 +91,48 @@ theorem foldl_delForStep (id : I64) (uids : List I64) (l acc : List Row) (h : Bo
         simp [hid, this]
       · simp [hid]
 
-/-- `delete_for` is `deletedBy`, refused when `uids` is empty or no row is
-the holder's paste with that id. -/
+/-- Some row with this id is a paste of one of the holder's uids. -/
+def HasOwned (rows : List Row) (id : I64) (uids : List I64) : Prop :=
+  ∃ x ∈ rows, x.id = id ∧ ∃ u, x.uid = some u ∧ u ∈ uids
+
+@[step] theorem delete_for_loop_spec (rows : alloc.vec.Vec Row) (id : I64) (uids : Slice I64) :
+    store.delete_for_loop rows id uids (alloc.vec.Vec.new Row) false 0#usize ⦃ r =>
+      r.1.val = deletedBy rows.val id uids.val ∧ (r.2 = true ↔ HasOwned rows.val id uids.val) ⦄ := by
+  unfold store.delete_for_loop
+  apply WP.spec_mono (loop_fold2 rows.val (fun (a : alloc.vec.Vec Row) (b : Bool) => (a.val, b))
+    (delForStep id uids.val) (fun a _ i => a.val.length ≤ i) _ ?_ (alloc.vec.Vec.new Row) false 0#usize
+    (by simp) (by simp [vec_new_val]))
+  · rintro ⟨a, b⟩ ⟨h1, -⟩
+    simp only [vec_new_val, foldl_delForStep, List.nil_append, Bool.false_or, Prod.mk.injEq] at h1
+    obtain ⟨h1, h2⟩ := h1
+    refine ⟨h1, ?_⟩
+    rw [h2, List.any_eq_true]
+    simp [HasOwned]
+  · intro a b i hi hinv
+    unfold store.delete_for_loop.body
+    simp only [bind_ite]
+    split
+    · h5i_steps
+      all_goals (try simp_all [FoldStep2, delForStep])
+      all_goals scalar_tac
+    · step*
+      simp_all [FoldStep2]
+      all_goals scalar_tac
+
+/-- `delete_for` is `deletedBy` when the holder owns a row with that id, and
+`Delete` otherwise (in particular when `uids` is empty). -/
 @[step] theorem delete_for_spec (rows : alloc.vec.Vec Row) (id : I64) (uids : Slice I64) :
-    store.delete_for rows id uids ⦃ r =>
-      r = if uids.val = [] ∨ ¬ (∃ x ∈ rows.val, x.id = id ∧ ∃ u, x.uid = some u ∧ u ∈ uids.val)
-        then .Err .Delete
-        else .Ok ⟨deletedBy rows.val id uids.val, by
-          have := rows.property
-          have : (deletedBy rows.val id uids.val).length ≤ rows.val.length := List.length_filter_le _ _
-          scalar_tac⟩ ⦄ := by
-  unfold store.delete_for store.delete_for_loop
-  sorry
+    store.delete_for rows id uids ⦃ r => match r with
+      | .Ok v => v.val = deletedBy rows.val id uids.val ∧ HasOwned rows.val id uids.val
+      | .Err e => e = .Delete ∧ ¬ HasOwned rows.val id uids.val ⦄ := by
+  unfold store.delete_for
+  dsimp only
+  split
+  · rename_i h
+    have : uids.val = [] := by
+      have := congrArg (·.val) h; simp at this; exact this
+    simp [HasOwned, this]
+  · step*
+    all_goals simp_all
 
 end wastebin_kernel.Verified.Store

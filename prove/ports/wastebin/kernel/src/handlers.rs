@@ -10,7 +10,7 @@
 //! cookie is missing or its HMAC does not verify) and the password (`None`
 //! when not given). A signed owner token arrives as the uid it verified to.
 
-use crate::id::{Key, decode, parse_key, to_i64};
+use crate::ids::{Key, decode, parse_key, to_i64};
 use crate::store::{DbError, Entry, Row, contains_uid, delete_for, get, get_metadata};
 
 /// The status codes the decisions produce (`impl From<Error> for StatusCode`).

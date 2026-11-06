@@ -10,5 +10,5 @@
 pub mod disposition;
 pub mod ext;
 pub mod handlers;
-pub mod id;
+pub mod ids;
 pub mod store;

@@ -799,11 +799,11 @@ def store.get_metadata
   | some r => let m ← store.metadata_of r
               ok (core.result.Result.Ok m)
 
-/-- [wastebin_kernel::id::sub]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 177:4-180:5
+/-- [wastebin_kernel::ids::sub]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 177:4-180:5
     Visibility: public -/
 @[rust_loop_body]
-def id.sub_loop.body
+def ids.sub_loop.body
   (s : Slice Std.U8) («to» : Std.Usize) (out : alloc.vec.Vec Std.U8)
   (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
@@ -817,34 +817,34 @@ def id.sub_loop.body
     ok (cont (out1, i2))
   else ok (done out)
 
-/-- [wastebin_kernel::id::sub]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 177:4-180:5
+/-- [wastebin_kernel::ids::sub]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 177:4-180:5
     Visibility: public -/
 @[rust_loop]
-def id.sub_loop
+def ids.sub_loop
   (s : Slice Std.U8) («to» : Std.Usize) (out : alloc.vec.Vec Std.U8)
   (i : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
   loop
-    (fun (out1, i1) => id.sub_loop.body s «to» out1 i1)
+    (fun (out1, i1) => ids.sub_loop.body s «to» out1 i1)
     (out, i)
 
-/-- [wastebin_kernel::id::sub]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 174:0-182:1
+/-- [wastebin_kernel::ids::sub]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 174:0-182:1
     Visibility: public -/
 @[reducible]
-def id.sub
+def ids.sub
   (s : Slice Std.U8) («from» : Std.Usize) («to» : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
-  id.sub_loop s «to» (alloc.vec.Vec.new Std.U8) «from»
+  ids.sub_loop s «to» (alloc.vec.Vec.new Std.U8) «from»
 
-/-- [wastebin_kernel::id::find_dot]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 164:4-171:1
+/-- [wastebin_kernel::ids::find_dot]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 164:4-171:1
     Visibility: public -/
 @[rust_loop_body]
-def id.find_dot_loop.body
+def ids.find_dot_loop.body
   (s : Slice Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize (Option Std.Usize))
   := do
@@ -858,43 +858,43 @@ def id.find_dot_loop.body
          ok (cont i3)
   else ok (done none)
 
-/-- [wastebin_kernel::id::find_dot]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 164:4-171:1
+/-- [wastebin_kernel::ids::find_dot]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 164:4-171:1
     Visibility: public -/
 @[rust_loop]
-def id.find_dot_loop
+def ids.find_dot_loop
   (s : Slice Std.U8) (i : Std.Usize) : Result (Option Std.Usize) := do
   loop
-    (fun i1 => id.find_dot_loop.body s i1)
+    (fun i1 => ids.find_dot_loop.body s i1)
     i
 
-/-- [wastebin_kernel::id::find_dot]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 162:0-171:1
+/-- [wastebin_kernel::ids::find_dot]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 162:0-171:1
     Visibility: public -/
 @[reducible]
-def id.find_dot (s : Slice Std.U8) : Result (Option Std.Usize) := do
-  id.find_dot_loop s 0#usize
+def ids.find_dot (s : Slice Std.U8) : Result (Option Std.Usize) := do
+  ids.find_dot_loop s 0#usize
 
-/-- [wastebin_kernel::id::Id]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 23:0-28:1
+/-- [wastebin_kernel::ids::Id]
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 23:0-28:1
     Visibility: public -/
 @[discriminant isize]
-inductive id.Id where
-| Id32 : Std.U32 → id.Id
-| Id64 : Std.I64 → id.Id
+inductive ids.Id where
+| Id32 : Std.U32 → ids.Id
+| Id64 : Std.I64 → ids.Id
 
-/-- [wastebin_kernel::id::Key]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 156:0-159:1
+/-- [wastebin_kernel::ids::Key]
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 156:0-159:1
     Visibility: public -/
-structure id.Key where
-  id : id.Id
+structure ids.Key where
+  id : ids.Id
   ext : Option (alloc.vec.Vec Std.U8)
 
-/-- [wastebin_kernel::id::CHAR_TABLE]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 7:0-12:2
+/-- [wastebin_kernel::ids::CHAR_TABLE]
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 7:0-12:2
     Visibility: public -/
 @[global_simps, irreducible]
-def id.CHAR_TABLE : Array Std.U8 64#usize :=
+def ids.CHAR_TABLE : Array Std.U8 64#usize :=
   Array.make 64#usize [
     97#u8, 98#u8, 99#u8, 100#u8, 101#u8, 102#u8, 103#u8, 104#u8, 105#u8,
     106#u8, 107#u8, 108#u8, 109#u8, 110#u8, 111#u8, 112#u8, 113#u8, 114#u8,
@@ -905,17 +905,17 @@ def id.CHAR_TABLE : Array Std.U8 64#usize :=
     53#u8, 54#u8, 55#u8, 56#u8, 57#u8, 45#u8, 43#u8
     ]
 
-/-- [wastebin_kernel::id::char_bits]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 41:4-48:1
+/-- [wastebin_kernel::ids::char_bits]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 41:4-48:1
     Visibility: public -/
 @[rust_loop_body]
-def id.char_bits_loop.body
+def ids.char_bits_loop.body
   (c : Std.U8) (i : Std.Usize) :
   Result (ControlFlow Std.Usize (Option Std.U8))
   := do
   if i < 64#usize
   then
-    let i1 ← Array.index_usize id.CHAR_TABLE i
+    let i1 ← Array.index_usize ids.CHAR_TABLE i
     if i1 = c
     then let i2 ← lift (UScalar.cast .U8 i)
          ok (done (some i2))
@@ -923,28 +923,28 @@ def id.char_bits_loop.body
          ok (cont i2)
   else ok (done none)
 
-/-- [wastebin_kernel::id::char_bits]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 41:4-48:1
+/-- [wastebin_kernel::ids::char_bits]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 41:4-48:1
     Visibility: public -/
 @[rust_loop]
-def id.char_bits_loop
+def ids.char_bits_loop
   (c : Std.U8) (i : Std.Usize) : Result (Option Std.U8) := do
   loop
-    (fun i1 => id.char_bits_loop.body c i1)
+    (fun i1 => ids.char_bits_loop.body c i1)
     i
 
-/-- [wastebin_kernel::id::char_bits]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 39:0-48:1
+/-- [wastebin_kernel::ids::char_bits]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 39:0-48:1
     Visibility: public -/
 @[reducible]
-def id.char_bits (c : Std.U8) : Result (Option Std.U8) := do
-  id.char_bits_loop c 0#usize
+def ids.char_bits (c : Std.U8) : Result (Option Std.U8) := do
+  ids.char_bits_loop c 0#usize
 
-/-- [wastebin_kernel::id::acc64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 96:0-101:1 -/
-def id.acc64
+/-- [wastebin_kernel::ids::acc64]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 96:0-101:1 -/
+def ids.acc64
   (n : Std.I64) (c : Std.U8) (shift : Std.U32) : Result (Option Std.I64) := do
-  let o ← id.char_bits c
+  let o ← ids.char_bits c
   match o with
   | none => ok none
   | some bits =>
@@ -953,10 +953,10 @@ def id.acc64
     let i2 ← lift (i ||| i1)
     ok (some i2)
 
-/-- [wastebin_kernel::id::decode64]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 124:4-133:1 -/
+/-- [wastebin_kernel::ids::decode64]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 124:4-133:1 -/
 @[rust_loop_body]
-def id.decode64_loop.body
+def ids.decode64_loop.body
   (s : Slice Std.U8) (n : Std.I64) (pos : Std.Usize) :
   Result (ControlFlow (Std.I64 × Std.Usize) (Option Std.I64))
   := do
@@ -966,35 +966,35 @@ def id.decode64_loop.body
                   then ok 6#u32
                   else ok 4#u32
     let i ← Slice.index_usize s pos
-    let o ← id.acc64 n i shift
+    let o ← ids.acc64 n i shift
     match o with
     | none => ok (done none)
     | some m => let pos1 ← pos + 1#usize
                 ok (cont (m, pos1))
   else ok (done (some n))
 
-/-- [wastebin_kernel::id::decode64]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 124:4-133:1 -/
+/-- [wastebin_kernel::ids::decode64]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 124:4-133:1 -/
 @[rust_loop]
-def id.decode64_loop
+def ids.decode64_loop
   (s : Slice Std.U8) (n : Std.I64) (pos : Std.Usize) :
   Result (Option Std.I64)
   := do
   loop
-    (fun (n1, pos1) => id.decode64_loop.body s n1 pos1)
+    (fun (n1, pos1) => ids.decode64_loop.body s n1 pos1)
     (n, pos)
 
-/-- [wastebin_kernel::id::decode64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 121:0-133:1 -/
+/-- [wastebin_kernel::ids::decode64]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 121:0-133:1 -/
 @[reducible]
-def id.decode64 (s : Slice Std.U8) : Result (Option Std.I64) := do
-  id.decode64_loop s 0#i64 0#usize
+def ids.decode64 (s : Slice Std.U8) : Result (Option Std.I64) := do
+  ids.decode64_loop s 0#i64 0#usize
 
-/-- [wastebin_kernel::id::acc32]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 88:0-93:1 -/
-def id.acc32
+/-- [wastebin_kernel::ids::acc32]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 88:0-93:1 -/
+def ids.acc32
   (n : Std.U32) (c : Std.U8) (shift : Std.U32) : Result (Option Std.U32) := do
-  let o ← id.char_bits c
+  let o ← ids.char_bits c
   match o with
   | none => ok none
   | some bits =>
@@ -1003,10 +1003,10 @@ def id.acc32
     let i2 ← lift (i ||| i1)
     ok (some i2)
 
-/-- [wastebin_kernel::id::decode32]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 108:4-117:1 -/
+/-- [wastebin_kernel::ids::decode32]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 108:4-117:1 -/
 @[rust_loop_body]
-def id.decode32_loop.body
+def ids.decode32_loop.body
   (s : Slice Std.U8) (n : Std.U32) (pos : Std.Usize) :
   Result (ControlFlow (Std.U32 × Std.Usize) (Option Std.U32))
   := do
@@ -1016,69 +1016,71 @@ def id.decode32_loop.body
                   then ok 6#u32
                   else ok 2#u32
     let i ← Slice.index_usize s pos
-    let o ← id.acc32 n i shift
+    let o ← ids.acc32 n i shift
     match o with
     | none => ok (done none)
     | some m => let pos1 ← pos + 1#usize
                 ok (cont (m, pos1))
   else ok (done (some n))
 
-/-- [wastebin_kernel::id::decode32]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 108:4-117:1 -/
+/-- [wastebin_kernel::ids::decode32]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 108:4-117:1 -/
 @[rust_loop]
-def id.decode32_loop
+def ids.decode32_loop
   (s : Slice Std.U8) (n : Std.U32) (pos : Std.Usize) :
   Result (Option Std.U32)
   := do
   loop
-    (fun (n1, pos1) => id.decode32_loop.body s n1 pos1)
+    (fun (n1, pos1) => ids.decode32_loop.body s n1 pos1)
     (n, pos)
 
-/-- [wastebin_kernel::id::decode32]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 105:0-117:1 -/
+/-- [wastebin_kernel::ids::decode32]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 105:0-117:1 -/
 @[reducible]
-def id.decode32 (s : Slice Std.U8) : Result (Option Std.U32) := do
-  id.decode32_loop s 0#u32 0#usize
+def ids.decode32 (s : Slice Std.U8) : Result (Option Std.U32) := do
+  ids.decode32_loop s 0#u32 0#usize
 
-/-- [wastebin_kernel::id::IdError]
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 16:0-19:1
+/-- [wastebin_kernel::ids::IdError]
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 16:0-19:1
     Visibility: public -/
 @[discriminant isize]
-inductive id.IdError where
-| IllegalCharacters : id.IdError
-| WrongSize : id.IdError
+inductive ids.IdError where
+| IllegalCharacters : ids.IdError
+| WrongSize : ids.IdError
 
-/-- [wastebin_kernel::id::decode]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 138:0-152:1
+/-- [wastebin_kernel::ids::decode]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 138:0-152:1
     Visibility: public -/
-def id.decode
-  (value : Slice Std.U8) : Result (core.result.Result id.Id id.IdError) := do
+def ids.decode
+  (value : Slice Std.U8) : Result (core.result.Result ids.Id ids.IdError) := do
   let i := Slice.len value
   if i = 6#usize
   then
-    let o ← id.decode32 value
+    let o ← ids.decode32 value
     match o with
-    | none => ok (core.result.Result.Err id.IdError.IllegalCharacters)
-    | some n => ok (core.result.Result.Ok (id.Id.Id32 n))
+    | none => ok (core.result.Result.Err ids.IdError.IllegalCharacters)
+    | some n => ok (core.result.Result.Ok (ids.Id.Id32 n))
   else
     let i1 := Slice.len value
     if i1 = 11#usize
     then
-      let o ← id.decode64 value
+      let o ← ids.decode64 value
       match o with
-      | none => ok (core.result.Result.Err id.IdError.IllegalCharacters)
-      | some n => ok (core.result.Result.Ok (id.Id.Id64 n))
-    else ok (core.result.Result.Err id.IdError.WrongSize)
+      | none => ok (core.result.Result.Err ids.IdError.IllegalCharacters)
+      | some n => ok (core.result.Result.Ok (ids.Id.Id64 n))
+    else ok (core.result.Result.Err ids.IdError.WrongSize)
 
-/-- [wastebin_kernel::id::parse_key]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 188:0-206:1
+/-- [wastebin_kernel::ids::parse_key]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 188:0-206:1
     Visibility: public -/
-def id.parse_key
-  (value : Slice Std.U8) : Result (core.result.Result id.Key id.IdError) := do
-  let o ← id.find_dot value
+def ids.parse_key
+  (value : Slice Std.U8) :
+  Result (core.result.Result ids.Key ids.IdError)
+  := do
+  let o ← ids.find_dot value
   match o with
   | none =>
-    let r ← id.decode value
+    let r ← ids.decode value
     match r with
     | core.result.Result.Ok id =>
       ok (core.result.Result.Ok { id, ext := none })
@@ -1086,27 +1088,27 @@ def id.parse_key
   | some i =>
     let i1 ← i + 1#usize
     let i2 := Slice.len value
-    let ext ← id.sub value i1 i2
-    let s := alloc.vec.Vec.deref ext
+    let tail ← ids.sub value i1 i2
+    let s := alloc.vec.Vec.deref tail
     let b ← ext.valid_extension s
     if b
     then
-      let head ← id.sub value 0#usize i
+      let head ← ids.sub value 0#usize i
       let s1 := alloc.vec.Vec.deref head
-      let r ← id.decode s1
+      let r ← ids.decode s1
       match r with
       | core.result.Result.Ok id =>
-        ok (core.result.Result.Ok { id, ext := (some ext) })
+        ok (core.result.Result.Ok { id, ext := (some tail) })
       | core.result.Result.Err e => ok (core.result.Result.Err e)
-    else ok (core.result.Result.Err id.IdError.IllegalCharacters)
+    else ok (core.result.Result.Err ids.IdError.IllegalCharacters)
 
-/-- [wastebin_kernel::id::to_i64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 31:0-36:1
+/-- [wastebin_kernel::ids::to_i64]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 31:0-36:1
     Visibility: public -/
-def id.to_i64 (id : id.Id) : Result Std.I64 := do
+def ids.to_i64 (id : ids.Id) : Result Std.I64 := do
   match id with
-  | id.Id.Id32 n => ok (UScalar.hcast .I64 n)
-  | id.Id.Id64 n => ok n
+  | ids.Id.Id32 n => ok (UScalar.hcast .I64 n)
+  | ids.Id.Id64 n => ok n
 
 /-- [wastebin_kernel::handlers::view]:
     Source: 'prove/ports/wastebin/kernel/src/handlers.rs', lines 114:0-152:1
@@ -1122,10 +1124,10 @@ def handlers.view
       match req.password with
       | none => ok (none, true)
       | some _ => ok (req.password, false)
-    let r ← id.parse_key path
+    let r ← ids.parse_key path
     match r with
     | core.result.Result.Ok k =>
-      let id ← id.to_i64 k.id
+      let id ← ids.to_i64 k.id
       let r1 ← store.get_metadata rows id
       match r1 with
       | core.result.Result.Ok m =>
@@ -1279,10 +1281,10 @@ def handlers.raw
   (password : Option Std.U64) :
   Result ((alloc.vec.Vec store.Row) × handlers.Raw)
   := do
-  let r ← id.parse_key path
+  let r ← ids.parse_key path
   match r with
   | core.result.Result.Ok k =>
-    let i ← id.to_i64 k.id
+    let i ← ids.to_i64 k.id
     let (after, result) ← store.get rows i now password
     match result with
     | core.result.Result.Ok e =>
@@ -1325,10 +1327,10 @@ def handlers.qr
   (uids : Option (alloc.vec.Vec Std.I64)) :
   Result handlers.Qr
   := do
-  let r ← id.parse_key path
+  let r ← ids.parse_key path
   match r with
   | core.result.Result.Ok k =>
-    let i ← id.to_i64 k.id
+    let i ← ids.to_i64 k.id
     let r1 ← store.get_metadata rows i
     match r1 with
     | core.result.Result.Ok m =>
@@ -1427,10 +1429,10 @@ def handlers.delete_paste
     let v ← alloc.vec.CloneVec.clone store.Row.Insts.CoreCloneClone rows
     ok (v, core.result.Result.Err handlers.Status.Forbidden)
   | some us =>
-    let r ← id.decode path
+    let r ← ids.decode path
     match r with
     | core.result.Result.Ok id =>
-      let i ← id.to_i64 id
+      let i ← ids.to_i64 id
       let s := alloc.vec.Vec.deref us
       let r1 ← store.delete_for rows i s
       match r1 with
@@ -1627,148 +1629,148 @@ def handlers.insert
   := do
   handlers.insert_loop rows ids p 0#usize
 
-/-- [wastebin_kernel::id::encode32]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 51:0-60:1
+/-- [wastebin_kernel::ids::encode32]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 51:0-60:1
     Visibility: public -/
-def id.encode32 (n : Std.U32) : Result (alloc.vec.Vec Std.U8) := do
+def ids.encode32 (n : Std.U32) : Result (alloc.vec.Vec Std.U8) := do
   let i ← n >>> 26#i32
   let i1 ← lift (i &&& 63#u32)
   let i2 ← lift (UScalar.cast .Usize i1)
-  let i3 ← Array.index_usize id.CHAR_TABLE i2
+  let i3 ← Array.index_usize ids.CHAR_TABLE i2
   let s ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) i3
   let i4 ← n >>> 20#i32
   let i5 ← lift (i4 &&& 63#u32)
   let i6 ← lift (UScalar.cast .Usize i5)
-  let i7 ← Array.index_usize id.CHAR_TABLE i6
+  let i7 ← Array.index_usize ids.CHAR_TABLE i6
   let s1 ← alloc.vec.Vec.push s i7
   let i8 ← n >>> 14#i32
   let i9 ← lift (i8 &&& 63#u32)
   let i10 ← lift (UScalar.cast .Usize i9)
-  let i11 ← Array.index_usize id.CHAR_TABLE i10
+  let i11 ← Array.index_usize ids.CHAR_TABLE i10
   let s2 ← alloc.vec.Vec.push s1 i11
   let i12 ← n >>> 8#i32
   let i13 ← lift (i12 &&& 63#u32)
   let i14 ← lift (UScalar.cast .Usize i13)
-  let i15 ← Array.index_usize id.CHAR_TABLE i14
+  let i15 ← Array.index_usize ids.CHAR_TABLE i14
   let s3 ← alloc.vec.Vec.push s2 i15
   let i16 ← n >>> 2#i32
   let i17 ← lift (i16 &&& 63#u32)
   let i18 ← lift (UScalar.cast .Usize i17)
-  let i19 ← Array.index_usize id.CHAR_TABLE i18
+  let i19 ← Array.index_usize ids.CHAR_TABLE i18
   let s4 ← alloc.vec.Vec.push s3 i19
   let i20 ← lift (n &&& 3#u32)
   let i21 ← lift (UScalar.cast .Usize i20)
-  let i22 ← Array.index_usize id.CHAR_TABLE i21
+  let i22 ← Array.index_usize ids.CHAR_TABLE i21
   alloc.vec.Vec.push s4 i22
 
-/-- [wastebin_kernel::id::encode64]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 63:0-77:1
+/-- [wastebin_kernel::ids::encode64]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 63:0-77:1
     Visibility: public -/
-def id.encode64 (n : Std.I64) : Result (alloc.vec.Vec Std.U8) := do
+def ids.encode64 (n : Std.I64) : Result (alloc.vec.Vec Std.U8) := do
   let i ← n >>> 58#i32
   let i1 ← lift (i &&& 63#i64)
   let i2 ← lift (IScalar.hcast .Usize i1)
-  let i3 ← Array.index_usize id.CHAR_TABLE i2
+  let i3 ← Array.index_usize ids.CHAR_TABLE i2
   let s ← alloc.vec.Vec.push (alloc.vec.Vec.new Std.U8) i3
   let i4 ← n >>> 52#i32
   let i5 ← lift (i4 &&& 63#i64)
   let i6 ← lift (IScalar.hcast .Usize i5)
-  let i7 ← Array.index_usize id.CHAR_TABLE i6
+  let i7 ← Array.index_usize ids.CHAR_TABLE i6
   let s1 ← alloc.vec.Vec.push s i7
   let i8 ← n >>> 46#i32
   let i9 ← lift (i8 &&& 63#i64)
   let i10 ← lift (IScalar.hcast .Usize i9)
-  let i11 ← Array.index_usize id.CHAR_TABLE i10
+  let i11 ← Array.index_usize ids.CHAR_TABLE i10
   let s2 ← alloc.vec.Vec.push s1 i11
   let i12 ← n >>> 40#i32
   let i13 ← lift (i12 &&& 63#i64)
   let i14 ← lift (IScalar.hcast .Usize i13)
-  let i15 ← Array.index_usize id.CHAR_TABLE i14
+  let i15 ← Array.index_usize ids.CHAR_TABLE i14
   let s3 ← alloc.vec.Vec.push s2 i15
   let i16 ← n >>> 34#i32
   let i17 ← lift (i16 &&& 63#i64)
   let i18 ← lift (IScalar.hcast .Usize i17)
-  let i19 ← Array.index_usize id.CHAR_TABLE i18
+  let i19 ← Array.index_usize ids.CHAR_TABLE i18
   let s4 ← alloc.vec.Vec.push s3 i19
   let i20 ← n >>> 28#i32
   let i21 ← lift (i20 &&& 63#i64)
   let i22 ← lift (IScalar.hcast .Usize i21)
-  let i23 ← Array.index_usize id.CHAR_TABLE i22
+  let i23 ← Array.index_usize ids.CHAR_TABLE i22
   let s5 ← alloc.vec.Vec.push s4 i23
   let i24 ← n >>> 22#i32
   let i25 ← lift (i24 &&& 63#i64)
   let i26 ← lift (IScalar.hcast .Usize i25)
-  let i27 ← Array.index_usize id.CHAR_TABLE i26
+  let i27 ← Array.index_usize ids.CHAR_TABLE i26
   let s6 ← alloc.vec.Vec.push s5 i27
   let i28 ← n >>> 16#i32
   let i29 ← lift (i28 &&& 63#i64)
   let i30 ← lift (IScalar.hcast .Usize i29)
-  let i31 ← Array.index_usize id.CHAR_TABLE i30
+  let i31 ← Array.index_usize ids.CHAR_TABLE i30
   let s7 ← alloc.vec.Vec.push s6 i31
   let i32 ← n >>> 10#i32
   let i33 ← lift (i32 &&& 63#i64)
   let i34 ← lift (IScalar.hcast .Usize i33)
-  let i35 ← Array.index_usize id.CHAR_TABLE i34
+  let i35 ← Array.index_usize ids.CHAR_TABLE i34
   let s8 ← alloc.vec.Vec.push s7 i35
   let i36 ← n >>> 4#i32
   let i37 ← lift (i36 &&& 63#i64)
   let i38 ← lift (IScalar.hcast .Usize i37)
-  let i39 ← Array.index_usize id.CHAR_TABLE i38
+  let i39 ← Array.index_usize ids.CHAR_TABLE i38
   let s9 ← alloc.vec.Vec.push s8 i39
   let i40 ← lift (n &&& 15#i64)
   let i41 ← lift (IScalar.hcast .Usize i40)
-  let i42 ← Array.index_usize id.CHAR_TABLE i41
+  let i42 ← Array.index_usize ids.CHAR_TABLE i41
   alloc.vec.Vec.push s9 i42
 
-/-- [wastebin_kernel::id::encode]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 80:0-85:1
+/-- [wastebin_kernel::ids::encode]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 80:0-85:1
     Visibility: public -/
-def id.encode (id : id.Id) : Result (alloc.vec.Vec Std.U8) := do
+def ids.encode (id : ids.Id) : Result (alloc.vec.Vec Std.U8) := do
   match id with
-  | id.Id.Id32 n => id.encode32 n
-  | id.Id.Id64 n => id.encode64 n
+  | ids.Id.Id32 n => ids.encode32 n
+  | ids.Id.Id64 n => ids.encode64 n
 
-/-- [wastebin_kernel::id::key_path]: loop body 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 217:12-220:13
+/-- [wastebin_kernel::ids::key_path]: loop body 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 217:12-220:13
     Visibility: public -/
 @[rust_loop_body]
-def id.key_path_loop.body
-  (ext : alloc.vec.Vec Std.U8) (s : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+def ids.key_path_loop.body
+  (e : alloc.vec.Vec Std.U8) (s : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (ControlFlow ((alloc.vec.Vec Std.U8) × Std.Usize) (alloc.vec.Vec
     Std.U8))
   := do
-  let i1 := alloc.vec.Vec.len ext
+  let i1 := alloc.vec.Vec.len e
   if i < i1
   then
     let i2 ←
-      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) ext i
+      alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice Std.U8) e i
     let s1 ← alloc.vec.Vec.push s i2
     let i3 ← i + 1#usize
     ok (cont (s1, i3))
   else ok (done s)
 
-/-- [wastebin_kernel::id::key_path]: loop 0:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 217:12-220:13
+/-- [wastebin_kernel::ids::key_path]: loop 0:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 217:12-220:13
     Visibility: public -/
 @[rust_loop]
-def id.key_path_loop
-  (s : alloc.vec.Vec Std.U8) (ext : alloc.vec.Vec Std.U8) (i : Std.Usize) :
+def ids.key_path_loop
+  (s : alloc.vec.Vec Std.U8) (e : alloc.vec.Vec Std.U8) (i : Std.Usize) :
   Result (alloc.vec.Vec Std.U8)
   := do
   loop
-    (fun (s1, i1) => id.key_path_loop.body ext s1 i1)
+    (fun (s1, i1) => ids.key_path_loop.body e s1 i1)
     (s, i)
 
-/-- [wastebin_kernel::id::key_path]:
-    Source: 'prove/ports/wastebin/kernel/src/id.rs', lines 210:0-224:1
+/-- [wastebin_kernel::ids::key_path]:
+    Source: 'prove/ports/wastebin/kernel/src/ids.rs', lines 210:0-224:1
     Visibility: public -/
-def id.key_path (key : id.Key) : Result (alloc.vec.Vec Std.U8) := do
-  let s ← id.encode key.id
+def ids.key_path (key : ids.Key) : Result (alloc.vec.Vec Std.U8) := do
+  let s ← ids.encode key.id
   match key.ext with
   | none => ok s
-  | some ext =>
+  | some e =>
     let s1 ← alloc.vec.Vec.push s 46#u8
-    id.key_path_loop s1 ext 0#usize
+    ids.key_path_loop s1 e 0#usize
 
 /-- [wastebin_kernel::store::purge]: loop body 0:
     Source: 'prove/ports/wastebin/kernel/src/store.rs', lines 267:4-273:5
