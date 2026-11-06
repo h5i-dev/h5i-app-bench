@@ -135,4 +135,32 @@ theorem place_local (file_len : U32) (prev : Option Slot) (len : U32)
           | (left; scalar_tac)
           | (right; exact ⟨p, rfl, by simp only [inSlot, slotEnd]; scalar_tac⟩))
 
+/-! ## Panic freedom (C) -/
+
+@[step] theorem place_total (file_len : U32) (prev : Option Slot) (len : U32)
+    (hlen : len.val ≤ 4096) : place file_len prev len ⦃ _ => True ⦄ := by
+  have hmf : MAX_FILE.val = 16777216 := max_file_val
+  unfold place
+  cases prev <;> step* <;> scalar_tac
+
+@[step] theorem len_ok_spec (len : U32) :
+    len_ok len ⦃ b => b = true → (1 ≤ len.val ∧ len.val ≤ 4096) ⦄ := by
+  unfold len_ok
+  have := max_rec_val
+  split <;> step*
+
+/-- (C) `transition` never panics / overflows, for any actor, store and
+command (given the record count fits `usize`, which the file-size cap
+guarantees physically). A panic on the device is a reset. -/
+theorem transition_total (a : Device) (s : Store) (c : Command)
+    (hcap : s.slots.val.length < Usize.max) : ∃ r, transition a s c = ok r := by
+  have h : transition a s c ⦃ _ => True ⦄ := by
+    unfold transition
+    cases c <;> step* <;>
+      (try obtain ⟨slot0, off, plan, fl⟩ := val) <;>
+      step* <;>
+      (first | scalar_tac | assumption | simp_all [alloc.vec.Vec.deref])
+  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
+  exact ⟨r, hr⟩
+
 end spoolease_kernel.Properties
