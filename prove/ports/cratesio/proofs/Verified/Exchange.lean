@@ -92,4 +92,112 @@ theorem config_level_full (c : trustpub.GitHubConfig) (owner nm : Slice U8) (oid
   subst hc hc_1 hc_3
   refine ⟨by simpa using h1, by simpa using h2, by simp at hc_2; scalar_tac, by simpa using h3, h4.1 hc_4⟩
 
+theorem push_val {α : Type} {v : alloc.vec.Vec α} {x : α} {w : alloc.vec.Vec α}
+    (h : alloc.vec.Vec.push v x = ok w) : w.val = v.val ++ [x] := by
+  by_cases hb : v.val.length < Usize.max
+  · exact post_of_ok (P := fun w => w.val = v.val ++ [x]) (alloc.vec.Vec.push_spec v x hb) h
+  · exfalso
+    unfold alloc.vec.Vec.push at h
+    dsimp only at h
+    split at h
+    · rename_i hc
+      simp only [Bool.or_eq_true, decide_eq_true_eq] at hc
+      have : U32.max ≤ Usize.max := by scalar_tac
+      omega
+    · simp at h
+
+/-- Every crate id the exchange collects comes from a fully matching config. -/
+theorem matching_ids_ok (configs : alloc.vec.Vec trustpub.GitHubConfig) (owner nm : Slice U8) (oid : I32)
+    (wf : Slice U8) (env : Option (alloc.vec.Vec U8)) (ids : alloc.vec.Vec I32)
+    (h : trustpub.matching_ids configs owner nm oid wf env = ok ids) :
+    ∀ id ∈ ids.val, ∃ c ∈ configs.val, c.crate_id = id ∧
+      Matches c owner.val nm.val oid wf.val (env.map (·.val)) := by
+  unfold trustpub.matching_ids trustpub.matching_ids_loop at h
+  refine loop_ok (fun y => trustpub.matching_ids_loop.body configs owner nm oid wf env y.1 y.2)
+    (fun y => ∀ id ∈ y.1.val, ∃ c ∈ configs.val, c.crate_id = id ∧
+        Matches c owner.val nm.val oid wf.val (env.map (·.val)))
+    (fun x => ∀ id ∈ x.val, ∃ c ∈ configs.val, c.crate_id = id ∧
+        Matches c owner.val nm.val oid wf.val (env.map (·.val)))
+    (fun y => configs.val.length - y.2.val) ?_ _ ids (by simp [vec_new_val]) h
+  rintro ⟨acc, i⟩ res hinv hb
+  unfold trustpub.matching_ids_loop.body at hb
+  simp only at hinv hb ⊢
+  h5i_invert hb
+  · h5i_ok_facts
+    refine ⟨fun id hid => ?_, by scalar_tac⟩
+    simp only at hid
+    by_cases h4 : i2 ≥ 4#u8
+    · simp only [h4, if_true] at hids1
+      rw [push_val hids1] at hid
+      rcases List.mem_append.1 hid with hm | hm
+      · exact hinv id hm
+      · simp only [List.mem_singleton] at hm; subst hm
+        exact ⟨ghc, vec_index_ok_mem hghc, rfl, config_level_full _ _ _ _ _ _ _ hi2 (by scalar_tac)⟩
+    · simp only [h4, if_false] at hids1
+      have := Result.ok.inj hids1; subst this
+      exact hinv id hid
+  · exact hinv
+
+@[step] theorem first_slash_spec (s : Slice U8) :
+    trustpub.first_slash s ⦃ o => s.val.findIdx? (fun b => decide (b = 47#u8)) = o.map (·.val) ⦄ := by
+  unfold trustpub.first_slash trustpub.first_slash_loop
+  apply WP.spec_mono (loop_search s.val (fun b => decide (b = 47#u8))
+    (fun o : Option Usize => (o.map (·.val) : Option Nat)) (fun k _ => some k) none _ ?_ 0#usize (by simp))
+  · intro r hr; exact (search_findIdx _ _ _ hr).symm
+  · intro j hj; unfold trustpub.first_slash_loop.body; h5i_step
+
+/-- What a successful exchange establishes: the `jti` was unused and is now
+recorded, the event is not a forbidden trigger, and every crate the new
+token may publish has a config matching the token's repository, owner id,
+workflow and environment. -/
+theorem exchange_ok {used : alloc.vec.Vec (alloc.vec.Vec U8)} {configs : alloc.vec.Vec trustpub.GitHubConfig}
+    {claims : trustpub.GitHubClaims} {ids : alloc.vec.Vec I32} {used' : alloc.vec.Vec (alloc.vec.Vec U8)}
+    (h : trustpub.exchange_github used configs claims = ok (.Ok (ids, used'))) :
+    claims.jti.val ∉ used.val.map (·.val) ∧ used'.val.map (·.val) = used.val.map (·.val) ++ [claims.jti.val] ∧
+    claims.event_name.val ≠ trustpub.PULL_REQUEST_TARGET.val ∧ claims.event_name.val ≠ trustpub.WORKFLOW_RUN.val ∧
+    ids.val ≠ [] ∧
+    ∃ k wf oid, claims.repository.val.findIdx? (fun b => decide (b = 47#u8)) = some k ∧
+      trustpub.workflow_filename claims.workflow_ref.deref = ok (some wf) ∧
+      trustpub.parse_i32 claims.repository_owner_id.deref = ok (some oid) ∧
+      ∀ id ∈ ids.val, ∃ c ∈ configs.val, c.crate_id = id ∧
+        Matches c (claims.repository.val.take k) (claims.repository.val.drop (k + 1)) oid wf.val
+          (claims.environment.map (·.val)) := by
+  unfold trustpub.exchange_github at h
+  h5i_invert h
+  obtain ⟨rfl, rfl⟩ := h
+  have hj := post_of_ok (jti_used_spec _ _) hb
+  have he1 := post_of_ok (eq_spec _ _) hb1
+  have he2 := post_of_ok (eq_spec _ _) hb2
+  have hs2v : s2 = trustpub.PULL_REQUEST_TARGET.to_slice := by
+    simp only [lift] at hs2; exact (Result.ok.inj hs2).symm
+  have hs4v : s4 = trustpub.WORKFLOW_RUN.to_slice := by
+    simp only [lift] at hs4; exact (Result.ok.inj hs4).symm
+  have hsl := post_of_ok (first_slash_spec _) ho
+  simp only [deref_val, Option.map_some] at hsl
+  have hlt : i.val < claims.repository.val.length := (List.findIdx?_eq_some_iff_findIdx_eq.1 hsl).1
+  have hown := post_of_ok (sub_spec claims.repository.deref 0#usize i (by simp) (by simp [Slice.length]; omega)) howner
+  h5i_ok_facts
+  have hnm := post_of_ok (sub_spec claims.repository.deref i1 claims.repository.len (by scalar_tac)
+    (by simp [Slice.length])) hname
+  have hm := matching_ids_ok _ _ _ _ _ _ _ hids_1
+  have hcl := post_of_ok (CloneLaw.vec_clone_spec _ _) hout
+  subst hcl
+  have hv1v := post_of_ok (sub_spec claims.jti.deref 0#usize claims.jti.len (by simp) (by simp [Slice.length])) hv1
+  have hpush := push_val hout1
+  refine ⟨?_, ?_, ?_, ?_, ?_, i.val, h_1, uid, hsl, ho1, ho2, ?_⟩
+  · intro hin; apply hc; rw [← hj]; simpa using hin
+  · rw [hpush]; simp [hv1v, Slice.length]
+  · intro he; apply hc_1; rw [← he1, hs2v]; simp [he, Array.to_slice]
+  · intro he; apply hc_2; rw [← he2, hs4v]; simp [he, Array.to_slice]
+  · intro he; apply hc_6; have : ids_1.val.length = 0 := by simp [he]
+    scalar_tac
+  · intro id hid
+    obtain ⟨c, hc, hcid, hmt⟩ := hm id hid
+    refine ⟨c, hc, hcid, ?_⟩
+    simp only [deref_val, show ((0#usize : Usize) : Nat) = 0 from rfl, List.drop_zero] at hown hnm hmt
+    rw [hown, hnm] at hmt
+    have hl : claims.repository.len.val = claims.repository.val.length := by simp [Slice.len]
+    rw [hl, List.take_length, hi1_val] at hmt
+    simpa using hmt
+
 end cratesio_kernel.Verified.Exchange

@@ -1,5 +1,6 @@
 import Verified.Authn
 import Verified.Publish
+import Verified.Exchange
 import Spec
 /-!
 # crates.io: the security properties
@@ -234,5 +235,93 @@ theorem publish_token_scoped (nm : Slice U8) (existing : Option publish.Crate)
       subst h2; rw [← hv]; exact h3
 
 end Publish
+
+/-! ## Trusted Publishing token exchange (`handle_github_token_inner`) -/
+
+section Exchange
+open Verified.Exchange
+
+/-- An access token is issued only for crates whose Trusted Publishing config
+matches the OIDC token: the repository owner and name (ignoring case, split
+at the first `/`), the numeric repository owner id, the workflow file, and,
+if the config names an environment, the same environment. -/
+theorem exchange_only_matching_configs (used : alloc.vec.Vec (alloc.vec.Vec U8))
+    (configs : alloc.vec.Vec trustpub.GitHubConfig) (claims : trustpub.GitHubClaims)
+    (ids : alloc.vec.Vec I32) (used' : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : trustpub.exchange_github used configs claims = ok (.Ok (ids, used'))) :
+    ids.val ≠ [] ∧ ∃ k wf oid, claims.repository.val.findIdx? (fun b => decide (b = 47#u8)) = some k ∧
+      trustpub.workflow_filename claims.workflow_ref.deref = ok (some wf) ∧
+      trustpub.parse_i32 claims.repository_owner_id.deref = ok (some oid) ∧
+      ∀ id ∈ ids.val, ∃ c ∈ configs.val, c.crate_id = id ∧
+        EqLower c.repository_owner.val (claims.repository.val.take k) ∧
+        EqLower c.repository_name.val (claims.repository.val.drop (k + 1)) ∧
+        c.repository_owner_id = oid ∧ c.workflow_filename.val = wf.val ∧
+        EnvOk (c.environment.map (·.val)) (claims.environment.map (·.val)) := by
+  obtain ⟨-, -, -, -, hne, k, wf, oid, hk, hw, ho, hm⟩ := exchange_ok h
+  exact ⟨hne, k, wf, oid, hk, hw, ho, hm⟩
+
+/-- A config that names an environment is never matched by an OIDC token
+without that environment. -/
+theorem exchange_environment_enforced (used : alloc.vec.Vec (alloc.vec.Vec U8))
+    (configs : alloc.vec.Vec trustpub.GitHubConfig) (claims : trustpub.GitHubClaims)
+    (ids : alloc.vec.Vec I32) (used' : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : trustpub.exchange_github used configs claims = ok (.Ok (ids, used')))
+    (id : I32) (hid : id ∈ ids.val) :
+    ∃ c ∈ configs.val, c.crate_id = id ∧ ∀ e, c.environment = some e →
+      ∃ s, claims.environment = some s ∧ EqLower e.val s.val := by
+  obtain ⟨-, -, -, -, -, k, wf, oid, -, -, -, hm⟩ := exchange_ok h
+  obtain ⟨c, hc, hcid, -, -, -, -, henv⟩ := hm id hid
+  refine ⟨c, hc, hcid, fun e he => ?_⟩
+  rcases henv with h0 | ⟨c', s', h1, h2, h3⟩
+  · rw [he] at h0; cases h0
+  · rw [he] at h1; simp only [Option.map_some, Option.some.injEq] at h1
+    rcases hs : claims.environment with _ | s
+    · rw [hs] at h2; cases h2
+    · rw [hs] at h2; simp only [Option.map_some, Option.some.injEq] at h2
+      exact ⟨s, rfl, by rw [h1, h2]; exact h3⟩
+
+/-- An OIDC token's `jti` is single-use: an exchange succeeds only if the
+`jti` was never used, and records it. -/
+theorem exchange_jti_single_use (used : alloc.vec.Vec (alloc.vec.Vec U8))
+    (configs : alloc.vec.Vec trustpub.GitHubConfig) (claims : trustpub.GitHubClaims)
+    (ids : alloc.vec.Vec I32) (used' : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : trustpub.exchange_github used configs claims = ok (.Ok (ids, used'))) :
+    claims.jti.val ∉ used.val.map (·.val) ∧ used'.val.map (·.val) = used.val.map (·.val) ++ [claims.jti.val] :=
+  ⟨(exchange_ok h).1, (exchange_ok h).2.1⟩
+
+/-- Replaying an OIDC token (same `jti`) after a successful exchange is
+refused, whatever the configs are by then. -/
+theorem exchange_replay_rejected (used : alloc.vec.Vec (alloc.vec.Vec U8))
+    (configs configs' : alloc.vec.Vec trustpub.GitHubConfig) (claims claims' : trustpub.GitHubClaims)
+    (ids : alloc.vec.Vec I32) (used' : alloc.vec.Vec (alloc.vec.Vec U8))
+    (h : trustpub.exchange_github used configs claims = ok (.Ok (ids, used')))
+    (hj : claims'.jti = claims.jti) :
+    trustpub.exchange_github used' configs' claims' = ok (.Err .JtiReused) := by
+  have hrec := (exchange_ok h).2.1
+  have hin : claims'.jti.val ∈ used'.val.map (·.val) := by rw [hrec, hj]; simp
+  unfold trustpub.exchange_github
+  obtain ⟨b, hb⟩ := ok_of (jti_used_spec used' claims'.jti.deref)
+  have := post_of_ok (jti_used_spec used' claims'.jti.deref) hb
+  simp only [Verified.Bytes.deref_val] at this
+  have hbt : b = true := by rw [← this]; simpa using hin
+  subst hbt
+  simp [hb]
+
+/-- OIDC tokens from `pull_request_target` and `workflow_run` workflows are
+never exchanged. -/
+theorem exchange_rejects_forbidden_events (used : alloc.vec.Vec (alloc.vec.Vec U8))
+    (configs : alloc.vec.Vec trustpub.GitHubConfig) (claims : trustpub.GitHubClaims)
+    (r : alloc.vec.Vec I32 × alloc.vec.Vec (alloc.vec.Vec U8))
+    (he : claims.event_name.val = trustpub.PULL_REQUEST_TARGET.val ∨
+      claims.event_name.val = trustpub.WORKFLOW_RUN.val) :
+    trustpub.exchange_github used configs claims ≠ ok (.Ok r) := by
+  intro h
+  obtain ⟨ids, used'⟩ := r
+  obtain ⟨-, -, h1, h2, -⟩ := exchange_ok h
+  rcases he with he | he
+  · exact h1 he
+  · exact h2 he
+
+end Exchange
 
 end cratesio_kernel.Properties
