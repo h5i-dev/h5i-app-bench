@@ -8,8 +8,8 @@
 - `h5i app check`: 468 theorems in 11 modules, using only propext, Classical.choice and Quot.sound
 - `h5i app lint`, which passes only when the `upstream-src` symlink is moved away first; otherwise lint scans upstream's server code.
 
-**Mutation:** the first 14 hand-written mutants were all caught (14/14, 0 survived). The 12
-mutants added later are still running (`/mnt/scratch/oss-sec/tmp/c/mutate2.log`).
+**Mutation:** `h5i app mutate -j 2 ports/openobserve` — baseline ok, then **26/26 caught, 0 survived, 0 invalid**
+(the full mutant set below).
 
 **Upstream:** openobserve/openobserve @ `a7745479a44bb2dd6f3498b2b3902304600bb466`. Scope, trusted
 boundary and deviations are in [DEVIATIONS.md](DEVIATIONS.md). Findings are in [FINDINGS.md](FINDINGS.md).
@@ -69,17 +69,14 @@ and every store table. The route theorems assume `path.length < usize::MAX`.
 
 ## Mutation results
 
-`h5i app mutate -j 2 ports/openobserve` on a shared 4-core host takes about 16 minutes per mutant.
+`h5i app mutate -j 2 ports/openobserve` on a shared 4-core host: baseline ok, then **26/26 caught,
+0 survived, 0 invalid**. Every mutant listed under `[[mutant]]` in `h5i-app.toml` (the 14
+delegated-token bugs and the 12 route/gRPC/org bugs) breaks at least one gated theorem.
 
-- Run 1: baseline ok, then 14/14 caught: `expiry_off_by_one`, `signature_ignored`,
-  `missing_previous_key_verifies`, `no_issued_at_skew_check`, `lifetime_two_hours`,
-  `member_of_any_org`, `role_escalated_to_root`, `revoked_link_kept`, `revoked_installation_kept`,
-  `subject_not_checked`, `org_connection_not_checked`, `slack_switch_ignored`,
-  `disabled_org_ignored`, `blocklist_ignored`.
-- Run 2 (`--only` for the 12 later mutants): in progress.
-- Known unspecified behaviour, which is a candidate survivor: the `RESERVED_STREAM_SLOTS` and
-  `ALERT_ID_LITERALS` exclusions in `seg_matches`. No S theorem states what they prevent (a
-  `{stream}` slot capturing a router literal). They are pinned only by C theorems (route matcher = Spec).
+- Known unspecified behaviour not covered by an S theorem (so not a mutant here): the
+  `RESERVED_STREAM_SLOTS` and `ALERT_ID_LITERALS` exclusions in `seg_matches`. They are pinned only
+  by the route-matcher correspondence (`V.segments_match_spec`, `V.in_scope_spec`), not by a
+  dedicated S property about what a reserved slot prevents.
 
 ## What is next
 

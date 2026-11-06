@@ -27,8 +27,7 @@ Two projects, both finished as full vertical slices (kernel + differential tests
 - Differential tests (12), ~700k random cases total, all comparing against upstream's own code
   compiled at the pinned commit (delegation, route scopes, link facts, `org_from_path`, the gRPC
   interceptor with real tonic/DashMap/http-auth-basic, `token_matches`, metadata validity).
-- Mutation: the 14 hand-written delegated-token mutants were caught 14/14; 12 more (route/gRPC) are
-  running.
+- Mutation: the full set was caught 26/26 (0 survived); see each port's STATUS. spacedrive: 3/3 caught.
 - **Finding F1 (low):** the delegated-token lifetime check computes `exp - iat` in `i64`; in
   openobserve's release profiles (overflow-checks off) `exp = i64::MAX, iat < 0` wraps and the token
   is accepted as "short-lived". The kernel (checked arithmetic) refuses it; the difftest shows
@@ -47,7 +46,7 @@ Two projects, both finished as full vertical slices (kernel + differential tests
   of `components` and a `skip` preservation proof.
 - Differential tests: `landing_agrees` (200k random names vs upstream's own `landing`), and a
   reproduction of the finding below using upstream's own extractor.
-- Mutation: 3 mutants (keep `..` / keep NUL / keep empty+`.`), running.
+- Mutation: 3 mutants (keep `..` / keep NUL / keep empty+`.`), all caught 3/3, 0 survived.
 - **Finding F1 (medium):** `landing` sanitises entry *names* but not entry *types*. A `.tar.zst`
   whose first entry is a symlink `lnk -> <outside>` and whose second is `lnk/pwned.txt` has both
   names pass `landing`; upstream's tar extractor then writes the second file through the symlink,
