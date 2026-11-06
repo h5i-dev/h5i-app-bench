@@ -258,4 +258,27 @@ theorem extra_perms_true_needs_entry (is_object : Bool) (obj : Slice authz.PermE
          exact ⟨e, he, hb, hval, Or.inr ⟨g, hgm, hkey⟩⟩)
   · exact h.1.elim
 
+theorem seg_of' {parts : alloc.vec.Vec (alloc.vec.Vec U8)} {segs : List Bytes}
+    (hs : parts.val.map (·.val) = segs) {i : Usize} {v : alloc.vec.Vec U8}
+    (hv : alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice (alloc.vec.Vec U8)) parts i = ok v)
+    {n : Nat} (hn : i.val = n) : segs[n]! = v.val := by
+  subst hn; exact seg_of hs hv
+
+theorem parse_fields (s : Slice U8) (sc : scopes.Scope) (hs : s.length < Usize.max)
+    (h : scopes.from_scope_string s = ok (some sc)) :
+    sc.domain.val = (segments 58#u8 s.val)[0]! ∧ sc.action.val = (segments 58#u8 s.val)[1]! := by
+  unfold scopes.from_scope_string at h
+  simp only [u8vec_clone, bind_ok] at h
+  h5i_invert h
+  all_goals
+    have hsp := post_of_ok (split_spec s 58#u8 hs) hparts
+    simp only [Option.some.injEq] at h
+    subst h
+    constructor
+    all_goals
+      simp only
+      first
+        | exact (seg_of' hsp (i := 0#usize) (by assumption) rfl).symm
+        | exact (seg_of' hsp (i := 1#usize) (by assumption) rfl).symm
+
 end windmill_kernel.Properties
