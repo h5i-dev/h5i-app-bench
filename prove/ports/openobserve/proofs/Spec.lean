@@ -37,11 +37,12 @@ def ClaimsFresh (c : Claims) (now : Int) : Prop :=
 /-- The signature check: the decoded MAC equals the MAC under the current
 key, or under the previous key when one is configured. -/
 def SignatureOk (o : VerifyOracle) : Prop :=
-  ∃ g, o.given_mac = some g ∧ (o.mac_current.val = g.val ∨ ∃ p, o.mac_previous = some p ∧ p.val = g.val)
+  ∃ g, o.given_mac = some g ∧
+    (nats o.mac_current.val = nats g.val ∨ ∃ p, o.mac_previous = some p ∧ nats p.val = nats g.val)
 
 /-- The token has the shape `o2dt.<claims>.<mac>`. -/
 def TokenShape (t : List Nat) : Prop :=
-  lit "o2dt." <+: t ∧ 46 ∈ t.drop 5
+  [111, 50, 100, 116, 46] /- o2dt. -/ <+: t ∧ 46 ∈ t.drop 5
 
 /-- `verify`'s checks after the signature, in upstream's order, over `Int`. -/
 def checkClaims (c : Claims) (now : Int) : core.result.Result Claims DelegationError :=
@@ -59,7 +60,7 @@ def previousMatches (o : VerifyOracle) (g : List Nat) : Bool :=
 
 /-- `verify(keys, token, now)`, in upstream's order. -/
 def verifySpec (t : List Nat) (o : VerifyOracle) (now : Int) : core.result.Result Claims DelegationError :=
-  if ¬ (lit "o2dt." <+: t ∧ 46 ∈ t.drop 5) then .Err (.Malformed .Shape) else
+  if ¬ ([111, 50, 100, 116, 46] /- o2dt. -/ <+: t ∧ 46 ∈ t.drop 5) then .Err (.Malformed .Shape) else
   match o.given_mac with
   | none => .Err (.Malformed .MacEncoding)
   | some g =>
@@ -82,7 +83,7 @@ when it is non-empty and more of the path follows. -/
 def pathOrg (rel : List Nat) : Option (List Nat) :=
   let (org, rest) : List Nat × List (List Nat) :=
     match splitSlash rel with
-    | v :: o :: r => if v = lit "v2" then (o, r) else (v, o :: r)
+    | v :: o :: r => if v = [118, 50] /- v2 -/ then (o, r) else (v, o :: r)
     | [v] => (v, [])
     | [] => ([], [])
   if org ≠ [] ∧ rest ≠ [] then some org else none
@@ -100,18 +101,18 @@ def segsMatch (ps : List SSeg) (cs : List (List Nat)) : Bool :=
 
 /-- `in_scope`: never DELETE; a `v2/` prefix selects the v2 routes. -/
 def inScope (routes : List SRoute) (m : Method) (path : List Nat) : Bool :=
-  let (v2, rest) := if lit "v2/" <+: path then (true, path.drop 3) else (false, path)
+  let (v2, rest) := if [118, 50, 47] /- v2/ -/ <+: path then (true, path.drop 3) else (false, path)
   decide (m ≠ .Delete) && routes.any (fun r => decide (r.v2 = v2) && decide (m ∈ r.methods) && segsMatch r.segs (splitSlash rest))
 
 def scopeRoutes (s : List Nat) : Option (List SRoute) :=
-  if s = lit "assistant" then some assistantScope
-  else if s = lit "slack_action" then some slackActionScope
+  if s = [97, 115, 115, 105, 115, 116, 97, 110, 116] /- assistant -/ then some assistantScope
+  else if s = [115, 108, 97, 99, 107, 95, 97, 99, 116, 105, 111, 110] /- slack_action -/ then some slackActionScope
   else none
 
 /-- `check_route`, in upstream's order. -/
 def checkRoute (path pfx : List Nat) (m : Method) (org scope : List Nat) :
     core.result.Result Unit AuthError :=
-  if pfx = lit "/proxy/" then .Err (.Forbidden .Proxy) else
+  if pfx = [47, 112, 114, 111, 120, 121, 47] /- /proxy/ -/ then .Err (.Forbidden .Proxy) else
   match scopeRoutes scope with
   | none => .Err (.Forbidden .UnknownScope)
   | some routes =>
@@ -125,13 +126,13 @@ def checkRoute (path pfx : List Nat) (m : Method) (org scope : List Nat) :
 /-! ## `core::auth::org_from_path` -/
 
 def v2OrgModules : List (List Nat) :=
-  [lit "alerts", lit "folders", lit "reports", lit "synthetics", lit "incidents", lit "downtimes",
-   lit "workflows", lit "alert_calibration", lit "fleets"]
+  [[97, 108, 101, 114, 116, 115] /- alerts -/, [102, 111, 108, 100, 101, 114, 115] /- folders -/, [114, 101, 112, 111, 114, 116, 115] /- reports -/, [115, 121, 110, 116, 104, 101, 116, 105, 99, 115] /- synthetics -/, [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, [100, 111, 119, 110, 116, 105, 109, 101, 115] /- downtimes -/,
+   [119, 111, 114, 107, 102, 108, 111, 119, 115] /- workflows -/, [97, 108, 101, 114, 116, 95, 99, 97, 108, 105, 98, 114, 97, 116, 105, 111, 110] /- alert_calibration -/, [102, 108, 101, 101, 116, 115] /- fleets -/]
 
 /-- The org the router serves for a path's segments. -/
 def orgFromPath (cols : List (List Nat)) : List Nat :=
   match cols with
-  | v :: org :: m :: _ => if v = lit "v2" ∧ m ∈ v2OrgModules then org else v
+  | v :: org :: m :: _ => if v = [118, 50] /- v2 -/ ∧ m ∈ v2OrgModules then org else v
   | v :: _ => v
   | [] => []
 

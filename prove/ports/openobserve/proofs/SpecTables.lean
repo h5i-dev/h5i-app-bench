@@ -21,98 +21,137 @@ structure SRoute where
   segs : List SSeg
   methods : List Method
 
-def reservedStreamSlots : List (List Nat) := [lit "_data_stream", lit "_index_template", lit "annotation_queues", lit "anomaly_detection", lit "cipher_keys", lit "datasets", lit "enrichment_tables", lit "eval_jobs", lit "experiments", lit "functions", lit "groups", lit "kv", lit "org_cleanup_tasks", lit "pipelines", lit "prompts", lit "providers", lit "re_patterns", lit "reports", lit "roles", lit "savedviews", lit "score_configs", lit "scorers", lit "search_jobs", lit "short", lit "slos", lit "status_pages", lit "streams", lit "synthetics", lit "tasks", lit "users", lit "workflows"]
+def reservedStreamSlots : List (List Nat) := [
+  [95, 100, 97, 116, 97, 95, 115, 116, 114, 101, 97, 109] /- _data_stream -/,
+  [95, 105, 110, 100, 101, 120, 95, 116, 101, 109, 112, 108, 97, 116, 101] /- _index_template -/,
+  [97, 110, 110, 111, 116, 97, 116, 105, 111, 110, 95, 113, 117, 101, 117, 101, 115] /- annotation_queues -/,
+  [97, 110, 111, 109, 97, 108, 121, 95, 100, 101, 116, 101, 99, 116, 105, 111, 110] /- anomaly_detection -/,
+  [99, 105, 112, 104, 101, 114, 95, 107, 101, 121, 115] /- cipher_keys -/,
+  [100, 97, 116, 97, 115, 101, 116, 115] /- datasets -/,
+  [101, 110, 114, 105, 99, 104, 109, 101, 110, 116, 95, 116, 97, 98, 108, 101, 115] /- enrichment_tables -/,
+  [101, 118, 97, 108, 95, 106, 111, 98, 115] /- eval_jobs -/,
+  [101, 120, 112, 101, 114, 105, 109, 101, 110, 116, 115] /- experiments -/,
+  [102, 117, 110, 99, 116, 105, 111, 110, 115] /- functions -/,
+  [103, 114, 111, 117, 112, 115] /- groups -/,
+  [107, 118] /- kv -/,
+  [111, 114, 103, 95, 99, 108, 101, 97, 110, 117, 112, 95, 116, 97, 115, 107, 115] /- org_cleanup_tasks -/,
+  [112, 105, 112, 101, 108, 105, 110, 101, 115] /- pipelines -/,
+  [112, 114, 111, 109, 112, 116, 115] /- prompts -/,
+  [112, 114, 111, 118, 105, 100, 101, 114, 115] /- providers -/,
+  [114, 101, 95, 112, 97, 116, 116, 101, 114, 110, 115] /- re_patterns -/,
+  [114, 101, 112, 111, 114, 116, 115] /- reports -/,
+  [114, 111, 108, 101, 115] /- roles -/,
+  [115, 97, 118, 101, 100, 118, 105, 101, 119, 115] /- savedviews -/,
+  [115, 99, 111, 114, 101, 95, 99, 111, 110, 102, 105, 103, 115] /- score_configs -/,
+  [115, 99, 111, 114, 101, 114, 115] /- scorers -/,
+  [115, 101, 97, 114, 99, 104, 95, 106, 111, 98, 115] /- search_jobs -/,
+  [115, 104, 111, 114, 116] /- short -/,
+  [115, 108, 111, 115] /- slos -/,
+  [115, 116, 97, 116, 117, 115, 95, 112, 97, 103, 101, 115] /- status_pages -/,
+  [115, 116, 114, 101, 97, 109, 115] /- streams -/,
+  [115, 121, 110, 116, 104, 101, 116, 105, 99, 115] /- synthetics -/,
+  [116, 97, 115, 107, 115] /- tasks -/,
+  [117, 115, 101, 114, 115] /- users -/,
+  [119, 111, 114, 107, 102, 108, 111, 119, 115] /- workflows -/]
 
-def alertIdLiterals : List (List Nat) := [lit "auto_investigate", lit "bulk", lit "composites", lit "generate_sql", lit "history", lit "incidents", lit "move", lit "tags"]
+def alertIdLiterals : List (List Nat) := [
+  [97, 117, 116, 111, 95, 105, 110, 118, 101, 115, 116, 105, 103, 97, 116, 101] /- auto_investigate -/,
+  [98, 117, 108, 107] /- bulk -/,
+  [99, 111, 109, 112, 111, 115, 105, 116, 101, 115] /- composites -/,
+  [103, 101, 110, 101, 114, 97, 116, 101, 95, 115, 113, 108] /- generate_sql -/,
+  [104, 105, 115, 116, 111, 114, 121] /- history -/,
+  [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/,
+  [109, 111, 118, 101] /- move -/,
+  [116, 97, 103, 115] /- tags -/]
 
 def assistantScope0 : List SRoute := [
-  ⟨false, [.param, .lit (lit "_search")], [.Post]⟩,
-  ⟨false, [.param, .stream, .lit (lit "_values")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "_around")], [.Get, .Post]⟩,
-  ⟨false, [.param, .lit (lit "prometheus"), .lit (lit "api"), .lit (lit "v1"), .lit (lit "query")], [.Get, .Post]⟩,
-  ⟨false, [.param, .lit (lit "prometheus"), .lit (lit "api"), .lit (lit "v1"), .lit (lit "query_range")], [.Get, .Post]⟩,
-  ⟨false, [.param, .lit (lit "streams")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "streams"), .param, .lit (lit "schema")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "functions")], [.Get]⟩]
+  ⟨false, [.param, .lit [95, 115, 101, 97, 114, 99, 104] /- _search -/], [.Post]⟩,
+  ⟨false, [.param, .stream, .lit [95, 118, 97, 108, 117, 101, 115] /- _values -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [95, 97, 114, 111, 117, 110, 100] /- _around -/], [.Get, .Post]⟩,
+  ⟨false, [.param, .lit [112, 114, 111, 109, 101, 116, 104, 101, 117, 115] /- prometheus -/, .lit [97, 112, 105] /- api -/, .lit [118, 49] /- v1 -/, .lit [113, 117, 101, 114, 121] /- query -/], [.Get, .Post]⟩,
+  ⟨false, [.param, .lit [112, 114, 111, 109, 101, 116, 104, 101, 117, 115] /- prometheus -/, .lit [97, 112, 105] /- api -/, .lit [118, 49] /- v1 -/, .lit [113, 117, 101, 114, 121, 95, 114, 97, 110, 103, 101] /- query_range -/], [.Get, .Post]⟩,
+  ⟨false, [.param, .lit [115, 116, 114, 101, 97, 109, 115] /- streams -/], [.Get]⟩,
+  ⟨false, [.param, .lit [115, 116, 114, 101, 97, 109, 115] /- streams -/, .param, .lit [115, 99, 104, 101, 109, 97] /- schema -/], [.Get]⟩,
+  ⟨false, [.param, .lit [102, 117, 110, 99, 116, 105, 111, 110, 115] /- functions -/], [.Get]⟩]
 
 def assistantScope1 : List SRoute := [
-  ⟨false, [.param, .lit (lit "dashboards")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "dashboards"), .param], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "folders"), .param], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "folders"), .param, .param], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "folders"), .param, .lit (lit "name"), .param], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts")], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .param], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .param, .lit (lit "groups")], [.Get]⟩]
+  ⟨false, [.param, .lit [100, 97, 115, 104, 98, 111, 97, 114, 100, 115] /- dashboards -/], [.Get]⟩,
+  ⟨false, [.param, .lit [100, 97, 115, 104, 98, 111, 97, 114, 100, 115] /- dashboards -/, .param], [.Get]⟩,
+  ⟨true, [.param, .lit [102, 111, 108, 100, 101, 114, 115] /- folders -/, .param], [.Get]⟩,
+  ⟨true, [.param, .lit [102, 111, 108, 100, 101, 114, 115] /- folders -/, .param, .param], [.Get]⟩,
+  ⟨true, [.param, .lit [102, 111, 108, 100, 101, 114, 115] /- folders -/, .param, .lit [110, 97, 109, 101] /- name -/, .param], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .param], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .param, .lit [103, 114, 111, 117, 112, 115] /- groups -/], [.Get]⟩]
 
 def assistantScope2 : List SRoute := [
-  ⟨true, [.param, .lit (lit "alerts"), .param, .lit (lit "groups"), .lit (lit "transitions")], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param, .lit (lit "events")], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param, .lit (lit "rca"), .lit (lit "runs")], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param, .lit (lit "rca"), .lit (lit "runs"), .param], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param, .lit (lit "update")], [.Patch]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param, .lit (lit "events"), .lit (lit "comment")], [.Post]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .lit (lit "latest")], [.Get]⟩]
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .param, .lit [103, 114, 111, 117, 112, 115] /- groups -/, .lit [116, 114, 97, 110, 115, 105, 116, 105, 111, 110, 115] /- transitions -/], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [101, 118, 101, 110, 116, 115] /- events -/], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [114, 99, 97] /- rca -/, .lit [114, 117, 110, 115] /- runs -/], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [114, 99, 97] /- rca -/, .lit [114, 117, 110, 115] /- runs -/, .param], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [117, 112, 100, 97, 116, 101] /- update -/], [.Patch]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [101, 118, 101, 110, 116, 115] /- events -/, .lit [99, 111, 109, 109, 101, 110, 116] /- comment -/], [.Post]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .lit [108, 97, 116, 101, 115, 116] /- latest -/], [.Get]⟩]
 
 def assistantScope3 : List SRoute := [
-  ⟨false, [.param, .stream, .lit (lit "traces"), .lit (lit "latest_stream")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .lit (lit "session")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .lit (lit "session"), .lit (lit "details")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .lit (lit "user")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .lit (lit "time_range")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .param, .lit (lit "details")], [.Get]⟩,
-  ⟨false, [.param, .stream, .lit (lit "traces"), .param, .lit (lit "dag")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams")], [.Get]⟩]
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .lit [108, 97, 116, 101, 115, 116, 95, 115, 116, 114, 101, 97, 109] /- latest_stream -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .lit [115, 101, 115, 115, 105, 111, 110] /- session -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .lit [115, 101, 115, 115, 105, 111, 110] /- session -/, .lit [100, 101, 116, 97, 105, 108, 115] /- details -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .lit [117, 115, 101, 114] /- user -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .lit [116, 105, 109, 101, 95, 114, 97, 110, 103, 101] /- time_range -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .param, .lit [100, 101, 116, 97, 105, 108, 115] /- details -/], [.Get]⟩,
+  ⟨false, [.param, .stream, .lit [116, 114, 97, 99, 101, 115] /- traces -/, .param, .lit [100, 97, 103] /- dag -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/], [.Get]⟩]
 
 def assistantScope4 : List SRoute := [
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param, .lit (lit "members")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param, .lit (lit "schedule")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param, .lit (lit "on-call")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param, .lit (lit "overrides")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param, .lit (lit "resolved-schedule")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "teams"), .param, .lit (lit "overview")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses")], [.Get]⟩]
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param, .lit [109, 101, 109, 98, 101, 114, 115] /- members -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param, .lit [115, 99, 104, 101, 100, 117, 108, 101] /- schedule -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param, .lit [111, 110, 45, 99, 97, 108, 108] /- on-call -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param, .lit [111, 118, 101, 114, 114, 105, 100, 101, 115] /- overrides -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param, .lit [114, 101, 115, 111, 108, 118, 101, 100, 45, 115, 99, 104, 101, 100, 117, 108, 101] /- resolved-schedule -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [116, 101, 97, 109, 115] /- teams -/, .param, .lit [111, 118, 101, 114, 118, 105, 101, 119] /- overview -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/], [.Get]⟩]
 
 def assistantScope5 : List SRoute := [
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "history")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "escalation")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "incidents"), .param, .lit (lit "responses")], [.Get]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "acknowledge")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "snooze")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "unsnooze")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "resolve")], [.Post]⟩]
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [104, 105, 115, 116, 111, 114, 121] /- history -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [101, 115, 99, 97, 108, 97, 116, 105, 111, 110] /- escalation -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/], [.Get]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [97, 99, 107, 110, 111, 119, 108, 101, 100, 103, 101] /- acknowledge -/], [.Post]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [115, 110, 111, 111, 122, 101] /- snooze -/], [.Post]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [117, 110, 115, 110, 111, 111, 122, 101] /- unsnooze -/], [.Post]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [114, 101, 115, 111, 108, 118, 101] /- resolve -/], [.Post]⟩]
 
 def assistantScope6 : List SRoute := [
-  ⟨false, [.param, .lit (lit "ai"), .lit (lit "chat")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "ai"), .lit (lit "chat_stream")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "ai"), .lit (lit "feedback")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "ai"), .lit (lit "confirm"), .param], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "ai"), .lit (lit "chats"), .param, .lit (lit "cancel")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "mcp")], [.Get, .Post]⟩,
-  ⟨true, [.param, .lit (lit "downtimes")], [.Post]⟩,
-  ⟨true, [.param, .lit (lit "downtimes"), .param, .lit (lit "cancel")], [.Post]⟩]
+  ⟨false, [.param, .lit [97, 105] /- ai -/, .lit [99, 104, 97, 116] /- chat -/], [.Post]⟩,
+  ⟨false, [.param, .lit [97, 105] /- ai -/, .lit [99, 104, 97, 116, 95, 115, 116, 114, 101, 97, 109] /- chat_stream -/], [.Post]⟩,
+  ⟨false, [.param, .lit [97, 105] /- ai -/, .lit [102, 101, 101, 100, 98, 97, 99, 107] /- feedback -/], [.Post]⟩,
+  ⟨false, [.param, .lit [97, 105] /- ai -/, .lit [99, 111, 110, 102, 105, 114, 109] /- confirm -/, .param], [.Post]⟩,
+  ⟨false, [.param, .lit [97, 105] /- ai -/, .lit [99, 104, 97, 116, 115] /- chats -/, .param, .lit [99, 97, 110, 99, 101, 108] /- cancel -/], [.Post]⟩,
+  ⟨false, [.param, .lit [109, 99, 112] /- mcp -/], [.Get, .Post]⟩,
+  ⟨true, [.param, .lit [100, 111, 119, 110, 116, 105, 109, 101, 115] /- downtimes -/], [.Post]⟩,
+  ⟨true, [.param, .lit [100, 111, 119, 110, 116, 105, 109, 101, 115] /- downtimes -/, .param, .lit [99, 97, 110, 99, 101, 108] /- cancel -/], [.Post]⟩]
 
 def assistantScope : List SRoute := assistantScope0 ++ assistantScope1 ++ assistantScope2 ++ assistantScope3 ++ assistantScope4 ++ assistantScope5 ++ assistantScope6
 
 def slackActionScope0 : List SRoute := [
-  ⟨true, [.param, .lit (lit "alerts"), .alertId], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "acks")], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "groups")], [.Get]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "ack")], [.Post]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "unack")], [.Post]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "mute")], [.Post]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "mute"), .param, .lit (lit "extend")], [.Post]⟩,
-  ⟨true, [.param, .lit (lit "alerts"), .alertId, .lit (lit "mute"), .param, .lit (lit "cancel")], [.Post]⟩]
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [97, 99, 107, 115] /- acks -/], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [103, 114, 111, 117, 112, 115] /- groups -/], [.Get]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [97, 99, 107] /- ack -/], [.Post]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [117, 110, 97, 99, 107] /- unack -/], [.Post]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [109, 117, 116, 101] /- mute -/], [.Post]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [109, 117, 116, 101] /- mute -/, .param, .lit [101, 120, 116, 101, 110, 100] /- extend -/], [.Post]⟩,
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .alertId, .lit [109, 117, 116, 101] /- mute -/, .param, .lit [99, 97, 110, 99, 101, 108] /- cancel -/], [.Post]⟩]
 
 def slackActionScope1 : List SRoute := [
-  ⟨true, [.param, .lit (lit "alerts"), .lit (lit "incidents"), .param, .lit (lit "update")], [.Patch]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "resolve")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "snooze")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "acknowledge")], [.Post]⟩,
-  ⟨false, [.param, .lit (lit "oncall"), .lit (lit "responses"), .param, .lit (lit "unacknowledge")], [.Post]⟩]
+  ⟨true, [.param, .lit [97, 108, 101, 114, 116, 115] /- alerts -/, .lit [105, 110, 99, 105, 100, 101, 110, 116, 115] /- incidents -/, .param, .lit [117, 112, 100, 97, 116, 101] /- update -/], [.Patch]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [114, 101, 115, 111, 108, 118, 101] /- resolve -/], [.Post]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [115, 110, 111, 111, 122, 101] /- snooze -/], [.Post]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [97, 99, 107, 110, 111, 119, 108, 101, 100, 103, 101] /- acknowledge -/], [.Post]⟩,
+  ⟨false, [.param, .lit [111, 110, 99, 97, 108, 108] /- oncall -/, .lit [114, 101, 115, 112, 111, 110, 115, 101, 115] /- responses -/, .param, .lit [117, 110, 97, 99, 107, 110, 111, 119, 108, 101, 100, 103, 101] /- unacknowledge -/], [.Post]⟩]
 
 def slackActionScope : List SRoute := slackActionScope0 ++ slackActionScope1
 

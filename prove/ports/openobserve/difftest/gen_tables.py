@@ -86,8 +86,12 @@ def rust_list(name, xs):
     return f"pub fn {name}() -> Vec<Vec<u8>> {{\n    let mut out = Vec::new();\n{body}\n    out\n}}"
 
 
+def lean_bytes(s):
+    return "[" + ", ".join(str(b) for b in s.encode()) + "]"
+
+
 def lean_seg(kind, lit):
-    return f'.lit (lit "{lit}")' if kind == "lit" else f".{kind}"
+    return f".lit {lean_bytes(lit)} /- {lit} -/" if kind == "lit" else f".{kind}"
 
 
 def lean_routes(name, rs, fns):
@@ -139,8 +143,8 @@ def main(repo):
             "inductive SSeg where\n  | lit (s : List Nat)\n  | param\n  | stream\n  | alertId\n"
             "  deriving DecidableEq, Repr\n\n"
             "structure SRoute where\n  v2 : Bool\n  segs : List SSeg\n  methods : List Method\n\n"
-            "def reservedStreamSlots : List (List Nat) := [" + ", ".join(f'lit "{x}"' for x in reserved) + "]\n\n"
-            "def alertIdLiterals : List (List Nat) := [" + ", ".join(f'lit "{x}"' for x in alert_ids) + "]\n\n"
+            "def reservedStreamSlots : List (List Nat) := [\n" + ",\n".join(f'  {lean_bytes(x)} /- {x} -/' for x in reserved) + "]\n\n"
+            "def alertIdLiterals : List (List Nat) := [\n" + ",\n".join(f'  {lean_bytes(x)} /- {x} -/' for x in alert_ids) + "]\n\n"
             + lean_routes("assistant_scope", assistant, fa) + "\n\n"
             + lean_routes("slack_action_scope", slack, fs) + "\n\n"
             "end openobserve_kernel.Spec\n")
