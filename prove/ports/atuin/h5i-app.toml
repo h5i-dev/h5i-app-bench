@@ -14,6 +14,20 @@ theorems = [
   "atuin_kernel.Properties.stored_records_fit",
   "atuin_kernel.Properties.writes_authorized",
   "atuin_kernel.Properties.login_needs_password",
+  "atuin_kernel.Properties.outcome_independent_of_other_users",
+  "atuin_kernel.Properties.other_accounts_untouched",
+  "atuin_kernel.Properties.account_deletion_purges",
+  "atuin_kernel.Properties.records_append_only",
+  "atuin_kernel.Properties.password_change_keeps_sessions",
+  "atuin_kernel.Properties.next_huge_count_is_unlimited",
+  "atuin_kernel.Properties.next_start_wraps",
+  "atuin_kernel.Verified.parse_authorization_spec",
+  "atuin_kernel.Verified.authenticate_spec",
+  "atuin_kernel.Verified.transition_writes",
+  "atuin_kernel.Verified.apply_write_ok",
+  "atuin_kernel.Verified.status_eq",
+  "atuin_kernel.Verified.next_records_eq",
+  "atuin_kernel.Verified.loop_eq_foldlM",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). Each `old` occurs exactly
@@ -25,8 +39,8 @@ new = "if true {"
 
 [[mutant]]
 name = "session_token_ignored"
-old = "if bytes_eq(&ss[i].token, token) {"
-new = "if bytes_eq(token, token) {"
+old = "if bytes_eq(&ss[i].token, token) {\n            return Some(ss[i].clone());"
+new = "if bytes_eq(token, token) {\n            return Some(ss[i].clone());"
 
 [[mutant]]
 name = "session_user_ignored"
@@ -77,3 +91,44 @@ new = "if !((rs[i].data.len() as u64) <= max || max != 0) {"
 name = "size_limit_strict"
 old = "if !((rs[i].data.len() as u64) <= max || max == 0) {"
 new = "if !((rs[i].data.len() as u64) < max || max == 0) {"
+
+[[mutant]]
+name = "next_ignores_user"
+old = "r.user_id == user_id && bytes_eq(&r.tag, tag)"
+new = "true && bytes_eq(&r.tag, tag)"
+
+[[mutant]]
+name = "status_ignores_user"
+old = "if s.store[i].user_id == user_id {"
+new = "if true {"
+
+[[mutant]]
+name = "delete_account_keeps_history"
+old = "history: without_user_history(&s.history, *id),"
+new = "history: s.history.clone(),"
+
+[[mutant]]
+name = "delete_account_wrong_sessions"
+old = "sessions: without_user_sessions(&s.sessions, *id),"
+new = "sessions: without_user_sessions(&s.sessions, 0),"
+
+[[mutant]]
+name = "insert_overwrites"
+old = "store: if store_conflict(&s.store, r) { s.store.clone() } else { push_row(&s.store, r) },"
+new = "store: if store_conflict(&s.store, r) { push_row(&without_user_store(&s.store, r.user_id), r) } else { push_row(&s.store, r) },"
+
+# Fixing a finding must break its theorem.
+[[mutant]]
+name = "fix_password_change_revokes_sessions"
+old = "users: with_password(&s.users, *user_id, hash),\n            sessions: s.sessions.clone(),"
+new = "users: with_password(&s.users, *user_id, hash),\n            sessions: without_user_sessions(&s.sessions, *user_id),"
+
+[[mutant]]
+name = "fix_count_limit"
+old = "if count > 0x7fff_ffff_ffff_ffff {"
+new = "if count == u64::MAX {"
+
+[[mutant]]
+name = "fix_unsigned_start"
+old = "signed_key(r.idx) >= signed_key(start)"
+new = "r.idx >= start"

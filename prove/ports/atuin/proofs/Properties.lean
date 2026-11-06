@@ -1,4 +1,4 @@
-import Verified.Authorization
+import Verified.Effects
 /-!
 # atuin's sync server: the security properties
 
@@ -126,5 +126,75 @@ theorem login_needs_password (cfg : Config) (c : Crypto) (s : Snapshot) (auth : 
       ∃ x ∈ s.sessions.val, x.user_id = u.id ∧ rep = .Session x.token := by
   unfold transition at h
   exact (Verified.login_ok h).2
+
+/-! ## Tenant isolation -/
+
+/-- What a request does (reply, writes or error) never depends on another
+user's records: two databases that agree on accounts, sessions, counters and
+the requester's own records give the same outcome. -/
+theorem outcome_independent_of_other_users (cfg : Config) (c : Crypto) (s s' : Snapshot) (req : Request)
+    (hu : s.users = s'.users) (hs : s.sessions = s'.sessions)
+    (hn : s.next_user_id = s'.next_user_id) (hn' : s.next_session_id = s'.next_session_id)
+    (hown : ∀ u, Authenticated s req.authorization u → ownRows s u.id = ownRows s' u.id) :
+    transition cfg c s req = transition cfg c s' req :=
+  Verified.transition_isolated cfg c s s' req hu hs hn hn' hown
+
+/-- A successful request changes no account but the requester's (and the
+fresh id a registration takes): user row, sessions, history and records of
+every other user stay exactly as they were. -/
+theorem other_accounts_untouched (cfg : Config) (c : Crypto) (s s' : Snapshot) (req : Request)
+    (ws : alloc.vec.Vec Write) (rep : Reply) (uid : U64)
+    (h : transition cfg c s req = ok (.Ok (ws, rep))) (ha : apply s ws = ok s')
+    (hnew : uid ≠ s.next_user_id) (hnot : ∀ u, Authenticated s req.authorization u → u.id ≠ uid) :
+    Verified.Account s' uid = Verified.Account s uid :=
+  Verified.other_accounts_untouched h ha hnew hnot
+
+/-- Deleting an account leaves nothing of it: no user row, session,
+history row or record with its id. -/
+theorem account_deletion_purges (cfg : Config) (c : Crypto) (s s' : Snapshot) (req : Request)
+    (ws : alloc.vec.Vec Write) (rep : Reply) (pw : alloc.vec.Vec U8)
+    (hcmd : req.command = .DeleteAccount pw)
+    (h : transition cfg c s req = ok (.Ok (ws, rep))) (ha : apply s ws = ok s') :
+    ∃ u, Authenticated s req.authorization u ∧ Verified.Account s' u.id = ([], [], [], []) :=
+  Verified.account_deletion_purges hcmd h ha
+
+/-- Records are append-only: only deleting the account or the store removes
+or changes a stored record; a re-posted `(host, tag, idx)` never overwrites. -/
+theorem records_append_only (cfg : Config) (c : Crypto) (s s' : Snapshot) (req : Request)
+    (ws : alloc.vec.Vec Write) (rep : Reply)
+    (hd : ∀ pw, req.command ≠ .DeleteAccount pw) (hs : req.command ≠ .DeleteStore)
+    (h : transition cfg c s req = ok (.Ok (ws, rep))) (ha : apply s ws = ok s') :
+    s.store.val <+: s'.store.val :=
+  Verified.records_append_only hd hs h ha
+
+/-! ## Findings -/
+
+/-- Finding: a password change keeps every session. A token obtained before
+the change (e.g. stolen) still authenticates afterwards. -/
+theorem password_change_keeps_sessions (cfg : Config) (c : Crypto) (s s' : Snapshot) (req : Request)
+    (ws : alloc.vec.Vec Write) (rep : Reply) (cur h' : alloc.vec.Vec U8)
+    (hcmd : req.command = .ChangePassword cur h')
+    (h : transition cfg c s req = ok (.Ok (ws, rep))) (ha : apply s ws = ok s') :
+    s'.sessions = s.sessions :=
+  Verified.password_change_keeps_sessions hcmd h ha
+
+/-- Finding: `count` is bound as `i64::conv(count)`; every count above
+`i64::MAX` wraps negative, and SQLite reads a negative `LIMIT` as no limit,
+so all such counts return the whole series. -/
+theorem next_huge_count_is_unlimited (s : Snapshot) (uid : U64) (host : U128) (tag : alloc.vec.Vec U8)
+    (start : Option U64) (n m : U64) (hn : n.val > 9223372036854775807) (hm : m.val > 9223372036854775807) :
+    next_records s uid host tag start n = next_records s uid host tag start m := by
+  rw [Verified.next_records_eq, Verified.next_records_eq]
+  have h1 : n > 9223372036854775807#u64 := by scalar_tac
+  have h2 : m > 9223372036854775807#u64 := by scalar_tac
+  simp only [h1, h2, ↓reduceIte]
+
+/-- Finding: `idx` and `start` are compared as signed `i64`s, so a `start`
+of 2^63 or more selects records from index 0 up: a record at `idx = 0` is
+"at or after" `start = 2^63`. -/
+theorem next_start_wraps (r : StoreRow) (tag : Slice U8) (hu : r.tag.val = tag.val) (h0 : r.idx = 0#u64) :
+    in_series r r.user_id r.host tag 9223372036854775808#u64 = ok true := by
+  rw [Verified.in_series_eq]
+  simp [Verified.InSeries, hu, h0, Verified.sk]
 
 end atuin_kernel.Properties
