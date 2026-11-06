@@ -1,0 +1,17 @@
+[package]
+name = "pico-bit-difftest"
+edition = "2024"
+version = "0.0.0"
+publish = false
+
+# Host-side differential tests: the extracted kernel decision logic vs a
+# verbatim copy of pico-bit's upstream functions (anapeksha/pico-bit @ b6349e2,
+# src/runners/http.rs). Testing is evidence, not a proof of equivalence.
+[dependencies]
+pico-bit-kernel = { path = "../kernel" }
+
+[[test]]
+name = "compare"
+path = "tests/compare.rs"
+
+[workspace]
