@@ -2,34 +2,42 @@
 
 [extract]
 crate = "kernel"
-start-from = ["transition", "apply", "read_only", "place"]
+start-from = ["transition", "apply", "read_only", "place", "lookup", "claim_tag"]
 
 [check]
 # Every theorem in a hand-written module under proofs/ is gated; the main ones
-# are named here so a rename is caught.
+# are named here so a rename is caught. S = security/safety, C = correspondence
+# (see STATUS.md for the full table).
 theorems = [
-    "spoolease_kernel.Properties.transition_total",
+    # S — allocator safety (the "two spool ids never alias storage" story)
     "spoolease_kernel.Properties.place_capacity",
     "spoolease_kernel.Properties.place_local",
     "spoolease_kernel.Properties.place_inplace_fits",
-    "spoolease_kernel.Properties.inv_reachable",
-    "spoolease_kernel.Properties.no_clobber",
     "spoolease_kernel.Properties.fresh_id_is_new",
-    "spoolease_kernel.Properties.tag_unique_reachable",
+    # C — foundations
+    "spoolease_kernel.Properties.transition_total",
+    "spoolease_kernel.Properties.addspool_id",
+    "spoolease_kernel.Properties.lookup_spec",
+    "spoolease_kernel.Properties.append_slot_spec",
+    "spoolease_kernel.Properties.replace_slot_spec",
+    "spoolease_kernel.Properties.remove_id_spec",
+    "spoolease_kernel.Properties.claim_tag_spec",
     "spoolease_kernel.ReadOnly.sound",
 ]
 
-[[mutant]]
-name = "inplace_boundary"
-old = "if len <= p.length {"
-new = "if len < p.length {"
-
-[[mutant]]
-name = "capacity_off_by_one"
-old = "if file_len > MAX_FILE - len {"
-new = "if file_len >= MAX_FILE - len {"
-
+# Bugs the proofs must reject (`h5i app mutate`). Each `old` occurs exactly
+# once in kernel/src/lib.rs.
 [[mutant]]
 name = "fresh_id_reuse"
 old = "let id = s.last_id + 1;"
 new = "let id = s.last_id;"
+
+[[mutant]]
+name = "inplace_data_len"
+old = "data: Region { off: p.offset, len: p.length }"
+new = "data: Region { off: p.offset, len }"
+
+[[mutant]]
+name = "append_data_offset"
+old = "data: Region { off: file_len, len },"
+new = "data: Region { off: p.offset, len },"
