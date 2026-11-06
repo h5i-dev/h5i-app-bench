@@ -54,16 +54,16 @@ theorem start_session_ok {t t' : token.Token} {now timeout d : I64}
   all_goals (have hexp : b = decide (t.expires_at < now) := (by unfold token.is_expired at hb; exact (H5iAppLib.Result.ok.inj hb).symm))
   · obtain ⟨rfl, rfl⟩ := h
     have hv := iadd_ok_val hi
-    refine ⟨?_, rfl, rfl, rfl, now, rfl, hv, fun _ => rfl, fun hn => absurd hc_1 hn⟩
-    simp_all; scalar_tac
+    refine ⟨?_, rfl, rfl, rfl, now, rfl, hv, ⟨fun _ => rfl, fun hn => absurd hc_1 hn⟩⟩
+    simp_all
   · obtain ⟨rfl, rfl⟩ := h
     rw [same_eq] at ht1; have := (H5iAppLib.Result.ok.inj ht1); subst this
     have hv := iadd_ok_val hi
     have hs := (is_session_valid_ok hb1).1 hc_2
     obtain ⟨u', hu', hlt⟩ := hs
     rw [hc_1] at hu'; cases hu'
-    refine ⟨?_, rfl, rfl, rfl, u, hc_1, hv, fun hn => by rw [hc_1] at hn; cases hn, fun _ => ⟨hc_1, hlt⟩⟩
-    simp_all; scalar_tac
+    refine ⟨?_, rfl, rfl, rfl, u, hc_1, hv, ⟨fun hn => (by rw [hc_1] at hn; cases hn), fun _ => ⟨hc_1, hlt⟩⟩⟩
+    simp_all
 
 /-- `validate_session`: an enrollment token with an open session; the
 request then acts for the token's user. -/
@@ -85,7 +85,7 @@ theorem session_outlives_token {t : token.Token} {now timeout u : I64}
   have hs : (u + timeout) ⦃ z => z.val = u.val + timeout.val ⦄ := by step*
   obtain ⟨z, hz⟩ := ok_of hs
   have hzv := post_of_ok hs hz
-  simp only [he, ↓reduceIte, hu, hz, bind_tc_ok, bind_ok]
+  simp only [he, ↓reduceIte, hu, hz, bind_ok]
   have : now < z := by scalar_tac
   simp [this]
 
