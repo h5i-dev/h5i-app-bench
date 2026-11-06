@@ -1,4 +1,4 @@
-import Verified.RouteScope
+import Verified.OrgConsistency
 /-!
 # Security properties of OpenObserve's delegated (`o2dt.`) tokens
 
@@ -153,6 +153,18 @@ theorem slack_action_only_alerts_and_oncall {env o now t path pfx m d}
   rcases Verified.slack_scope_second r hrm with h1 | h1
   · exact Or.inl (Verified.segsMatch_lit hseg h1)
   · exact Or.inr (Verified.segsMatch_lit hseg h1)
+
+/-- S (the two org checks agree): for an accepted delegated request, the org
+the `AuthExtractor` derives from the same path (`org_from_path`, which the
+permission check and user lookup use) is the token's org. A route whose org
+slot the delegation check reads differently from RBAC would break this. -/
+theorem delegated_org_is_rbac_org {env o now t path pfx m d}
+    (hp : path.length < Usize.max) (h : validate_delegated env o now t path pfx m = ok (.Ok d)) :
+    ∃ e, auth.extractor_org_id path = ok e ∧ nats e.val = nats d.org.val := by
+  have hc := Verified.checkRoute_org_consistent (accepted_route hp h)
+  have hs := Verified.extractor_org_id_spec path hp
+  obtain ⟨e, he⟩ := H5iAppLib.ok_of hs
+  exact ⟨e, he, by rw [H5iAppLib.post_of_ok hs he, hc]⟩
 
 /-- F: the kernel's (and upstream's) lifetime check computes `exp - iat` in
 `i64`. For `exp = i64::MAX, iat = -10` that overflows: the extracted kernel

@@ -19,6 +19,7 @@ theorems = [
   "openobserve_kernel.Properties.delegated_methods_limited",
   "openobserve_kernel.Properties.delegated_never_on_proxy",
   "openobserve_kernel.Properties.slack_action_only_alerts_and_oncall",
+  "openobserve_kernel.Properties.delegated_org_is_rbac_org",
   # F: finding
   "openobserve_kernel.Properties.lifetime_check_overflows",
   # C: correspondence and foundations
@@ -28,6 +29,9 @@ theorems = [
   "openobserve_kernel.Verified.in_scope_spec",
   "openobserve_kernel.Verified.segments_match_spec",
   "openobserve_kernel.Verified.checkRoute_ok",
+  "openobserve_kernel.Verified.checkRoute_org_consistent",
+  "openobserve_kernel.Verified.org_from_path_prefix_spec",
+  "openobserve_kernel.Verified.extractor_org_id_spec",
   "openobserve_kernel.Verified.validate_delegated_ok",
   "openobserve_kernel.Verified.verify_ok",
   "openobserve_kernel.Verified.verify_spec",
@@ -150,3 +154,9 @@ name = "slack_action_gets_assistant_scope"  # slack_action_only_alerts_and_oncal
 file = "kernel/src/delegation.rs"
 old = "Some(slack_action_scope())"
 new = "Some(assistant_scope())"
+
+[[mutant]]
+name = "downtimes_not_a_v2_org_module"  # delegated_org_is_rbac_org
+file = "kernel/src/auth.rs"
+old = 'out.push(lit(b"downtimes"));'
+new = ""
