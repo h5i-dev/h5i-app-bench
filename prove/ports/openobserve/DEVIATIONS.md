@@ -40,6 +40,9 @@ set of org-scoped routes with an `o2dt.<claims>.<mac>` bearer token:
 | `delegation::{refused, from_rows, admit}` | 227-276 | without the `loaded: Instant` field |
 | `delegation::{load_link_facts, find_link, find_installation, find_member, validate_delegated}` | 285-323, 528-552 | store reads become table lookups |
 | `delegation::touch_due` | 585 | |
+| `auth::{v2_org_modules, org_from_path, org_from_path_prefix, extractor_org_id}` | `core/src/auth.rs:42-108`, `AuthExtractor` 346-360 | the trailing-empty-segment `pop()` becomes a length `n` |
+| `grpc::{auth_token, token_matches, check_internal_auth, check_auth_inner, attach_user_id, valid_metadata}` | `api/grpc/src/handler/grpc/auth/mod.rs:43-163` | |
+| `grpc::{is_root_user, get_cached_user_org, lookup_user, password_matches, try_get_hash, join_key, ascii_lower}` | `db/src/user.rs:35`, `db/src/org_users.rs:208`, `db/src/org_ingestion_tokens.rs:39` | caches become tables keyed by upstream's own strings |
 
 ## Differences from upstream
 
@@ -61,6 +64,15 @@ set of org-scoped routes with an `o2dt.<claims>.<mac>` bearer token:
   is not modelled: the kernel always loads fresh, and a failed read is `store_ok = false` (503).
 - **Arithmetic.** The extracted Lean uses checked `i64` arithmetic, so overflow is a failure. That
   matches Rust with overflow checks on (debug), not openobserve's release profiles. See FINDINGS F1.
+- **gRPC caches.** `ORG_USERS`, `USERS`, `ROOT_USER` and `ORG_INGESTION_TOKENS` are lists of rows
+  with upstream's string keys (`"{org}/{email}"`, the lowercased email, `"{org}/{token}"`). The
+  kernel builds the keys exactly as upstream does, so collisions between keys that contain `/`
+  are modelled, not ruled out. If several rows share a key, the first one wins; DashMap keys are
+  unique. `str::to_lowercase` becomes ASCII lowercase. They agree on ASCII. The difftest
+  includes non-ASCII ids, which upstream lowercases differently, but no case in the corpus
+  depends on that difference; see the limitation below. `try_get_hash` (Argon2) is an oracle
+  table; rows that are not listed hash to `None`. `http_auth_basic::Credentials::from_header`
+  is decoded by the shell. Super-cluster mode is an input (`super_cluster_token`).
 - **Not ported:** `authorize` (step 6, the private OpenFGA `check_permissions`), `touch_if_due`'s
   store write, key derivation (`derive_key`, `effective_keys`), `sign`.
 
@@ -87,6 +99,17 @@ apply exactly once). Seeds are fixed (splitmix64).
 | `constant_time_eq_agrees` | 50,000 | bool |
 | `touch_due_agrees` | 50,000 | bool |
 | `upstream_release_wraps_lifetime_check` / `upstream_debug_panics_on_lifetime_overflow` | 1 | FINDINGS F1 |
+
+| `org_from_path_agrees` | 100,000 | `org_from_path`, `routed_path`, extractor org |
+| `upstream_route_org_is_extractor_org` | 200,000 | upstream only: whenever upstream's `check_route` accepts, upstream's extractor org is the token org (more than 10,000 accepted) |
+| `grpc::check_auth_inner_agrees` | 150,000 | the whole `check_auth_inner` file compiled from upstream (tonic `Request`, DashMap caches, `http-auth-basic`), compared on accept/`user_id`/`[n]` reject tag |
+| `grpc::token_matches_agrees`, `grpc::metadata_validity_agrees` | 20,000 / all bytes | `token_matches`; `MetadataValue::try_from` accepts bytes ≥ 0x80 and rejects control bytes except tab |
+
+The gRPC difftest builds upstream's `auth/mod.rs` without the `enterprise` feature, so its
+super-cluster token is always `None`. The kernel's super-cluster path is covered by
+`token_matches_agrees`. Lowercasing: upstream's `to_lowercase` is Unicode. The kernel lowercases
+ASCII only. The test ids include `zoë@x.io`, which both lowercase the same way, so a
+counterexample needs non-ASCII uppercase.
 
 All pass. This is testing evidence, not an equivalence proof. `validate_delegated` as a whole has
 no upstream counterpart that compiles without the enterprise crates and a database. It is tested
