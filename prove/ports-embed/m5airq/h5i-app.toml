@@ -10,6 +10,7 @@ start-from = [
     "check_auth",
     "validate_session",
     "slot_valid",
+    "transport_blocks",
     "ct_eq8",
     "is_zero8",
     "age_ok",
@@ -67,18 +68,18 @@ new = "if *offset != expected && false {"
 
 [[mutant]]
 name = "auth_public_bypass"
-old = "if !is_https && !cfg.allow_http_tokens {"
-new = "if false {"
+old = "!is_https && !allow_http_tokens"
+new = "false"
 
 [[mutant]]
 name = "auth_skip_expiry"
-old = "ct_eq(&s.token, token) && !is_zero8(&s.token) && age_ok(now, s.created)"
-new = "ct_eq(&s.token, token) && !is_zero8(&s.token)"
+old = "ct_eq8(&slot.token, token) && !is_zero8(&slot.token) && age_ok(now, slot.created)"
+new = "ct_eq8(&slot.token, token) && !is_zero8(&slot.token)"
 
 [[mutant]]
 name = "auth_empty_secret"
-old = "if cfg.bearer_set && ct_eq(bearer, bearer_key) {"
-new = "if ct_eq(bearer, bearer_key) {"
+old = "let bearer_ok = bearer_present && cfg.bearer_set && bearer_match;"
+new = "let bearer_ok = bearer_present && bearer_match;"
 
 [[mutant]]
 name = "ota_begin_no_admin"

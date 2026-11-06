@@ -357,6 +357,12 @@ pub fn validate_session(store: &SessionStore, token: &[u8; 8], now: u32) -> bool
         || slot_valid(&store.s3, token, now)
 }
 
+/// Whether a token credential must be refused on this transport:
+/// plaintext HTTP with token-over-HTTP disabled (`!is_https && !allow`).
+pub fn transport_blocks(is_https: bool, allow_http_tokens: bool) -> bool {
+    !is_https && !allow_http_tokens
+}
+
 /// The authentication decision (`check_auth`), pure and total.
 ///
 /// `*_present` says a credential of that kind arrived. `cookie_token` is the
@@ -365,6 +371,12 @@ pub fn validate_session(store: &SessionStore, token: &[u8; 8], now: u32) -> bool
 /// comparison results of the presented token against the configured secret
 /// (upstream's `constant_time_eq`), and `digest_ok` is the trusted
 /// `verify_digest` MD5 result. `is_health` is `path == "/api/health"`.
+///
+/// This is the flattened but behaviourally identical form of upstream's
+/// nested `check_auth`: the transport (`is_https`, `allow_http_tokens`) is
+/// fixed for a request, so a blocked token credential is refused with
+/// `Forbidden` before any lower-priority credential, exactly as the nested
+/// original short-circuits.
 #[allow(clippy::too_many_arguments)]
 pub fn check_auth(
     cfg: &AuthCfg,
@@ -382,52 +394,37 @@ pub fn check_auth(
     is_https: bool,
     is_health: bool,
 ) -> AuthDecision {
-    // Public access — allow everything.
+    let blocked = transport_blocks(is_https, cfg.allow_http_tokens);
+    let valid_cookie = cookie_present && validate_session(store, cookie_token, now);
+    let bearer_block = bearer_present && blocked;
+    let bearer_ok = bearer_present && cfg.bearer_set && bearer_match;
+    let akh_block = akh_present && blocked;
+    let akh_ok = akh_present && cfg.apikey_set && akh_match;
+    let akq_block = akq_present && blocked;
+    let akq_ok = akq_present && cfg.apikey_set && akq_match;
     if cfg.public_access {
-        return AuthDecision::Allowed;
+        AuthDecision::Allowed
+    } else if is_health {
+        AuthDecision::Allowed
+    } else if valid_cookie {
+        AuthDecision::Allowed
+    } else if bearer_block {
+        AuthDecision::Forbidden
+    } else if bearer_ok {
+        AuthDecision::Allowed
+    } else if akh_block {
+        AuthDecision::Forbidden
+    } else if akh_ok {
+        AuthDecision::Allowed
+    } else if akq_block {
+        AuthDecision::Forbidden
+    } else if akq_ok {
+        AuthDecision::Allowed
+    } else if digest_ok {
+        AuthDecision::AllowedSetSession
+    } else {
+        AuthDecision::Challenge
     }
-    // The health endpoint is always public (monitoring probes).
-    if is_health {
-        return AuthDecision::Allowed;
-    }
-    // Session cookie.
-    if cookie_present {
-        if validate_session(store, cookie_token, now) {
-            return AuthDecision::Allowed;
-        }
-    }
-    // Bearer token.
-    if bearer_present {
-        if !is_https && !cfg.allow_http_tokens {
-            return AuthDecision::Forbidden;
-        }
-        if cfg.bearer_set && bearer_match {
-            return AuthDecision::Allowed;
-        }
-    }
-    // API key (header).
-    if akh_present {
-        if !is_https && !cfg.allow_http_tokens {
-            return AuthDecision::Forbidden;
-        }
-        if cfg.apikey_set && akh_match {
-            return AuthDecision::Allowed;
-        }
-    }
-    // API key (query parameter).
-    if akq_present {
-        if !is_https && !cfg.allow_http_tokens {
-            return AuthDecision::Forbidden;
-        }
-        if cfg.apikey_set && akq_match {
-            return AuthDecision::Allowed;
-        }
-    }
-    // Digest — a fresh login mints a session.
-    if digest_ok {
-        return AuthDecision::AllowedSetSession;
-    }
-    AuthDecision::Challenge
 }
 
 #[cfg(test)]

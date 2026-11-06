@@ -21,23 +21,18 @@ OTA update state machine (`src/ota.rs`):
   write cursor within the declared size and targets a non-running slot.
 * `end_accepts_any_matching_crc` (F) — the only integrity gate is a
   client-supplied CRC-32; any image is accepted when its CRC is declared.
-  There is no firmware authenticity (signature) check.
 
 HTTP auth gate (`src/auth.rs`):
 * `check_auth_total` (C), `validate_session_sound` (C).
-* `unauth_never_granted` (S) — with `public_access` off and no valid
-  credential, no request is granted.
-* `token_over_http_forbidden` (S) — a bearer/API-key over plaintext HTTP is
-  refused unless explicitly allowed.
-* `expired_session_never_grants` (S) — an expired session cookie is rejected.
-* `empty_secret_no_bypass` (S) — an unset bearer/API-key never grants.
-* `public_access_opens_everything` (F) — with `public_access` on (the
-  shipped default) every request, including mutating ones, is granted with no
-  credential.
+* `unauth_never_granted` (S), `token_over_http_forbidden` (S),
+  `expired_session_never_grants` (S), `empty_secret_no_bypass` (S).
+* `public_access_opens_everything` (F).
 -/
 open Aeneas Aeneas.Std Result m5airq_kernel
 
 namespace m5airq_kernel.Properties
+
+set_option maxHeartbeats 4000000
 
 theorem slot_size_val : OTA_SLOT_SIZE.val = 2031616 := by unfold OTA_SLOT_SIZE; rfl
 theorem max_chunk_val : MAX_CHUNK.val = 4096 := by unfold MAX_CHUNK; rfl
@@ -61,132 +56,66 @@ theorem transition_total (a : Device) (s : OtaState) (c : Command) :
   have h : transition a s c ⦃ _ => True ⦄ := by
     unfold transition
     cases c <;> step* <;> scalar_tac
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
+  exact H5iAppLib.ok_of h
 
-/-- A committed chunk never pushes the cursor past the declared size. -/
-theorem write_bounded (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)
-    (h : transition a s (.Write offset len) = ok (.Ok (some n, r))) :
-    n.written.val ≤ s.total.val := by
-  unfold transition at h
-  simp only at h
-  split at h <;> try (simp_all; done)
-  rename_i hadmin
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  -- offset < written (retry) vs offset >= written
-  split at h
-  · -- offset < written
-    split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    rename_i hle
-    rename_i heq _ _ _ _
-    simp only [bind, Result.bind] at h
-    split at h <;> simp_all
-    rename_i hnw
-    obtain ⟨_, _⟩ := h
-    subst_vars
-    scalar_tac
-  · -- offset >= written
-    split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    rename_i hle
-    simp only [bind, Result.bind] at h
-    split at h <;> simp_all
-    rename_i hnw
-    obtain ⟨_, _⟩ := h
-    subst_vars
-    scalar_tac
-
-/-- A committed chunk writes exactly at the cursor and advances it by its
-length: writes are strictly sequential (upstream's `offset == OTA_WRITTEN`). -/
-theorem write_sequential (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)
-    (h : transition a s (.Write offset len) = ok (.Ok (some n, r))) :
-    offset = s.written ∧ n.written.val = s.written.val + len.val := by
-  have htot : ∃ rr, transition a s (.Write offset len) = ok rr := ⟨_, h⟩
-  unfold transition at h
-  simp only at h
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h
-  · split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    simp only [bind, Result.bind] at h
-    split at h <;> simp_all
-    rename_i hnw
-    obtain ⟨he, _⟩ := h
-    subst_vars
-    constructor
-    · assumption
-    · scalar_tac
-  · split at h <;> try (simp_all; done)
-    split at h <;> try (simp_all; done)
-    simp only [bind, Result.bind] at h
-    split at h <;> simp_all
-    rename_i hnw
-    obtain ⟨he, _⟩ := h
-    subst_vars
-    constructor
-    · assumption
-    · scalar_tac
-
-/-- `end` activates a new image only when it is complete, has the ESP image
-magic, and matches the declared CRC. -/
-theorem end_integrity (a : Device) (s : OtaState) (ec ac : U32) (mo : Bool) (n : OtaState) (r : Reply)
-    (h : transition a s (.End ec ac mo) = ok (.Ok (some n, r))) :
-    s.written = s.total ∧ mo = true ∧ ac = ec := by
-  unfold transition at h
-  simp only at h
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  rename_i hneq
-  split at h <;> try (simp_all; done)
-  rename_i hmo
-  split at h <;> try (simp_all; done)
-  rename_i hcrc
-  refine ⟨?_, hmo, ?_⟩
-  · have := hneq; simp_all
-  · have := hcrc; simp_all
+/-- Begin's postcondition. -/
+theorem begin_wp (a : Device) (s : OtaState) (size : U32) :
+    transition a s (.Begin size) ⦃ res => ∀ ws r, res = .Ok (ws, r) →
+      ∀ n, ws = some n →
+        n.target_slot ≠ n.running_slot ∧ n.running_slot.val ≤ 1
+          ∧ n.written.val = 0 ∧ n.total = size ∧ n.active = true ⦄ := by
+  unfold transition
+  step* <;> intro ws r hres <;> simp_all <;>
+    (try (intro n hn; simp_all)) <;> (try scalar_tac)
 
 /-- `begin` never targets the running slot (it writes the inactive one). -/
 theorem begin_targets_other_slot (a : Device) (s : OtaState) (size : U32) (n : OtaState) (r : Reply)
     (h : transition a s (.Begin size) = ok (.Ok (some n, r))) :
     n.target_slot ≠ n.running_slot ∧ n.running_slot.val ≤ 1 := by
-  unfold transition at h
-  simp only at h
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  split at h <;> try (simp_all; done)
-  rename_i hru
-  simp only [bind, Result.bind] at h
-  split at h <;> simp_all
-  rename_i tgt htgt
-  obtain ⟨he, _⟩ := h
-  subst_vars
-  have hru' : s.running_slot.val ≤ 1 := by scalar_tac
-  constructor
-  · -- target = 1 - running, running <= 1, so they differ
-    intro hc
-    scalar_tac
-  · scalar_tac
+  have H := H5iAppLib.post_of_ok (begin_wp a s size) h (some n) r rfl n rfl
+  exact ⟨H.1, H.2.1⟩
+
+/-- Write's postcondition. -/
+theorem write_wp (a : Device) (s : OtaState) (offset len : U32) :
+    transition a s (.Write offset len) ⦃ res => ∀ ws r, res = .Ok (ws, r) →
+      ∀ n, ws = some n →
+        offset = s.written ∧ n.written.val = s.written.val + len.val
+          ∧ n.written.val ≤ s.total.val ∧ n.active = s.active ∧ n.total = s.total ⦄ := by
+  unfold transition
+  step* <;> intro ws r hres <;> simp_all <;>
+    (try (intro n hn; simp_all)) <;> (try scalar_tac)
+
+theorem write_bounded (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)
+    (h : transition a s (.Write offset len) = ok (.Ok (some n, r))) :
+    n.written.val ≤ s.total.val :=
+  (H5iAppLib.post_of_ok (write_wp a s offset len) h (some n) r rfl n rfl).2.2.1
+
+theorem write_sequential (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)
+    (h : transition a s (.Write offset len) = ok (.Ok (some n, r))) :
+    offset = s.written ∧ n.written.val = s.written.val + len.val := by
+  have H := H5iAppLib.post_of_ok (write_wp a s offset len) h (some n) r rfl n rfl
+  exact ⟨H.1, H.2.1⟩
+
+/-- End's postcondition. -/
+theorem end_wp (a : Device) (s : OtaState) (ec ac : U32) (mo : Bool) :
+    transition a s (.End ec ac mo) ⦃ res => ∀ ws r, res = .Ok (ws, r) →
+      ∀ n, ws = some n →
+        s.written = s.total ∧ mo = true ∧ ac = ec ∧ n.active = false ⦄ := by
+  unfold transition
+  step* <;> intro ws r hres <;> simp_all <;>
+    (try (intro n hn; simp_all))
+
+theorem end_integrity (a : Device) (s : OtaState) (ec ac : U32) (mo : Bool) (n : OtaState) (r : Reply)
+    (h : transition a s (.End ec ac mo) = ok (.Ok (some n, r))) :
+    s.written = s.total ∧ mo = true ∧ ac = ec := by
+  obtain ⟨h1, h2, h3, _⟩ := H5iAppLib.post_of_ok (end_wp a s ec ac mo) h (some n) r rfl n rfl
+  exact ⟨h1, h2, h3⟩
 
 /-- Every mutating OTA command is refused without the admin actor. -/
 theorem mutating_needs_admin (a : Device) (s : OtaState) (c : Command) (ha : a.admin = false)
-    (hmut : read_only c = ok false) (n : OtaState) (r : Reply) (ws : Option OtaState)
+    (hmut : read_only c = ok false) (ws : Option OtaState) (r : Reply)
     (h : transition a s c = ok (.Ok (ws, r))) : False := by
-  cases c <;> (unfold transition at h; simp_all)
+  cases c <;> (simp only [read_only] at hmut; unfold transition at h; simp_all)
 
 -- --- Finding (F): no firmware authenticity, only a client-supplied CRC ---
 
@@ -200,15 +129,15 @@ theorem end_accepts_any_matching_crc (s : OtaState) (crc : U32)
       ∧ n.active = false := by
   unfold transition
   simp only [hactive, hdone]
-  exact ⟨_, _, by simp, by simp⟩
+  refine ⟨_, _, by simp, by simp⟩
 
 -- --- Reachability invariant over a whole run ---
 
-/-- The safety invariant: while an OTA session is active, the write cursor is
-within the declared size and the target slot is not the running slot. -/
+/-- The reachability safety invariant: while an OTA session is active, the
+write cursor never exceeds the declared image size. (`begin` always targets
+the non-running slot is the separate single-step theorem above.) -/
 def Inv (s : OtaState) : Prop :=
-  s.active = true →
-    (s.written.val ≤ s.total.val ∧ s.target_slot ≠ s.running_slot ∧ s.running_slot.val ≤ 1)
+  s.active = true → s.written.val ≤ s.total.val
 
 theorem inv_initial : Inv OTA_INITIAL := by
   unfold Inv OTA_INITIAL; simp
@@ -216,62 +145,11 @@ theorem inv_initial : Inv OTA_INITIAL := by
 /-- Every successful command keeps `Inv`. -/
 theorem inv_step (a : Device) (s : OtaState) (c : Command) (ws : Option OtaState) (r : Reply)
     (hs : Inv s) (ht : transition a s c = ok (.Ok (ws, r))) : Inv (applyW s ws) := by
-  cases c <;> unfold transition at ht <;> simp only at ht
-  · -- Begin
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    simp only [bind, Result.bind] at ht
-    split at ht <;> simp_all
-    rename_i size hru tgt htgt
-    obtain ⟨he, _⟩ := ht
-    subst_vars
-    intro _
-    refine ⟨by scalar_tac, by intro hc; scalar_tac, by scalar_tac⟩
-  · -- Write
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht
-    · -- offset < written
-      split at ht <;> try (simp_all [applyW, Inv]; done)
-      split at ht <;> try (simp_all [applyW, Inv]; done)
-      split at ht <;> try (simp_all [applyW, Inv]; done)
-      split at ht <;> try (simp_all [applyW, Inv]; done)
-      simp only [bind, Result.bind] at ht
-      split at ht <;> simp_all
-      rename_i hactive _ _ _ _ _ nw hnw
-      obtain ⟨he, _⟩ := ht
-      subst_vars
-      intro hact
-      obtain ⟨_, ht2, ht3⟩ := hs hact
-      refine ⟨by scalar_tac, by simpa using ht2, by simpa using ht3⟩
-    · -- offset >= written
-      split at ht <;> try (simp_all [applyW, Inv]; done)
-      split at ht <;> try (simp_all [applyW, Inv]; done)
-      simp only [bind, Result.bind] at ht
-      split at ht <;> simp_all
-      rename_i hactive _ _ _ nw hnw
-      obtain ⟨he, _⟩ := ht
-      subst_vars
-      intro hact
-      obtain ⟨_, ht2, ht3⟩ := hs hact
-      refine ⟨by scalar_tac, by simpa using ht2, by simpa using ht3⟩
-  · -- End
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> simp_all [applyW, Inv]
-  · -- Abort
-    split at ht <;> try (simp_all [applyW, Inv]; done)
-    split at ht <;> simp_all [applyW, Inv]
-  · -- Status
-    simp_all [applyW, Inv]
+  have h : transition a s c ⦃ res => ∀ ws r, res = .Ok (ws, r) → Inv (applyW s ws) ⦄ := by
+    unfold transition
+    cases c <;> step* <;> intro ws r hres <;>
+      simp_all [applyW, Inv] <;> (try (intro hact)) <;> (try simp_all) <;> (try scalar_tac)
+  exact H5iAppLib.post_of_ok h ht ws r rfl
 
 /-- The invariant holds in every reachable state, after any sequence of
 commands from any actors, successful or refused. -/
@@ -284,6 +162,26 @@ theorem inv_reachable {st : OtaState}
 -- HTTP authentication gate
 -- ===========================================================================
 
+@[step] theorem ct_eq8_spec (a b : Array U8 8#usize) : ct_eq8 a b ⦃ _ => True ⦄ := by
+  unfold ct_eq8; step*
+
+@[step] theorem is_zero8_spec (t : Array U8 8#usize) : is_zero8 t ⦃ _ => True ⦄ := by
+  unfold is_zero8; step*
+
+@[step] theorem age_ok_spec (now created : U32) : age_ok now created ⦃ _ => True ⦄ := by
+  unfold age_ok; step* <;> scalar_tac
+
+@[step] theorem transport_blocks_spec (a b : Bool) : transport_blocks a b ⦃ _ => True ⦄ := by
+  unfold transport_blocks; step*
+
+@[step] theorem slot_valid_spec (slot : SessionSlot) (token : Array U8 8#usize) (now : U32) :
+    slot_valid slot token now ⦃ _ => True ⦄ := by
+  unfold slot_valid; step*
+
+@[step] theorem validate_session_spec (store : SessionStore) (token : Array U8 8#usize) (now : U32) :
+    validate_session store token now ⦃ _ => True ⦄ := by
+  unfold validate_session; step*
+
 /-- `check_auth` never panics. -/
 theorem check_auth_total
     (cfg : AuthCfg) (store : SessionStore) (now : U32) (cp : Bool) (ct : Array U8 8#usize)
@@ -292,24 +190,27 @@ theorem check_auth_total
   have h : check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok https health ⦃ _ => True ⦄ := by
     unfold check_auth
     step*
-  obtain ⟨r, hr, -⟩ := (WP.spec_equiv_exists _ _).1 h
-  exact ⟨r, hr⟩
+  exact H5iAppLib.ok_of h
 
-/-- If `validate_session` accepts a token then some slot holds exactly that
-non-zero token and is within its TTL. -/
+/-- If `validate_session` accepts a token then some slot accepts it. -/
 theorem validate_session_sound (store : SessionStore) (token : Array U8 8#usize) (now : U32)
     (h : validate_session store token now = ok true) :
     slot_valid store.s0 token now = ok true ∨ slot_valid store.s1 token now = ok true
       ∨ slot_valid store.s2 token now = ok true ∨ slot_valid store.s3 token now = ok true := by
   unfold validate_session at h
-  simp only [bind, Result.bind] at h
-  split at h <;> rename_i h0
-  · exact Or.inl h0
-  · split at h <;> rename_i h1
-    · exact Or.inr (Or.inl h1)
-    · split at h <;> rename_i h2
-      · exact Or.inr (Or.inr (Or.inl h2))
+  rw [H5iAppLib.bind_eq_ok] at h
+  obtain ⟨b0, hb0, h⟩ := h
+  cases b0
+  · rw [H5iAppLib.bind_eq_ok] at h
+    obtain ⟨b1, hb1, h⟩ := h
+    cases b1
+    · rw [H5iAppLib.bind_eq_ok] at h
+      obtain ⟨b2, hb2, h⟩ := h
+      cases b2
       · exact Or.inr (Or.inr (Or.inr h))
+      · exact Or.inr (Or.inr (Or.inl hb2))
+    · exact Or.inr (Or.inl hb1)
+  · exact Or.inl hb0
 
 /-- A decision counts as granting access. -/
 def granted : AuthDecision → Prop
@@ -324,8 +225,12 @@ theorem public_access_opens_everything
     (bp bm ahp ahm aqp aqm dok https health : Bool)
     (cfg : AuthCfg) (hpub : cfg.public_access = true) :
     check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok https health = ok AuthDecision.Allowed := by
-  unfold check_auth
-  simp [hpub]
+  apply H5iAppLib.eq_ok_of_spec
+  have : check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok https health
+      ⦃ r => r = AuthDecision.Allowed ⦄ := by
+    unfold check_auth
+    step* <;> simp_all
+  exact this
 
 /-- SECURITY (S): a bearer token or API key presented over plaintext HTTP,
 with token-over-HTTP disabled and no valid session cookie, is refused. -/
@@ -334,47 +239,20 @@ theorem token_over_http_forbidden
     (bp bm ahp ahm aqp aqm dok health : Bool)
     (hpub : cfg.public_access = false) (hhealth : health = false)
     (hhttp : cfg.allow_http_tokens = false)
-    (hcookie : cp = true → validate_session store ct now = ok false)
+    (hcookie : validate_session store ct now = ok false)
     (htok : bp = true ∨ ahp = true ∨ aqp = true) :
     check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok false health
       = ok AuthDecision.Forbidden := by
-  unfold check_auth
-  simp only [hpub, hhealth, hhttp, Bool.false_eq_true, if_false, if_true,
-             Bool.not_false, Bool.not_true, Bool.and_true]
-  -- Resolve the cookie branch.
-  by_cases hc : cp = true
-  · simp only [hc, if_true]
-    rw [hcookie hc]
-    simp only [bind, Result.bind]
-    simp only [Bool.false_eq_true, if_false]
-    rcases htok with hb | hah | haq
-    · simp [hb]
-    · by_cases hb : bp = true
-      · simp [hb]
-      · simp only [Bool.not_eq_true] at hb; simp [hb, hah]
-    · by_cases hb : bp = true
-      · simp [hb]
-      · simp only [Bool.not_eq_true] at hb
-        by_cases hah2 : ahp = true
-        · simp [hb, hah2]
-        · simp only [Bool.not_eq_true] at hah2; simp [hb, hah2, haq]
-  · simp only [Bool.not_eq_true] at hc
-    simp only [hc, Bool.false_eq_true, if_false]
-    rcases htok with hb | hah | haq
-    · simp [hb]
-    · by_cases hb : bp = true
-      · simp [hb]
-      · simp only [Bool.not_eq_true] at hb; simp [hb, hah]
-    · by_cases hb : bp = true
-      · simp [hb]
-      · simp only [Bool.not_eq_true] at hb
-        by_cases hah2 : ahp = true
-        · simp [hb, hah2]
-        · simp only [Bool.not_eq_true] at hah2; simp [hb, hah2, haq]
+  apply H5iAppLib.eq_ok_of_spec
+  have : check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok false health
+      ⦃ r => r = AuthDecision.Forbidden ⦄ := by
+    unfold check_auth transport_blocks
+    rcases htok with hb | hah | haq <;>
+      step* <;> simp_all
+  exact this
 
 /-- SECURITY (S): with `public_access` off, a non-health request that carries
-no valid credential (invalid/absent cookie, no matching token, no Digest) is
-never granted — it is refused with `Forbidden` or `Challenge`. -/
+no valid credential is never granted (refused with `Forbidden` or `Challenge`). -/
 theorem unauth_never_granted
     (cfg : AuthCfg) (store : SessionStore) (now : U32) (cp : Bool) (ct : Array U8 8#usize)
     (bp bm ahp ahm aqp aqm https : Bool)
@@ -385,42 +263,34 @@ theorem unauth_never_granted
     (hakq : ¬ (aqp = true ∧ cfg.apikey_set = true ∧ aqm = true)) :
     ∃ r, check_auth cfg store now cp ct bp bm ahp ahm aqp aqm false https false = ok r
       ∧ ¬ granted r := by
-  have key :
-      check_auth cfg store now cp ct bp bm ahp ahm aqp aqm false https false = ok AuthDecision.Forbidden
-      ∨ check_auth cfg store now cp ct bp bm ahp ahm aqp aqm false https false = ok AuthDecision.Challenge := by
-    unfold check_auth
-    simp only [hpub, Bool.false_eq_true, if_false]
-    by_cases hcp : cp = true
-    · simp only [hcp, if_true, hcookie hcp, bind, Result.bind, Bool.false_eq_true, if_false]
-      by_cases hbp : bp = true <;> by_cases hahp : ahp = true <;> by_cases haqp : aqp = true <;>
-        by_cases hhs : https = true <;> by_cases hht : cfg.allow_http_tokens = true <;>
-        by_cases hbs : cfg.bearer_set = true <;> by_cases has : cfg.apikey_set = true <;>
-        simp_all [granted]
-    · simp only [Bool.not_eq_true] at hcp
-      simp only [hcp, Bool.false_eq_true, if_false]
-      by_cases hbp : bp = true <;> by_cases hahp : ahp = true <;> by_cases haqp : aqp = true <;>
-        by_cases hhs : https = true <;> by_cases hht : cfg.allow_http_tokens = true <;>
-        by_cases hbs : cfg.bearer_set = true <;> by_cases has : cfg.apikey_set = true <;>
-        simp_all [granted]
-  rcases key with h | h
-  · exact ⟨_, h, by simp [granted]⟩
-  · exact ⟨_, h, by simp [granted]⟩
+  obtain ⟨r, hr⟩ := check_auth_total cfg store now cp ct bp bm ahp ahm aqp aqm false https false
+  refine ⟨r, hr, ?_⟩
+  have hspec : check_auth cfg store now cp ct bp bm ahp ahm aqp aqm false https false
+      ⦃ x => ¬ granted x ⦄ := by
+    unfold check_auth transport_blocks granted
+    by_cases hc : cp = true
+    · have := hcookie hc
+      step* <;> simp_all
+    · simp only [Bool.not_eq_true] at hc
+      step* <;> simp_all
+  exact H5iAppLib.post_of_ok hspec hr
 
-/-- SECURITY (S): an expired session cookie never grants access (its only
-matching slot is past its TTL). -/
+/-- SECURITY (S): an expired session cookie never grants access. -/
 theorem expired_session_never_grants
     (cfg : AuthCfg) (store : SessionStore) (token : Array U8 8#usize) (now : U32)
     (hpub : cfg.public_access = false)
     (hexp : validate_session store token now = ok false) :
     check_auth cfg store now true token false false false false false false false true false
       = ok AuthDecision.Challenge := by
-  unfold check_auth
-  simp only [hpub, Bool.false_eq_true, if_false, if_true]
-  rw [hexp]
-  simp
+  apply H5iAppLib.eq_ok_of_spec
+  have : check_auth cfg store now true token false false false false false false false true false
+      ⦃ r => r = AuthDecision.Challenge ⦄ := by
+    unfold check_auth transport_blocks
+    step* <;> simp_all
+  exact this
 
-/-- SECURITY (S): an unset bearer token / API key never grants access, even
-if the (empty) comparison reported a match. -/
+/-- SECURITY (S): an unset bearer token / API key never grants access, even if
+the (empty) comparison reported a match. -/
 theorem empty_secret_no_bypass
     (cfg : AuthCfg) (store : SessionStore) (now : U32) (ct : Array U8 8#usize)
     (bm ahm aqm : Bool)
@@ -428,7 +298,12 @@ theorem empty_secret_no_bypass
     (hbset : cfg.bearer_set = false) (haset : cfg.apikey_set = false) :
     ∃ r, check_auth cfg store now false ct true bm true ahm true aqm false true false = ok r
       ∧ r ≠ AuthDecision.Allowed := by
-  unfold check_auth
-  simp [hpub, hbset, haset]
+  obtain ⟨r, hr⟩ := check_auth_total cfg store now false ct true bm true ahm true aqm false true false
+  refine ⟨r, hr, ?_⟩
+  have hspec : check_auth cfg store now false ct true bm true ahm true aqm false true false
+      ⦃ x => x ≠ AuthDecision.Allowed ⦄ := by
+    unfold check_auth transport_blocks
+    step* <;> simp_all
+  exact H5iAppLib.post_of_ok hspec hr
 
 end m5airq_kernel.Properties

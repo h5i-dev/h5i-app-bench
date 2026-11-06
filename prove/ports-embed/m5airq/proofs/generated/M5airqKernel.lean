@@ -393,8 +393,17 @@ def validate_session
       then ok true
       else slot_valid store.s3 token now
 
+/-- [m5airq_kernel::transport_blocks]:
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 362:0-364:1
+    Visibility: public -/
+def transport_blocks
+  (is_https : Bool) (allow_http_tokens : Bool) : Result Bool := do
+  if is_https
+  then ok false
+  else ok (¬ allow_http_tokens)
+
 /-- [m5airq_kernel::check_auth]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 369:0-431:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 381:0-428:1
     Visibility: public -/
 def check_auth
   (cfg : AuthCfg) (store : SessionStore) (now : Std.U32)
@@ -404,642 +413,67 @@ def check_auth
   (is_https : Bool) (is_health : Bool) :
   Result AuthDecision
   := do
+  let blocked ← transport_blocks is_https cfg.allow_http_tokens
+  let valid_cookie ←
+    if cookie_present
+    then validate_session store cookie_token now
+    else ok false
+  let bearer_block ← if bearer_present
+                       then ok blocked
+                       else ok false
+  let bearer_ok ←
+    if bearer_present
+    then if cfg.bearer_set
+         then ok bearer_match
+         else ok false
+    else ok false
+  let akh_block ← if akh_present
+                    then ok blocked
+                    else ok false
+  let (b, akh_ok) ←
+    if akh_present
+    then if cfg.apikey_set
+         then ok (true, akh_match)
+         else ok (false, false)
+    else ok (cfg.apikey_set, false)
+  let akq_block ← if akq_present
+                    then ok blocked
+                    else ok false
+  let akq_ok ←
+    if akq_present
+    then if b
+         then ok akq_match
+         else ok false
+    else ok false
   if cfg.public_access
   then ok AuthDecision.Allowed
   else
     if is_health
     then ok AuthDecision.Allowed
     else
-      if cookie_present
-      then
-        let b ← validate_session store cookie_token now
-        if b
-        then ok AuthDecision.Allowed
-        else
-          if bearer_present
-          then
-            if is_https
-            then
-              if cfg.bearer_set
-              then
-                if bearer_match
-                then ok AuthDecision.Allowed
-                else
-                  if akh_present
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akh_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if akq_present
-                        then
-                          if akq_match
-                          then ok AuthDecision.Allowed
-                          else
-                            if digest_ok
-                            then ok AuthDecision.AllowedSetSession
-                            else ok AuthDecision.Challenge
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                    else
-                      if akq_present
-                      then
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if cfg.apikey_set
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-              else
-                if akh_present
-                then
-                  if cfg.apikey_set
-                  then
-                    if akh_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if akq_present
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                else
-                  if akq_present
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-            else
-              if cfg.allow_http_tokens
-              then
-                if cfg.bearer_set
-                then
-                  if bearer_match
-                  then ok AuthDecision.Allowed
-                  else
-                    if akh_present
-                    then
-                      if cfg.apikey_set
-                      then
-                        if akh_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if akq_present
-                          then
-                            if akq_match
-                            then ok AuthDecision.Allowed
-                            else
-                              if digest_ok
-                              then ok AuthDecision.AllowedSetSession
-                              else ok AuthDecision.Challenge
-                          else
-                            if digest_ok
-                            then ok AuthDecision.AllowedSetSession
-                            else ok AuthDecision.Challenge
-                      else
-                        if akq_present
-                        then
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                    else
-                      if akq_present
-                      then
-                        if cfg.apikey_set
-                        then
-                          if akq_match
-                          then ok AuthDecision.Allowed
-                          else
-                            if digest_ok
-                            then ok AuthDecision.AllowedSetSession
-                            else ok AuthDecision.Challenge
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                else
-                  if akh_present
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akh_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if akq_present
-                        then
-                          if akq_match
-                          then ok AuthDecision.Allowed
-                          else
-                            if digest_ok
-                            then ok AuthDecision.AllowedSetSession
-                            else ok AuthDecision.Challenge
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                    else
-                      if akq_present
-                      then
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if cfg.apikey_set
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-              else ok AuthDecision.Forbidden
-          else
-            if akh_present
-            then
-              if is_https
-              then
-                if cfg.apikey_set
-                then
-                  if akh_match
-                  then ok AuthDecision.Allowed
-                  else
-                    if akq_present
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                else
-                  if akq_present
-                  then
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-              else
-                if cfg.allow_http_tokens
-                then
-                  if cfg.apikey_set
-                  then
-                    if akh_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if akq_present
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                else ok AuthDecision.Forbidden
-            else
-              if akq_present
-              then
-                if is_https
-                then
-                  if cfg.apikey_set
-                  then
-                    if akq_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-                else
-                  if cfg.allow_http_tokens
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else ok AuthDecision.Forbidden
-              else
-                if digest_ok
-                then ok AuthDecision.AllowedSetSession
-                else ok AuthDecision.Challenge
+      if valid_cookie
+      then ok AuthDecision.Allowed
       else
-        if bearer_present
-        then
-          if is_https
-          then
-            if cfg.bearer_set
-            then
-              if bearer_match
+        if bearer_block
+        then ok AuthDecision.Forbidden
+        else
+          if bearer_ok
+          then ok AuthDecision.Allowed
+          else
+            if akh_block
+            then ok AuthDecision.Forbidden
+            else
+              if akh_ok
               then ok AuthDecision.Allowed
               else
-                if akh_present
-                then
-                  if cfg.apikey_set
-                  then
-                    if akh_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if akq_present
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
+                if akq_block
+                then ok AuthDecision.Forbidden
                 else
-                  if akq_present
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-            else
-              if akh_present
-              then
-                if cfg.apikey_set
-                then
-                  if akh_match
-                  then ok AuthDecision.Allowed
-                  else
-                    if akq_present
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                else
-                  if akq_present
-                  then
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-              else
-                if akq_present
-                then
-                  if cfg.apikey_set
-                  then
-                    if akq_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-                else
-                  if digest_ok
-                  then ok AuthDecision.AllowedSetSession
-                  else ok AuthDecision.Challenge
-          else
-            if cfg.allow_http_tokens
-            then
-              if cfg.bearer_set
-              then
-                if bearer_match
-                then ok AuthDecision.Allowed
-                else
-                  if akh_present
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akh_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if akq_present
-                        then
-                          if akq_match
-                          then ok AuthDecision.Allowed
-                          else
-                            if digest_ok
-                            then ok AuthDecision.AllowedSetSession
-                            else ok AuthDecision.Challenge
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                    else
-                      if akq_present
-                      then
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if cfg.apikey_set
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-              else
-                if akh_present
-                then
-                  if cfg.apikey_set
-                  then
-                    if akh_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if akq_present
-                      then
-                        if akq_match
-                        then ok AuthDecision.Allowed
-                        else
-                          if digest_ok
-                          then ok AuthDecision.AllowedSetSession
-                          else ok AuthDecision.Challenge
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                  else
-                    if akq_present
-                    then
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                else
-                  if akq_present
-                  then
-                    if cfg.apikey_set
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-            else ok AuthDecision.Forbidden
-        else
-          if akh_present
-          then
-            if is_https
-            then
-              if cfg.apikey_set
-              then
-                if akh_match
-                then ok AuthDecision.Allowed
-                else
-                  if akq_present
-                  then
-                    if akq_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-              else
-                if akq_present
-                then
-                  if digest_ok
-                  then ok AuthDecision.AllowedSetSession
-                  else ok AuthDecision.Challenge
-                else
-                  if digest_ok
-                  then ok AuthDecision.AllowedSetSession
-                  else ok AuthDecision.Challenge
-            else
-              if cfg.allow_http_tokens
-              then
-                if cfg.apikey_set
-                then
-                  if akh_match
-                  then ok AuthDecision.Allowed
-                  else
-                    if akq_present
-                    then
-                      if akq_match
-                      then ok AuthDecision.Allowed
-                      else
-                        if digest_ok
-                        then ok AuthDecision.AllowedSetSession
-                        else ok AuthDecision.Challenge
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                else
-                  if akq_present
-                  then
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-              else ok AuthDecision.Forbidden
-          else
-            if akq_present
-            then
-              if is_https
-              then
-                if cfg.apikey_set
-                then
-                  if akq_match
+                  if akq_ok
                   then ok AuthDecision.Allowed
                   else
                     if digest_ok
                     then ok AuthDecision.AllowedSetSession
                     else ok AuthDecision.Challenge
-                else
-                  if digest_ok
-                  then ok AuthDecision.AllowedSetSession
-                  else ok AuthDecision.Challenge
-              else
-                if cfg.allow_http_tokens
-                then
-                  if cfg.apikey_set
-                  then
-                    if akq_match
-                    then ok AuthDecision.Allowed
-                    else
-                      if digest_ok
-                      then ok AuthDecision.AllowedSetSession
-                      else ok AuthDecision.Challenge
-                  else
-                    if digest_ok
-                    then ok AuthDecision.AllowedSetSession
-                    else ok AuthDecision.Challenge
-                else ok AuthDecision.Forbidden
-            else
-              if digest_ok
-              then ok AuthDecision.AllowedSetSession
-              else ok AuthDecision.Challenge
 
 end m5airq_kernel
