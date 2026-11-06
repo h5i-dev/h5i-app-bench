@@ -1,0 +1,24 @@
+# Host-side differential test: the extracted kernel's decisions vs the REAL
+# upstream decision logic in `anova-oven-pico-core` at
+# robdimsdale/anova-oven-rs@43ac1a7. The upstream crate is referenced by an
+# absolute path into the read-only pinned checkout (not vendored into this
+# repo). If that checkout is absent, this crate will not build — that is
+# intentional; the proofs and kernel tests stand on their own.
+[workspace]
+
+[package]
+name = "anova-oven-difftest"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+anova-oven-kernel = { path = "../kernel" }
+# The real upstream pure-logic crate (scheduler::EventQueue, reset::classify_reset).
+anova-oven-pico-core = { path = "/mnt/scratch/oss-sec/upstream-embed/anova-oven-rs/crates/anova-oven-pico-core" }
+# Supplies a no-op time driver so the test binary links; we only ever use
+# Instant::from_ticks, never Instant::now.
+embassy-time = { version = "0.5", features = ["mock-driver"] }
+
+[dev-dependencies]
+rand = "0.8"
