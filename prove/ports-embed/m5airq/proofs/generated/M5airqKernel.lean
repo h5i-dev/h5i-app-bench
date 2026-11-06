@@ -403,7 +403,7 @@ def transport_blocks
   else ok (¬ allow_http_tokens)
 
 /-- [m5airq_kernel::check_auth]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 381:0-428:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 381:0-432:1
     Visibility: public -/
 def check_auth
   (cfg : AuthCfg) (store : SessionStore) (now : Std.U32)
@@ -414,10 +414,10 @@ def check_auth
   Result AuthDecision
   := do
   let blocked ← transport_blocks is_https cfg.allow_http_tokens
-  let valid_cookie ←
-    if cookie_present
-    then validate_session store cookie_token now
-    else ok false
+  let vs ← validate_session store cookie_token now
+  let valid_cookie ← if cookie_present
+                       then ok vs
+                       else ok false
   let bearer_block ← if bearer_present
                        then ok blocked
                        else ok false

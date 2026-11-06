@@ -58,58 +58,60 @@ theorem transition_total (a : Device) (s : OtaState) (c : Command) :
     cases c <;> step* <;> scalar_tac
   exact H5iAppLib.ok_of h
 
-/-- Begin's postcondition. -/
-theorem begin_wp (a : Device) (s : OtaState) (size : U32) :
-    transition a s (.Begin size) ⦃ res => ∀ ws r, res = .Ok (ws, r) →
-      ∀ n, ws = some n →
-        n.target_slot ≠ n.running_slot ∧ n.running_slot.val ≤ 1
-          ∧ n.written.val = 0 ∧ n.total = size ∧ n.active = true ⦄ := by
+/-- The per-command postcondition for a committed write set. -/
+def PostOk (s : OtaState) (c : Command) (ws : Option OtaState) : Prop :=
+  match c, ws with
+  | .Begin size, some n =>
+      n.target_slot ≠ n.running_slot ∧ n.running_slot.val ≤ 1
+        ∧ n.written.val = 0 ∧ n.total = size ∧ n.active = true
+  | .Write offset len, some n =>
+      offset = s.written ∧ n.written.val = s.written.val + len.val
+        ∧ n.written.val ≤ s.total.val ∧ n.active = s.active ∧ n.total = s.total
+  | .End _ec ac mo, some n =>
+      s.written = s.total ∧ mo = true ∧ ac = _ec ∧ n.active = false
+  | .Abort, some n => n.active = false
+  | _, _ => True
+
+/-- One WP for every command (`cases c` reduces the extracted match). -/
+theorem transition_wp (a : Device) (s : OtaState) (c : Command) :
+    transition a s c ⦃ res => ∀ ws r, res = .Ok (ws, r) → PostOk s c ws ⦄ := by
   unfold transition
-  step* <;> intro ws r hres <;> simp_all <;>
-    (try (intro n hn; simp_all)) <;> (try scalar_tac)
+  cases c <;> step* <;> intro ws r hres <;> (try (cases hres)) <;>
+    simp_all [PostOk] <;> (try scalar_tac)
 
 /-- `begin` never targets the running slot (it writes the inactive one). -/
 theorem begin_targets_other_slot (a : Device) (s : OtaState) (size : U32) (n : OtaState) (r : Reply)
     (h : transition a s (.Begin size) = ok (.Ok (some n, r))) :
     n.target_slot ≠ n.running_slot ∧ n.running_slot.val ≤ 1 := by
-  have H := H5iAppLib.post_of_ok (begin_wp a s size) h (some n) r rfl n rfl
+  have H := H5iAppLib.post_of_ok (transition_wp a s (.Begin size)) h (some n) r rfl
+  simp only [PostOk] at H
   exact ⟨H.1, H.2.1⟩
 
-/-- Write's postcondition. -/
-theorem write_wp (a : Device) (s : OtaState) (offset len : U32) :
-    transition a s (.Write offset len) ⦃ res => ∀ ws r, res = .Ok (ws, r) →
-      ∀ n, ws = some n →
-        offset = s.written ∧ n.written.val = s.written.val + len.val
-          ∧ n.written.val ≤ s.total.val ∧ n.active = s.active ∧ n.total = s.total ⦄ := by
-  unfold transition
-  step* <;> intro ws r hres <;> simp_all <;>
-    (try (intro n hn; simp_all)) <;> (try scalar_tac)
-
+/-- A committed chunk never pushes the cursor past the declared image size. -/
 theorem write_bounded (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)
     (h : transition a s (.Write offset len) = ok (.Ok (some n, r))) :
-    n.written.val ≤ s.total.val :=
-  (H5iAppLib.post_of_ok (write_wp a s offset len) h (some n) r rfl n rfl).2.2.1
+    n.written.val ≤ s.total.val := by
+  have H := H5iAppLib.post_of_ok (transition_wp a s (.Write offset len)) h (some n) r rfl
+  simp only [PostOk] at H
+  exact H.2.2.1
 
+/-- A committed chunk writes exactly at the cursor and advances it by its
+length: writes are strictly sequential. -/
 theorem write_sequential (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)
     (h : transition a s (.Write offset len) = ok (.Ok (some n, r))) :
     offset = s.written ∧ n.written.val = s.written.val + len.val := by
-  have H := H5iAppLib.post_of_ok (write_wp a s offset len) h (some n) r rfl n rfl
+  have H := H5iAppLib.post_of_ok (transition_wp a s (.Write offset len)) h (some n) r rfl
+  simp only [PostOk] at H
   exact ⟨H.1, H.2.1⟩
 
-/-- End's postcondition. -/
-theorem end_wp (a : Device) (s : OtaState) (ec ac : U32) (mo : Bool) :
-    transition a s (.End ec ac mo) ⦃ res => ∀ ws r, res = .Ok (ws, r) →
-      ∀ n, ws = some n →
-        s.written = s.total ∧ mo = true ∧ ac = ec ∧ n.active = false ⦄ := by
-  unfold transition
-  step* <;> intro ws r hres <;> simp_all <;>
-    (try (intro n hn; simp_all))
-
+/-- `end` activates a new image only when it is complete, has the ESP image
+magic, and matches the declared CRC. -/
 theorem end_integrity (a : Device) (s : OtaState) (ec ac : U32) (mo : Bool) (n : OtaState) (r : Reply)
     (h : transition a s (.End ec ac mo) = ok (.Ok (some n, r))) :
     s.written = s.total ∧ mo = true ∧ ac = ec := by
-  obtain ⟨h1, h2, h3, _⟩ := H5iAppLib.post_of_ok (end_wp a s ec ac mo) h (some n) r rfl n rfl
-  exact ⟨h1, h2, h3⟩
+  have H := H5iAppLib.post_of_ok (transition_wp a s (.End ec ac mo)) h (some n) r rfl
+  simp only [PostOk] at H
+  exact ⟨H.1, H.2.1, H.2.2.1⟩
 
 /-- Every mutating OTA command is refused without the admin actor. -/
 theorem mutating_needs_admin (a : Device) (s : OtaState) (c : Command) (ha : a.admin = false)
@@ -147,7 +149,7 @@ theorem inv_step (a : Device) (s : OtaState) (c : Command) (ws : Option OtaState
     (hs : Inv s) (ht : transition a s c = ok (.Ok (ws, r))) : Inv (applyW s ws) := by
   have h : transition a s c ⦃ res => ∀ ws r, res = .Ok (ws, r) → Inv (applyW s ws) ⦄ := by
     unfold transition
-    cases c <;> step* <;> intro ws r hres <;>
+    cases c <;> step* <;> intro ws r hres <;> (try (cases hres)) <;>
       simp_all [applyW, Inv] <;> (try (intro hact)) <;> (try simp_all) <;> (try scalar_tac)
   exact H5iAppLib.post_of_ok h ht ws r rfl
 
@@ -201,13 +203,16 @@ theorem validate_session_sound (store : SessionStore) (token : Array U8 8#usize)
   rw [H5iAppLib.bind_eq_ok] at h
   obtain ⟨b0, hb0, h⟩ := h
   cases b0
-  · rw [H5iAppLib.bind_eq_ok] at h
+  · simp only [Bool.false_eq_true, if_false] at h
+    rw [H5iAppLib.bind_eq_ok] at h
     obtain ⟨b1, hb1, h⟩ := h
     cases b1
-    · rw [H5iAppLib.bind_eq_ok] at h
+    · simp only [Bool.false_eq_true, if_false] at h
+      rw [H5iAppLib.bind_eq_ok] at h
       obtain ⟨b2, hb2, h⟩ := h
       cases b2
-      · exact Or.inr (Or.inr (Or.inr h))
+      · simp only [Bool.false_eq_true, if_false] at h
+        exact Or.inr (Or.inr (Or.inr h))
       · exact Or.inr (Or.inr (Or.inl hb2))
     · exact Or.inr (Or.inl hb1)
   · exact Or.inl hb0
@@ -226,11 +231,10 @@ theorem public_access_opens_everything
     (cfg : AuthCfg) (hpub : cfg.public_access = true) :
     check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok https health = ok AuthDecision.Allowed := by
   apply H5iAppLib.eq_ok_of_spec
-  have : check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok https health
-      ⦃ r => r = AuthDecision.Allowed ⦄ := by
-    unfold check_auth
-    step* <;> simp_all
-  exact this
+  show check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok https health
+      ⦃ r => r = AuthDecision.Allowed ⦄
+  unfold check_auth
+  step* <;> simp_all
 
 /-- SECURITY (S): a bearer token or API key presented over plaintext HTTP,
 with token-over-HTTP disabled and no valid session cookie, is refused. -/
@@ -244,12 +248,11 @@ theorem token_over_http_forbidden
     check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok false health
       = ok AuthDecision.Forbidden := by
   apply H5iAppLib.eq_ok_of_spec
-  have : check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok false health
-      ⦃ r => r = AuthDecision.Forbidden ⦄ := by
-    unfold check_auth transport_blocks
-    rcases htok with hb | hah | haq <;>
-      step* <;> simp_all
-  exact this
+  show check_auth cfg store now cp ct bp bm ahp ahm aqp aqm dok false health
+      ⦃ r => r = AuthDecision.Forbidden ⦄
+  unfold check_auth transport_blocks
+  rw [hcookie]
+  rcases htok with hb | hah | haq <;> step* <;> simp_all
 
 /-- SECURITY (S): with `public_access` off, a non-health request that carries
 no valid credential is never granted (refused with `Forbidden` or `Challenge`). -/
@@ -269,7 +272,7 @@ theorem unauth_never_granted
       ⦃ x => ¬ granted x ⦄ := by
     unfold check_auth transport_blocks granted
     by_cases hc : cp = true
-    · have := hcookie hc
+    · rw [hcookie hc]
       step* <;> simp_all
     · simp only [Bool.not_eq_true] at hc
       step* <;> simp_all
@@ -283,11 +286,11 @@ theorem expired_session_never_grants
     check_auth cfg store now true token false false false false false false false true false
       = ok AuthDecision.Challenge := by
   apply H5iAppLib.eq_ok_of_spec
-  have : check_auth cfg store now true token false false false false false false false true false
-      ⦃ r => r = AuthDecision.Challenge ⦄ := by
-    unfold check_auth transport_blocks
-    step* <;> simp_all
-  exact this
+  show check_auth cfg store now true token false false false false false false false true false
+      ⦃ r => r = AuthDecision.Challenge ⦄
+  unfold check_auth transport_blocks
+  rw [hexp]
+  step* <;> simp_all
 
 /-- SECURITY (S): an unset bearer token / API key never grants access, even if
 the (empty) comparison reported a match. -/

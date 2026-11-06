@@ -395,7 +395,11 @@ pub fn check_auth(
     is_health: bool,
 ) -> AuthDecision {
     let blocked = transport_blocks(is_https, cfg.allow_http_tokens);
-    let valid_cookie = cookie_present && validate_session(store, cookie_token, now);
+    // `validate_session` is pure; compute it unconditionally so the extracted
+    // code binds it directly (its result is only consulted when a cookie is
+    // present, exactly as upstream short-circuits `cookie && validate`).
+    let vs = validate_session(store, cookie_token, now);
+    let valid_cookie = cookie_present && vs;
     let bearer_block = bearer_present && blocked;
     let bearer_ok = bearer_present && cfg.bearer_set && bearer_match;
     let akh_block = akh_present && blocked;
