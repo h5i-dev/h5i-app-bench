@@ -83,4 +83,15 @@ def grantedByEntry (obj : List windmill_kernel.authz.PermEntry) (a : windmill_ke
   ∃ e ∈ obj, e.is_bool = true ∧ e.value = true ∧
     (e.key.val = [117#u8, 47#u8] ++ a.username.val ∨ ∃ g ∈ a.groups.val, e.key.val = [103#u8, 47#u8] ++ g.val)
 
+/-! ## Token scopes as strings -/
+
+/-- `if_jobs:filter_tags:`: a tag filter, not a scope restriction. -/
+def filterTagsB : Bytes :=
+  [105#u8, 102#u8, 95#u8, 106#u8, 111#u8, 98#u8, 115#u8, 58#u8, 102#u8, 105#u8, 108#u8, 116#u8,
+   101#u8, 114#u8, 95#u8, 116#u8, 97#u8, 103#u8, 115#u8, 58#u8]
+
+/-- The domain and action fields of a `domain:action[:...]` scope string. -/
+def domainOf (s : Bytes) : Bytes := (segments 58#u8 s)[0]!
+def actionOf (s : Bytes) : Bytes := (segments 58#u8 s)[1]!
+
 end windmill_kernel.Spec

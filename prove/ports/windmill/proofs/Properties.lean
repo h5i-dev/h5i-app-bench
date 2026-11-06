@@ -281,4 +281,29 @@ theorem parse_fields (s : Slice U8) (sc : scopes.Scope) (hs : s.length < Usize.m
         | exact (seg_of' hsp (i := 0#usize) (by assumption) rfl).symm
         | exact (seg_of' hsp (i := 1#usize) (by assumption) rfl).symm
 
+theorem is_filter_tags_spec (s : Slice U8) :
+    authz.is_filter_tags s ⦃ b => (b = true ↔ filterTagsB <+: s.val) ⦄ := by
+  unfold authz.is_filter_tags
+  step*
+  subst b_post
+  rename_i hs1 _
+  have e : p.slice.val = filterTagsB := by
+    rw [← s1_post, hs1]; simp [array_to_slice_val, filterTagsB, Array.make]
+  simp [vec_deref_val]
+  rw [show p.val = p.slice.val from rfl, e]
+
+theorem any_grants_sound (list : Slice (alloc.vec.Vec U8)) (req : scopes.Scope) :
+    authz.any_grants list req ⦃ b => b = true →
+      ∃ s ∈ list.val, ¬ filterTagsB <+: s.val ∧ authz.parsed_includes s.deref req = ok true ⦄ := by
+  unfold authz.any_grants authz.any_grants_loop
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => list.length - j.val)
+    (inv := fun j => j.val ≤ list.length)
+  · intro i hi
+    unfold authz.any_grants_loop.body
+    have hf := fun s => is_filter_tags_spec s
+    step*
+    all_goals trace_state
+    all_goals sorry
+  · simp
+
 end windmill_kernel.Properties
