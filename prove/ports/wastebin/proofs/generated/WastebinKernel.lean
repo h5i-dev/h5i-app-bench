@@ -20,7 +20,7 @@ set_option maxRecDepth 2048
 namespace wastebin_kernel
 
 /-- [wastebin_kernel::disposition::PREFIX]
-    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 6:0-9:2
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 8:0-11:2
     Visibility: public -/
 @[global_simps, irreducible]
 def disposition.PREFIX : Array Std.U8 29#usize :=
@@ -32,7 +32,7 @@ def disposition.PREFIX : Array Std.U8 29#usize :=
     ]
 
 /-- [wastebin_kernel::disposition::HEX]
-    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 12:0-14:2
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 14:0-16:2
     Visibility: public -/
 @[global_simps, irreducible]
 def disposition.HEX : Array Std.U8 16#usize :=
@@ -41,10 +41,10 @@ def disposition.HEX : Array Std.U8 16#usize :=
     65#u8, 66#u8, 67#u8, 68#u8, 69#u8, 70#u8
     ]
 
-/-- [wastebin_kernel::disposition::unreserved]:
-    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 17:0-26:1
+/-- [wastebin_kernel::ext::is_ascii_alphanumeric]:
+    Source: 'prove/ports/wastebin/kernel/src/ext.rs', lines 7:0-9:1
     Visibility: public -/
-def disposition.unreserved (b : Std.U8) : Result Bool := do
+def ext.is_ascii_alphanumeric (b : Std.U8) : Result Bool := do
   if b >= 48#u8
   then
     if b <= 57#u8
@@ -54,127 +54,43 @@ def disposition.unreserved (b : Std.U8) : Result Bool := do
       then
         if b <= 90#u8
         then ok true
-        else
-          if b >= 97#u8
-          then
-            if b <= 122#u8
-            then ok true
-            else
-              if b = 46#u8
-              then ok true
-              else
-                if b = 45#u8
-                then ok true
-                else
-                  if b = 95#u8
-                  then ok true
-                  else if b = 126#u8
-                       then ok true
-                       else ok (b = 43#u8)
-          else
-            if b = 46#u8
-            then ok true
-            else
-              if b = 45#u8
-              then ok true
-              else
-                if b = 95#u8
-                then ok true
-                else if b = 126#u8
-                     then ok true
-                     else ok (b = 43#u8)
-      else
-        if b >= 97#u8
-        then
-          if b <= 122#u8
-          then ok true
-          else
-            if b = 46#u8
-            then ok true
-            else
-              if b = 45#u8
-              then ok true
-              else
-                if b = 95#u8
-                then ok true
-                else if b = 126#u8
-                     then ok true
-                     else ok (b = 43#u8)
-        else
-          if b = 46#u8
-          then ok true
-          else
-            if b = 45#u8
-            then ok true
-            else
-              if b = 95#u8
-              then ok true
-              else if b = 126#u8
-                   then ok true
-                   else ok (b = 43#u8)
+        else if b >= 97#u8
+             then ok (b <= 122#u8)
+             else ok false
+      else if b >= 97#u8
+           then ok (b <= 122#u8)
+           else ok false
   else
     if b >= 65#u8
     then
       if b <= 90#u8
       then ok true
-      else
-        if b >= 97#u8
-        then
-          if b <= 122#u8
-          then ok true
-          else
-            if b = 46#u8
-            then ok true
-            else
-              if b = 45#u8
-              then ok true
-              else
-                if b = 95#u8
-                then ok true
-                else if b = 126#u8
-                     then ok true
-                     else ok (b = 43#u8)
-        else
-          if b = 46#u8
-          then ok true
-          else
-            if b = 45#u8
-            then ok true
-            else
-              if b = 95#u8
-              then ok true
-              else if b = 126#u8
-                   then ok true
-                   else ok (b = 43#u8)
+      else if b >= 97#u8
+           then ok (b <= 122#u8)
+           else ok false
+    else if b >= 97#u8
+         then ok (b <= 122#u8)
+         else ok false
+
+/-- [wastebin_kernel::disposition::unreserved]:
+    Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 19:0-26:1
+    Visibility: public -/
+def disposition.unreserved (b : Std.U8) : Result Bool := do
+  let b1 ← ext.is_ascii_alphanumeric b
+  if b1
+  then ok true
+  else
+    if b = 46#u8
+    then ok true
     else
-      if b >= 97#u8
-      then
-        if b <= 122#u8
-        then ok true
-        else
-          if b = 46#u8
-          then ok true
-          else
-            if b = 45#u8
-            then ok true
-            else
-              if b = 95#u8
-              then ok true
-              else if b = 126#u8
-                   then ok true
-                   else ok (b = 43#u8)
+      if b = 45#u8
+      then ok true
       else
-        if b = 46#u8
+        if b = 95#u8
         then ok true
-        else
-          if b = 45#u8
-          then ok true
-          else
-            if b = 95#u8
-            then ok true
-            else if b = 126#u8
-                 then ok true
-                 else ok (b = 43#u8)
+        else if b = 126#u8
+             then ok true
+             else ok (b = 43#u8)
 
 /-- [wastebin_kernel::disposition::content_disposition]: loop body 0:
     Source: 'prove/ports/wastebin/kernel/src/disposition.rs', lines 33:4-36:5
@@ -262,37 +178,6 @@ def disposition.content_disposition
     Source: 'prove/ports/wastebin/kernel/src/ext.rs', lines 4:0-4:40
     Visibility: public -/
 @[global_simps, irreducible] def ext.MAX_EXTENSION_LEN : Std.Usize := 32#usize
-
-/-- [wastebin_kernel::ext::is_ascii_alphanumeric]:
-    Source: 'prove/ports/wastebin/kernel/src/ext.rs', lines 7:0-9:1
-    Visibility: public -/
-def ext.is_ascii_alphanumeric (b : Std.U8) : Result Bool := do
-  if b >= 48#u8
-  then
-    if b <= 57#u8
-    then ok true
-    else
-      if b >= 65#u8
-      then
-        if b <= 90#u8
-        then ok true
-        else if b >= 97#u8
-             then ok (b <= 122#u8)
-             else ok false
-      else if b >= 97#u8
-           then ok (b <= 122#u8)
-           else ok false
-  else
-    if b >= 65#u8
-    then
-      if b <= 90#u8
-      then ok true
-      else if b >= 97#u8
-           then ok (b <= 122#u8)
-           else ok false
-    else if b >= 97#u8
-         then ok (b <= 122#u8)
-         else ok false
 
 /-- [wastebin_kernel::ext::extension_byte]:
     Source: 'prove/ports/wastebin/kernel/src/ext.rs', lines 12:0-14:1

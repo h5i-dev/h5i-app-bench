@@ -4,6 +4,7 @@ import Verified.Get
 import Verified.Burn
 import Verified.View
 import Verified.Owner
+import Verified.Ids
 import Spec
 /-!
 # wastebin: the security properties
@@ -339,5 +340,24 @@ theorem magic_link_fixes_owner_of_fresh_browser (c fresh : I64) :
   simp only [Verified.Owner.cookieList, hv] at hm
   obtain ⟨rfl, hl'⟩ := hm
   exact ⟨l', hx, hl'⟩
+
+/-! ## Extensions -/
+
+/-- An extension `valid_extension` accepts is at most 32 bytes and contains
+only URL-safe bytes: no quote, angle bracket, slash, backslash, `%`, `?`,
+`#`, whitespace or control byte can reach the HTML or a URL through it. -/
+theorem extension_accepts_only_url_safe (e : Slice U8) (h : ext.valid_extension e = ok true) :
+    e.val.length ≤ 32 ∧ ∀ b ∈ e.val, UrlSafe b.val := by
+  have := post_of_ok (Verified.Ids.valid_extension_spec e) h
+  have : e.val.length ≤ 32 ∧ ∀ b ∈ e.val, ExtByte b.val := of_decide_eq_true this.symm
+  exact ⟨this.1, fun b hb => Verified.Ids.extByte_urlSafe (this.2 b hb)⟩
+
+/-- Every key the view, raw, download and QR handlers accept carries an
+extension of at most 32 URL-safe bytes, the extension later echoed into
+links and form actions (`FormAction`, `Key`'s `Display`). -/
+theorem parsed_key_extension_url_safe (s : Slice U8) (k : ids.Key) (h : ids.parse_key s = ok (.Ok k))
+    (t : alloc.vec.Vec U8) (ht : k.ext = some t) : t.val.length ≤ 32 ∧ ∀ b ∈ t.val, UrlSafe b.val := by
+  obtain ⟨hl, hb⟩ := Verified.Ids.parse_key_ext s k h t ht
+  exact ⟨hl, fun b hm => Verified.Ids.extByte_urlSafe (hb b hm)⟩
 
 end wastebin_kernel.Properties

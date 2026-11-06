@@ -2,6 +2,8 @@
 //! `make_content_disposition`, the `Content-Disposition` header of a
 //! download, whose filename is the paste's user-chosen title.
 
+use crate::ext::is_ascii_alphanumeric;
+
 /// `"attachment; filename*=UTF-8''"`.
 pub const PREFIX: [u8; 29] = [
     b'a', b't', b't', b'a', b'c', b'h', b'm', b'e', b'n', b't', b';', b' ', b'f', b'i', b'l', b'e',
@@ -15,9 +17,7 @@ pub const HEX: [u8; 16] = [
 
 /// Bytes written as themselves: ASCII alphanumerics and `.-_~+`.
 pub fn unreserved(b: u8) -> bool {
-    (b >= b'0' && b <= b'9')
-        || (b >= b'A' && b <= b'Z')
-        || (b >= b'a' && b <= b'z')
+    is_ascii_alphanumeric(b)
         || b == b'.'
         || b == b'-'
         || b == b'_'
