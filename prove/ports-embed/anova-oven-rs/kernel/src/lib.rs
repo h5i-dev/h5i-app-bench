@@ -188,8 +188,8 @@ pub fn consider(best: Option<(u64, Kind)>, s: Option<u64>, k: Kind, now: u64) ->
             } else {
                 match best {
                     None => Some((t, k)),
-                    Some((bt, bk)) => {
-                        if better(t, k, bt, bk) {
+                    Some(b) => {
+                        if better(t, k, b.0, b.1) {
                             Some((t, k))
                         } else {
                             best
@@ -212,7 +212,7 @@ pub fn soonest_due(q: &Queue, now: u64) -> Option<Kind> {
     let b5 = consider(b4, q.next, Kind::UserNextStage, now);
     match b5 {
         None => None,
-        Some((_, k)) => Some(k),
+        Some(b) => Some(b.1),
     }
 }
 
@@ -244,11 +244,16 @@ pub fn is_offline(fail_count: u64) -> bool {
     fail_count >= OFFLINE_THRESHOLD
 }
 
-/// `fail_count + 1`, saturating at `u64::MAX` so it never overflows
-/// (`record_fast_poll_failure` uses `saturating_add(1)`).
+/// `fail_count + 1`, capped at `TIER3_FAILS`. Beyond the top backoff tier the
+/// exact count changes no decision (the poll interval and the offline flag are
+/// already saturated), so the kernel stops counting at the tier instead of
+/// tracking an unbounded value. Upstream keeps a `saturating_add(1)` counter
+/// for its logs; its *decisions* (`next_poll_interval`, `is_offline`) are
+/// identical once past `TIER3_FAILS`. The cap also makes the `+ 1` provably
+/// panic-free. See `DEVIATIONS.md`.
 pub fn incr_sat(x: u64) -> u64 {
-    if x >= u64::MAX {
-        u64::MAX
+    if x >= TIER3_FAILS {
+        TIER3_FAILS
     } else {
         x + 1
     }
@@ -480,11 +485,14 @@ mod tests {
     }
 
     #[test]
-    fn poll_fail_saturates() {
+    fn poll_fail_caps_at_tier3() {
         let mut q = EMPTY;
-        q.fail_count = u64::MAX;
+        q.fail_count = TIER3_FAILS;
         let q = run(q, Command::PollFail);
-        assert_eq!(q.fail_count, u64::MAX);
+        assert_eq!(q.fail_count, TIER3_FAILS);
+        // Decisions are already saturated at the top tier.
+        assert_eq!(next_poll_interval(q.fail_count), TIER3_SECS);
+        assert!(is_offline(q.fail_count));
     }
 
     #[test]
