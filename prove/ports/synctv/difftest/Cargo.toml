@@ -1,0 +1,26 @@
+[package]
+name = "synctv-difftest"
+description = "Differential test: the synctv kernel against synctv-core's own code at 38970e0"
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+synctv-kernel = { path = "../kernel" }
+# The upstream crate itself, from the pinned checkout (ports/synctv/upstream-src).
+synctv-core = { path = "../upstream-src/synctv-core" }
+synctv-common = { path = "../upstream-src/synctv-common" }
+chrono = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = "0.1"
+
+[workspace]
+
+[profile.dev]
+debug = 0
+opt-level = 1
+
+[profile.release]
+overflow-checks = true

@@ -1,0 +1,11 @@
+[package]
+name = "synctv-kernel"
+description = "synctv's room permission, role and token-acceptance decisions (synctv-org/synctv @ 38970e0) as an h5i-app kernel"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[workspace]
