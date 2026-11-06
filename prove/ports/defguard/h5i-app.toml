@@ -1,0 +1,7 @@
+# Standard h5i-app project: defguard (DefGuard/defguard @ 12508b4).
+[extract]
+crate = "kernel"
+start-from = ["lockout::authenticate", "auth::admin_role", "auth::user_for_admin_or_self", "auth::device_for_admin_or_self", "token::start_session", "token::validate_session", "ranges::merge_ranges"]
+
+[check]
+theorems = []
