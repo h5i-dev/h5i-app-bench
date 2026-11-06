@@ -1,0 +1,12 @@
+[package]
+name = "wastebin-kernel"
+description = "wastebin's paste access decisions (matze/wastebin @ c0ec968) as an h5i-app kernel: ids, extensions, owner-uid deletion, expiry, burn-after-reading and password gating"
+edition = "2024"
+version = "0.1.0"
+publish = false
+license = "MIT"
+
+# No dependencies: this crate is extracted to Lean by Charon + Aeneas.
+[dependencies]
+
+[workspace]
