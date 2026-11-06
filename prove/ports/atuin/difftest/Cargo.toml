@@ -1,0 +1,36 @@
+[package]
+name = "atuin-difftest"
+description = "Differential test: the atuin kernel against atuin-server's own code at df152cd"
+edition = "2024"
+version = "0.1.0"
+publish = false
+
+# `upstream-src` is a symlink to the pinned checkout (gitignored):
+#   ln -s /mnt/scratch/oss-sec/upstream/atuin prove/ports/atuin/upstream-src
+# with HEAD at df152cd4d68b4dbc2a6f13732b31b0e013470c70.
+[dependencies]
+atuin-kernel = { path = "../kernel" }
+atuin-server = { path = "../upstream-src/crates/atuin-server" }
+atuin-common = { path = "../upstream-src/crates/atuin-common", features = ["db"] }
+atuin-domain = { path = "../upstream-src/crates/atuin-domain" }
+argon2 = "0.5"
+axum = "0.8"
+derive_more = { version = "2", features = ["display"] }
+ipnet = "2.12"
+rand = { version = "0.8", features = ["std"] }
+rand_chacha = "0.3"
+reqwest = { version = "0.13", default-features = false, features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sqlx = { version = "0.9", features = ["runtime-tokio", "sqlite"] }
+tokio = { version = "1", features = ["full"] }
+tracing = "0.1"
+uuid = { version = "1.6", features = ["v4", "v7", "serde"] }
+tempfile = "3"
+
+[build-dependencies]
+
+[workspace]
+
+[profile.release]
+overflow-checks = true

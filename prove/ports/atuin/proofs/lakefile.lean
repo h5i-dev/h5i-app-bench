@@ -16,6 +16,10 @@ lean_lib Generated where
   srcDir := "generated"
   roots := #[`AtuinKernel]
 
--- Hand-written specs and proofs.
+-- Lemmas about the extracted helpers (one module per area).
+lean_lib Verified where
+  globs := #[.submodules `Verified]
+
+-- The policy, stated without the kernel's helpers, and the theorems.
 @[default_target] lean_lib Proofs where
-  roots := #[`Theorems]
+  roots := #[`Spec, `Properties]
