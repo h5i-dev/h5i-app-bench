@@ -3,7 +3,7 @@
 | Project | Upstream (pinned) | S / C / F | Gate | Mutants | Difftests |
 |---|---|---|---|---|---|
 | synctv | synctv-org/synctv @ `38970e0` | **26 / 9 / 1** | doctor, extract --check, check (442 theorems in the gate), lint: pass | 34/34 caught (1 equivalent, see below) | 13 pass |
-| windmill | windmill-labs/windmill @ `9dedc42` | **12 / 4 / 1** | doctor, extract --check, check (143 theorems in the gate), lint: pass | see `ports/windmill/STATUS.md` | 9 pass |
+| windmill | windmill-labs/windmill @ `9dedc42` | **12 / 4 / 1** | doctor, extract --check, check (143 theorems in the gate), lint: pass | 13/13 caught | 9 pass |
 | **Total** | | **38 / 13 / 2** | | | |
 
 Per-theorem tables, with the mutant that falsifies each S statement, are in

@@ -29,7 +29,6 @@ abbrev vals (s : Slice U8) : List Nat := s.val.map (·.val)
     · intro e; apply UScalar.eq_of_val_eq; scalar_tac
   · have hb := l_post1 (by scalar_tac)
     simp [hexPair, hb]
-    cases hexDigit a.val <;> simp
   · have ha := h_post1 (by scalar_tac)
     simp [hexPair, ha]
 

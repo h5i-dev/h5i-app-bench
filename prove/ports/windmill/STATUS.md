@@ -43,11 +43,12 @@ Helper lemmas (byte loops, `split`, `prefix`, `nth_char_is_slash`, list facts) a
 - `h5i app lint ports/windmill`: lint ok, run without the `upstream-src` symlink (same
   harness issue as in synctv's STATUS).
 - `cargo +stable test` in `difftest/` (`SQLX_OFFLINE=true`): 9 passed.
-- `h5i app mutate -j2 ports/windmill`: see "Mutation" below.
+- `h5i app mutate -j2 ports/windmill`: **13/13 caught, 0 survived, 0 invalid**.
 
 ## Mutation
 
-13 hand-written mutants; results are recorded below when the run finishes.
+13 hand-written mutants, all caught. Every S theorem in the table has at least one
+mutant under which its statement is false. No equivalent mutants.
 
 ## Not yet proved (next steps)
 
