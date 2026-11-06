@@ -97,6 +97,6 @@ namespace atuin_kernel.Verified
         have hx2 := List.find?_some hx
         have hu1 := List.mem_of_find?_eq_some ho.symm
         have hu2 := List.find?_some ho.symm
-        exact ⟨t.val, hr, hu1, x, hx1, by simpa using hx2, by simpa using hu2⟩
+        exact ⟨t.val, hr, hu1, x, hx1, by simpa using hx2, by simpa using (by simpa using hu2 : u.id = x.user_id).symm⟩
 
 end atuin_kernel.Verified
