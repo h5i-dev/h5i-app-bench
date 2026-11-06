@@ -11,6 +11,9 @@ open Aeneas Aeneas.Std cratesio_kernel
 
 namespace cratesio_kernel.Spec
 
+instance : DecidableEq scopes.EndpointScope := fun a b => by
+  cases a <;> cases b <;> first | exact isTrue rfl | exact isFalse (by intro h; cases h)
+
 /-- An account lock is in force: a lock reason is set and the lock has no end
 or ends after `now`. -/
 def Locked (u : auth.User) (now : Int) : Prop :=

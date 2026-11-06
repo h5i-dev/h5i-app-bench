@@ -63,6 +63,7 @@ theorem starts_with_loop_spec (s p : Slice U8) (i : Usize)
   · intro r hr; rw [hr, foldl_snoc]; simp [vec_new_val]
   · intro a i hi hinv
     unfold bytes.sub_loop.body
+    dsimp only
     split
     · step*
       simp only [FoldStep]
@@ -72,10 +73,12 @@ theorem starts_with_loop_spec (s p : Slice U8) (i : Usize)
 
 @[step] theorem is_star_spec (p : Slice U8) : scopes.is_star p ⦃ b => decide (p.val = [42#u8]) = b ⦄ := by
   unfold scopes.is_star
+  dsimp only
   split
   · step*
     rcases hp : p.val with _ | ⟨x, _ | ⟨y, rest⟩⟩
-    · simp_all
+    · have : p.val.length = 1 := by scalar_tac
+      simp [hp] at this
     · simp_all
     · have : p.val.length = 1 := by scalar_tac
       simp [hp] at this
@@ -87,23 +90,80 @@ theorem ends_star_iff (l : List U8) : (∃ pre, l = pre ++ [42#u8]) ↔ (l ≠ [
   · rintro ⟨pre, rfl⟩; simp
   · rintro ⟨hne, hl⟩
     refine ⟨l.dropLast, ?_⟩
-    rw [List.getLast?_eq_getLast hne, Option.some.injEq] at hl
+    rw [List.getLast?_eq_some_getLast hne, Option.some.injEq] at hl
     conv_lhs => rw [← List.dropLast_append_getLast hne]
     rw [hl]
 
 @[step] theorem ends_with_star_spec (p : Slice U8) :
-    scopes.ends_with_star p ⦃ b => decide (∃ pre, p.val = pre ++ [42#u8]) = b ⦄ := by
+    scopes.ends_with_star p ⦃ b => decide (p.val.getLast? = some 42#u8) = b ⦄ := by
   unfold scopes.ends_with_star
+  dsimp only
   split
   · step*
-    have hne : p.val ≠ [] := by intro h; simp [h] at *; scalar_tac
-    rw [Bool.eq_iff_iff, decide_eq_true_eq, ends_star_iff, List.getLast?_eq_getElem?]
-    simp only [hne, ne_eq, not_false_eq_true, true_and]
+    rw [List.getLast?_eq_getElem?]
     have hi : p.val.length - 1 < p.val.length := by scalar_tac
     rw [List.getElem?_eq_getElem hi]
     simp_all
-  · have : ¬ ∃ pre, p.val = pre ++ [42#u8] := by
-      rintro ⟨pre, h⟩; have := congrArg List.length h; simp at this; scalar_tac
+  · have : p.val = [] := by
+      have : p.val.length = 0 := by scalar_tac
+      exact List.eq_nil_of_length_eq_zero this
     simp [this]
+
+/-- `CrateScope::matches` as a Boolean over lists. -/
+def coversB (p n : List U8) : Bool :=
+  if p.getLast? = some 42#u8 then decide (p.dropLast <+: n) else decide (p = n)
+
+theorem coversB_iff (p n : List U8) : coversB p n = true ↔ Spec.Covers p n := by
+  unfold coversB Spec.Covers
+  split
+  · rename_i h
+    have hne : p ≠ [] := by intro h'; simp [h'] at h
+    have hp : p = p.dropLast ++ [42#u8] := by
+      conv_lhs => rw [← List.dropLast_append_getLast hne]
+      rw [List.getLast?_eq_some_getLast hne, Option.some.injEq] at h
+      rw [h]
+    simp only [decide_eq_true_eq]
+    constructor
+    · intro hpre; exact .inl ⟨_, hp, hpre⟩
+    · rintro (⟨pre, hpre, hpn⟩ | rfl)
+      · rw [hpre, List.dropLast_concat]; exact hpn
+      · rw [hp, List.dropLast_concat]; exact List.prefix_append _ _
+  · rename_i h
+    simp only [decide_eq_true_eq]
+    constructor
+    · intro e; exact .inr e
+    · rintro (⟨pre, hpre, -⟩ | e)
+      · exact absurd (by rw [hpre]; simp) h
+      · exact e
+
+instance (p n : List U8) : Decidable (Spec.Covers p n) := decidable_of_iff _ (coversB_iff p n)
+
+theorem eq_of_spec' {α} {m : Result α} {v : α} (h : m ⦃ x => v = x ⦄) : m = ok v := by
+  obtain ⟨x, hx⟩ := ok_of h
+  rw [hx, post_of_ok h hx]
+
+@[step] theorem scope_matches_spec (p n : Slice U8) :
+    scopes.scope_matches p n ⦃ b => coversB p.val n.val = b ⦄ := by
+  unfold scopes.scope_matches
+  rw [eq_of_spec' (is_star_spec p)]
+  by_cases hs : p.val = [42#u8]
+  · simp [hs, coversB]
+  · simp only [hs, decide_false, Bool.false_eq_true, if_false, bind_tc_ok]
+    rw [eq_of_spec' (ends_with_star_spec p)]
+    by_cases he : p.val.getLast? = some 42#u8
+    · have hne : p.val ≠ [] := by intro h; simp [h] at he
+      have hl : 1 ≤ p.val.length := by
+        rcases hp : p.val with _ | ⟨x, xs⟩
+        · exact absurd hp hne
+        · simp
+      simp only [he, decide_true, if_true, bind_tc_ok]
+      step*
+      simp only [coversB, he, if_true]
+      rw [← b_post, deref_val, prefix_post, List.drop_zero, List.dropLast_eq_take]
+      have : i1.val = p.val.length - 1 := by simp [i1_post, Slice.len]
+      rw [this]
+    · simp only [he, decide_false, Bool.false_eq_true, if_false]
+      step*
+      simp_all [coversB, eq_comm]
 
 end cratesio_kernel.Verified.Scopes
