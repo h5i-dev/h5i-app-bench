@@ -303,4 +303,66 @@ theorem scoped_token_rejects_malformed_requirement (a : authz.Authed) (req : Sli
   unfold authz.check_scopes
   simp [hs, hp]
 
+theorem some_contains_witness (by' : Slice (alloc.vec.Vec U8)) (p : scopes.Scope)
+    (h : scopes.some_contains by' p = ok true) :
+    ∃ b ∈ by'.val, scopes.parsed_contains b.deref p = ok true := by
+  unfold scopes.some_contains scopes.some_contains_loop at h
+  refine loop_true_witness _ (fun i : Usize => i.val ≤ by'.length) (fun i => by'.length - i.val) _ ?_
+    0#usize (by simp) h
+  intro i r hi hr
+  unfold scopes.some_contains_loop.body at hr
+  h5i_invert hr
+  all_goals simp only []
+  all_goals first
+    | (h5i_ok_facts; constructor <;> scalar_tac)
+    | (intro _; exact ⟨v, slice_index_ok_mem hv, by rw [hb, hc_1]⟩)
+    | simp
+
+theorem covered_by_true (raw : Slice U8) (by' : Slice (alloc.vec.Vec U8))
+    (h : scopes.covered_by raw by' = ok true) :
+    ∃ p, scopes.from_scope_string raw = ok (some p) ∧
+      ∃ b ∈ by'.val, ∃ pb, scopes.from_scope_string b.deref = ok (some pb) ∧ scopes.scope_contains pb p = ok true := by
+  unfold scopes.covered_by at h
+  h5i_invert h
+  obtain ⟨b, hb, hpc⟩ := some_contains_witness _ _ h
+  unfold scopes.parsed_contains at hpc
+  h5i_invert hpc
+  exact ⟨s1, ho, b, hb, s1_1, ho_1, hpc⟩
+
+theorem keep_covered_sound (out : alloc.vec.Vec (alloc.vec.Vec U8)) (raw by' : Slice (alloc.vec.Vec U8))
+    (out' : alloc.vec.Vec (alloc.vec.Vec U8)) (h : scopes.keep_covered out raw by' = ok out') :
+    ∀ s ∈ out'.val, s ∈ out.val ∨ (s ∈ raw.val ∧ scopes.covered_by s.deref by' = ok true) := by
+  unfold scopes.keep_covered scopes.keep_covered_loop at h
+  refine loop_ok _ (fun x : alloc.vec.Vec (alloc.vec.Vec U8) × Usize => x.2.val ≤ raw.length ∧
+      ∀ s ∈ x.1.val, s ∈ out.val ∨ (s ∈ raw.val ∧ scopes.covered_by s.deref by' = ok true))
+    (fun o => ∀ s ∈ o.val, s ∈ out.val ∨ (s ∈ raw.val ∧ scopes.covered_by s.deref by' = ok true))
+    (fun x => raw.length - x.2.val) ?_ (out, 0#usize) out' ⟨by simp, fun s hs => Or.inl hs⟩ h
+  rintro ⟨o, i⟩ r ⟨hi, hinv⟩ hr
+  unfold scopes.keep_covered_loop.body at hr
+  h5i_invert hr
+  all_goals simp only [] at hi hinv ⊢
+  · h5i_ok_facts
+    refine ⟨⟨by scalar_tac, ?_⟩, by scalar_tac⟩
+    split at hout1
+    · h5i_invert hout1
+      · exact hinv
+      · rw [u8vec_clone, Result.ok.injEq] at hv1
+        subst hv1
+        have hp : out1.val = o.val ++ [v] := by
+          unfold alloc.vec.Vec.push at hout1
+          dsimp only at hout1
+          split at hout1
+          · simp only [Result.ok.injEq] at hout1; subst hout1; simp [alloc.vec.Vec.from, Slice.from]
+          · simp at hout1
+        intro s hs
+        rw [hp] at hs
+        rcases List.mem_append.1 hs with hs | hs
+        · exact hinv s hs
+        · simp only [List.mem_singleton] at hs
+          subst hs
+          exact Or.inr ⟨slice_index_ok_mem hv, by rw [hb, ‹b = true›]⟩
+    · simp only [Result.ok.injEq] at hout1
+      subst hout1; exact hinv
+  · exact hinv
+
 end windmill_kernel.Properties
