@@ -1,6 +1,6 @@
 # synctv: status
 
-**Theorem classes: S = 27, C = 9, F = 1** (37 theorems in `[check] theorems`).
+**Theorem classes: S = 30, C = 9, F = 2** (41 theorems in `[check] theorems`).
 Upstream pinned at `38970e0215753a034de6b6659be577fd7e0479c2`. Threat model, ported code
 and deviations are in DEVIATIONS.md; findings are in FINDINGS.md.
 
@@ -50,6 +50,10 @@ counterexample is given in brief.
 | `guest_revocation_effective` | S | a guest token older than the room's guest version is rejected | `guest_version_unchecked` |
 | `guest_access_requires` | S | guests enter only with guest mode on server-wide (fail closed without settings), allowed by the room, and no room password | `guest_password_room_allowed`, `guest_settings_fail_open` |
 | `bearer_token_after_scheme` | S | an accepted `Authorization` value starts with `Bearer ` (any case) and the token is a non-empty range after it | `bearer_empty_token_accepted`, `bearer_scheme_unchecked` |
+| `traversal_check_rejects_literal` | S | an accepted provider path contains no `..`, NUL, `%00` or `./.` | `path_dotdot_check_dropped`, `path_nul_check_dropped` |
+| `traversal_check_rejects_encoded_dot` | S | an accepted path contains no `%2e`, `%25`+`2e` or `%25`+`25`+`2e` (any hex case) | `path_encoded_dot_ignored`, `path_double_encoded_dot_ignored`, `path_hex_lowercase_only` |
+| `decoded_path_has_no_dotdot` | S | percent-decoding an accepted path once never yields `..` | `path_encoded_dot_ignored` (`%2e%2e` → `..`), `path_dotdot_check_dropped` |
+| `double_decoding_reaches_dotdot` | F | `%2%65%2%65` is accepted and decodes twice to `..` (FINDINGS F3) | — |
 | `pipeline_accepts_only_valid` | S | `SecurityPipeline::check` accepts only existing, non-deleted, non-banned users with matching password version, 2FA when required, non-revoked JTI; blacklist outage fails closed | `pipeline_skips_password_version`, `pipeline_blacklist_fail_open`, `pipeline_skips_two_factor` |
 
 Helper lemmas (bit tables, validators, loop-free specs) are in `proofs/Lemmas.lean`. They

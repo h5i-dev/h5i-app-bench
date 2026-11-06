@@ -3,7 +3,7 @@
 Upstream: <https://github.com/synctv-org/synctv>, pinned at
 **`38970e0215753a034de6b6659be577fd7e0479c2`** (2026-11-06, "fix(xiu): rotate the GOP cache
 on the frame cap for audio-only streams (#521)"). synctv is a Rust workspace; this port
-covers decision logic in `synctv-core`. (The campaign brief first called synctv a Go
+covers decision logic in `synctv-core`, plus one validator in `synctv-common`. (The campaign brief first called synctv a Go
 project. That was wrong, so no Go harness exists. The difftest links the upstream Rust
 crates directly.)
 
@@ -66,6 +66,7 @@ the executor `execute_member_update_with_outbox`, which checks the actor's
 | `auth::check_guest_allowed` | `service/room/guest_access.rs:11-55` |
 | `auth::extract_bearer_token` | `service/auth/validator.rs:29` |
 | `auth::pipeline_check` | `service/auth/security_pipeline.rs:134-228` |
+| `pathcheck::validate_path_for_traversal` (+ `hex_val`, `hex_pair_is`, `contains1/2/3`, `encoded_at`, `first_encoded`) | `synctv-common/src/validation.rs:45-125` |
 
 ## Differences from upstream
 
@@ -88,6 +89,10 @@ the executor `execute_member_update_with_outbox`, which checks the actor's
 - **`plan_member_update`.** `role.unwrap_or(current.role)` is the helper
   `effective_role_of`. The returned `MemberUpdatePlan` records what the executor is told
   (`needs_manage_member_permissions` = `actor_permission_check.is_some()`).
+- **`validate_path_for_traversal`** works on bytes. `path.get(i+1..i+3)` followed by
+  `u8::from_str_radix(_, 16)` becomes "both bytes are hex digits". Rust also accepts
+  `+x`, but that value is at most 15, never 0x2E or 0x25, so it cannot change the
+  outcome. The difftest covers `+`.
 - **`extract_bearer_token`** works on bytes and returns the token's byte range. Its
   domain is ASCII header values. Both upstream callers obtain the value through
   `HeaderValue::to_str()`, which only admits visible ASCII. On non-ASCII input upstream
@@ -118,7 +123,9 @@ fixed-seed splitmix64.
 | `expiration_agrees` | verbatim `validate_expiration` with a test `Clock` | 200,000 incl. `i64` extremes and leeways above `i64::MAX` |
 | `user_and_guest_tokens_agree` | real HS256 tokens from `JwtService::sign_*` checked by `verify_access_token`, `verify_refresh_token`, `GuestTokenValidator::validate_with_version` under a controlled clock | 24,000 rounds, boundaries ±3 s |
 | `bearer_extraction_agrees` | `JwtValidator::extract_bearer_token` | 300,000 ASCII headers |
-| `bearer_extraction_panics_on_non_ascii` | records the finding | 1 |
+| `bearer_extraction_panics_on_non_ascii` | records finding F1 | 1 |
+| `traversal_check_agrees` | `synctv_common::validation::validate_path_for_traversal` | 400,000 random over `%`/hex/`.`/`/`/`+`/NUL/non-ASCII pieces + every string of length ≤ 4 over `%2e5.0/+E` |
+| `double_decoding_bypass` | records finding F3 | 2 |
 
 Not differentially tested, because each needs a database-backed service or an async
 service with repositories: `plan_member_update` (its validators are tested, but the

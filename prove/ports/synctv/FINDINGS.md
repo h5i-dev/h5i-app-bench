@@ -1,7 +1,7 @@
 # synctv findings (pinned 38970e0215753a034de6b6659be577fd7e0479c2)
 
-None of these is an exploitable vulnerability in the current code. No upstream issues
-were filed.
+No exploitable vulnerability in the current code was established. No upstream
+issues were filed.
 
 ## F1. `extract_bearer_token` can panic on non-ASCII input (latent)
 
@@ -38,6 +38,34 @@ were filed.
   computation per call, and it suggests the authors expected a different semantics
   (for example, overrides that could grant beyond the role default).
 - **Severity:** info.
+
+## F3. The "double-encoded dot" check of `validate_path_for_traversal` is bypassable (low)
+
+- **Where:** `synctv-common/src/validation.rs:45-125`, Check 4 (lines 71-122).
+- **What:** The validator rejects `%2e`, `%252e` and `%25252e` (any hex case). It does
+  not reject encodings of the hex digits themselves. In `%2%65` the `%2` is not a
+  valid escape and `%65` is `e`, so one round of percent-decoding gives `%2e` and a
+  second round gives `.`. Two such sequences give `..`. The same holds for
+  `%25%32%65` (decodes to `%2e`). The validator's own doc comment says it covers
+  double-encoded variants.
+- **Evidence:**
+  - Lean theorem `Properties.double_decoding_reaches_dotdot` (class F) proves that the
+    port accepts `%2%65%2%65` and that `decodeOnce (decodeOnce _)` contains `..`.
+  - Difftest `pathcheck_tests::double_decoding_bypass` shows that upstream accepts
+    `%2%65%2%65/etc` and `%25%32%65%25%32%65`.
+  - What does hold: one round of decoding never yields `..`
+    (`decoded_path_has_no_dotdot`, class S). No literal `..`, NUL, `%00`, `./.` or
+    recognised encoded dot is accepted (`traversal_check_rejects_literal`,
+    `traversal_check_rejects_encoded_dot`, class S). So the bypass needs a consumer
+    that percent-decodes the path twice.
+- **Reachability:** The validator gates provider paths in `provider/alist.rs`, for
+  example lines 710, 2444, 2551, 2865, 3012 and 3086. Whether the path is decoded twice
+  depends on the remote Alist server and on how the URL is built. This was not
+  established. Also not rejected (not proved, by inspection): 4-layer encodings
+  (`%2525252e`) and Unicode look-alikes (`．．`, U+FF0E) for consumers that normalise.
+- **Severity:** low (defence-in-depth gap in a validator meant for exactly this; impact
+  depends on a double-decoding consumer). A fix is to percent-decode repeatedly until
+  the string stops changing, then check for `..`.
 
 ## Design observations (no finding class)
 

@@ -42,6 +42,10 @@ theorems = [
   "synctv_kernel.Properties.guest_access_requires",
   "synctv_kernel.Properties.pipeline_accepts_only_valid",
   "synctv_kernel.Properties.bearer_token_after_scheme",
+  "synctv_kernel.Properties.traversal_check_rejects_literal",
+  "synctv_kernel.Properties.traversal_check_rejects_encoded_dot",
+  "synctv_kernel.Properties.decoded_path_has_no_dotdot",
+  "synctv_kernel.Properties.double_decoding_reaches_dotdot",
 ]
 
 # Bugs the proofs must reject (`h5i app mutate`). See STATUS.md for which theorem
@@ -303,3 +307,33 @@ name = "bearer_scheme_unchecked"
 file = "kernel/src/auth.rs"
 old = "    if v.len() <= 7 || !bearer_prefix(v) {"
 new = "    if v.len() <= 7 {"
+
+[[mutant]]
+name = "path_dotdot_check_dropped"
+file = "kernel/src/pathcheck.rs"
+old = "    if contains2(p, 46, 46) {"
+new = "    if false && contains2(p, 46, 46) {"
+
+[[mutant]]
+name = "path_nul_check_dropped"
+file = "kernel/src/pathcheck.rs"
+old = "    if contains1(p, 0) || contains3(p, 37, 48, 48) {"
+new = "    if contains3(p, 37, 48, 48) {"
+
+[[mutant]]
+name = "path_encoded_dot_ignored"
+file = "kernel/src/pathcheck.rs"
+old = "            return Some(TraversalError::EncodedDot);"
+new = "            return None;"
+
+[[mutant]]
+name = "path_double_encoded_dot_ignored"
+file = "kernel/src/pathcheck.rs"
+old = "                return Some(TraversalError::DoubleEncodedDot);"
+new = "                return None;"
+
+[[mutant]]
+name = "path_hex_lowercase_only"
+file = "kernel/src/pathcheck.rs"
+old = "    } else if b >= 65 && b <= 70 {"
+new = "    } else if false && b >= 65 && b <= 70 {"

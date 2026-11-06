@@ -176,6 +176,18 @@ def decodeOnce : List Nat → List Nat
   | c :: rest => c :: decodeOnce rest
   | [] => []
 
+/-- The byte `%xy` at positions `j, j+1` encodes, if both are hex digits. -/
+def pairAt (l : List Nat) (j : Nat) : Option Nat :=
+  match l[j]?, l[j + 1]? with
+  | some x, some y => hexPair x y
+  | _, _ => none
+
+/-- Position `i` starts an encoded dot: `%2e`, `%25` + `2e`, or `%25` + `25` + `2e`
+(hex in either case). -/
+def encAt (l : List Nat) (i : Nat) : Prop :=
+  l[i]? = some 37 ∧ (pairAt l (i + 1) = some 46 ∨ (pairAt l (i + 1) = some 37 ∧
+    (pairAt l (i + 3) = some 46 ∨ (pairAt l (i + 3) = some 37 ∧ pairAt l (i + 5) = some 46))))
+
 /-- A path that is an obvious traversal or injection: a literal `..`, a NUL byte, an
 encoded NUL `%00`, or `./.`. -/
 def literalTraversal (p : List Nat) : Prop :=

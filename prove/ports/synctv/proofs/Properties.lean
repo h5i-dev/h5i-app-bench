@@ -1,10 +1,11 @@
 import Lemmas
+import PathLemmas
 /-!
 # Security properties of synctv's room permissions, member policy and tokens
 
 Each theorem is about the extracted kernel and the policy in `Spec.lean`.
 -/
-open Aeneas Aeneas.Std Result synctv_kernel synctv_kernel.Spec synctv_kernel.Lemmas H5iAppLib
+open Aeneas Aeneas.Std Result synctv_kernel synctv_kernel.Spec synctv_kernel.Lemmas synctv_kernel.PathLemmas H5iAppLib
 
 namespace synctv_kernel.Properties
 
@@ -378,5 +379,78 @@ theorem bearer_token_after_scheme (v : Slice U8) (st en : Usize)
   refine ⟨by scalar_tac, hp, by simpa using h0.1, ?_, by scalar_tac⟩
   have : start.val ≠ end1.val := fun e => hc_2 (UScalar.eq_of_val_eq e)
   scalar_tac
+
+/-! ## Path traversal -/
+
+/-- An accepted path contains no literal `..`, NUL, `%00` or `./.`. -/
+theorem traversal_check_rejects_literal (p : Slice U8) (hs : p.length + 8 < Usize.max)
+    (h : pathcheck.validate_path_for_traversal p = ok (.Ok ())) : ¬ literalTraversal (vals p) := by
+  obtain ⟨h1, h2, h3, h4, -⟩ := validate_ok p hs h
+  rw [has2_vals, has2_iff] at h1
+  rw [has3_vals, has3_iff] at h3 h4
+  rintro (e | e | e | e)
+  · exact h1 e
+  · apply h2
+    obtain ⟨x, hx, hx0⟩ := List.mem_map.1 e
+    have : x = 0#u8 := UScalar.eq_of_val_eq hx0
+    exact this ▸ hx
+  · exact h3 e
+  · exact h4 e
+
+/-- An accepted path contains no percent-encoded dot, single, double (`%25` then
+`2e`) or triple encoded. -/
+theorem traversal_check_rejects_encoded_dot (p : Slice U8) (hs : p.length + 8 < Usize.max)
+    (h : pathcheck.validate_path_for_traversal p = ok (.Ok ())) : ∀ i, ¬ encAt (vals p) i := by
+  intro i
+  by_cases hi : i < p.length
+  · exact (validate_ok p hs h).2.2.2.2 i hi
+  · rintro ⟨h0, -⟩
+    rw [vals_get_none p (by scalar_tac)] at h0
+    simp at h0
+
+/-- Decoding an accepted path once never produces `..`. -/
+theorem decoded_path_has_no_dotdot (p : Slice U8) (hs : p.length + 8 < Usize.max)
+    (h : pathcheck.validate_path_for_traversal p = ok (.Ok ())) : ¬ [46, 46] <:+: decodeOnce (vals p) := by
+  have hl := traversal_check_rejects_literal p hs h
+  have he := traversal_check_rejects_encoded_dot p hs h
+  refine (decode_no_dd (vals p) (fun e => hl (Or.inl e)) (fun i hi => he i ⟨hi.1, Or.inl hi.2⟩)).1
+
+/-- FINDING (S3): the double-encoding check only recognises `%25` followed by `2e`.
+Percent-encoding the hex digits instead passes: `%2%65%2%65` is accepted, decodes
+once to `%2e%2e` and twice to `..`. (`%25%32%65` works the same way.) -/
+theorem double_decoding_reaches_dotdot (p : Slice U8)
+    (hp : p.val = [37#u8, 50#u8, 37#u8, 54#u8, 53#u8, 37#u8, 50#u8, 37#u8, 54#u8, 53#u8])
+    (hs : p.length + 8 < Usize.max) :
+    pathcheck.validate_path_for_traversal p = ok (.Ok ()) ∧
+      [46, 46] <:+: decodeOnce (decodeOnce (vals p)) := by
+  have hv : vals p = [37, 50, 37, 54, 53, 37, 50, 37, 54, 53] := by simp [vals, hp]
+  refine ⟨?_, by rw [hv]; decide⟩
+  obtain ⟨b, hb, hbi⟩ := WP.spec_imp_exists (contains2_spec p 46#u8 46#u8 hs)
+  obtain ⟨b1, hb1, hb1i⟩ := WP.spec_imp_exists (contains1_spec p 0#u8)
+  obtain ⟨b2, hb2, hb2i⟩ := WP.spec_imp_exists (contains3_spec p 37#u8 48#u8 48#u8 hs)
+  obtain ⟨b3, hb3, hb3i⟩ := WP.spec_imp_exists (contains3_spec p 46#u8 47#u8 46#u8 hs)
+  obtain ⟨o, ho, hoi⟩ := WP.spec_imp_exists (first_encoded_spec p hs)
+  have e0 : b = false := by
+    cases b; rfl; exfalso; have := hbi.1 rfl; rw [has2_iff, hp] at this; revert this; decide
+  have e1 : b1 = false := by rw [hb1i, hp]; decide
+  have e2 : b2 = false := by
+    cases b2; rfl; exfalso; have := hb2i.1 rfl; rw [has3_iff, hp] at this; revert this; decide
+  have e3 : b3 = false := by
+    cases b3; rfl; exfalso; have := hb3i.1 rfl; rw [has3_iff, hp] at this; revert this; decide
+  have e4 : o = none := by
+    apply hoi.2
+    intro i hi
+    have hl : p.length = 10 := by simp [Slice.length, hp]
+    rw [hv]
+    rw [hl] at hi
+    revert i
+    unfold encAt pairAt hexPair hexDigit
+    decide
+  unfold pathcheck.validate_path_for_traversal
+  rw [hb, e0]; simp only [bind_ok, Bool.false_eq_true, if_false]
+  rw [hb1, e1]; simp only [bind_ok, Bool.false_eq_true, if_false]
+  rw [hb2, e2]; simp only [bind_ok, Bool.false_eq_true, if_false]
+  rw [hb3, e3]; simp only [bind_ok, Bool.false_eq_true, if_false]
+  rw [ho, e4]; simp
 
 end synctv_kernel.Properties
