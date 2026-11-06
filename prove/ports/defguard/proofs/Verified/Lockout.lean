@@ -252,7 +252,7 @@ theorem log_failed_attempt_ok {map m : alloc.vec.Vec lockout.FailedLogin} {k : S
         simp [hf.1]; exact fun e => hk' e.symm
       rw [this]; simp
     · simp only [entryFor] at he ⊢
-      simp only [hm, List.find?_append, he, hf.1]; simp
+      simp only [hm, List.find?_append, he]; simp; exact hf.1
     · rw [he]; exact ⟨hf.2.1, hf.2.2.1⟩
   all_goals
     have h' := post_of_ok (find_entry_spec map k) ho
@@ -288,5 +288,124 @@ theorem log_failed_attempt_ok {map m : alloc.vec.Vec lockout.FailedLogin} {k : S
     · rw [he]
       refine ⟨fun hy => ?_, fun _ => ⟨hf.2.1, hf.2.2.1⟩⟩
       exfalso; unfold ResetCond at hy; simp_all
+
+/-! ## Account lookup -/
+
+@[step] theorem lower_spec (b : U8) : lockout.lower b ⦃ r => r.val = lowerN b.val ⦄ := by
+  unfold lockout.lower lowerN
+  step*
+  all_goals (simp_all; try scalar_tac)
+
+instance (a b : List U8) : Decidable (LowerEq a b) := by unfold LowerEq; infer_instance
+
+theorem lowerEq_iff (a b : List U8) :
+    LowerEq a b ↔ a.length = b.length ∧ ∀ k < a.length, lowerN a[k]!.val = lowerN b[k]!.val := by
+  unfold LowerEq
+  constructor
+  · intro h
+    have hl : a.length = b.length := by simpa using congrArg List.length h
+    refine ⟨hl, fun k hk => ?_⟩
+    have := congrArg (fun l => l[k]?) h
+    simp only [List.getElem?_map, List.getElem?_eq_getElem hk, List.getElem?_eq_getElem (show k < b.length by omega),
+      Option.map_some, Option.some.injEq] at this
+    rw [getElem!_of_lt hk, getElem!_of_lt (by omega)]
+    exact this
+  · rintro ⟨hl, hk⟩
+    apply List.ext_getElem (by simpa using hl)
+    intro n h1 h2
+    have := hk n (by simpa using h1)
+    simp only [List.getElem_map]
+    rw [getElem!_of_lt (by simpa using h1), getElem!_of_lt (by simpa using h2)] at this
+    exact this
+
+@[step] theorem eq_lower_spec (a b : Slice U8) :
+    lockout.eq_lower a b ⦃ r => r = decide (LowerEq a.val b.val) ⦄ := by
+  unfold lockout.eq_lower; simp only []
+  split
+  · simp only [WP.spec_ok]
+    have : ¬ LowerEq a.val b.val := fun h => by
+      have := ((lowerEq_iff _ _).1 h).1; simp_all
+    simp [this]
+  · unfold lockout.eq_lower_loop
+    apply loop.spec_decr_nat (measure := fun (j : Usize) => a.length - j.val)
+      (inv := fun j => j.val ≤ a.length ∧ ∀ k < j.val, lowerN a.val[k]!.val = lowerN b.val[k]!.val)
+    · rintro j ⟨hj, hk⟩
+      unfold lockout.eq_lower_loop.body; simp only []
+      step*
+      · have : ¬ LowerEq a.val b.val := by
+          intro h
+          have h2 := ((lowerEq_iff _ _).1 h).2 j.val (by scalar_tac)
+          rw [getElem!_of_lt (by scalar_tac), getElem!_of_lt (by scalar_tac)] at h2
+          have : i3 = i5 := UScalar.eq_of_val_eq (by simp_all)
+          simp_all
+        simp [this]
+      · refine ⟨by scalar_tac, ?_, by scalar_tac⟩
+        intro k hk'
+        rcases Nat.lt_succ_iff_lt_or_eq.1 (show k < j.val + 1 by scalar_tac) with h1 | h1
+        · exact hk k h1
+        · subst h1
+          rw [getElem!_of_lt (by scalar_tac), getElem!_of_lt (by scalar_tac)]
+          simp_all
+      · have : LowerEq a.val b.val := (lowerEq_iff _ _).2 ⟨by scalar_tac, fun k hk' => hk k (by scalar_tac)⟩
+        simp [this]
+    · simp
+
+@[step] theorem find_by_username_spec (us : alloc.vec.Vec lockout.Account) (n : Slice U8) :
+    lockout.find_by_username us n ⦃ o => o.map (·.val) = us.val.findIdx? (fun a => decide (a.username.val = n.val)) ⦄ := by
+  unfold lockout.find_by_username lockout.find_by_username_loop
+  apply WP.spec_mono (H5iAppLib.loop_search us.val (fun a => decide (a.username.val = n.val)) (fun r => r.map (·.val))
+    (fun i _ => some i) none _ ?step 0#usize (by simp))
+  · intro r hr; rw [hr, H5iAppLib.searchFrom_findIdx]; simp
+  case step =>
+    intro j hj; unfold lockout.find_by_username_loop.body; h5i_step
+
+@[step] theorem find_by_email_spec (us : alloc.vec.Vec lockout.Account) (e : Slice U8) :
+    lockout.find_by_email us e ⦃ o => o.map (·.val) = us.val.findIdx? (fun a => decide (LowerEq a.email.val e.val)) ⦄ := by
+  unfold lockout.find_by_email lockout.find_by_email_loop
+  apply WP.spec_mono (H5iAppLib.loop_search us.val (fun a => decide (LowerEq a.email.val e.val)) (fun r => r.map (·.val))
+    (fun i _ => some i) none _ ?step 0#usize (by simp))
+  · intro r hr; rw [hr, H5iAppLib.searchFrom_findIdx]; simp
+  case step =>
+    intro j hj; unfold lockout.find_by_email_loop.body; h5i_step
+
+/-- `find_by_username_or_email`: an exact username match, else (only if no
+username matches) a case-insensitive email match. -/
+theorem find_account_ok {us : alloc.vec.Vec lockout.Account} {input : Slice U8} {o : Option Usize}
+    (h : lockout.find_by_username_or_email us input = ok o) :
+    match o with
+    | some i => ∃ hi : i.val < us.val.length,
+        us.val[i.val].username.val = input.val ∨ (¬ IsUsername us.val input.val ∧ LowerEq us.val[i.val].email.val input.val)
+    | none => ¬ IsUsername us.val input.val ∧ ∀ a ∈ us.val, ¬ LowerEq a.email.val input.val := by
+  unfold lockout.find_by_username_or_email at h
+  obtain ⟨o1, h1, h2⟩ := H5iAppLib.bind_tc_eq_ok.1 h
+  have hs1 := post_of_ok (find_by_username_spec us input) h1
+  have nou : o1 = none → ¬ IsUsername us.val input.val := by
+    rintro rfl ⟨a, ha, hn⟩
+    simp only [Option.map_none] at hs1
+    have := List.findIdx?_eq_none_iff.1 hs1.symm a ha
+    simp [hn] at this
+  cases o1 with
+  | some j =>
+    simp only [] at h2
+    have e := (H5iAppLib.Result.ok.inj h2).symm; subst e
+    simp only [Option.map_some] at hs1
+    obtain ⟨hl, hf⟩ := find_of_findIdx _ _ _ hs1.symm
+    refine ⟨hl, Or.inl ?_⟩
+    have := List.find?_some hf; simpa using this
+  | none =>
+    simp only [] at h2
+    have hs2 := post_of_ok (find_by_email_spec us input) h2
+    have hnu := nou rfl
+    cases o with
+    | none =>
+      refine ⟨hnu, fun a ha he => ?_⟩
+      simp only [Option.map_none] at hs2
+      have := List.findIdx?_eq_none_iff.1 hs2.symm a ha
+      simp [he] at this
+    | some i =>
+      simp only [Option.map_some] at hs2
+      obtain ⟨hl, hf⟩ := find_of_findIdx _ _ _ hs2.symm
+      refine ⟨hl, Or.inr ⟨hnu, ?_⟩⟩
+      have := List.find?_some hf; simpa using this
 
 end defguard_kernel.Verified
