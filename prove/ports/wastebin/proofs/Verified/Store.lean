@@ -27,7 +27,7 @@ namespace wastebin_kernel.Verified.Store
   cases uid <;> step* <;> simp_all
 
 @[step] theorem find_row_spec (rows : alloc.vec.Vec Row) (id : I64) :
-    store.find_row rows id ⦃ o => o = rowOf rows.val id ⦄ := by
+    store.find_row rows id ⦃ o => rowOf rows.val id = o ⦄ := by
   unfold store.find_row store.find_row_loop
   apply WP.spec_mono (loop_search rows.val (fun r => decide (r.id = id)) (fun o : Option Row => o)
     (fun _ r => some r) none _ ?_ 0#usize (by simp))

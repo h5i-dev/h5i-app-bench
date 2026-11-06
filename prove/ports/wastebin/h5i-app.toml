@@ -9,4 +9,11 @@ theorems = [
   "wastebin_kernel.Properties.delete_removes_only_owned",
   "wastebin_kernel.Properties.delete_refusal_unchanged",
   "wastebin_kernel.Properties.delete_without_cookie_forbidden",
+  "wastebin_kernel.Properties.get_content_needs_password",
+  "wastebin_kernel.Properties.get_expired_never_read",
+  "wastebin_kernel.Properties.get_wrong_password_keeps_paste",
+  "wastebin_kernel.Properties.get_burn_consumes",
+  "wastebin_kernel.Properties.get_keeps_unburned",
+  "wastebin_kernel.Properties.burn_second_read_not_found",
+  "wastebin_kernel.Properties.burn_readers_exactly_once",
 ]

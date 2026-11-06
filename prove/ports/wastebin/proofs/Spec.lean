@@ -75,4 +75,27 @@ def HeaderToken (b : Nat) : Prop :=
   (48 ≤ b ∧ b ≤ 57) ∨ (65 ≤ b ∧ b ≤ 90) ∨ (97 ≤ b ∧ b ≤ 122) ∨
     b = 46 ∨ b = 45 ∨ b = 95 ∨ b = 126 ∨ b = 43 ∨ b = 37
 
+/-- The content and metadata an entry carries. -/
+def entryData : store.Entry → store.Data
+  | .Regular d => d
+  | .Burned d => d
+  | .Encrypted d => d
+
+/-- `Entry::Encrypted`: the callers mark the response `no-store` and keep it
+out of the cache. -/
+def isEncrypted : store.Entry → Bool
+  | .Encrypted _ => true
+  | _ => false
+
+/-- Concurrent burn-after-reading readers. Each reader has already read and
+decrypted the paste (`fetch` answered `Ready`), possibly all from the same
+table state; their burning `DELETE`s (`finish`) then run one after another,
+in any order. The result lists which readers got the content. -/
+def burnReaders (id : I64) : List (store.Data × Bool) → alloc.vec.Vec Row → Result (List Bool)
+  | [], _ => .ok []
+  | (d, enc) :: rs, v => do
+    let (v', res) ← store.finish v id d enc true
+    let bs ← burnReaders id rs v'
+    .ok ((match res with | .Ok _ => true | .Err _ => false) :: bs)
+
 end wastebin_kernel.Spec
