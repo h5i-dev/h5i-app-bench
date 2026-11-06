@@ -16,6 +16,9 @@ lean_lib Generated where
   srcDir := "generated"
   roots := #[`OpenobserveKernel]
 
--- Hand-written specs and proofs.
+-- Specs over lists, and the per-function lemmas that relate the kernel to them.
+lean_lib Verified where
+  globs := #[.submodules `Verified]
+
 @[default_target] lean_lib Proofs where
-  roots := #[`Theorems]
+  roots := #[`SpecTables, `Spec, `Properties]
