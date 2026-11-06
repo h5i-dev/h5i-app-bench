@@ -471,4 +471,44 @@ theorem not_traversal_of (p : Slice U8) (parts : alloc.vec.Vec (alloc.vec.Vec U8
     exact hd q hq hqe
   · exact hn _ h3 rfl
 
+@[step] theorem key_for_spec (c : U8) (n : Slice U8) (hn : n.length + 2 < Usize.max) :
+    authz.key_for c n ⦃ r => r.val = [c, 47#u8] ++ n.val ⦄ := by
+  unfold authz.key_for authz.key_for_loop
+  step*
+  have h := loop_fold (l := n.val) (abs := fun (o : alloc.vec.Vec U8) => o.val)
+    (g := fun acc x => acc ++ [x]) (Inv := fun o i => o.length = i + 2)
+    (body := fun x => authz.key_for_loop.body n x.1 x.2) ?_ out1 0#usize (by simp) (by simp_all)
+  · apply WP.spec_mono (by simpa using h)
+    intro r hr
+    rw [hr]; simp_all
+    clear h hr
+    generalize n.val = l
+    induction l using List.reverseRecOn with
+    | nil => simp
+    | append_singleton xs x ih => simp [List.foldl_append, ih]
+  · intro o i hi hinv
+    unfold authz.key_for_loop.body
+    simp only []
+    split
+    · step*
+      refine ⟨by scalar_tac, ?_, by scalar_tac, by simp; scalar_tac⟩
+      simp_all
+    · simp only [WP.spec_ok]
+      exact ⟨by scalar_tac, rfl⟩
+
+@[step] theorem lookup_spec (obj : Slice authz.PermEntry) (k : Slice U8) :
+    authz.lookup obj k ⦃ r => r.1 = true → r.2 = true →
+      ∃ e ∈ obj.val, e.key.val = k.val ∧ e.is_bool = true ∧ e.value = true ⦄ := by
+  unfold authz.lookup authz.lookup_loop
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => obj.length - j.val)
+    (inv := fun j => j.val ≤ obj.length)
+  · intro i hi
+    unfold authz.lookup_loop.body
+    step*
+    · intro h1 h2
+      refine ⟨pe, ?_, ?_, h1, h2⟩
+      · simp_all
+      · simp_all [vec_deref_val]
+  · simp
+
 end windmill_kernel.Lemmas

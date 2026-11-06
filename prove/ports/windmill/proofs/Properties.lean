@@ -234,4 +234,67 @@ theorem read_delegates_only_read (c r : scopes.Scope) (h : scopes.scope_contains
   · exact h1.symm
   all_goals simp [readB, writeB] at h1
 
+theorem perm_loop0_sound (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hv : ∀ g ∈ v.val, g.length + 2 < Usize.max) :
+    authz.get_perm_in_extra_perms_loop0 obj v 0#usize ⦃ b => b = true →
+      ∃ e ∈ obj.val, e.is_bool = true ∧ e.value = true ∧ ∃ g ∈ v.val, e.key.val = [103#u8, 47#u8] ++ g.val ⦄ := by
+  unfold authz.get_perm_in_extra_perms_loop0
+  apply loop.spec_decr_nat (measure := fun (j : Usize) => v.length - j.val)
+    (inv := fun j => j.val ≤ v.length)
+  · intro i hi
+    unfold authz.get_perm_in_extra_perms_loop0.body
+    step*
+    · have := hv v1 (by rw [v1_post]; simp)
+      simpa [vec_deref_val] using this
+    · intro _
+      obtain ⟨e, he, hk, hb, hval⟩ := f_post ‹_› ‹_›
+      exact ⟨e, he, hb, hval, v1, by rw [v1_post]; simp, by rw [hk]; simpa [vec_deref_val] using v2_post⟩
+  · simp
+
+theorem perm_loop1_sound (obj : Slice authz.PermEntry) (v : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hv : ∀ g ∈ v.val, g.length + 2 < Usize.max) :
+    authz.get_perm_in_extra_perms_loop1 obj v false 0#usize ⦃ r => r.2 = true →
+      ∃ e ∈ obj.val, e.is_bool = true ∧ e.value = true ∧ ∃ g ∈ v.val, e.key.val = [103#u8, 47#u8] ++ g.val ⦄ := by
+  unfold authz.get_perm_in_extra_perms_loop1
+  apply loop.spec_decr_nat (measure := fun (x : Bool × Usize) => v.length - x.2.val)
+    (inv := fun x => x.2.val ≤ v.length)
+  · rintro ⟨rs, i⟩ hi
+    simp only [] at hi ⊢
+    unfold authz.get_perm_in_extra_perms_loop1.body
+    step*
+    · have := hv v1 (by rw [v1_post]; simp)
+      simpa [vec_deref_val] using this
+    all_goals first
+      | (intro _
+         obtain ⟨e, he, hk, hb, hval⟩ := f_post ‹_› ‹_›
+         exact ⟨e, he, hb, hval, v1, by rw [v1_post]; simp, by rw [hk]; simpa [vec_deref_val] using v2_post⟩)
+      | skip
+  · simp
+
+/-- `extra_perms` grants (`Some(true)`) only through an explicit JSON `true` entry
+for `u/<username>` or `g/<group>` of one of the caller's groups. -/
+theorem extra_perms_true_needs_entry (is_object : Bool) (obj : Slice authz.PermEntry) (a : authz.Authed)
+    (hu : a.username.length + 2 < Usize.max) (hg : ∀ g ∈ a.groups.val, g.length + 2 < Usize.max)
+    (h : authz.get_perm_in_extra_perms is_object obj a = ok (true, true)) :
+    grantedByEntry obj.val a := by
+  unfold authz.get_perm_in_extra_perms at h
+  h5i_invert h
+  · obtain ⟨f, v1⟩ := x
+    have hk := post_of_ok (key_for_spec 117#u8 a.username.deref (by simpa [vec_deref_val] using hu)) hv
+    have hl := post_of_ok (lookup_spec obj v.deref) hx
+    dsimp only at hl
+    split at h
+    rename_i f' v1' heq
+    simp only [Prod.mk.injEq] at heq
+    obtain ⟨rfl, rfl⟩ := heq
+    split_ifs at h with h1 h2
+    · obtain ⟨e, he, hkey, hb, hval⟩ := hl h1 h2
+      exact ⟨e, he, hb, hval, Or.inl (by rw [hkey]; simpa [vec_deref_val] using hk)⟩
+    · h5i_invert h
+      obtain ⟨e, he, hb, hval, g, hgm, hkey⟩ := post_of_ok (perm_loop0_sound obj a.groups hg) (by assumption) (by simp_all)
+      exact ⟨e, he, hb, hval, Or.inr ⟨g, hgm, hkey⟩⟩
+    · obtain ⟨e, he, hb, hval, g, hgm, hkey⟩ := post_of_ok (perm_loop1_sound obj a.groups hg) h rfl
+      exact ⟨e, he, hb, hval, Or.inr ⟨g, hgm, hkey⟩⟩
+  · exact h.1.elim
+
 end windmill_kernel.Properties

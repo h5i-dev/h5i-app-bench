@@ -75,4 +75,12 @@ def actionCov (d a b : Bytes) : Prop :=
   a = b ∨ (a = writeB ∧ b = readB) ∨ (a = writeB ∧ b = runB ∧ d = appsB) ∨
     (a = writeB ∧ b = cancelB ∧ d = jobsB)
 
+/-! ## `extra_perms` -/
+
+/-- `extra_perms` names `a` with value `true`: an entry for `u/<username>` or for
+`g/<group>` of one of `a`'s groups, whose value is the JSON boolean `true`. -/
+def grantedByEntry (obj : List windmill_kernel.authz.PermEntry) (a : windmill_kernel.authz.Authed) : Prop :=
+  ∃ e ∈ obj, e.is_bool = true ∧ e.value = true ∧
+    (e.key.val = [117#u8, 47#u8] ++ a.username.val ∨ ∃ g ∈ a.groups.val, e.key.val = [103#u8, 47#u8] ++ g.val)
+
 end windmill_kernel.Spec
