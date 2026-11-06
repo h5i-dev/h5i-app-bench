@@ -88,11 +88,12 @@ pub enum AuthError {
     CrateScopeMismatch,
 }
 
-/// `Authentication`.
-#[derive(Clone, Debug, PartialEq, Eq)]
+/// `Authentication`. A token authentication names the token's row in the
+/// table (upstream returns the row itself).
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Authentication {
     Cookie(User),
-    Token(ApiToken, User),
+    Token(usize, User),
 }
 
 /// `allowed_origins.contains(value)`.
@@ -211,11 +212,11 @@ pub fn token_live(t: &ApiToken, secret: &[u8], now: i64) -> bool {
 }
 
 /// `ApiToken::find_by_api_token`: the first live token with this secret.
-pub fn find_token(tokens: &Vec<ApiToken>, secret: &[u8], now: i64) -> Option<ApiToken> {
+pub fn find_token(tokens: &Vec<ApiToken>, secret: &[u8], now: i64) -> Option<usize> {
     let mut i = 0;
     while i < tokens.len() {
         if token_live(&tokens[i], secret, now) {
-            return Some(tokens[i].clone());
+            return Some(i);
         }
         i += 1;
     }
@@ -251,18 +252,18 @@ pub fn token_user(users: &[User], tokens: &Vec<ApiToken>, header: &[u8], now: i6
     if !starts_with(&secret, &TOKEN_PREFIX) {
         return Err(AuthError::InsecureToken);
     }
-    let token = match find_token(tokens, &secret, now) {
+    let ti = match find_token(tokens, &secret, now) {
         None => return Err(AuthError::TokenNotFound),
-        Some(t) => t,
+        Some(i) => i,
     };
-    let user = match find_user(users, token.user_id) {
+    let user = match find_user(users, tokens[ti].user_id) {
         None => return Err(AuthError::UserNotFound),
         Some(u) => u,
     };
     if is_locked(&user, now) {
         return Err(AuthError::Locked);
     }
-    Ok(Authentication::Token(token, user))
+    Ok(Authentication::Token(ti, user))
 }
 
 /// `authenticate`: the origin check, then the session cookie, then the API
@@ -340,9 +341,10 @@ pub fn check(
         Err(e) => return Err(e),
         Ok(a) => a,
     };
-    match &a {
+    match a {
         Authentication::Cookie(_) => {}
-        Authentication::Token(t, _) => {
+        Authentication::Token(ti, _) => {
+            let t = &tokens[ti];
             if !ac.allow_token {
                 return Err(AuthError::TokenDisallowed);
             }
