@@ -6,9 +6,11 @@ Every permission constant is a power of two; `map_bit` is the `if bits & from !=
 step of upstream's bitspace tables. From these, each table function gets a spec
 saying which permission bits it sets, in terms of `Spec.names`.
 -/
-open Aeneas Aeneas.Std Result synctv_kernel synctv_kernel.Spec
+open Aeneas Aeneas.Std Result Aeneas.Std.WP synctv_kernel synctv_kernel.Spec H5iAppLib
 
 set_option linter.unusedSimpArgs false
+
+h5i_derive_all
 
 namespace synctv_kernel.Lemmas
 
@@ -248,5 +250,193 @@ theorem calculator_spec (d : perms.Defaults) (m : perms.MemberPerms) (s : perms.
       rfl
     · simp only [Bool.false_eq_true, false_iff, not_and]
       exact fun h => absurd ((hE0 p).2 h) h0
+
+/-! ## Policy validators -/
+
+theorem u64_eq_zero_iff (x : U64) : x = 0#u64 ↔ x.val = 0 := by
+  constructor
+  · intro h; subst h; rfl
+  · intro h; apply UScalar.eq_of_val_eq; simpa using h
+
+theorem and_not_zero_iff (b m : U64) :
+    (b &&& ~~~m).val = 0 ↔ ∀ i, b.val.testBit i = true → m.val.testBit i = true := by
+  constructor
+  · intro h i hi
+    have := congrArg (fun n => n.testBit i) h
+    simp only [UScalar.val_and, Nat.testBit_and, bit_not, Nat.zero_testBit, hi, Bool.true_and] at this
+    have hlt : i < 64 := by
+      by_contra hge
+      have : b.val < 2 ^ i := lt_of_lt_of_le b.hBounds (Nat.pow_le_pow_right (by decide) (by simp at hge ⊢; omega))
+      rw [Nat.testBit_eq_false_of_lt this] at hi; exact absurd hi (by simp)
+    simpa [hlt] using this
+  · intro h
+    apply Nat.eq_of_testBit_eq
+    intro i
+    simp only [UScalar.val_and, Nat.testBit_and, bit_not, Nat.zero_testBit]
+    cases hb : b.val.testBit i
+    · simp
+    · simp [h i hb]
+
+theorem guest_mask_testBit (i : Nat) : (2 ^ 36 - 2 ^ 32).testBit i = decide (32 ≤ i ∧ i < 36) := by
+  have : 2 ^ 36 - 2 ^ 32 = (2 ^ 4 - 1) <<< 32 := by decide
+  rw [this, Nat.testBit_shiftLeft, testBit_low_mask]
+  by_cases h : 32 ≤ i <;> simp [h]; omega
+
+theorem admin_iod_spec (b : U64) : ∃ x, perms.admin_includes_only_defined b = ok x ∧
+    (x = true ↔ withinSpace 0 21 b.val) := by
+  refine ⟨decide (b &&& ~~~perms.A_ALL = 0#u64), by simp [perms.admin_includes_only_defined, lift], ?_⟩
+  simp only [decide_eq_true_eq, u64_eq_zero_iff, and_not_zero_iff, A_ALL_val, testBit_low_mask, withinSpace]
+  simp
+
+theorem member_iod_spec (b : U64) : ∃ x, perms.member_includes_only_defined b = ok x ∧
+    (x = true ↔ withinSpace 0 7 b.val) := by
+  refine ⟨decide (b &&& ~~~perms.M_ALL = 0#u64), by simp [perms.member_includes_only_defined, lift], ?_⟩
+  simp only [decide_eq_true_eq, u64_eq_zero_iff, and_not_zero_iff, M_ALL_val, testBit_low_mask, withinSpace]
+  simp
+
+theorem guest_iod_spec (b : U64) : ∃ x, perms.guest_includes_only_defined b = ok x ∧
+    (x = true ↔ withinSpace 32 4 b.val) := by
+  refine ⟨decide (b &&& ~~~perms.G_ALL = 0#u64), by simp [perms.guest_includes_only_defined, lift], ?_⟩
+  simp only [decide_eq_true_eq, u64_eq_zero_iff, and_not_zero_iff, G_ALL_val, guest_mask_testBit, withinSpace]
+
+theorem role_eq (a b : perms.Role) : perms.Role.Insts.CoreCmpPartialEqRole.eq a b = ok (decide (a = b)) := by
+  cases a <;> cases b <;> simp [perms.Role.Insts.CoreCmpPartialEqRole.eq, perms.Role.read_discriminant]
+
+theorem role_assignable_iff (r : perms.Role) :
+    policy.validate_role_can_be_assigned r = ok (.Ok ()) ↔ r ≠ .Creator := by
+  cases r <;> simp [policy.validate_role_can_be_assigned, role_eq]
+
+theorem add_member_role_iff (c a : I64) (r : perms.Role) :
+    policy.validate_add_member_role c a r = ok (.Ok ()) ↔ r ≠ .Creator ∧ (r = .Admin → a = c) := by
+  cases r <;> simp [policy.validate_add_member_role, policy.validate_role_can_be_assigned, role_eq,
+    core.result.Result.Insts.CoreOpsTry.branch]
+  exact ⟨fun h => (IScalar.eq_of_val_eq h).symm, fun h => by rw [h]⟩
+
+theorem creator_update_iff (c a t : I64) :
+    policy.validate_creator_member_role_update c a t = ok (.Ok ()) ↔ a = c ∧ t ≠ c := by
+  simp only [policy.validate_creator_member_role_update, policy.validate_admin_member_role_update]
+  by_cases h1 : c = a <;> by_cases h2 : t = c <;> simp [h1, h2, bne]
+  exact fun e => h1 (IScalar.eq_of_val_eq e).symm
+
+theorem admin_override_iff (a r : U64) :
+    policy.validate_admin_override_bits a r = ok (.Ok ()) ↔ withinSpace 0 21 a.val ∧ withinSpace 0 21 r.val := by
+  obtain ⟨x, hx, hX⟩ := admin_iod_spec a
+  obtain ⟨y, hy, hY⟩ := admin_iod_spec r
+  unfold policy.validate_admin_override_bits
+  rw [hx, ← hX, ← hY]
+  cases x <;> cases y <;> simp [hy]
+
+theorem roleSpace_within (r : perms.Role) (b : U64) (x : Bool)
+    (h : (match r with
+      | .Creator => perms.admin_includes_only_defined b
+      | .Admin => perms.admin_includes_only_defined b
+      | .Member => perms.member_includes_only_defined b
+      | .Guest => perms.guest_includes_only_defined b) = ok x) :
+    x = true ↔ withinSpace (roleSpace r).1 (roleSpace r).2 b.val := by
+  cases r
+  · obtain ⟨y, hy, hY⟩ := admin_iod_spec b; rw [hy, Result.ok.injEq] at h; subst h; exact hY
+  · obtain ⟨y, hy, hY⟩ := admin_iod_spec b; rw [hy, Result.ok.injEq] at h; subst h; exact hY
+  · obtain ⟨y, hy, hY⟩ := member_iod_spec b; rw [hy, Result.ok.injEq] at h; subst h; exact hY
+  · obtain ⟨y, hy, hY⟩ := guest_iod_spec b; rw [hy, Result.ok.injEq] at h; subst h; exact hY
+
+theorem override_bits_iff (r : perms.Role) (a b : U64) :
+    policy.validate_override_bits_for_role r a b = ok (.Ok ()) ↔
+      withinSpace (roleSpace r).1 (roleSpace r).2 a.val ∧ withinSpace (roleSpace r).1 (roleSpace r).2 b.val := by
+  cases r <;> simp only [policy.validate_override_bits_for_role, roleSpace]
+  · obtain ⟨x, hx, hX⟩ := admin_iod_spec a
+    obtain ⟨y, hy, hY⟩ := admin_iod_spec b
+    rw [hx, ← hX, ← hY]; cases x <;> cases y <;> simp [hy]
+  · obtain ⟨x, hx, hX⟩ := admin_iod_spec a
+    obtain ⟨y, hy, hY⟩ := admin_iod_spec b
+    rw [hx, ← hX, ← hY]; cases x <;> cases y <;> simp [hy]
+  · obtain ⟨x, hx, hX⟩ := member_iod_spec a
+    obtain ⟨y, hy, hY⟩ := member_iod_spec b
+    rw [hx, ← hX, ← hY]; cases x <;> cases y <;> simp [hy]
+  · obtain ⟨x, hx, hX⟩ := guest_iod_spec a
+    obtain ⟨y, hy, hY⟩ := guest_iod_spec b
+    rw [hx, ← hX, ← hY]; cases x <;> cases y <;> simp [hy]
+
+theorem channel_iff (adm : Bool) (a r aa ar : U64) :
+    policy.validate_member_permission_override_channel adm a r aa ar = ok (.Ok ()) ↔
+      (adm = true → a.val = 0 ∧ r.val = 0) ∧ (adm = false → aa.val = 0 ∧ ar.val = 0) := by
+  unfold policy.validate_member_permission_override_channel
+  cases adm <;> simp <;> split_ifs <;> simp_all <;> scalar_tac
+
+theorem kick_cooldown_iff (c : I64) :
+    policy.validate_kick_cooldown_seconds c = ok (.Ok ()) ↔ 0 < c.val ∧ c.val ≤ 2592000 := by
+  unfold policy.validate_kick_cooldown_seconds
+  have : policy.MAX_KICK_COOLDOWN_SECONDS.val = 2592000 := by unfold policy.MAX_KICK_COOLDOWN_SECONDS; rfl
+  split_ifs <;> simp <;> scalar_tac
+
+theorem plan_sound (u : policy.MemberUpdate) (ce : Bool) (cr : perms.Role) (re : Bool) (c : I64)
+    (plan : policy.MemberUpdatePlan)
+    (h : policy.plan_member_update u ce cr re c = ok (.Ok plan)) :
+    ce = true ∧ withinSpace 0 21 u.admin_added_permissions.val ∧ withinSpace 0 21 u.admin_removed_permissions.val ∧
+    plan.effective_role = (if u.has_role then u.role else cr) ∧
+    (u.has_role = true → u.role ≠ .Creator ∧ u.actor_id = c ∧ u.target_user_id ≠ c) ∧
+    (u.apply_permission_update = true → plan.needs_manage_member_permissions = true ∧
+      withinSpace (roleSpace plan.effective_role).1 (roleSpace plan.effective_role).2 u.added_permissions.val ∧
+      withinSpace (roleSpace plan.effective_role).1 (roleSpace plan.effective_role).2 u.removed_permissions.val ∧
+      (plan.effective_role = .Admin → u.added_permissions.val = 0 ∧ u.removed_permissions.val = 0) ∧
+      (plan.effective_role ≠ .Admin → u.admin_added_permissions.val = 0 ∧ u.admin_removed_permissions.val = 0)) := by
+  unfold policy.plan_member_update at h
+  h5i_invert h
+  all_goals
+    simp only [show ∀ x : Unit, x = () from fun _ => rfl, admin_override_iff, override_bits_iff, channel_iff,
+      creator_update_iff, role_assignable_iff, policy.effective_role_of, role_eq] at *
+  all_goals
+    simp only [Result.ok.injEq] at heffective_is_admin
+    subst heffective_is_admin
+    split at heffective_role <;> simp only [Result.ok.injEq] at heffective_role <;> subst heffective_role <;>
+      simp_all
+
+/-! ## Token and role decisions -/
+
+theorem leeway_spec (l : U64) : auth.leeway_to_i64 l ⦃ x => x.val = min (l.val : Int) (2 ^ 63 - 1) ⦄ := by
+  unfold auth.leeway_to_i64
+  split
+  · simp only [WP.spec_ok, UScalar.hcast_val_eq]
+    rename_i h
+    have : l.val ≤ 9223372036854775807 := by scalar_tac
+    rw [Int.bmod_eq_of_le] <;> simp <;> omega
+  · rename_i h
+    have : ¬ l.val ≤ 9223372036854775807 := by scalar_tac
+    simp; omega
+
+theorem sat_spec (e l : I64) (hl : 0 ≤ l.val) :
+    auth.saturating_add_nonneg e l ⦃ x => x.val = min (e.val + l.val) (2 ^ 63 - 1) ⦄ := by
+  unfold auth.saturating_add_nonneg
+  step*
+
+theorem expiration_spec (now exp : I64) (l : U64) :
+    auth.validate_expiration now exp l ⦃ r => (r = .Ok () ↔ notExpired now.val exp.val l.val) ∧
+      (r = .Ok () ∨ r = .Err .Authentication) ⦄ := by
+  unfold auth.validate_expiration
+  obtain ⟨x, hx, hxv⟩ := WP.spec_imp_exists (leeway_spec l)
+  have hx0 : 0 ≤ x.val := by rw [hxv]; omega
+  obtain ⟨y, hy, hyv⟩ := WP.spec_imp_exists (sat_spec exp x hx0)
+  simp only [hx, hy, bind_ok]
+  split <;> simp [notExpired] <;> rename_i h <;> scalar_tac
+
+theorem expiration_eq (now exp : I64) (l : U64) : ∃ r, auth.validate_expiration now exp l = ok r ∧
+    (r = .Ok () ↔ notExpired now.val exp.val l.val) ∧ (r = .Ok () ∨ r = .Err .Authentication) :=
+  WP.spec_imp_exists (expiration_spec now exp l)
+
+theorem tt_ne (a b : auth.TokenType) :
+    core.cmp.PartialEq.ne.trait_default auth.TokenType.Insts.CoreCmpPartialEqTokenType a b = ok (decide (a ≠ b)) := by
+  cases a <;> cases b <;> simp [core.cmp.PartialEq.ne.trait_default, core.cmp.PartialEq.ne.default,
+    auth.TokenType.Insts.CoreCmpPartialEqTokenType.eq, auth.TokenType.read_discriminant]
+
+theorem user_token_accepted (now exp : I64) (l : U64) (typ expected : auth.TokenType)
+    (h : auth.accept_user_token now exp l typ expected = ok (.Ok ())) :
+    typ = expected ∧ notExpired now.val exp.val l.val := by
+  obtain ⟨r, hr, hiff, hor⟩ := expiration_eq now exp l
+  unfold auth.accept_user_token at h
+  rcases hor with rfl | rfl
+  · simp only [hr, bind_ok, core.result.Result.Insts.CoreOpsTry.branch, tt_ne] at h
+    by_cases he : typ = expected <;> simp [he] at h
+    exact ⟨he, hiff.1 rfl⟩
+  · simp [hr, core.result.Result.Insts.CoreOpsTry.branch,
+      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual] at h
 
 end synctv_kernel.Lemmas

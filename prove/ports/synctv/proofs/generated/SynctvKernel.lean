@@ -2708,8 +2708,19 @@ def policy.MemberUpdatePlan.Insts.CoreCmpEq : core.cmp.Eq
     policy.MemberUpdatePlan.Insts.CoreCmpEq.assert_fields_are_eq
 }
 
+/-- [synctv_kernel::policy::effective_role_of]:
+    Source: 'prove/ports/synctv/kernel/src/policy.rs', lines 164:0-166:1
+    Visibility: public -/
+def policy.effective_role_of
+  (has_role : Bool) (role : perms.Role) (current_role : perms.Role) :
+  Result perms.Role
+  := do
+  if has_role
+  then ok role
+  else ok current_role
+
 /-- [synctv_kernel::policy::plan_member_update]:
-    Source: 'prove/ports/synctv/kernel/src/policy.rs', lines 166:0-203:1
+    Source: 'prove/ports/synctv/kernel/src/policy.rs', lines 171:0-208:1
     Visibility: public -/
 def policy.plan_member_update
   (u : policy.MemberUpdate) (current_exists : Bool) (current_role : perms.Role)
@@ -2724,10 +2735,8 @@ def policy.plan_member_update
   | core.ops.control_flow.ControlFlow.Continue _ =>
     if current_exists
     then
-      let (b, effective_role) ←
-        if u.has_role
-        then ok (true, u.role)
-        else ok (false, current_role)
+      let effective_role ←
+        policy.effective_role_of u.has_role u.role current_role
       let effective_is_admin ←
         perms.Role.Insts.CoreCmpPartialEqRole.eq effective_role
           perms.Role.Admin
@@ -2739,7 +2748,7 @@ def policy.plan_member_update
         let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1
         match cf1 with
         | core.ops.control_flow.ControlFlow.Continue _ =>
-          if b
+          if u.has_role
           then
             let r2 ← policy.validate_role_can_be_assigned u.role
             let cf2 ← core.result.Result.Insts.CoreOpsTry.branch r2
@@ -2803,7 +2812,7 @@ def policy.plan_member_update
             policy.MemberUpdatePlan (core.convert.FromSame policy.PolicyError)
             residual
       else
-        if b
+        if u.has_role
         then
           let r1 ← policy.validate_role_can_be_assigned u.role
           let cf1 ← core.result.Result.Insts.CoreOpsTry.branch r1

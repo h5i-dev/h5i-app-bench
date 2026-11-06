@@ -160,6 +160,11 @@ pub struct MemberUpdatePlan {
     pub needs_manage_member_permissions: bool,
 }
 
+/// `role.unwrap_or(current.role)`.
+pub fn effective_role_of(has_role: bool, role: Role, current_role: Role) -> Role {
+    if has_role { role } else { current_role }
+}
+
 /// The validation prefix of `RoomService::update_member_with_outbox`.
 /// `current_role` is the target's row (`None` -> `NotFound`), `room_created_by` the room
 /// (`None` -> `NotFound`; only read when a role is requested).
@@ -174,7 +179,7 @@ pub fn plan_member_update(
     if !current_exists {
         return Err(PolicyError::NotFound);
     }
-    let effective_role = if u.has_role { u.role } else { current_role };
+    let effective_role = effective_role_of(u.has_role, u.role, current_role);
     let effective_is_admin = effective_role == Role::Admin;
     if u.apply_permission_update {
         validate_override_bits_for_role(effective_role, u.added_permissions, u.removed_permissions)?;
