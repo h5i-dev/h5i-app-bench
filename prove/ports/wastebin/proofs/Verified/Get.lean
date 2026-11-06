@@ -131,7 +131,8 @@ theorem getM_ok {rows : List Row} {id now : I64} {pw : Option U64} {v : List Row
     (h : getM rows id now pw = (v, .Ok e)) :
     ∃ r, rowOf rows id = some r ∧ ¬ Expired r now.val ∧ Opens r pw ∧
       entryData e = ⟨r.data, metaM r⟩ ∧ v = (if Burns r then without rows id else rows) ∧
-      (isEncrypted e = r.secret.isSome) := by
+      (isEncrypted e = r.secret.isSome) ∧ (Burns r → ∀ d, e ≠ .Regular d) ∧
+      (∀ d, e = .Burned d → Burns r) := by
   unfold getM fetchM at h
   rcases hr : rowOf rows id with _ | r <;> simp only [hr] at h
   · simp at h
