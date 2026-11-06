@@ -10,7 +10,8 @@ before `lint`/`mutate` (they walk the project directory).
 200,000 cases; `tar_symlink_entry_writes_outside_destination`, which demonstrates FINDINGS F1 with
 upstream's own `extract_entries`).
 
-**Mutation:** `h5i app mutate -j 2 ports/spacedrive` is running (`/mnt/scratch/oss-sec/tmp/c/mutate_sd.log`).
+**Mutation:** `h5i app mutate -j 2 ports/spacedrive` — baseline ok, then **3/3 caught, 0 survived**
+(`keep_parent`, `keep_nul`, `keep_empty_and_curdir`).
 
 Upstream: spacedriveapp/spacedrive @ `2c4da346da529f06428fcf40488345ef8b955f15`. Scope, trusted
 boundary and deviations are in [DEVIATIONS.md](DEVIATIONS.md); the finding is in [FINDINGS.md](FINDINGS.md).
