@@ -4,4 +4,108 @@ crate = "kernel"
 start-from = ["bytes", "scopes", "authz"]
 
 [check]
-theorems = []
+theorems = [
+  "windmill_kernel.Properties.owner_of_path_sound",
+  "windmill_kernel.Properties.preview_spec",
+  "windmill_kernel.Properties.preview_never_traverses",
+  "windmill_kernel.Properties.preview_requires_namespace",
+  "windmill_kernel.Properties.is_owner_sound",
+  "windmill_kernel.Properties.instance_admin_never_job_token",
+  "windmill_kernel.Properties.covers_spec",
+  "windmill_kernel.Properties.resource_covers_sound",
+  "windmill_kernel.Properties.wildcard_ascii_boundary",
+  "windmill_kernel.Properties.wildcard_unicode_crosses_boundary",
+  "windmill_kernel.Properties.includes_true",
+  "windmill_kernel.Properties.scope_never_crosses_domain",
+  "windmill_kernel.Properties.read_never_grants_more",
+  "windmill_kernel.Properties.jobs_write_never_runs",
+  "windmill_kernel.Properties.contains_true",
+  "windmill_kernel.Properties.delegation_stays_in_domain_and_action",
+  "windmill_kernel.Properties.read_delegates_only_read",
+]
+
+# Bugs the proofs must reject (`h5i app mutate`). STATUS.md names the theorem that
+# kills each one.
+[[mutant]]
+name = "owner_u_any_user"
+file = "kernel/src/authz.rs"
+old = """    if eq(&parts[0], U) {
+        if eq(&parts[1], &a.username) { Ok(()) } else { Err(AuthzError::BadRequest) }
+    } else if eq(&parts[0], F) {
+        require_is_owner"""
+new = """    if eq(&parts[0], U) {
+        Ok(())
+    } else if eq(&parts[0], F) {
+        require_is_owner"""
+
+[[mutant]]
+name = "is_owner_ignores_owner_flag"
+file = "kernel/src/authz.rs"
+old = "eq(&a.folders[i].name, name) && a.folders[i].is_owner"
+new = "eq(&a.folders[i].name, name)"
+
+[[mutant]]
+name = "owner_f_skips_owner_check"
+file = "kernel/src/authz.rs"
+old = "        require_is_owner(a, &parts[1])"
+new = "        Ok(())"
+
+[[mutant]]
+name = "preview_admin_skips_traversal"
+file = "kernel/src/authz.rs"
+old = "    if (path.len() > 0 && path[0] == 47) || has_dotdot_segment(&parts) || has_nul(path) {"
+new = "    if !a.is_admin && ((path.len() > 0 && path[0] == 47) || has_dotdot_segment(&parts) || has_nul(path)) {"
+
+[[mutant]]
+name = "preview_no_nul_check"
+file = "kernel/src/authz.rs"
+old = "|| has_nul(path) {"
+new = "{"
+
+[[mutant]]
+name = "preview_any_folder"
+file = "kernel/src/authz.rs"
+old = "        if has_folder(a, &parts[1]) { Ok(()) } else { Err(AuthzError::BadRequest) }"
+new = "        Ok(())"
+
+[[mutant]]
+name = "instance_admin_allows_job_token"
+file = "kernel/src/authz.rs"
+old = "    if a.has_job_id {"
+new = "    if a.has_job_id && false {"
+
+[[mutant]]
+name = "covers_no_slash_boundary"
+file = "kernel/src/scopes.rs"
+old = "starts_with(&base, &pre) && base.len() > pre.len() && base[pre.len()] == 47"
+new = "starts_with(&base, &pre) && base.len() > pre.len()"
+
+[[mutant]]
+name = "wildcard_no_boundary"
+file = "kernel/src/scopes.rs"
+old = "    nth_char_is_slash(resource, pre.len())"
+new = "    true"
+
+[[mutant]]
+name = "includes_ignores_domain"
+file = "kernel/src/scopes.rs"
+old = "    if !eq(&s.domain, &o.domain) {"
+new = "    if false && !eq(&s.domain, &o.domain) {"
+
+[[mutant]]
+name = "write_runs_in_every_domain"
+file = "kernel/src/scopes.rs"
+old = "    if eq(a, WRITE) && eq(b, RUN) && eq(domain, APPS) {"
+new = "    if eq(a, WRITE) && eq(b, RUN) {"
+
+[[mutant]]
+name = "read_covers_write"
+file = "kernel/src/scopes.rs"
+old = "    if (eq(a, WRITE) && eq(b, READ)) || eq(a, b) {"
+new = "    if (eq(a, WRITE) && eq(b, READ)) || (eq(a, READ) && eq(b, WRITE)) || eq(a, b) {"
+
+[[mutant]]
+name = "contains_ignores_domain"
+file = "kernel/src/scopes.rs"
+old = "    if !eq(&caller.domain, &requested.domain) {"
+new = "    if false && !eq(&caller.domain, &requested.domain) {"

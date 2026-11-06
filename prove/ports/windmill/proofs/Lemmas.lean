@@ -437,10 +437,38 @@ theorem WRITE_val : scopes.WRITE.val = writeB := by unfold scopes.WRITE; simp [w
 theorem RUN_val : scopes.RUN.val = runB := by unfold scopes.RUN; simp [runB, array_to_slice_val]
 theorem CANCEL_val : scopes.CANCEL.val = cancelB := by unfold scopes.CANCEL; simp [cancelB, array_to_slice_val]
 
+theorem eq_eq (a b : Slice U8) : bytes.eq a b = ok (decide (a.val = b.val)) :=
+  eq_ok_of_spec (eq_spec a b)
+
 theorem action_covers_true {d a b : Slice U8} (h : scopes.action_covers d a b = ok true) :
     actionCov d.val a.val b.val := by
   unfold scopes.action_covers at h
-  h5i_invert h
-  all_goals sorry
+  simp only [eq_eq, bind_ok] at h
+  unfold actionCov
+  split_ifs at h <;> simp_all [JOBS_val, APPS_val, READ_val, WRITE_val, RUN_val, CANCEL_val]
+
+theorem leads_ascii {r : Bytes} (h : ascii r) : leads r = r := by
+  unfold leads
+  rw [List.filter_eq_self]
+  intro b hb
+  simp [isLead, h b hb]
+
+theorem not_traversal_of (p : Slice U8) (parts : alloc.vec.Vec (alloc.vec.Vec U8))
+    (hs : parts.val.map (·.val) = segments 47#u8 p.val)
+    (hhead : ∀ h : 0 < p.val.length, p.val[0] ≠ 47#u8)
+    (hd : ∀ q ∈ parts.val, q.val ≠ dotdot)
+    (hn : ∀ c ∈ p.val, c.val ≠ 0) : ¬ traversal p.val := by
+  rintro (h1 | h2 | h3)
+  · cases hp : p.val with
+    | nil => simp [hp] at h1
+    | cons x xs =>
+      have := hhead (by simp [hp])
+      simp only [hp, List.head?_cons, Option.some.injEq] at h1
+      simp [hp, h1, slashB] at this
+  · change dotdot ∈ segments 47#u8 p.val at h2
+    rw [← hs, List.mem_map] at h2
+    obtain ⟨q, hq, hqe⟩ := h2
+    exact hd q hq hqe
+  · exact hn _ h3 rfl
 
 end windmill_kernel.Lemmas

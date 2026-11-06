@@ -28,24 +28,6 @@ theorem owner_of_path_sound (a : authz.Authed) (p : Slice U8) (hp : p.length < U
   · right
     exact ⟨by simpa [vec_deref_val, F_val] using eq_true hb1 hc_4, by simpa [vec_deref_val] using require_is_owner_ok h⟩
 
-theorem not_traversal_of (p : Slice U8) (parts : alloc.vec.Vec (alloc.vec.Vec U8))
-    (hs : parts.val.map (·.val) = segments 47#u8 p.val)
-    (hhead : ∀ h : 0 < p.val.length, p.val[0] ≠ 47#u8)
-    (hd : ∀ q ∈ parts.val, q.val ≠ dotdot)
-    (hn : ∀ c ∈ p.val, c.val ≠ 0) : ¬ traversal p.val := by
-  rintro (h1 | h2 | h3)
-  · cases hp : p.val with
-    | nil => simp [hp] at h1
-    | cons x xs =>
-      have := hhead (by simp [hp])
-      simp only [hp, List.head?_cons, Option.some.injEq] at h1
-      simp [hp, h1, slashB] at this
-  · change dotdot ∈ segments 47#u8 p.val at h2
-    rw [← hs, List.mem_map] at h2
-    obtain ⟨q, hq, hqe⟩ := h2
-    exact hd q hq hqe
-  · exact hn _ h3 rfl
-
 /-- What a successful preview access check establishes. -/
 def previewOk (a : authz.Authed) (path : Bytes) : Prop :=
   ¬ traversal path ∧
@@ -154,12 +136,6 @@ theorem resource_covers_sound (c r : Slice U8) (h : scopes.resource_covers c r =
     coversSem c.val r.val :=
   post_of_ok (covers_spec c r) h rfl
 
-theorem leads_ascii {r : Bytes} (h : ascii r) : leads r = r := by
-  unfold leads
-  rw [List.filter_eq_self]
-  intro b hb
-  simp [isLead, h b hb]
-
 /-- For ASCII resources, a `p/*` wildcard matches only paths in the subtree of `p`:
 `p` itself or `p/...`, never a sibling such as `p-x/...` or `px/...`. -/
 theorem wildcard_ascii_boundary (pat r : Slice U8) (ha : ascii r.val)
@@ -195,5 +171,67 @@ theorem wildcard_unicode_crosses_boundary (pat r : Slice U8)
     [102#u8, 47#u8, 100#u8, 195#u8, 169#u8] ++ [slashB, starB] by simp [slashB, starB], names_wild]
   simp only [inSubtree]
   decide
+
+theorem includes_true {s o : scopes.Scope} (h : scopes.includes s o = ok true) :
+    s.domain.val = o.domain.val ∧ actionCov s.domain.val s.action.val o.action.val := by
+  unfold scopes.includes at h
+  simp only [eq_eq, bind_ok] at h
+  h5i_invert h
+  all_goals
+    subst hc_1
+    refine ⟨by simpa [vec_deref_val] using hc, ?_⟩
+    simpa [vec_deref_val] using action_covers_true hb1
+
+/-- A token scope never grants anything in another domain. -/
+theorem scope_never_crosses_domain (s o : scopes.Scope) (h : scopes.includes s o = ok true) :
+    s.domain.val = o.domain.val :=
+  (includes_true h).1
+
+/-- A `read` scope never grants a `write` (or `run`, `cancel`) requirement. -/
+theorem read_never_grants_more (s o : scopes.Scope) (h : scopes.includes s o = ok true)
+    (hr : s.action.val = readB) : o.action.val = readB := by
+  have := (includes_true h).2
+  unfold actionCov at this
+  rw [hr] at this
+  rcases this with h1 | ⟨h1, _⟩ | ⟨h1, _⟩ | ⟨h1, _⟩
+  · exact h1.symm
+  all_goals simp [readB, writeB] at h1
+
+/-- `jobs:write` never grants running a job (only `apps:write` covers `run`). -/
+theorem jobs_write_never_runs (s o : scopes.Scope) (hd : s.domain.val = jobsB) (ha : s.action.val = writeB)
+    (hr : o.action.val = runB) : scopes.includes s o ≠ ok true := by
+  intro h
+  have := (includes_true h).2
+  unfold actionCov at this
+  rw [hd, ha, hr] at this
+  simp [jobsB, appsB, writeB, runB, readB, cancelB] at this
+
+theorem contains_true {c r : scopes.Scope} (h : scopes.scope_contains c r = ok true) :
+    c.domain.val = r.domain.val ∧ actionCov c.domain.val c.action.val r.action.val := by
+  unfold scopes.scope_contains at h
+  simp only [eq_eq, bind_ok] at h
+  h5i_invert h
+  all_goals
+    subst hc_1
+    refine ⟨by simpa [vec_deref_val] using hc, ?_⟩
+    simpa [vec_deref_val] using action_covers_true hb1
+
+/-- Minting never moves a token to another domain or to an action its caller's scope
+does not cover: a scope accepted by `scope_contains` has the caller's domain and an
+action the caller's action covers. -/
+theorem delegation_stays_in_domain_and_action (c r : scopes.Scope)
+    (h : scopes.scope_contains c r = ok true) :
+    c.domain.val = r.domain.val ∧ actionCov c.domain.val c.action.val r.action.val :=
+  contains_true h
+
+/-- A `read` caller can only delegate `read`. -/
+theorem read_delegates_only_read (c r : scopes.Scope) (h : scopes.scope_contains c r = ok true)
+    (hr : c.action.val = readB) : r.action.val = readB := by
+  have := (contains_true h).2
+  unfold actionCov at this
+  rw [hr] at this
+  rcases this with h1 | ⟨h1, _⟩ | ⟨h1, _⟩ | ⟨h1, _⟩
+  · exact h1.symm
+  all_goals simp [readB, writeB] at h1
 
 end windmill_kernel.Properties
