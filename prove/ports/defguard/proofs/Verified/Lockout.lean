@@ -109,4 +109,184 @@ theorem find_of_findIdx {α : Type} (p : α → Bool) (l : List α) (i : Nat) (h
   refine ⟨hl, ?_⟩
   rw [List.find?_eq_getElem?_findIdx, hidx, List.getElem?_eq_getElem hl]
 
+/-! ## Kernel helpers -/
+
+theorem vclone_eq {T : Type} (inst : core.clone.Clone T) (hc : ∀ x, inst.clone x = ok x)
+    {a b : alloc.vec.Vec T} (h : alloc.vec.CloneVec.clone inst a = ok b) : b = a := by
+  rw [H5iAppLib.vec_clone_ok inst a hc] at h; exact (H5iAppLib.Result.ok.inj h).symm
+
+theorem map_clone_eq {a b : alloc.vec.Vec lockout.FailedLogin}
+    (h : alloc.vec.CloneVec.clone lockout.FailedLogin.Insts.CoreCloneClone a = ok b) : b = a :=
+  vclone_eq _ lockout.FailedLogin.Insts.CoreCloneClone.clone.ok_eq h
+
+theorem push_ok_val {α : Type} {v : alloc.vec.Vec α} {x : α} {w : alloc.vec.Vec α}
+    (h : v.push x = ok w) : w.val = v.val ++ [x] := by
+  unfold alloc.vec.Vec.push at h
+  simp only [] at h
+  split at h
+  · have := H5iAppLib.Result.ok.inj h
+    subst this; simp
+  · simp at h
+
+theorem set_entry_ok {map m : alloc.vec.Vec lockout.FailedLogin} {i : Usize} {f : lockout.FailedLogin}
+    (h : lockout.set_entry map i f = ok m) : m.val = map.val.set i.val f := by
+  unfold lockout.set_entry at h
+  h5i_invert h
+  · obtain rfl := map_clone_eq hres
+    obtain ⟨a, back⟩ := x
+    try simp only [] at h
+    rw [alloc.vec.Vec.index_mut_slice_index] at hx
+    unfold alloc.vec.Vec.index_mut_usize at hx
+    obtain ⟨y, hy, hx'⟩ := H5iAppLib.bind_tc_eq_ok.1 hx
+    have e1 := H5iAppLib.Result.ok.inj hx'
+    have e2 := H5iAppLib.Result.ok.inj h
+    simp only [Prod.mk.injEq] at e1
+    obtain ⟨_, rfl⟩ := e1
+    subst e2
+    simp
+  · obtain rfl := map_clone_eq hres
+    rw [List.set_eq_of_length_le]; scalar_tac
+
+theorem fresh_spec (key : Slice U8) (now : I64) :
+    lockout.fresh key now ⦃ f => f.key.val = key.val ∧ f.attempt_count = 1#u32 ∧
+      f.first_attempt = now ∧ f.last_attempt = now ⦄ := by
+  unfold lockout.fresh lockout.fresh_loop
+  apply WP.spec_bind (H5iAppLib.loop_fold key.val (fun (o : alloc.vec.Vec U8) => o.val) (fun acc x => acc ++ [x])
+    (fun o i => o.val.length ≤ i) _ ?step (alloc.vec.Vec.new U8) 0#usize (by simp) (by simp))
+  · intro r hr; rw [H5iAppLib.foldl_snoc] at hr; simp_all
+  case step =>
+    intro o j hj hinv; unfold lockout.fresh_loop.body; h5i_step
+
+theorem incremented_ok {f f' : lockout.FailedLogin} {now : I64} (h : lockout.incremented f now = ok f') :
+    f'.key = f.key ∧ f'.attempt_count = core.num.U32.wrapping_add f.attempt_count 1#u32 ∧
+      f'.first_attempt = f.first_attempt ∧ f'.last_attempt = now := by
+  unfold lockout.incremented at h
+  rw [H5iAppLib.u8vec_clone] at h
+  simp only [lift, bind_ok] at h
+  have := (H5iAppLib.Result.ok.inj h).symm
+  subst this
+  exact ⟨rfl, rfl, rfl, rfl⟩
+
+theorem vec_index_eq {α : Type} (v : alloc.vec.Vec α) (i : Usize) (h : i.val < v.val.length) :
+    alloc.vec.Vec.index (core.slice.index.SliceIndexUsizeSlice α) v i = ok v.val[i.val] := by
+  rw [alloc.vec.Vec.index_slice_index]
+  simp only [alloc.vec.Vec.index_usize]
+  rw [show v[i.val]? = some v.val[i.val] by simp [h]]
+
+theorem entry_of_idx {map : alloc.vec.Vec lockout.FailedLogin} {k : Slice U8} {o : Option Usize}
+    (ho : o.map (·.val) = map.val.findIdx? (fun f => decide (f.key.val = k.val))) :
+    match o with
+    | none => entryFor map.val k.val = none
+    | some i => ∃ h : i.val < map.val.length, entryFor map.val k.val = some map.val[i.val] ∧
+        map.val.findIdx? (fun f => decide (f.key.val = k.val)) = some i.val := by
+  cases o with
+  | none =>
+    simp only [Option.map_none] at ho
+    simp only [entryFor]; rw [List.find?_eq_none]; intro x hx
+    have := List.findIdx?_eq_none_iff.1 ho.symm x hx; simpa using this
+  | some i =>
+    simp only [Option.map_some] at ho
+    obtain ⟨hl, hf⟩ := find_of_findIdx _ _ _ ho.symm
+    exact ⟨hl, hf, ho.symm⟩
+
+/-- `verify_username`: a name with no entry, or one not locked out, passes
+and leaves the tracker as it was; a locked-out name is refused. -/
+theorem verify_username_ok {map m : alloc.vec.Vec lockout.FailedLogin} {k : Slice U8} {now : I64} {b : Bool}
+    (h : lockout.verify_username map k now = ok (m, b)) :
+    (b = true ↔ Locked map.val k.val now.val) ∧ (b = false → m = map) := by
+  unfold lockout.verify_username at h
+  h5i_invert h
+  · -- no entry
+    have h' := post_of_ok (find_entry_spec map k) ho
+    have he := entry_of_idx h'
+    simp only [] at he
+    obtain ⟨rfl, rfl⟩ := h
+    refine ⟨?_, fun _ => map_clone_eq hv⟩
+    simp only [Bool.false_eq_true, false_iff]
+    rintro ⟨f, hf, _⟩; rw [he] at hf; cases hf
+  all_goals
+    obtain ⟨rfl, rfl⟩ := h
+    have h' := post_of_ok (find_entry_spec map k) ho
+    obtain ⟨hl, he, _⟩ := entry_of_idx h'
+    have hfl' : fl = map.val[i.val] := by
+      rw [vec_index_eq _ _ hl] at hfl; exact (H5iAppLib.Result.ok.inj hfl).symm
+    subst hfl'
+    have hb := should_prevent_ok hb_1
+  · refine ⟨?_, fun h => by cases h⟩
+    simp only [true_iff]
+    exact ⟨_, he, by simp_all⟩
+  · refine ⟨?_, fun _ => map_clone_eq hv⟩
+    simp only [Bool.false_eq_true, false_iff]
+    rintro ⟨f, hf, h5, ht⟩
+    rw [he] at hf; cases hf
+    simp_all
+
+/-- The reset condition of `should_reset_counter`, on integers. -/
+def ResetCond (f : lockout.FailedLogin) (now : Int) : Prop :=
+  (now - f.first_attempt.val > 60000000000 ∧ f.attempt_count.val < 5) ∨ now - f.last_attempt.val > 300000000000
+
+/-- `log_failed_attempt`: the entries of other names are untouched; the
+name's entry is new or reset (one attempt, now), or one attempt more. -/
+theorem log_failed_attempt_ok {map m : alloc.vec.Vec lockout.FailedLogin} {k : Slice U8} {now : I64}
+    (h : lockout.log_failed_attempt map k now = ok m) :
+    (∀ k', k' ≠ k.val → entryFor m.val k' = entryFor map.val k') ∧
+    ∃ f', entryFor m.val k.val = some f' ∧ f'.last_attempt = now ∧
+      (match entryFor map.val k.val with
+       | none => f'.attempt_count = 1#u32 ∧ f'.first_attempt = now
+       | some f => (ResetCond f now.val → f'.attempt_count = 1#u32 ∧ f'.first_attempt = now) ∧
+           (¬ ResetCond f now.val → f'.attempt_count = core.num.U32.wrapping_add f.attempt_count 1#u32 ∧
+             f'.first_attempt = f.first_attempt)) := by
+  unfold lockout.log_failed_attempt at h
+  h5i_invert h
+  · -- a new entry
+    have h' := post_of_ok (find_entry_spec map k) ho
+    have he := entry_of_idx h'
+    simp only [] at he
+    obtain rfl := map_clone_eq hres
+    have hf := post_of_ok (fresh_spec k now) hfl
+    have hm := push_ok_val h
+    refine ⟨?_, fl, ?_, hf.2.2.2, ?_⟩
+    · intro k' hk'
+      simp only [entryFor, hm, List.find?_append]
+      have : [fl].find? (fun f => decide (f.key.val = k')) = none := by
+        simp [hf.1]; exact fun e => hk' e.symm
+      rw [this]; simp
+    · simp only [entryFor] at he ⊢
+      simp only [hm, List.find?_append, he, hf.1]; simp
+    · rw [he]; exact ⟨hf.2.1, hf.2.2.1⟩
+  all_goals
+    have h' := post_of_ok (find_entry_spec map k) ho
+    obtain ⟨hl, he, hidx⟩ := entry_of_idx h'
+    have hfl' : fl = map.val[i.val] := by
+      rw [vec_index_eq _ _ hl] at hfl; exact (H5iAppLib.Result.ok.inj hfl).symm
+    subst hfl'
+    have hr := should_reset_ok hb
+    have hm := set_entry_ok h
+    have hkey : map.val[i.val].key.val = k.val := by
+      have := List.find?_some he; simpa using this
+  · -- reset
+    have hf := post_of_ok (fresh_spec k now) hfl1
+    refine ⟨?_, fl1, ?_, hf.2.2.2, ?_⟩
+    · intro k' hk'
+      simp only [entryFor, hm]
+      exact find_set_other _ _ _ _ _ hidx (fun x hx => by simp at hx ⊢; rw [hx]; exact fun e => hk' e.symm)
+        (by simp [hf.1]; exact fun e => hk' e.symm)
+    · simp only [entryFor, hm]
+      exact find_set_first _ _ _ _ hidx (by simp [hf.1])
+    · rw [he]
+      refine ⟨fun _ => ⟨hf.2.1, hf.2.2.1⟩, fun hn => ?_⟩
+      exfalso; apply hn; unfold ResetCond; simp_all
+  · -- one more attempt
+    have hf := incremented_ok hfl1
+    refine ⟨?_, fl1, ?_, hf.2.2.2, ?_⟩
+    · intro k' hk'
+      simp only [entryFor, hm]
+      exact find_set_other _ _ _ _ _ hidx (fun x hx => by simp at hx ⊢; rw [hx]; exact fun e => hk' e.symm)
+        (by simp [hf.1, hkey]; exact fun e => hk' e.symm)
+    · simp only [entryFor, hm]
+      exact find_set_first _ _ _ _ hidx (by simp [hf.1, hkey])
+    · rw [he]
+      refine ⟨fun hy => ?_, fun _ => ⟨hf.2.1, hf.2.2.1⟩⟩
+      exfalso; unfold ResetCond at hy; simp_all
+
 end defguard_kernel.Verified
