@@ -5,14 +5,15 @@ edition = "2024"
 version = "0.1.0"
 publish = false
 
-# `upstream-src` is a symlink to the pinned checkout (gitignored):
-#   ln -s /mnt/scratch/oss-sec/upstream/atuin prove/ports/atuin/upstream-src
+# `prove/results/upstream/atuin` is a symlink to the pinned checkout (gitignored; outside the
+# project so `h5i app lint` does not scan upstream routes):
+#   ln -s /mnt/scratch/oss-sec/upstream/atuin prove/results/upstream/atuin
 # with HEAD at df152cd4d68b4dbc2a6f13732b31b0e013470c70.
 [dependencies]
 atuin-kernel = { path = "../kernel" }
-atuin-server = { path = "../upstream-src/crates/atuin-server" }
-atuin-common = { path = "../upstream-src/crates/atuin-common", features = ["db"] }
-atuin-domain = { path = "../upstream-src/crates/atuin-domain" }
+atuin-server = { path = "../../../results/upstream/atuin/crates/atuin-server" }
+atuin-common = { path = "../../../results/upstream/atuin/crates/atuin-common", features = ["db"] }
+atuin-domain = { path = "../../../results/upstream/atuin/crates/atuin-domain" }
 argon2 = "0.5"
 axum = "0.8"
 derive_more = { version = "2", features = ["display"] }
