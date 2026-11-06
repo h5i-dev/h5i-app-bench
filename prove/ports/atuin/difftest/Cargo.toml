@@ -28,6 +28,7 @@ tokio = { version = "1", features = ["full"] }
 tracing = "0.1"
 uuid = { version = "1.6", features = ["v4", "v7", "serde"] }
 tempfile = "3"
+url = "2"
 
 [build-dependencies]
 
