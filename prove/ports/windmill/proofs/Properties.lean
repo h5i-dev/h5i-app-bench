@@ -115,4 +115,11 @@ theorem instance_admin_never_job_token (a : authz.Authed)
   unfold authz.require_instance_admin at h
   split_ifs at h <;> simp_all
 
+theorem covers_spec (c r : Slice U8) :
+    scopes.resource_covers c r ⦃ b => b = true → coversSem c.val r.val ⦄ := by
+  unfold scopes.resource_covers
+  step*
+  all_goals trace_state
+  all_goals sorry
+
 end windmill_kernel.Properties

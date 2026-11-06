@@ -194,4 +194,58 @@ theorem require_is_owner_ok {a : authz.Authed} {n : Slice U8}
   h5i_invert h
   exact (post_of_ok (is_owner_spec a n) (by assumption)).1 (by assumption)
 
+@[step] theorem prefix_spec (s : Slice U8) (n : Usize) :
+    bytes.prefix s n ⦃ r => r.val = s.val.take n.val ⦄ := by
+  unfold bytes.prefix bytes.prefix_loop
+  have h := loop_fold (l := s.val.take n.val) (abs := fun (o : alloc.vec.Vec U8) => o.val)
+    (g := fun acc x => acc ++ [x]) (Inv := fun o i => o.length = i)
+    (body := fun x => bytes.prefix_loop.body s n x.1 x.2) ?_ (alloc.vec.Vec.new _) 0#usize (by simp) (by simp)
+  · apply WP.spec_mono (by simpa using h)
+    intro r hr
+    rw [hr]
+    clear h hr
+    generalize s.val = l
+    generalize n.val = k
+    induction l generalizing k with
+    | nil => simp
+    | cons x xs ih => cases k <;> simp [ih]
+  · intro o i hi hinv
+    unfold bytes.prefix_loop.body
+    simp only []
+    split
+    · split
+      · step*
+        refine ⟨by simp; scalar_tac, ?_, by scalar_tac, by simp; scalar_tac⟩
+        simp_all [List.getElem_take]
+      · simp only [WP.spec_ok]
+        exact ⟨by simp; scalar_tac, rfl⟩
+    · simp only [WP.spec_ok]
+      exact ⟨by simp; scalar_tac, rfl⟩
+
+/-- `s.ends_with("/*")`. -/
+def endsSS (s : Bytes) : Prop := ∃ q, s = q ++ [slashB, starB]
+
+theorem endsSS_iff (l : Bytes) :
+    endsSS l ↔ ∃ h : 2 ≤ l.length, l[l.length - 2] = slashB ∧ l[l.length - 1] = starB := by
+  constructor
+  · rintro ⟨q, rfl⟩
+    refine ⟨by simp, ?_, ?_⟩
+    · rw [List.getElem_append_right (by simp)]; simp
+    · rw [List.getElem_append_right (by simp)]; simp
+  · rintro ⟨h2, ha, hb⟩
+    refine ⟨l.take (l.length - 2), ?_⟩
+    have hd : l.drop (l.length - 2) = [slashB, starB] := by
+      rw [List.drop_eq_getElem_cons (by omega), List.drop_eq_getElem_cons (by omega)]
+      rw [List.drop_eq_nil_of_le (by omega)]
+      simp only [ha, show l.length - 2 + 1 = l.length - 1 by omega, hb]
+    conv_lhs => rw [← List.take_append_drop (l.length - 2) l]
+    rw [hd]
+
+@[step] theorem ends_with_slash_star_spec (s : Slice U8) :
+    bytes.ends_with_slash_star s ⦃ b => (b = true ↔ endsSS s.val) ⦄ := by
+  unfold bytes.ends_with_slash_star
+  step*
+  all_goals simp only [endsSS_iff]
+  all_goals simp_all [slashB, starB]
+
 end windmill_kernel.Lemmas
