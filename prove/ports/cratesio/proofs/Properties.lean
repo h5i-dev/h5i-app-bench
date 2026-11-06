@@ -150,6 +150,15 @@ theorem team_rights_need_active_membership (user : rights.Actor) (owners : Slice
       user.gh_token = some true ∧ user.gh_login = true :=
   (Verified.Rights.rights_ok user owners answers _ h).2 rfl
 
+/-- FINDING (upstream behavior, recorded): `Rights::get` decrypts the user's
+stored GitHub token before looking at the owners, so a user who is a listed
+owner is refused (an error, `500`) whenever that token does not decrypt,
+although no team lookup is needed. -/
+theorem rights_decrypt_failure_denies_direct_owner (id : I32) (gl : Bool)
+    (owners : Slice rights.Owner) (answers : Slice (I64 × rights.Membership)) :
+    rights.rights ⟨id, some false, gl⟩ owners answers = ok (.Err .Decrypt) := by
+  simp [rights.rights]
+
 /-! ## Publishing (`publish`) -/
 
 section Publish
