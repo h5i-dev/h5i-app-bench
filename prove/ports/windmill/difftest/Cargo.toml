@@ -1,0 +1,34 @@
+[package]
+name = "windmill-difftest"
+description = "Differential test: the windmill kernel against windmill-common / windmill-api-auth at 9dedc42"
+edition = "2021"
+version = "0.1.0"
+publish = false
+
+[dependencies]
+windmill-kernel = { path = "../kernel" }
+# The upstream crates themselves, from the pinned checkout (ports/windmill/upstream-src).
+windmill-common = { path = "../upstream-src/backend/windmill-common", default-features = false }
+windmill-api-auth = { path = "../upstream-src/backend/windmill-api-auth", default-features = false }
+serde_json = "1"
+
+[workspace]
+
+# Copied from upstream backend/Cargo.toml so the same sqlx fork is used.
+[patch.crates-io]
+sqlx = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+sqlx-core = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+sqlx-macros = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+sqlx-macros-core = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+sqlx-postgres = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+sqlx-mysql = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+sqlx-sqlite = { git = "https://github.com/windmill-labs/sqlx", rev = "c1c5f1f2a07cb1fce0e47463c314697e08f4f26b" }
+object_store = { git = "https://github.com/apache/arrow-rs-object-store", rev = "36752c975d4f29e20b57c91f81a10872dcd48ae7" }
+tiberius = { git = "https://github.com/prisma/tiberius", rev = "59db57960a14b422fb3a1309aa4aa47880896ff8" }
+tokio-postgres = { git = "https://github.com/windmill-labs/rust-postgres", rev = "b3a6443aa1ae90a4f6c4b742103ba80584598f2e" }
+postgres-types = { git = "https://github.com/windmill-labs/rust-postgres", rev = "b3a6443aa1ae90a4f6c4b742103ba80584598f2e" }
+postgres-protocol = { git = "https://github.com/windmill-labs/rust-postgres", rev = "b3a6443aa1ae90a4f6c4b742103ba80584598f2e" }
+
+[profile.dev]
+debug = 0
+opt-level = 1
