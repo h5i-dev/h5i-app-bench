@@ -102,7 +102,7 @@ inductive Error where
 | CrcMismatch : Error
 
 /-- [m5airq_kernel::transition]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 119:0-232:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 119:0-237:1
     Visibility: public -/
 def transition
   (actor : Device) (s : OtaState) (cmd : Command) :
@@ -168,26 +168,32 @@ def transition
                   if offset != s.written
                   then ok (core.result.Result.Err Error.OffsetMismatch)
                   else
-                    let i1 ← s.total - offset
-                    if len > i1
+                    if offset > s.total
+                    then ok (core.result.Result.Err Error.ExceedsDeclared)
+                    else
+                      let i1 ← s.total - offset
+                      if len > i1
+                      then ok (core.result.Result.Err Error.ExceedsDeclared)
+                      else
+                        let new_written ← offset + len
+                        ok (core.result.Result.Ok (some
+                          { s with written := new_written }, Reply.State
+                          { s with written := new_written }))
+              else
+                if offset != s.written
+                then ok (core.result.Result.Err Error.OffsetMismatch)
+                else
+                  if offset > s.total
+                  then ok (core.result.Result.Err Error.ExceedsDeclared)
+                  else
+                    let i ← s.total - offset
+                    if len > i
                     then ok (core.result.Result.Err Error.ExceedsDeclared)
                     else
                       let new_written ← offset + len
                       ok (core.result.Result.Ok (some
                         { s with written := new_written }, Reply.State
                         { s with written := new_written }))
-              else
-                if offset != s.written
-                then ok (core.result.Result.Err Error.OffsetMismatch)
-                else
-                  let i ← s.total - offset
-                  if len > i
-                  then ok (core.result.Result.Err Error.ExceedsDeclared)
-                  else
-                    let new_written ← offset + len
-                    ok (core.result.Result.Ok (some
-                      { s with written := new_written }, Reply.State
-                      { s with written := new_written }))
       else ok (core.result.Result.Err Error.NoSession)
     else ok (core.result.Result.Err Error.Forbidden)
   | Command.End expected_crc actual_crc magic_ok =>
@@ -223,7 +229,7 @@ def transition
   | Command.Status => ok (core.result.Result.Ok (none, Reply.State s))
 
 /-- [m5airq_kernel::apply]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 234:0-239:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 239:0-244:1
     Visibility: public -/
 def apply (s : OtaState) (w : Option OtaState) : Result OtaState := do
   match w with
@@ -231,7 +237,7 @@ def apply (s : OtaState) (w : Option OtaState) : Result OtaState := do
   | some n => ok n
 
 /-- [m5airq_kernel::read_only]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 242:0-247:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 247:0-252:1
     Visibility: public -/
 def read_only (cmd : Command) : Result Bool := do
   match cmd with
@@ -242,30 +248,28 @@ def read_only (cmd : Command) : Result Bool := do
   | Command.Status => ok true
 
 /-- [m5airq_kernel::SESSION_TTL_SECS]
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 254:0-254:39
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 259:0-259:39
     Visibility: public -/
 @[global_simps, irreducible] def SESSION_TTL_SECS : Std.U32 := 7200#u32
 
-/-- [m5airq_kernel::MAX_SESSIONS]
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 256:0-256:34
-    Visibility: public -/
-@[global_simps, irreducible] def MAX_SESSIONS : Std.Usize := 4#usize
-
 /-- [m5airq_kernel::SessionSlot]
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 260:0-263:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 265:0-268:1
     Visibility: public -/
 structure SessionSlot where
   token : Array Std.U8 8#usize
   created : Std.U32
 
 /-- [m5airq_kernel::SessionStore]
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 267:0-269:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 272:0-277:1
     Visibility: public -/
 structure SessionStore where
-  slots : Array SessionSlot 4#usize
+  s0 : SessionSlot
+  s1 : SessionSlot
+  s2 : SessionSlot
+  s3 : SessionSlot
 
 /-- [m5airq_kernel::AuthCfg]
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 274:0-281:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 282:0-289:1
     Visibility: public -/
 structure AuthCfg where
   public_access : Bool
@@ -274,7 +278,7 @@ structure AuthCfg where
   apikey_set : Bool
 
 /-- [m5airq_kernel::AuthDecision]
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 284:0-293:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 292:0-301:1
     Visibility: public -/
 @[discriminant isize]
 inductive AuthDecision where
@@ -283,125 +287,69 @@ inductive AuthDecision where
 | Forbidden : AuthDecision
 | Challenge : AuthDecision
 
-/-- [m5airq_kernel::ct_eq]: loop body 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 302:4-305:5
-    Visibility: public -/
-@[rust_loop_body]
-def ct_eq_loop.body
-  (a : Slice Std.U8) (b : Slice Std.U8) (diff : Std.U8) (i : Std.Usize) :
-  Result (ControlFlow (Std.U8 × Std.Usize) Std.U8)
-  := do
-  let i1 := Slice.len a
-  if i < i1
-  then
-    let i2 ← Slice.index_usize a i
-    let i3 ← Slice.index_usize b i
-    let i4 ← lift (i2 ^^^ i3)
-    let diff1 ← lift (diff ||| i4)
-    let i5 ← i + 1#usize
-    ok (cont (diff1, i5))
-  else ok (done diff)
-
-/-- [m5airq_kernel::ct_eq]: loop 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 302:4-305:5
-    Visibility: public -/
-@[rust_loop]
-def ct_eq_loop
-  (a : Slice Std.U8) (b : Slice Std.U8) (diff : Std.U8) (i : Std.Usize) :
-  Result Std.U8
-  := do
-  loop
-    (fun (diff1, i1) => ct_eq_loop.body a b diff1 i1)
-    (diff, i)
-
-/-- [m5airq_kernel::ct_eq]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 296:0-307:1
-    Visibility: public -/
-def ct_eq (a : Slice Std.U8) (b : Slice Std.U8) : Result Bool := do
-  let i := Slice.len a
-  let i1 := Slice.len b
-  if i != i1
-  then ok false
-  else let diff ← ct_eq_loop a b 0#u8 0#usize
-       ok (diff = 0#u8)
-
-/-- [m5airq_kernel::ct_eq8]: loop body 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 313:4-316:5
-    Visibility: public -/
-@[rust_loop_body]
-def ct_eq8_loop.body
-  (a : Array Std.U8 8#usize) (b : Array Std.U8 8#usize) (diff : Std.U8)
-  (i : Std.Usize) :
-  Result (ControlFlow (Std.U8 × Std.Usize) Std.U8)
-  := do
-  if i < 8#usize
-  then
-    let i1 ← Array.index_usize a i
-    let i2 ← Array.index_usize b i
-    let i3 ← lift (i1 ^^^ i2)
-    let diff1 ← lift (diff ||| i3)
-    let i4 ← i + 1#usize
-    ok (cont (diff1, i4))
-  else ok (done diff)
-
-/-- [m5airq_kernel::ct_eq8]: loop 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 313:4-316:5
-    Visibility: public -/
-@[rust_loop]
-def ct_eq8_loop
-  (a : Array Std.U8 8#usize) (b : Array Std.U8 8#usize) (diff : Std.U8)
-  (i : Std.Usize) :
-  Result Std.U8
-  := do
-  loop
-    (fun (diff1, i1) => ct_eq8_loop.body a b diff1 i1)
-    (diff, i)
-
 /-- [m5airq_kernel::ct_eq8]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 310:0-318:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 307:0-318:1
     Visibility: public -/
 def ct_eq8
   (a : Array Std.U8 8#usize) (b : Array Std.U8 8#usize) : Result Bool := do
-  let diff ← ct_eq8_loop a b 0#u8 0#usize
-  ok (diff = 0#u8)
-
-/-- [m5airq_kernel::is_zero8]: loop body 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 324:4-327:5
-    Visibility: public -/
-@[rust_loop_body]
-def is_zero8_loop.body
-  (t : Array Std.U8 8#usize) (i : Std.Usize) (nz : Std.U8) :
-  Result (ControlFlow (Std.Usize × Std.U8) Std.U8)
-  := do
-  if i < 8#usize
-  then
-    let i1 ← Array.index_usize t i
-    let nz1 ← lift (nz ||| i1)
-    let i2 ← i + 1#usize
-    ok (cont (i2, nz1))
-  else ok (done nz)
-
-/-- [m5airq_kernel::is_zero8]: loop 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 324:4-327:5
-    Visibility: public -/
-@[rust_loop]
-def is_zero8_loop
-  (t : Array Std.U8 8#usize) (i : Std.Usize) (nz : Std.U8) :
-  Result Std.U8
-  := do
-  loop
-    (fun (i1, nz1) => is_zero8_loop.body t i1 nz1)
-    (i, nz)
+  let i ← Array.index_usize a 0#usize
+  let i1 ← Array.index_usize b 0#usize
+  let i2 ← lift (i ^^^ i1)
+  let diff ← lift (0#u8 ||| i2)
+  let i3 ← Array.index_usize a 1#usize
+  let i4 ← Array.index_usize b 1#usize
+  let i5 ← lift (i3 ^^^ i4)
+  let diff1 ← lift (diff ||| i5)
+  let i6 ← Array.index_usize a 2#usize
+  let i7 ← Array.index_usize b 2#usize
+  let i8 ← lift (i6 ^^^ i7)
+  let diff2 ← lift (diff1 ||| i8)
+  let i9 ← Array.index_usize a 3#usize
+  let i10 ← Array.index_usize b 3#usize
+  let i11 ← lift (i9 ^^^ i10)
+  let diff3 ← lift (diff2 ||| i11)
+  let i12 ← Array.index_usize a 4#usize
+  let i13 ← Array.index_usize b 4#usize
+  let i14 ← lift (i12 ^^^ i13)
+  let diff4 ← lift (diff3 ||| i14)
+  let i15 ← Array.index_usize a 5#usize
+  let i16 ← Array.index_usize b 5#usize
+  let i17 ← lift (i15 ^^^ i16)
+  let diff5 ← lift (diff4 ||| i17)
+  let i18 ← Array.index_usize a 6#usize
+  let i19 ← Array.index_usize b 6#usize
+  let i20 ← lift (i18 ^^^ i19)
+  let diff6 ← lift (diff5 ||| i20)
+  let i21 ← Array.index_usize a 7#usize
+  let i22 ← Array.index_usize b 7#usize
+  let i23 ← lift (i21 ^^^ i22)
+  let diff7 ← lift (diff6 ||| i23)
+  ok (diff7 = 0#u8)
 
 /-- [m5airq_kernel::is_zero8]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 321:0-329:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 321:0-332:1
     Visibility: public -/
 def is_zero8 (t : Array Std.U8 8#usize) : Result Bool := do
-  let nz ← is_zero8_loop t 0#usize 0#u8
-  ok (nz = 0#u8)
+  let i ← Array.index_usize t 0#usize
+  let nz ← lift (0#u8 ||| i)
+  let i1 ← Array.index_usize t 1#usize
+  let nz1 ← lift (nz ||| i1)
+  let i2 ← Array.index_usize t 2#usize
+  let nz2 ← lift (nz1 ||| i2)
+  let i3 ← Array.index_usize t 3#usize
+  let nz3 ← lift (nz2 ||| i3)
+  let i4 ← Array.index_usize t 4#usize
+  let nz4 ← lift (nz3 ||| i4)
+  let i5 ← Array.index_usize t 5#usize
+  let nz5 ← lift (nz4 ||| i5)
+  let i6 ← Array.index_usize t 6#usize
+  let nz6 ← lift (nz5 ||| i6)
+  let i7 ← Array.index_usize t 7#usize
+  let nz7 ← lift (nz6 ||| i7)
+  ok (nz7 = 0#u8)
 
 /-- [m5airq_kernel::age_ok]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 334:0-340:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 337:0-343:1
     Visibility: public -/
 def age_ok (now : Std.U32) (created : Std.U32) : Result Bool := do
   if now >= created
@@ -409,67 +357,50 @@ def age_ok (now : Std.U32) (created : Std.U32) : Result Bool := do
        ok (i <= SESSION_TTL_SECS)
   else ok false
 
-/-- [m5airq_kernel::validate_session]: loop body 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 348:4-356:5
+/-- [m5airq_kernel::slot_valid]:
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 347:0-349:1
     Visibility: public -/
-@[rust_loop_body]
-def validate_session_loop.body
-  (store : SessionStore) (token : Array Std.U8 8#usize) (now : Std.U32)
-  (i : Std.Usize) (found : Bool) :
-  Result (ControlFlow (Std.Usize × Bool) Bool)
-  := do
-  if i < MAX_SESSIONS
-  then
-    let ss ← Array.index_usize store.slots i
-    let b ← ct_eq8 ss.token token
-    let m ←
-      if b
-      then
-        do
-        let b1 ← is_zero8 ss.token
-        if b1
-        then ok false
-        else age_ok now ss.created
-      else ok false
-    let found1 ← if m
-                   then ok true
-                   else ok found
-    let i1 ← i + 1#usize
-    ok (cont (i1, found1))
-  else ok (done found)
-
-/-- [m5airq_kernel::validate_session]: loop 0:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 348:4-356:5
-    Visibility: public -/
-@[rust_loop]
-def validate_session_loop
-  (store : SessionStore) (token : Array Std.U8 8#usize) (now : Std.U32)
-  (i : Std.Usize) (found : Bool) :
+def slot_valid
+  (slot : SessionSlot) (token : Array Std.U8 8#usize) (now : Std.U32) :
   Result Bool
   := do
-  loop
-    (fun (i1, found1) => validate_session_loop.body store token now i1 found1)
-    (i, found)
+  let b ← ct_eq8 slot.token token
+  if b
+  then
+    let b1 ← is_zero8 slot.token
+    if b1
+    then ok false
+    else age_ok now slot.created
+  else ok false
 
 /-- [m5airq_kernel::validate_session]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 345:0-358:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 353:0-358:1
     Visibility: public -/
-@[reducible]
 def validate_session
   (store : SessionStore) (token : Array Std.U8 8#usize) (now : Std.U32) :
   Result Bool
   := do
-  validate_session_loop store token now 0#usize false
+  let b ← slot_valid store.s0 token now
+  if b
+  then ok true
+  else
+    let b1 ← slot_valid store.s1 token now
+    if b1
+    then ok true
+    else
+      let b2 ← slot_valid store.s2 token now
+      if b2
+      then ok true
+      else slot_valid store.s3 token now
 
 /-- [m5airq_kernel::check_auth]:
-    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 367:0-431:1
+    Source: 'prove/ports-embed/m5airq/kernel/src/lib.rs', lines 369:0-431:1
     Visibility: public -/
 def check_auth
   (cfg : AuthCfg) (store : SessionStore) (now : Std.U32)
   (cookie_present : Bool) (cookie_token : Array Std.U8 8#usize)
-  (bearer_present : Bool) (bearer : Slice Std.U8) (bearer_key : Slice Std.U8)
-  (akh_present : Bool) (akh : Slice Std.U8) (akq_present : Bool)
-  (akq : Slice Std.U8) (apikey : Slice Std.U8) (digest_ok : Bool)
+  (bearer_present : Bool) (bearer_match : Bool) (akh_present : Bool)
+  (akh_match : Bool) (akq_present : Bool) (akq_match : Bool) (digest_ok : Bool)
   (is_https : Bool) (is_health : Bool) :
   Result AuthDecision
   := do
@@ -491,22 +422,19 @@ def check_auth
             then
               if cfg.bearer_set
               then
-                let b1 ← ct_eq bearer bearer_key
-                if b1
+                if bearer_match
                 then ok AuthDecision.Allowed
                 else
                   if akh_present
                   then
                     if cfg.apikey_set
                     then
-                      let b2 ← ct_eq akh apikey
-                      if b2
+                      if akh_match
                       then ok AuthDecision.Allowed
                       else
                         if akq_present
                         then
-                          let b3 ← ct_eq akq apikey
-                          if b3
+                          if akq_match
                           then ok AuthDecision.Allowed
                           else
                             if digest_ok
@@ -531,8 +459,7 @@ def check_auth
                     then
                       if cfg.apikey_set
                       then
-                        let b2 ← ct_eq akq apikey
-                        if b2
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -551,14 +478,12 @@ def check_auth
                 then
                   if cfg.apikey_set
                   then
-                    let b1 ← ct_eq akh apikey
-                    if b1
+                    if akh_match
                     then ok AuthDecision.Allowed
                     else
                       if akq_present
                       then
-                        let b2 ← ct_eq akq apikey
-                        if b2
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -583,8 +508,7 @@ def check_auth
                   then
                     if cfg.apikey_set
                     then
-                      let b1 ← ct_eq akq apikey
-                      if b1
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -603,22 +527,19 @@ def check_auth
               then
                 if cfg.bearer_set
                 then
-                  let b1 ← ct_eq bearer bearer_key
-                  if b1
+                  if bearer_match
                   then ok AuthDecision.Allowed
                   else
                     if akh_present
                     then
                       if cfg.apikey_set
                       then
-                        let b2 ← ct_eq akh apikey
-                        if b2
+                        if akh_match
                         then ok AuthDecision.Allowed
                         else
                           if akq_present
                           then
-                            let b3 ← ct_eq akq apikey
-                            if b3
+                            if akq_match
                             then ok AuthDecision.Allowed
                             else
                               if digest_ok
@@ -643,8 +564,7 @@ def check_auth
                       then
                         if cfg.apikey_set
                         then
-                          let b2 ← ct_eq akq apikey
-                          if b2
+                          if akq_match
                           then ok AuthDecision.Allowed
                           else
                             if digest_ok
@@ -663,14 +583,12 @@ def check_auth
                   then
                     if cfg.apikey_set
                     then
-                      let b1 ← ct_eq akh apikey
-                      if b1
+                      if akh_match
                       then ok AuthDecision.Allowed
                       else
                         if akq_present
                         then
-                          let b2 ← ct_eq akq apikey
-                          if b2
+                          if akq_match
                           then ok AuthDecision.Allowed
                           else
                             if digest_ok
@@ -695,8 +613,7 @@ def check_auth
                     then
                       if cfg.apikey_set
                       then
-                        let b1 ← ct_eq akq apikey
-                        if b1
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -718,14 +635,12 @@ def check_auth
               then
                 if cfg.apikey_set
                 then
-                  let b1 ← ct_eq akh apikey
-                  if b1
+                  if akh_match
                   then ok AuthDecision.Allowed
                   else
                     if akq_present
                     then
-                      let b2 ← ct_eq akq apikey
-                      if b2
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -750,14 +665,12 @@ def check_auth
                 then
                   if cfg.apikey_set
                   then
-                    let b1 ← ct_eq akh apikey
-                    if b1
+                    if akh_match
                     then ok AuthDecision.Allowed
                     else
                       if akq_present
                       then
-                        let b2 ← ct_eq akq apikey
-                        if b2
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -785,8 +698,7 @@ def check_auth
                 then
                   if cfg.apikey_set
                   then
-                    let b1 ← ct_eq akq apikey
-                    if b1
+                    if akq_match
                     then ok AuthDecision.Allowed
                     else
                       if digest_ok
@@ -801,8 +713,7 @@ def check_auth
                   then
                     if cfg.apikey_set
                     then
-                      let b1 ← ct_eq akq apikey
-                      if b1
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -824,22 +735,19 @@ def check_auth
           then
             if cfg.bearer_set
             then
-              let b ← ct_eq bearer bearer_key
-              if b
+              if bearer_match
               then ok AuthDecision.Allowed
               else
                 if akh_present
                 then
                   if cfg.apikey_set
                   then
-                    let b1 ← ct_eq akh apikey
-                    if b1
+                    if akh_match
                     then ok AuthDecision.Allowed
                     else
                       if akq_present
                       then
-                        let b2 ← ct_eq akq apikey
-                        if b2
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -864,8 +772,7 @@ def check_auth
                   then
                     if cfg.apikey_set
                     then
-                      let b1 ← ct_eq akq apikey
-                      if b1
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -884,14 +791,12 @@ def check_auth
               then
                 if cfg.apikey_set
                 then
-                  let b ← ct_eq akh apikey
-                  if b
+                  if akh_match
                   then ok AuthDecision.Allowed
                   else
                     if akq_present
                     then
-                      let b1 ← ct_eq akq apikey
-                      if b1
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -916,8 +821,7 @@ def check_auth
                 then
                   if cfg.apikey_set
                   then
-                    let b ← ct_eq akq apikey
-                    if b
+                    if akq_match
                     then ok AuthDecision.Allowed
                     else
                       if digest_ok
@@ -936,22 +840,19 @@ def check_auth
             then
               if cfg.bearer_set
               then
-                let b ← ct_eq bearer bearer_key
-                if b
+                if bearer_match
                 then ok AuthDecision.Allowed
                 else
                   if akh_present
                   then
                     if cfg.apikey_set
                     then
-                      let b1 ← ct_eq akh apikey
-                      if b1
+                      if akh_match
                       then ok AuthDecision.Allowed
                       else
                         if akq_present
                         then
-                          let b2 ← ct_eq akq apikey
-                          if b2
+                          if akq_match
                           then ok AuthDecision.Allowed
                           else
                             if digest_ok
@@ -976,8 +877,7 @@ def check_auth
                     then
                       if cfg.apikey_set
                       then
-                        let b1 ← ct_eq akq apikey
-                        if b1
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -996,14 +896,12 @@ def check_auth
                 then
                   if cfg.apikey_set
                   then
-                    let b ← ct_eq akh apikey
-                    if b
+                    if akh_match
                     then ok AuthDecision.Allowed
                     else
                       if akq_present
                       then
-                        let b1 ← ct_eq akq apikey
-                        if b1
+                        if akq_match
                         then ok AuthDecision.Allowed
                         else
                           if digest_ok
@@ -1028,8 +926,7 @@ def check_auth
                   then
                     if cfg.apikey_set
                     then
-                      let b ← ct_eq akq apikey
-                      if b
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -1051,14 +948,12 @@ def check_auth
             then
               if cfg.apikey_set
               then
-                let b ← ct_eq akh apikey
-                if b
+                if akh_match
                 then ok AuthDecision.Allowed
                 else
                   if akq_present
                   then
-                    let b1 ← ct_eq akq apikey
-                    if b1
+                    if akq_match
                     then ok AuthDecision.Allowed
                     else
                       if digest_ok
@@ -1083,14 +978,12 @@ def check_auth
               then
                 if cfg.apikey_set
                 then
-                  let b ← ct_eq akh apikey
-                  if b
+                  if akh_match
                   then ok AuthDecision.Allowed
                   else
                     if akq_present
                     then
-                      let b1 ← ct_eq akq apikey
-                      if b1
+                      if akq_match
                       then ok AuthDecision.Allowed
                       else
                         if digest_ok
@@ -1118,8 +1011,7 @@ def check_auth
               then
                 if cfg.apikey_set
                 then
-                  let b ← ct_eq akq apikey
-                  if b
+                  if akq_match
                   then ok AuthDecision.Allowed
                   else
                     if digest_ok
@@ -1134,8 +1026,7 @@ def check_auth
                 then
                   if cfg.apikey_set
                   then
-                    let b ← ct_eq akq apikey
-                    if b
+                    if akq_match
                     then ok AuthDecision.Allowed
                     else
                       if digest_ok

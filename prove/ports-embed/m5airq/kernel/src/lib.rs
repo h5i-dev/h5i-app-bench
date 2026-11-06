@@ -170,7 +170,12 @@ pub fn transition(
             if *offset != expected {
                 return Err(Error::OffsetMismatch);
             }
-            // offset == expected == written <= total  (invariant Inv)
+            // offset == expected == written. Guard the subtraction below so
+            // `transition` is total for every state (upstream's
+            // `offset + len > total` check rejects this case the same way).
+            if *offset > s.total {
+                return Err(Error::ExceedsDeclared);
+            }
             if *len > s.total - *offset {
                 return Err(Error::ExceedsDeclared);
             }
@@ -262,14 +267,17 @@ pub struct SessionSlot {
     pub created: u32,
 }
 
-/// The RAM session store (`SESSIONS` upstream).
+/// The RAM session store (`SESSIONS` upstream), four fixed slots.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct SessionStore {
-    pub slots: [SessionSlot; MAX_SESSIONS],
+    pub s0: SessionSlot,
+    pub s1: SessionSlot,
+    pub s2: SessionSlot,
+    pub s3: SessionSlot,
 }
 
 /// The auth-posture configuration (`AuthSettings` upstream, the fields the
-/// decision reads). Secrets are passed as slices alongside.
+/// decision reads).
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct AuthCfg {
     pub public_access: bool,
@@ -292,39 +300,34 @@ pub enum AuthDecision {
     Challenge,
 }
 
-/// Equal length and bytes, without an early exit (`constant_time_eq`).
-pub fn ct_eq(a: &[u8], b: &[u8]) -> bool {
-    if a.len() != b.len() {
-        return false;
-    }
-    let mut diff: u8 = 0;
-    let mut i: usize = 0;
-    while i < a.len() {
-        diff |= a[i] ^ b[i];
-        i += 1;
-    }
-    diff == 0
-}
-
-/// `ct_eq` specialised to 8-byte tokens (no slice unsizing).
+/// Equal bytes without an early exit (`constant_time_eq`, for 8-byte
+/// tokens). Kept for the constant-time comparison property; the auth
+/// decision takes the comparison *result* as a trusted bool, as it does for
+/// the Digest MD5.
 pub fn ct_eq8(a: &[u8; 8], b: &[u8; 8]) -> bool {
     let mut diff: u8 = 0;
-    let mut i: usize = 0;
-    while i < 8 {
-        diff |= a[i] ^ b[i];
-        i += 1;
-    }
+    diff |= a[0] ^ b[0];
+    diff |= a[1] ^ b[1];
+    diff |= a[2] ^ b[2];
+    diff |= a[3] ^ b[3];
+    diff |= a[4] ^ b[4];
+    diff |= a[5] ^ b[5];
+    diff |= a[6] ^ b[6];
+    diff |= a[7] ^ b[7];
     diff == 0
 }
 
 /// Whether an 8-byte token is all zeroes (the empty-slot sentinel).
 pub fn is_zero8(t: &[u8; 8]) -> bool {
-    let mut i: usize = 0;
     let mut nz: u8 = 0;
-    while i < 8 {
-        nz |= t[i];
-        i += 1;
-    }
+    nz |= t[0];
+    nz |= t[1];
+    nz |= t[2];
+    nz |= t[3];
+    nz |= t[4];
+    nz |= t[5];
+    nz |= t[6];
+    nz |= t[7];
     nz == 0
 }
 
@@ -339,30 +342,29 @@ pub fn age_ok(now: u32, created: u32) -> bool {
     }
 }
 
+/// Whether one slot accepts `token` at `now` (`validate_session`'s predicate):
+/// the slot holds exactly this non-zero token and is not past its TTL.
+pub fn slot_valid(slot: &SessionSlot, token: &[u8; 8], now: u32) -> bool {
+    ct_eq8(&slot.token, token) && !is_zero8(&slot.token) && age_ok(now, slot.created)
+}
+
 /// Validate a decrypted 8-byte session token against the store
-/// (`validate_session`): some slot holds exactly this non-zero token and is
-/// not past its TTL.
+/// (`validate_session`), unrolled over the four fixed slots.
 pub fn validate_session(store: &SessionStore, token: &[u8; 8], now: u32) -> bool {
-    let mut i: usize = 0;
-    let mut found = false;
-    while i < MAX_SESSIONS {
-        let tok = store.slots[i].token;
-        let created = store.slots[i].created;
-        let m = ct_eq8(&tok, token) && !is_zero8(&tok) && age_ok(now, created);
-        if m {
-            found = true;
-        }
-        i += 1;
-    }
-    found
+    slot_valid(&store.s0, token, now)
+        || slot_valid(&store.s1, token, now)
+        || slot_valid(&store.s2, token, now)
+        || slot_valid(&store.s3, token, now)
 }
 
 /// The authentication decision (`check_auth`), pure and total.
 ///
-/// `*_present` says a credential of that kind arrived; the paired slice is
-/// its value. `cookie_token` is the already-decrypted 8-byte token (XOR
-/// decoding is trusted IO). `digest_ok` is the result of the trusted
-/// `verify_digest` MD5 check. `is_health` is `path == "/api/health"`.
+/// `*_present` says a credential of that kind arrived. `cookie_token` is the
+/// already-decrypted 8-byte token (XOR decoding is trusted IO).
+/// `bearer_match`/`akh_match`/`akq_match` are the trusted constant-time
+/// comparison results of the presented token against the configured secret
+/// (upstream's `constant_time_eq`), and `digest_ok` is the trusted
+/// `verify_digest` MD5 result. `is_health` is `path == "/api/health"`.
 #[allow(clippy::too_many_arguments)]
 pub fn check_auth(
     cfg: &AuthCfg,
@@ -371,13 +373,11 @@ pub fn check_auth(
     cookie_present: bool,
     cookie_token: &[u8; 8],
     bearer_present: bool,
-    bearer: &[u8],
-    bearer_key: &[u8],
+    bearer_match: bool,
     akh_present: bool,
-    akh: &[u8],
+    akh_match: bool,
     akq_present: bool,
-    akq: &[u8],
-    apikey: &[u8],
+    akq_match: bool,
     digest_ok: bool,
     is_https: bool,
     is_health: bool,
@@ -401,7 +401,7 @@ pub fn check_auth(
         if !is_https && !cfg.allow_http_tokens {
             return AuthDecision::Forbidden;
         }
-        if cfg.bearer_set && ct_eq(bearer, bearer_key) {
+        if cfg.bearer_set && bearer_match {
             return AuthDecision::Allowed;
         }
     }
@@ -410,7 +410,7 @@ pub fn check_auth(
         if !is_https && !cfg.allow_http_tokens {
             return AuthDecision::Forbidden;
         }
-        if cfg.apikey_set && ct_eq(akh, apikey) {
+        if cfg.apikey_set && akh_match {
             return AuthDecision::Allowed;
         }
     }
@@ -419,7 +419,7 @@ pub fn check_auth(
         if !is_https && !cfg.allow_http_tokens {
             return AuthDecision::Forbidden;
         }
-        if cfg.apikey_set && ct_eq(akq, apikey) {
+        if cfg.apikey_set && akq_match {
             return AuthDecision::Allowed;
         }
     }
@@ -469,12 +469,9 @@ mod tests {
             Err(Error::Forbidden)
         );
         let s = run(booted(), Command::Begin { size: 8000 }).unwrap();
-        // out-of-order write
         assert_eq!(run(s, Command::Write { offset: 100, len: 10 }), Err(Error::OffsetMismatch));
-        // chunk past declared size
         let s2 = run(s, Command::Write { offset: 0, len: 4096 }).unwrap();
         assert_eq!(run(s2, Command::Write { offset: 4096, len: 4000 }), Err(Error::ExceedsDeclared));
-        // end before complete
         assert_eq!(
             run(s2, Command::End { expected_crc: 1, actual_crc: 1, magic_ok: true }),
             Err(Error::Incomplete)
@@ -496,7 +493,8 @@ mod tests {
     }
 
     fn empty_store() -> SessionStore {
-        SessionStore { slots: [SessionSlot { token: [0; 8], created: 0 }; MAX_SESSIONS] }
+        let z = SessionSlot { token: [0; 8], created: 0 };
+        SessionStore { s0: z, s1: z, s2: z, s3: z }
     }
 
     fn cfg(public: bool) -> AuthCfg {
@@ -505,62 +503,42 @@ mod tests {
 
     #[test]
     fn auth_public_opens_everything() {
-        let d = check_auth(
-            &cfg(true), &empty_store(), 0, false, &[0; 8], false, b"", b"KEY", false, b"", false, b"", b"AK",
-            false, false, false,
-        );
+        let d = check_auth(&cfg(true), &empty_store(), 0, false, &[0; 8], false, false, false, false, false, false, false, false, false);
         assert_eq!(d, AuthDecision::Allowed);
     }
 
     #[test]
     fn auth_no_cred_challenges() {
-        let d = check_auth(
-            &cfg(false), &empty_store(), 0, false, &[0; 8], false, b"", b"KEY", false, b"", false, b"", b"AK",
-            false, false, false,
-        );
+        let d = check_auth(&cfg(false), &empty_store(), 0, false, &[0; 8], false, false, false, false, false, false, false, false, false);
         assert_eq!(d, AuthDecision::Challenge);
     }
 
     #[test]
     fn auth_bearer_over_http_forbidden() {
-        let d = check_auth(
-            &cfg(false), &empty_store(), 0, false, &[0; 8], true, b"KEY", b"KEY", false, b"", false, b"", b"AK",
-            false, false, false,
-        );
+        let d = check_auth(&cfg(false), &empty_store(), 0, false, &[0; 8], true, true, false, false, false, false, false, false, false);
         assert_eq!(d, AuthDecision::Forbidden);
     }
 
     #[test]
     fn auth_bearer_over_https_ok() {
-        let d = check_auth(
-            &cfg(false), &empty_store(), 0, false, &[0; 8], true, b"KEY", b"KEY", false, b"", false, b"", b"AK",
-            false, true, false,
-        );
+        let d = check_auth(&cfg(false), &empty_store(), 0, false, &[0; 8], true, true, false, false, false, false, false, true, false);
         assert_eq!(d, AuthDecision::Allowed);
     }
 
     #[test]
     fn auth_health_public() {
-        let d = check_auth(
-            &cfg(false), &empty_store(), 0, false, &[0; 8], false, b"", b"KEY", false, b"", false, b"", b"AK",
-            false, false, true,
-        );
+        let d = check_auth(&cfg(false), &empty_store(), 0, false, &[0; 8], false, false, false, false, false, false, false, false, true);
         assert_eq!(d, AuthDecision::Allowed);
     }
 
     #[test]
     fn auth_expired_cookie_rejected() {
         let mut store = empty_store();
-        store.slots[0] = SessionSlot { token: [1, 2, 3, 4, 5, 6, 7, 8], created: 100 };
-        // now = 100 + TTL + 1 -> expired
+        store.s0 = SessionSlot { token: [1, 2, 3, 4, 5, 6, 7, 8], created: 100 };
         let now = 100 + SESSION_TTL_SECS + 1;
         assert!(!validate_session(&store, &[1, 2, 3, 4, 5, 6, 7, 8], now));
-        let d = check_auth(
-            &cfg(false), &store, now, true, &[1, 2, 3, 4, 5, 6, 7, 8], false, b"", b"KEY", false, b"", false,
-            b"", b"AK", false, true, false,
-        );
+        let d = check_auth(&cfg(false), &store, now, true, &[1, 2, 3, 4, 5, 6, 7, 8], false, false, false, false, false, false, false, true, false);
         assert_eq!(d, AuthDecision::Challenge);
-        // within TTL -> valid
         assert!(validate_session(&store, &[1, 2, 3, 4, 5, 6, 7, 8], 100 + SESSION_TTL_SECS));
     }
 }
