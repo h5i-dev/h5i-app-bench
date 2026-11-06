@@ -1,0 +1,7 @@
+# Standard h5i-app project. Keep every selected theorem in the final gate.
+[extract]
+crate = "kernel"
+start-from = ["validation::validate_crate_name", "validation::validate_dependency_name", "scopes::is_valid_pattern", "scopes::scope_matches", "auth::parse_auth_header", "auth::authenticate", "auth::check"]
+
+[check]
+theorems = []
