@@ -1263,13 +1263,13 @@ def ranges.sweep
     Source: 'prove/ports/defguard/kernel/src/ranges.rs', lines 75:0-81:1
     Visibility: public -/
 def ranges.merge_ranges
-  (ranges : alloc.vec.Vec ranges.Range) (max : Std.U128) :
+  (input : alloc.vec.Vec ranges.Range) (max : Std.U128) :
   Result (alloc.vec.Vec ranges.Range)
   := do
-  let i := alloc.vec.Vec.len ranges
+  let i := alloc.vec.Vec.len input
   if i = 0#usize
   then ok (alloc.vec.Vec.new ranges.Range)
-  else let sorted ← ranges.sort_by_start ranges
+  else let sorted ← ranges.sort_by_start input
        ranges.sweep sorted max
 
 /-- [defguard_kernel::token::Token]
