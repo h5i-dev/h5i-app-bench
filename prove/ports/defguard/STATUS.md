@@ -50,7 +50,8 @@ Limits of the statements:
 - `kept_address_unchecked` and `keeps_gateway_address` assume the call succeeds; the difftest has
   9,127 such results (FINDINGS F4).
 - `merge_ranges_exact` assumes well-formed input ranges (`start ≤ end ≤ max`). Upstream builds them
-  from parsed `RangeInclusive` values; an empty range (`start > end`) was not considered.
+  from the ACL's configured ports and addresses; whether a caller can pass an empty range
+  (`start > end`) was not checked.
 
 ## Mutation results
 
