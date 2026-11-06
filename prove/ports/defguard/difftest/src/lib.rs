@@ -249,7 +249,7 @@ pub mod diff {
                     ok += 1;
                     for (i, ip) in kk.iter().enumerate() {
                         let n = &knets[i];
-                        if !k::ipalloc::assignable(n, ip.bits, &kused, &kres) {
+                        if ip.bits == k::ipalloc::network(n) || ip.bits == k::ipalloc::broadcast(n) || ip.bits == n.ip {
                             kept_bad += 1;
                         }
                     }
