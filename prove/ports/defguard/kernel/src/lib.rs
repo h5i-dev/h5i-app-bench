@@ -7,6 +7,7 @@
 //! ../DEVIATIONS.md. Databases, clocks and password hashing are inputs.
 
 pub mod auth;
+pub mod ipalloc;
 pub mod lockout;
 pub mod ranges;
 pub mod token;
