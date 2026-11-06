@@ -142,4 +142,12 @@ def extractorOrg (path : List Nat) : List Nat :=
   let cols := splitSlash (relativePath path)
   orgFromPath (if 1 < cols.length ∧ cols.getLast? = some [] then cols.dropLast else cols)
 
+/-! ## gRPC authentication -/
+
+/-- ASCII lowercase. -/
+def asciiLower (s : List Nat) : List Nat := s.map (fun c => if 65 ≤ c ∧ c ≤ 90 then c + 32 else c)
+
+/-- A cache key `"{a}/{b}"`. -/
+def joinKey (a b : List Nat) : List Nat := a ++ [47] ++ b
+
 end openobserve_kernel.Spec

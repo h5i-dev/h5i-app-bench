@@ -4232,7 +4232,7 @@ def grpc.valid_metadata_loop.body
     let c ← Slice.index_usize s i
     if c >= 32#u8
     then
-      if c < 127#u8
+      if c != 127#u8
       then let i2 ← i + 1#usize
            ok (cont i2)
       else

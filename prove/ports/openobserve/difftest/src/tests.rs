@@ -587,7 +587,7 @@ mod grpc {
                 hash: h.as_ref().map(|h| h.as_bytes().to_vec()),
             })
             .collect();
-        for case in 0..60_000 {
+        for case in 0..150_000 {
             ORG_USERS.clear();
             USERS.clear();
             ROOT_USER.clear();
