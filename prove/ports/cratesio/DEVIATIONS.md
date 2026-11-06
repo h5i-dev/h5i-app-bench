@@ -35,6 +35,7 @@ yank, or manage owners of) a crate, and with which credential:
 | `trustpub::exchange_github` (+ `config_level`, `any_level`, `matching_ids`, `env_ok`, `jti_used`) | `src/controllers/trustpub/tokens/exchange/mod.rs` `handle_github_token_inner`, `insert_jti` |
 | `trustpub::workflow_filename` | `crates/crates_io_trustpub/src/github/workflows.rs` `extract_workflow_filename` (the regex, hand-ported) |
 | `trustpub::parse_i32` | `str::parse::<i32>` of `repository_owner_id` |
+| `rate_limit::take_token`, `check_rate_limit` | `src/rate_limiter.rs` `RateLimiter::take_token` (the `INSERT .. ON CONFLICT DO UPDATE` bucket update) and `check_rate_limit` |
 
 ## How it is checked
 
@@ -85,9 +86,16 @@ yank, or manage owners of) a crate, and with which credential:
 | publish | `actor_gh` is the user row's `gh_encrypted_token`/`gh_login` | two inputs `gh_token`, `gh_login` | the user row is not modeled beyond `auth::User` |
 | errors | messages and status codes | error variants | |
 
+Rate limiter: upstream computes `floor((epoch(now) - epoch(last_refill)) / epoch(rate))` in
+`double` seconds inside Postgres; the kernel uses integer milliseconds and Rust's truncating
+division, equal to the floor for `now >= last_refill` (the theorem's precondition; a clock going
+backwards is not modeled). The burst (an unexpired `publish_rate_overrides` row or the default)
+is an input and fixed over a run in the theorem. Not differentially tested (would need
+Postgres).
+
 ## Not covered
 
-Rate limiting (`rate_limiter.rs`, SQL token bucket), GitLab Trusted Publishing, config creation
+GitLab Trusted Publishing, config creation
 validators (`github/validation.rs`), owner invitations, yank/unyank and owner-management
 endpoints (they use `AuthCheck` + `Rights`, which are covered, but their handlers are not ported),
 crate deletion rules, `verified_email` and daily version limits in `publish`, the rest of

@@ -1,10 +1,10 @@
 # crates.io: status
 
 Upstream rust-lang/crates.io @ `e0fc83aa64e4d53b5447576f8018e3287d4e8982` (2026-11-05). Gate:
-`h5i app check` passes with 22 listed theorems (133 checked in total), axioms only `propext`,
+`h5i app check` passes with 23 listed theorems (148 checked in total), axioms only `propext`,
 `Classical.choice`, `Quot.sound`; `h5i app extract --check` up to date.
 
-**Theorem classes: S = 21, C = 0, F = 1.** (The correspondence lemmas, about 110, live in
+**Theorem classes: S = 22, C = 0, F = 1.** (The correspondence lemmas, about 110, live in
 `proofs/Verified/` and are not listed.)
 
 ## Theorems
@@ -37,34 +37,39 @@ violates the statement; results of the mutation run are in "Mutation" below.
 | 20 | `exchange_jti_single_use` | S | OIDC token replay | `exchange_github@trustpub.rs:268:if-false` |
 | 21 | `exchange_replay_rejected` | S | replay after a successful exchange | `jti_used@trustpub.rs:195:if-false` |
 | 22 | `exchange_rejects_forbidden_events` | S | `pull_request_target` / `workflow_run` tokens exchanged | `exchange_github@trustpub.rs:271:if-false`, `:and-or` |
+| 23 | `publish_rate_limit_bounded` | S | a bucket that refills past `burst`, or that never empties: more than `burst + elapsed/rate` publishes | `take_token@rate_limit.rs:28:if-true`, `:if-false` |
 
 ## Mutation
 
-Run: `h5i app mutate --auto -j 2 --only <fn>@ ...` restricted to the 38 decision functions
-(167 mutants; the parsers `parse_auth_header`, `validate_*`, `parse_access_token`,
-`workflow_filename`/`yml_end`/`match_in_segment`, `parse_i32`/`digits_value` have no Lean spec and
-are covered by the difftest only; their ~200 auto mutants are not run). Log:
-`/mnt/scratch/oss-sec/tmp/a/mutate-c.log` (not committed). Results: see "Mutation results".
+A first run over all 167 auto mutants of the 38 decision functions was stopped after 4 mutants
+(all caught): under the host's load each mutant took 10-15 minutes. The run that backs the
+"Kills" column is targeted: the 32 named mutants above plus two expected survivors,
+`h5i app mutate --auto --no-baseline -j 2 --only <name> ...` (log
+`/mnt/scratch/oss-sec/tmp/a/mutate-c2.log`, not committed). The parsers
+(`parse_auth_header`, `validate_*`, `parse_access_token`, `workflow_filename`/`yml_end`/
+`match_in_segment`, `parse_i32`/`digits_value`) have no Lean spec and are covered by the difftest
+only; their ~200 auto mutants are not run.
 
 Expected survivors and why:
-- `exchange_github@trustpub.rs:289/292/295:if-false` / `drop-not`-to-false: the three intermediate
-  emptiness checks only choose the error message; a non-empty `matching_ids` implies all three,
-  so on success they are equivalent mutants.
-- Mutants that only make a function fail or refuse (e.g. `*:if-true` on a refusal branch,
-  out-of-bounds `boundary` mutants): the S theorems are about successful runs. Liveness
-  ("an owner can publish") is not claimed.
+- `exchange_github@trustpub.rs:289/292/295:if-false`: the three intermediate emptiness checks
+  only choose the error message; a non-empty `matching_ids` implies all three, so on success
+  they are equivalent mutants.
+- `take_token@rate_limit.rs:27:*`, `check_rate_limit@rate_limit.rs:37:boundary`,
+  `take_token@rate_limit.rs:28:boundary`: they make the limiter stricter (or are equivalent at
+  the boundary `add = burst - kept`); the theorem is an upper bound, so they satisfy it.
+- Mutants that only make a function fail or refuse (out-of-bounds `boundary` mutants, `if-true`
+  on refusal branches): the S theorems are about successful runs; liveness is not claimed.
 
 ### Mutation results
 
-(pending: filled in when the run finishes)
+(filled in when the targeted run finishes)
 
 ## Done
-- Kernel, extraction, 22 gated theorems, DEVIATIONS.md, FINDINGS.md.
+- Kernel, extraction, 23 gated theorems (incl. the rate limiter), DEVIATIONS.md, FINDINGS.md.
 - Difftest `difftest/` (8 tests, pass).
 
 ## Next
 - Lean specs for the parsers (`parse_auth_header`, `parse_access_token`, `workflow_filename`).
-- Rate limiter (token bucket) kernel + "allowed actions per window" S theorem.
 - Yank / owner-management handlers on top of `AuthCheck` + `Rights`.
 
 ## Resume

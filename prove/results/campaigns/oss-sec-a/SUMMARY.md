@@ -8,8 +8,8 @@ the pinned upstream code.
 | Project | Upstream (pinned) | Listed theorems | S / C / F | Difftests |
 |---|---|---|---|---|
 | wastebin | matze/wastebin @ `c0ec968` | 30 (182 checked) | 23 / 4 / 3 | 7 pass: real `wastebin_core::Database` (SQLite, zstd, argon2+XChaCha20) on 1,200 random ops; ids/keys/extensions/`Content-Disposition` on 200k-400k inputs each |
-| crates.io | rust-lang/crates.io @ `e0fc83a` | 22 (133 checked) | 21 / 0 / 1 | 8 pass: `crates_io_validation` linked; scopes, `AuthCheck` scope checks, account locks, `Authorization` parsing, access tokens, workflow-filename regex, owner ids copied verbatim; 100k-300k inputs each |
-| **Total** | | **52** | **44 / 4 / 4** | |
+| crates.io | rust-lang/crates.io @ `e0fc83a` | 23 (148 checked) | 22 / 0 / 1 | 8 pass: `crates_io_validation` linked; scopes, `AuthCheck` scope checks, account locks, `Authorization` parsing, access tokens, workflow-filename regex, owner ids copied verbatim; 100k-300k inputs each |
+| **Total** | | **53** | **45 / 4 / 4** | |
 
 S = security property (implementation-independent statement, falsifiable by a plausible bug,
 backed by a named killing mutant); C = correspondence/helper; F = finding. The roughly 250
@@ -45,6 +45,8 @@ correspondence lemmas in `proofs/Verified/` are not listed and not counted.
 - Trusted Publishing exchange: tokens only for configs matching repository, owner id, workflow
   and environment; `jti` single use and replay rejected; `pull_request_target`/`workflow_run`
   rejected.
+- Publish rate limit: over any run of requests at nondecreasing times, at most
+  `burst + (t_n - t_1) / rate` pass.
 
 ## Findings (details in each port's FINDINGS.md)
 
@@ -64,7 +66,7 @@ correspondence lemmas in `proofs/Verified/` are not listed and not counted.
   through its tested helpers.
 - Trusted: cryptography (AEAD/argon2, SHA-256 injectivity, HMAC cookies, JWT verification),
   SQLite/Postgres query semantics, ASCII case folding for Postgres `lower()`.
-- Not covered: wastebin's `safe_referer`, markdown rendering; crates.io's rate limiter, GitLab
+- Not covered: wastebin's `safe_referer`, markdown rendering; crates.io's GitLab
   Trusted Publishing, yank/owner-management handlers, config-creation validators.
 - Parsers without Lean specs (wastebin id codec; crates.io header/token/workflow parsers) are
   difftest-only; their mutants survive by design and are listed in each STATUS.md.
