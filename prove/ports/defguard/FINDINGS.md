@@ -46,18 +46,51 @@ fixes it and must break that theorem. No upstream issues were filed.
 
 ## F3. `merge_ranges` returns overlapping ranges after a range that ends at the maximum (low)
 
-- No theorem yet (the range-merging proofs are pending); evidence is the difftest.
+- Theorem: `Properties.merge_ranges_overlap`. For the ports `1024-65535` and `2000`,
+  `merge_ranges` returns both ranges unchanged, and they overlap (`¬ PairwiseDisjoint`). The
+  security property next to it, `merge_ranges_exact`, proves that the merged ranges cover exactly
+  the values the input covers, for any input of well-formed ranges (`start ≤ end ≤ max`).
 - Upstream: `crates/defguard_core/src/enterprise/utils.rs:193-239`. `next_up = current_range_end.next()`
   wraps to 0 when the end is the type's maximum (port 65535, 255.255.255.255, the last IPv6 address;
   `Next` at `:15-29` uses `wrapping_add`), so every later range is pushed separately even when it lies
-  inside the current one. Example: ports `[1..=65535, 80..=80]` merge to `[1..=65535, 80..=80]`.
-- The covered set is unchanged (the difftest checks this point by point when outputs differ), so no
-  traffic is allowed or denied that was not configured. The firewall rules sent to the gateway are,
-  however, not the minimal non-overlapping set the function documents; in the difftest's generator
-  about a quarter of the port sets (2,527 of 10,000 for seed 1) came out overlapping. Whether the
-  gateway (a separate repository, not checked) accepts overlapping intervals was not checked.
+  inside the current one.
+- Effect: none on what the rule allows or denies (`merge_ranges_exact`). The firewall rules sent to
+  the gateway are not the minimal non-overlapping set the function documents. In the difftest's
+  generator about a quarter of the port sets came out overlapping (2,527 / 2,571 / 2,579 / 2,599 of
+  10,000 for seeds 1-4). Whether the gateway (a separate repository) accepts overlapping intervals
+  was not checked.
 - Severity: low. Reachable: yes, by an admin configuring an ACL with a port or address range that
   ends at the maximum.
+- Fix mutant: `fix_next_saturates` (`next(max) = max`, so a range ending at the maximum absorbs every
+  later one).
+
+## F4. Readdressing keeps a device's old address without checking it (low)
+
+- Theorems: `Properties.kept_address_unchecked` (a current address inside a subnet is returned as
+  it is) and `Properties.keeps_gateway_address` (a device whose current address is the subnet's
+  gateway address keeps it, and that address is not `Assignable`). For comparison,
+  `fresh_addresses_valid` proves that a fresh assignment never returns a network, broadcast,
+  gateway, used or reserved address.
+- Upstream: `crates/defguard_common/src/db/models/device.rs:741-818` `assign_next_network_ip`;
+  lines 762-774 reuse `current_ips.find(|ip| address.contains(ip))` and skip the checks at
+  :776-783 (network, broadcast and gateway address, `used_ips`, `reserved_ips`). The doc comment
+  (:717-718) says this is deliberate. The caller,
+  `crates/defguard_core/src/location_management/mod.rs:174-186`, readdresses a device only when the
+  location no longer contains all its addresses or the number of subnets changed.
+- Effect: after an admin changes a location's subnets, a device can keep an address that is now
+  the gateway's address, the new subnet's network or broadcast address, or a newly reserved address.
+  Example: the location goes from `10.0.0.1/24` to `10.0.0.1/25, fd00::1/64`; the subnet count
+  changes, so every device is readdressed, and a device at `10.0.0.127` (now the IPv4 broadcast
+  address) keeps it. When the subnet count does not change and every address still fits, the
+  caller does not call `assign_next_network_ip` at all (outside the kernel). The difftest
+  reproduces it: of the 26,898 assignments that agree with upstream (seeds 1-4), 9,127 hold a
+  network, broadcast or gateway address kept from the device's current ones (the generator picks
+  current addresses at those positions on purpose, so the rate means nothing).
+- Severity: low. It needs an admin to change a location's addresses, and the likely result is a
+  device that cannot route traffic or an address that clashes with the gateway's own. No way to
+  reach another user's traffic was found.
+- Fix mutant: `fix_recheck_kept_address` (keep the current address only if it is assignable,
+  otherwise take the first free one).
 
 ## Observations without a theorem
 

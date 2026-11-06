@@ -16,7 +16,9 @@ to its management API and to enrollment:
    devices) only for their owner or an admin.
 3. Enrollment / desktop-activation tokens: an expired token never opens a session; a token opens
    one session; enrollment requests need an open session and act for the token's user.
-4. Range merging behind firewall rules (ported and difftested; proofs pending).
+4. Range merging behind firewall rules: the merged ranges cover exactly the configured values.
+5. Device addresses: a device gets an address inside each subnet that is not the network,
+   broadcast or gateway address and not used or reserved.
 
 Trusted / out of scope: password hashing (`verify_password`, a table here), the database queries
 (their results are inputs: the session row, the API token's user, group memberships, the token row),
@@ -35,6 +37,7 @@ axum/tonic extraction, the clock (an input), LDAP (disabled in the port), the ga
 | `token::{is_expired, is_session_valid, start_session}` | `crates/defguard_core/src/db/models/enrollment.rs` `Token` (163-222) |
 | `token::validate_session` | `crates/defguard_proxy_manager/src/servers/enrollment.rs` `validate_session` (79-106) |
 | `ranges::merge_ranges` | `crates/defguard_core/src/enterprise/utils.rs` `merge_ranges` (193-239), `Next` (9-29) |
+| `ipalloc::{network, broadcast, contains, assignable, first_free, find_current, pick, assign_next_network_ip}` | `crates/defguard_common/src/db/models/device.rs` `assign_next_network_ip` (741-818), the address loop up to the relation insert; `ipnetwork`'s `network`, `broadcast`, `contains` and iteration |
 
 ## How it is checked
 
@@ -54,6 +57,12 @@ axum/tonic extraction, the clock (an input), LDAP (disabled in the port), the ga
   0, 1, 65534, 65535 and full-width ranges. The outputs are compared exactly (they were equal in all
   40,000 cases); a range ending at 65535 would allow a set-wise comparison, because upstream's
   `sort_unstable_by` may order equal starts differently there.
+- `db/models/device.rs` `assign_next_network_ip`, its address loop (from `let mut ips` to the
+  relation insert), compiled as a plain function over the real `ipnetwork` types. 10,000 random
+  locations per seed with one or two subnets (IPv4 /26-/32, IPv6 /122-/128, so that subnets fill
+  up), up to 40 used or reserved addresses and up to two current addresses, each one the gateway,
+  network or broadcast address or a low host. The assigned addresses, or the index of the full
+  subnet, agree in every case. Seeds 1-4: 26,898 assignments and 13,102 full subnets.
 
 Not difftested (ported by reading; async axum/tonic code with database calls interleaved): the
 login handler's use of the tracker, `SessionExtractor`, `SessionInfo`, `AdminRole`,
@@ -80,3 +89,7 @@ not a proof of equivalence.
 | `merge_ranges<T: Ord + Next>` | generic | `u128` values below `max`, `next` wraps at `max` | one function for ports, IPv4 and IPv6 |
 | `sort_unstable_by` | unstable | stable insertion sort | differs only for equal starts next to the maximum |
 | `Option::clone` | | `token::same` | Aeneas has no `Option::clone` |
+| `IpNetwork` / `IpAddr` | enums of `Ipv4Network`/`Ipv6Network` | `Net { v4, ip: u128, prefix }`, `Ip { v4, bits: u128 }` | one function for both families; IPv4 bits are the low 32 |
+| `used_ips: &HashSet<IpAddr>`, `reserved_ips: Option<&[IpAddr]>` | set, optional slice | two `Vec<Ip>` (none = empty) | no sets; membership only |
+| `Err(DeviceError::NetworkFull(address.to_string()))` | the subnet as a string | the subnet's index | |
+| the relation insert after the loop | `WireguardNetworkDevice::insert` | not modelled | the shell's |
