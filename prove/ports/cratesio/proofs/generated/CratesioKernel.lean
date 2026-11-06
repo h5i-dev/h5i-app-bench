@@ -1653,21 +1653,19 @@ def rights.rank (r : rights.Rights) : Result Std.U8 := do
   | rights.Rights.Full => ok 2#u8
 
 /-- [cratesio_kernel::publish::owner_ok]:
-    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 207:0-229:1
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 207:0-230:1
     Visibility: public -/
 def publish.owner_ok
   (user_id : Std.I32) (owners_at_write : Option (alloc.vec.Vec rights.Owner))
-  (actor_gh : ((Option Bool) × Bool))
+  (gh_token : Option Bool) (gh_login : Bool)
   (answers : Slice (Std.I64 × rights.Membership)) :
   Result (core.result.Result publish.Publisher publish.PublishError)
   := do
   match owners_at_write with
   | none => ok (core.result.Result.Ok (publish.Publisher.User user_id))
   | some owners =>
-    let (o, b) := actor_gh
     let s := alloc.vec.Vec.deref owners
-    let r ←
-      rights.rights { id := user_id, gh_token := o, gh_login := b } s answers
+    let r ← rights.rights { id := user_id, gh_token, gh_login } s answers
     match r with
     | core.result.Result.Ok r1 =>
       let i ← rights.rank r1
@@ -1678,14 +1676,14 @@ def publish.owner_ok
       ok (core.result.Result.Err (publish.PublishError.Rights e))
 
 /-- [cratesio_kernel::publish::user_publish]:
-    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 233:0-254:1
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 234:0-256:1
     Visibility: public -/
 def publish.user_publish
   («name» : Slice Std.U8) (existing : Option publish.Crate)
   (owners_at_write : Option (alloc.vec.Vec rights.Owner))
   (allowed_origins : Slice Std.U64) (users : Slice auth.User)
   (tokens : alloc.vec.Vec auth.ApiToken) (req : auth.Request) (now : Std.I64)
-  (actor_gh : ((Option Bool) × Bool))
+  (gh_token : Option Bool) (gh_login : Bool)
   (answers : Slice (Std.I64 × rights.Membership)) :
   Result (core.result.Result publish.Publisher publish.PublishError)
   := do
@@ -1698,12 +1696,12 @@ def publish.user_publish
     then ok (core.result.Result.Err publish.PublishError.TrustpubOnly)
     else
       let u ← publish.auth_user a
-      publish.owner_ok u.id owners_at_write actor_gh answers
+      publish.owner_ok u.id owners_at_write gh_token gh_login answers
   | core.result.Result.Err e =>
     ok (core.result.Result.Err (publish.PublishError.Auth e))
 
 /-- [cratesio_kernel::publish::publish_auth]:
-    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 266:0-292:1
+    Source: 'prove/ports/cratesio/kernel/src/publish.rs', lines 260:0-287:1
     Visibility: public -/
 def publish.publish_auth
   («name» : Slice Std.U8) (existing : Option publish.Crate)
@@ -1711,14 +1709,14 @@ def publish.publish_auth
   (allowed_origins : Slice Std.U64) (users : Slice auth.User)
   (tokens : alloc.vec.Vec auth.ApiToken)
   (tp_tokens : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request)
-  (now : Std.I64) (actor_gh : ((Option Bool) × Bool))
+  (now : Std.I64) (gh_token : Option Bool) (gh_login : Bool)
   (answers : Slice (Std.I64 × rights.Membership)) :
   Result (core.result.Result publish.Publisher publish.PublishError)
   := do
   match req.authorization with
   | none =>
     publish.user_publish «name» existing owners_at_write allowed_origins
-      users tokens req now actor_gh answers
+      users tokens req now gh_token gh_login answers
   | some h =>
     let s := alloc.vec.Vec.deref h
     let r ← auth.parse_auth_header s
@@ -1733,7 +1731,7 @@ def publish.publish_auth
         publish.trustpub_auth existing tp_tokens s3 now
       else
         publish.user_publish «name» existing owners_at_write allowed_origins
-          users tokens req now actor_gh answers
+          users tokens req now gh_token gh_login answers
     | core.result.Result.Err e =>
       ok (core.result.Result.Err (publish.PublishError.Header e))
 

@@ -92,18 +92,16 @@ theorem auth_user_eq (a : auth.Authentication) : publish.auth_user a = ok (userO
 theorem rank_ge {r : rights.Rights} {i : U8} (h : rights.rank r = ok i) (hi : ¬ i < 1#u8) : r ≠ .None := by
   intro e; subst e; simp [rights.rank] at h; subst h; simp at hi
 
-theorem owner_ok_ok {uid : I32} {ow : Option (alloc.vec.Vec rights.Owner)} {gh : Option Bool × Bool}
+theorem owner_ok_ok {uid : I32} {ow : Option (alloc.vec.Vec rights.Owner)} {gt : Option Bool} {gl : Bool}
     {answers : Slice (I64 × rights.Membership)} {p : publish.Publisher}
-    (h : publish.owner_ok uid ow gh answers = ok (.Ok p)) :
+    (h : publish.owner_ok uid ow gt gl answers = ok (.Ok p)) :
     p = .User uid ∧ ∀ owners, ow = some owners → rights.Owner.User uid ∈ owners.val ∨
-      ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧ gh.1 = some true ∧ gh.2 = true := by
+      ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧ gt = some true ∧ gl = true := by
   unfold publish.owner_ok at h
   rcases ow with _ | owners
   · simp only at h; have := Result.ok.inj h; simp only [core.result.Result.Ok.injEq] at this
     exact ⟨this.symm, fun _ e => by cases e⟩
   · simp only at h
-    obtain ⟨o, b⟩ := gh
-    dsimp only at h
     h5i_invert h
     refine ⟨by first | rfl | simp_all | (subst_vars; rfl), fun owners' e => ?_⟩
     cases e
@@ -128,30 +126,31 @@ theorem trustpub_only_eq (existing : Option publish.Crate) :
 
 theorem user_publish_ok {nm : Slice U8} {existing : Option publish.Crate} {ow : Option (alloc.vec.Vec rights.Owner)}
     {allowed : Slice U64} {users : Slice auth.User} {tokens : alloc.vec.Vec auth.ApiToken}
-    {req : auth.Request} {now : I64} {gh : Option Bool × Bool}
+    {req : auth.Request} {now : I64} {gt : Option Bool} {gl : Bool}
     {answers : Slice (I64 × rights.Membership)} {p : publish.Publisher}
-    (h : publish.user_publish nm existing ow allowed users tokens req now gh answers = ok (.Ok p)) :
+    (h : publish.user_publish nm existing ow allowed users tokens req now gt gl answers = ok (.Ok p)) :
     ∃ v a, v.val = nm.val ∧ auth.check (publishCheck existing v) allowed users tokens req now = ok (.Ok a) ∧
       p = .User (userOf a).id ∧ (∀ k, existing = some k → k.trustpub_only = false) ∧
       (∀ owners, ow = some owners → rights.Owner.User (userOf a).id ∈ owners.val ∨
         ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧
-          gh.1 = some true ∧ gh.2 = true) := by
+          gt = some true ∧ gl = true) := by
   unfold publish.user_publish at h
   obtain ⟨v, hc, hv⟩ := publish_check_ok existing nm
   rw [hc] at h
   simp only [bind_tc_ok, trustpub_only_eq, auth_user_eq] at h
   h5i_invert h
-  obtain ⟨hp, ho⟩ := owner_ok_ok h
-  refine ⟨v, _, hv, ‹_›, hp, fun k e => ?_, ho⟩
-  cases e
-  simp_all
+  all_goals
+    obtain ⟨hp, ho⟩ := owner_ok_ok h
+    refine ⟨v, _, hv, ‹_›, hp, fun k e => ?_, ho⟩
+    cases e
+    try simp_all
 
 /-- What a granted publish establishes. -/
 theorem publish_ok {nm : Slice U8} {existing : Option publish.Crate} {ow : Option (alloc.vec.Vec rights.Owner)}
     {allowed : Slice U64} {users : Slice auth.User} {tokens : alloc.vec.Vec auth.ApiToken}
-    {tp : alloc.vec.Vec publish.TrustpubToken} {req : auth.Request} {now : I64} {gh : Option Bool × Bool}
+    {tp : alloc.vec.Vec publish.TrustpubToken} {req : auth.Request} {now : I64} {gt : Option Bool} {gl : Bool}
     {answers : Slice (I64 × rights.Membership)} {p : publish.Publisher}
-    (h : publish.publish_auth nm existing ow allowed users tokens tp req now gh answers = ok (.Ok p)) :
+    (h : publish.publish_auth nm existing ow allowed users tokens tp req now gt gl answers = ok (.Ok p)) :
     match p with
     | .TrustPub id => ∃ hd t, req.authorization = some hd ∧ auth.parse_auth_header hd.deref = ok (.Ok t) ∧
         ∃ k raw, existing = some k ∧ id = k.id ∧ publish.parse_access_token t.deref = ok (some raw) ∧
@@ -161,7 +160,7 @@ theorem publish_ok {nm : Slice U8} {existing : Option publish.Crate} {ow : Optio
         uid = (userOf a).id ∧ (∀ k, existing = some k → k.trustpub_only = false) ∧
         (∀ owners, ow = some owners → rights.Owner.User uid ∈ owners.val ∨
           ∃ t, rights.Owner.Team t ∈ owners.val ∧ answerOf answers.val t = .Active ∧
-            gh.1 = some true ∧ gh.2 = true) := by
+            gt = some true ∧ gl = true) := by
   unfold publish.publish_auth at h
   rcases ha : req.authorization with _ | hd <;> simp only [ha] at h
   · obtain ⟨v, a, hv, hc, hp, ht, ho⟩ := user_publish_ok h

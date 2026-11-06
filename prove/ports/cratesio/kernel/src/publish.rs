@@ -207,13 +207,14 @@ pub fn trustpub_only(existing: &Option<Crate>) -> bool {
 pub fn owner_ok(
     user_id: i32,
     owners_at_write: &Option<Vec<Owner>>,
-    actor_gh: (Option<bool>, bool),
+    gh_token: Option<bool>,
+    gh_login: bool,
     answers: &[(i64, crate::rights::Membership)],
 ) -> Result<Publisher, PublishError> {
     match owners_at_write {
         None => Ok(Publisher::User(user_id)),
         Some(owners) => {
-            let actor = Actor { id: user_id, gh_token: actor_gh.0, gh_login: actor_gh.1 };
+            let actor = Actor { id: user_id, gh_token, gh_login };
             match rights(&actor, owners, answers) {
                 Err(e) => Err(PublishError::Rights(e)),
                 Ok(r) => {
@@ -239,7 +240,8 @@ pub fn user_publish(
     tokens: &Vec<crate::auth::ApiToken>,
     req: &Request,
     now: i64,
-    actor_gh: (Option<bool>, bool),
+    gh_token: Option<bool>,
+    gh_login: bool,
     answers: &[(i64, crate::rights::Membership)],
 ) -> Result<Publisher, PublishError> {
     let ac = publish_check(existing, name);
@@ -250,15 +252,7 @@ pub fn user_publish(
     if trustpub_only(existing) {
         return Err(PublishError::TrustpubOnly);
     }
-    owner_ok(auth_user(&a).id, owners_at_write, actor_gh, answers)
-}
-
-/// The header token, if it is a Trusted Publishing token (`cio_tp_`).
-pub fn is_tp(header_token: &Option<Vec<u8>>) -> bool {
-    match header_token {
-        None => false,
-        Some(t) => starts_with(t, &TP_PREFIX),
-    }
+    owner_ok(auth_user(&a).id, owners_at_write, gh_token, gh_login, answers)
 }
 
 /// `publish`'s authorization, up to and including the ownership check.
@@ -273,18 +267,19 @@ pub fn publish_auth(
     tp_tokens: &Vec<TrustpubToken>,
     req: &Request,
     now: i64,
-    actor_gh: (Option<bool>, bool),
+    gh_token: Option<bool>,
+    gh_login: bool,
     answers: &[(i64, crate::rights::Membership)],
 ) -> Result<Publisher, PublishError> {
     match &req.authorization {
-        None => user_publish(name, existing, owners_at_write, allowed_origins, users, tokens, req, now, actor_gh, answers),
+        None => user_publish(name, existing, owners_at_write, allowed_origins, users, tokens, req, now, gh_token, gh_login, answers),
         Some(h) => match parse_auth_header(h) {
             Err(e) => Err(PublishError::Header(e)),
             Ok(t) => {
                 if starts_with(&t, &TP_PREFIX) {
                     trustpub_auth(existing, tp_tokens, &t, now)
                 } else {
-                    user_publish(name, existing, owners_at_write, allowed_origins, users, tokens, req, now, actor_gh, answers)
+                    user_publish(name, existing, owners_at_write, allowed_origins, users, tokens, req, now, gh_token, gh_login, answers)
                 }
             }
         },

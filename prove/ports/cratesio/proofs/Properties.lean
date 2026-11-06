@@ -1,4 +1,5 @@
 import Verified.Authn
+import Verified.Publish
 import Spec
 /-!
 # crates.io: the security properties
@@ -127,5 +128,111 @@ theorem crate_scoped_token_needs_crate_or_opt_in (ac : auth.AuthCheck) (allowed 
   · rw [hv] at h1; cases h1; exact absurd h2 hne
   · exact h3
   · rw [hn] at h2; cases h2
+
+/-! ## Ownership rights (`Rights::get`) -/
+
+/-- Full rights (managing owners, deleting the crate) only come from being a
+listed user owner; team membership never gives them. -/
+theorem full_rights_only_for_listed_user (user : rights.Actor) (owners : Slice rights.Owner)
+    (answers : Slice (I64 × rights.Membership))
+    (h : rights.rights user owners answers = ok (.Ok .Full)) :
+    rights.Owner.User user.id ∈ owners.val :=
+  (Verified.Rights.rights_ok user owners answers _ h).1 rfl
+
+/-- Publish rights without being a listed user owner need an owning team that
+GitHub reports the user an *active* member of, through a GitHub token that
+decrypts and a GitHub login. -/
+theorem team_rights_need_active_membership (user : rights.Actor) (owners : Slice rights.Owner)
+    (answers : Slice (I64 × rights.Membership))
+    (h : rights.rights user owners answers = ok (.Ok .Publish)) :
+    ∃ t, rights.Owner.Team t ∈ owners.val ∧ Verified.Rights.answerOf answers.val t = .Active ∧
+      user.gh_token = some true ∧ user.gh_login = true :=
+  (Verified.Rights.rights_ok user owners answers _ h).2 rfl
+
+/-! ## Publishing (`publish`) -/
+
+section Publish
+open Verified.Publish
+
+/-- A Trusted Publishing publish is accepted only for an existing crate and
+only with an unexpired Trusted Publishing token, the one presented, that
+lists that crate. -/
+theorem trustpub_publish_bound_to_crate (nm : Slice U8) (existing : Option publish.Crate)
+    (ow : Option (alloc.vec.Vec rights.Owner)) (allowed : Slice U64) (users : Slice auth.User)
+    (tokens : alloc.vec.Vec auth.ApiToken) (tp : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request)
+    (now : I64) (gt : Option Bool) (gl : Bool) (answers : Slice (I64 × rights.Membership)) (id : I32)
+    (h : publish.publish_auth nm existing ow allowed users tokens tp req now gt gl answers = ok (.Ok (.TrustPub id))) :
+    ∃ k raw, existing = some k ∧ id = k.id ∧
+      ∃ i, ∃ hi : i < tp.val.length, now.val < (tp.val[i]).expires_at.val ∧ (tp.val[i]).raw.val = raw ∧
+        some k.id ∈ (tp.val[i]).crate_ids.val := by
+  obtain ⟨-, -, -, -, k, raw, hk, hid, -, i, hi, ⟨hl, hr⟩, hm⟩ := publish_ok h
+  exact ⟨k, raw.val, hk, hid, i, hi, hl, hr, hm⟩
+
+/-- Trusted Publishing never creates a crate. -/
+theorem trustpub_cannot_create_crates (nm : Slice U8) (ow : Option (alloc.vec.Vec rights.Owner))
+    (allowed : Slice U64) (users : Slice auth.User) (tokens : alloc.vec.Vec auth.ApiToken)
+    (tp : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request) (now : I64) (gt : Option Bool) (gl : Bool)
+    (answers : Slice (I64 × rights.Membership)) (id : I32) :
+    publish.publish_auth nm none ow allowed users tokens tp req now gt gl answers ≠ ok (.Ok (.TrustPub id)) := by
+  intro h
+  obtain ⟨-, -, -, -, k, -, hk, -⟩ := publish_ok h
+  cases hk
+
+/-- A crate that requires Trusted Publishing never accepts a publish by a
+user (cookie or API token). -/
+theorem trustpub_only_rejects_users (nm : Slice U8) (k : publish.Crate) (hk : k.trustpub_only = true)
+    (ow : Option (alloc.vec.Vec rights.Owner)) (allowed : Slice U64) (users : Slice auth.User)
+    (tokens : alloc.vec.Vec auth.ApiToken) (tp : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request)
+    (now : I64) (gt : Option Bool) (gl : Bool) (answers : Slice (I64 × rights.Membership)) (uid : I32) :
+    publish.publish_auth nm (some k) ow allowed users tokens tp req now gt gl answers ≠ ok (.Ok (.User uid)) := by
+  intro h
+  obtain ⟨-, -, -, -, -, ht, -⟩ := publish_ok h
+  rw [ht k rfl] at hk; cases hk
+
+/-- A user publishing into a crate that already exists when the row is
+written (even one created concurrently) is a listed owner or an active
+member of an owning team. -/
+theorem publish_existing_needs_ownership (nm : Slice U8) (existing : Option publish.Crate)
+    (owners : alloc.vec.Vec rights.Owner) (allowed : Slice U64) (users : Slice auth.User)
+    (tokens : alloc.vec.Vec auth.ApiToken) (tp : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request)
+    (now : I64) (gt : Option Bool) (gl : Bool) (answers : Slice (I64 × rights.Membership)) (uid : I32)
+    (h : publish.publish_auth nm existing (some owners) allowed users tokens tp req now gt gl answers =
+      ok (.Ok (.User uid))) :
+    rights.Owner.User uid ∈ owners.val ∨ ∃ t, rights.Owner.Team t ∈ owners.val ∧
+      Verified.Rights.answerOf answers.val t = .Active ∧ gt = some true ∧ gl = true := by
+  obtain ⟨-, -, -, -, -, -, ho⟩ := publish_ok h
+  exact ho owners rfl
+
+/-- A user publish authenticated by an API token used a token scoped for it:
+legacy, or listing `publish-update` for an existing crate and `publish-new`
+for a new one; and its crate scopes, if any, cover the crate's name. -/
+theorem publish_token_scoped (nm : Slice U8) (existing : Option publish.Crate)
+    (ow : Option (alloc.vec.Vec rights.Owner)) (allowed : Slice U64) (users : Slice auth.User)
+    (tokens : alloc.vec.Vec auth.ApiToken) (tp : alloc.vec.Vec publish.TrustpubToken) (req : auth.Request)
+    (now : I64) (gt : Option Bool) (gl : Bool) (answers : Slice (I64 × rights.Membership)) (uid : I32)
+    (h : publish.publish_auth nm existing ow allowed users tokens tp req now gt gl answers = ok (.Ok (.User uid))) :
+    ∃ a, auth.authenticate allowed users tokens req now = ok (.Ok a) ∧
+      ∀ i u, a = .Token i u → ∃ hi : i.val < tokens.val.length,
+        (Legacy (tokens.val[i.val]) ∨ ∃ v, (tokens.val[i.val]).endpoint_scopes = some v ∧
+          (match existing with | none => scopes.EndpointScope.PublishNew | some _ => .PublishUpdate) ∈ v.val) ∧
+        (∀ v, (tokens.val[i.val]).crate_scopes = some v → v.val ≠ [] → ∃ p ∈ v.val, Covers p.val nm.val) := by
+  obtain ⟨v, a, hv, hc, -, -, -⟩ := publish_ok h
+  obtain ⟨ha, ht⟩ := Verified.Authn.check_ok hc
+  refine ⟨a, ha, fun i u e => ?_⟩
+  obtain ⟨-, hi, he, hcs⟩ := ht i u e
+  refine ⟨hi, ?_, fun w hw hne => ?_⟩
+  · rcases he with he | ⟨w, s, hw, hs, hm⟩
+    · exact .inl he
+    · simp only [publishCheck, Option.some.injEq] at hs
+      exact .inr ⟨w, hw, hs ▸ hm⟩
+  · rcases hcs with h0 | ⟨w', h1, h2⟩ | ⟨w', h1, h2, -⟩ | ⟨w', n', h1, h2, h3⟩
+    · rw [hw] at h0; cases h0
+    · rw [hw] at h1; cases h1; exact absurd h2 hne
+    · simp [publishCheck] at h2
+    · rw [hw] at h1; cases h1
+      simp only [publishCheck, Option.some.injEq] at h2
+      subst h2; rw [← hv]; exact h3
+
+end Publish
 
 end cratesio_kernel.Properties
