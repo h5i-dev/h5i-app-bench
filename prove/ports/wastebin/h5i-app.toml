@@ -4,4 +4,9 @@ crate = "kernel"
 start-from = ["ext::valid_extension", "ids::to_i64", "ids::encode", "ids::decode", "ids::parse_key", "ids::key_path", "store::get", "store::fetch", "store::finish", "store::get_metadata", "store::delete_for", "store::purge", "handlers::view", "handlers::raw", "handlers::qr", "handlers::delete_paste", "handlers::form_owner", "handlers::api_owner", "handlers::insert", "disposition::content_disposition"]
 
 [check]
-theorems = []
+theorems = [
+  "wastebin_kernel.Properties.delete_needs_owner",
+  "wastebin_kernel.Properties.delete_removes_only_owned",
+  "wastebin_kernel.Properties.delete_refusal_unchanged",
+  "wastebin_kernel.Properties.delete_without_cookie_forbidden",
+]
