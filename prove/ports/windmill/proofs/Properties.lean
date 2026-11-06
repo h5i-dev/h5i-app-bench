@@ -292,18 +292,62 @@ theorem is_filter_tags_spec (s : Slice U8) :
   simp [vec_deref_val]
   rw [show p.val = p.slice.val from rfl, e]
 
-theorem any_grants_sound (list : Slice (alloc.vec.Vec U8)) (req : scopes.Scope) :
-    authz.any_grants list req ⦃ b => b = true →
-      ∃ s ∈ list.val, ¬ filterTagsB <+: s.val ∧ authz.parsed_includes s.deref req = ok true ⦄ := by
-  unfold authz.any_grants authz.any_grants_loop
-  apply loop.spec_decr_nat (measure := fun (j : Usize) => list.length - j.val)
-    (inv := fun j => j.val ≤ list.length)
-  · intro i hi
-    unfold authz.any_grants_loop.body
-    have hf := fun s => is_filter_tags_spec s
-    step*
-    all_goals trace_state
-    all_goals sorry
+theorem any_grants_sound (list : Slice (alloc.vec.Vec U8)) (req : scopes.Scope)
+    (h : authz.any_grants list req = ok true) :
+    ∃ s ∈ list.val, ¬ filterTagsB <+: s.val ∧ authz.parsed_includes s.deref req = ok true := by
+  unfold authz.any_grants authz.any_grants_loop at h
+  refine loop_true_witness _ (fun i : Usize => i.val ≤ list.length) (fun i => list.length - i.val) _ ?_
+    0#usize (by simp) h
+  intro i r hi hr
+  unfold authz.any_grants_loop.body at hr
+  h5i_invert hr
+  all_goals simp only []
+  all_goals first
+    | (h5i_ok_facts; constructor <;> scalar_tac)
+    | (intro _
+       refine ⟨v, slice_index_ok_mem hv, fun hp => hc_1 ((post_of_ok (is_filter_tags_spec _) hb).2
+         (by simpa [vec_deref_val] using hp)), by rw [hb1, hc_2]⟩)
+    | simp
+
+theorem unscoped_true_all_filters (list : Slice (alloc.vec.Vec U8))
+    (h : authz.is_effectively_unscoped true list = ok true) : ∀ s ∈ list.val, filterTagsB <+: s.val := by
+  unfold authz.is_effectively_unscoped authz.is_effectively_unscoped_loop at h
+  refine loop_ok _ (fun i : Usize => i.val ≤ list.length ∧ ∀ k < i.val, filterTagsB <+: (list.val[k]!).val)
+    (fun b => b = true → ∀ s ∈ list.val, filterTagsB <+: s.val) (fun i => list.length - i.val) ?_
+    0#usize true (by simp) h rfl
+  intro i r ⟨hi, hk⟩ hr
+  unfold authz.is_effectively_unscoped_loop.body at hr
+  h5i_invert hr
+  all_goals simp only []
+  · h5i_ok_facts
+    refine ⟨⟨by scalar_tac, ?_⟩, by scalar_tac⟩
+    intro k hk'
+    rcases Nat.lt_succ_iff_lt_or_eq.1 (show k < i.val + 1 by scalar_tac) with h1 | h1
+    · exact hk k h1
+    · subst h1
+      obtain ⟨hlt, hve⟩ := slice_index_ok hv
+      rw [List.getElem!_eq_getElem?_getD, List.getElem?_eq_getElem hlt, Option.getD_some, hve]
+      simpa [vec_deref_val] using (post_of_ok (is_filter_tags_spec _) hb).1 hc_1
   · simp
+  · intro _ s hs
+    obtain ⟨k, hk', rfl⟩ := List.getElem_of_mem hs
+    have := hk k (by scalar_tac)
+    rwa [List.getElem!_eq_getElem?_getD, List.getElem?_eq_getElem hk', Option.getD_some] at this
+
+theorem check_scopes_ok (a : authz.Authed) (req : Slice U8)
+    (h : authz.check_scopes a req = ok (.Ok ())) :
+    a.has_scopes = false ∨ (∀ s ∈ a.scopes.val, filterTagsB <+: s.val) ∨
+      ∃ s ∈ a.scopes.val, ¬ filterTagsB <+: s.val ∧ ∃ sc rq, scopes.from_scope_string s.deref = ok (some sc) ∧
+        scopes.from_scope_string req = ok (some rq) ∧ scopes.includes sc rq = ok true := by
+  unfold authz.check_scopes at h
+  h5i_invert h
+  · subst hc_1
+    obtain ⟨s, hs, hnf, hpi⟩ := any_grants_sound _ _ hb
+    unfold authz.parsed_includes at hpi
+    h5i_invert hpi
+    exact Or.inr (Or.inr ⟨s, by simpa [vec_deref_val] using hs, hnf, s1_1, s1, ho_1, ho, hpi⟩)
+  · subst hc_2
+    exact Or.inr (Or.inl (by simpa [vec_deref_val] using unscoped_true_all_filters _ hb1))
+  · exact Or.inl (by simpa using hc)
 
 end windmill_kernel.Properties
