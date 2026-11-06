@@ -51,6 +51,8 @@ def lowerN (n : Nat) : Nat := if 65 ≤ n ∧ n ≤ 90 then n + 32 else n
 /-- `LOWER(a) = LOWER(b)`. -/
 def LowerEq (a b : List U8) : Prop := a.map (fun c => lowerN c.val) = b.map (fun c => lowerN c.val)
 
+instance (a b : List U8) : Decidable (LowerEq a b) := by unfold LowerEq; infer_instance
+
 /-- A letter, digit or `-`. -/
 def nameChar (c : U8) : Bool :=
   (decide (97 ≤ c.val) && decide (c.val ≤ 122)) || (decide (65 ≤ c.val) && decide (c.val ≤ 90)) ||
@@ -58,6 +60,8 @@ def nameChar (c : U8) : Bool :=
 
 /-- `NewUsername`: non-empty letters, digits and hyphens. -/
 def ValidUsername (u : List U8) : Prop := u ≠ [] ∧ ∀ c ∈ u, nameChar c = true
+
+instance (u : List U8) : Decidable (ValidUsername u) := by unfold ValidUsername; infer_instance
 
 /-- No `users` or `sessions` constraint stops the insert: `UNIQUE(username)`,
 `UNIQUE(email)`, `UNIQUE(password)`, `UNIQUE(LOWER(username))`,
