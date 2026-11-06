@@ -59,4 +59,20 @@ def ownerOfPath (a : windmill_kernel.authz.Authed) (path : Bytes) : Prop :=
 def traversal (path : Bytes) : Prop :=
   path.head? = some slashB ∨ dotdot ∈ segments slashB path ∨ 0#u8 ∈ path
 
+/-! ## Scope actions -/
+
+def jobsB : Bytes := [106#u8, 111#u8, 98#u8, 115#u8]
+def appsB : Bytes := [97#u8, 112#u8, 112#u8, 115#u8]
+def readB : Bytes := [114#u8, 101#u8, 97#u8, 100#u8]
+def writeB : Bytes := [119#u8, 114#u8, 105#u8, 116#u8, 101#u8]
+def runB : Bytes := [114#u8, 117#u8, 110#u8]
+def cancelB : Bytes := [99#u8, 97#u8, 110#u8, 99#u8, 101#u8, 108#u8]
+
+/-- Which held action covers which required action in domain `d`: the same action,
+`write` covers `read`, and only in `apps` does `write` cover `run`, only in `jobs`
+does `write` cover `cancel`. -/
+def actionCov (d a b : Bytes) : Prop :=
+  a = b ∨ (a = writeB ∧ b = readB) ∨ (a = writeB ∧ b = runB ∧ d = appsB) ∨
+    (a = writeB ∧ b = cancelB ∧ d = jobsB)
+
 end windmill_kernel.Spec

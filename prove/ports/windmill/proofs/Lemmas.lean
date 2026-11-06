@@ -430,4 +430,17 @@ def wildcardModel (pat r : Bytes) : Prop :=
          · exfalso; apply ‹¬r.len = pre.len›; apply UScalar.eq_of_val_eq; scalar_tac
          · exact h)
 
+theorem JOBS_val : scopes.JOBS.val = jobsB := by unfold scopes.JOBS; simp [jobsB, array_to_slice_val]
+theorem APPS_val : scopes.APPS.val = appsB := by unfold scopes.APPS; simp [appsB, array_to_slice_val]
+theorem READ_val : scopes.READ.val = readB := by unfold scopes.READ; simp [readB, array_to_slice_val]
+theorem WRITE_val : scopes.WRITE.val = writeB := by unfold scopes.WRITE; simp [writeB, array_to_slice_val]
+theorem RUN_val : scopes.RUN.val = runB := by unfold scopes.RUN; simp [runB, array_to_slice_val]
+theorem CANCEL_val : scopes.CANCEL.val = cancelB := by unfold scopes.CANCEL; simp [cancelB, array_to_slice_val]
+
+theorem action_covers_true {d a b : Slice U8} (h : scopes.action_covers d a b = ok true) :
+    actionCov d.val a.val b.val := by
+  unfold scopes.action_covers at h
+  h5i_invert h
+  all_goals sorry
+
 end windmill_kernel.Lemmas
