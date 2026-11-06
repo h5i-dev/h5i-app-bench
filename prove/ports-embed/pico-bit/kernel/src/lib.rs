@@ -113,13 +113,16 @@ pub fn is_separator(b: u8) -> bool {
 }
 
 /// Whether `buf[..len]` is exactly `.` or `..` (the relative-path entries that
-/// must never name an armory file). Kept in its own function so the separator
-/// loop below extracts as a single loop.
+/// must never name an armory file). The leading length guard keeps the index
+/// reads in bounds and lets the separator loop below extract as a single loop.
 pub fn is_dot_name(buf: &[u8], len: usize) -> bool {
-    if len == 1 && buf.len() >= 1 {
+    if buf.len() < len {
+        return false;
+    }
+    if len == 1 {
         return buf[0] == DOT;
     }
-    if len == 2 && buf.len() >= 2 {
+    if len == 2 {
         return buf[0] == DOT && buf[1] == DOT;
     }
     false

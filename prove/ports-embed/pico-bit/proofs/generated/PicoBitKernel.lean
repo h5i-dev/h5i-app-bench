@@ -211,33 +211,18 @@ def is_separator (b : Std.U8) : Result Bool := do
        else ok (b = NUL)
 
 /-- [pico_bit_kernel::is_dot_name]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 118:0-126:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 118:0-129:1
     Visibility: public -/
 def is_dot_name (buf : Slice Std.U8) (len : Std.Usize) : Result Bool := do
-  if len = 1#usize
-  then
-    let i := Slice.len buf
-    if i >= 1#usize
+  let i := Slice.len buf
+  if i < len
+  then ok false
+  else
+    if len = 1#usize
     then let i1 ← Slice.index_usize buf 0#usize
          ok (i1 = DOT)
     else
       if len = 2#usize
-      then
-        let i1 := Slice.len buf
-        if i1 >= 2#usize
-        then
-          let i2 ← Slice.index_usize buf 0#usize
-          if i2 = DOT
-          then let i3 ← Slice.index_usize buf 1#usize
-               ok (i3 = DOT)
-          else ok false
-        else ok false
-      else ok false
-  else
-    if len = 2#usize
-    then
-      let i := Slice.len buf
-      if i >= 2#usize
       then
         let i1 ← Slice.index_usize buf 0#usize
         if i1 = DOT
@@ -245,10 +230,9 @@ def is_dot_name (buf : Slice Std.U8) (len : Std.Usize) : Result Bool := do
              ok (i2 = DOT)
         else ok false
       else ok false
-    else ok false
 
 /-- [pico_bit_kernel::valid_name_prefix]: loop body 0:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 143:4-150:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 146:4-153:1
     Visibility: public -/
 @[rust_loop_body]
 def valid_name_prefix_loop.body
@@ -266,7 +250,7 @@ def valid_name_prefix_loop.body
   else ok (done true)
 
 /-- [pico_bit_kernel::valid_name_prefix]: loop 0:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 143:4-150:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 146:4-153:1
     Visibility: public -/
 @[rust_loop]
 def valid_name_prefix_loop
@@ -276,7 +260,7 @@ def valid_name_prefix_loop
     i
 
 /-- [pico_bit_kernel::valid_name_prefix]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 132:0-150:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 135:0-153:1
     Visibility: public -/
 def valid_name_prefix
   (buf : Slice Std.U8) (len : Std.Usize) : Result Bool := do
@@ -296,14 +280,14 @@ def valid_name_prefix
         else valid_name_prefix_loop buf len 0#usize
 
 /-- [pico_bit_kernel::valid_name]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 154:0-156:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 157:0-159:1
     Visibility: public -/
 def valid_name («name» : Slice Std.U8) : Result Bool := do
   let i := Slice.len «name»
   valid_name_prefix «name» i
 
 /-- [pico_bit_kernel::decode_filename]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 165:0-176:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 168:0-179:1
     Visibility: public -/
 def decode_filename
   (raw : Slice Std.U8) (out : Slice Std.U8) :
@@ -319,7 +303,7 @@ def decode_filename
     else ok (none, out1)
 
 /-- [pico_bit_kernel::Class]
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 187:0-202:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 190:0-205:1
     Visibility: public -/
 @[discriminant isize]
 inductive Class where
@@ -339,7 +323,7 @@ inductive Class where
 | Other : Class
 
 /-- [pico_bit_kernel::starts_with]: loop body 0:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 210:4-217:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 213:4-220:1
     Visibility: public -/
 @[rust_loop_body]
 def starts_with_loop.body
@@ -358,7 +342,7 @@ def starts_with_loop.body
   else ok (done true)
 
 /-- [pico_bit_kernel::starts_with]: loop 0:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 210:4-217:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 213:4-220:1
     Visibility: public -/
 @[rust_loop]
 def starts_with_loop
@@ -370,7 +354,7 @@ def starts_with_loop
     i
 
 /-- [pico_bit_kernel::starts_with]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 205:0-217:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 208:0-220:1
     Visibility: public -/
 def starts_with
   (bytes : Slice Std.U8) («prefix» : Slice Std.U8) : Result Bool := do
@@ -381,7 +365,7 @@ def starts_with
   else starts_with_loop bytes «prefix» 0#usize
 
 /-- [pico_bit_kernel::classify]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 224:0-265:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 227:0-268:1
     Visibility: public -/
 def classify (bytes : Slice Std.U8) : Result Class := do
   let s ←
@@ -545,7 +529,7 @@ def classify (bytes : Slice Std.U8) : Result Class := do
                               else ok Class.Other
 
 /-- [pico_bit_kernel::is_mutating]:
-    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 270:0-279:1
+    Source: 'prove/ports-embed/pico-bit/kernel/src/lib.rs', lines 273:0-282:1
     Visibility: public -/
 def is_mutating (c : Class) : Result Bool := do
   match c with
