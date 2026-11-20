@@ -40,61 +40,13 @@
    "proof": "theorem answer_fits_bounds (rcv buf q : Std.Usize) (hq : q.val < 65536)\n    (h : answer_fits rcv buf q = ok true) :\n    12 + q.val \u2264 rcv.val \u2227 12 + q.val + 16 \u2264 buf.val := by\n  have spec : answer_fits rcv buf q \u2983 r => r = true \u2192 12 + q.val \u2264 rcv.val \u2227 12 + q.val + 16 \u2264 buf.val \u2984 := by\n    unfold answer_fits DNS_HEADER_SIZE ANSWER_SIZE\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals first | (intro h; simp_all; done) | (intro h; simp_all; scalar_tac) | scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 spec\n  rw [h] at hr\n  simp only [Result.ok.injEq] at hr\n  exact hp hr.symm",
    "deps": [
     "answer_fits",
-    "DNS_HEADER_SIZE",
-    "ANSWER_SIZE"
+    "ANSWER_SIZE",
+    "DNS_HEADER_SIZE"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "discover": {
-   "kind": "def",
-   "rust_path": "pico_dhcp_kernel::discover",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 36,
-   "kernel_code": "pub fn discover(slots: &mut [Slot], cid: u64, txid: u32, now: u64) -> Option<usize> {\n    let mut first_offered: Option<usize> = None;\n    let mut i: usize = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        let usable = match s.kind {\n            Kind::Offered => {\n                if s.id != cid {\n                    first_offered = Some(i);\n                    false\n                } else {\n                    true\n                }\n            }\n            // (explicit ifs: the same, and Bool results Aeneas types right)\n            Kind::Assigned => {\n                if s.id == cid {\n                    true\n                } else if now >= s.lease_end {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Free => true,\n        };\n        if usable {\n            slots[i] = Slot { kind: Kind::Offered, id: cid, txid, lease_end: s.lease_end };\n            return Some(i);\n        }\n        i += 1;\n    }\n    match first_offered {\n        Some(j) => {\n            let le = slots[j].lease_end;\n            slots[j] = Slot { kind: Kind::Offered, id: cid, txid, lease_end: le };\n            Some(j)\n        }\n        None => None,\n    }\n}",
-   "lean": "@[reducible]\ndef discover\n  (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64) :\n  Result ((Option Std.Usize) \u00d7 (Slice Slot))\n  := do\n  discover_loop slots cid txid now none 0#usize",
-   "upstream": [
-    {
-     "file": "src/dhcp_server.rs",
-     "line": 251,
-     "code": "    async fn process_discover(\n        &mut self,\n        client_hardware_address: EthernetAddress,\n        client_identifier: Option<EthernetAddress>,\n        transaction_id: u32,\n    ) -> Result<()> {\n        let id = client_identifier.unwrap_or(client_hardware_address);\n        let mut first_offered_index = None;\n        for (index, assignment) in self.assignments.iter_mut().enumerate() {\n            match assignment {\n                // if the lease has been offered to another index, then this can possibly be taken\n                // if there are no more spots\n                DhcpAssignment::Offered {\n                    identifier: a_identifier,\n                    ..\n                } if a_identifier != &id => first_offered_index = Some(index),\n                // if the assignment is given to a different identifier, and the lease time on that assignment is not up yet, then this spot can't be used\n                DhcpAssignment::Assigned {\n                    identifier: a_identifier,\n                    lease_end_time,\n                    ..\n                } if (*a_identifier != id) && (Instant::now() < *lease_end_time) => {}\n                _ => {\n                    // we are free to use this assignment spot\n                    *assignment = DhcpAssignment::Offered {\n                        transaction_id,\n                        identifier: id,\n                    };\n                    return self\n                        .construct_and_send_offer(\n                            client_hardware_address,\n                            transaction_id,\n                            index as u8,\n                        )\n                        .await;\n                }\n            }\n        }\n        if let Some(i) = first_offered_index {\n            *unsafe { self.assignments.get_unchecked_mut(i) } = DhcpAssignment::Offered {\n                identifier: id,\n                transaction_id,\n            };\n            self.construct_and_send_offer(client_hardware_address, transaction_id, i as u8)\n                .await\n        } else {\n            Ok(())\n        }\n    }"
-    }
-   ],
-   "upstream_note": "process_discover's slot choice; returns the slot index instead of sending the offer"
-  },
-  "request": {
-   "kind": "def",
-   "rust_path": "pico_dhcp_kernel::request",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 105,
-   "kernel_code": "pub fn request(slots: &mut [Slot], cid: u64, txid: u32, now: u64, new_end: u64) -> Option<usize> {\n    let mut i: usize = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        let hit = match s.kind {\n            Kind::Offered => {\n                if s.id == cid && s.txid == txid {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Assigned => {\n                if s.id == cid && s.txid == txid && now < s.lease_end {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Free => false,\n        };\n        if hit {\n            slots[i] = Slot { kind: Kind::Assigned, id: cid, txid, lease_end: new_end };\n            return Some(i);\n        }\n        i += 1;\n    }\n    None\n}",
-   "lean": "@[reducible]\ndef request\n  (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64)\n  (new_end : Std.U64) :\n  Result ((Option Std.Usize) \u00d7 (Slice Slot))\n  := do\n  request_loop slots cid txid now new_end 0#usize",
-   "upstream": [
-    {
-     "file": "src/dhcp_server.rs",
-     "line": 342,
-     "code": "        let mut assigned_index = None;\n        for (i, assignment) in self.assignments.iter_mut().enumerate() {\n            match assignment {\n                // we have offered an assignment with this transaction_id to this identifier\n                DhcpAssignment::Offered {\n                    identifier: a_identifier,\n                    transaction_id: a_transaction_id,\n                } if (*a_identifier == id) && (*a_transaction_id == transaction_id) => {\n                    *assignment = DhcpAssignment::Assigned {\n                        identifier: id,\n                        lease_end_time: new_lease_time,\n                        transaction_id,\n                    };\n                    assigned_index = Some(i);\n                    break;\n                }\n                // we have already assigned an ip to this identifier with this transaction_id, and the\n                // lease time isn't up\n                DhcpAssignment::Assigned {\n                    identifier: a_identifier,\n                    transaction_id: a_transaction_id,\n                    lease_end_time,\n                } if (*a_identifier == id)\n                    && (*a_transaction_id == transaction_id)\n                    && (Instant::now() < *lease_end_time) =>\n                {\n                    *lease_end_time = new_lease_time;\n                    assigned_index = Some(i);\n                    break;\n                }\n                _ => {}\n            }\n        }\n        if let Some(i) = assigned_index {\n            self.construct_and_send_ack(client_hardware_address, transaction_id, i as u8, client_ip)\n                .await\n        } else {\n            self.construct_and_send_nack(client_hardware_address, transaction_id, client_ip)\n                .await\n        }"
-    }
-   ],
-   "upstream_note": "process_request's ACK/NAK scan; Some(i) = ACK slot i, None = NAK"
-  },
-  "Kind": {
-   "kind": "inductive",
-   "rust_path": "pico_dhcp_kernel::Kind",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 18,
-   "kernel_code": "pub enum Kind {\n    Free,\n    Offered,\n    Assigned,\n}",
-   "lean": "@[discriminant isize]\ninductive Kind where\n| Free : Kind\n| Offered : Kind\n| Assigned : Kind",
-   "upstream": [
-    {
-     "file": "src/dhcp_server.rs",
-     "line": 17,
-     "code": "#[derive(Debug)]\nenum DhcpAssignment {\n    Offered {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n    },\n    Assigned {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n        lease_end_time: Instant,\n    },\n    Free,\n}"
-    }
-   ],
-   "upstream_note": "the variants of DhcpAssignment (Offered / Assigned / Free)"
-  },
   "DNS_HEADER_SIZE": {
    "kind": "def",
    "rust_path": "pico_dhcp_kernel::DNS_HEADER_SIZE",
@@ -111,26 +63,58 @@
    ],
    "upstream_note": ""
   },
-  "Slot": {
-   "kind": "structure",
-   "rust_path": "pico_dhcp_kernel::Slot",
+  "discover": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::discover",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 25,
-   "kernel_code": "pub struct Slot {\n    pub kind: Kind,\n    pub id: u64,\n    pub txid: u32,\n    pub lease_end: u64,\n}",
-   "lean": "structure Slot where\n  kind : Kind\n  id : Std.U64\n  txid : Std.U32\n  lease_end : Std.U64",
+   "kernel_line": 36,
+   "kernel_code": "pub fn discover(slots: &mut [Slot], cid: u64, txid: u32, now: u64) -> Option<usize> {\n    let mut first_offered: Option<usize> = None;\n    let mut i: usize = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        let usable = match s.kind {\n            Kind::Offered => {\n                if s.id != cid {\n                    first_offered = Some(i);\n                    false\n                } else {\n                    true\n                }\n            }\n            // (explicit ifs: the same, and Bool results Aeneas types right)\n            Kind::Assigned => {\n                if s.id == cid {\n                    true\n                } else if now >= s.lease_end {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Free => true,\n        };\n        if usable {\n            slots[i] = Slot { kind: Kind::Offered, id: cid, txid, lease_end: s.lease_end };\n            return Some(i);\n        }\n        i += 1;\n    }\n    match first_offered {\n        Some(j) => {\n            let le = slots[j].lease_end;\n            slots[j] = Slot { kind: Kind::Offered, id: cid, txid, lease_end: le };\n            Some(j)\n        }\n        None => None,\n    }\n}",
+   "lean": "@[reducible]\ndef discover\n  (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64) :\n  Result ((Option Std.Usize) \u00d7 (Slice Slot))\n  := do\n  discover_loop slots cid txid now none 0#usize",
    "upstream": [
     {
      "file": "src/dhcp_server.rs",
-     "line": 17,
-     "code": "#[derive(Debug)]\nenum DhcpAssignment {\n    Offered {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n    },\n    Assigned {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n        lease_end_time: Instant,\n    },\n    Free,\n}"
-    },
-    {
-     "file": "src/dhcp_server.rs",
-     "line": 39,
-     "code": "    assignments: [DhcpAssignment; N_ADDRESSES],"
+     "line": 251,
+     "code": "    async fn process_discover(\n        &mut self,\n        client_hardware_address: EthernetAddress,\n        client_identifier: Option<EthernetAddress>,\n        transaction_id: u32,\n    ) -> Result<()> {\n        let id = client_identifier.unwrap_or(client_hardware_address);\n        let mut first_offered_index = None;\n        for (index, assignment) in self.assignments.iter_mut().enumerate() {\n            match assignment {\n                // if the lease has been offered to another index, then this can possibly be taken\n                // if there are no more spots\n                DhcpAssignment::Offered {\n                    identifier: a_identifier,\n                    ..\n                } if a_identifier != &id => first_offered_index = Some(index),\n                // if the assignment is given to a different identifier, and the lease time on that assignment is not up yet, then this spot can't be used\n                DhcpAssignment::Assigned {\n                    identifier: a_identifier,\n                    lease_end_time,\n                    ..\n                } if (*a_identifier != id) && (Instant::now() < *lease_end_time) => {}\n                _ => {\n                    // we are free to use this assignment spot\n                    *assignment = DhcpAssignment::Offered {\n                        transaction_id,\n                        identifier: id,\n                    };\n                    return self\n                        .construct_and_send_offer(\n                            client_hardware_address,\n                            transaction_id,\n                            index as u8,\n                        )\n                        .await;\n                }\n            }\n        }\n        if let Some(i) = first_offered_index {\n            *unsafe { self.assignments.get_unchecked_mut(i) } = DhcpAssignment::Offered {\n                identifier: id,\n                transaction_id,\n            };\n            self.construct_and_send_offer(client_hardware_address, transaction_id, i as u8)\n                .await\n        } else {\n            Ok(())\n        }\n    }"
     }
    ],
-   "upstream_note": "one DhcpAssignment of the assignments table, flattened (identifier as u64, Instant as u64 ticks)"
+   "upstream_note": "process_discover's slot choice; returns the slot index instead of sending the offer"
+  },
+  "ANSWER_SIZE": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::ANSWER_SIZE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 142,
+   "kernel_code": "pub const ANSWER_SIZE: usize = 16;",
+   "lean": "@[global_simps, irreducible] def ANSWER_SIZE : Std.Usize := 16#usize",
+   "upstream": [
+    {
+     "file": "src/dns_packet.rs",
+     "line": 167,
+     "code": "        let answer_start = DNS_HEADER_SIZE + question_length;\n\n        let ip_address_start = answer_start + 2 + 2 + 2 + 4 + 2;"
+    },
+    {
+     "file": "src/dns_packet.rs",
+     "line": 189,
+     "code": "        query_buffer[ip_address_start..ip_address_start + 4].copy_from_slice(if address_matches {"
+    }
+   ],
+   "upstream_note": "the 12 answer bytes before ip_address_start plus the 4-byte address transform_query_to_response writes"
+  },
+  "request": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::request",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 105,
+   "kernel_code": "pub fn request(slots: &mut [Slot], cid: u64, txid: u32, now: u64, new_end: u64) -> Option<usize> {\n    let mut i: usize = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        let hit = match s.kind {\n            Kind::Offered => {\n                if s.id == cid && s.txid == txid {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Assigned => {\n                if s.id == cid && s.txid == txid && now < s.lease_end {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Free => false,\n        };\n        if hit {\n            slots[i] = Slot { kind: Kind::Assigned, id: cid, txid, lease_end: new_end };\n            return Some(i);\n        }\n        i += 1;\n    }\n    None\n}",
+   "lean": "@[reducible]\ndef request\n  (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64)\n  (new_end : Std.U64) :\n  Result ((Option Std.Usize) \u00d7 (Slice Slot))\n  := do\n  request_loop slots cid txid now new_end 0#usize",
+   "upstream": [
+    {
+     "file": "src/dhcp_server.rs",
+     "line": 342,
+     "code": "        let mut assigned_index = None;\n        for (i, assignment) in self.assignments.iter_mut().enumerate() {\n            match assignment {\n                // we have offered an assignment with this transaction_id to this identifier\n                DhcpAssignment::Offered {\n                    identifier: a_identifier,\n                    transaction_id: a_transaction_id,\n                } if (*a_identifier == id) && (*a_transaction_id == transaction_id) => {\n                    *assignment = DhcpAssignment::Assigned {\n                        identifier: id,\n                        lease_end_time: new_lease_time,\n                        transaction_id,\n                    };\n                    assigned_index = Some(i);\n                    break;\n                }\n                // we have already assigned an ip to this identifier with this transaction_id, and the\n                // lease time isn't up\n                DhcpAssignment::Assigned {\n                    identifier: a_identifier,\n                    transaction_id: a_transaction_id,\n                    lease_end_time,\n                } if (*a_identifier == id)\n                    && (*a_transaction_id == transaction_id)\n                    && (Instant::now() < *lease_end_time) =>\n                {\n                    *lease_end_time = new_lease_time;\n                    assigned_index = Some(i);\n                    break;\n                }\n                _ => {}\n            }\n        }\n        if let Some(i) = assigned_index {\n            self.construct_and_send_ack(client_hardware_address, transaction_id, i as u8, client_ip)\n                .await\n        } else {\n            self.construct_and_send_nack(client_hardware_address, transaction_id, client_ip)\n                .await\n        }"
+    }
+   ],
+   "upstream_note": "process_request's ACK/NAK scan; Some(i) = ACK slot i, None = NAK"
   },
   "answer_fits": {
    "kind": "def",
@@ -153,26 +137,42 @@
    ],
    "upstream_note": "upstream has no check (U1): recv_from's length is ignored; guards transform_query_to_response on the whole buffer"
   },
-  "ANSWER_SIZE": {
-   "kind": "def",
-   "rust_path": "pico_dhcp_kernel::ANSWER_SIZE",
+  "Kind": {
+   "kind": "inductive",
+   "rust_path": "pico_dhcp_kernel::Kind",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 142,
-   "kernel_code": "pub const ANSWER_SIZE: usize = 16;",
-   "lean": "@[global_simps, irreducible] def ANSWER_SIZE : Std.Usize := 16#usize",
+   "kernel_line": 18,
+   "kernel_code": "pub enum Kind {\n    Free,\n    Offered,\n    Assigned,\n}",
+   "lean": "@[discriminant isize]\ninductive Kind where\n| Free : Kind\n| Offered : Kind\n| Assigned : Kind",
    "upstream": [
     {
-     "file": "src/dns_packet.rs",
-     "line": 167,
-     "code": "        let answer_start = DNS_HEADER_SIZE + question_length;\n\n        let ip_address_start = answer_start + 2 + 2 + 2 + 4 + 2;"
-    },
-    {
-     "file": "src/dns_packet.rs",
-     "line": 189,
-     "code": "        query_buffer[ip_address_start..ip_address_start + 4].copy_from_slice(if address_matches {"
+     "file": "src/dhcp_server.rs",
+     "line": 17,
+     "code": "#[derive(Debug)]\nenum DhcpAssignment {\n    Offered {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n    },\n    Assigned {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n        lease_end_time: Instant,\n    },\n    Free,\n}"
     }
    ],
-   "upstream_note": "the 12 answer bytes before ip_address_start plus the 4-byte address transform_query_to_response writes"
+   "upstream_note": "the variants of DhcpAssignment (Offered / Assigned / Free)"
+  },
+  "Slot": {
+   "kind": "structure",
+   "rust_path": "pico_dhcp_kernel::Slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 25,
+   "kernel_code": "pub struct Slot {\n    pub kind: Kind,\n    pub id: u64,\n    pub txid: u32,\n    pub lease_end: u64,\n}",
+   "lean": "structure Slot where\n  kind : Kind\n  id : Std.U64\n  txid : Std.U32\n  lease_end : Std.U64",
+   "upstream": [
+    {
+     "file": "src/dhcp_server.rs",
+     "line": 17,
+     "code": "#[derive(Debug)]\nenum DhcpAssignment {\n    Offered {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n    },\n    Assigned {\n        transaction_id: u32,\n        identifier: EthernetAddress,\n        lease_end_time: Instant,\n    },\n    Free,\n}"
+    },
+    {
+     "file": "src/dhcp_server.rs",
+     "line": 39,
+     "code": "    assignments: [DhcpAssignment; N_ADDRESSES],"
+    }
+   ],
+   "upstream_note": "one DhcpAssignment of the assignments table, flattened (identifier as u64, Instant as u64 ticks)"
   }
  },
  "specs": {}

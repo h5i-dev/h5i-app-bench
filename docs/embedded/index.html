@@ -78,7 +78,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <p class="caption">– = not run yet. Normal-input runs use only what the firmware's own client sends; they are in progress.</p>
+        <p class="caption">Normal input: only what the firmware's own client or UI sends, within the ranges it allows, plus ordinary device events; every difference counts except a short named list of cosmetic ones. Mixed input adds malformed requests and boundary values.</p>
         <noscript><p>Enable JavaScript to see the results.</p></noscript>
       </section>
 
@@ -120,6 +120,7 @@
             <tbody></tbody>
           </table>
         </div>
+        <ul class="emb-notes" id="normal-notes"></ul>
         <p class="caption">Mixed-input scenarios deliberately include malformed requests and boundary values, so their identical share mostly reflects how often the generator hits such input, not how often the firmwares disagree in normal use.</p>
       </section>
 

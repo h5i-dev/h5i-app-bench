@@ -25,8 +25,8 @@
    "statement": "theorem split_index_boundary (s : Slice Std.U8) (w k : Std.Usize) (h0 : 0 < s.val.length)\n    (h : split_index s w = ok k) : is_boundary s k = ok true",
    "proof": "theorem split_index_boundary (s : Slice Std.U8) (w k : Std.Usize) (h0 : 0 < s.val.length)\n    (h : split_index s w = ok k) : is_boundary s k = ok true := by\n  obtain \u27e8k', hk, _, _, hb\u27e9 := (WP.spec_equiv_exists _ _).1 (split_index_spec s w h0)\n  rw [hk] at h\n  simp only [Result.ok.injEq] at h\n  subst h\n  exact is_boundary_of_bnd s k' hb",
    "deps": [
-    "split_index",
     "is_boundary",
+    "split_index",
     "floor_boundary"
    ],
    "spec": []
@@ -58,59 +58,6 @@
   }
  ],
  "decls": {
-  "printable": {
-   "kind": "def",
-   "rust_path": "thermal_printer_kernel::printable",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 97,
-   "kernel_code": "pub fn printable(b: u8) -> bool {\n    b >= SPACE && b != DEL\n}",
-   "lean": "def printable (b : Std.U8) : Result Bool := do\n  if b >= SPACE\n  then ok (b != DEL)\n  else ok false",
-   "upstream": [
-    {
-     "file": "src/printer.rs",
-     "line": 140,
-     "code": "    async fn print_line(&mut self, line: &str) {\n        debug!(\"Printing line: {}\", line);\n\n        self.printer.send_data(line.as_bytes()).await;\n        self.printer.send_data(&[0x0A]).await; // LF\n    }"
-    }
-   ],
-   "upstream_note": "upstream has no check (U2); guards print_line, which sends the line's bytes (ESC/POS commands included) to the printer"
-  },
-  "floor_boundary": {
-   "kind": "def",
-   "rust_path": "thermal_printer_kernel::floor_boundary",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 35,
-   "kernel_code": "pub fn floor_boundary(s: &[u8], i: usize) -> usize {\n    let mut j = if i > s.len() { s.len() } else { i };\n    while j > 0 && !is_boundary(s, j) {\n        j -= 1;\n    }\n    j\n}",
-   "lean": "def floor_boundary (s : Slice Std.U8) (i : Std.Usize) : Result Std.Usize := do\n  let i1 := Slice.len s\n  let j \u2190 if i > i1\n            then ok (Slice.len s)\n            else ok i\n  floor_boundary_loop s j",
-   "upstream": [
-    {
-     "file": "src/printer.rs",
-     "line": 106,
-     "code": "                let take_len = core::cmp::min(MAX_CHARACTERS_PER_LINE, remaining.len());\n                let slice = &remaining[..take_len];"
-    },
-    {
-     "file": "src/printer.rs",
-     "line": 50,
-     "code": "            let page = (DATA_SIZE + offset).min(payload.len());\n            let slice = &payload[offset..page];"
-    }
-   ],
-   "upstream_note": "upstream has no check (U1); backs the take/page index of those slices off to a char boundary"
-  },
-  "split_index": {
-   "kind": "def",
-   "rust_path": "thermal_printer_kernel::split_index",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 47,
-   "kernel_code": "pub fn split_index(remaining: &[u8], width: usize) -> usize {\n    let len = remaining.len();\n    if len == 0 {\n        return 0;\n    }\n    let mut take = if width < len { width } else { len };\n    take = floor_boundary(remaining, take);\n    if take == 0 {\n        // A first character longer than the width: take it whole.\n        take = 1;\n        while take < len && !is_boundary(remaining, take) {\n            take += 1;\n        }\n        return take;\n    }\n    // rfind(' ') in remaining[..take]\n    let mut k = take;\n    while k > 0 {\n        k -= 1;\n        if remaining[k] == SPACE {\n            if k == 0 {\n                return take;\n            }\n            return k;\n        }\n    }\n    take\n}",
-   "lean": "def split_index\n  (remaining : Slice Std.U8) (width : Std.Usize) : Result Std.Usize := do\n  let len := Slice.len remaining\n  if len = 0#usize\n  then ok 0#usize\n  else\n    let take \u2190 if width < len\n                 then ok width\n                 else ok len\n    let take1 \u2190 floor_boundary remaining take\n    if take1 = 0#usize\n    then split_index_loop0 remaining len 1#usize\n    else split_index_loop1 remaining take1 take1",
-   "upstream": [
-    {
-     "file": "src/printer.rs",
-     "line": 105,
-     "code": "            while !remaining.is_empty() {\n                let take_len = core::cmp::min(MAX_CHARACTERS_PER_LINE, remaining.len());\n                let slice = &remaining[..take_len];\n\n                // Try to break at the last space within the slice\n                let break_point = slice.rfind(' ').unwrap_or(take_len);\n                let split_idx = if break_point == 0 {\n                    take_len\n                } else {\n                    break_point\n                };\n\n                let (line, rest) = remaining.split_at(split_idx);\n                lines.push(line.trim());\n\n                remaining = rest.trim_start();\n            }"
-    }
-   ],
-   "upstream_note": "print's line wrap: take <= MAX_CHARACTERS_PER_LINE, break at the last space unless at 0"
-  },
   "is_boundary": {
    "kind": "def",
    "rust_path": "thermal_printer_kernel::is_boundary",
@@ -132,22 +79,6 @@
    ],
    "upstream_note": "upstream has no check (U1); guards the byte-index slices &remaining[..take_len] and &payload[offset..page], which panic inside a character"
   },
-  "chunk_end": {
-   "kind": "def",
-   "rust_path": "thermal_printer_kernel::chunk_end",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 78,
-   "kernel_code": "pub fn chunk_end(payload: &[u8], offset: usize, size: usize) -> usize {\n    let len = payload.len();\n    if offset >= len {\n        return len;\n    }\n    let limit = if size > len - offset { len } else { offset + size };\n    let e = floor_boundary(payload, limit);\n    if e > offset {\n        return e;\n    }\n    let mut j = offset + 1;\n    while j < len && !is_boundary(payload, j) {\n        j += 1;\n    }\n    j\n}",
-   "lean": "def chunk_end\n  (payload : Slice Std.U8) (offset : Std.Usize) (size : Std.Usize) :\n  Result Std.Usize\n  := do\n  let len := Slice.len payload\n  if offset >= len\n  then ok len\n  else\n    let i \u2190 len - offset\n    let limit \u2190 if size > i\n                  then ok len\n                  else offset + size\n    let e \u2190 floor_boundary payload limit\n    if e > offset\n    then ok e\n    else let j \u2190 offset + 1#usize\n         chunk_end_loop payload len j",
-   "upstream": [
-    {
-     "file": "src/printer.rs",
-     "line": 47,
-     "code": "    pub async fn chunk_print(&self, payload: &str) {\n        let mut offset: usize = 0;\n        while offset < payload.len() {\n            let page = (DATA_SIZE + offset).min(payload.len());\n            let slice = &payload[offset..page];\n            let message: MessageData = heapless::String::from_str(slice).unwrap();\n            self.print(message).await;\n            offset = page;\n        }\n    }"
-    }
-   ],
-   "upstream_note": "chunk_print's DATA_SIZE page end, on a char boundary"
-  },
   "SPACE": {
    "kind": "def",
    "rust_path": "thermal_printer_kernel::SPACE",
@@ -164,6 +95,54 @@
    ],
    "upstream_note": "the ' ' that print breaks a line at (slice.rfind(' '))"
   },
+  "split_index": {
+   "kind": "def",
+   "rust_path": "thermal_printer_kernel::split_index",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 47,
+   "kernel_code": "pub fn split_index(remaining: &[u8], width: usize) -> usize {\n    let len = remaining.len();\n    if len == 0 {\n        return 0;\n    }\n    let mut take = if width < len { width } else { len };\n    take = floor_boundary(remaining, take);\n    if take == 0 {\n        // A first character longer than the width: take it whole.\n        take = 1;\n        while take < len && !is_boundary(remaining, take) {\n            take += 1;\n        }\n        return take;\n    }\n    // rfind(' ') in remaining[..take]\n    let mut k = take;\n    while k > 0 {\n        k -= 1;\n        if remaining[k] == SPACE {\n            if k == 0 {\n                return take;\n            }\n            return k;\n        }\n    }\n    take\n}",
+   "lean": "def split_index\n  (remaining : Slice Std.U8) (width : Std.Usize) : Result Std.Usize := do\n  let len := Slice.len remaining\n  if len = 0#usize\n  then ok 0#usize\n  else\n    let take \u2190 if width < len\n                 then ok width\n                 else ok len\n    let take1 \u2190 floor_boundary remaining take\n    if take1 = 0#usize\n    then split_index_loop0 remaining len 1#usize\n    else split_index_loop1 remaining take1 take1",
+   "upstream": [
+    {
+     "file": "src/printer.rs",
+     "line": 105,
+     "code": "            while !remaining.is_empty() {\n                let take_len = core::cmp::min(MAX_CHARACTERS_PER_LINE, remaining.len());\n                let slice = &remaining[..take_len];\n\n                // Try to break at the last space within the slice\n                let break_point = slice.rfind(' ').unwrap_or(take_len);\n                let split_idx = if break_point == 0 {\n                    take_len\n                } else {\n                    break_point\n                };\n\n                let (line, rest) = remaining.split_at(split_idx);\n                lines.push(line.trim());\n\n                remaining = rest.trim_start();\n            }"
+    }
+   ],
+   "upstream_note": "print's line wrap: take <= MAX_CHARACTERS_PER_LINE, break at the last space unless at 0"
+  },
+  "printable": {
+   "kind": "def",
+   "rust_path": "thermal_printer_kernel::printable",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 97,
+   "kernel_code": "pub fn printable(b: u8) -> bool {\n    b >= SPACE && b != DEL\n}",
+   "lean": "def printable (b : Std.U8) : Result Bool := do\n  if b >= SPACE\n  then ok (b != DEL)\n  else ok false",
+   "upstream": [
+    {
+     "file": "src/printer.rs",
+     "line": 140,
+     "code": "    async fn print_line(&mut self, line: &str) {\n        debug!(\"Printing line: {}\", line);\n\n        self.printer.send_data(line.as_bytes()).await;\n        self.printer.send_data(&[0x0A]).await; // LF\n    }"
+    }
+   ],
+   "upstream_note": "upstream has no check (U2); guards print_line, which sends the line's bytes (ESC/POS commands included) to the printer"
+  },
+  "chunk_end": {
+   "kind": "def",
+   "rust_path": "thermal_printer_kernel::chunk_end",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 78,
+   "kernel_code": "pub fn chunk_end(payload: &[u8], offset: usize, size: usize) -> usize {\n    let len = payload.len();\n    if offset >= len {\n        return len;\n    }\n    let limit = if size > len - offset { len } else { offset + size };\n    let e = floor_boundary(payload, limit);\n    if e > offset {\n        return e;\n    }\n    let mut j = offset + 1;\n    while j < len && !is_boundary(payload, j) {\n        j += 1;\n    }\n    j\n}",
+   "lean": "def chunk_end\n  (payload : Slice Std.U8) (offset : Std.Usize) (size : Std.Usize) :\n  Result Std.Usize\n  := do\n  let len := Slice.len payload\n  if offset >= len\n  then ok len\n  else\n    let i \u2190 len - offset\n    let limit \u2190 if size > i\n                  then ok len\n                  else offset + size\n    let e \u2190 floor_boundary payload limit\n    if e > offset\n    then ok e\n    else let j \u2190 offset + 1#usize\n         chunk_end_loop payload len j",
+   "upstream": [
+    {
+     "file": "src/printer.rs",
+     "line": 47,
+     "code": "    pub async fn chunk_print(&self, payload: &str) {\n        let mut offset: usize = 0;\n        while offset < payload.len() {\n            let page = (DATA_SIZE + offset).min(payload.len());\n            let slice = &payload[offset..page];\n            let message: MessageData = heapless::String::from_str(slice).unwrap();\n            self.print(message).await;\n            offset = page;\n        }\n    }"
+    }
+   ],
+   "upstream_note": "chunk_print's DATA_SIZE page end, on a char boundary"
+  },
   "DEL": {
    "kind": "def",
    "rust_path": "thermal_printer_kernel::DEL",
@@ -173,6 +152,27 @@
    "lean": "@[global_simps, irreducible] def DEL : Std.U8 := 127#u8",
    "upstream": [],
    "upstream_note": "port-only: 0x7F bound of printable's control-byte filter (U2); upstream filters nothing"
+  },
+  "floor_boundary": {
+   "kind": "def",
+   "rust_path": "thermal_printer_kernel::floor_boundary",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub fn floor_boundary(s: &[u8], i: usize) -> usize {\n    let mut j = if i > s.len() { s.len() } else { i };\n    while j > 0 && !is_boundary(s, j) {\n        j -= 1;\n    }\n    j\n}",
+   "lean": "def floor_boundary (s : Slice Std.U8) (i : Std.Usize) : Result Std.Usize := do\n  let i1 := Slice.len s\n  let j \u2190 if i > i1\n            then ok (Slice.len s)\n            else ok i\n  floor_boundary_loop s j",
+   "upstream": [
+    {
+     "file": "src/printer.rs",
+     "line": 106,
+     "code": "                let take_len = core::cmp::min(MAX_CHARACTERS_PER_LINE, remaining.len());\n                let slice = &remaining[..take_len];"
+    },
+    {
+     "file": "src/printer.rs",
+     "line": 50,
+     "code": "            let page = (DATA_SIZE + offset).min(payload.len());\n            let slice = &payload[offset..page];"
+    }
+   ],
+   "upstream_note": "upstream has no check (U1); backs the take/page index of those slices off to a char boundary"
   }
  },
  "specs": {}

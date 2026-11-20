@@ -598,3 +598,5 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .embedded-page #detail-table td.num { color: var(--ink); }
 .embedded-page #detail-table td.pending { color: var(--dim); }
 .embedded-page .matrix .t-prop { color: var(--text); }
+.emb-notes { margin: 16px 0 0; padding-left: 18px; color: var(--text); font-size: 13.5px; max-width: 100ch; }
+.emb-notes li { margin: 6px 0; }

@@ -64,6 +64,90 @@
   }
  ],
  "decls": {
+  "password": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub fn password(is_keep_marker: bool) -> Password {\n    if is_keep_marker { Password::KeepStored } else { Password::Replace }\n}",
+   "lean": "def password (is_keep_marker : Bool) : Result Password := do\n  if is_keep_marker\n  then ok Password.KeepStored\n  else ok Password.Replace",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 158,
+     "code": "    if new_config.mqtt_password == KEEP_PASSWORD {\n        new_config.mqtt_password = state.mqtt.mqtt_password.clone();\n    }"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 183,
+     "code": "    if new_config.wifi_key == KEEP_PASSWORD {\n        new_config.wifi_key = state.wifi.wifi_key.clone();\n    }"
+    }
+   ],
+   "upstream_note": "the keep-marker check of post_config_mqtt and post_config_wifi"
+  },
+  "serve_password": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::serve_password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub fn serve_password() -> bool {\n    true\n}",
+   "lean": "def serve_password : Result Bool := do\n  ok true",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 146,
+     "code": "    config.mqtt_password = KEEP_PASSWORD.try_into().unwrap();"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 175,
+     "code": "    config.wifi_key = KEEP_PASSWORD.try_into().unwrap();"
+    }
+   ],
+   "upstream_note": "a served config always carries the marker, never the password"
+  },
+  "stpm_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::stpm_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 59,
+   "kernel_code": "pub fn stpm_ok(samples: u32) -> bool {\n    samples >= 1\n}",
+   "lean": "def stpm_ok (samples : Std.U32) : Result Bool := do\n  ok (samples >= 1#u32)",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 219,
+     "code": "async fn post_config_stpm(JsonBody(new_config): JsonBody<StpmConfig>) -> impl IntoResponse {\n    let mut state = STATE.lock().await;\n    let state = state.as_mut().unwrap();\n\n    state.stpm = new_config.clone();\n    CONFIG_STPM.signal(new_config);\n}"
+    }
+   ],
+   "upstream_note": "post_config_stpm takes any samples_stpm; the port refuses 0 (U1)"
+  },
+  "Password": {
+   "kind": "inductive",
+   "rust_path": "energy_monitor_ha_kernel::Password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub enum Password {\n    /// `--keep--`: the stored password stays.\n    KeepStored,\n    /// A new password.\n    Replace,\n}",
+   "lean": "@[discriminant isize]\ninductive Password where\n| KeepStored : Password\n| Replace : Password",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 21,
+     "code": "const KEEP_PASSWORD: &str = \"--keep--\";"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 158,
+     "code": "    if new_config.mqtt_password == KEEP_PASSWORD {\n        new_config.mqtt_password = state.mqtt.mqtt_password.clone();\n    }"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 183,
+     "code": "    if new_config.wifi_key == KEEP_PASSWORD {\n        new_config.wifi_key = state.wifi.wifi_key.clone();\n    }"
+    }
+   ],
+   "upstream_note": "a submitted password: the --keep-- marker keeps the stored one, anything else replaces it"
+  },
   "frequency_ok": {
    "kind": "def",
    "rust_path": "energy_monitor_ha_kernel::frequency_ok",
@@ -100,90 +184,6 @@
     }
    ],
    "upstream_note": "IntCalibration::apply divides by num_samples (0 panics, U1); the port publishes only with at least one sample"
-  },
-  "stpm_ok": {
-   "kind": "def",
-   "rust_path": "energy_monitor_ha_kernel::stpm_ok",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 59,
-   "kernel_code": "pub fn stpm_ok(samples: u32) -> bool {\n    samples >= 1\n}",
-   "lean": "def stpm_ok (samples : Std.U32) : Result Bool := do\n  ok (samples >= 1#u32)",
-   "upstream": [
-    {
-     "file": "src/config/server.rs",
-     "line": 219,
-     "code": "async fn post_config_stpm(JsonBody(new_config): JsonBody<StpmConfig>) -> impl IntoResponse {\n    let mut state = STATE.lock().await;\n    let state = state.as_mut().unwrap();\n\n    state.stpm = new_config.clone();\n    CONFIG_STPM.signal(new_config);\n}"
-    }
-   ],
-   "upstream_note": "post_config_stpm takes any samples_stpm; the port refuses 0 (U1)"
-  },
-  "serve_password": {
-   "kind": "def",
-   "rust_path": "energy_monitor_ha_kernel::serve_password",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 54,
-   "kernel_code": "pub fn serve_password() -> bool {\n    true\n}",
-   "lean": "def serve_password : Result Bool := do\n  ok true",
-   "upstream": [
-    {
-     "file": "src/config/server.rs",
-     "line": 146,
-     "code": "    config.mqtt_password = KEEP_PASSWORD.try_into().unwrap();"
-    },
-    {
-     "file": "src/config/server.rs",
-     "line": 175,
-     "code": "    config.wifi_key = KEEP_PASSWORD.try_into().unwrap();"
-    }
-   ],
-   "upstream_note": "a served config always carries the marker, never the password"
-  },
-  "Password": {
-   "kind": "inductive",
-   "rust_path": "energy_monitor_ha_kernel::Password",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 42,
-   "kernel_code": "pub enum Password {\n    /// `--keep--`: the stored password stays.\n    KeepStored,\n    /// A new password.\n    Replace,\n}",
-   "lean": "@[discriminant isize]\ninductive Password where\n| KeepStored : Password\n| Replace : Password",
-   "upstream": [
-    {
-     "file": "src/config/server.rs",
-     "line": 21,
-     "code": "const KEEP_PASSWORD: &str = \"--keep--\";"
-    },
-    {
-     "file": "src/config/server.rs",
-     "line": 158,
-     "code": "    if new_config.mqtt_password == KEEP_PASSWORD {\n        new_config.mqtt_password = state.mqtt.mqtt_password.clone();\n    }"
-    },
-    {
-     "file": "src/config/server.rs",
-     "line": 183,
-     "code": "    if new_config.wifi_key == KEEP_PASSWORD {\n        new_config.wifi_key = state.wifi.wifi_key.clone();\n    }"
-    }
-   ],
-   "upstream_note": "a submitted password: the --keep-- marker keeps the stored one, anything else replaces it"
-  },
-  "password": {
-   "kind": "def",
-   "rust_path": "energy_monitor_ha_kernel::password",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub fn password(is_keep_marker: bool) -> Password {\n    if is_keep_marker { Password::KeepStored } else { Password::Replace }\n}",
-   "lean": "def password (is_keep_marker : Bool) : Result Password := do\n  if is_keep_marker\n  then ok Password.KeepStored\n  else ok Password.Replace",
-   "upstream": [
-    {
-     "file": "src/config/server.rs",
-     "line": 158,
-     "code": "    if new_config.mqtt_password == KEEP_PASSWORD {\n        new_config.mqtt_password = state.mqtt.mqtt_password.clone();\n    }"
-    },
-    {
-     "file": "src/config/server.rs",
-     "line": 183,
-     "code": "    if new_config.wifi_key == KEEP_PASSWORD {\n        new_config.wifi_key = state.wifi.wifi_key.clone();\n    }"
-    }
-   ],
-   "upstream_note": "the keep-marker check of post_config_mqtt and post_config_wifi"
   }
  },
  "specs": {}

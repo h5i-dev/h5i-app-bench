@@ -15,7 +15,12 @@
     "explained": 130,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Requests without a valid session, bearer token or API key are never granted; expired sessions and empty secrets never grant",
     "State-changing routes require admin rights; token-over-HTTP is refused when disabled",
@@ -116,7 +121,12 @@
     "explained": 526,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Unauthenticated requests are refused",
     "Every committed inventory row can be read back after a reboot",
@@ -229,7 +239,12 @@
     "explained": 535,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 761,
+    "cosmetic": 0,
+    "other": 239
+   },
    "properties": [
     "Spoolman requests are forwarded only to a usable server; calibration needs a client; device info needs a ready sensor",
     "Read-only requests change no stored state; Wi-Fi updates reset the connection",
@@ -314,7 +329,8 @@
      "name": "it_mask_collision",
      "doc": "(F) The integration-time encodings overflow `IT_MASK`: `IT_25MS` and `IT_50MS` set bits outside the 3-bit field, so after masking `_50ms` and `_100ms` are the same. Latent: `set_integration_time` is never called."
     }
-   ]
+   ],
+   "normal_note": "All 239 differing scenarios trace to one upstream behaviour on normal input: the filament list is lost when Spoolman's reply arrives during a 2 ms sleep in the handler."
   },
   {
    "name": "pico-bit",
@@ -330,7 +346,12 @@
     "explained": 326,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "File names cannot traverse paths and decode to confined, ASCII names",
     "Percent-decoding and request classification are total (never fail)",
@@ -423,7 +444,12 @@
     "explained": 786,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Retry backoff is bounded and monotone; a successful poll recovers",
     "User requests pre-empt polling; queue operations keep other entries",
@@ -513,8 +539,8 @@
     "unexplained": 0
    },
    "normal": {
-    "scenarios": 300,
-    "identical": 300,
+    "scenarios": 1000,
+    "identical": 1000,
     "cosmetic": 0,
     "other": 0
    },
@@ -602,7 +628,12 @@
     "explained": 0,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Duty sent to the heater is at most 100%; out-of-range duty is refused",
     "Anonymous, mismatched or expired remotes are refused and send nothing",
@@ -707,7 +738,12 @@
     "explained": 602,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Motor and steering percentages stay in range for every command",
     "Servo duty stays within the pulse range; the arithmetic cannot overflow",
@@ -772,7 +808,12 @@
     "explained": 842,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Only valid AP names are stored; settings are clamped into range",
     "A pending save completes before a restart",
@@ -841,7 +882,12 @@
     "explained": 700,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Page and schedule ids are valid; encoded messages contain no raw protocol brackets",
     "Message encoding is total; dates and times are two digits",
@@ -901,7 +947,12 @@
     "explained": 899,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 193,
+    "cosmetic": 0,
+    "other": 807
+   },
    "properties": [
     "Overcurrent reverses a closing door and stops an opening one; the timeout stops the motor",
     "A stale overcurrent flag is ignored; no motion is commanded without the driver",
@@ -946,7 +997,8 @@
      "name": "duty_at_most_max",
      "doc": "(S) No duty over 100 %."
     }
-   ]
+   ],
+   "normal_note": "All 807 differing scenarios trace to upstream reading the end-stop stall after an ordinary full movement as overcurrent (it then reopens the door). With an end stop that does not read as overcurrent, 250 of 250 scenarios are identical; the effect depends on the door hardware."
   },
   {
    "name": "blind_controller.rs",
@@ -962,7 +1014,12 @@
     "explained": 961,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 700,
+    "identical": 700,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "A move never exceeds the full travel; lowering stops at the bottom",
     "The position estimate follows the moves; idle at the limits",
@@ -998,7 +1055,8 @@
      "name": "ramp",
      "doc": "(C) The first and last 100 microsteps are slow."
     }
-   ]
+   ],
+   "normal_note": "Run stopped at 700 of 1000 scenarios."
   },
   {
    "name": "garaza-pico-rs",
@@ -1014,7 +1072,12 @@
     "explained": 587,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "A request starts one pulse of the configured length, which always ends low",
     "Requests during a pulse are coalesced; the next pulse waits for the pause",
@@ -1062,7 +1125,12 @@
     "explained": 0,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "The watchdog stops the motors when commands are overdue and is quiet when disarmed",
     "An active command arms it; a held lease is not taken",
@@ -1110,7 +1178,12 @@
     "explained": 450,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "The stored password is never served",
     "Sample-count and period computations never divide by zero",
@@ -1154,7 +1227,12 @@
     "explained": 934,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Only consistent alarm and fan configurations are admitted",
     "The alarm fires above the high and below the low threshold, is reachable, and clears with hysteresis",
@@ -1210,7 +1288,12 @@
     "explained": 993,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Text is only cut at UTF-8 character boundaries and every cut makes progress",
     "Printable output excludes control bytes"
@@ -1249,7 +1332,12 @@
     "explained": 973,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Colour parsing is total and accepts exactly the #rrggbb shape"
    ],
@@ -1283,7 +1371,12 @@
     "explained": 743,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 800,
+    "identical": 800,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Commands for a motor that does not exist are refused",
     "Zero speed and zero acceleration are refused",
@@ -1311,7 +1404,8 @@
      "name": "queued_only_valid",
      "doc": "(S) Every command is either valid and queued for the motor it names, or not valid and refused (no such motor, or a bad move): nothing reaches a queue past the two senders, or with a speed or acceleration of 0."
     }
-   ]
+   ],
+   "normal_note": "Run stopped at 800 of 1000 scenarios."
   },
   {
    "name": "chlorophyll",
@@ -1327,7 +1421,12 @@
     "explained": 828,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Commands for another device are ignored",
     "An over-long name keeps the old one; an unchanged name is not written",
@@ -1375,7 +1474,12 @@
     "explained": 722,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "The linear regression never panics for any calibration data; zero divisors are refused",
     "Pressure conversion never panics",
@@ -1415,11 +1519,16 @@
    "theorems": 7,
    "mixed": {
     "scenarios": 1000,
-    "identical": 33,
-    "explained": 965,
-    "unexplained": 2
+    "identical": 53,
+    "explained": 947,
+    "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "An update starts only with a token and a length that fits",
     "Chunks are contiguous and within the declared length",
@@ -1456,7 +1565,8 @@
      "name": "confirm_boot_needs_up",
      "doc": "**S (U4).** A swapped-in image is confirmed only once the firmware is up."
     }
-   ]
+   ],
+   "normal_note": "Normal uploads are limited to 1 KiB: larger uploads reach upstream behaviour that differs on every client."
   },
   {
    "name": "pico_dhcp_dns_server",
@@ -1472,7 +1582,12 @@
     "explained": 607,
     "unexplained": 0
    },
-   "normal": null,
+   "normal": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "cosmetic": 0,
+    "other": 0
+   },
    "properties": [
     "Discovery keeps live leases; a request is acknowledged only for its own lease",
     "DNS answers stay within the packet bounds"

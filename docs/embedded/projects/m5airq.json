@@ -13,14 +13,14 @@
    "statement": "theorem transition_total (a : Device) (s : OtaState) (c : Command) :\n    \u2203 r, transition a s c = ok r",
    "proof": "theorem transition_total (a : Device) (s : OtaState) (c : Command) :\n    \u2203 r, transition a s c = ok r := by\n  have h : transition a s c \u2983 _ => True \u2984 := by\n    unfold transition\n    cases c <;> step* <;> scalar_tac\n  exact H5iAppLib.ok_of h",
    "deps": [
-    "OtaState",
     "transition",
-    "Device",
     "Command",
-    "Error",
+    "OtaState",
+    "Device",
+    "MAX_CHUNK",
     "Reply",
-    "OTA_SLOT_SIZE",
-    "MAX_CHUNK"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -31,15 +31,15 @@
    "statement": "theorem sound (a : Device) (s : OtaState) (c : Command) (ws : Option OtaState) (r : Reply)\n    (hro : read_only c = ok true) (ht : transition a s c = ok (.Ok (ws, r))) : ws = none",
    "proof": "theorem sound (a : Device) (s : OtaState) (c : Command) (ws : Option OtaState) (r : Reply)\n    (hro : read_only c = ok true) (ht : transition a s c = ok (.Ok (ws, r))) : ws = none := by\n  cases c <;> simp_all [read_only, transition]",
    "deps": [
-    "OtaState",
-    "read_only",
-    "Device",
-    "transition",
-    "Reply",
     "Command",
+    "transition",
+    "Device",
+    "Reply",
+    "read_only",
+    "OtaState",
+    "MAX_CHUNK",
     "Error",
-    "OTA_SLOT_SIZE",
-    "MAX_CHUNK"
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -50,14 +50,14 @@
    "statement": "theorem write_bounded (a : Device) (s : OtaState) (offset len : U32) (io : Bool) (n : OtaState) (r : Reply)\n    (h : transition a s (.Write offset len io) = ok (.Ok (some n, r))) :\n    n.written.val \u2264 s.total.val",
    "proof": "theorem write_bounded (a : Device) (s : OtaState) (offset len : U32) (io : Bool) (n : OtaState) (r : Reply)\n    (h : transition a s (.Write offset len io) = ok (.Ok (some n, r))) :\n    n.written.val \u2264 s.total.val := by\n  have H := H5iAppLib.post_of_ok (transition_wp a s (.Write offset len io)) h (some n) r rfl\n  simp only [PostOk] at H\n  simp_all",
    "deps": [
-    "OtaState",
-    "Device",
     "transition",
+    "Device",
     "Reply",
-    "Error",
-    "OTA_SLOT_SIZE",
+    "OtaState",
+    "Command",
     "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -68,14 +68,14 @@
    "statement": "theorem write_sequential (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)\n    (h : transition a s (.Write offset len true) = ok (.Ok (some n, r))) :\n    offset = s.written \u2227 n.written.val = s.written.val + len.val",
    "proof": "theorem write_sequential (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)\n    (h : transition a s (.Write offset len true) = ok (.Ok (some n, r))) :\n    offset = s.written \u2227 n.written.val = s.written.val + len.val := by\n  have H := H5iAppLib.post_of_ok (transition_wp a s (.Write offset len true)) h (some n) r rfl\n  simp only [PostOk] at H\n  simp_all",
    "deps": [
-    "OtaState",
-    "Device",
     "transition",
+    "Device",
     "Reply",
-    "Error",
-    "OTA_SLOT_SIZE",
+    "OtaState",
+    "Command",
     "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -86,14 +86,14 @@
    "statement": "theorem end_integrity (a : Device) (s : OtaState) (ec ac : U32) (mo ro ao : Bool) (n : OtaState) (r : Reply)\n    (h : transition a s (.End ec ac mo ro ao) = ok (.Ok (some n, r))) (hclean : n.error = false) :\n    s.written = s.total \u2227 ro = true \u2227 mo = true \u2227 ac = ec \u2227 ao = true",
    "proof": "theorem end_integrity (a : Device) (s : OtaState) (ec ac : U32) (mo ro ao : Bool) (n : OtaState) (r : Reply)\n    (h : transition a s (.End ec ac mo ro ao) = ok (.Ok (some n, r))) (hclean : n.error = false) :\n    s.written = s.total \u2227 ro = true \u2227 mo = true \u2227 ac = ec \u2227 ao = true := by\n  have H := H5iAppLib.post_of_ok (transition_wp a s (.End ec ac mo ro ao)) h (some n) r rfl\n  simp only [PostOk] at H\n  simp_all",
    "deps": [
-    "OtaState",
-    "Device",
     "transition",
+    "Device",
     "Reply",
-    "Error",
-    "OTA_SLOT_SIZE",
+    "OtaState",
+    "Command",
     "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -104,14 +104,14 @@
    "statement": "theorem end_failure_closes (a : Device) (s : OtaState) (ec ac : U32) (mo ro ao : Bool) (n : OtaState) (r : Reply)\n    (h : transition a s (.End ec ac mo ro ao) = ok (.Ok (some n, r)))\n    (hfail : \u00ac (ro = true \u2227 mo = true \u2227 ac = ec \u2227 ao = true)) :\n    n.active = false \u2227 n.error = true",
    "proof": "theorem end_failure_closes (a : Device) (s : OtaState) (ec ac : U32) (mo ro ao : Bool) (n : OtaState) (r : Reply)\n    (h : transition a s (.End ec ac mo ro ao) = ok (.Ok (some n, r)))\n    (hfail : \u00ac (ro = true \u2227 mo = true \u2227 ac = ec \u2227 ao = true)) :\n    n.active = false \u2227 n.error = true := by\n  have H := H5iAppLib.post_of_ok (transition_wp a s (.End ec ac mo ro ao)) h (some n) r rfl\n  simp only [PostOk] at H\n  refine \u27e8H.2.1, ?_\u27e9\n  cases he : n.error\n  \u00b7 exact absurd (H.2.2.2.2.1 he) hfail\n  \u00b7 rfl",
    "deps": [
-    "OtaState",
-    "Device",
     "transition",
+    "Device",
     "Reply",
-    "Error",
-    "OTA_SLOT_SIZE",
+    "OtaState",
+    "Command",
     "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -122,14 +122,14 @@
    "statement": "theorem write_io_failure_poisons (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)\n    (h : transition a s (.Write offset len false) = ok (.Ok (some n, r))) :\n    n.written = s.written \u2227 n.error = true",
    "proof": "theorem write_io_failure_poisons (a : Device) (s : OtaState) (offset len : U32) (n : OtaState) (r : Reply)\n    (h : transition a s (.Write offset len false) = ok (.Ok (some n, r))) :\n    n.written = s.written \u2227 n.error = true := by\n  have H := H5iAppLib.post_of_ok (transition_wp a s (.Write offset len false)) h (some n) r rfl\n  simp only [PostOk] at H\n  simp_all",
    "deps": [
-    "OtaState",
-    "Device",
     "transition",
+    "Device",
     "Reply",
-    "Error",
-    "OTA_SLOT_SIZE",
+    "OtaState",
+    "Command",
     "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -140,14 +140,14 @@
    "statement": "theorem begin_targets_other_slot (a : Device) (s : OtaState) (size : U32) (n : OtaState) (r : Reply)\n    (h : transition a s (.Begin size) = ok (.Ok (some n, r))) :\n    n.target_slot \u2260 n.running_slot \u2227 n.running_slot.val \u2264 1",
    "proof": "theorem begin_targets_other_slot (a : Device) (s : OtaState) (size : U32) (n : OtaState) (r : Reply)\n    (h : transition a s (.Begin size) = ok (.Ok (some n, r))) :\n    n.target_slot \u2260 n.running_slot \u2227 n.running_slot.val \u2264 1 := by\n  have H := H5iAppLib.post_of_ok (transition_wp a s (.Begin size)) h (some n) r rfl\n  simp only [PostOk] at H\n  exact \u27e8H.1, H.2.1\u27e9",
    "deps": [
-    "OtaState",
-    "Device",
     "transition",
+    "Device",
     "Reply",
-    "Error",
-    "OTA_SLOT_SIZE",
+    "OtaState",
+    "Command",
     "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -158,15 +158,15 @@
    "statement": "theorem mutating_needs_admin (a : Device) (s : OtaState) (c : Command) (ha : a.admin = false)\n    (hmut : read_only c = ok false) (ws : Option OtaState) (r : Reply)\n    (h : transition a s c = ok (.Ok (ws, r))) : False",
    "proof": "theorem mutating_needs_admin (a : Device) (s : OtaState) (c : Command) (ha : a.admin = false)\n    (hmut : read_only c = ok false) (ws : Option OtaState) (r : Reply)\n    (h : transition a s c = ok (.Ok (ws, r))) : False := by\n  cases c <;> (simp only [read_only] at hmut; unfold transition at h; simp_all)\n\n-- --- Finding (F): no firmware authenticity, only a client-supplied CRC ---",
    "deps": [
-    "OtaState",
-    "read_only",
-    "Device",
-    "transition",
-    "Reply",
     "Command",
+    "transition",
+    "Device",
+    "Reply",
+    "read_only",
+    "OtaState",
+    "MAX_CHUNK",
     "Error",
-    "OTA_SLOT_SIZE",
-    "MAX_CHUNK"
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -177,16 +177,16 @@
    "statement": "theorem inv_reachable {st : OtaState}\n    {evs : List (H5iAppLib.Event Device Command Reply Error)}\n    (h : H5iAppLib.Run transition id applyW OTA_INITIAL st evs) : Inv st",
    "proof": "theorem inv_reachable {st : OtaState}\n    {evs : List (H5iAppLib.Event Device Command Reply Error)}\n    (h : H5iAppLib.Run transition id applyW OTA_INITIAL st evs) : Inv st :=\n  H5iAppLib.Run.inv Inv inv_initial (fun a s c ws r hs ht => inv_step a s c ws r hs ht) h\n\n-- ===========================================================================\n-- HTTP authentication gate\n-- ===========================================================================",
    "deps": [
+    "transition",
+    "Command",
     "OtaState",
     "OTA_INITIAL",
-    "Reply",
-    "transition",
     "Device",
-    "Command",
+    "Reply",
     "Error",
-    "SLOT_UNKNOWN",
+    "MAX_CHUNK",
     "OTA_SLOT_SIZE",
-    "MAX_CHUNK"
+    "SLOT_UNKNOWN"
    ],
    "spec": [
     "Inv",
@@ -200,14 +200,14 @@
    "statement": "theorem end_accepts_any_matching_crc (s : OtaState) (crc : U32)\n    (hactive : s.active = true) (hdone : s.written = s.total) :\n    \u2203 n r, transition { admin := true } s (.End crc crc true true true) = ok (.Ok (some n, r))\n      \u2227 n.active = false \u2227 n.error = false",
    "proof": "theorem end_accepts_any_matching_crc (s : OtaState) (crc : U32)\n    (hactive : s.active = true) (hdone : s.written = s.total) :\n    \u2203 n r, transition { admin := true } s (.End crc crc true true true) = ok (.Ok (some n, r))\n      \u2227 n.active = false \u2227 n.error = false := by\n  refine \u27e8{ s with active := false, error := false },\n          Reply.State { s with active := false, error := false }, ?_, rfl, rfl\u27e9\n  unfold transition\n  simp [hactive, hdone]\n\n-- --- Reachability invariant over a whole run ---",
    "deps": [
-    "OtaState",
     "transition",
-    "Error",
+    "OtaState",
+    "Command",
+    "MAX_CHUNK",
     "Device",
     "Reply",
-    "OTA_SLOT_SIZE",
-    "MAX_CHUNK",
-    "Command"
+    "Error",
+    "OTA_SLOT_SIZE"
    ],
    "spec": []
   },
@@ -222,13 +222,13 @@
     "SessionStore",
     "AuthCfg",
     "AuthDecision",
-    "transport_blocks",
     "validate_session",
+    "transport_blocks",
     "SessionSlot",
     "slot_valid",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": []
@@ -240,13 +240,13 @@
    "statement": "theorem validate_session_sound (store : SessionStore) (token : Array U8 8#usize) (now : U32)\n    (h : validate_session store token now = ok true) :\n    slot_valid store.s0 token now = ok true \u2228 slot_valid store.s1 token now = ok true\n      \u2228 slot_valid store.s2 token now = ok true \u2228 slot_valid store.s3 token now = ok true",
    "proof": "theorem validate_session_sound (store : SessionStore) (token : Array U8 8#usize) (now : U32)\n    (h : validate_session store token now = ok true) :\n    slot_valid store.s0 token now = ok true \u2228 slot_valid store.s1 token now = ok true\n      \u2228 slot_valid store.s2 token now = ok true \u2228 slot_valid store.s3 token now = ok true := by\n  unfold validate_session at h\n  rw [H5iAppLib.bind_eq_ok] at h\n  obtain \u27e8b0, hb0, h\u27e9 := h\n  cases b0\n  \u00b7 simp only [Bool.false_eq_true, if_false] at h\n    rw [H5iAppLib.bind_eq_ok] at h\n    obtain \u27e8b1, hb1, h\u27e9 := h\n    cases b1\n    \u00b7 simp only [Bool.false_eq_true, if_false] at h\n      rw [H5iAppLib.bind_eq_ok] at h\n      obtain \u27e8b2, hb2, h\u27e9 := h\n      cases b2\n      \u00b7 simp only [Bool.false_eq_true, if_false] at h\n        exact Or.inr (Or.inr (Or.inr h))\n      \u00b7 exact Or.inr (Or.inr (Or.inl hb2))\n    \u00b7 exact Or.inr (Or.inl hb1)\n  \u00b7 exact Or.inl hb0",
    "deps": [
-    "SessionStore",
     "slot_valid",
+    "SessionStore",
     "validate_session",
     "SessionSlot",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": []
@@ -258,12 +258,12 @@
    "statement": "theorem slot_valid_fresh (slot : SessionSlot) (token : Array U8 8#usize) (now : U32)\n    (h : slot_valid slot token now = ok true) : age_ok now slot.created = ok true",
    "proof": "theorem slot_valid_fresh (slot : SessionSlot) (token : Array U8 8#usize) (now : U32)\n    (h : slot_valid slot token now = ok true) : age_ok now slot.created = ok true := by\n  unfold slot_valid at h\n  rw [H5iAppLib.bind_eq_ok] at h\n  obtain \u27e8b, _hb, h\u27e9 := h\n  cases b\n  case false => simp at h\n  case true =>\n    simp only [reduceIte] at h\n    rw [H5iAppLib.bind_eq_ok] at h\n    obtain \u27e8b1, _hb1, h\u27e9 := h\n    cases b1\n    case false => simpa using h\n    case true => simp at h",
    "deps": [
-    "age_ok",
-    "SessionSlot",
     "slot_valid",
-    "SESSION_TTL_SECS",
+    "SessionSlot",
+    "age_ok",
     "ct_eq8",
-    "is_zero8"
+    "is_zero8",
+    "SESSION_TTL_SECS"
    ],
    "spec": []
   },
@@ -276,15 +276,15 @@
    "deps": [
     "check_auth",
     "SessionStore",
-    "AuthCfg",
     "validate_session",
+    "AuthCfg",
     "AuthDecision",
     "transport_blocks",
     "SessionSlot",
     "slot_valid",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": [
@@ -300,15 +300,15 @@
    "deps": [
     "check_auth",
     "SessionStore",
-    "AuthCfg",
     "validate_session",
+    "AuthCfg",
     "AuthDecision",
     "transport_blocks",
     "SessionSlot",
     "slot_valid",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": []
@@ -322,15 +322,15 @@
    "deps": [
     "check_auth",
     "SessionStore",
-    "AuthCfg",
     "validate_session",
+    "AuthCfg",
     "AuthDecision",
     "transport_blocks",
     "SessionSlot",
     "slot_valid",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": []
@@ -346,13 +346,13 @@
     "SessionStore",
     "AuthCfg",
     "AuthDecision",
-    "transport_blocks",
     "validate_session",
+    "transport_blocks",
     "SessionSlot",
     "slot_valid",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": []
@@ -368,13 +368,13 @@
     "SessionStore",
     "AuthCfg",
     "AuthDecision",
-    "transport_blocks",
     "validate_session",
+    "transport_blocks",
     "SessionSlot",
     "slot_valid",
-    "age_ok",
     "ct_eq8",
     "is_zero8",
+    "age_ok",
     "SESSION_TTL_SECS"
    ],
    "spec": []
@@ -402,21 +402,21 @@
    ],
    "upstream_note": "the 0xFF initial value of RUNNING_SLOT and begin's refusal when it is still unknown"
   },
-  "age_ok": {
+  "slot_valid": {
    "kind": "def",
-   "rust_path": "m5airq_kernel::age_ok",
+   "rust_path": "m5airq_kernel::slot_valid",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 354,
-   "kernel_code": "pub fn age_ok(now: u32, created: u32) -> bool {\n    if now >= created {\n        now - created <= SESSION_TTL_SECS\n    } else {\n        false\n    }\n}",
-   "lean": "def age_ok (now : Std.U32) (created : Std.U32) : Result Bool := do\n  if now >= created\n  then let i \u2190 now - created\n       ok (i <= SESSION_TTL_SECS)\n  else ok false",
+   "kernel_line": 364,
+   "kernel_code": "pub fn slot_valid(slot: &SessionSlot, token: &[u8; 8], now: u32) -> bool {\n    ct_eq8(&slot.token, token) && !is_zero8(&slot.token) && age_ok(now, slot.created)\n}",
+   "lean": "def slot_valid\n  (slot : SessionSlot) (token : Array Std.U8 8#usize) (now : Std.U32) :\n  Result Bool\n  := do\n  let b \u2190 ct_eq8 slot.token token\n  if b\n  then\n    let b1 \u2190 is_zero8 slot.token\n    if b1\n    then ok false\n    else age_ok now slot.created\n  else ok false",
    "upstream": [
     {
      "file": "src/auth.rs",
-     "line": 246,
-     "code": "                && now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS"
+     "line": 243,
+     "code": "        sessions.iter().any(|s| {\n            s.token == *token\n                && s.token != [0; 8]\n                && now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS\n        })"
     }
    ],
-   "upstream_note": "now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS without wrapping arithmetic"
+   "upstream_note": "the per-slot predicate passed to sessions.iter().any in validate_session"
   },
   "check_auth": {
    "kind": "def",
@@ -433,86 +433,6 @@
     }
    ],
    "upstream_note": "nested check_auth flattened; header parsing, cookie decryption, MD5 and comparisons are trusted inputs"
-  },
-  "OtaState": {
-   "kind": "structure",
-   "rust_path": "m5airq_kernel::OtaState",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub struct OtaState {\n    pub active: bool,\n    /// The slot being written (0 or 1).\n    pub target_slot: u8,\n    /// The slot the bootloader loaded us from (0 or 1), or `SLOT_UNKNOWN`.\n    pub running_slot: u8,\n    /// The declared firmware size for this session.\n    pub total: u32,\n    /// Bytes committed so far.\n    pub written: u32,\n    pub error: bool,\n}",
-   "lean": "structure OtaState where\n  active : Bool\n  target_slot : Std.U8\n  running_slot : Std.U8\n  total : Std.U32\n  written : Std.U32\n  error : Bool",
-   "upstream": [
-    {
-     "file": "src/ota.rs",
-     "line": 50,
-     "code": "static OTA_ACTIVE: AtomicBool = AtomicBool::new(false);\nstatic OTA_TARGET_SLOT: AtomicU8 = AtomicU8::new(0);\nstatic OTA_TOTAL_SIZE: AtomicU32 = AtomicU32::new(0);\nstatic OTA_WRITTEN: AtomicU32 = AtomicU32::new(0);\nstatic OTA_ERROR: AtomicBool = AtomicBool::new(false);\n\n/// The slot the bootloader actually loaded us from (set once at boot).\nstatic RUNNING_SLOT: AtomicU8 = AtomicU8::new(0xFF);"
-    }
-   ],
-   "upstream_note": "the five OTA_* atomics plus RUNNING_SLOT gathered into one struct"
-  },
-  "SessionSlot": {
-   "kind": "structure",
-   "rust_path": "m5airq_kernel::SessionSlot",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 282,
-   "kernel_code": "pub struct SessionSlot {\n    pub token: [u8; 8],\n    pub created: u32,\n}",
-   "lean": "structure SessionSlot where\n  token : Array Std.U8 8#usize\n  created : Std.U32",
-   "upstream": [
-    {
-     "file": "src/auth.rs",
-     "line": 185,
-     "code": "struct Session {\n    token: [u8; 8],\n    created_tick: u32,\n}"
-    }
-   ],
-   "upstream_note": "struct Session (token + created_tick)"
-  },
-  "SessionStore": {
-   "kind": "structure",
-   "rust_path": "m5airq_kernel::SessionStore",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 289,
-   "kernel_code": "pub struct SessionStore {\n    pub s0: SessionSlot,\n    pub s1: SessionSlot,\n    pub s2: SessionSlot,\n    pub s3: SessionSlot,\n}",
-   "lean": "structure SessionStore where\n  s0 : SessionSlot\n  s1 : SessionSlot\n  s2 : SessionSlot\n  s3 : SessionSlot",
-   "upstream": [
-    {
-     "file": "src/auth.rs",
-     "line": 197,
-     "code": "static SESSIONS: Mutex<RefCell<[Session; MAX_SESSIONS]>> =\n    Mutex::new(RefCell::new([Session::EMPTY; MAX_SESSIONS]));"
-    }
-   ],
-   "upstream_note": "static SESSIONS: [Session; MAX_SESSIONS], unrolled to four named slots"
-  },
-  "AuthDecision": {
-   "kind": "inductive",
-   "rust_path": "m5airq_kernel::AuthDecision",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 309,
-   "kernel_code": "pub enum AuthDecision {\n    /// Public or an existing credential \u2014 serve the request.\n    Allowed,\n    /// Fresh Digest login \u2014 serve and set a session cookie.\n    AllowedSetSession,\n    /// A token over plaintext HTTP when that is not allowed.\n    Forbidden,\n    /// No valid credential \u2014 answer 401 with a Digest challenge.\n    Challenge,\n}",
-   "lean": "@[discriminant isize]\ninductive AuthDecision where\n| Allowed : AuthDecision\n| AllowedSetSession : AuthDecision\n| Forbidden : AuthDecision\n| Challenge : AuthDecision",
-   "upstream": [
-    {
-     "file": "src/auth.rs",
-     "line": 630,
-     "code": "pub enum AuthResult {\n    /// Request is allowed (either public or authenticated).\n    Allowed,\n    /// Request is allowed and this is a fresh Digest login -- set a session cookie.\n    AllowedSetSession([u8; 8]),\n    /// Authentication required -- return 401 with the given challenge header.\n    Challenge(heapless::String<128>),\n    /// Forbidden (e.g. token over HTTP when not allowed).\n    Forbidden,\n}"
-    }
-   ],
-   "upstream_note": "AuthResult without payloads (session token, challenge header)"
-  },
-  "slot_valid": {
-   "kind": "def",
-   "rust_path": "m5airq_kernel::slot_valid",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 364,
-   "kernel_code": "pub fn slot_valid(slot: &SessionSlot, token: &[u8; 8], now: u32) -> bool {\n    ct_eq8(&slot.token, token) && !is_zero8(&slot.token) && age_ok(now, slot.created)\n}",
-   "lean": "def slot_valid\n  (slot : SessionSlot) (token : Array Std.U8 8#usize) (now : Std.U32) :\n  Result Bool\n  := do\n  let b \u2190 ct_eq8 slot.token token\n  if b\n  then\n    let b1 \u2190 is_zero8 slot.token\n    if b1\n    then ok false\n    else age_ok now slot.created\n  else ok false",
-   "upstream": [
-    {
-     "file": "src/auth.rs",
-     "line": 243,
-     "code": "        sessions.iter().any(|s| {\n            s.token == *token\n                && s.token != [0; 8]\n                && now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS\n        })"
-    }
-   ],
-   "upstream_note": "the per-slot predicate passed to sessions.iter().any in validate_session"
   },
   "Command": {
    "kind": "inductive",
@@ -535,130 +455,37 @@
    ],
    "upstream_note": "one variant per /api/ota/* route and handler; IO results of write/end become trusted fields"
   },
-  "Error": {
-   "kind": "inductive",
-   "rust_path": "m5airq_kernel::Error",
+  "MAX_CHUNK": {
+   "kind": "def",
+   "rust_path": "m5airq_kernel::MAX_CHUNK",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 103,
-   "kernel_code": "pub enum Error {\n    Forbidden,\n    AlreadyActive,\n    BadSize,\n    RunningUnknown,\n    NoSession,\n    PriorError,\n    ChunkSize,\n    OffsetMismatch,\n    ExceedsDeclared,\n    Incomplete,\n}",
-   "lean": "@[discriminant isize]\ninductive Error where\n| Forbidden : Error\n| AlreadyActive : Error\n| BadSize : Error\n| RunningUnknown : Error\n| NoSession : Error\n| PriorError : Error\n| ChunkSize : Error\n| OffsetMismatch : Error\n| ExceedsDeclared : Error\n| Incomplete : Error",
+   "kernel_line": 33,
+   "kernel_code": "pub const MAX_CHUNK: u32 = 4096;",
+   "lean": "@[global_simps, irreducible] def MAX_CHUNK : Std.U32 := 4096#u32",
    "upstream": [
     {
      "file": "src/ota.rs",
-     "line": 399,
-     "code": "pub fn begin(firmware_size: u32) -> String {\n    if OTA_ACTIVE.load(Ordering::Relaxed) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"OTA already in progress\"}}\"#);\n    }\n    if firmware_size == 0 || firmware_size > OTA_SLOT_SIZE {\n        return format!(\n            r#\"{{\"ok\":false,\"error\":\"invalid size (max {} bytes)\"}}\"#,\n            OTA_SLOT_SIZE\n        );\n    }\n\n    // Determine running slot (detected at boot via flash fingerprinting)\n    // and target the OTHER slot.  This is critical -- targeting the running\n    // slot would erase the firmware we're executing from.\n    let running = RUNNING_SLOT.load(Ordering::Relaxed);\n    if running == 0xFF {\n        // init_running_slot() was never called -- refuse rather than guess.\n        return format!(r#\"{{\"ok\":false,\"error\":\"running slot unknown (call init_running_slot at boot)\"}}\"#);\n    }\n    let target = 1 - running;\n\n    // Also log what otadata thinks (for diagnostics).\n    let otadata_active = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        read_active_slot(&mut inner.store.flash)\n    });\n    if otadata_active != running {\n        log::warn!(\n            \"[ota] otadata says slot {} active, but we detected slot {} as running\",\n            otadata_active, running\n        );\n    }\n\n    let num_sectors = (firmware_size + FLASH_SECTOR_SIZE - 1) / FLASH_SECTOR_SIZE;\n\n    log::info!(\n        \"[ota] begin: size={}B running=slot{} target=slot{} (0x{:05X}), {} sectors (lazy erase)\",\n        firmware_size,\n        running,\n        target,\n        slot_offset(target),\n        num_sectors,\n    );\n\n    // Mark session active. Sectors will be erased on-demand in write().\n    OTA_TARGET_SLOT.store(target, Ordering::Relaxed);\n    OTA_TOTAL_SIZE.store(firmware_size, Ordering::Relaxed);\n    OTA_WRITTEN.store(0, Ordering::Relaxed);\n    OTA_ERROR.store(false, Ordering::Relaxed);\n    OTA_ACTIVE.store(true, Ordering::Release);\n\n    format!(\n        r#\"{{\"ok\":true,\"slot\":{},\"size\":{},\"sectors\":{}}}\"#,\n        target, firmware_size, num_sectors\n    )\n}"
-    },
-    {
-     "file": "src/ota.rs",
-     "line": 459,
-     "code": "pub fn write(offset: u32, data: &[u8]) -> String {\n    if !OTA_ACTIVE.load(Ordering::Acquire) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"no OTA session\"}}\"#);\n    }\n    if OTA_ERROR.load(Ordering::Relaxed) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"OTA aborted due to prior error\"}}\"#);\n    }\n    if data.is_empty() || data.len() > MAX_CHUNK_SIZE {\n        return format!(r#\"{{\"ok\":false,\"error\":\"chunk too large (max {})\"}}\"#, MAX_CHUNK_SIZE);\n    }\n\n    let expected = OTA_WRITTEN.load(Ordering::Relaxed);\n    let total = OTA_TOTAL_SIZE.load(Ordering::Relaxed);\n\n    // Retry handling: if this chunk was already written (response lost but\n    // data committed), return success so the client can continue.\n    if offset < expected && offset + data.len() as u32 <= expected {\n        return format!(\n            r#\"{{\"ok\":true,\"written\":{},\"total\":{},\"pct\":{}}}\"#,\n            expected, total, expected * 100 / total\n        );\n    }\n    if offset != expected {\n        return format!(\n            r#\"{{\"ok\":false,\"error\":\"offset mismatch (expected {}, got {})\"}}\"#,\n            expected, offset\n        );\n    }\n    if offset + data.len() as u32 > total {\n        return format!(r#\"{{\"ok\":false,\"error\":\"write exceeds declared size\"}}\"#);\n    }\n\n    let slot = OTA_TARGET_SLOT.load(Ordering::Relaxed);\n\n    // Lazy erase: erase any sector that this chunk touches (before writing).\n    // Chunks are sequential and up to 4KB (= 1 sector), so at most 2 sectors\n    // can be touched (when a chunk straddles a sector boundary).\n    let first_sector = offset / FLASH_SECTOR_SIZE;\n    let last_sector = (offset + data.len() as u32 - 1) / FLASH_SECTOR_SIZE;\n    for sector in first_sector..=last_sector {\n        let er = critical_section::with(|cs| {\n            let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n            let inner = borrow.as_mut().unwrap();\n            erase_slot_sector(&mut inner.store.flash, slot, sector)\n        });\n        if let Err(e) = er {\n            OTA_ERROR.store(true, Ordering::Relaxed);\n            log::error!(\"[ota] erase failed at sector {}: {}\", sector, e);\n            return format!(r#\"{{\"ok\":false,\"error\":\"erase failed at sector {}\"}}\"#, sector);\n        }\n    }\n\n    // Pad data to 4-byte alignment for NorFlash write.\n    let mut chunk = alloc::vec![0xFF_u8; (data.len() + 3) & !3];\n    chunk[..data.len()].copy_from_slice(data);\n\n    let r = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        write_chunk(&mut inner.store.flash, slot, offset, &chunk)\n    });\n\n    if let Err(e) = r {\n        OTA_ERROR.store(true, Ordering::Relaxed);\n        log::error!(\"[ota] write failed at offset {}: {}\", offset, e);\n        return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n    }\n\n    let new_written = offset + data.len() as u32;\n    OTA_WRITTEN.store(new_written, Ordering::Relaxed);\n\n    format!(\n        r#\"{{\"ok\":true,\"written\":{},\"total\":{},\"pct\":{}}}\"#,\n        new_written,\n        total,\n        new_written * 100 / total,\n    )\n}"
-    },
-    {
-     "file": "src/ota.rs",
-     "line": 544,
-     "code": "pub fn end(expected_crc: u32) -> String {\n    if !OTA_ACTIVE.load(Ordering::Acquire) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"no OTA session\"}}\"#);\n    }\n\n    let written = OTA_WRITTEN.load(Ordering::Relaxed);\n    let total = OTA_TOTAL_SIZE.load(Ordering::Relaxed);\n    if written != total {\n        return format!(\n            r#\"{{\"ok\":false,\"error\":\"incomplete ({}/{} bytes)\"}}\"#,\n            written, total\n        );\n    }\n\n    let slot = OTA_TARGET_SLOT.load(Ordering::Relaxed);\n\n    // Verify image header.\n    let verify = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        verify_image_header(&mut inner.store.flash, slot)\n    });\n    if let Err(e) = verify {\n        OTA_ERROR.store(true, Ordering::Relaxed);\n        OTA_ACTIVE.store(false, Ordering::Release);\n        log::error!(\"[ota] image verification failed: {}\", e);\n        return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n    }\n\n    // Read back the entire image from flash and compute CRC-32.\n    // Uses many short critical sections (one per 4 KB chunk) so WiFi\n    // isn't starved during the ~1 MB read-back.\n    log::info!(\"[ota] verifying CRC-32 ({} bytes from slot {})...\", total, slot);\n    let crc_result = compute_image_crc32_yielding(slot, total);\n    match crc_result {\n        Err(e) => {\n            OTA_ERROR.store(true, Ordering::Relaxed);\n            OTA_ACTIVE.store(false, Ordering::Release);\n            log::error!(\"[ota] CRC read-back failed: {}\", e);\n            return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n        }\n        Ok(actual_crc) => {\n            if actual_crc != expected_crc {\n                OTA_ERROR.store(true, Ordering::Relaxed);\n                OTA_ACTIVE.store(false, Ordering::Release);\n                log::error!(\n                    \"[ota] CRC mismatch: expected 0x{:08X}, got 0x{:08X}\",\n                    expected_crc, actual_crc\n                );\n                return format!(\n                    r#\"{{\"ok\":false,\"error\":\"CRC mismatch (expected {:08x}, got {:08x})\"}}\"#,\n                    expected_crc, actual_crc\n                );\n            }\n            log::info!(\"[ota] CRC-32 verified: 0x{:08X}\", actual_crc);\n        }\n    }\n\n    // Activate the new slot.\n    let activate = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        activate_slot(&mut inner.store.flash, slot)\n    });\n    if let Err(e) = activate {\n        OTA_ERROR.store(true, Ordering::Relaxed);\n        OTA_ACTIVE.store(false, Ordering::Release);\n        log::error!(\"[ota] activation failed: {}\", e);\n        return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n    }\n\n    OTA_ACTIVE.store(false, Ordering::Release);\n    log::info!(\"[ota] complete -- rebooting to slot {} ({}B)\", slot, total);\n\n    // Reboot after a short delay to let the HTTP response be sent.\n    // The caller should send the response, then we reboot.\n    format!(\n        r#\"{{\"ok\":true,\"msg\":\"OTA complete, rebooting to slot {}\",\"size\":{}}}\"#,\n        slot, total\n    )\n}"
-    },
-    {
-     "file": "src/ota.rs",
-     "line": 627,
-     "code": "pub fn abort() -> String {\n    if !OTA_ACTIVE.load(Ordering::Acquire) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"no OTA session to abort\"}}\"#);\n    }\n    OTA_ACTIVE.store(false, Ordering::Release);\n    OTA_ERROR.store(false, Ordering::Relaxed);\n    OTA_WRITTEN.store(0, Ordering::Relaxed);\n    log::info!(\"[ota] session aborted by user\");\n    format!(r#\"{{\"ok\":true,\"msg\":\"OTA aborted\"}}\"#)\n}"
-    },
-    {
-     "file": "src/auth.rs",
-     "line": 69,
-     "code": "pub enum AuthRejection {\n    /// 401 with WWW-Authenticate: Digest challenge\n    Challenge(heapless::String<128>),\n    /// 403 -- token over insecure transport\n    Forbidden,\n}"
+     "line": 44,
+     "code": "pub const MAX_CHUNK_SIZE: usize = 4096;"
     }
    ],
-   "upstream_note": "the {\"ok\":false,\"error\":...} replies of begin/write/end/abort, plus Forbidden from AuthRejection"
+   "upstream_note": "MAX_CHUNK_SIZE (usize upstream, u32 in the kernel)"
   },
-  "transport_blocks": {
-   "kind": "def",
-   "rust_path": "m5airq_kernel::transport_blocks",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 379,
-   "kernel_code": "pub fn transport_blocks(is_https: bool, allow_http_tokens: bool) -> bool {\n    !is_https & !allow_http_tokens\n}",
-   "lean": "def transport_blocks\n  (is_https : Bool) (allow_http_tokens : Bool) : Result Bool := do\n  ok ((\u00ac is_https) && (\u00ac allow_http_tokens))",
-   "upstream": [
-    {
-     "file": "src/auth.rs",
-     "line": 694,
-     "code": "            if !is_https && !allow_http_tokens {"
-    },
-    {
-     "file": "src/auth.rs",
-     "line": 707,
-     "code": "        if !is_https && !allow_http_tokens {"
-    },
-    {
-     "file": "src/auth.rs",
-     "line": 720,
-     "code": "            if !is_https && !allow_http_tokens {"
-    }
-   ],
-   "upstream_note": "the !is_https && !allow_http_tokens test repeated for bearer, API-key header and query"
-  },
-  "read_only": {
-   "kind": "def",
-   "rust_path": "m5airq_kernel::read_only",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 264,
-   "kernel_code": "pub fn read_only(cmd: &Command) -> bool {\n    match cmd {\n        Command::Status => true,\n        _ => false,\n    }\n}",
-   "lean": "def read_only (cmd : Command) : Result Bool := do\n  match cmd with\n  | Command.Begin _ => ok false\n  | Command.Write _ _ _ => ok false\n  | Command.End _ _ _ _ _ => ok false\n  | Command.Abort => ok false\n  | Command.Status => ok true",
-   "upstream": [],
-   "upstream_note": "port-only harness predicate (Status writes no state); upstream has no command classifier"
-  },
-  "ct_eq8": {
-   "kind": "def",
-   "rust_path": "m5airq_kernel::ct_eq8",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 324,
-   "kernel_code": "pub fn ct_eq8(a: &[u8; 8], b: &[u8; 8]) -> bool {\n    let mut diff: u8 = 0;\n    diff |= a[0] ^ b[0];\n    diff |= a[1] ^ b[1];\n    diff |= a[2] ^ b[2];\n    diff |= a[3] ^ b[3];\n    diff |= a[4] ^ b[4];\n    diff |= a[5] ^ b[5];\n    diff |= a[6] ^ b[6];\n    diff |= a[7] ^ b[7];\n    diff == 0\n}",
-   "lean": "def ct_eq8\n  (a : Array Std.U8 8#usize) (b : Array Std.U8 8#usize) : Result Bool := do\n  let i \u2190 Array.index_usize a 0#usize\n  let i1 \u2190 Array.index_usize b 0#usize\n  let i2 \u2190 lift (i ^^^ i1)\n  let diff \u2190 lift (0#u8 ||| i2)\n  let i3 \u2190 Array.index_usize a 1#usize\n  let i4 \u2190 Array.index_usize b 1#usize\n  let i5 \u2190 lift (i3 ^^^ i4)\n  let diff1 \u2190 lift (diff ||| i5)\n  let i6 \u2190 Array.index_usize a 2#usize\n  let i7 \u2190 Array.index_usize b 2#usize\n  let i8 \u2190 lift (i6 ^^^ i7)\n  let diff2 \u2190 lift (diff1 ||| i8)\n  let i9 \u2190 Array.index_usize a 3#usize\n  let i10 \u2190 Array.index_usize b 3#usize\n  let i11 \u2190 lift (i9 ^^^ i10)\n  let diff3 \u2190 lift (diff2 ||| i11)\n  let i12 \u2190 Array.index_usize a 4#usize\n  let i13 \u2190 Array.index_usize b 4#usize\n  let i14 \u2190 lift (i12 ^^^ i13)\n  let diff4 \u2190 lift (diff3 ||| i14)\n  let i15 \u2190 Array.index_usize a 5#usize\n  let i16 \u2190 Array.index_usize b 5#usize\n  let i17 \u2190 lift (i15 ^^^ i16)\n  let diff5 \u2190 lift (diff4 ||| i17)\n  let i18 \u2190 Array.index_usize a 6#usize\n  let i19 \u2190 Array.index_usize b 6#usize\n  let i20 \u2190 lift (i18 ^^^ i19)\n  let diff6 \u2190 lift (diff5 ||| i20)\n  let i21 \u2190 Array.index_usize a 7#usize\n  let i22 \u2190 Array.index_usize b 7#usize\n  let i23 \u2190 lift (i21 ^^^ i22)\n  let diff7 \u2190 lift (diff6 ||| i23)\n  ok (diff7 = 0#u8)",
-   "upstream": [
-    {
-     "file": "src/auth.rs",
-     "line": 614,
-     "code": "fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {\n    if a.len() != b.len() {\n        return false;\n    }\n    let mut diff = 0u8;\n    for (x, y) in a.iter().zip(b.iter()) {\n        diff |= x ^ y;\n    }\n    diff == 0\n}"
-    }
-   ],
-   "upstream_note": "constant_time_eq specialised to two 8-byte arrays (length check vacuous)"
-  },
-  "Device": {
+  "SessionStore": {
    "kind": "structure",
-   "rust_path": "m5airq_kernel::Device",
+   "rust_path": "m5airq_kernel::SessionStore",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 42,
-   "kernel_code": "pub struct Device {\n    pub admin: bool,\n}",
-   "lean": "structure Device where\n  admin : Bool",
+   "kernel_line": 289,
+   "kernel_code": "pub struct SessionStore {\n    pub s0: SessionSlot,\n    pub s1: SessionSlot,\n    pub s2: SessionSlot,\n    pub s3: SessionSlot,\n}",
+   "lean": "structure SessionStore where\n  s0 : SessionSlot\n  s1 : SessionSlot\n  s2 : SessionSlot\n  s3 : SessionSlot",
    "upstream": [
     {
      "file": "src/auth.rs",
-     "line": 51,
-     "code": "pub struct Authenticated {\n    /// Set-Cookie value to send back (only after fresh Digest login).\n    cookie: Option<heapless::String<96>>,\n}"
-    },
-    {
-     "file": "src/webserver.rs",
-     "line": 1289,
-     "code": "async fn ota_status_handler(auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    let j = crate::ota::status();\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_begin_handler(size: u32, auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    log::info!(\"OTA begin: size={}\", size);\n    let j = crate::ota::begin(size);\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_write_handler(offset: u32, auth: crate::auth::Authenticated, body: alloc::vec::Vec<u8>) -> impl picoserve::response::IntoResponse {\n    let j = crate::ota::write(offset, &body);\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_end_handler(expected_crc: u32, auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    log::info!(\"OTA end requested (expected CRC=0x{:08X})\", expected_crc);\n    let j = crate::ota::end(expected_crc);\n    // Note: we can't reboot here because the response hasn't been sent yet.\n    // Instead, spawn_reboot_delayed() sets a flag checked by the heartbeat\n    // loop, which reboots after a short delay.  If we're on HTTPS the\n    // https_route handler does the reboot after the response flushes.\n    if j.contains(r#\"\"ok\":true\"#) {\n        log::info!(\"[ota] scheduling reboot (picoserve path)\");\n        spawn_reboot_delayed();\n    }\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_abort_handler(auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    log::info!(\"OTA abort requested\");\n    let j = crate::ota::abort();\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}"
+     "line": 197,
+     "code": "static SESSIONS: Mutex<RefCell<[Session; MAX_SESSIONS]>> =\n    Mutex::new(RefCell::new([Session::EMPTY; MAX_SESSIONS]));"
     }
    ],
-   "upstream_note": "the Authenticated extractor every OTA handler takes; admin = the extractor succeeded"
-  },
-  "OTA_INITIAL": {
-   "kind": "def",
-   "rust_path": "m5airq_kernel::OTA_INITIAL",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 63,
-   "kernel_code": "pub const OTA_INITIAL: OtaState = OtaState {\n    active: false,\n    target_slot: 0,\n    running_slot: SLOT_UNKNOWN,\n    total: 0,\n    written: 0,\n    error: false,\n};",
-   "lean": "@[global_simps, irreducible]\ndef OTA_INITIAL : OtaState :=\n  {\n    active := false,\n    target_slot := 0#u8,\n    running_slot := SLOT_UNKNOWN,\n    total := 0#u32,\n    written := 0#u32,\n    error := false\n  }",
-   "upstream": [
-    {
-     "file": "src/ota.rs",
-     "line": 50,
-     "code": "static OTA_ACTIVE: AtomicBool = AtomicBool::new(false);\nstatic OTA_TARGET_SLOT: AtomicU8 = AtomicU8::new(0);\nstatic OTA_TOTAL_SIZE: AtomicU32 = AtomicU32::new(0);\nstatic OTA_WRITTEN: AtomicU32 = AtomicU32::new(0);\nstatic OTA_ERROR: AtomicBool = AtomicBool::new(false);\n\n/// The slot the bootloader actually loaded us from (set once at boot).\nstatic RUNNING_SLOT: AtomicU8 = AtomicU8::new(0xFF);"
-    }
-   ],
-   "upstream_note": "initial values of the OTA_* atomics and RUNNING_SLOT"
+   "upstream_note": "static SESSIONS: [Session; MAX_SESSIONS], unrolled to four named slots"
   },
   "transition": {
    "kind": "def",
@@ -696,6 +523,59 @@
    ],
    "upstream_note": "begin/write/end/abort/status flattened into one pure transition; flash IO results are inputs"
   },
+  "AuthDecision": {
+   "kind": "inductive",
+   "rust_path": "m5airq_kernel::AuthDecision",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 309,
+   "kernel_code": "pub enum AuthDecision {\n    /// Public or an existing credential \u2014 serve the request.\n    Allowed,\n    /// Fresh Digest login \u2014 serve and set a session cookie.\n    AllowedSetSession,\n    /// A token over plaintext HTTP when that is not allowed.\n    Forbidden,\n    /// No valid credential \u2014 answer 401 with a Digest challenge.\n    Challenge,\n}",
+   "lean": "@[discriminant isize]\ninductive AuthDecision where\n| Allowed : AuthDecision\n| AllowedSetSession : AuthDecision\n| Forbidden : AuthDecision\n| Challenge : AuthDecision",
+   "upstream": [
+    {
+     "file": "src/auth.rs",
+     "line": 630,
+     "code": "pub enum AuthResult {\n    /// Request is allowed (either public or authenticated).\n    Allowed,\n    /// Request is allowed and this is a fresh Digest login -- set a session cookie.\n    AllowedSetSession([u8; 8]),\n    /// Authentication required -- return 401 with the given challenge header.\n    Challenge(heapless::String<128>),\n    /// Forbidden (e.g. token over HTTP when not allowed).\n    Forbidden,\n}"
+    }
+   ],
+   "upstream_note": "AuthResult without payloads (session token, challenge header)"
+  },
+  "SessionSlot": {
+   "kind": "structure",
+   "rust_path": "m5airq_kernel::SessionSlot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 282,
+   "kernel_code": "pub struct SessionSlot {\n    pub token: [u8; 8],\n    pub created: u32,\n}",
+   "lean": "structure SessionSlot where\n  token : Array Std.U8 8#usize\n  created : Std.U32",
+   "upstream": [
+    {
+     "file": "src/auth.rs",
+     "line": 185,
+     "code": "struct Session {\n    token: [u8; 8],\n    created_tick: u32,\n}"
+    }
+   ],
+   "upstream_note": "struct Session (token + created_tick)"
+  },
+  "Device": {
+   "kind": "structure",
+   "rust_path": "m5airq_kernel::Device",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub struct Device {\n    pub admin: bool,\n}",
+   "lean": "structure Device where\n  admin : Bool",
+   "upstream": [
+    {
+     "file": "src/auth.rs",
+     "line": 51,
+     "code": "pub struct Authenticated {\n    /// Set-Cookie value to send back (only after fresh Digest login).\n    cookie: Option<heapless::String<96>>,\n}"
+    },
+    {
+     "file": "src/webserver.rs",
+     "line": 1289,
+     "code": "async fn ota_status_handler(auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    let j = crate::ota::status();\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_begin_handler(size: u32, auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    log::info!(\"OTA begin: size={}\", size);\n    let j = crate::ota::begin(size);\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_write_handler(offset: u32, auth: crate::auth::Authenticated, body: alloc::vec::Vec<u8>) -> impl picoserve::response::IntoResponse {\n    let j = crate::ota::write(offset, &body);\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_end_handler(expected_crc: u32, auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    log::info!(\"OTA end requested (expected CRC=0x{:08X})\", expected_crc);\n    let j = crate::ota::end(expected_crc);\n    // Note: we can't reboot here because the response hasn't been sent yet.\n    // Instead, spawn_reboot_delayed() sets a flag checked by the heartbeat\n    // loop, which reboots after a short delay.  If we're on HTTPS the\n    // https_route handler does the reboot after the response flushes.\n    if j.contains(r#\"\"ok\":true\"#) {\n        log::info!(\"[ota] scheduling reboot (picoserve path)\");\n        spawn_reboot_delayed();\n    }\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}\n\nasync fn ota_abort_handler(auth: crate::auth::Authenticated) -> impl picoserve::response::IntoResponse {\n    REQUEST_COUNT.fetch_add(1, Ordering::Relaxed);\n    log::info!(\"OTA abort requested\");\n    let j = crate::ota::abort();\n    (auth, (\"Content-Type\", \"application/json\"), j)\n}"
+    }
+   ],
+   "upstream_note": "the Authenticated extractor every OTA handler takes; admin = the extractor succeeded"
+  },
   "Reply": {
    "kind": "inductive",
    "rust_path": "m5airq_kernel::Reply",
@@ -728,21 +608,57 @@
    ],
    "upstream_note": "same constant, 7200 s"
   },
-  "AuthCfg": {
-   "kind": "structure",
-   "rust_path": "m5airq_kernel::AuthCfg",
+  "validate_session": {
+   "kind": "def",
+   "rust_path": "m5airq_kernel::validate_session",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 299,
-   "kernel_code": "pub struct AuthCfg {\n    pub public_access: bool,\n    pub allow_http_tokens: bool,\n    /// Whether a non-empty bearer token is configured.\n    pub bearer_set: bool,\n    /// Whether a non-empty API key is configured.\n    pub apikey_set: bool,\n}",
-   "lean": "structure AuthCfg where\n  public_access : Bool\n  allow_http_tokens : Bool\n  bearer_set : Bool\n  apikey_set : Bool",
+   "kernel_line": 370,
+   "kernel_code": "pub fn validate_session(store: &SessionStore, token: &[u8; 8], now: u32) -> bool {\n    slot_valid(&store.s0, token, now)\n        || slot_valid(&store.s1, token, now)\n        || slot_valid(&store.s2, token, now)\n        || slot_valid(&store.s3, token, now)\n}",
+   "lean": "def validate_session\n  (store : SessionStore) (token : Array Std.U8 8#usize) (now : Std.U32) :\n  Result Bool\n  := do\n  let b \u2190 slot_valid store.s0 token now\n  if b\n  then ok true\n  else\n    let b1 \u2190 slot_valid store.s1 token now\n    if b1\n    then ok true\n    else\n      let b2 \u2190 slot_valid store.s2 token now\n      if b2\n      then ok true\n      else slot_valid store.s3 token now",
    "upstream": [
     {
-     "file": "src/settings.rs",
-     "line": 120,
-     "code": "pub struct AuthSettings {\n    pub public_access: bool,\n    pub username: HString<32>,\n    pub password: HString<64>,\n    pub bearer_token: HString<128>,\n    pub api_key: HString<128>,\n    /// Allow bearer token and API key over plain HTTP (default: false = HTTPS only).\n    pub allow_http_tokens: bool,\n}"
+     "file": "src/auth.rs",
+     "line": 239,
+     "code": "fn validate_session(token: &[u8; 8]) -> bool {\n    let now = now_secs();\n    critical_section::with(|cs| {\n        let sessions = SESSIONS.borrow_ref(cs);\n        sessions.iter().any(|s| {\n            s.token == *token\n                && s.token != [0; 8]\n                && now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS\n        })\n    })\n}"
     }
    ],
-   "upstream_note": "AuthSettings fields the decision reads; bearer_token/api_key reduced to non-empty flags"
+   "upstream_note": "now and the store are parameters instead of now_secs() and the SESSIONS static"
+  },
+  "Error": {
+   "kind": "inductive",
+   "rust_path": "m5airq_kernel::Error",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 103,
+   "kernel_code": "pub enum Error {\n    Forbidden,\n    AlreadyActive,\n    BadSize,\n    RunningUnknown,\n    NoSession,\n    PriorError,\n    ChunkSize,\n    OffsetMismatch,\n    ExceedsDeclared,\n    Incomplete,\n}",
+   "lean": "@[discriminant isize]\ninductive Error where\n| Forbidden : Error\n| AlreadyActive : Error\n| BadSize : Error\n| RunningUnknown : Error\n| NoSession : Error\n| PriorError : Error\n| ChunkSize : Error\n| OffsetMismatch : Error\n| ExceedsDeclared : Error\n| Incomplete : Error",
+   "upstream": [
+    {
+     "file": "src/ota.rs",
+     "line": 399,
+     "code": "pub fn begin(firmware_size: u32) -> String {\n    if OTA_ACTIVE.load(Ordering::Relaxed) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"OTA already in progress\"}}\"#);\n    }\n    if firmware_size == 0 || firmware_size > OTA_SLOT_SIZE {\n        return format!(\n            r#\"{{\"ok\":false,\"error\":\"invalid size (max {} bytes)\"}}\"#,\n            OTA_SLOT_SIZE\n        );\n    }\n\n    // Determine running slot (detected at boot via flash fingerprinting)\n    // and target the OTHER slot.  This is critical -- targeting the running\n    // slot would erase the firmware we're executing from.\n    let running = RUNNING_SLOT.load(Ordering::Relaxed);\n    if running == 0xFF {\n        // init_running_slot() was never called -- refuse rather than guess.\n        return format!(r#\"{{\"ok\":false,\"error\":\"running slot unknown (call init_running_slot at boot)\"}}\"#);\n    }\n    let target = 1 - running;\n\n    // Also log what otadata thinks (for diagnostics).\n    let otadata_active = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        read_active_slot(&mut inner.store.flash)\n    });\n    if otadata_active != running {\n        log::warn!(\n            \"[ota] otadata says slot {} active, but we detected slot {} as running\",\n            otadata_active, running\n        );\n    }\n\n    let num_sectors = (firmware_size + FLASH_SECTOR_SIZE - 1) / FLASH_SECTOR_SIZE;\n\n    log::info!(\n        \"[ota] begin: size={}B running=slot{} target=slot{} (0x{:05X}), {} sectors (lazy erase)\",\n        firmware_size,\n        running,\n        target,\n        slot_offset(target),\n        num_sectors,\n    );\n\n    // Mark session active. Sectors will be erased on-demand in write().\n    OTA_TARGET_SLOT.store(target, Ordering::Relaxed);\n    OTA_TOTAL_SIZE.store(firmware_size, Ordering::Relaxed);\n    OTA_WRITTEN.store(0, Ordering::Relaxed);\n    OTA_ERROR.store(false, Ordering::Relaxed);\n    OTA_ACTIVE.store(true, Ordering::Release);\n\n    format!(\n        r#\"{{\"ok\":true,\"slot\":{},\"size\":{},\"sectors\":{}}}\"#,\n        target, firmware_size, num_sectors\n    )\n}"
+    },
+    {
+     "file": "src/ota.rs",
+     "line": 459,
+     "code": "pub fn write(offset: u32, data: &[u8]) -> String {\n    if !OTA_ACTIVE.load(Ordering::Acquire) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"no OTA session\"}}\"#);\n    }\n    if OTA_ERROR.load(Ordering::Relaxed) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"OTA aborted due to prior error\"}}\"#);\n    }\n    if data.is_empty() || data.len() > MAX_CHUNK_SIZE {\n        return format!(r#\"{{\"ok\":false,\"error\":\"chunk too large (max {})\"}}\"#, MAX_CHUNK_SIZE);\n    }\n\n    let expected = OTA_WRITTEN.load(Ordering::Relaxed);\n    let total = OTA_TOTAL_SIZE.load(Ordering::Relaxed);\n\n    // Retry handling: if this chunk was already written (response lost but\n    // data committed), return success so the client can continue.\n    if offset < expected && offset + data.len() as u32 <= expected {\n        return format!(\n            r#\"{{\"ok\":true,\"written\":{},\"total\":{},\"pct\":{}}}\"#,\n            expected, total, expected * 100 / total\n        );\n    }\n    if offset != expected {\n        return format!(\n            r#\"{{\"ok\":false,\"error\":\"offset mismatch (expected {}, got {})\"}}\"#,\n            expected, offset\n        );\n    }\n    if offset + data.len() as u32 > total {\n        return format!(r#\"{{\"ok\":false,\"error\":\"write exceeds declared size\"}}\"#);\n    }\n\n    let slot = OTA_TARGET_SLOT.load(Ordering::Relaxed);\n\n    // Lazy erase: erase any sector that this chunk touches (before writing).\n    // Chunks are sequential and up to 4KB (= 1 sector), so at most 2 sectors\n    // can be touched (when a chunk straddles a sector boundary).\n    let first_sector = offset / FLASH_SECTOR_SIZE;\n    let last_sector = (offset + data.len() as u32 - 1) / FLASH_SECTOR_SIZE;\n    for sector in first_sector..=last_sector {\n        let er = critical_section::with(|cs| {\n            let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n            let inner = borrow.as_mut().unwrap();\n            erase_slot_sector(&mut inner.store.flash, slot, sector)\n        });\n        if let Err(e) = er {\n            OTA_ERROR.store(true, Ordering::Relaxed);\n            log::error!(\"[ota] erase failed at sector {}: {}\", sector, e);\n            return format!(r#\"{{\"ok\":false,\"error\":\"erase failed at sector {}\"}}\"#, sector);\n        }\n    }\n\n    // Pad data to 4-byte alignment for NorFlash write.\n    let mut chunk = alloc::vec![0xFF_u8; (data.len() + 3) & !3];\n    chunk[..data.len()].copy_from_slice(data);\n\n    let r = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        write_chunk(&mut inner.store.flash, slot, offset, &chunk)\n    });\n\n    if let Err(e) = r {\n        OTA_ERROR.store(true, Ordering::Relaxed);\n        log::error!(\"[ota] write failed at offset {}: {}\", offset, e);\n        return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n    }\n\n    let new_written = offset + data.len() as u32;\n    OTA_WRITTEN.store(new_written, Ordering::Relaxed);\n\n    format!(\n        r#\"{{\"ok\":true,\"written\":{},\"total\":{},\"pct\":{}}}\"#,\n        new_written,\n        total,\n        new_written * 100 / total,\n    )\n}"
+    },
+    {
+     "file": "src/ota.rs",
+     "line": 544,
+     "code": "pub fn end(expected_crc: u32) -> String {\n    if !OTA_ACTIVE.load(Ordering::Acquire) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"no OTA session\"}}\"#);\n    }\n\n    let written = OTA_WRITTEN.load(Ordering::Relaxed);\n    let total = OTA_TOTAL_SIZE.load(Ordering::Relaxed);\n    if written != total {\n        return format!(\n            r#\"{{\"ok\":false,\"error\":\"incomplete ({}/{} bytes)\"}}\"#,\n            written, total\n        );\n    }\n\n    let slot = OTA_TARGET_SLOT.load(Ordering::Relaxed);\n\n    // Verify image header.\n    let verify = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        verify_image_header(&mut inner.store.flash, slot)\n    });\n    if let Err(e) = verify {\n        OTA_ERROR.store(true, Ordering::Relaxed);\n        OTA_ACTIVE.store(false, Ordering::Release);\n        log::error!(\"[ota] image verification failed: {}\", e);\n        return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n    }\n\n    // Read back the entire image from flash and compute CRC-32.\n    // Uses many short critical sections (one per 4 KB chunk) so WiFi\n    // isn't starved during the ~1 MB read-back.\n    log::info!(\"[ota] verifying CRC-32 ({} bytes from slot {})...\", total, slot);\n    let crc_result = compute_image_crc32_yielding(slot, total);\n    match crc_result {\n        Err(e) => {\n            OTA_ERROR.store(true, Ordering::Relaxed);\n            OTA_ACTIVE.store(false, Ordering::Release);\n            log::error!(\"[ota] CRC read-back failed: {}\", e);\n            return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n        }\n        Ok(actual_crc) => {\n            if actual_crc != expected_crc {\n                OTA_ERROR.store(true, Ordering::Relaxed);\n                OTA_ACTIVE.store(false, Ordering::Release);\n                log::error!(\n                    \"[ota] CRC mismatch: expected 0x{:08X}, got 0x{:08X}\",\n                    expected_crc, actual_crc\n                );\n                return format!(\n                    r#\"{{\"ok\":false,\"error\":\"CRC mismatch (expected {:08x}, got {:08x})\"}}\"#,\n                    expected_crc, actual_crc\n                );\n            }\n            log::info!(\"[ota] CRC-32 verified: 0x{:08X}\", actual_crc);\n        }\n    }\n\n    // Activate the new slot.\n    let activate = critical_section::with(|cs| {\n        let mut borrow = crate::state::STATE.borrow_ref_mut(cs);\n        let inner = borrow.as_mut().unwrap();\n        activate_slot(&mut inner.store.flash, slot)\n    });\n    if let Err(e) = activate {\n        OTA_ERROR.store(true, Ordering::Relaxed);\n        OTA_ACTIVE.store(false, Ordering::Release);\n        log::error!(\"[ota] activation failed: {}\", e);\n        return format!(r#\"{{\"ok\":false,\"error\":\"{}\"}}\"#, e);\n    }\n\n    OTA_ACTIVE.store(false, Ordering::Release);\n    log::info!(\"[ota] complete -- rebooting to slot {} ({}B)\", slot, total);\n\n    // Reboot after a short delay to let the HTTP response be sent.\n    // The caller should send the response, then we reboot.\n    format!(\n        r#\"{{\"ok\":true,\"msg\":\"OTA complete, rebooting to slot {}\",\"size\":{}}}\"#,\n        slot, total\n    )\n}"
+    },
+    {
+     "file": "src/ota.rs",
+     "line": 627,
+     "code": "pub fn abort() -> String {\n    if !OTA_ACTIVE.load(Ordering::Acquire) {\n        return format!(r#\"{{\"ok\":false,\"error\":\"no OTA session to abort\"}}\"#);\n    }\n    OTA_ACTIVE.store(false, Ordering::Release);\n    OTA_ERROR.store(false, Ordering::Relaxed);\n    OTA_WRITTEN.store(0, Ordering::Relaxed);\n    log::info!(\"[ota] session aborted by user\");\n    format!(r#\"{{\"ok\":true,\"msg\":\"OTA aborted\"}}\"#)\n}"
+    },
+    {
+     "file": "src/auth.rs",
+     "line": 69,
+     "code": "pub enum AuthRejection {\n    /// 401 with WWW-Authenticate: Digest challenge\n    Challenge(heapless::String<128>),\n    /// 403 -- token over insecure transport\n    Forbidden,\n}"
+    }
+   ],
+   "upstream_note": "the {\"ok\":false,\"error\":...} replies of begin/write/end/abort, plus Forbidden from AuthRejection"
   },
   "OTA_SLOT_SIZE": {
    "kind": "def",
@@ -760,6 +676,106 @@
    ],
    "upstream_note": "same constant, 0x1F_0000"
   },
+  "transport_blocks": {
+   "kind": "def",
+   "rust_path": "m5airq_kernel::transport_blocks",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 379,
+   "kernel_code": "pub fn transport_blocks(is_https: bool, allow_http_tokens: bool) -> bool {\n    !is_https & !allow_http_tokens\n}",
+   "lean": "def transport_blocks\n  (is_https : Bool) (allow_http_tokens : Bool) : Result Bool := do\n  ok ((\u00ac is_https) && (\u00ac allow_http_tokens))",
+   "upstream": [
+    {
+     "file": "src/auth.rs",
+     "line": 694,
+     "code": "            if !is_https && !allow_http_tokens {"
+    },
+    {
+     "file": "src/auth.rs",
+     "line": 707,
+     "code": "        if !is_https && !allow_http_tokens {"
+    },
+    {
+     "file": "src/auth.rs",
+     "line": 720,
+     "code": "            if !is_https && !allow_http_tokens {"
+    }
+   ],
+   "upstream_note": "the !is_https && !allow_http_tokens test repeated for bearer, API-key header and query"
+  },
+  "AuthCfg": {
+   "kind": "structure",
+   "rust_path": "m5airq_kernel::AuthCfg",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 299,
+   "kernel_code": "pub struct AuthCfg {\n    pub public_access: bool,\n    pub allow_http_tokens: bool,\n    /// Whether a non-empty bearer token is configured.\n    pub bearer_set: bool,\n    /// Whether a non-empty API key is configured.\n    pub apikey_set: bool,\n}",
+   "lean": "structure AuthCfg where\n  public_access : Bool\n  allow_http_tokens : Bool\n  bearer_set : Bool\n  apikey_set : Bool",
+   "upstream": [
+    {
+     "file": "src/settings.rs",
+     "line": 120,
+     "code": "pub struct AuthSettings {\n    pub public_access: bool,\n    pub username: HString<32>,\n    pub password: HString<64>,\n    pub bearer_token: HString<128>,\n    pub api_key: HString<128>,\n    /// Allow bearer token and API key over plain HTTP (default: false = HTTPS only).\n    pub allow_http_tokens: bool,\n}"
+    }
+   ],
+   "upstream_note": "AuthSettings fields the decision reads; bearer_token/api_key reduced to non-empty flags"
+  },
+  "OTA_INITIAL": {
+   "kind": "def",
+   "rust_path": "m5airq_kernel::OTA_INITIAL",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 63,
+   "kernel_code": "pub const OTA_INITIAL: OtaState = OtaState {\n    active: false,\n    target_slot: 0,\n    running_slot: SLOT_UNKNOWN,\n    total: 0,\n    written: 0,\n    error: false,\n};",
+   "lean": "@[global_simps, irreducible]\ndef OTA_INITIAL : OtaState :=\n  {\n    active := false,\n    target_slot := 0#u8,\n    running_slot := SLOT_UNKNOWN,\n    total := 0#u32,\n    written := 0#u32,\n    error := false\n  }",
+   "upstream": [
+    {
+     "file": "src/ota.rs",
+     "line": 50,
+     "code": "static OTA_ACTIVE: AtomicBool = AtomicBool::new(false);\nstatic OTA_TARGET_SLOT: AtomicU8 = AtomicU8::new(0);\nstatic OTA_TOTAL_SIZE: AtomicU32 = AtomicU32::new(0);\nstatic OTA_WRITTEN: AtomicU32 = AtomicU32::new(0);\nstatic OTA_ERROR: AtomicBool = AtomicBool::new(false);\n\n/// The slot the bootloader actually loaded us from (set once at boot).\nstatic RUNNING_SLOT: AtomicU8 = AtomicU8::new(0xFF);"
+    }
+   ],
+   "upstream_note": "initial values of the OTA_* atomics and RUNNING_SLOT"
+  },
+  "read_only": {
+   "kind": "def",
+   "rust_path": "m5airq_kernel::read_only",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 264,
+   "kernel_code": "pub fn read_only(cmd: &Command) -> bool {\n    match cmd {\n        Command::Status => true,\n        _ => false,\n    }\n}",
+   "lean": "def read_only (cmd : Command) : Result Bool := do\n  match cmd with\n  | Command.Begin _ => ok false\n  | Command.Write _ _ _ => ok false\n  | Command.End _ _ _ _ _ => ok false\n  | Command.Abort => ok false\n  | Command.Status => ok true",
+   "upstream": [],
+   "upstream_note": "port-only harness predicate (Status writes no state); upstream has no command classifier"
+  },
+  "ct_eq8": {
+   "kind": "def",
+   "rust_path": "m5airq_kernel::ct_eq8",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 324,
+   "kernel_code": "pub fn ct_eq8(a: &[u8; 8], b: &[u8; 8]) -> bool {\n    let mut diff: u8 = 0;\n    diff |= a[0] ^ b[0];\n    diff |= a[1] ^ b[1];\n    diff |= a[2] ^ b[2];\n    diff |= a[3] ^ b[3];\n    diff |= a[4] ^ b[4];\n    diff |= a[5] ^ b[5];\n    diff |= a[6] ^ b[6];\n    diff |= a[7] ^ b[7];\n    diff == 0\n}",
+   "lean": "def ct_eq8\n  (a : Array Std.U8 8#usize) (b : Array Std.U8 8#usize) : Result Bool := do\n  let i \u2190 Array.index_usize a 0#usize\n  let i1 \u2190 Array.index_usize b 0#usize\n  let i2 \u2190 lift (i ^^^ i1)\n  let diff \u2190 lift (0#u8 ||| i2)\n  let i3 \u2190 Array.index_usize a 1#usize\n  let i4 \u2190 Array.index_usize b 1#usize\n  let i5 \u2190 lift (i3 ^^^ i4)\n  let diff1 \u2190 lift (diff ||| i5)\n  let i6 \u2190 Array.index_usize a 2#usize\n  let i7 \u2190 Array.index_usize b 2#usize\n  let i8 \u2190 lift (i6 ^^^ i7)\n  let diff2 \u2190 lift (diff1 ||| i8)\n  let i9 \u2190 Array.index_usize a 3#usize\n  let i10 \u2190 Array.index_usize b 3#usize\n  let i11 \u2190 lift (i9 ^^^ i10)\n  let diff3 \u2190 lift (diff2 ||| i11)\n  let i12 \u2190 Array.index_usize a 4#usize\n  let i13 \u2190 Array.index_usize b 4#usize\n  let i14 \u2190 lift (i12 ^^^ i13)\n  let diff4 \u2190 lift (diff3 ||| i14)\n  let i15 \u2190 Array.index_usize a 5#usize\n  let i16 \u2190 Array.index_usize b 5#usize\n  let i17 \u2190 lift (i15 ^^^ i16)\n  let diff5 \u2190 lift (diff4 ||| i17)\n  let i18 \u2190 Array.index_usize a 6#usize\n  let i19 \u2190 Array.index_usize b 6#usize\n  let i20 \u2190 lift (i18 ^^^ i19)\n  let diff6 \u2190 lift (diff5 ||| i20)\n  let i21 \u2190 Array.index_usize a 7#usize\n  let i22 \u2190 Array.index_usize b 7#usize\n  let i23 \u2190 lift (i21 ^^^ i22)\n  let diff7 \u2190 lift (diff6 ||| i23)\n  ok (diff7 = 0#u8)",
+   "upstream": [
+    {
+     "file": "src/auth.rs",
+     "line": 614,
+     "code": "fn constant_time_eq(a: &[u8], b: &[u8]) -> bool {\n    if a.len() != b.len() {\n        return false;\n    }\n    let mut diff = 0u8;\n    for (x, y) in a.iter().zip(b.iter()) {\n        diff |= x ^ y;\n    }\n    diff == 0\n}"
+    }
+   ],
+   "upstream_note": "constant_time_eq specialised to two 8-byte arrays (length check vacuous)"
+  },
+  "OtaState": {
+   "kind": "structure",
+   "rust_path": "m5airq_kernel::OtaState",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub struct OtaState {\n    pub active: bool,\n    /// The slot being written (0 or 1).\n    pub target_slot: u8,\n    /// The slot the bootloader loaded us from (0 or 1), or `SLOT_UNKNOWN`.\n    pub running_slot: u8,\n    /// The declared firmware size for this session.\n    pub total: u32,\n    /// Bytes committed so far.\n    pub written: u32,\n    pub error: bool,\n}",
+   "lean": "structure OtaState where\n  active : Bool\n  target_slot : Std.U8\n  running_slot : Std.U8\n  total : Std.U32\n  written : Std.U32\n  error : Bool",
+   "upstream": [
+    {
+     "file": "src/ota.rs",
+     "line": 50,
+     "code": "static OTA_ACTIVE: AtomicBool = AtomicBool::new(false);\nstatic OTA_TARGET_SLOT: AtomicU8 = AtomicU8::new(0);\nstatic OTA_TOTAL_SIZE: AtomicU32 = AtomicU32::new(0);\nstatic OTA_WRITTEN: AtomicU32 = AtomicU32::new(0);\nstatic OTA_ERROR: AtomicBool = AtomicBool::new(false);\n\n/// The slot the bootloader actually loaded us from (set once at boot).\nstatic RUNNING_SLOT: AtomicU8 = AtomicU8::new(0xFF);"
+    }
+   ],
+   "upstream_note": "the five OTA_* atomics plus RUNNING_SLOT gathered into one struct"
+  },
   "is_zero8": {
    "kind": "def",
    "rust_path": "m5airq_kernel::is_zero8",
@@ -776,37 +792,21 @@
    ],
    "upstream_note": "the s.token != [0; 8] empty-slot test inside validate_session"
   },
-  "MAX_CHUNK": {
+  "age_ok": {
    "kind": "def",
-   "rust_path": "m5airq_kernel::MAX_CHUNK",
+   "rust_path": "m5airq_kernel::age_ok",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 33,
-   "kernel_code": "pub const MAX_CHUNK: u32 = 4096;",
-   "lean": "@[global_simps, irreducible] def MAX_CHUNK : Std.U32 := 4096#u32",
-   "upstream": [
-    {
-     "file": "src/ota.rs",
-     "line": 44,
-     "code": "pub const MAX_CHUNK_SIZE: usize = 4096;"
-    }
-   ],
-   "upstream_note": "MAX_CHUNK_SIZE (usize upstream, u32 in the kernel)"
-  },
-  "validate_session": {
-   "kind": "def",
-   "rust_path": "m5airq_kernel::validate_session",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 370,
-   "kernel_code": "pub fn validate_session(store: &SessionStore, token: &[u8; 8], now: u32) -> bool {\n    slot_valid(&store.s0, token, now)\n        || slot_valid(&store.s1, token, now)\n        || slot_valid(&store.s2, token, now)\n        || slot_valid(&store.s3, token, now)\n}",
-   "lean": "def validate_session\n  (store : SessionStore) (token : Array Std.U8 8#usize) (now : Std.U32) :\n  Result Bool\n  := do\n  let b \u2190 slot_valid store.s0 token now\n  if b\n  then ok true\n  else\n    let b1 \u2190 slot_valid store.s1 token now\n    if b1\n    then ok true\n    else\n      let b2 \u2190 slot_valid store.s2 token now\n      if b2\n      then ok true\n      else slot_valid store.s3 token now",
+   "kernel_line": 354,
+   "kernel_code": "pub fn age_ok(now: u32, created: u32) -> bool {\n    if now >= created {\n        now - created <= SESSION_TTL_SECS\n    } else {\n        false\n    }\n}",
+   "lean": "def age_ok (now : Std.U32) (created : Std.U32) : Result Bool := do\n  if now >= created\n  then let i \u2190 now - created\n       ok (i <= SESSION_TTL_SECS)\n  else ok false",
    "upstream": [
     {
      "file": "src/auth.rs",
-     "line": 239,
-     "code": "fn validate_session(token: &[u8; 8]) -> bool {\n    let now = now_secs();\n    critical_section::with(|cs| {\n        let sessions = SESSIONS.borrow_ref(cs);\n        sessions.iter().any(|s| {\n            s.token == *token\n                && s.token != [0; 8]\n                && now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS\n        })\n    })\n}"
+     "line": 246,
+     "code": "                && now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS"
     }
    ],
-   "upstream_note": "now and the store are parameters instead of now_secs() and the SESSIONS static"
+   "upstream_note": "now.wrapping_sub(s.created_tick) <= SESSION_TTL_SECS without wrapping arithmetic"
   }
  },
  "specs": {

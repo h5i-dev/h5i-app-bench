@@ -96,6 +96,8 @@ function detail() {
   $("#detail-table tbody").innerHTML = D.projects.map((p) =>
     `<tr><th scope="row" rowspan="2">${esc(p.name)}</th><td>Normal input</td>${cells(p.normal, "cosmetic", "other")}</tr>` +
     `<tr><td>Mixed input</td>${cells(p.mixed, "explained", "unexplained")}</tr>`).join("");
+  $("#normal-notes").innerHTML = D.projects.filter((p) => p.normal_note)
+    .map((p) => `<li><strong>${esc(p.name)}</strong> (normal input): ${esc(p.normal_note)}</li>`).join("");
 }
 
 // ---- Properties -------------------------------------------------------------------
