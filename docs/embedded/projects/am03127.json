@@ -4,7 +4,7 @@
  "pin": "5e07e35",
  "upstream_head": "5e07e35",
  "pin_ok": true,
- "mapped": false,
+ "mapped": true,
  "theorems": [
   {
    "name": "encode_message_no_raw_brackets",
@@ -47,8 +47,8 @@
    "proof": "theorem page_id_valid_iff (id : Std.U32) :\n    page_id_valid id = ok (decide (65 \u2264 id.val \u2227 id.val \u2264 90)) := by\n  unfold page_id_valid CAP_A CAP_Z\n  first\n    | (simp only [lift, bind_tc_ok]; split <;> simp_all <;> scalar_tac)\n    | (simp [lift]; split <;> simp_all <;> omega)\n    | (simp [lift, UScalar.cast_val_eq]; by_cases h1 : 65 \u2264 id.val <;> simp_all <;> omega)",
    "deps": [
     "page_id_valid",
-    "CAP_A",
-    "CAP_Z"
+    "CAP_Z",
+    "CAP_A"
    ],
    "spec": []
   },
@@ -60,8 +60,8 @@
    "proof": "theorem schedule_id_valid_iff (id : Std.U32) :\n    schedule_id_valid id = ok (decide (65 \u2264 id.val \u2227 id.val \u2264 69)) := by\n  unfold schedule_id_valid CAP_A CAP_E\n  first\n    | (simp only [lift, bind_tc_ok]; split <;> simp_all <;> scalar_tac)\n    | (simp [lift]; split <;> simp_all <;> omega)\n    | (simp [lift, UScalar.cast_val_eq]; by_cases h1 : 65 \u2264 id.val <;> simp_all <;> omega)",
    "deps": [
     "schedule_id_valid",
-    "CAP_E",
-    "CAP_A"
+    "CAP_A",
+    "CAP_E"
    ],
    "spec": []
   },
@@ -114,85 +114,26 @@
   }
  ],
  "decls": {
-  "CAP_E": {
+  "two_digits": {
    "kind": "def",
-   "rust_path": "am03127_kernel::CAP_E",
+   "rust_path": "am03127_kernel::two_digits",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 33,
-   "kernel_code": "pub const CAP_E: u8 = 69; // 'E'",
-   "lean": "@[global_simps, irreducible] def CAP_E : Std.U8 := 69#u8",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "date_time_valid": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::date_time_valid",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 156,
-   "kernel_code": "pub fn date_time_valid(year: u8, week: u8, month: u8, day: u8, hour: u8, minute: u8, second: u8) -> bool {\n    two_digits(year)\n        && two_digits(week)\n        && two_digits(month)\n        && two_digits(day)\n        && two_digits(hour)\n        && two_digits(minute)\n        && two_digits(second)\n}",
-   "lean": "def date_time_valid\n  (year : Std.U8) (week : Std.U8) (month : Std.U8) (day : Std.U8)\n  (hour : Std.U8) (minute : Std.U8) (second : Std.U8) :\n  Result Bool\n  := do\n  let b \u2190 two_digits year\n  if b\n  then\n    let b1 \u2190 two_digits week\n    if b1\n    then\n      let b2 \u2190 two_digits month\n      if b2\n      then\n        let b3 \u2190 two_digits day\n        if b3\n        then\n          let b4 \u2190 two_digits hour\n          if b4\n          then\n            let b5 \u2190 two_digits minute\n            if b5\n            then two_digits second\n            else ok false\n          else ok false\n        else ok false\n      else ok false\n    else ok false\n  else ok false",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "WAITING_TIME_MAX": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::WAITING_TIME_MAX",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 140,
-   "kernel_code": "pub const WAITING_TIME_MAX: u8 = 25;",
-   "lean": "@[global_simps, irreducible] def WAITING_TIME_MAX : Std.U8 := 25#u8",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "page_id_valid": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::page_id_valid",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 44,
-   "kernel_code": "pub fn page_id_valid(id: u32) -> bool {\n    id >= CAP_A as u32 && id <= CAP_Z as u32\n}",
-   "lean": "def page_id_valid (id : Std.U32) : Result Bool := do\n  let i \u2190 lift (UScalar.cast .U32 CAP_A)\n  if id >= i\n  then let i1 \u2190 lift (UScalar.cast .U32 CAP_Z)\n       ok (id <= i1)\n  else ok false",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "CAP_A": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::CAP_A",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 32,
-   "kernel_code": "pub const CAP_A: u8 = 65; // 'A'",
-   "lean": "@[global_simps, irreducible] def CAP_A : Std.U8 := 65#u8",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "pages_valid": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::pages_valid",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 54,
-   "kernel_code": "pub fn pages_valid(pages: &[u8]) -> bool {\n    let mut i: usize = 0;\n    while i < pages.len() {\n        if !page_id_valid(pages[i] as u32) {\n            return false;\n        }\n        i += 1;\n    }\n    true\n}",
-   "lean": "@[reducible]\ndef pages_valid (pages : Slice Std.U8) : Result Bool := do\n  pages_valid_loop pages 0#usize",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "schedule_id_valid": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::schedule_id_valid",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub fn schedule_id_valid(id: u32) -> bool {\n    id >= CAP_A as u32 && id <= CAP_E as u32\n}",
-   "lean": "def schedule_id_valid (id : Std.U32) : Result Bool := do\n  let i \u2190 lift (UScalar.cast .U32 CAP_A)\n  if id >= i\n  then let i1 \u2190 lift (UScalar.cast .U32 CAP_E)\n       ok (id <= i1)\n  else ok false",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "encode_message": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::encode_message",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 104,
-   "kernel_code": "pub fn encode_message(msg: &[u8], out: &mut [u8]) -> Option<usize> {\n    let mut i: usize = 0;\n    let mut n: usize = 0;\n    while i < msg.len() {\n        let b = msg[i];\n        if b == LT || b == GT {\n            return None;\n        }\n        let code = if b == UTF8_C3 && i + 1 < msg.len() { umlaut_code(msg[i + 1]) } else { 0 };\n        if code != 0 {\n            if out.len() < 5 || n > out.len() - 5 {\n                return None;\n            }\n            out[n] = LT;\n            out[n + 1] = CAP_U;\n            out[n + 2] = hex_upper(code >> 4);\n            out[n + 3] = hex_upper(code & 15);\n            out[n + 4] = GT;\n            n += 5;\n            i += 2;\n        } else {\n            if n >= out.len() {\n                return None;\n            }\n            out[n] = b;\n            n += 1;\n            i += 1;\n        }\n    }\n    Some(n)\n}",
-   "lean": "@[reducible]\ndef encode_message\n  (msg : Slice Std.U8) (out : Slice Std.U8) :\n  Result ((Option Std.Usize) \u00d7 (Slice Std.U8))\n  := do\n  encode_message_loop msg out 0#usize 0#usize",
-   "upstream": [],
-   "upstream_note": ""
+   "kernel_line": 151,
+   "kernel_code": "pub fn two_digits(v: u8) -> bool {\n    v <= 99\n}",
+   "lean": "def two_digits (v : Std.U8) : Result Bool := do\n  ok (v <= 99#u8)",
+   "upstream": [
+    {
+     "file": "am03127-commands/src/realtime_clock.rs",
+     "line": 33,
+     "code": "impl Display for DateTime {\n    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n        write!(\n            f,\n            \"<SC>{:02}{:02}{:02}{:02}{:02}{:02}{:02}\",\n            self.year, self.week, self.month, self.day, self.hour, self.minute, self.second\n        )\n    }\n}"
+    },
+    {
+     "file": "am03127-commands/src/schedule.rs",
+     "line": 58,
+     "code": "impl Display for ScheduleDateTime {\n    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n        write!(\n            f,\n            \"{:02}{:02}{:02}{:02}{:02}\",\n            self.year, self.month, self.day, self.hour, self.minute\n        )\n    }\n}"
+    }
+   ],
+   "upstream_note": "upstream has no check (U2); guards the {:02} fields of DateTime and ScheduleDateTime"
   },
   "ota_start": {
    "kind": "def",
@@ -201,28 +142,146 @@
    "kernel_line": 199,
    "kernel_code": "pub fn ota_start(octet_stream: bool, content_length: usize, transfer_encoding: bool) -> OtaStart {\n    if !octet_stream {\n        OtaStart::WrongContentType\n    } else if content_length == 0 {\n        if transfer_encoding { OtaStart::Chunked } else { OtaStart::Empty }\n    } else {\n        OtaStart::Proceed\n    }\n}",
    "lean": "def ota_start\n  (octet_stream : Bool) (content_length : Std.Usize) (transfer_encoding : Bool)\n  :\n  Result OtaStart\n  := do\n  if octet_stream\n  then\n    if content_length = 0#usize\n    then if transfer_encoding\n         then ok OtaStart.Chunked\n         else ok OtaStart.Empty\n    else ok OtaStart.Proceed\n  else ok OtaStart.WrongContentType",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/server/ota.rs",
+     "line": 119,
+     "code": "        // Compare the media type only, so parameters like \"; charset=...\" are accepted.\n        let content_type = request.parts.headers().get(\"Content-Type\");\n        let is_octet_stream = content_type.is_some_and(|ct| {\n            ct.as_raw().split(|&b| b == b';').next().is_some_and(|t| {\n                t.trim_ascii()\n                    .eq_ignore_ascii_case(b\"application/octet-stream\")\n            })\n        });\n        if !is_octet_stream {\n            let connection = request.body_connection.finalize().await?;\n            return response_writer\n                .write_response(\n                    connection,\n                    Response::new(StatusCode::BAD_REQUEST, \"Wrong content type\"),\n                )\n                .await;\n        }\n\n        let content_length = body_reader.content_length();\n        if content_length == 0 {\n            // A chunked upload also ends up here: the image size must be known up front.\n            let message = if request.parts.headers().get(\"Transfer-Encoding\").is_some() {\n                \"Chunked upload not supported, send a Content-Length\"\n            } else {\n                \"Firmware image is empty\"\n            };\n            let connection = request.body_connection.finalize().await?;\n            return response_writer\n                .write_response(connection, Response::new(StatusCode::BAD_REQUEST, message))\n                .await;\n        }"
+    }
+   ],
+   "upstream_note": "octet-stream media type, then content_length == 0 (chunked vs empty)"
   },
-  "OtaStart": {
-   "kind": "inductive",
-   "rust_path": "am03127_kernel::OtaStart",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 191,
-   "kernel_code": "pub enum OtaStart {\n    WrongContentType,\n    Chunked,\n    Empty,\n    Proceed,\n}",
-   "lean": "@[discriminant isize]\ninductive OtaStart where\n| WrongContentType : OtaStart\n| Chunked : OtaStart\n| Empty : OtaStart\n| Proceed : OtaStart",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "two_digits": {
+  "WAITING_TIME_MAX": {
    "kind": "def",
-   "rust_path": "am03127_kernel::two_digits",
+   "rust_path": "am03127_kernel::WAITING_TIME_MAX",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 151,
-   "kernel_code": "pub fn two_digits(v: u8) -> bool {\n    v <= 99\n}",
-   "lean": "def two_digits (v : Std.U8) : Result Bool := do\n  ok (v <= 99#u8)",
-   "upstream": [],
-   "upstream_note": ""
+   "kernel_line": 140,
+   "kernel_code": "pub const WAITING_TIME_MAX: u8 = 25;",
+   "lean": "@[global_simps, irreducible] def WAITING_TIME_MAX : Std.U8 := 25#u8",
+   "upstream": [
+    {
+     "file": "am03127-commands/src/page.rs",
+     "line": 291,
+     "code": "impl WaitingTime {\n    pub fn new(value: u8) -> Self {\n        // Max to 25 == Z\n        WaitingTime(value.min(25))\n    }"
+    }
+   ],
+   "upstream_note": "WaitingTime::new's value.min(25)"
+  },
+  "pages_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::pages_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub fn pages_valid(pages: &[u8]) -> bool {\n    let mut i: usize = 0;\n    while i < pages.len() {\n        if !page_id_valid(pages[i] as u32) {\n            return false;\n        }\n        i += 1;\n    }\n    true\n}",
+   "lean": "@[reducible]\ndef pages_valid (pages : Slice Std.U8) : Result Bool := do\n  pages_valid_loop pages 0#usize",
+   "upstream": [
+    {
+     "file": "am03127-commands/src/schedule.rs",
+     "line": 21,
+     "code": "    /// List of page IDs to display during this schedule\n    pub pages: String,"
+    },
+    {
+     "file": "am03127-commands/src/schedule.rs",
+     "line": 38,
+     "code": "impl Display for Schedule {\n    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n        write!(f, \"<T{}>{}{}{}\", self.id, self.from, self.to, self.pages)\n    }\n}"
+    }
+   ],
+   "upstream_note": "upstream has no check (U1); guards Schedule's pages string, copied into the frame by Display"
+  },
+  "CAP_E": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::CAP_E",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 33,
+   "kernel_code": "pub const CAP_E: u8 = 69; // 'E'",
+   "lean": "@[global_simps, irreducible] def CAP_E : Std.U8 := 69#u8",
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/panel.rs",
+     "line": 385,
+     "code": "    id >= 'A' && id <= 'E'"
+    }
+   ],
+   "upstream_note": "the 'E' upper bound of schedule IDs"
+  },
+  "date_time_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::date_time_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 156,
+   "kernel_code": "pub fn date_time_valid(year: u8, week: u8, month: u8, day: u8, hour: u8, minute: u8, second: u8) -> bool {\n    two_digits(year)\n        && two_digits(week)\n        && two_digits(month)\n        && two_digits(day)\n        && two_digits(hour)\n        && two_digits(minute)\n        && two_digits(second)\n}",
+   "lean": "def date_time_valid\n  (year : Std.U8) (week : Std.U8) (month : Std.U8) (day : Std.U8)\n  (hour : Std.U8) (minute : Std.U8) (second : Std.U8) :\n  Result Bool\n  := do\n  let b \u2190 two_digits year\n  if b\n  then\n    let b1 \u2190 two_digits week\n    if b1\n    then\n      let b2 \u2190 two_digits month\n      if b2\n      then\n        let b3 \u2190 two_digits day\n        if b3\n        then\n          let b4 \u2190 two_digits hour\n          if b4\n          then\n            let b5 \u2190 two_digits minute\n            if b5\n            then two_digits second\n            else ok false\n          else ok false\n        else ok false\n      else ok false\n    else ok false\n  else ok false",
+   "upstream": [
+    {
+     "file": "am03127-commands/src/realtime_clock.rs",
+     "line": 13,
+     "code": "#[derive(Copy, Clone, Debug, Default, Deserialize, Serialize)]\npub struct DateTime {\n    /// Year (0-99)\n    pub year: u8,\n    /// Week of the year (1-52)\n    pub week: u8,\n    /// Month (1-12)\n    pub month: u8,\n    /// Day of the month (1-31)\n    pub day: u8,\n    /// Hour (0-23)\n    pub hour: u8,\n    /// Minute (0-59)\n    pub minute: u8,\n    /// Second (0-59)\n    pub second: u8,\n}\n\nimpl CommandAble for DateTime {}\n\nimpl Display for DateTime {\n    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {\n        write!(\n            f,\n            \"<SC>{:02}{:02}{:02}{:02}{:02}{:02}{:02}\",\n            self.year, self.week, self.month, self.day, self.hour, self.minute, self.second\n        )\n    }\n}"
+    },
+    {
+     "file": "am03127-firmware/src/server/routers.rs",
+     "line": 62,
+     "code": "pub fn clock_router() -> impl MethodHandler<AppState> {\n    post(\n        |State(panel): State<&'static Panel>, Json::<DateTime>(date_time)| async move {\n            log::info!(\"{LOGGER_NAME}: Set clock\");\n\n            match panel.set_clock(&date_time).await {\n                Ok(_) => Ok(()),\n                Err(err) => {\n                    log::error!(\"{LOGGER_NAME}: {err}\");\n                    Err(err)\n                }\n            }\n        },\n    )\n}"
+    }
+   ],
+   "upstream_note": "upstream has no check (U2); guards clock_router's DateTime, formatted <SC>{:02}x7"
+  },
+  "encode_message": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::encode_message",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 104,
+   "kernel_code": "pub fn encode_message(msg: &[u8], out: &mut [u8]) -> Option<usize> {\n    let mut i: usize = 0;\n    let mut n: usize = 0;\n    while i < msg.len() {\n        let b = msg[i];\n        if b == LT || b == GT {\n            return None;\n        }\n        let code = if b == UTF8_C3 && i + 1 < msg.len() { umlaut_code(msg[i + 1]) } else { 0 };\n        if code != 0 {\n            if out.len() < 5 || n > out.len() - 5 {\n                return None;\n            }\n            out[n] = LT;\n            out[n + 1] = CAP_U;\n            out[n + 2] = hex_upper(code >> 4);\n            out[n + 3] = hex_upper(code & 15);\n            out[n + 4] = GT;\n            n += 5;\n            i += 2;\n        } else {\n            if n >= out.len() {\n                return None;\n            }\n            out[n] = b;\n            n += 1;\n            i += 1;\n        }\n    }\n    Some(n)\n}",
+   "lean": "@[reducible]\ndef encode_message\n  (msg : Slice Std.U8) (out : Slice Std.U8) :\n  Result ((Option Std.Usize) \u00d7 (Slice Std.U8))\n  := do\n  encode_message_loop msg out 0#usize 0#usize",
+   "upstream": [
+    {
+     "file": "am03127-commands/src/page.rs",
+     "line": 359,
+     "code": "    fn replace_european_character(message: &str) -> String {\n        let mut result = String::new();\n        for c in message.chars() {\n            match c {\n                '\u00fc' => result.push_str(\"<U7C>\"),\n                '\u00dc' => result.push_str(\"<U5C>\"),\n                '\u00e4' => result.push_str(\"<U64>\"),\n                '\u00c4' => result.push_str(\"<U44>\"),\n                '\u00f6' => result.push_str(\"<U76>\"),\n                '\u00d6' => result.push_str(\"<U56>\"),\n                '\u00df' => result.push_str(\"<U5F>\"),\n                _ => result.push(c),\n            }\n        }\n        result\n    }"
+    },
+    {
+     "file": "am03127-commands/src/page.rs",
+     "line": 377,
+     "code": "impl Display for Page {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        let message = Self::replace_european_character(&self.message);\n        write!(\n            f,\n            \"<L{}><P{}><F{}><M{}><W{}><F{}>{}\",\n            self.line,\n            self.id,\n            self.leading,\n            self.waiting_mode_and_speed,\n            self.waiting_time,\n            self.lagging,\n            message\n        )\n    }\n}"
+    }
+   ],
+   "upstream_note": "replace_european_character, refusing raw < and > (upstream copies them into the frame, U1)"
+  },
+  "schedule_id_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::schedule_id_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub fn schedule_id_valid(id: u32) -> bool {\n    id >= CAP_A as u32 && id <= CAP_E as u32\n}",
+   "lean": "def schedule_id_valid (id : Std.U32) : Result Bool := do\n  let i \u2190 lift (UScalar.cast .U32 CAP_A)\n  if id >= i\n  then let i1 \u2190 lift (UScalar.cast .U32 CAP_E)\n       ok (id <= i1)\n  else ok false",
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/panel.rs",
+     "line": 384,
+     "code": "pub fn is_schedule_id_valid(id: char) -> bool {\n    id >= 'A' && id <= 'E'\n}"
+    }
+   ],
+   "upstream_note": "is_schedule_id_valid"
+  },
+  "CAP_A": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::CAP_A",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub const CAP_A: u8 = 65; // 'A'",
+   "lean": "@[global_simps, irreducible] def CAP_A : Std.U8 := 65#u8",
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/panel.rs",
+     "line": 373,
+     "code": "    id >= 'A' && id <= 'Z'"
+    },
+    {
+     "file": "am03127-firmware/src/panel.rs",
+     "line": 385,
+     "code": "    id >= 'A' && id <= 'E'"
+    }
+   ],
+   "upstream_note": "the 'A' lower bound of page and schedule IDs"
   },
   "waiting_time_valid": {
    "kind": "def",
@@ -231,18 +290,19 @@
    "kernel_line": 142,
    "kernel_code": "pub fn waiting_time_valid(v: u8) -> bool {\n    v <= WAITING_TIME_MAX\n}",
    "lean": "def waiting_time_valid (v : Std.U8) : Result Bool := do\n  ok (v <= WAITING_TIME_MAX)",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "ota_complete": {
-   "kind": "def",
-   "rust_path": "am03127_kernel::ota_complete",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 216,
-   "kernel_code": "pub fn ota_complete(bytes_written: usize, content_length: usize, remainder: usize) -> bool {\n    remainder == 0 && bytes_written == content_length\n}",
-   "lean": "def ota_complete\n  (bytes_written : Std.Usize) (content_length : Std.Usize)\n  (remainder : Std.Usize) :\n  Result Bool\n  := do\n  if remainder = 0#usize\n  then ok (bytes_written = content_length)\n  else ok false",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "am03127-commands/src/page.rs",
+     "line": 288,
+     "code": "#[derive(Debug, Clone, Deserialize, Serialize)]\npub struct WaitingTime(u8);"
+    },
+    {
+     "file": "am03127-commands/src/page.rs",
+     "line": 302,
+     "code": "impl Display for WaitingTime {\n    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {\n        write!(f, \"{}\", (self.0 + b'A') as char)\n    }\n}"
+    }
+   ],
+   "upstream_note": "upstream has no check on Deserialize (U3); guards WaitingTime's Display (value + b'A')"
   },
   "CAP_Z": {
    "kind": "def",
@@ -251,8 +311,67 @@
    "kernel_line": 34,
    "kernel_code": "pub const CAP_Z: u8 = 90; // 'Z'",
    "lean": "@[global_simps, irreducible] def CAP_Z : Std.U8 := 90#u8",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/panel.rs",
+     "line": 373,
+     "code": "    id >= 'A' && id <= 'Z'"
+    }
+   ],
+   "upstream_note": "the 'Z' upper bound of page IDs"
+  },
+  "ota_complete": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::ota_complete",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 216,
+   "kernel_code": "pub fn ota_complete(bytes_written: usize, content_length: usize, remainder: usize) -> bool {\n    remainder == 0 && bytes_written == content_length\n}",
+   "lean": "def ota_complete\n  (bytes_written : Std.Usize) (content_length : Std.Usize)\n  (remainder : Std.Usize) :\n  Result Bool\n  := do\n  if remainder = 0#usize\n  then ok (bytes_written = content_length)\n  else ok false",
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/server/ota.rs",
+     "line": 45,
+     "code": "            Ok(0) => {\n                // Write any remaining data\n                if write_buffer_pos > 0 {\n                    if write_buffer_pos % ALIGNMENT != 0 {\n                        return Err(\"Firmware size is not 4-byte aligned\");\n                    }"
+    },
+    {
+     "file": "am03127-firmware/src/server/ota.rs",
+     "line": 95,
+     "code": "    if bytes_written != content_length {\n        return Err(\"Could not read whole body\");\n    }"
+    }
+   ],
+   "upstream_note": "flash_firmware's end checks: no unaligned remainder, bytes_written == content_length"
+  },
+  "page_id_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::page_id_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 44,
+   "kernel_code": "pub fn page_id_valid(id: u32) -> bool {\n    id >= CAP_A as u32 && id <= CAP_Z as u32\n}",
+   "lean": "def page_id_valid (id : Std.U32) : Result Bool := do\n  let i \u2190 lift (UScalar.cast .U32 CAP_A)\n  if id >= i\n  then let i1 \u2190 lift (UScalar.cast .U32 CAP_Z)\n       ok (id <= i1)\n  else ok false",
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/panel.rs",
+     "line": 372,
+     "code": "pub fn is_page_id_valid(id: char) -> bool {\n    id >= 'A' && id <= 'Z'\n}"
+    }
+   ],
+   "upstream_note": "is_page_id_valid, char as its code point"
+  },
+  "OtaStart": {
+   "kind": "inductive",
+   "rust_path": "am03127_kernel::OtaStart",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 191,
+   "kernel_code": "pub enum OtaStart {\n    WrongContentType,\n    Chunked,\n    Empty,\n    Proceed,\n}",
+   "lean": "@[discriminant isize]\ninductive OtaStart where\n| WrongContentType : OtaStart\n| Chunked : OtaStart\n| Empty : OtaStart\n| Proceed : OtaStart",
+   "upstream": [
+    {
+     "file": "am03127-firmware/src/server/ota.rs",
+     "line": 119,
+     "code": "        // Compare the media type only, so parameters like \"; charset=...\" are accepted.\n        let content_type = request.parts.headers().get(\"Content-Type\");\n        let is_octet_stream = content_type.is_some_and(|ct| {\n            ct.as_raw().split(|&b| b == b';').next().is_some_and(|t| {\n                t.trim_ascii()\n                    .eq_ignore_ascii_case(b\"application/octet-stream\")\n            })\n        });\n        if !is_octet_stream {\n            let connection = request.body_connection.finalize().await?;\n            return response_writer\n                .write_response(\n                    connection,\n                    Response::new(StatusCode::BAD_REQUEST, \"Wrong content type\"),\n                )\n                .await;\n        }\n\n        let content_length = body_reader.content_length();\n        if content_length == 0 {\n            // A chunked upload also ends up here: the image size must be known up front.\n            let message = if request.parts.headers().get(\"Transfer-Encoding\").is_some() {\n                \"Chunked upload not supported, send a Content-Length\"\n            } else {\n                \"Firmware image is empty\"\n            };\n            let connection = request.body_connection.finalize().await?;\n            return response_writer\n                .write_response(connection, Response::new(StatusCode::BAD_REQUEST, message))\n                .await;\n        }"
+    }
+   ],
+   "upstream_note": "the outcomes of OverTheAirUpdate's content-type and content-length checks"
   }
  },
  "specs": {}

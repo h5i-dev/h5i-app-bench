@@ -4,7 +4,7 @@
  "pin": "942db26",
  "upstream_head": "942db26",
  "pin_ok": true,
- "mapped": false,
+ "mapped": true,
  "theorems": [
   {
    "name": "watchdog_stops_when_overdue",
@@ -76,81 +76,27 @@
    "proof": "theorem idle_wait_bounds (d now : Std.U64) :\n    \u2203 w, idle_wait d now = ok w \u2227 1 \u2264 w.val \u2227 w.val \u2264 10 := by\n  have spec : idle_wait d now \u2983 w => 1 \u2264 w.val \u2227 w.val \u2264 10 \u2984 := by\n    unfold idle_wait COMMAND_IDLE_POLL_MS MOTION_WATCHDOG_POLL_MS\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals first | (simp_all; done) | scalar_tac | (simp_all; scalar_tac)\n  exact (WP.spec_equiv_exists _ _).1 spec",
    "deps": [
     "idle_wait",
-    "MOTION_WATCHDOG_POLL_MS",
-    "COMMAND_IDLE_POLL_MS"
+    "COMMAND_IDLE_POLL_MS",
+    "MOTION_WATCHDOG_POLL_MS"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "verify": {
+  "COMMAND_IDLE_POLL_MS": {
    "kind": "def",
-   "rust_path": "owb_kernel::verify",
+   "rust_path": "owb_kernel::COMMAND_IDLE_POLL_MS",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 167,
-   "kernel_code": "pub fn verify(open_surface: bool, secret_set: bool, matches: bool) -> bool {\n    if open_surface {\n        return true;\n    }\n    secret_set && matches\n}",
-   "lean": "def verify\n  (open_surface : Bool) (secret_set : Bool) (\u00abmatches\u00bb : Bool) :\n  Result Bool\n  := do\n  if open_surface\n  then ok true\n  else if secret_set\n       then ok \u00abmatches\u00bb\n       else ok false",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Watchdog": {
-   "kind": "structure",
-   "rust_path": "owb_kernel::Watchdog",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 44,
-   "kernel_code": "pub struct Watchdog {\n    pub active: bool,\n    pub last_motion_ms: u64,\n}",
-   "lean": "structure Watchdog where\n  active : Bool\n  last_motion_ms : Std.U64",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "MOTION_WATCHDOG_MS": {
-   "kind": "def",
-   "rust_path": "owb_kernel::MOTION_WATCHDOG_MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 24,
-   "kernel_code": "pub const MOTION_WATCHDOG_MS: u64 = 300;",
-   "lean": "@[global_simps, irreducible] def MOTION_WATCHDOG_MS : Std.U64 := 300#u64",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "may_acquire": {
-   "kind": "def",
-   "rust_path": "owb_kernel::may_acquire",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 126,
-   "kernel_code": "pub fn may_acquire(held_last_seen: Option<u64>, now_secs: u64) -> bool {\n    match held_last_seen {\n        None => true,\n        Some(last) => {\n            let age = if now_secs > last { now_secs - last } else { 0 };\n            age > SESSION_TIMEOUT_SECS\n        }\n    }\n}",
-   "lean": "def may_acquire\n  (held_last_seen : Option Std.U64) (now_secs : Std.U64) : Result Bool := do\n  match held_last_seen with\n  | none => ok true\n  | some last =>\n    let age \u2190 if now_secs > last\n                then now_secs - last\n                else ok 0#u64\n    ok (age > SESSION_TIMEOUT_SECS)",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "MotionKind": {
-   "kind": "inductive",
-   "rust_path": "owb_kernel::MotionKind",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 34,
-   "kernel_code": "pub enum MotionKind {\n    /// Not a motion stream or probe command: leaves the watchdog as it is.\n    Other,\n    /// A motion/probe command asking for zero motion: an explicit stop.\n    Stop,\n    /// A motion/probe command asking for motion.\n    Active,\n}",
-   "lean": "@[discriminant isize]\ninductive MotionKind where\n| Other : MotionKind\n| Stop : MotionKind\n| Active : MotionKind",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "watchdog_on_command": {
-   "kind": "def",
-   "rust_path": "owb_kernel::watchdog_on_command",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 51,
-   "kernel_code": "pub fn watchdog_on_command(w: Watchdog, kind: MotionKind, now_ms: u64) -> Watchdog {\n    match kind {\n        MotionKind::Active => Watchdog { active: true, last_motion_ms: now_ms },\n        MotionKind::Stop => Watchdog { active: false, last_motion_ms: w.last_motion_ms },\n        MotionKind::Other => w,\n    }\n}",
-   "lean": "def watchdog_on_command\n  (w : Watchdog) (kind : MotionKind) (now_ms : Std.U64) : Result Watchdog := do\n  match kind with\n  | MotionKind.Other => ok w\n  | MotionKind.Stop => ok { w with active := false }\n  | MotionKind.Active => ok { active := true, last_motion_ms := now_ms }",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "SESSION_TIMEOUT_SECS": {
-   "kind": "def",
-   "rust_path": "owb_kernel::SESSION_TIMEOUT_SECS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 122,
-   "kernel_code": "pub const SESSION_TIMEOUT_SECS: u64 = 30;",
-   "lean": "@[global_simps, irreducible] def SESSION_TIMEOUT_SECS : Std.U64 := 30#u64",
-   "upstream": [],
+   "kernel_line": 29,
+   "kernel_code": "pub const COMMAND_IDLE_POLL_MS: u64 = 10;",
+   "lean": "@[global_simps, irreducible] def COMMAND_IDLE_POLL_MS : Std.U64 := 10#u64",
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 36,
+     "code": "const COMMAND_IDLE_POLL_MS: u64 = 10;"
+    }
+   ],
    "upstream_note": ""
   },
   "MOTION_WATCHDOG_POLL_MS": {
@@ -160,7 +106,29 @@
    "kernel_line": 28,
    "kernel_code": "pub const MOTION_WATCHDOG_POLL_MS: u64 = 50;",
    "lean": "@[global_simps, irreducible] def MOTION_WATCHDOG_POLL_MS : Std.U64 := 50#u64",
-   "upstream": [],
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 32,
+     "code": "const MOTION_WATCHDOG_POLL_MS: u64 = 50;"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "MOTION_WATCHDOG_MS": {
+   "kind": "def",
+   "rust_path": "owb_kernel::MOTION_WATCHDOG_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 24,
+   "kernel_code": "pub const MOTION_WATCHDOG_MS: u64 = 300;",
+   "lean": "@[global_simps, irreducible] def MOTION_WATCHDOG_MS : Std.U64 := 300#u64",
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 27,
+     "code": "const MOTION_WATCHDOG_MS: u64 = 300;"
+    }
+   ],
    "upstream_note": ""
   },
   "watchdog_trip": {
@@ -170,8 +138,30 @@
    "kernel_line": 61,
    "kernel_code": "pub fn watchdog_trip(w: Watchdog, now_ms: u64) -> (Watchdog, bool) {\n    if !w.active {\n        return (w, false);\n    }\n    let age = if now_ms > w.last_motion_ms { now_ms - w.last_motion_ms } else { 0 };\n    if age > MOTION_WATCHDOG_MS {\n        (Watchdog { active: false, last_motion_ms: w.last_motion_ms }, true)\n    } else {\n        (w, false)\n    }\n}",
    "lean": "def watchdog_trip\n  (w : Watchdog) (now_ms : Std.U64) : Result (Watchdog \u00d7 Bool) := do\n  if w.active\n  then\n    let age \u2190\n      if now_ms > w.last_motion_ms\n      then now_ms - w.last_motion_ms\n      else ok 0#u64\n    if age > MOTION_WATCHDOG_MS\n    then ok ({ w with active := false }, true)\n    else ok (w, false)\n  else ok (w, false)",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 202,
+     "code": "fn trip_motion_watchdog_if_idle<E>(\n    executor: &mut E,\n    now_ms: u64,\n    last_motion_ms: u64,\n    motion_active: &mut bool,\n) where\n    E: CommandExecutor,\n{\n    if !*motion_active {\n        return;\n    }\n    let age_ms = now_ms.saturating_sub(last_motion_ms);\n    if age_ms > MOTION_WATCHDOG_MS {\n        let _ = executor.stop_motion();\n        *motion_active = false;\n        COMMAND_METRIC_WATCHDOG_STOPS_TOTAL.fetch_add(1, Ordering::Relaxed);\n        tracing::warn!(\n            target: \"owb::cmdbus\",\n            age_ms,\n            \"motion watchdog tripped: no command within failsafe window, wheels zeroed\"\n        );\n    }\n}"
+    }
+   ],
+   "upstream_note": "trip_motion_watchdog_if_idle; the stop_motion call is the returned bool"
+  },
+  "Watchdog": {
+   "kind": "structure",
+   "rust_path": "owb_kernel::Watchdog",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 44,
+   "kernel_code": "pub struct Watchdog {\n    pub active: bool,\n    pub last_motion_ms: u64,\n}",
+   "lean": "structure Watchdog where\n  active : Bool\n  last_motion_ms : Std.U64",
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 301,
+     "code": "    // Deadman watchdog state: armed once an active motion command executes.\n    let mut last_motion_ms = last_exec_ms;\n    let mut motion_active = false;"
+    }
+   ],
+   "upstream_note": "run_command_bus's last_motion_ms and motion_active"
   },
   "idle_wait": {
    "kind": "def",
@@ -180,18 +170,99 @@
    "kernel_line": 110,
    "kernel_code": "pub fn idle_wait(next_deadline: u64, now_ms: u64) -> u64 {\n    let w = if next_deadline > now_ms { next_deadline - now_ms } else { 0 };\n    let w = if w > COMMAND_IDLE_POLL_MS { COMMAND_IDLE_POLL_MS } else { w };\n    let w = if w > MOTION_WATCHDOG_POLL_MS { MOTION_WATCHDOG_POLL_MS } else { w };\n    if w < 1 { 1 } else { w }\n}",
    "lean": "def idle_wait\n  (next_deadline : Std.U64) (now_ms : Std.U64) : Result Std.U64 := do\n  let w \u2190 if next_deadline > now_ms\n            then next_deadline - now_ms\n            else ok 0#u64\n  let w1 \u2190 if w > COMMAND_IDLE_POLL_MS\n             then ok COMMAND_IDLE_POLL_MS\n             else ok w\n  let w2 \u2190\n    if w1 > MOTION_WATCHDOG_POLL_MS\n    then ok MOTION_WATCHDOG_POLL_MS\n    else ok w1\n  if w2 < 1#u64\n  then ok 1#u64\n  else ok w2",
-   "upstream": [],
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 332,
+     "code": "            let wait_ms = next_background_tick_ms\n                .saturating_sub(now_ms)\n                .min(COMMAND_IDLE_POLL_MS)\n                .min(MOTION_WATCHDOG_POLL_MS)\n                .max(1);"
+    }
+   ],
+   "upstream_note": "wait_ms: saturating_sub, min both poll caps, max 1"
+  },
+  "SESSION_TIMEOUT_SECS": {
+   "kind": "def",
+   "rust_path": "owb_kernel::SESSION_TIMEOUT_SECS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 122,
+   "kernel_code": "pub const SESSION_TIMEOUT_SECS: u64 = 30;",
+   "lean": "@[global_simps, irreducible] def SESSION_TIMEOUT_SECS : Std.U64 := 30#u64",
+   "upstream": [
+    {
+     "file": "owb-core/src/net/session.rs",
+     "line": 10,
+     "code": "pub const SESSION_TIMEOUT_SECS: u64 = 30;"
+    }
+   ],
    "upstream_note": ""
   },
-  "COMMAND_IDLE_POLL_MS": {
-   "kind": "def",
-   "rust_path": "owb_kernel::COMMAND_IDLE_POLL_MS",
+  "MotionKind": {
+   "kind": "inductive",
+   "rust_path": "owb_kernel::MotionKind",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 29,
-   "kernel_code": "pub const COMMAND_IDLE_POLL_MS: u64 = 10;",
-   "lean": "@[global_simps, irreducible] def COMMAND_IDLE_POLL_MS : Std.U64 := 10#u64",
-   "upstream": [],
-   "upstream_note": ""
+   "kernel_line": 34,
+   "kernel_code": "pub enum MotionKind {\n    /// Not a motion stream or probe command: leaves the watchdog as it is.\n    Other,\n    /// A motion/probe command asking for zero motion: an explicit stop.\n    Stop,\n    /// A motion/probe command asking for motion.\n    Active,\n}",
+   "lean": "@[discriminant isize]\ninductive MotionKind where\n| Other : MotionKind\n| Stop : MotionKind\n| Active : MotionKind",
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 165,
+     "code": "fn is_active_motion_command(cmd: &SystemCommand) -> bool {\n    match cmd {\n        SystemCommand::I(I2CCommand::T { speed_norm, .. }) => *speed_norm != 0.0,\n        SystemCommand::I(I2CCommand::Y { yaw_rate_deg_s, .. }) => *yaw_rate_deg_s != 0.0,\n        SystemCommand::I(I2CCommand::O {\n            speed_norm,\n            yaw_rate_deg_s,\n            ..\n        }) => *speed_norm != 0.0 || *yaw_rate_deg_s != 0.0,\n        // Probe always drives a wheel (bang-bang direction pulse \u2014 no zero state).\n        SystemCommand::I(I2CCommand::Probe { .. }) => true,\n        // Speed-controlled probes: arm only when a nonzero target is commanded.\n        SystemCommand::I(I2CCommand::ProbeSpeed { speed_norm, .. }) => *speed_norm != 0.0,\n        SystemCommand::I(I2CCommand::PidProbeSpeed { speed_norm, .. }) => *speed_norm != 0.0,\n        _ => false,\n    }\n}"
+    },
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 194,
+     "code": "fn arms_watchdog(cmd: &SystemCommand) -> bool {\n    is_motion_stream_command(cmd) || is_probe_command(cmd)\n}"
+    }
+   ],
+   "upstream_note": "the arms_watchdog / is_active_motion_command classification: Other, Stop (armed, zero), Active"
+  },
+  "may_acquire": {
+   "kind": "def",
+   "rust_path": "owb_kernel::may_acquire",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 126,
+   "kernel_code": "pub fn may_acquire(held_last_seen: Option<u64>, now_secs: u64) -> bool {\n    match held_last_seen {\n        None => true,\n        Some(last) => {\n            let age = if now_secs > last { now_secs - last } else { 0 };\n            age > SESSION_TIMEOUT_SECS\n        }\n    }\n}",
+   "lean": "def may_acquire\n  (held_last_seen : Option Std.U64) (now_secs : Std.U64) : Result Bool := do\n  match held_last_seen with\n  | none => ok true\n  | some last =>\n    let age \u2190 if now_secs > last\n                then now_secs - last\n                else ok 0#u64\n    ok (age > SESSION_TIMEOUT_SECS)",
+   "upstream": [
+    {
+     "file": "owb-core/src/net/session.rs",
+     "line": 88,
+     "code": "    pub async fn try_acquire_session(\n        session_id: String,\n        timestamp: u64,\n        lease_id: u64,\n    ) -> bool {\n        let mut store = SESSION_STORE.lock().await;\n        if let Some((_, held)) = store.as_ref() {\n            if timestamp.saturating_sub(held.last_seen) <= SESSION_TIMEOUT_SECS {\n                return false;\n            }\n        }\n        *store = Some((\n            session_id,\n            SessionState {\n                last_seen: timestamp,\n                lease_id,\n            },\n        ));\n        true\n    }"
+    }
+   ],
+   "upstream_note": "try_acquire_session: refuse while a held lease was seen within the timeout"
+  },
+  "watchdog_on_command": {
+   "kind": "def",
+   "rust_path": "owb_kernel::watchdog_on_command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 51,
+   "kernel_code": "pub fn watchdog_on_command(w: Watchdog, kind: MotionKind, now_ms: u64) -> Watchdog {\n    match kind {\n        MotionKind::Active => Watchdog { active: true, last_motion_ms: now_ms },\n        MotionKind::Stop => Watchdog { active: false, last_motion_ms: w.last_motion_ms },\n        MotionKind::Other => w,\n    }\n}",
+   "lean": "def watchdog_on_command\n  (w : Watchdog) (kind : MotionKind) (now_ms : Std.U64) : Result Watchdog := do\n  match kind with\n  | MotionKind.Other => ok w\n  | MotionKind.Stop => ok { w with active := false }\n  | MotionKind.Active => ok { active := true, last_motion_ms := now_ms }",
+   "upstream": [
+    {
+     "file": "owb-core/src/node/command_bus.rs",
+     "line": 396,
+     "code": "        // Arm/disarm the deadman watchdog around the command we are about to\n        // run: a nonzero motion command (re)arms it; a zero motion command is\n        // an explicit stop that disarms it.  `arms_watchdog` covers both the\n        // high-rate T/Y/O stream and one-shot probe commands (I-03 safety fix).\n        if arms_watchdog(&envelope.cmd) {\n            if is_active_motion_command(&envelope.cmd) {\n                last_motion_ms = Instant::now().as_millis();\n                motion_active = true;\n            }\n            else {\n                motion_active = false;\n            }\n        }"
+    }
+   ],
+   "upstream_note": "arm/disarm before executing a command"
+  },
+  "verify": {
+   "kind": "def",
+   "rust_path": "owb_kernel::verify",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 167,
+   "kernel_code": "pub fn verify(open_surface: bool, secret_set: bool, matches: bool) -> bool {\n    if open_surface {\n        return true;\n    }\n    secret_set && matches\n}",
+   "lean": "def verify\n  (open_surface : Bool) (secret_set : Bool) (\u00abmatches\u00bb : Bool) :\n  Result Bool\n  := do\n  if open_surface\n  then ok true\n  else if secret_set\n       then ok \u00abmatches\u00bb\n       else ok false",
+   "upstream": [
+    {
+     "file": "owb-core/src/net/auth.rs",
+     "line": 87,
+     "code": "pub async fn verify_control_secret(presented: &str) -> bool {\n    if OPEN_SURFACE.lock(|c| c.get()) {\n        return true;\n    }\n    let guard = CONTROL_SECRET.lock().await;\n    match guard.as_ref() {\n        None => false,\n        Some(expected) => constant_time_eq(expected.as_bytes(), presented.as_bytes()),\n    }\n}"
+    }
+   ],
+   "upstream_note": "verify_control_secret: open surface, else a configured secret that matches"
   }
  },
  "specs": {}

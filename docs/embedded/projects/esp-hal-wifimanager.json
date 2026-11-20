@@ -4,7 +4,7 @@
  "pin": "ab5fbd8",
  "upstream_head": "ab5fbd8",
  "pin_ok": true,
- "mapped": false,
+ "mapped": true,
  "theorems": [
   {
    "name": "store_only_connected",
@@ -13,11 +13,11 @@
    "statement": "theorem store_only_connected (st : Prov) (a : Attempt) {st' r}\n    (h : attempt st a = ok (st', r)) :\n    r.store = true \u2192 st.pending = false \u2227 a.parsed = true \u2227 a.driver_ok = true \u2227 a.connected = true \u2227\n      st'.status = Status.Connected",
    "proof": "theorem store_only_connected (st : Prov) (a : Attempt) {st' r}\n    (h : attempt st a = ok (st', r)) :\n    r.store = true \u2192 st.pending = false \u2227 a.parsed = true \u2227 a.driver_ok = true \u2227 a.connected = true \u2227\n      st'.status = Status.Connected := by\n  unfold attempt at h\n  revert h\n  cases ht : st.trying <;> cases hp : st.pending <;> cases a.parsed <;> cases a.driver_ok <;> cases a.connected <;>\n    simp_all <;> (try (intro h1 h2; subst h1 h2; simp_all))",
    "deps": [
+    "Prov",
     "Attempt",
     "attempt",
-    "Prov",
-    "AfterAttempt",
-    "Status"
+    "Status",
+    "AfterAttempt"
    ],
    "spec": []
   },
@@ -28,12 +28,12 @@
    "statement": "theorem ip_only_when_connected (st : Prov) {w s ip}\n    (h : http st .Status = ok (w, Resp.Status s ip)) :\n    ip = true \u2192 s = Status.Connected \u2227 st.status = Status.Connected \u2227 st.has_ip = true",
    "proof": "theorem ip_only_when_connected (st : Prov) {w s ip}\n    (h : http st .Status = ok (w, Resp.Status s ip)) :\n    ip = true \u2192 s = Status.Connected \u2227 st.status = Status.Connected \u2227 st.has_ip = true := by\n  unfold http is_connected at h\n  revert h\n  cases hs : st.status <;> cases st.has_ip <;> simp_all <;> (try (intro h1 h2 h3; subst_vars; simp_all)) <;>\n    (try (intro h1; subst_vars; simp_all))",
    "deps": [
-    "http",
     "Prov",
     "Status",
-    "Req",
+    "http",
+    "is_connected",
     "Resp",
-    "is_connected"
+    "Req"
    ],
    "spec": []
   },
@@ -56,11 +56,11 @@
    "statement": "theorem invalid_never_stored (st : Prov) (a : Attempt) (ht : st.trying = true) (hp : st.pending = false)\n    (hi : a.parsed = false \u2228 a.driver_ok = false) {st' r}\n    (h : attempt st a = ok (st', r)) : r.store = false \u2227 st'.status = Status.Invalid",
    "proof": "theorem invalid_never_stored (st : Prov) (a : Attempt) (ht : st.trying = true) (hp : st.pending = false)\n    (hi : a.parsed = false \u2228 a.driver_ok = false) {st' r}\n    (h : attempt st a = ok (st', r)) : r.store = false \u2227 st'.status = Status.Invalid := by\n  unfold attempt at h\n  revert h hi\n  cases a.parsed <;> cases a.driver_ok <;> cases a.connected <;> simp [ht, hp] <;>\n    (try (intro h1 h2; subst h1 h2; simp))",
    "deps": [
+    "Prov",
     "Attempt",
     "attempt",
-    "Prov",
-    "AfterAttempt",
-    "Status"
+    "Status",
+    "AfterAttempt"
    ],
    "spec": []
   },
@@ -71,12 +71,12 @@
    "statement": "theorem setup_starts_connecting (st : Prov) (hs : st.stored = false) :\n    http st (.Setup true) = ok (some { st with status := Status.Connecting, pending := true }, Resp.SetupTaken)",
    "proof": "theorem setup_starts_connecting (st : Prov) (hs : st.stored = false) :\n    http st (.Setup true) = ok (some { st with status := Status.Connecting, pending := true }, Resp.SetupTaken) := by\n  simp [http, hs]",
    "deps": [
-    "http",
     "Prov",
+    "http",
     "Status",
-    "Req",
+    "is_connected",
     "Resp",
-    "is_connected"
+    "Req"
    ],
    "spec": []
   },
@@ -87,12 +87,12 @@
    "statement": "theorem oversized_setup_ignored (st : Prov) (hs : st.stored = false) :\n    http st (.Setup false) = ok (none, Resp.SetupTooLarge)",
    "proof": "theorem oversized_setup_ignored (st : Prov) (hs : st.stored = false) :\n    http st (.Setup false) = ok (none, Resp.SetupTooLarge) := by\n  simp [http, hs]",
    "deps": [
-    "http",
     "Prov",
+    "http",
     "Status",
-    "Req",
+    "is_connected",
     "Resp",
-    "is_connected"
+    "Req"
    ],
    "spec": []
   },
@@ -139,12 +139,12 @@
    "statement": "theorem reads_change_nothing (st : Prov) (q : Req)\n    (hq : q = .Panel \u2228 q = .UpdatePanel \u2228 q = .List \u2228 q = .OtherGet \u2228 q = .Other) {w r}\n    (h : http st q = ok (w, r)) : w = none",
    "proof": "theorem reads_change_nothing (st : Prov) (q : Req)\n    (hq : q = .Panel \u2228 q = .UpdatePanel \u2228 q = .List \u2228 q = .OtherGet \u2228 q = .Other) {w r}\n    (h : http st q = ok (w, r)) : w = none := by\n  rcases hq with rfl | rfl | rfl | rfl | rfl <;> simp [http] at h <;> simp_all",
    "deps": [
+    "Prov",
     "Req",
     "http",
-    "Prov",
     "Status",
-    "Resp",
-    "is_connected"
+    "is_connected",
+    "Resp"
    ],
    "spec": []
   },
@@ -156,8 +156,8 @@
    "proof": "theorem no_attempt_without_setup (st : Prov) (a : Attempt) (ht : st.trying = false) :\n    attempt st a = ok (st, { store := false, will_end := false }) := by\n  simp [attempt, ht]",
    "deps": [
     "Prov",
-    "Attempt",
     "attempt",
+    "Attempt",
     "Status",
     "AfterAttempt"
    ],
@@ -170,11 +170,11 @@
    "statement": "theorem superseded_not_stored (st : Prov) (a : Attempt) (hp : st.pending = true) {st' r}\n    (h : attempt st a = ok (st', r)) :\n    r.store = false \u2227 r.will_end = false \u2227 (st.trying = true \u2192 st'.status = Status.Connecting)",
    "proof": "theorem superseded_not_stored (st : Prov) (a : Attempt) (hp : st.pending = true) {st' r}\n    (h : attempt st a = ok (st', r)) :\n    r.store = false \u2227 r.will_end = false \u2227 (st.trying = true \u2192 st'.status = Status.Connecting) := by\n  unfold attempt at h\n  revert h\n  cases ht : st.trying <;> simp [hp] <;> (try (intro h1 h2; subst h1 h2; simp_all))",
    "deps": [
+    "Prov",
     "Attempt",
     "attempt",
-    "Prov",
-    "AfterAttempt",
-    "Status"
+    "Status",
+    "AfterAttempt"
    ],
    "spec": []
   },
@@ -185,8 +185,8 @@
    "statement": "theorem take_only_pending (st : Prov) {st'} (h : take st = ok (some st')) :\n    st.pending = true \u2227 st'.status = Status.Connecting \u2227 st'.trying = true \u2227 st'.pending = false",
    "proof": "theorem take_only_pending (st : Prov) {st'} (h : take st = ok (some st')) :\n    st.pending = true \u2227 st'.status = Status.Connecting \u2227 st'.trying = true \u2227 st'.pending = false := by\n  unfold take at h\n  revert h\n  cases hp : st.pending <;> simp <;> (intro h; subst h; simp)",
    "deps": [
-    "take",
     "Prov",
+    "take",
     "Status"
    ],
    "spec": []
@@ -198,12 +198,12 @@
    "statement": "theorem setup_after_connect_refused (st : Prov) (f : Bool) (hs : st.stored = true) :\n    http st (.Setup f) = ok (none, Resp.SetupRefused)",
    "proof": "theorem setup_after_connect_refused (st : Prov) (f : Bool) (hs : st.stored = true) :\n    http st (.Setup f) = ok (none, Resp.SetupRefused) := by\n  simp [http, hs]",
    "deps": [
-    "http",
     "Prov",
+    "http",
     "Status",
-    "Req",
+    "is_connected",
     "Resp",
-    "is_connected"
+    "Req"
    ],
    "spec": []
   },
@@ -214,57 +214,17 @@
    "statement": "theorem connected_stays_until_end (st : Prov) (q : Req) (hs : st.stored = true)\n    (hc : st.status = Status.Connected) {st' r} (h : http st q = ok (some st', r)) :\n    st'.status = Status.Connected \u2227 st'.stored = true",
    "proof": "theorem connected_stays_until_end (st : Prov) (q : Req) (hs : st.stored = true)\n    (hc : st.status = Status.Connected) {st' r} (h : http st q = ok (some st', r)) :\n    st'.status = Status.Connected \u2227 st'.stored = true := by\n  unfold http at h\n  cases q <;> simp [hs, hc, is_connected] at h <;> (try (obtain \u27e8h1, _\u27e9 := h; subst h1; simp [hs, hc]))",
    "deps": [
-    "Req",
-    "http",
     "Prov",
+    "http",
+    "Req",
     "Status",
-    "Resp",
-    "is_connected"
+    "is_connected",
+    "Resp"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "Req": {
-   "kind": "inductive",
-   "rust_path": "esp_hal_wifimanager_kernel::Req",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 56,
-   "kernel_code": "pub enum Req {\n    Panel,\n    UpdatePanel,\n    List,\n    Status,\n    /// `POST /setup`; `fits`: the body is at most `MAX_SETUP_LEN` bytes.\n    Setup { fits: bool },\n    /// Any other GET: the captive portal's redirect.\n    OtherGet,\n    /// Anything else.\n    Other,\n}",
-   "lean": "@[discriminant isize]\ninductive Req where\n| Panel : Req\n| UpdatePanel : Req\n| List : Req\n| Status : Req\n| Setup : Bool \u2192 Req\n| OtherGet : Req\n| Other : Req",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "http": {
-   "kind": "def",
-   "rust_path": "esp_hal_wifimanager_kernel::http",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 94,
-   "kernel_code": "pub fn http(st: &Prov, req: &Req) -> (Option<Prov>, Resp) {\n    match req {\n        Req::Panel => (None, Resp::Panel),\n        Req::UpdatePanel => (None, Resp::UpdatePanel),\n        Req::List => (None, Resp::List),\n        Req::Status => {\n            let connected = is_connected(st.status);\n            let show_ip = if connected { st.has_ip } else { false };\n            let resp = Resp::Status { status: st.status, show_ip };\n            if connected {\n                (Some(Prov { connected_seen: true, ..*st }), resp)\n            } else {\n                (None, resp)\n            }\n        }\n        Req::Setup { fits } => {\n            if st.stored {\n                // A setup connected and was stored; provisioning ends.\n                // (Upstream answers `.`, shows `connecting` and drops the\n                // setup when the AP goes down: STATUS.md.)\n                (None, Resp::SetupRefused)\n            } else if *fits {\n                (Some(Prov { status: Status::Connecting, pending: true, ..*st }), Resp::SetupTaken)\n            } else {\n                (None, Resp::SetupTooLarge)\n            }\n        }\n        Req::OtherGet => (None, Resp::Redirect),\n        Req::Other => (None, Resp::NotFound),\n    }\n}",
-   "lean": "def http (st : Prov) (req : Req) : Result ((Option Prov) \u00d7 Resp) := do\n  match req with\n  | Req.Panel => ok (none, Resp.Panel)\n  | Req.UpdatePanel => ok (none, Resp.UpdatePanel)\n  | Req.List => ok (none, Resp.List)\n  | Req.Status =>\n    let connected \u2190 is_connected st.status\n    let show_ip \u2190 if connected\n                    then ok st.has_ip\n                    else ok false\n    if connected\n    then\n      ok (some { st with connected_seen := true }, Resp.Status st.status\n        show_ip)\n    else ok (none, Resp.Status st.status show_ip)\n  | Req.Setup fits =>\n    if st.stored\n    then ok (none, Resp.SetupRefused)\n    else\n      if fits\n      then\n        ok (some { st with status := Status.Connecting, pending := true },\n          Resp.SetupTaken)\n      else ok (none, Resp.SetupTooLarge)\n  | Req.OtherGet => ok (none, Resp.Redirect)\n  | Req.Other => ok (none, Resp.NotFound)",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "is_connected": {
-   "kind": "def",
-   "rust_path": "esp_hal_wifimanager_kernel::is_connected",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 86,
-   "kernel_code": "fn is_connected(s: Status) -> bool {\n    match s {\n        Status::Connected => true,\n        _ => false,\n    }\n}",
-   "lean": "def is_connected (s : Status) : Result Bool := do\n  match s with\n  | Status.Idle => ok false\n  | Status.Connecting => ok false\n  | Status.Connected => ok true\n  | Status.Invalid => ok false\n  | Status.Failed => ok false",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "take": {
-   "kind": "def",
-   "rust_path": "esp_hal_wifimanager_kernel::take",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 150,
-   "kernel_code": "pub fn take(st: &Prov) -> Option<Prov> {\n    if st.pending {\n        Some(Prov { status: Status::Connecting, pending: false, trying: true, ..*st })\n    } else {\n        None\n    }\n}",
-   "lean": "def take (st : Prov) : Result (Option Prov) := do\n  if st.pending\n  then\n    ok (some\n      { st with status := Status.Connecting, pending := false, trying := true })\n  else ok none",
-   "upstream": [],
-   "upstream_note": ""
-  },
   "Prov": {
    "kind": "structure",
    "rust_path": "esp_hal_wifimanager_kernel::Prov",
@@ -272,17 +232,61 @@
    "kernel_line": 34,
    "kernel_code": "pub struct Prov {\n    pub status: Status,\n    /// The station got an address (shown by `/status` when connected).\n    pub has_ip: bool,\n    /// The panel has read `connected`.\n    pub connected_seen: bool,\n    /// A setup was submitted and the worker has not taken it yet.\n    pub pending: bool,\n    /// The worker is trying the setup it took.\n    pub trying: bool,\n    /// A setup connected (and was stored): provisioning is ending.\n    pub stored: bool,\n    /// Provisioning is over (the AP goes down).\n    pub ended: bool,\n}",
    "lean": "structure Prov where\n  status : Status\n  has_ip : Bool\n  connected_seen : Bool\n  pending : Bool\n  trying : Bool\n  stored : Bool\n  ended : Bool",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/structs.rs",
+     "line": 315,
+     "code": "pub(crate) struct WmInnerSignals {\n    pub wifi_scan_res: Mutex<NoopRawMutex, heapless::String<SCAN_LIST_LEN>>,\n\n    status: portable_atomic::AtomicU8,\n    /// station address once connected (0 = none yet), shown by `/status`\n    ip: portable_atomic::AtomicU32,\n    /// the panel read `connected`, so the AP can go down\n    connected_seen: portable_atomic::AtomicBool,\n\n    /// This is used to tell main task to connect to wifi\n    pub wifi_conn_info_sig: Signal<NoopRawMutex, SetupData>,\n\n    /// This is used to tell ble task about conn result (return signal)\n    pub wifi_conn_res_sig: Signal<NoopRawMutex, bool>,\n\n    end_signal_pubsub: PubSubChannel<NoopRawMutex, (), 1, 16, 0>,\n}"
+    }
+   ],
+   "upstream_note": "the provisioning state WmInnerSignals carries (status, the pending setup, connected-seen, the end)"
   },
-  "load_setup": {
-   "kind": "def",
-   "rust_path": "esp_hal_wifimanager_kernel::load_setup",
+  "Resp": {
+   "kind": "inductive",
+   "rust_path": "esp_hal_wifimanager_kernel::Resp",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 209,
-   "kernel_code": "pub fn load_setup(present: bool, parses: bool) -> Stored {\n    if !present {\n        Stored::Absent\n    } else if parses {\n        Stored::Use\n    } else {\n        Stored::Delete\n    }\n}",
-   "lean": "def load_setup (present : Bool) (parses : Bool) : Result Stored := do\n  if present\n  then if parses\n       then ok Stored.Use\n       else ok Stored.Delete\n  else ok Stored.Absent",
-   "upstream": [],
+   "kernel_line": 70,
+   "kernel_code": "pub enum Resp {\n    Panel,\n    UpdatePanel,\n    List,\n    /// `GET /status`: the status, and whether the address follows it.\n    Status { status: Status, show_ip: bool },\n    /// `200 .`: the setup is taken.\n    SetupTaken,\n    /// `413 Too large`.\n    SetupTooLarge,\n    /// `409 Already connected`: a setup connected, provisioning is ending.\n    SetupRefused,\n    Redirect,\n    NotFound,\n}",
+   "lean": "@[discriminant isize]\ninductive Resp where\n| Panel : Resp\n| UpdatePanel : Resp\n| List : Resp\n| Status : Status \u2192 Bool \u2192 Resp\n| SetupTaken : Resp\n| SetupTooLarge : Resp\n| SetupRefused : Resp\n| Redirect : Resp\n| NotFound : Resp",
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 157,
+     "code": "async fn handle_request(\n    request: HttpRequest<'_>,\n    signals: &WmInnerSignals,\n    wifi_panel: crate::Panel,\n    socket: &mut TcpSocket<'_>,\n) {\n    if request.is(\"GET\", \"/\") {\n        _ = match wifi_panel {\n            #[cfg(not(feature = \"custom_panel\"))]\n            crate::Panel::Builtin => write_html_gz(socket, PANEL_GZ).await,\n            crate::Panel::Html(html) => {\n                write_response(socket, \"200 OK\", \"text/html\", html.as_bytes()).await\n            }\n            crate::Panel::Gzip(gz) => write_html_gz(socket, gz).await,\n        };\n    } else if request.is(\"GET\", \"/update\") {\n        #[cfg(feature = \"ota\")]\n        {\n            _ = write_html_gz(socket, UPDATE_PANEL_GZ).await;\n        }\n        #[cfg(not(feature = \"ota\"))]\n        {\n            let html = b\"<html><body><p>OTA updates disabled</p></body></html>\";\n            _ = write_response(socket, \"200 OK\", \"text/html\", html).await;\n        }\n    } else if request.is(\"GET\", \"/list\") {\n        let scan_res = signals.wifi_scan_res.try_lock();\n        let resp = scan_res.as_ref().map(|s| s.as_str()).unwrap_or_default();\n        _ = write_response(socket, \"200 OK\", \"text/plain\", resp.as_bytes()).await;\n    } else if request.is(\"GET\", \"/status\") {\n        let status = signals.status();\n        let mut body: heapless::String<32> = heapless::String::new();\n        _ = body.push_str(status.as_str());\n        if status == crate::structs::SetupStatus::Connected {\n            if let Some(ip) = signals.ip() {\n                _ = core::fmt::write(&mut body, format_args!(\":{ip}\"));\n            }\n        }\n        if write_response(socket, \"200 OK\", \"text/plain\", body.as_bytes()).await\n            && status == crate::structs::SetupStatus::Connected\n        {\n            signals.mark_connected_seen();\n        }\n    } else if request.is(\"POST\", \"/setup\") {\n        let Ok(setup) = SetupData::from_slice(request.body) else {\n            _ = write_response(socket, \"413 Payload Too Large\", \"text/plain\", b\"Too large\").await;\n            return;\n        };\n\n        // the panel polls `/status`; don't let it read the previous attempt's result\n        signals.set_status(crate::structs::SetupStatus::Connecting);\n        signals.wifi_conn_info_sig.signal(setup);\n        _ = write_response(socket, \"200 OK\", \"text/plain\", b\".\").await;\n    } else if cfg!(feature = \"ota\") && request.is(\"POST\", \"/update\") {\n        #[cfg(feature = \"ota\")]\n        handle_update_req(request, socket).await;\n    } else if request.method.eq_ignore_ascii_case(\"GET\") {\n        // captive portal: OS connectivity checks (/generate_204, /hotspot-detect.html,\n        // /connecttest.txt, ...) and any other page get redirected to the panel, which makes\n        // phones and laptops open it by themselves\n        _ = write_response_enc(\n            socket,\n            \"302 Found\",\n            \"text/plain\",\n            \"Location: http://192.168.4.1/\\r\\n\",\n            b\"\",\n        )\n        .await;\n    } else {\n        _ = write_response(socket, \"404 Not Found\", \"text/plain\", b\"Not Found\").await;\n    }\n}"
+    }
+   ],
+   "upstream_note": "handle_request's answers"
+  },
+  "Stored": {
+   "kind": "inductive",
+   "rust_path": "esp_hal_wifimanager_kernel::Stored",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 200,
+   "kernel_code": "pub enum Stored {\n    /// None stored: provisioning.\n    Absent,\n    /// It parses: try it (provisioning if it does not connect).\n    Use,\n    /// It does not parse: delete it, provisioning.\n    Delete,\n}",
+   "lean": "@[discriminant isize]\ninductive Stored where\n| Absent : Stored\n| Use : Stored\n| Delete : Stored",
+   "upstream": [
+    {
+     "file": "src/lib.rs",
+     "line": 250,
+     "code": "async fn load_wifi_setup(nvs: &Nvs) -> Option<(SetupData, esp_radio::wifi::Config)> {\n    let stored = nvs.get::<String>(&WIFI_NVS_KEY).await.ok()?;\n    let parsed = SetupData::from_slice(stored.as_bytes())\n        .map_err(|_| WmError::InvalidSetup)\n        .and_then(|raw| {\n            let config = Setup::parse(&raw)?.to_configuration()?;\n            Ok((raw, config))\n        });\n\n    match parsed {\n        Ok(res) => Some(res),\n        Err(e) => {\n            log::error!(\"Stored wifi setup is invalid, deleting it: {e:?}\");\n            _ = nvs.delete(&WIFI_NVS_KEY).await;\n            None\n        }\n    }\n}"
+    }
+   ],
+   "upstream_note": "what load_wifi_setup finds: none, a setup, one that does not parse"
+  },
+  "ota_begin": {
+   "kind": "def",
+   "rust_path": "esp_hal_wifimanager_kernel::ota_begin",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 228,
+   "kernel_code": "pub fn ota_begin(has_size: bool, has_crc: bool, has_len: bool) -> Ota {\n    if has_size {\n        if has_crc { if has_len { Ota::Begin } else { Ota::BadRequest } } else { Ota::BadRequest }\n    } else {\n        Ota::BadRequest\n    }\n}",
+   "lean": "def ota_begin\n  (has_size : Bool) (has_crc : Bool) (has_len : Bool) : Result Ota := do\n  if has_size\n  then\n    if has_crc\n    then if has_len\n         then ok Ota.Begin\n         else ok Ota.BadRequest\n    else ok Ota.BadRequest\n  else ok Ota.BadRequest",
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 273,
+     "code": "async fn handle_update_req(req: HttpRequest<'_>, socket: &mut TcpSocket<'_>) {\n    let params = (|| {\n        let size: u32 = req.query(\"size\")?.trim().parse().ok()?;\n        let crc: u32 = req.query(\"crc\")?.trim().parse().ok()?;\n        Some((size, crc, req.content_length()?))\n    })();\n    let Some((size, crc, content_length)) = params else {\n        _ = write_response(\n            socket,\n            \"400 Bad Request\",\n            \"text/plain\",\n            b\"ERROR:bad request\\n\",\n        )\n        .await;\n        return;\n    };\n\n    log::info!(\"Start ota update. Size: {size} crc: {crc}\");\n    // SAFETY: flash is only used here while the wifimanager AP runs\n    let ota = esp_hal_ota::Ota::new(esp_storage::FlashStorage::new(unsafe {\n        esp_hal::peripherals::FLASH::steal()\n    }));\n    let Ok(mut ota) = ota else {\n        _ = write_response(\n            socket,\n            \"500 Internal Server Error\",\n            \"text/plain\",\n            b\"ERROR:ota init\\n\",\n        )\n        .await;\n        return;\n    };\n    if let Err(e) = ota.begin(size, crc) {\n        log::warn!(\"Ota begin error: {e:?}\");\n        _ = write_response(\n            socket,\n            \"500 Internal Server Error\",\n            \"text/plain\",\n            b\"ERROR:ota begin\\n\",\n        )\n        .await;\n        return;"
+    }
+   ],
    "upstream_note": ""
   },
   "Status": {
@@ -292,8 +296,14 @@
    "kernel_line": 22,
    "kernel_code": "pub enum Status {\n    Idle,\n    Connecting,\n    Connected,\n    /// The setup json did not parse, or the driver rejected it.\n    Invalid,\n    /// Wrong password, or the network was not found.\n    Failed,\n}",
    "lean": "@[discriminant isize]\ninductive Status where\n| Idle : Status\n| Connecting : Status\n| Connected : Status\n| Invalid : Status\n| Failed : Status",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/structs.rs",
+     "line": 292,
+     "code": "pub(crate) enum SetupStatus {\n    Idle = 0,\n    Connecting = 1,\n    Connected = 2,\n    /// setup json unparsable or rejected by the driver\n    Invalid = 3,\n    /// wrong password or network not found\n    Failed = 4,\n}"
+    }
+   ],
+   "upstream_note": "SetupStatus: what GET /status reports"
   },
   "Ota": {
    "kind": "inductive",
@@ -302,68 +312,14 @@
    "kernel_line": 221,
    "kernel_code": "pub enum Ota {\n    /// `size`, `crc` (query) or `Content-Length` missing or not numbers.\n    BadRequest,\n    /// The image is taken; flash is written as it arrives.\n    Begin,\n}",
    "lean": "@[discriminant isize]\ninductive Ota where\n| BadRequest : Ota\n| Begin : Ota",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "OtaEnd": {
-   "kind": "inductive",
-   "rust_path": "esp_hal_wifimanager_kernel::OtaEnd",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 239,
-   "kernel_code": "pub enum OtaEnd {\n    Reset,\n    VerifyFailed,\n    Incomplete,\n    WriteFailed,\n}",
-   "lean": "@[discriminant isize]\ninductive OtaEnd where\n| Reset : OtaEnd\n| VerifyFailed : OtaEnd\n| Incomplete : OtaEnd\n| WriteFailed : OtaEnd",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "ota_begin": {
-   "kind": "def",
-   "rust_path": "esp_hal_wifimanager_kernel::ota_begin",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 228,
-   "kernel_code": "pub fn ota_begin(has_size: bool, has_crc: bool, has_len: bool) -> Ota {\n    if has_size {\n        if has_crc { if has_len { Ota::Begin } else { Ota::BadRequest } } else { Ota::BadRequest }\n    } else {\n        Ota::BadRequest\n    }\n}",
-   "lean": "def ota_begin\n  (has_size : Bool) (has_crc : Bool) (has_len : Bool) : Result Ota := do\n  if has_size\n  then\n    if has_crc\n    then if has_len\n         then ok Ota.Begin\n         else ok Ota.BadRequest\n    else ok Ota.BadRequest\n  else ok Ota.BadRequest",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Resp": {
-   "kind": "inductive",
-   "rust_path": "esp_hal_wifimanager_kernel::Resp",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 70,
-   "kernel_code": "pub enum Resp {\n    Panel,\n    UpdatePanel,\n    List,\n    /// `GET /status`: the status, and whether the address follows it.\n    Status { status: Status, show_ip: bool },\n    /// `200 .`: the setup is taken.\n    SetupTaken,\n    /// `413 Too large`.\n    SetupTooLarge,\n    /// `409 Already connected`: a setup connected, provisioning is ending.\n    SetupRefused,\n    Redirect,\n    NotFound,\n}",
-   "lean": "@[discriminant isize]\ninductive Resp where\n| Panel : Resp\n| UpdatePanel : Resp\n| List : Resp\n| Status : Status \u2192 Bool \u2192 Resp\n| SetupTaken : Resp\n| SetupTooLarge : Resp\n| SetupRefused : Resp\n| Redirect : Resp\n| NotFound : Resp",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Stored": {
-   "kind": "inductive",
-   "rust_path": "esp_hal_wifimanager_kernel::Stored",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 200,
-   "kernel_code": "pub enum Stored {\n    /// None stored: provisioning.\n    Absent,\n    /// It parses: try it (provisioning if it does not connect).\n    Use,\n    /// It does not parse: delete it, provisioning.\n    Delete,\n}",
-   "lean": "@[discriminant isize]\ninductive Stored where\n| Absent : Stored\n| Use : Stored\n| Delete : Stored",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Attempt": {
-   "kind": "structure",
-   "rust_path": "esp_hal_wifimanager_kernel::Attempt",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 128,
-   "kernel_code": "pub struct Attempt {\n    /// The setup json parsed (`Setup::parse` + `to_station`).\n    pub parsed: bool,\n    /// The driver accepted the configuration.\n    pub driver_ok: bool,\n    /// The station connected (within the timeout).\n    pub connected: bool,\n    /// It got an address within 10 s.\n    pub got_ip: bool,\n}",
-   "lean": "structure Attempt where\n  parsed : Bool\n  driver_ok : Bool\n  connected : Bool\n  got_ip : Bool",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "ota_end": {
-   "kind": "def",
-   "rust_path": "esp_hal_wifimanager_kernel::ota_end",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 246,
-   "kernel_code": "pub fn ota_end(write_ok: bool, complete: bool, verified: bool) -> OtaEnd {\n    if !write_ok {\n        OtaEnd::WriteFailed\n    } else if !complete {\n        OtaEnd::Incomplete\n    } else if verified {\n        OtaEnd::Reset\n    } else {\n        OtaEnd::VerifyFailed\n    }\n}",
-   "lean": "def ota_end\n  (write_ok : Bool) (complete : Bool) (verified : Bool) : Result OtaEnd := do\n  if write_ok\n  then\n    if complete\n    then if verified\n         then ok OtaEnd.Reset\n         else ok OtaEnd.VerifyFailed\n    else ok OtaEnd.Incomplete\n  else ok OtaEnd.WriteFailed",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 273,
+     "code": "async fn handle_update_req(req: HttpRequest<'_>, socket: &mut TcpSocket<'_>) {\n    let params = (|| {\n        let size: u32 = req.query(\"size\")?.trim().parse().ok()?;\n        let crc: u32 = req.query(\"crc\")?.trim().parse().ok()?;\n        Some((size, crc, req.content_length()?))\n    })();\n    let Some((size, crc, content_length)) = params else {\n        _ = write_response(\n            socket,\n            \"400 Bad Request\",\n            \"text/plain\",\n            b\"ERROR:bad request\\n\",\n        )\n        .await;\n        return;\n    };\n\n    log::info!(\"Start ota update. Size: {size} crc: {crc}\");\n    // SAFETY: flash is only used here while the wifimanager AP runs\n    let ota = esp_hal_ota::Ota::new(esp_storage::FlashStorage::new(unsafe {\n        esp_hal::peripherals::FLASH::steal()\n    }));\n    let Ok(mut ota) = ota else {\n        _ = write_response(\n            socket,\n            \"500 Internal Server Error\",\n            \"text/plain\",\n            b\"ERROR:ota init\\n\",\n        )\n        .await;\n        return;\n    };\n    if let Err(e) = ota.begin(size, crc) {\n        log::warn!(\"Ota begin error: {e:?}\");\n        _ = write_response(\n            socket,\n            \"500 Internal Server Error\",\n            \"text/plain\",\n            b\"ERROR:ota begin\\n\",\n        )\n        .await;\n        return;"
+    }
+   ],
+   "upstream_note": "POST /update's outcomes before the body (missing size, crc or length; ota begin failing)"
   },
   "attempt": {
    "kind": "def",
@@ -372,7 +328,29 @@
    "kernel_line": 166,
    "kernel_code": "pub fn attempt(st: &Prov, a: &Attempt) -> (Prov, AfterAttempt) {\n    if !st.trying {\n        return (*st, AfterAttempt { store: false, will_end: false });\n    }\n    if st.pending {\n        return (Prov { status: Status::Connecting, trying: false, ..*st }, AfterAttempt { store: false, will_end: false });\n    }\n    if !a.parsed {\n        return (Prov { status: Status::Invalid, trying: false, ..*st }, AfterAttempt { store: false, will_end: false });\n    }\n    if !a.driver_ok {\n        return (Prov { status: Status::Invalid, trying: false, ..*st }, AfterAttempt { store: false, will_end: false });\n    }\n    if !a.connected {\n        return (Prov { status: Status::Failed, trying: false, ..*st }, AfterAttempt { store: false, will_end: false });\n    }\n    (\n        Prov { status: Status::Connected, has_ip: a.got_ip, trying: false, stored: true, ..*st },\n        AfterAttempt { store: true, will_end: true },\n    )\n}",
    "lean": "def attempt (st : Prov) (a : Attempt) : Result (Prov \u00d7 AfterAttempt) := do\n  if st.trying\n  then\n    if st.pending\n    then\n      ok ({ st with status := Status.Connecting, trying := false },\n        { store := false, will_end := false })\n    else\n      if a.parsed\n      then\n        if a.driver_ok\n        then\n          if a.connected\n          then\n            ok\n              ({\n                 st\n                   with\n                   status := Status.Connected,\n                   has_ip := a.got_ip,\n                   trying := false,\n                   stored := true\n               }, { store := true, will_end := true })\n          else\n            ok ({ st with status := Status.Failed, trying := false },\n              { store := false, will_end := false })\n        else\n          ok ({ st with status := Status.Invalid, trying := false },\n            { store := false, will_end := false })\n      else\n        ok ({ st with status := Status.Invalid, trying := false },\n          { store := false, will_end := false })\n  else ok (st, { store := false, will_end := false })",
-   "upstream": [],
+   "upstream": [
+    {
+     "file": "src/lib.rs",
+     "line": 269,
+     "code": "async fn wifi_connection_worker(\n    settings: &WmSettings,\n    wm_signals: &WmInnerSignals,\n    nvs: Option<&Nvs>,\n    controller: &mut WifiController<'static>,\n    mut configuration: esp_radio::wifi::Config,\n    sta_stack: &embassy_net::Stack<'static>,\n) -> Result<SetupData> {\n    let start_time = Instant::now();\n    let mut last_scan = Instant::MIN;\n    loop {\n        if wm_signals.wifi_conn_info_sig.signaled() {\n            let setup_info_buf = wm_signals.wifi_conn_info_sig.wait().await;\n            wm_signals.set_status(SetupStatus::Connecting);\n\n            // a rejected config makes esp-radio stop wifi (AP included): keep one to restore\n            let last_good = configuration.clone();\n\n            // setup comes from AP/BLE clients: a bad request must not stop the wifimanager\n            match Setup::parse(&setup_info_buf).and_then(|setup| {\n                log::debug!(\"trying to connect to: {}\", setup.ssid);\n                setup.to_station()\n            }) {\n                Ok(station) => {\n                    if let esp_radio::wifi::Config::Station(sta)\n                    | esp_radio::wifi::Config::AccessPointStation(sta, _) = &mut configuration\n                    {\n                        *sta = station;\n                    }\n                }\n                Err(e) => {\n                    log::warn!(\"Invalid wifi setup received: {e}\");\n                    wm_signals.set_status(SetupStatus::Invalid);\n                    wm_signals.wifi_conn_res_sig.signal(false);\n                    continue;\n                }\n            }\n\n            let (wifi_connected, status) = match controller.set_config(&configuration) {\n                Ok(()) => {\n                    match utils::try_to_wifi_connect(controller, settings.wifi_conn_timeout).await {\n                        true => (true, SetupStatus::Connected),\n                        false => (false, SetupStatus::Failed),\n                    }\n                }\n                Err(e) => {\n                    log::warn!(\"Wifi setup rejected by driver: {e:?}\");\n                    if let Err(e) = controller.set_config(&last_good) {\n                        log::error!(\"Restoring the provisioning config failed: {e:?}\");\n                    }\n                    configuration = last_good;\n                    (false, SetupStatus::Invalid)\n                }\n            };\n            if wifi_connected {\n                // the panel shows the address; still connected without one, it just isn't shown\n                if let Ok(ip) =\n                    with_timeout(Duration::from_secs(10), utils::wifi_wait_for_ip(sta_stack)).await\n                {\n                    wm_signals.set_ip(ip);\n                }\n            } else {\n                // a timed-out connect keeps running in the driver, and the next set_config\n                // would fail while it does\n                _ = with_timeout(Duration::from_secs(2), controller.disconnect_async()).await;\n            }\n            wm_signals.set_status(status);\n\n            wm_signals.wifi_conn_res_sig.signal(wifi_connected);\n\n            if wifi_connected {\n                if let Some(nvs) = nvs {\n                    // valid utf8: it was just parsed as json\n                    let stored = match core::str::from_utf8(&setup_info_buf) {\n                        Ok(setup_info_str) => nvs.set(&WIFI_NVS_KEY, setup_info_str).await,\n                        Err(_) => Err(WmError::InvalidSetup),\n                    };\n\n                    // still connected, so keep going; it only won't survive a reboot\n                    if let Err(e) = stored {\n                        log::error!(\"Saving wifi setup failed: {e}\");\n                    }\n                }\n\n                // keep the AP up until the panel has shown `connected` (or 10 s pass)\n                let since = Instant::now();\n                while !wm_signals.connected_seen() && since.elapsed() < Duration::from_secs(10) {\n                    Timer::after_millis(100).await;\n                }\n                Timer::after_millis(2000).await;\n                wm_signals.signal_end();\n                return Ok(setup_info_buf);\n            }\n        }\n\n        if last_scan.elapsed() >= settings.wifi_scan_interval {\n            let scan_res = controller.scan_async(&Default::default()).await;\n            let mut wifis = wm_signals.wifi_scan_res.lock().await;\n            wifis.clear();\n            if let Ok(aps) = scan_res {\n                // whole lines only: a cut line would show a wrong ssid\n                for ap in aps {\n                    let mut line = heapless::String::<48>::new();\n                    let fits = core::fmt::write(\n                        &mut line,\n                        format_args!(\"{}: {}\\n\", ap.ssid.as_str(), ap.signal_strength),\n                    )\n                    .is_ok();\n                    if !fits || wifis.deref_mut().push_str(&line).is_err() {\n                        break;\n                    }\n                }\n            }\n\n            last_scan = Instant::now();\n        }\n\n        if let Some(reset_timeout) = settings.esp_reset_timeout {\n            if start_time.elapsed() >= reset_timeout {\n                log::info!(\"Wifimanager esp reset timeout reached! Resetting..\");\n                Timer::after_millis(1000).await;\n                esp_hal::system::software_reset();\n            }\n        }\n\n        Timer::after_millis(100).await;\n    }\n}"
+    }
+   ],
+   "upstream_note": "one turn of wifi_connection_worker's loop; the port drops an attempt superseded by a newer setup (U1)"
+  },
+  "load_setup": {
+   "kind": "def",
+   "rust_path": "esp_hal_wifimanager_kernel::load_setup",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 209,
+   "kernel_code": "pub fn load_setup(present: bool, parses: bool) -> Stored {\n    if !present {\n        Stored::Absent\n    } else if parses {\n        Stored::Use\n    } else {\n        Stored::Delete\n    }\n}",
+   "lean": "def load_setup (present : Bool) (parses : Bool) : Result Stored := do\n  if present\n  then if parses\n       then ok Stored.Use\n       else ok Stored.Delete\n  else ok Stored.Absent",
+   "upstream": [
+    {
+     "file": "src/lib.rs",
+     "line": 250,
+     "code": "async fn load_wifi_setup(nvs: &Nvs) -> Option<(SetupData, esp_radio::wifi::Config)> {\n    let stored = nvs.get::<String>(&WIFI_NVS_KEY).await.ok()?;\n    let parsed = SetupData::from_slice(stored.as_bytes())\n        .map_err(|_| WmError::InvalidSetup)\n        .and_then(|raw| {\n            let config = Setup::parse(&raw)?.to_configuration()?;\n            Ok((raw, config))\n        });\n\n    match parsed {\n        Ok(res) => Some(res),\n        Err(e) => {\n            log::error!(\"Stored wifi setup is invalid, deleting it: {e:?}\");\n            _ = nvs.delete(&WIFI_NVS_KEY).await;\n            None\n        }\n    }\n}"
+    }
+   ],
    "upstream_note": ""
   },
   "AfterAttempt": {
@@ -382,7 +360,125 @@
    "kernel_line": 141,
    "kernel_code": "pub struct AfterAttempt {\n    /// Store the setup in NVS.\n    pub store: bool,\n    /// Provisioning will end (after the panel saw `connected`, or 10 s).\n    pub will_end: bool,\n}",
    "lean": "structure AfterAttempt where\n  store : Bool\n  will_end : Bool",
-   "upstream": [],
+   "upstream": [
+    {
+     "file": "src/lib.rs",
+     "line": 335,
+     "code": "            wm_signals.set_status(status);\n\n            wm_signals.wifi_conn_res_sig.signal(wifi_connected);\n\n            if wifi_connected {\n                if let Some(nvs) = nvs {\n                    // valid utf8: it was just parsed as json\n                    let stored = match core::str::from_utf8(&setup_info_buf) {\n                        Ok(setup_info_str) => nvs.set(&WIFI_NVS_KEY, setup_info_str).await,\n                        Err(_) => Err(WmError::InvalidSetup),\n                    };\n\n                    // still connected, so keep going; it only won't survive a reboot\n                    if let Err(e) = stored {\n                        log::error!(\"Saving wifi setup failed: {e}\");\n                    }\n                }\n\n                // keep the AP up until the panel has shown `connected` (or 10 s pass)\n                let since = Instant::now();\n                while !wm_signals.connected_seen() && since.elapsed() < Duration::from_secs(10) {\n                    Timer::after_millis(100).await;\n                }\n                Timer::after_millis(2000).await;\n                wm_signals.signal_end();"
+    }
+   ],
+   "upstream_note": "what follows an attempt: the status, storing the setup, ending provisioning"
+  },
+  "Attempt": {
+   "kind": "structure",
+   "rust_path": "esp_hal_wifimanager_kernel::Attempt",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 128,
+   "kernel_code": "pub struct Attempt {\n    /// The setup json parsed (`Setup::parse` + `to_station`).\n    pub parsed: bool,\n    /// The driver accepted the configuration.\n    pub driver_ok: bool,\n    /// The station connected (within the timeout).\n    pub connected: bool,\n    /// It got an address within 10 s.\n    pub got_ip: bool,\n}",
+   "lean": "structure Attempt where\n  parsed : Bool\n  driver_ok : Bool\n  connected : Bool\n  got_ip : Bool",
+   "upstream": [
+    {
+     "file": "src/lib.rs",
+     "line": 288,
+     "code": "            match Setup::parse(&setup_info_buf).and_then(|setup| {\n                log::debug!(\"trying to connect to: {}\", setup.ssid);\n                setup.to_station()\n            }) {\n                Ok(station) => {\n                    if let esp_radio::wifi::Config::Station(sta)\n                    | esp_radio::wifi::Config::AccessPointStation(sta, _) = &mut configuration\n                    {\n                        *sta = station;\n                    }\n                }\n                Err(e) => {\n                    log::warn!(\"Invalid wifi setup received: {e}\");\n                    wm_signals.set_status(SetupStatus::Invalid);\n                    wm_signals.wifi_conn_res_sig.signal(false);\n                    continue;\n                }\n            }\n\n            let (wifi_connected, status) = match controller.set_config(&configuration) {\n                Ok(()) => {\n                    match utils::try_to_wifi_connect(controller, settings.wifi_conn_timeout).await {\n                        true => (true, SetupStatus::Connected),\n                        false => (false, SetupStatus::Failed),\n                    }\n                }\n                Err(e) => {\n                    log::warn!(\"Wifi setup rejected by driver: {e:?}\");\n                    if let Err(e) = controller.set_config(&last_good) {\n                        log::error!(\"Restoring the provisioning config failed: {e:?}\");\n                    }\n                    configuration = last_good;\n                    (false, SetupStatus::Invalid)\n                }\n            };\n            if wifi_connected {\n                // the panel shows the address; still connected without one, it just isn't shown\n                if let Ok(ip) =\n                    with_timeout(Duration::from_secs(10), utils::wifi_wait_for_ip(sta_stack)).await\n                {\n                    wm_signals.set_ip(ip);\n                }\n            } else {\n                // a timed-out connect keeps running in the driver, and the next set_config\n                // would fail while it does\n                _ = with_timeout(Duration::from_secs(2), controller.disconnect_async()).await;\n            }\n            wm_signals.set_status(status);\n\n            wm_signals.wifi_conn_res_sig.signal(wifi_connected);"
+    }
+   ],
+   "upstream_note": "one connection attempt's inputs: the setup parses, the driver connects"
+  },
+  "Req": {
+   "kind": "inductive",
+   "rust_path": "esp_hal_wifimanager_kernel::Req",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub enum Req {\n    Panel,\n    UpdatePanel,\n    List,\n    Status,\n    /// `POST /setup`; `fits`: the body is at most `MAX_SETUP_LEN` bytes.\n    Setup { fits: bool },\n    /// Any other GET: the captive portal's redirect.\n    OtherGet,\n    /// Anything else.\n    Other,\n}",
+   "lean": "@[discriminant isize]\ninductive Req where\n| Panel : Req\n| UpdatePanel : Req\n| List : Req\n| Status : Req\n| Setup : Bool \u2192 Req\n| OtherGet : Req\n| Other : Req",
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 157,
+     "code": "async fn handle_request(\n    request: HttpRequest<'_>,\n    signals: &WmInnerSignals,\n    wifi_panel: crate::Panel,\n    socket: &mut TcpSocket<'_>,\n) {\n    if request.is(\"GET\", \"/\") {\n        _ = match wifi_panel {\n            #[cfg(not(feature = \"custom_panel\"))]\n            crate::Panel::Builtin => write_html_gz(socket, PANEL_GZ).await,\n            crate::Panel::Html(html) => {\n                write_response(socket, \"200 OK\", \"text/html\", html.as_bytes()).await\n            }\n            crate::Panel::Gzip(gz) => write_html_gz(socket, gz).await,\n        };\n    } else if request.is(\"GET\", \"/update\") {\n        #[cfg(feature = \"ota\")]\n        {\n            _ = write_html_gz(socket, UPDATE_PANEL_GZ).await;\n        }\n        #[cfg(not(feature = \"ota\"))]\n        {\n            let html = b\"<html><body><p>OTA updates disabled</p></body></html>\";\n            _ = write_response(socket, \"200 OK\", \"text/html\", html).await;\n        }\n    } else if request.is(\"GET\", \"/list\") {\n        let scan_res = signals.wifi_scan_res.try_lock();\n        let resp = scan_res.as_ref().map(|s| s.as_str()).unwrap_or_default();\n        _ = write_response(socket, \"200 OK\", \"text/plain\", resp.as_bytes()).await;\n    } else if request.is(\"GET\", \"/status\") {\n        let status = signals.status();\n        let mut body: heapless::String<32> = heapless::String::new();\n        _ = body.push_str(status.as_str());\n        if status == crate::structs::SetupStatus::Connected {\n            if let Some(ip) = signals.ip() {\n                _ = core::fmt::write(&mut body, format_args!(\":{ip}\"));\n            }\n        }\n        if write_response(socket, \"200 OK\", \"text/plain\", body.as_bytes()).await\n            && status == crate::structs::SetupStatus::Connected\n        {\n            signals.mark_connected_seen();\n        }\n    } else if request.is(\"POST\", \"/setup\") {\n        let Ok(setup) = SetupData::from_slice(request.body) else {\n            _ = write_response(socket, \"413 Payload Too Large\", \"text/plain\", b\"Too large\").await;\n            return;\n        };\n\n        // the panel polls `/status`; don't let it read the previous attempt's result\n        signals.set_status(crate::structs::SetupStatus::Connecting);\n        signals.wifi_conn_info_sig.signal(setup);\n        _ = write_response(socket, \"200 OK\", \"text/plain\", b\".\").await;\n    } else if cfg!(feature = \"ota\") && request.is(\"POST\", \"/update\") {\n        #[cfg(feature = \"ota\")]\n        handle_update_req(request, socket).await;\n    } else if request.method.eq_ignore_ascii_case(\"GET\") {\n        // captive portal: OS connectivity checks (/generate_204, /hotspot-detect.html,\n        // /connecttest.txt, ...) and any other page get redirected to the panel, which makes\n        // phones and laptops open it by themselves\n        _ = write_response_enc(\n            socket,\n            \"302 Found\",\n            \"text/plain\",\n            \"Location: http://192.168.4.1/\\r\\n\",\n            b\"\",\n        )\n        .await;\n    } else {\n        _ = write_response(socket, \"404 Not Found\", \"text/plain\", b\"Not Found\").await;\n    }\n}"
+    }
+   ],
+   "upstream_note": "the requests handle_request routes"
+  },
+  "OtaEnd": {
+   "kind": "inductive",
+   "rust_path": "esp_hal_wifimanager_kernel::OtaEnd",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 239,
+   "kernel_code": "pub enum OtaEnd {\n    Reset,\n    VerifyFailed,\n    Incomplete,\n    WriteFailed,\n}",
+   "lean": "@[discriminant isize]\ninductive OtaEnd where\n| Reset : OtaEnd\n| VerifyFailed : OtaEnd\n| Incomplete : OtaEnd\n| WriteFailed : OtaEnd",
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 333,
+     "code": "    let result: &[u8] = loop {\n        let n = if buffer_pos == ota_buffer.len() || total + buffer_pos >= content_length {\n            0\n        } else {\n            match socket.read(&mut ota_buffer[buffer_pos..]).await {\n                Ok(0) | Err(_) => break b\"ERROR:connection lost\\n\",\n                Ok(n) => n,\n            }\n        };\n        buffer_pos += n;\n\n        if buffer_pos < ota_buffer.len() && total + buffer_pos < content_length {\n            continue;\n        }\n\n        total += buffer_pos;\n        let mut progress: heapless::String<48> = heapless::String::new();\n        _ = core::fmt::write(\n            &mut progress,\n            format_args!(\"PROGRESS:{total},{content_length}\\n\"),\n        );\n        _ = write_all(socket, progress.as_bytes()).await;\n\n        match ota.write(&ota_buffer[..buffer_pos]) {\n            Ok(true) => {\n                if ota.finish(true).is_ok() {\n                    log::info!(\"OTA restart!\");\n                    _ = write_all(socket, b\"DONE:OTA Update Successful. Restarting...\\n\").await;\n                    Timer::after(Duration::from_millis(100)).await;\n                    esp_hal::system::software_reset();\n                }\n\n                log::error!(\"OTA flash verify failed!\");\n                break b\"ERROR:verify failed\\n\";\n            }\n            Ok(false) => {}\n            Err(e) => {\n                log::error!(\"OTA write error: {e:?}\");\n                break b\"ERROR:write failed\\n\";\n            }\n        }\n\n        buffer_pos = 0;\n        if total >= content_length {\n            break b\"ERROR:upload ended before image was complete\\n\";\n        }\n    };\n\n    _ = write_all(socket, result).await;\n}"
+    }
+   ],
+   "upstream_note": "the upload's end: written, complete, verified"
+  },
+  "take": {
+   "kind": "def",
+   "rust_path": "esp_hal_wifimanager_kernel::take",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 150,
+   "kernel_code": "pub fn take(st: &Prov) -> Option<Prov> {\n    if st.pending {\n        Some(Prov { status: Status::Connecting, pending: false, trying: true, ..*st })\n    } else {\n        None\n    }\n}",
+   "lean": "def take (st : Prov) : Result (Option Prov) := do\n  if st.pending\n  then\n    ok (some\n      { st with status := Status.Connecting, pending := false, trying := true })\n  else ok none",
+   "upstream": [
+    {
+     "file": "src/lib.rs",
+     "line": 280,
+     "code": "        if wm_signals.wifi_conn_info_sig.signaled() {\n            let setup_info_buf = wm_signals.wifi_conn_info_sig.wait().await;\n            wm_signals.set_status(SetupStatus::Connecting);"
+    }
+   ],
+   "upstream_note": "the connection worker taking the submitted setup (wifi_conn_info_sig) and reporting connecting"
+  },
+  "is_connected": {
+   "kind": "def",
+   "rust_path": "esp_hal_wifimanager_kernel::is_connected",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 86,
+   "kernel_code": "fn is_connected(s: Status) -> bool {\n    match s {\n        Status::Connected => true,\n        _ => false,\n    }\n}",
+   "lean": "def is_connected (s : Status) : Result Bool := do\n  match s with\n  | Status.Idle => ok false\n  | Status.Connecting => ok false\n  | Status.Connected => ok true\n  | Status.Invalid => ok false\n  | Status.Failed => ok false",
+   "upstream": [
+    {
+     "file": "src/structs.rs",
+     "line": 292,
+     "code": "pub(crate) enum SetupStatus {\n    Idle = 0,\n    Connecting = 1,\n    Connected = 2,\n    /// setup json unparsable or rejected by the driver\n    Invalid = 3,\n    /// wrong password or network not found\n    Failed = 4,\n}"
+    }
+   ],
+   "upstream_note": "port-only helper over SetupStatus: whether it is Connected"
+  },
+  "http": {
+   "kind": "def",
+   "rust_path": "esp_hal_wifimanager_kernel::http",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 94,
+   "kernel_code": "pub fn http(st: &Prov, req: &Req) -> (Option<Prov>, Resp) {\n    match req {\n        Req::Panel => (None, Resp::Panel),\n        Req::UpdatePanel => (None, Resp::UpdatePanel),\n        Req::List => (None, Resp::List),\n        Req::Status => {\n            let connected = is_connected(st.status);\n            let show_ip = if connected { st.has_ip } else { false };\n            let resp = Resp::Status { status: st.status, show_ip };\n            if connected {\n                (Some(Prov { connected_seen: true, ..*st }), resp)\n            } else {\n                (None, resp)\n            }\n        }\n        Req::Setup { fits } => {\n            if st.stored {\n                // A setup connected and was stored; provisioning ends.\n                // (Upstream answers `.`, shows `connecting` and drops the\n                // setup when the AP goes down: STATUS.md.)\n                (None, Resp::SetupRefused)\n            } else if *fits {\n                (Some(Prov { status: Status::Connecting, pending: true, ..*st }), Resp::SetupTaken)\n            } else {\n                (None, Resp::SetupTooLarge)\n            }\n        }\n        Req::OtherGet => (None, Resp::Redirect),\n        Req::Other => (None, Resp::NotFound),\n    }\n}",
+   "lean": "def http (st : Prov) (req : Req) : Result ((Option Prov) \u00d7 Resp) := do\n  match req with\n  | Req.Panel => ok (none, Resp.Panel)\n  | Req.UpdatePanel => ok (none, Resp.UpdatePanel)\n  | Req.List => ok (none, Resp.List)\n  | Req.Status =>\n    let connected \u2190 is_connected st.status\n    let show_ip \u2190 if connected\n                    then ok st.has_ip\n                    else ok false\n    if connected\n    then\n      ok (some { st with connected_seen := true }, Resp.Status st.status\n        show_ip)\n    else ok (none, Resp.Status st.status show_ip)\n  | Req.Setup fits =>\n    if st.stored\n    then ok (none, Resp.SetupRefused)\n    else\n      if fits\n      then\n        ok (some { st with status := Status.Connecting, pending := true },\n          Resp.SetupTaken)\n      else ok (none, Resp.SetupTooLarge)\n  | Req.OtherGet => ok (none, Resp.Redirect)\n  | Req.Other => ok (none, Resp.NotFound)",
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 157,
+     "code": "async fn handle_request(\n    request: HttpRequest<'_>,\n    signals: &WmInnerSignals,\n    wifi_panel: crate::Panel,\n    socket: &mut TcpSocket<'_>,\n) {\n    if request.is(\"GET\", \"/\") {\n        _ = match wifi_panel {\n            #[cfg(not(feature = \"custom_panel\"))]\n            crate::Panel::Builtin => write_html_gz(socket, PANEL_GZ).await,\n            crate::Panel::Html(html) => {\n                write_response(socket, \"200 OK\", \"text/html\", html.as_bytes()).await\n            }\n            crate::Panel::Gzip(gz) => write_html_gz(socket, gz).await,\n        };\n    } else if request.is(\"GET\", \"/update\") {\n        #[cfg(feature = \"ota\")]\n        {\n            _ = write_html_gz(socket, UPDATE_PANEL_GZ).await;\n        }\n        #[cfg(not(feature = \"ota\"))]\n        {\n            let html = b\"<html><body><p>OTA updates disabled</p></body></html>\";\n            _ = write_response(socket, \"200 OK\", \"text/html\", html).await;\n        }\n    } else if request.is(\"GET\", \"/list\") {\n        let scan_res = signals.wifi_scan_res.try_lock();\n        let resp = scan_res.as_ref().map(|s| s.as_str()).unwrap_or_default();\n        _ = write_response(socket, \"200 OK\", \"text/plain\", resp.as_bytes()).await;\n    } else if request.is(\"GET\", \"/status\") {\n        let status = signals.status();\n        let mut body: heapless::String<32> = heapless::String::new();\n        _ = body.push_str(status.as_str());\n        if status == crate::structs::SetupStatus::Connected {\n            if let Some(ip) = signals.ip() {\n                _ = core::fmt::write(&mut body, format_args!(\":{ip}\"));\n            }\n        }\n        if write_response(socket, \"200 OK\", \"text/plain\", body.as_bytes()).await\n            && status == crate::structs::SetupStatus::Connected\n        {\n            signals.mark_connected_seen();\n        }\n    } else if request.is(\"POST\", \"/setup\") {\n        let Ok(setup) = SetupData::from_slice(request.body) else {\n            _ = write_response(socket, \"413 Payload Too Large\", \"text/plain\", b\"Too large\").await;\n            return;\n        };\n\n        // the panel polls `/status`; don't let it read the previous attempt's result\n        signals.set_status(crate::structs::SetupStatus::Connecting);\n        signals.wifi_conn_info_sig.signal(setup);\n        _ = write_response(socket, \"200 OK\", \"text/plain\", b\".\").await;\n    } else if cfg!(feature = \"ota\") && request.is(\"POST\", \"/update\") {\n        #[cfg(feature = \"ota\")]\n        handle_update_req(request, socket).await;\n    } else if request.method.eq_ignore_ascii_case(\"GET\") {\n        // captive portal: OS connectivity checks (/generate_204, /hotspot-detect.html,\n        // /connecttest.txt, ...) and any other page get redirected to the panel, which makes\n        // phones and laptops open it by themselves\n        _ = write_response_enc(\n            socket,\n            \"302 Found\",\n            \"text/plain\",\n            \"Location: http://192.168.4.1/\\r\\n\",\n            b\"\",\n        )\n        .await;\n    } else {\n        _ = write_response(socket, \"404 Not Found\", \"text/plain\", b\"Not Found\").await;\n    }\n}"
+    }
+   ],
+   "upstream_note": "handle_request, as a decision over the provisioning state; the port refuses a setup after one connected (U1)"
+  },
+  "ota_end": {
+   "kind": "def",
+   "rust_path": "esp_hal_wifimanager_kernel::ota_end",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 246,
+   "kernel_code": "pub fn ota_end(write_ok: bool, complete: bool, verified: bool) -> OtaEnd {\n    if !write_ok {\n        OtaEnd::WriteFailed\n    } else if !complete {\n        OtaEnd::Incomplete\n    } else if verified {\n        OtaEnd::Reset\n    } else {\n        OtaEnd::VerifyFailed\n    }\n}",
+   "lean": "def ota_end\n  (write_ok : Bool) (complete : Bool) (verified : Bool) : Result OtaEnd := do\n  if write_ok\n  then\n    if complete\n    then if verified\n         then ok OtaEnd.Reset\n         else ok OtaEnd.VerifyFailed\n    else ok OtaEnd.Incomplete\n  else ok OtaEnd.WriteFailed",
+   "upstream": [
+    {
+     "file": "src/http.rs",
+     "line": 333,
+     "code": "    let result: &[u8] = loop {\n        let n = if buffer_pos == ota_buffer.len() || total + buffer_pos >= content_length {\n            0\n        } else {\n            match socket.read(&mut ota_buffer[buffer_pos..]).await {\n                Ok(0) | Err(_) => break b\"ERROR:connection lost\\n\",\n                Ok(n) => n,\n            }\n        };\n        buffer_pos += n;\n\n        if buffer_pos < ota_buffer.len() && total + buffer_pos < content_length {\n            continue;\n        }\n\n        total += buffer_pos;\n        let mut progress: heapless::String<48> = heapless::String::new();\n        _ = core::fmt::write(\n            &mut progress,\n            format_args!(\"PROGRESS:{total},{content_length}\\n\"),\n        );\n        _ = write_all(socket, progress.as_bytes()).await;\n\n        match ota.write(&ota_buffer[..buffer_pos]) {\n            Ok(true) => {\n                if ota.finish(true).is_ok() {\n                    log::info!(\"OTA restart!\");\n                    _ = write_all(socket, b\"DONE:OTA Update Successful. Restarting...\\n\").await;\n                    Timer::after(Duration::from_millis(100)).await;\n                    esp_hal::system::software_reset();\n                }\n\n                log::error!(\"OTA flash verify failed!\");\n                break b\"ERROR:verify failed\\n\";\n            }\n            Ok(false) => {}\n            Err(e) => {\n                log::error!(\"OTA write error: {e:?}\");\n                break b\"ERROR:write failed\\n\";\n            }\n        }\n\n        buffer_pos = 0;\n        if total >= content_length {\n            break b\"ERROR:upload ended before image was complete\\n\";\n        }\n    };\n\n    _ = write_all(socket, result).await;\n}"
+    }
+   ],
    "upstream_note": ""
   }
  },

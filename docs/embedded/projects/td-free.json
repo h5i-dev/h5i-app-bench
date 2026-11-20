@@ -4,7 +4,7 @@
  "pin": "5e67e73",
  "upstream_head": "5e67e73",
  "pin_ok": true,
- "mapped": false,
+ "mapped": true,
  "theorems": [
   {
    "name": "spoolman_forward_needs_usable_server",
@@ -15,14 +15,14 @@
    "deps": [
     "DevCmd",
     "dev_transition",
-    "DevState",
     "Env",
+    "DevState",
     "Spool",
-    "NOT_READY",
-    "Outcome",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Key"
    ],
    "spec": []
@@ -35,14 +35,14 @@
    "proof": "theorem calibrate_needs_client (env : Env) (st : DevState) {w}\n    (h : dev_transition env st .Calibrate = ok (w, Outcome.Forward)) :\n    env.client_connected = true := by\n  simp only [dev_transition] at h\n  revert h; cases env.client_connected <;> simp",
    "deps": [
     "dev_transition",
-    "DevState",
     "Env",
-    "DevCmd",
-    "NOT_READY",
-    "Outcome",
+    "DevState",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "DevCmd",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Spool",
     "Key"
    ],
@@ -56,14 +56,14 @@
    "proof": "theorem info_needs_ready (env : Env) (st : DevState) {w o}\n    (h : dev_transition env st .ReadInfo = ok (w, o)) :\n    o = Outcome.Read \u2192 env.info_ready = true := by\n  simp only [dev_transition] at h\n  revert h; cases env.info_ready <;> simp <;> intro _ h <;> subst h <;> simp",
    "deps": [
     "dev_transition",
-    "DevState",
     "Env",
-    "DevCmd",
-    "NOT_READY",
-    "Outcome",
+    "DevState",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "DevCmd",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Spool",
     "Key"
    ],
@@ -77,14 +77,14 @@
    "proof": "theorem wifi_update_resets (env : Env) (st : DevState) {w o}\n    (h : dev_transition env st .WriteWifi = ok (w, o)) :\n    o = Outcome.PersistThenReset Key.Wifi \u2227 \u2203 n, w = some n \u2227 n.reset_pending = true := by\n  simp only [dev_transition] at h\n  obtain \u27e8rfl, rfl\u27e9 := Prod.mk.inj (by simpa using h)\n  exact \u27e8rfl, _, rfl, rfl\u27e9",
    "deps": [
     "dev_transition",
-    "DevState",
     "Env",
-    "DevCmd",
-    "NOT_READY",
-    "Outcome",
+    "DevState",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "DevCmd",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Spool",
     "Key"
    ],
@@ -97,16 +97,16 @@
    "statement": "theorem updates_keyed (env : Env) (st : DevState) (sp : Spool) :\n    dev_transition env st (.WriteSettings sp) = ok (some { st with spool := sp }, Outcome.Persist Key.Settings) \u2227\n    dev_transition env st .WriteRgb = ok (none, Outcome.Persist Key.Rgb) \u2227\n    dev_transition env st .WriteWifi = ok (some { st with reset_pending := true }, Outcome.PersistThenReset Key.Wifi)",
    "proof": "theorem updates_keyed (env : Env) (st : DevState) (sp : Spool) :\n    dev_transition env st (.WriteSettings sp) = ok (some { st with spool := sp }, Outcome.Persist Key.Settings) \u2227\n    dev_transition env st .WriteRgb = ok (none, Outcome.Persist Key.Rgb) \u2227\n    dev_transition env st .WriteWifi = ok (some { st with reset_pending := true }, Outcome.PersistThenReset Key.Wifi) := by\n  simp [dev_transition]",
    "deps": [
-    "Spool",
     "dev_transition",
-    "DevState",
     "Env",
-    "DevCmd",
-    "NOT_READY",
-    "Outcome",
+    "DevState",
+    "Spool",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "DevCmd",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Key"
    ],
    "spec": []
@@ -119,14 +119,14 @@
    "proof": "theorem reads_store_nothing (env : Env) (st : DevState) (cmd : DevCmd)\n    (hc : cmd = .ReadSettings \u2228 cmd = .ReadRgb \u2228 cmd = .ReadInfo) {w o}\n    (h : dev_transition env st cmd = ok (w, o)) : w = none := by\n  rcases hc with rfl | rfl | rfl <;> simp only [dev_transition] at h <;> (try split at h) <;>\n    (simp only [ok.injEq, Prod.mk.injEq] at h; exact h.1.symm)",
    "deps": [
     "dev_transition",
+    "Env",
     "DevState",
     "DevCmd",
-    "Env",
-    "NOT_READY",
-    "Outcome",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Spool",
     "Key"
    ],
@@ -152,14 +152,14 @@
    "proof": "theorem dev_transition_total (env : Env) (st : DevState) (cmd : DevCmd) :\n    \u2203 r, dev_transition env st cmd = ok r := by\n  unfold dev_transition\n  cases cmd <;> simp [spool_usable_val] <;> split <;> simp",
    "deps": [
     "dev_transition",
+    "Env",
     "DevState",
     "DevCmd",
-    "Env",
-    "NOT_READY",
-    "Outcome",
     "NOT_CONFIGURED",
-    "spool_usable",
+    "Outcome",
     "NO_CLIENT",
+    "spool_usable",
+    "NOT_READY",
     "Spool",
     "Key"
    ],
@@ -184,8 +184,8 @@
    "statement": "theorem set_bits_preserves_complement (c : Config) (mask value m : Std.U16)\n    (hdisj : m &&& mask = 0#u16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& m = c.bits &&& m",
    "proof": "theorem set_bits_preserves_complement (c : Config) (mask value m : Std.U16)\n    (hdisj : m &&& mask = 0#u16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& m = c.bits &&& m := by\n  intro cfg h\n  rw [set_bits_eq h]\n  bvify 16 at hdisj \u22a2\n  ext i hi\n  have h := congrArg (fun x => x[i]) hdisj\n  simp only [BitVec.getElem_and, BitVec.getElem_or, BitVec.getElem_not, BitVec.getElem_zero] at h \u22a2\n  generalize c.bits.bv[i] = a at h \u22a2\n  generalize mask.bv[i] = b at h \u22a2\n  generalize value.bv[i] = d at h \u22a2\n  generalize m.bv[i] = e at h \u22a2\n  cases a <;> cases b <;> cases d <;> cases e <;> simp_all",
    "deps": [
-    "Config",
-    "set_bits"
+    "set_bits",
+    "Config"
    ],
    "spec": []
   },
@@ -196,8 +196,8 @@
    "statement": "theorem set_bits_sets_masked (c : Config) (mask value : Std.U16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& mask = value &&& mask",
    "proof": "theorem set_bits_sets_masked (c : Config) (mask value : Std.U16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& mask = value &&& mask := by\n  intro cfg h\n  rw [set_bits_eq h]\n  bvify 16\n  ext i hi\n  simp only [BitVec.getElem_and, BitVec.getElem_or, BitVec.getElem_not]\n  generalize c.bits.bv[i] = a\n  generalize mask.bv[i] = b\n  generalize value.bv[i] = d\n  cases a <;> cases b <;> cases d <;> simp",
    "deps": [
-    "Config",
-    "set_bits"
+    "set_bits",
+    "Config"
    ],
    "spec": []
   },
@@ -208,13 +208,13 @@
    "statement": "theorem set_gain_preserves_shutdown (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN",
    "proof": "theorem set_gain_preserves_shutdown (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_gain_val c g\n  rw [hv] at h\n  exact set_bits_preserves_complement c GAIN_MASK v SHUTDOWN TdFree.Spec.shutdown_gain_disjoint cfg h",
    "deps": [
+    "Gain",
     "Config",
     "set_gain_config",
-    "Gain",
     "SHUTDOWN",
-    "gain_bits",
     "GAIN_MASK",
     "set_bits",
+    "gain_bits",
     "GAIN_ONE_EIGHTH",
     "GAIN_ONE",
     "GAIN_ONE_QUARTER",
@@ -230,18 +230,18 @@
    "proof": "theorem set_it_preserves_shutdown (c : Config) (it : IntegrationTime) :\n    \u2200 cfg, set_it_config c it = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_it_val c it\n  rw [hv] at h\n  exact set_bits_preserves_complement c IT_MASK v SHUTDOWN TdFree.Spec.shutdown_it_disjoint cfg h",
    "deps": [
     "set_it_config",
-    "SHUTDOWN",
-    "Config",
     "IntegrationTime",
-    "it_bits",
-    "IT_MASK",
+    "Config",
+    "SHUTDOWN",
     "set_bits",
-    "IT_100MS",
-    "IT_50MS",
-    "IT_200MS",
+    "IT_MASK",
+    "it_bits",
     "IT_800MS",
     "IT_400MS",
-    "IT_25MS"
+    "IT_25MS",
+    "IT_100MS",
+    "IT_200MS",
+    "IT_50MS"
    ],
    "spec": []
   },
@@ -253,18 +253,18 @@
    "proof": "theorem set_it_preserves_gain (c : Config) (it : IntegrationTime) :\n    \u2200 cfg, set_it_config c it = ok cfg \u2192 cfg.bits &&& GAIN_MASK = c.bits &&& GAIN_MASK := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_it_val c it\n  rw [hv] at h\n  exact set_bits_preserves_complement c IT_MASK v GAIN_MASK TdFree.Spec.gain_it_disjoint cfg h",
    "deps": [
     "set_it_config",
-    "Config",
     "GAIN_MASK",
     "IntegrationTime",
-    "it_bits",
-    "IT_MASK",
+    "Config",
     "set_bits",
-    "IT_100MS",
-    "IT_50MS",
-    "IT_200MS",
+    "IT_MASK",
+    "it_bits",
     "IT_800MS",
     "IT_400MS",
-    "IT_25MS"
+    "IT_25MS",
+    "IT_100MS",
+    "IT_200MS",
+    "IT_50MS"
    ],
    "spec": []
   },
@@ -275,13 +275,13 @@
    "statement": "theorem set_gain_preserves_it (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& IT_MASK = c.bits &&& IT_MASK",
    "proof": "theorem set_gain_preserves_it (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& IT_MASK = c.bits &&& IT_MASK := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_gain_val c g\n  rw [hv] at h\n  have hdisj : IT_MASK &&& GAIN_MASK = 0#u16 := by unfold IT_MASK GAIN_MASK; decide\n  exact set_bits_preserves_complement c GAIN_MASK v IT_MASK hdisj cfg h",
    "deps": [
-    "Config",
-    "set_gain_config",
     "Gain",
     "IT_MASK",
-    "gain_bits",
+    "Config",
+    "set_gain_config",
     "GAIN_MASK",
     "set_bits",
+    "gain_bits",
     "GAIN_ONE_EIGHTH",
     "GAIN_ONE",
     "GAIN_ONE_QUARTER",
@@ -299,13 +299,13 @@
     "enable_config",
     "SHUTDOWN",
     "IT_100MS",
+    "GAIN_ONE",
+    "set_bits",
+    "with_low",
     "GAIN_MASK",
     "config_new",
-    "with_low",
-    "Config",
-    "GAIN_ONE",
     "IT_MASK",
-    "set_bits"
+    "Config"
    ],
    "spec": []
   },
@@ -316,8 +316,8 @@
    "statement": "theorem disable_sets_shutdown :\n    \u2200 c cfg, disable_config c = ok cfg \u2192 cfg.bits &&& SD0 = SD0",
    "proof": "theorem disable_sets_shutdown :\n    \u2200 c cfg, disable_config c = ok cfg \u2192 cfg.bits &&& SD0 = SD0 := by\n  intro c cfg h\n  have e : cfg.bits = c.bits ||| SD0 := by\n    simp only [disable_config, with_high, lift, bind_ok, ok.injEq] at h; rw [\u2190 h]\n  rw [e]\n  bvify 16\n  ext i hi\n  simp only [BitVec.getElem_and, BitVec.getElem_or]\n  generalize c.bits.bv[i] = a\n  cases a <;> simp",
    "deps": [
-    "disable_config",
     "SD0",
+    "disable_config",
     "with_high",
     "Config"
    ],
@@ -330,8 +330,8 @@
    "statement": "theorem set_bits_total (c : Config) (mask value : Std.U16) :\n    \u2203 r, set_bits c mask value = ok r",
    "proof": "theorem set_bits_total (c : Config) (mask value : Std.U16) :\n    \u2203 r, set_bits c mask value = ok r :=\n  \u27e8_, set_bits_val c mask value\u27e9",
    "deps": [
-    "Config",
-    "set_bits"
+    "set_bits",
+    "Config"
    ],
    "spec": []
   },
@@ -351,25 +351,21 @@
   }
  ],
  "decls": {
-  "IT_100MS": {
+  "GAIN_ONE_EIGHTH": {
    "kind": "def",
-   "rust_path": "td_free_kernel::IT_100MS",
+   "rust_path": "td_free_kernel::GAIN_ONE_EIGHTH",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 39,
-   "kernel_code": "pub const IT_100MS: u16 = 0; //       0b0000 << 4",
-   "lean": "@[global_simps, irreducible] def IT_100MS : Std.U16 := 0#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "enable_config": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::enable_config",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 111,
-   "kernel_code": "pub fn enable_config() -> Config {\n    set_bits(\n        set_bits(with_low(config_new(), SHUTDOWN), IT_MASK, IT_100MS),\n        GAIN_MASK,\n        GAIN_ONE,\n    )\n}",
-   "lean": "def enable_config : Result Config := do\n  let c \u2190 config_new\n  let c1 \u2190 with_low c SHUTDOWN\n  let c2 \u2190 set_bits c1 IT_MASK IT_100MS\n  set_bits c2 GAIN_MASK GAIN_ONE",
-   "upstream": [],
-   "upstream_note": ""
+   "kernel_line": 31,
+   "kernel_code": "pub const GAIN_ONE_EIGHTH: u16 = 6144; // 0b11 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_ONE_EIGHTH : Std.U16 := 6144#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 139,
+     "code": "    pub const GAIN_ONE_EIGHTH: u16 = 0b11 << 11;"
+    }
+   ],
+   "upstream_note": "bits::GAIN_ONE_EIGHTH, pre-evaluated"
   },
   "with_low": {
    "kind": "def",
@@ -378,88 +374,14 @@
    "kernel_line": 79,
    "kernel_code": "pub fn with_low(c: Config, mask: u16) -> Config {\n    Config { bits: c.bits & !mask }\n}",
    "lean": "def with_low (c : Config) (mask : Std.U16) : Result Config := do\n  let i \u2190 lift (~~~ mask)\n  let i1 \u2190 lift (c.bits &&& i)\n  ok { bits := i1 }",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IT_50MS": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::IT_50MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 38,
-   "kernel_code": "pub const IT_50MS: u16 = 128; //      0b1000 << 4",
-   "lean": "@[global_simps, irreducible] def IT_50MS : Std.U16 := 128#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IT_200MS": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::IT_200MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 40,
-   "kernel_code": "pub const IT_200MS: u16 = 16; //      0b0001 << 4",
-   "lean": "@[global_simps, irreducible] def IT_200MS : Std.U16 := 16#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Config": {
-   "kind": "structure",
-   "rust_path": "td_free_kernel::Config",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 46,
-   "kernel_code": "pub struct Config {\n    pub bits: u16,\n}",
-   "lean": "structure Config where\n  bits : Std.U16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "gain_bits": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::gain_bits",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 89,
-   "kernel_code": "pub fn gain_bits(g: Gain) -> u16 {\n    match g {\n        Gain::OneEighth => GAIN_ONE_EIGHTH,\n        Gain::OneQuarter => GAIN_ONE_QUARTER,\n        Gain::One => GAIN_ONE,\n        Gain::Two => GAIN_TWO,\n    }\n}",
-   "lean": "def gain_bits (g : Gain) : Result Std.U16 := do\n  match g with\n  | Gain.OneEighth => ok GAIN_ONE_EIGHTH\n  | Gain.OneQuarter => ok GAIN_ONE_QUARTER\n  | Gain.One => ok GAIN_ONE\n  | Gain.Two => ok GAIN_TWO",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Spool": {
-   "kind": "structure",
-   "rust_path": "td_free_kernel::Spool",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 151,
-   "kernel_code": "pub struct Spool {\n    pub host_set: bool,\n    /// The host is an IPv4 address (the Spoolman client connects to an\n    /// address; upstream parses it with `unwrap`).\n    pub host_ipv4: bool,\n    pub port_set: bool,\n}",
-   "lean": "structure Spool where\n  host_set : Bool\n  host_ipv4 : Bool\n  port_set : Bool",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "DevCmd": {
-   "kind": "inductive",
-   "rust_path": "td_free_kernel::DevCmd",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 186,
-   "kernel_code": "pub enum DevCmd {\n    ReadSettings,\n    WriteSettings { spool: Spool },\n    ReadRgb,\n    WriteRgb,\n    WriteWifi,\n    ReadInfo,\n    Calibrate,\n    GetFilaments,\n    SetFilament,\n}",
-   "lean": "@[discriminant isize]\ninductive DevCmd where\n| ReadSettings : DevCmd\n| WriteSettings : Spool \u2192 DevCmd\n| ReadRgb : DevCmd\n| WriteRgb : DevCmd\n| WriteWifi : DevCmd\n| ReadInfo : DevCmd\n| Calibrate : DevCmd\n| GetFilaments : DevCmd\n| SetFilament : DevCmd",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "GAIN_MASK": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::GAIN_MASK",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 30,
-   "kernel_code": "pub const GAIN_MASK: u16 = 6144; //   0b11 << 11",
-   "lean": "@[global_simps, irreducible] def GAIN_MASK : Std.U16 := 6144#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "NOT_READY": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::NOT_READY",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 218,
-   "kernel_code": "pub const NOT_READY: u16 = 503;",
-   "lean": "@[global_simps, irreducible] def NOT_READY : Std.U16 := 503#u16",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 170,
+     "code": "    fn with_low(self, mask: u16) -> Self {\n        Config {\n            bits: self.bits & !mask,\n        }\n    }"
+    }
+   ],
+   "upstream_note": "Config::with_low as a free function"
   },
   "GAIN_ONE_QUARTER": {
    "kind": "def",
@@ -468,248 +390,14 @@
    "kernel_line": 32,
    "kernel_code": "pub const GAIN_ONE_QUARTER: u16 = 4096; // 0b10 << 11",
    "lean": "@[global_simps, irreducible] def GAIN_ONE_QUARTER : Std.U16 := 4096#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "GAIN_TWO": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::GAIN_TWO",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 34,
-   "kernel_code": "pub const GAIN_TWO: u16 = 2048; //    0b01 << 11",
-   "lean": "@[global_simps, irreducible] def GAIN_TWO : Std.U16 := 2048#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "set_bits": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::set_bits",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 85,
-   "kernel_code": "pub fn set_bits(c: Config, mask: u16, value: u16) -> Config {\n    Config { bits: (c.bits & !mask) | (value & mask) }\n}",
-   "lean": "def set_bits\n  (c : Config) (mask : Std.U16) (value : Std.U16) : Result Config := do\n  let i \u2190 lift (~~~ mask)\n  let i1 \u2190 lift (c.bits &&& i)\n  let i2 \u2190 lift (value &&& mask)\n  let i3 \u2190 lift (i1 ||| i2)\n  ok { bits := i3 }",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IT_MASK": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::IT_MASK",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 36,
-   "kernel_code": "pub const IT_MASK: u16 = 112; //      0b111 << 4",
-   "lean": "@[global_simps, irreducible] def IT_MASK : Std.U16 := 112#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "SD0": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::SD0",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 26,
-   "kernel_code": "pub const SD0: u16 = 1; //            1 << 0   \u2014 chip shutdown",
-   "lean": "@[global_simps, irreducible] def SD0 : Std.U16 := 1#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "set_it_config": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::set_it_config",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 130,
-   "kernel_code": "pub fn set_it_config(c: Config, it: IntegrationTime) -> Config {\n    set_bits(c, IT_MASK, it_bits(it))\n}",
-   "lean": "def set_it_config (c : Config) (it : IntegrationTime) : Result Config := do\n  let i \u2190 it_bits it\n  set_bits c IT_MASK i",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IT_800MS": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::IT_800MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 42,
-   "kernel_code": "pub const IT_800MS: u16 = 48; //      0b0011 << 4",
-   "lean": "@[global_simps, irreducible] def IT_800MS : Std.U16 := 48#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "disable_config": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::disable_config",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 120,
-   "kernel_code": "pub fn disable_config(c: Config) -> Config {\n    with_high(c, SD0)\n}",
-   "lean": "def disable_config (c : Config) : Result Config := do\n  with_high c SD0",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "it_bits": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::it_bits",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 98,
-   "kernel_code": "pub fn it_bits(it: IntegrationTime) -> u16 {\n    match it {\n        IntegrationTime::_25ms => IT_25MS,\n        IntegrationTime::_50ms => IT_50MS,\n        IntegrationTime::_100ms => IT_100MS,\n        IntegrationTime::_200ms => IT_200MS,\n        IntegrationTime::_400ms => IT_400MS,\n        IntegrationTime::_800ms => IT_800MS,\n    }\n}",
-   "lean": "def it_bits (it : IntegrationTime) : Result Std.U16 := do\n  match it with\n  | IntegrationTime._25ms => ok IT_25MS\n  | IntegrationTime._50ms => ok IT_50MS\n  | IntegrationTime._100ms => ok IT_100MS\n  | IntegrationTime._200ms => ok IT_200MS\n  | IntegrationTime._400ms => ok IT_400MS\n  | IntegrationTime._800ms => ok IT_800MS",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IT_400MS": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::IT_400MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 41,
-   "kernel_code": "pub const IT_400MS: u16 = 32; //      0b0010 << 4",
-   "lean": "@[global_simps, irreducible] def IT_400MS : Std.U16 := 32#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "with_high": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::with_high",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 74,
-   "kernel_code": "pub fn with_high(c: Config, mask: u16) -> Config {\n    Config { bits: c.bits | mask }\n}",
-   "lean": "def with_high (c : Config) (mask : Std.U16) : Result Config := do\n  let i \u2190 lift (c.bits ||| mask)\n  ok { bits := i }",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "set_gain_config": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::set_gain_config",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 125,
-   "kernel_code": "pub fn set_gain_config(c: Config, g: Gain) -> Config {\n    set_bits(c, GAIN_MASK, gain_bits(g))\n}",
-   "lean": "def set_gain_config (c : Config) (g : Gain) : Result Config := do\n  let i \u2190 gain_bits g\n  set_bits c GAIN_MASK i",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "NOT_CONFIGURED": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::NOT_CONFIGURED",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 214,
-   "kernel_code": "pub const NOT_CONFIGURED: u16 = 412;",
-   "lean": "@[global_simps, irreducible] def NOT_CONFIGURED : Std.U16 := 412#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Outcome": {
-   "kind": "inductive",
-   "rust_path": "td_free_kernel::Outcome",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 199,
-   "kernel_code": "pub enum Outcome {\n    /// Answer from the current state; nothing stored.\n    Read,\n    /// Store the body under `key` (replacing the old value) and answer it.\n    Persist(Key),\n    /// Store, then reset the device (to use the new Wi-Fi credentials).\n    PersistThenReset(Key),\n    /// Hand the request to the task that serves it (Spoolman client,\n    /// calibration).\n    Forward,\n    /// Refuse with this status.\n    Refuse(u16),\n}",
-   "lean": "@[discriminant isize]\ninductive Outcome where\n| Read : Outcome\n| Persist : Key \u2192 Outcome\n| PersistThenReset : Key \u2192 Outcome\n| Forward : Outcome\n| Refuse : Std.U16 \u2192 Outcome",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "dev_transition": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::dev_transition",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 229,
-   "kernel_code": "pub fn dev_transition(env: &Env, st: &DevState, cmd: &DevCmd) -> (Option<DevState>, Outcome) {\n    match cmd {\n        DevCmd::ReadSettings => (None, Outcome::Read),\n        DevCmd::ReadRgb => (None, Outcome::Read),\n        DevCmd::WriteSettings { spool } => {\n            (Some(DevState { spool: *spool, reset_pending: st.reset_pending }), Outcome::Persist(Key::Settings))\n        }\n        DevCmd::WriteRgb => (None, Outcome::Persist(Key::Rgb)),\n        DevCmd::WriteWifi => {\n            (Some(DevState { spool: st.spool, reset_pending: true }), Outcome::PersistThenReset(Key::Wifi))\n        }\n        DevCmd::ReadInfo => {\n            if env.info_ready { (None, Outcome::Read) } else { (None, Outcome::Refuse(NOT_READY)) }\n        }\n        DevCmd::Calibrate => {\n            if env.client_connected { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NO_CLIENT)) }\n        }\n        DevCmd::GetFilaments => {\n            if spool_usable(st.spool) { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NOT_CONFIGURED)) }\n        }\n        DevCmd::SetFilament => {\n            if spool_usable(st.spool) { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NOT_CONFIGURED)) }\n        }\n    }\n}",
-   "lean": "def dev_transition\n  (env : Env) (st : DevState) (cmd : DevCmd) :\n  Result ((Option DevState) \u00d7 Outcome)\n  := do\n  match cmd with\n  | DevCmd.ReadSettings => ok (none, Outcome.Read)\n  | DevCmd.WriteSettings spool =>\n    ok (some { st with spool }, Outcome.Persist Key.Settings)\n  | DevCmd.ReadRgb => ok (none, Outcome.Read)\n  | DevCmd.WriteRgb => ok (none, Outcome.Persist Key.Rgb)\n  | DevCmd.WriteWifi =>\n    ok (some { st with reset_pending := true }, Outcome.PersistThenReset\n      Key.Wifi)\n  | DevCmd.ReadInfo =>\n    if env.info_ready\n    then ok (none, Outcome.Read)\n    else ok (none, Outcome.Refuse NOT_READY)\n  | DevCmd.Calibrate =>\n    if env.client_connected\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NO_CLIENT)\n  | DevCmd.GetFilaments =>\n    let b \u2190 spool_usable st.spool\n    if b\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NOT_CONFIGURED)\n  | DevCmd.SetFilament =>\n    let b \u2190 spool_usable st.spool\n    if b\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NOT_CONFIGURED)",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "GAIN_ONE_EIGHTH": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::GAIN_ONE_EIGHTH",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 31,
-   "kernel_code": "pub const GAIN_ONE_EIGHTH: u16 = 6144; // 0b11 << 11",
-   "lean": "@[global_simps, irreducible] def GAIN_ONE_EIGHTH : Std.U16 := 6144#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "spool_usable": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::spool_usable",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 220,
-   "kernel_code": "fn spool_usable(s: Spool) -> bool {\n    if s.host_set {\n        if s.port_set { s.host_ipv4 } else { false }\n    } else {\n        false\n    }\n}",
-   "lean": "def spool_usable (s : Spool) : Result Bool := do\n  if s.host_set\n  then if s.port_set\n       then ok s.host_ipv4\n       else ok false\n  else ok false",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IT_25MS": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::IT_25MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 37,
-   "kernel_code": "pub const IT_25MS: u16 = 192; //      0b1100 << 4",
-   "lean": "@[global_simps, irreducible] def IT_25MS : Std.U16 := 192#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Gain": {
-   "kind": "inductive",
-   "rust_path": "td_free_kernel::Gain",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 51,
-   "kernel_code": "pub enum Gain {\n    OneEighth,\n    OneQuarter,\n    One,\n    Two,\n}",
-   "lean": "@[discriminant isize]\ninductive Gain where\n| OneEighth : Gain\n| OneQuarter : Gain\n| One : Gain\n| Two : Gain",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "SHUTDOWN": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::SHUTDOWN",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 28,
-   "kernel_code": "pub const SHUTDOWN: u16 = 32769; //   SD0 | SD1",
-   "lean": "@[global_simps, irreducible] def SHUTDOWN : Std.U16 := 32769#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "IntegrationTime": {
-   "kind": "inductive",
-   "rust_path": "td_free_kernel::IntegrationTime",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 59,
-   "kernel_code": "pub enum IntegrationTime {\n    _25ms,\n    _50ms,\n    _100ms,\n    _200ms,\n    _400ms,\n    _800ms,\n}",
-   "lean": "@[discriminant isize]\ninductive IntegrationTime where\n| _25ms : IntegrationTime\n| _50ms : IntegrationTime\n| _100ms : IntegrationTime\n| _200ms : IntegrationTime\n| _400ms : IntegrationTime\n| _800ms : IntegrationTime",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "NO_CLIENT": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::NO_CLIENT",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 216,
-   "kernel_code": "pub const NO_CLIENT: u16 = 428;",
-   "lean": "@[global_simps, irreducible] def NO_CLIENT : Std.U16 := 428#u16",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "boot_wifi": {
-   "kind": "def",
-   "rust_path": "td_free_kernel::boot_wifi",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 276,
-   "kernel_code": "pub fn boot_wifi(has_creds: bool, connected: bool, got_ip: bool) -> BootWifi {\n    if !has_creds {\n        BootWifi::AccessPoint\n    } else if !connected {\n        BootWifi::ForgetAndReset\n    } else if !got_ip {\n        BootWifi::ForgetAndReset\n    } else {\n        BootWifi::Station\n    }\n}",
-   "lean": "def boot_wifi\n  (has_creds : Bool) (connected : Bool) (got_ip : Bool) : Result BootWifi := do\n  if has_creds\n  then\n    if connected\n    then if got_ip\n         then ok BootWifi.Station\n         else ok BootWifi.ForgetAndReset\n    else ok BootWifi.ForgetAndReset\n  else ok BootWifi.AccessPoint",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "BootWifi": {
-   "kind": "inductive",
-   "rust_path": "td_free_kernel::BootWifi",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 264,
-   "kernel_code": "pub enum BootWifi {\n    /// No credentials: the open access point `Td-Free`.\n    AccessPoint,\n    /// Connected with an address: station mode.\n    Station,\n    /// The stored credentials did not work: delete them and reset (the next\n    /// boot is an access point).\n    ForgetAndReset,\n}",
-   "lean": "@[discriminant isize]\ninductive BootWifi where\n| AccessPoint : BootWifi\n| Station : BootWifi\n| ForgetAndReset : BootWifi",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "DevState": {
-   "kind": "structure",
-   "rust_path": "td_free_kernel::DevState",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 160,
-   "kernel_code": "pub struct DevState {\n    pub spool: Spool,\n    pub reset_pending: bool,\n}",
-   "lean": "structure DevState where\n  spool : Spool\n  reset_pending : Bool",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 140,
+     "code": "    pub const GAIN_ONE_QUARTER: u16 = 0b10 << 11;"
+    }
+   ],
+   "upstream_note": "bits::GAIN_ONE_QUARTER, pre-evaluated"
   },
   "config_new": {
    "kind": "def",
@@ -718,8 +406,194 @@
    "kernel_line": 69,
    "kernel_code": "pub fn config_new() -> Config {\n    Config { bits: 0 }\n}",
    "lean": "def config_new : Result Config := do\n  ok { bits := 0#u16 }",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 159,
+     "code": "    pub(crate) fn new() -> Self {\n        // Power-on defaults: SD0=0, SD1=0, gain=1x, IT=50ms\n        Config { bits: 0x0000 }\n    }"
+    }
+   ],
+   "upstream_note": "Config::new"
+  },
+  "NOT_CONFIGURED": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::NOT_CONFIGURED",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 214,
+   "kernel_code": "pub const NOT_CONFIGURED: u16 = 412;",
+   "lean": "@[global_simps, irreducible] def NOT_CONFIGURED : Std.U16 := 412#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/spoolman.rs",
+     "line": 77,
+     "code": "        return CustomResponse::build(StatusCode::PRECONDITION_FAILED)"
+    },
+    {
+     "file": "firmware/src/tasks/http/spoolman.rs",
+     "line": 101,
+     "code": "        return (StatusCode::PRECONDITION_FAILED, NoContent);"
+    }
+   ],
+   "upstream_note": "StatusCode::PRECONDITION_FAILED (412) of the Spoolman handlers"
+  },
+  "enable_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::enable_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 111,
+   "kernel_code": "pub fn enable_config() -> Config {\n    set_bits(\n        set_bits(with_low(config_new(), SHUTDOWN), IT_MASK, IT_100MS),\n        GAIN_MASK,\n        GAIN_ONE,\n    )\n}",
+   "lean": "def enable_config : Result Config := do\n  let c \u2190 config_new\n  let c1 \u2190 with_low c SHUTDOWN\n  let c2 \u2190 set_bits c1 IT_MASK IT_100MS\n  set_bits c2 GAIN_MASK GAIN_ONE",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 208,
+     "code": "        let config = Config::new()\n            .with_low(bits::SD0 | bits::SD1)\n            .set_bits(bits::IT_MASK, bits::IT_100MS)\n            .set_bits(bits::GAIN_MASK, bits::GAIN_ONE);"
+    }
+   ],
+   "upstream_note": "the config chain in Veml3328::enable (I2C id check and write stay in the app)"
+  },
+  "DevCmd": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::DevCmd",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 186,
+   "kernel_code": "pub enum DevCmd {\n    ReadSettings,\n    WriteSettings { spool: Spool },\n    ReadRgb,\n    WriteRgb,\n    WriteWifi,\n    ReadInfo,\n    Calibrate,\n    GetFilaments,\n    SetFilament,\n}",
+   "lean": "@[discriminant isize]\ninductive DevCmd where\n| ReadSettings : DevCmd\n| WriteSettings : Spool \u2192 DevCmd\n| ReadRgb : DevCmd\n| WriteRgb : DevCmd\n| WriteWifi : DevCmd\n| ReadInfo : DevCmd\n| Calibrate : DevCmd\n| GetFilaments : DevCmd\n| SetFilament : DevCmd",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/config.rs",
+     "line": 24,
+     "code": "    picoserve::Router::new()\n        .route(\"/settings\", get(get_settings).post(set_settings))\n        .route(\"/rgb\", get(get_rbg_mutlipliers).post(set_rgb_mutlipliers))\n        .route(\"/wifi\", post(set_wifi_creds))\n        .route(\"/info\", get(get_device_info))\n        .route(\"/auto-calibrate\", post(set_auto_calibrate))"
+    },
+    {
+     "file": "firmware/src/tasks/http/spoolman.rs",
+     "line": 19,
+     "code": "    picoserve::Router::new()\n        .route(\"/get-filaments\", get(spoolman_handler))\n        .route(\"/set-filament\", post(set_filament_td))"
+    }
+   ],
+   "upstream_note": "one variant per route/method of config_router and spoolman_router"
+  },
+  "IT_800MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_800MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub const IT_800MS: u16 = 48; //      0b0011 << 4",
+   "lean": "@[global_simps, irreducible] def IT_800MS : Std.U16 := 48#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 150,
+     "code": "    pub const IT_800MS: u16 = 0b0011 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_800MS, pre-evaluated"
+  },
+  "boot_wifi": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::boot_wifi",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 276,
+   "kernel_code": "pub fn boot_wifi(has_creds: bool, connected: bool, got_ip: bool) -> BootWifi {\n    if !has_creds {\n        BootWifi::AccessPoint\n    } else if !connected {\n        BootWifi::ForgetAndReset\n    } else if !got_ip {\n        BootWifi::ForgetAndReset\n    } else {\n        BootWifi::Station\n    }\n}",
+   "lean": "def boot_wifi\n  (has_creds : Bool) (connected : Bool) (got_ip : Bool) : Result BootWifi := do\n  if has_creds\n  then\n    if connected\n    then if got_ip\n         then ok BootWifi.Station\n         else ok BootWifi.ForgetAndReset\n    else ok BootWifi.ForgetAndReset\n  else ok BootWifi.AccessPoint",
+   "upstream": [
+    {
+     "file": "firmware/src/bin/main.rs",
+     "line": 112,
+     "code": "    let (iface, net_config, wifi_controller) = if let Some(wf_creds) = wifi_creds.clone() {\n        info!(\"Found wifi creds, trying to connect\");\n        firmware::WIFI_STATE\n            .sender()\n            .send(firmware::WifiState::Connecting);\n        let sta_config = esp_radio::wifi::Config::Station(\n            StationConfig::default()\n                .with_ssid(wf_creds.ssid.as_str())\n                .with_password(wf_creds.password.as_str().into()),\n        );\n        let (mut wifi_controller, interfaces) = esp_radio::wifi::new(\n            peripherals.WIFI,\n            ControllerConfig::default().with_initial_config(sta_config),\n        )\n        .expect(\"Failed to initialize Wi-Fi controller\");\n\n        let connect_is_err = wifi_controller.connect_async().await.is_err();\n        if connect_is_err {\n            warn!(\"Resetting wifi creds\");\n            let _ = WifiCreds::delete(nvs).await;\n            Timer::after_millis(200).await;\n            software_reset();\n        }\n\n        let mut dhcp_cfg = embassy_net::DhcpConfig::default();\n\n        let mut hostname = heapless::String::new();\n        hostname.push_str(\"td-free\").unwrap();\n        dhcp_cfg.hostname = Some(hostname);\n        (\n            interfaces.station,\n            embassy_net::Config::dhcpv4(dhcp_cfg),\n            wifi_controller,\n        )\n    } else {\n        let ap_config = esp_radio::wifi::Config::AccessPoint(\n            AccessPointConfig::default()\n                .with_ssid(\"Td-Free\")\n                .with_auth_method(esp_radio::wifi::AuthenticationMethod::None),\n        );\n        let (wifi_controller, interfaces) = esp_radio::wifi::new(\n            peripherals.WIFI,\n            ControllerConfig::default().with_initial_config(ap_config),\n        )\n        .expect(\"Failed to initialize Wi-Fi controller\");\n        let ipv4_cfg = StaticConfigV4 {\n            address: Ipv4Cidr::new(embassy_net::Ipv4Address::new(10, 10, 10, 1), 24),\n            dns_servers: Default::default(),\n            gateway: Some(embassy_net::Ipv4Address::new(10, 10, 10, 1)),\n        };\n        firmware::WIFI_STATE\n            .sender()\n            .send(firmware::WifiState::HotSpotRunning);\n        (\n            interfaces.access_point,\n            embassy_net::Config::ipv4_static(ipv4_cfg),\n            wifi_controller,\n        )\n    };"
+    },
+    {
+     "file": "firmware/src/bin/main.rs",
+     "line": 182,
+     "code": "    if wifi_creds.is_some() {\n        let has_ip_fut = async {\n            info!(\"Checking for ip addr\");\n            loop {\n                if let Some(config) = stack.config_v4() {\n                    info!(\"Got IP: {}\", config.address);\n                    return config.address;\n                }\n                Timer::after_millis(200).await;\n            }\n        };\n        let timeout_fut = Timer::after_secs(600);\n        match select(has_ip_fut, timeout_fut).await {\n            Either::First(_) => (),\n            Either::Second(_) => {\n                warn!(\"Resetting wifi creds\");\n                let _ = WifiCreds::delete(nvs).await;\n                Timer::after_millis(200).await;\n                software_reset()\n            }\n        }\n        firmware::WIFI_STATE\n            .sender()\n            .send(firmware::WifiState::Connected);\n    } else {\n        spawner.spawn(\n            tasks::http::network::listen_for_connect_event_wifi_ap(wifi_controller).unwrap(),\n        );\n        spawner.spawn(tasks::http::network::run_dhcp_server(stack).unwrap());\n        spawner.spawn(tasks::http::network::captive_dns(stack).unwrap());\n    }"
+    }
+   ],
+   "upstream_note": "no creds -> AP; connect error or no IP within 600 s -> WifiCreds::delete + reset; else station"
+  },
+  "GAIN_MASK": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_MASK",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub const GAIN_MASK: u16 = 6144; //   0b11 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_MASK : Std.U16 := 6144#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 138,
+     "code": "    pub const GAIN_MASK: u16 = 0b11 << 11;"
+    }
+   ],
+   "upstream_note": "bits::GAIN_MASK = 0b11 << 11, pre-evaluated"
+  },
+  "SD0": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::SD0",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 26,
+   "kernel_code": "pub const SD0: u16 = 1; //            1 << 0   \u2014 chip shutdown",
+   "lean": "@[global_simps, irreducible] def SD0 : Std.U16 := 1#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 134,
+     "code": "    pub const SD0: u16 = 1 << 0;"
+    }
+   ],
+   "upstream_note": "bits::SD0 = 1 << 0, pre-evaluated to 1"
+  },
+  "IT_400MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_400MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 41,
+   "kernel_code": "pub const IT_400MS: u16 = 32; //      0b0010 << 4",
+   "lean": "@[global_simps, irreducible] def IT_400MS : Std.U16 := 32#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 149,
+     "code": "    pub const IT_400MS: u16 = 0b0010 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_400MS, pre-evaluated"
+  },
+  "set_gain_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::set_gain_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 125,
+   "kernel_code": "pub fn set_gain_config(c: Config, g: Gain) -> Config {\n    set_bits(c, GAIN_MASK, gain_bits(g))\n}",
+   "lean": "def set_gain_config (c : Config) (g : Gain) : Result Config := do\n  let i \u2190 gain_bits g\n  set_bits c GAIN_MASK i",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 224,
+     "code": "    pub fn set_gain(&mut self, gain: Gain) -> Result<(), Error<I2C::Error>> {\n        let gain_bits = match gain {\n            Gain::OneEighth => bits::GAIN_ONE_EIGHTH,\n            Gain::OneQuarter => bits::GAIN_ONE_QUARTER,\n            Gain::One => bits::GAIN_ONE,\n            Gain::Two => bits::GAIN_TWO,\n        };\n        let config = self.config.set_bits(bits::GAIN_MASK, gain_bits);\n        self.set_config(config)\n    }"
+    }
+   ],
+   "upstream_note": "Veml3328::set_gain's config transform (without the register write)"
+  },
+  "BootWifi": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::BootWifi",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 264,
+   "kernel_code": "pub enum BootWifi {\n    /// No credentials: the open access point `Td-Free`.\n    AccessPoint,\n    /// Connected with an address: station mode.\n    Station,\n    /// The stored credentials did not work: delete them and reset (the next\n    /// boot is an access point).\n    ForgetAndReset,\n}",
+   "lean": "@[discriminant isize]\ninductive BootWifi where\n| AccessPoint : BootWifi\n| Station : BootWifi\n| ForgetAndReset : BootWifi",
+   "upstream": [
+    {
+     "file": "firmware/src/bin/main.rs",
+     "line": 112,
+     "code": "    let (iface, net_config, wifi_controller) = if let Some(wf_creds) = wifi_creds.clone() {\n        info!(\"Found wifi creds, trying to connect\");\n        firmware::WIFI_STATE\n            .sender()\n            .send(firmware::WifiState::Connecting);\n        let sta_config = esp_radio::wifi::Config::Station(\n            StationConfig::default()\n                .with_ssid(wf_creds.ssid.as_str())\n                .with_password(wf_creds.password.as_str().into()),\n        );\n        let (mut wifi_controller, interfaces) = esp_radio::wifi::new(\n            peripherals.WIFI,\n            ControllerConfig::default().with_initial_config(sta_config),\n        )\n        .expect(\"Failed to initialize Wi-Fi controller\");\n\n        let connect_is_err = wifi_controller.connect_async().await.is_err();\n        if connect_is_err {\n            warn!(\"Resetting wifi creds\");\n            let _ = WifiCreds::delete(nvs).await;\n            Timer::after_millis(200).await;\n            software_reset();\n        }\n\n        let mut dhcp_cfg = embassy_net::DhcpConfig::default();\n\n        let mut hostname = heapless::String::new();\n        hostname.push_str(\"td-free\").unwrap();\n        dhcp_cfg.hostname = Some(hostname);\n        (\n            interfaces.station,\n            embassy_net::Config::dhcpv4(dhcp_cfg),\n            wifi_controller,\n        )\n    } else {\n        let ap_config = esp_radio::wifi::Config::AccessPoint(\n            AccessPointConfig::default()\n                .with_ssid(\"Td-Free\")\n                .with_auth_method(esp_radio::wifi::AuthenticationMethod::None),\n        );\n        let (wifi_controller, interfaces) = esp_radio::wifi::new(\n            peripherals.WIFI,\n            ControllerConfig::default().with_initial_config(ap_config),\n        )\n        .expect(\"Failed to initialize Wi-Fi controller\");\n        let ipv4_cfg = StaticConfigV4 {\n            address: Ipv4Cidr::new(embassy_net::Ipv4Address::new(10, 10, 10, 1), 24),\n            dns_servers: Default::default(),\n            gateway: Some(embassy_net::Ipv4Address::new(10, 10, 10, 1)),\n        };\n        firmware::WIFI_STATE\n            .sender()\n            .send(firmware::WifiState::HotSpotRunning);\n        (\n            interfaces.access_point,\n            embassy_net::Config::ipv4_static(ipv4_cfg),\n            wifi_controller,\n        )\n    };"
+    },
+    {
+     "file": "firmware/src/bin/main.rs",
+     "line": 182,
+     "code": "    if wifi_creds.is_some() {\n        let has_ip_fut = async {\n            info!(\"Checking for ip addr\");\n            loop {\n                if let Some(config) = stack.config_v4() {\n                    info!(\"Got IP: {}\", config.address);\n                    return config.address;\n                }\n                Timer::after_millis(200).await;\n            }\n        };\n        let timeout_fut = Timer::after_secs(600);\n        match select(has_ip_fut, timeout_fut).await {\n            Either::First(_) => (),\n            Either::Second(_) => {\n                warn!(\"Resetting wifi creds\");\n                let _ = WifiCreds::delete(nvs).await;\n                Timer::after_millis(200).await;\n                software_reset()\n            }\n        }\n        firmware::WIFI_STATE\n            .sender()\n            .send(firmware::WifiState::Connected);\n    } else {\n        spawner.spawn(\n            tasks::http::network::listen_for_connect_event_wifi_ap(wifi_controller).unwrap(),\n        );\n        spawner.spawn(tasks::http::network::run_dhcp_server(stack).unwrap());\n        spawner.spawn(tasks::http::network::captive_dns(stack).unwrap());\n    }"
+    }
+   ],
+   "upstream_note": "the boot's three Wi-Fi outcomes: access point, station, delete creds and software_reset"
   },
   "GAIN_ONE": {
    "kind": "def",
@@ -728,8 +602,56 @@
    "kernel_line": 33,
    "kernel_code": "pub const GAIN_ONE: u16 = 0; //       0b00 << 11",
    "lean": "@[global_simps, irreducible] def GAIN_ONE : Std.U16 := 0#u16",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 141,
+     "code": "    pub const GAIN_ONE: u16 = 0b00 << 11;"
+    }
+   ],
+   "upstream_note": "bits::GAIN_ONE, pre-evaluated"
+  },
+  "set_it_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::set_it_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 130,
+   "kernel_code": "pub fn set_it_config(c: Config, it: IntegrationTime) -> Config {\n    set_bits(c, IT_MASK, it_bits(it))\n}",
+   "lean": "def set_it_config (c : Config) (it : IntegrationTime) : Result Config := do\n  let i \u2190 it_bits it\n  set_bits c IT_MASK i",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 236,
+     "code": "    pub fn set_integration_time(&mut self, it: IntegrationTime) -> Result<(), Error<I2C::Error>> {\n        let it_bits = match it {\n            IntegrationTime::_25ms => bits::IT_25MS,\n            IntegrationTime::_50ms => bits::IT_50MS,\n            IntegrationTime::_100ms => bits::IT_100MS,\n            IntegrationTime::_200ms => bits::IT_200MS,\n            IntegrationTime::_400ms => bits::IT_400MS,\n            IntegrationTime::_800ms => bits::IT_800MS,\n        };\n        let config = self.config.set_bits(bits::IT_MASK, it_bits);\n        self.set_config(config)\n    }"
+    }
+   ],
+   "upstream_note": "Veml3328::set_integration_time's config transform (without the register write)"
+  },
+  "dev_transition": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::dev_transition",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 229,
+   "kernel_code": "pub fn dev_transition(env: &Env, st: &DevState, cmd: &DevCmd) -> (Option<DevState>, Outcome) {\n    match cmd {\n        DevCmd::ReadSettings => (None, Outcome::Read),\n        DevCmd::ReadRgb => (None, Outcome::Read),\n        DevCmd::WriteSettings { spool } => {\n            (Some(DevState { spool: *spool, reset_pending: st.reset_pending }), Outcome::Persist(Key::Settings))\n        }\n        DevCmd::WriteRgb => (None, Outcome::Persist(Key::Rgb)),\n        DevCmd::WriteWifi => {\n            (Some(DevState { spool: st.spool, reset_pending: true }), Outcome::PersistThenReset(Key::Wifi))\n        }\n        DevCmd::ReadInfo => {\n            if env.info_ready { (None, Outcome::Read) } else { (None, Outcome::Refuse(NOT_READY)) }\n        }\n        DevCmd::Calibrate => {\n            if env.client_connected { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NO_CLIENT)) }\n        }\n        DevCmd::GetFilaments => {\n            if spool_usable(st.spool) { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NOT_CONFIGURED)) }\n        }\n        DevCmd::SetFilament => {\n            if spool_usable(st.spool) { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NOT_CONFIGURED)) }\n        }\n    }\n}",
+   "lean": "def dev_transition\n  (env : Env) (st : DevState) (cmd : DevCmd) :\n  Result ((Option DevState) \u00d7 Outcome)\n  := do\n  match cmd with\n  | DevCmd.ReadSettings => ok (none, Outcome.Read)\n  | DevCmd.WriteSettings spool =>\n    ok (some { st with spool }, Outcome.Persist Key.Settings)\n  | DevCmd.ReadRgb => ok (none, Outcome.Read)\n  | DevCmd.WriteRgb => ok (none, Outcome.Persist Key.Rgb)\n  | DevCmd.WriteWifi =>\n    ok (some { st with reset_pending := true }, Outcome.PersistThenReset\n      Key.Wifi)\n  | DevCmd.ReadInfo =>\n    if env.info_ready\n    then ok (none, Outcome.Read)\n    else ok (none, Outcome.Refuse NOT_READY)\n  | DevCmd.Calibrate =>\n    if env.client_connected\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NO_CLIENT)\n  | DevCmd.GetFilaments =>\n    let b \u2190 spool_usable st.spool\n    if b\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NOT_CONFIGURED)\n  | DevCmd.SetFilament =>\n    let b \u2190 spool_usable st.spool\n    if b\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NOT_CONFIGURED)",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/config.rs",
+     "line": 32,
+     "code": "async fn get_settings() -> impl IntoResponse {\n    let mut cfg_recv = SETTINGS_DATA_WATCH.anon_receiver();\n    response::Json(cfg_recv.try_get().unwrap())\n}\n\nasync fn set_settings(extract::Json(settings): extract::Json<Settings>) -> impl IntoResponse {\n    DATA_UPDATE_CHANNEL.publish_immediate(crate::DataUpdate::Settings(settings.clone()));\n    response::Json(settings)\n}\n\nasync fn get_rbg_mutlipliers() -> impl IntoResponse {\n    let mut rgb_recv = RGB_MULTIPLIERS_WATCH.anon_receiver();\n    response::Json(rgb_recv.try_get().unwrap())\n}\n\nasync fn set_rgb_mutlipliers(\n    extract::Json(rgb_m): extract::Json<RGBMultipliers>,\n) -> impl IntoResponse {\n    DATA_UPDATE_CHANNEL.publish_immediate(crate::DataUpdate::RgbMulti(rgb_m));\n    response::Json(rgb_m)\n}\n\nasync fn set_wifi_creds(extract::Json(wifi_creds): extract::Json<WifiCreds>) -> impl IntoResponse {\n    info!(\"Received wifi creds: {}\", wifi_creds);\n    DATA_UPDATE_CHANNEL.publish_immediate(crate::DataUpdate::Wifi(wifi_creds.clone()));\n    response::Json(wifi_creds)\n}\n\nasync fn get_device_info() -> impl IntoResponse {\n    let mut info_recv = DEVICE_INFO_WATCH.anon_receiver();\n    response::Json(info_recv.try_get().unwrap())\n}\n\nasync fn set_auto_calibrate<'a>(\n    extract::Json(calib_d): extract::Json<CalibrationCommand>,\n) -> Result<response::Json<RGBMultipliers>, (StatusCode, &'a str)> {\n    let client_connected = CLIENT_CONNECTED.try_get().unwrap_or(false);\n    if !client_connected {\n        return Err((\n            StatusCode::PRECONDITION_REQUIRED,\n            \"client needs to be listening and connected\",\n        ));\n    }\n\n    CALIBRATE_REF_CHANNEL.publish_immediate(calib_d);\n    let mut rgb_multi_recv = RGB_MULTIPLIERS_WATCH.anon_receiver();\n    let changed_fut = async {\n        loop {\n            if let Some(d) = rgb_multi_recv.try_changed() {\n                return d;\n            }\n            Timer::after_millis(50).await\n        }\n    };\n    let timeout_fut = Timer::after_secs(5);\n    return match select(changed_fut, timeout_fut).await {\n        Either::First(d) => Ok(response::Json(d)),\n        Either::Second(_) => {\n            // timeout occurred\n            Err((StatusCode::REQUEST_TIMEOUT, \"fn timeouted\"))\n        }\n    };\n}"
+    },
+    {
+     "file": "firmware/src/tasks/http/spoolman.rs",
+     "line": 71,
+     "code": "pub async fn spoolman_handler() -> impl IntoResponse {\n    let spoolman_set_up = match SETTINGS_DATA_WATCH.anon_receiver().try_get() {\n        Some(d) => d.spoolman_host.is_some() && d.spoolman_port.is_some(),\n        None => false,\n    };\n    if !spoolman_set_up {\n        return CustomResponse::build(StatusCode::PRECONDITION_FAILED)\n            .with_header(\"Content-Type\", \"application/text\")\n            .with_header(\"Access-Control-Allow-Origin\", \"*\")\n            .with_body(SpoolmanResponseBody::Empty);\n    }\n    CustomResponse::build(StatusCode::OK)\n        .with_header(\"Content-Type\", \"application/json\")\n        .with_header(\"Access-Control-Allow-Origin\", \"*\")\n        .with_body(SpoolmanResponseBody::Spoolman)\n}\n\n#[derive(Debug, Deserialize)]\nstruct SetTdFilament {\n    filament_id: u32,\n    td: Option<f32>,\n    color: Option<String<6>>,\n}\n\nasync fn set_filament_td(extract::Json(data): extract::Json<SetTdFilament>) -> impl IntoResponse {\n    let spoolman_set_up = match SETTINGS_DATA_WATCH.anon_receiver().try_get() {\n        Some(d) => d.spoolman_host.is_some() && d.spoolman_port.is_some(),\n        None => false,\n    };\n    if !spoolman_set_up {\n        return (StatusCode::PRECONDITION_FAILED, NoContent);\n    }\n    SPOOLMAN_CHANNEL.publish_immediate(SpoolmanCommands::Set(\n        data.filament_id,\n        data.td,\n        data.color,\n    ));\n    let mut sub = SPOOLMAN_CHANNEL.subscriber().unwrap();\n    let resp_code = loop {\n        let msg = sub.next_message_pure().await;\n        match msg {\n            SpoolmanCommands::SetResponse(code) => break code,\n            _ => continue,\n        };\n    };\n    (StatusCode::new(resp_code), NoContent)\n}"
+    },
+    {
+     "file": "firmware/src/tasks/states.rs",
+     "line": 38,
+     "code": "        match msg {\n            crate::DataUpdate::RgbMulti(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                RGB_MULTIPLIERS_WATCH.sender().send(d)\n            }\n            crate::DataUpdate::Settings(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                SETTINGS_DATA_WATCH.sender().send(d)\n            }\n            crate::DataUpdate::Wifi(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                Timer::after_millis(300).await;\n                software_reset()\n            }\n        }"
+    }
+   ],
+   "upstream_note": "the config and Spoolman handlers' decisions, with the save task's store/reset folded in"
   },
   "Key": {
    "kind": "inductive",
@@ -738,8 +660,30 @@
    "kernel_line": 179,
    "kernel_code": "pub enum Key {\n    Settings,\n    Rgb,\n    Wifi,\n}",
    "lean": "@[discriminant isize]\ninductive Key where\n| Settings : Key\n| Rgb : Key\n| Wifi : Key",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/storage/mod.rs",
+     "line": 52,
+     "code": "impl NvsStored for WifiCreds {\n    const KEY: &'static [u8] = b\"WF_CR\";\n}\n\nimpl NvsStored for Settings {\n    const KEY: &'static [u8] = b\"SET\";\n}\n\nimpl NvsStored for RGBMultipliers {\n    const KEY: &'static [u8] = b\"RGB\";\n}"
+    }
+   ],
+   "upstream_note": "NvsStored::KEY of WifiCreds (WF_CR), Settings (SET), RGBMultipliers (RGB) as an enum"
+  },
+  "set_bits": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::set_bits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 85,
+   "kernel_code": "pub fn set_bits(c: Config, mask: u16, value: u16) -> Config {\n    Config { bits: (c.bits & !mask) | (value & mask) }\n}",
+   "lean": "def set_bits\n  (c : Config) (mask : Std.U16) (value : Std.U16) : Result Config := do\n  let i \u2190 lift (~~~ mask)\n  let i1 \u2190 lift (c.bits &&& i)\n  let i2 \u2190 lift (value &&& mask)\n  let i3 \u2190 lift (i1 ||| i2)\n  ok { bits := i3 }",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 176,
+     "code": "    fn set_bits(self, mask: u16, value: u16) -> Self {\n        Config {\n            bits: (self.bits & !mask) | (value & mask),\n        }\n    }"
+    }
+   ],
+   "upstream_note": "Config::set_bits as a free function"
   },
   "Env": {
    "kind": "structure",
@@ -748,8 +692,364 @@
    "kernel_line": 172,
    "kernel_code": "pub struct Env {\n    pub client_connected: bool,\n    pub info_ready: bool,\n}",
    "lean": "structure Env where\n  client_connected : Bool\n  info_ready : Bool",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "firmware/src/lib.rs",
+     "line": 34,
+     "code": "pub static CLIENT_CONNECTED: Watch<CriticalSectionRawMutex, bool, 2> = Watch::new();"
+    },
+    {
+     "file": "firmware/src/lib.rs",
+     "line": 98,
+     "code": "pub static DEVICE_INFO_WATCH: Watch<CriticalSectionRawMutex, DeviceInfo, 1> = Watch::new();"
+    }
+   ],
+   "upstream_note": "CLIENT_CONNECTED and whether DEVICE_INFO_WATCH holds a value, as booleans"
+  },
+  "DevState": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::DevState",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 160,
+   "kernel_code": "pub struct DevState {\n    pub spool: Spool,\n    pub reset_pending: bool,\n}",
+   "lean": "structure DevState where\n  spool : Spool\n  reset_pending : Bool",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/storage/mod.rs",
+     "line": 33,
+     "code": "pub struct Settings {\n    /// in %\n    pub led_brightness: u8,\n    pub algo: AlgoAdjustment,\n    pub spoolman_host: Option<heapless::String<32>>,\n    pub spoolman_port: Option<u16>,\n}"
+    },
+    {
+     "file": "firmware/src/tasks/states.rs",
+     "line": 47,
+     "code": "            crate::DataUpdate::Wifi(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                Timer::after_millis(300).await;\n                software_reset()\n            }"
+    }
+   ],
+   "upstream_note": "the Settings the decisions read (Spoolman fields) and the reset pending after a Wi-Fi save"
+  },
+  "Outcome": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::Outcome",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 199,
+   "kernel_code": "pub enum Outcome {\n    /// Answer from the current state; nothing stored.\n    Read,\n    /// Store the body under `key` (replacing the old value) and answer it.\n    Persist(Key),\n    /// Store, then reset the device (to use the new Wi-Fi credentials).\n    PersistThenReset(Key),\n    /// Hand the request to the task that serves it (Spoolman client,\n    /// calibration).\n    Forward,\n    /// Refuse with this status.\n    Refuse(u16),\n}",
+   "lean": "@[discriminant isize]\ninductive Outcome where\n| Read : Outcome\n| Persist : Key \u2192 Outcome\n| PersistThenReset : Key \u2192 Outcome\n| Forward : Outcome\n| Refuse : Std.U16 \u2192 Outcome",
+   "upstream": [
+    {
+     "file": "firmware/src/lib.rs",
+     "line": 83,
+     "code": "pub enum DataUpdate {\n    Settings(Settings),\n    RgbMulti(RGBMultipliers),\n    Wifi(WifiCreds),\n}"
+    },
+    {
+     "file": "firmware/src/tasks/states.rs",
+     "line": 38,
+     "code": "        match msg {\n            crate::DataUpdate::RgbMulti(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                RGB_MULTIPLIERS_WATCH.sender().send(d)\n            }\n            crate::DataUpdate::Settings(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                SETTINGS_DATA_WATCH.sender().send(d)\n            }\n            crate::DataUpdate::Wifi(d) => {\n                d.save(nvs_mutex).await.unwrap();\n                Timer::after_millis(300).await;\n                software_reset()\n            }\n        }"
+    }
+   ],
+   "upstream_note": "what a request leads to: DataUpdate publish and the save task's store / store-then-reset, a forward to a task, or a refusal status"
+  },
+  "NO_CLIENT": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::NO_CLIENT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 216,
+   "kernel_code": "pub const NO_CLIENT: u16 = 428;",
+   "lean": "@[global_simps, irreducible] def NO_CLIENT : Std.U16 := 428#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/config.rs",
+     "line": 69,
+     "code": "    if !client_connected {\n        return Err((\n            StatusCode::PRECONDITION_REQUIRED,\n            \"client needs to be listening and connected\",\n        ));\n    }"
+    }
+   ],
+   "upstream_note": "StatusCode::PRECONDITION_REQUIRED (428) when no client is listening"
+  },
+  "Config": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::Config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 46,
+   "kernel_code": "pub struct Config {\n    pub bits: u16,\n}",
+   "lean": "structure Config where\n  bits : Std.U16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 154,
+     "code": "pub struct Config {\n    pub(crate) bits: u16,\n}"
+    }
+   ],
+   "upstream_note": "struct Config { bits: u16 }"
+  },
+  "it_bits": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::it_bits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 98,
+   "kernel_code": "pub fn it_bits(it: IntegrationTime) -> u16 {\n    match it {\n        IntegrationTime::_25ms => IT_25MS,\n        IntegrationTime::_50ms => IT_50MS,\n        IntegrationTime::_100ms => IT_100MS,\n        IntegrationTime::_200ms => IT_200MS,\n        IntegrationTime::_400ms => IT_400MS,\n        IntegrationTime::_800ms => IT_800MS,\n    }\n}",
+   "lean": "def it_bits (it : IntegrationTime) : Result Std.U16 := do\n  match it with\n  | IntegrationTime._25ms => ok IT_25MS\n  | IntegrationTime._50ms => ok IT_50MS\n  | IntegrationTime._100ms => ok IT_100MS\n  | IntegrationTime._200ms => ok IT_200MS\n  | IntegrationTime._400ms => ok IT_400MS\n  | IntegrationTime._800ms => ok IT_800MS",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 237,
+     "code": "        let it_bits = match it {\n            IntegrationTime::_25ms => bits::IT_25MS,\n            IntegrationTime::_50ms => bits::IT_50MS,\n            IntegrationTime::_100ms => bits::IT_100MS,\n            IntegrationTime::_200ms => bits::IT_200MS,\n            IntegrationTime::_400ms => bits::IT_400MS,\n            IntegrationTime::_800ms => bits::IT_800MS,\n        };"
+    }
+   ],
+   "upstream_note": "the integration time -> bits match inside Veml3328::set_integration_time, factored out"
+  },
+  "gain_bits": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::gain_bits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 89,
+   "kernel_code": "pub fn gain_bits(g: Gain) -> u16 {\n    match g {\n        Gain::OneEighth => GAIN_ONE_EIGHTH,\n        Gain::OneQuarter => GAIN_ONE_QUARTER,\n        Gain::One => GAIN_ONE,\n        Gain::Two => GAIN_TWO,\n    }\n}",
+   "lean": "def gain_bits (g : Gain) : Result Std.U16 := do\n  match g with\n  | Gain.OneEighth => ok GAIN_ONE_EIGHTH\n  | Gain.OneQuarter => ok GAIN_ONE_QUARTER\n  | Gain.One => ok GAIN_ONE\n  | Gain.Two => ok GAIN_TWO",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 225,
+     "code": "        let gain_bits = match gain {\n            Gain::OneEighth => bits::GAIN_ONE_EIGHTH,\n            Gain::OneQuarter => bits::GAIN_ONE_QUARTER,\n            Gain::One => bits::GAIN_ONE,\n            Gain::Two => bits::GAIN_TWO,\n        };"
+    }
+   ],
+   "upstream_note": "the gain -> bits match inside Veml3328::set_gain, factored out"
+  },
+  "SHUTDOWN": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::SHUTDOWN",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 28,
+   "kernel_code": "pub const SHUTDOWN: u16 = 32769; //   SD0 | SD1",
+   "lean": "@[global_simps, irreducible] def SHUTDOWN : Std.U16 := 32769#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 209,
+     "code": "            .with_low(bits::SD0 | bits::SD1)"
+    }
+   ],
+   "upstream_note": "the SD0 | SD1 mask Veml3328::enable clears, named as a constant (32769)"
+  },
+  "Gain": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::Gain",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 51,
+   "kernel_code": "pub enum Gain {\n    OneEighth,\n    OneQuarter,\n    One,\n    Two,\n}",
+   "lean": "@[discriminant isize]\ninductive Gain where\n| OneEighth : Gain\n| OneQuarter : Gain\n| One : Gain\n| Two : Gain",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 67,
+     "code": "pub enum Gain {\n    /// 1/8\n    OneEighth,\n    /// 1/4\n    OneQuarter,\n    /// 1 (default)\n    One,\n    /// 2\n    Two,\n}"
+    }
+   ],
+   "upstream_note": "enum Gain, same variants"
+  },
+  "with_high": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::with_high",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 74,
+   "kernel_code": "pub fn with_high(c: Config, mask: u16) -> Config {\n    Config { bits: c.bits | mask }\n}",
+   "lean": "def with_high (c : Config) (mask : Std.U16) : Result Config := do\n  let i \u2190 lift (c.bits ||| mask)\n  ok { bits := i }",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 164,
+     "code": "    fn with_high(self, mask: u16) -> Self {\n        Config {\n            bits: self.bits | mask,\n        }\n    }"
+    }
+   ],
+   "upstream_note": "Config::with_high as a free function"
+  },
+  "spool_usable": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::spool_usable",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 220,
+   "kernel_code": "fn spool_usable(s: Spool) -> bool {\n    if s.host_set {\n        if s.port_set { s.host_ipv4 } else { false }\n    } else {\n        false\n    }\n}",
+   "lean": "def spool_usable (s : Spool) : Result Bool := do\n  if s.host_set\n  then if s.port_set\n       then ok s.host_ipv4\n       else ok false\n  else ok false",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/spoolman.rs",
+     "line": 72,
+     "code": "    let spoolman_set_up = match SETTINGS_DATA_WATCH.anon_receiver().try_get() {\n        Some(d) => d.spoolman_host.is_some() && d.spoolman_port.is_some(),\n        None => false,\n    };"
+    },
+    {
+     "file": "firmware/src/tasks/http/spoolman.rs",
+     "line": 96,
+     "code": "    let spoolman_set_up = match SETTINGS_DATA_WATCH.anon_receiver().try_get() {\n        Some(d) => d.spoolman_host.is_some() && d.spoolman_port.is_some(),\n        None => false,\n    };"
+    },
+    {
+     "file": "firmware/src/tasks/spoolman.rs",
+     "line": 48,
+     "code": "            .connect((Ipv4Address::from_str(host.as_str()).unwrap(), port))"
+    }
+   ],
+   "upstream_note": "host.is_some() && port.is_some(), plus the host being an Ipv4 address (upstream unwraps the parse)"
+  },
+  "IT_25MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_25MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 37,
+   "kernel_code": "pub const IT_25MS: u16 = 192; //      0b1100 << 4",
+   "lean": "@[global_simps, irreducible] def IT_25MS : Std.U16 := 192#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 145,
+     "code": "    pub const IT_25MS: u16 = 0b1100 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_25MS = 0b1100 << 4 (192, outside IT_MASK as upstream), pre-evaluated"
+  },
+  "IT_100MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_100MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 39,
+   "kernel_code": "pub const IT_100MS: u16 = 0; //       0b0000 << 4",
+   "lean": "@[global_simps, irreducible] def IT_100MS : Std.U16 := 0#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 147,
+     "code": "    pub const IT_100MS: u16 = 0b0000 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_100MS, pre-evaluated"
+  },
+  "NOT_READY": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::NOT_READY",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 218,
+   "kernel_code": "pub const NOT_READY: u16 = 503;",
+   "lean": "@[global_simps, irreducible] def NOT_READY : Std.U16 := 503#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/config.rs",
+     "line": 62,
+     "code": "    response::Json(info_recv.try_get().unwrap())"
+    }
+   ],
+   "upstream_note": "deviation: upstream unwraps (panics) when the device info is absent; the port answers 503"
+  },
+  "IT_200MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_200MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 40,
+   "kernel_code": "pub const IT_200MS: u16 = 16; //      0b0001 << 4",
+   "lean": "@[global_simps, irreducible] def IT_200MS : Std.U16 := 16#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 148,
+     "code": "    pub const IT_200MS: u16 = 0b0001 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_200MS, pre-evaluated"
+  },
+  "IT_50MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_50MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 38,
+   "kernel_code": "pub const IT_50MS: u16 = 128; //      0b1000 << 4",
+   "lean": "@[global_simps, irreducible] def IT_50MS : Std.U16 := 128#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 146,
+     "code": "    pub const IT_50MS: u16 = 0b1000 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_50MS = 0b1000 << 4 (128, outside IT_MASK as upstream), pre-evaluated"
+  },
+  "disable_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::disable_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 120,
+   "kernel_code": "pub fn disable_config(c: Config) -> Config {\n    with_high(c, SD0)\n}",
+   "lean": "def disable_config (c : Config) : Result Config := do\n  with_high c SD0",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 218,
+     "code": "    pub fn disable(&mut self) -> Result<(), Error<I2C::Error>> {\n        let config = self.config.with_high(bits::SD0);\n        self.set_config(config)\n    }"
+    }
+   ],
+   "upstream_note": "Veml3328::disable's config transform (without the register write)"
+  },
+  "IntegrationTime": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::IntegrationTime",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 59,
+   "kernel_code": "pub enum IntegrationTime {\n    _25ms,\n    _50ms,\n    _100ms,\n    _200ms,\n    _400ms,\n    _800ms,\n}",
+   "lean": "@[discriminant isize]\ninductive IntegrationTime where\n| _25ms : IntegrationTime\n| _50ms : IntegrationTime\n| _100ms : IntegrationTime\n| _200ms : IntegrationTime\n| _400ms : IntegrationTime\n| _800ms : IntegrationTime",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 31,
+     "code": "pub enum IntegrationTime {\n    /// 25 ms\n    _25ms,\n    /// 50 ms\n    _50ms,\n    /// 100 ms\n    _100ms,\n    /// 200 ms\n    _200ms,\n    /// 400 ms\n    _400ms,\n    /// 800 ms\n    _800ms,\n}"
+    }
+   ],
+   "upstream_note": "enum IntegrationTime, same variants"
+  },
+  "IT_MASK": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_MASK",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 36,
+   "kernel_code": "pub const IT_MASK: u16 = 112; //      0b111 << 4",
+   "lean": "@[global_simps, irreducible] def IT_MASK : Std.U16 := 112#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 144,
+     "code": "    pub const IT_MASK: u16 = 0b111 << 4;"
+    }
+   ],
+   "upstream_note": "bits::IT_MASK = 0b111 << 4, pre-evaluated"
+  },
+  "Spool": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::Spool",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 151,
+   "kernel_code": "pub struct Spool {\n    pub host_set: bool,\n    /// The host is an IPv4 address (the Spoolman client connects to an\n    /// address; upstream parses it with `unwrap`).\n    pub host_ipv4: bool,\n    pub port_set: bool,\n}",
+   "lean": "structure Spool where\n  host_set : Bool\n  host_ipv4 : Bool\n  port_set : Bool",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/storage/mod.rs",
+     "line": 37,
+     "code": "    pub spoolman_host: Option<heapless::String<32>>,\n    pub spoolman_port: Option<u16>,"
+    },
+    {
+     "file": "firmware/src/tasks/spoolman.rs",
+     "line": 48,
+     "code": "            .connect((Ipv4Address::from_str(host.as_str()).unwrap(), port))"
+    }
+   ],
+   "upstream_note": "Settings.spoolman_host/spoolman_port presence, plus whether the host parses as Ipv4Address (upstream unwraps)"
+  },
+  "GAIN_TWO": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_TWO",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub const GAIN_TWO: u16 = 2048; //    0b01 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_TWO : Std.U16 := 2048#u16",
+   "upstream": [
+    {
+     "file": "firmware/src/helpers/veml3328.rs",
+     "line": 142,
+     "code": "    pub const GAIN_TWO: u16 = 0b01 << 11;"
+    }
+   ],
+   "upstream_note": "bits::GAIN_TWO, pre-evaluated"
   }
  },
  "specs": {}

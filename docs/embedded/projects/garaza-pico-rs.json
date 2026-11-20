@@ -4,7 +4,7 @@
  "pin": "4f18df8",
  "upstream_head": "4f18df8",
  "pin_ok": true,
- "mapped": false,
+ "mapped": true,
  "theorems": [
   {
    "name": "request_starts_pulse",
@@ -14,14 +14,14 @@
    "proof": "theorem request_starts_pulse (p : Bool) (now : Std.U64) (hn : now.val < 2 ^ 63) :\n    \u2203 u, step { phase := .Idle, pending := p } .Request now\n        = ok ({ phase := .Pulse u, pending := false }, { relay := some true, timer_at := some u }) \u2227\n      u.val = now.val + 500 := by\n  have hv := sat64_val now PULSE_MS\n  rw [pulse_val] at hv\n  refine \u27e8core.num.U64.saturating_add now PULSE_MS, by simp [step, start, lift], ?_\u27e9\n  rw [hv]; omega",
    "deps": [
     "step",
-    "PAUSE_MS",
-    "Act",
-    "Event",
-    "start",
-    "Vrata",
     "NONE",
-    "PULSE_MS",
-    "Phase"
+    "Act",
+    "Vrata",
+    "Event",
+    "PAUSE_MS",
+    "start",
+    "Phase",
+    "PULSE_MS"
    ],
    "spec": []
   },
@@ -33,14 +33,14 @@
    "proof": "theorem pulse_ends_low (u now : Std.U64) (p : Bool) (h : u.val \u2264 now.val) (hn : now.val < 2 ^ 63) :\n    \u2203 n, step { phase := .Pulse u, pending := p } .Timer now\n        = ok ({ phase := .Pause n, pending := p }, { relay := some false, timer_at := some n }) \u2227\n      n.val = now.val + 2000 := by\n  have hv := sat64_val now PAUSE_MS\n  rw [pause_val] at hv\n  have : \u00ac now < u := by scalar_tac\n  refine \u27e8core.num.U64.saturating_add now PAUSE_MS, by simp [step, lift, this], ?_\u27e9\n  rw [hv]; omega",
    "deps": [
     "step",
-    "PAUSE_MS",
-    "Act",
-    "Event",
-    "start",
-    "Vrata",
     "NONE",
-    "PULSE_MS",
-    "Phase"
+    "Act",
+    "Vrata",
+    "Event",
+    "PAUSE_MS",
+    "start",
+    "Phase",
+    "PULSE_MS"
    ],
    "spec": []
   },
@@ -51,15 +51,15 @@
    "statement": "theorem pulse_lasts_its_time (u now : Std.U64) (p : Bool) (h : now.val < u.val) :\n    step { phase := .Pulse u, pending := p } .Timer now = ok ({ phase := .Pulse u, pending := p }, NONE)",
    "proof": "theorem pulse_lasts_its_time (u now : Std.U64) (p : Bool) (h : now.val < u.val) :\n    step { phase := .Pulse u, pending := p } .Timer now = ok ({ phase := .Pulse u, pending := p }, NONE) := by\n  have : now < u := by scalar_tac\n  simp [step, this]",
    "deps": [
-    "step",
     "NONE",
-    "PAUSE_MS",
+    "step",
     "Act",
-    "Event",
-    "start",
     "Vrata",
-    "PULSE_MS",
-    "Phase"
+    "Event",
+    "PAUSE_MS",
+    "start",
+    "Phase",
+    "PULSE_MS"
    ],
    "spec": []
   },
@@ -70,15 +70,15 @@
    "statement": "theorem busy_request_coalesced (u now : Std.U64) (p : Bool) :\n    step { phase := .Pulse u, pending := p } .Request now = ok ({ phase := .Pulse u, pending := true }, NONE) \u2227\n    step { phase := .Pause u, pending := p } .Request now = ok ({ phase := .Pause u, pending := true }, NONE)",
    "proof": "theorem busy_request_coalesced (u now : Std.U64) (p : Bool) :\n    step { phase := .Pulse u, pending := p } .Request now = ok ({ phase := .Pulse u, pending := true }, NONE) \u2227\n    step { phase := .Pause u, pending := p } .Request now = ok ({ phase := .Pause u, pending := true }, NONE) := by\n  constructor <;> simp [step]",
    "deps": [
-    "step",
     "NONE",
-    "PAUSE_MS",
+    "step",
     "Act",
-    "Event",
-    "start",
     "Vrata",
-    "PULSE_MS",
-    "Phase"
+    "Event",
+    "PAUSE_MS",
+    "start",
+    "Phase",
+    "PULSE_MS"
    ],
    "spec": []
   },
@@ -90,14 +90,14 @@
    "proof": "theorem next_pulse_after_pause (u now : Std.U64) (p : Bool) :\n    step { phase := .Pause u, pending := p } .Timer now \u2983 r =>\n      r.2.relay = some true \u2192 u.val \u2264 now.val \u2227 p = true \u2984 := by\n  by_cases h : now.val < u.val\n  \u00b7 have : now < u := by scalar_tac\n    simp [step, this, NONE]\n  \u00b7 have : \u00ac now < u := by scalar_tac\n    cases p <;> simp [step, start, lift, this, NONE] <;> omega",
    "deps": [
     "step",
-    "PAUSE_MS",
-    "Act",
-    "Event",
-    "start",
-    "Vrata",
     "NONE",
-    "PULSE_MS",
-    "Phase"
+    "Act",
+    "Vrata",
+    "Event",
+    "PAUSE_MS",
+    "start",
+    "Phase",
+    "PULSE_MS"
    ],
    "spec": []
   },
@@ -108,59 +108,35 @@
    "statement": "theorem high_only_starting (v : Vrata) (ev : Event) (now : Std.U64) :\n    step v ev now \u2983 r => r.2.relay = some true \u2192\n      (v.phase = .Idle \u2227 ev = .Request) \u2228 (\u2203 u, v.phase = .Pause u \u2227 ev = .Timer \u2227 u.val \u2264 now.val \u2227 v.pending = true) \u2984",
    "proof": "theorem high_only_starting (v : Vrata) (ev : Event) (now : Std.U64) :\n    step v ev now \u2983 r => r.2.relay = some true \u2192\n      (v.phase = .Idle \u2227 ev = .Request) \u2228 (\u2203 u, v.phase = .Pause u \u2227 ev = .Timer \u2227 u.val \u2264 now.val \u2227 v.pending = true) \u2984 := by\n  rcases v with \u27e8ph, pe\u27e9\n  rcases ph with _ | u | u <;> cases ev\n  \u00b7 simp [step, start, lift]\n  \u00b7 simp [step, NONE]\n  \u00b7 simp [step, NONE]\n  \u00b7 by_cases h : now.val < u.val\n    \u00b7 have : now < u := by scalar_tac\n      simp [step, this, NONE]\n    \u00b7 have : \u00ac now < u := by scalar_tac\n      simp [step, lift, this]\n  \u00b7 simp [step, NONE]\n  \u00b7 by_cases h : now.val < u.val\n    \u00b7 have : now < u := by scalar_tac\n      simp [step, this, NONE]\n    \u00b7 have : \u00ac now < u := by scalar_tac\n      cases pe <;> simp [step, start, lift, this, NONE] <;> omega",
    "deps": [
-    "Event",
     "Vrata",
     "step",
+    "Event",
     "Phase",
-    "PAUSE_MS",
-    "Act",
-    "start",
     "NONE",
+    "Act",
+    "PAUSE_MS",
+    "start",
     "PULSE_MS"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "Phase": {
-   "kind": "inductive",
-   "rust_path": "garaza_pico_rs_kernel::Phase",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 20,
-   "kernel_code": "pub enum Phase {\n    /// Waiting for a request (relay low).\n    Idle,\n    /// The relay is high until `until`.\n    Pulse { until: u64 },\n    /// The relay is low; the next pulse can start at `until`.\n    Pause { until: u64 },\n}",
-   "lean": "@[discriminant isize]\ninductive Phase where\n| Idle : Phase\n| Pulse : Std.U64 \u2192 Phase\n| Pause : Std.U64 \u2192 Phase",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "PAUSE_MS": {
+  "PULSE_MS": {
    "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::PAUSE_MS",
+   "rust_path": "garaza_pico_rs_kernel::PULSE_MS",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 17,
-   "kernel_code": "pub const PAUSE_MS: u64 = 2000;",
-   "lean": "@[global_simps, irreducible] def PAUSE_MS : Std.U64 := 2000#u64",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Act": {
-   "kind": "structure",
-   "rust_path": "garaza_pico_rs_kernel::Act",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub struct Act {\n    pub relay: Option<bool>,\n    pub timer_at: Option<u64>,\n}",
-   "lean": "structure Act where\n  relay : Option Bool\n  timer_at : Option Std.U64",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "Vrata": {
-   "kind": "structure",
-   "rust_path": "garaza_pico_rs_kernel::Vrata",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 30,
-   "kernel_code": "pub struct Vrata {\n    pub phase: Phase,\n    /// A request waits (the `Signal` is set).\n    pub pending: bool,\n}",
-   "lean": "structure Vrata where\n  phase : Phase\n  pending : Bool",
-   "upstream": [],
-   "upstream_note": ""
+   "kernel_line": 16,
+   "kernel_code": "pub const PULSE_MS: u64 = 500;",
+   "lean": "@[global_simps, irreducible] def PULSE_MS : Std.U64 := 500#u64",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 91,
+     "code": "        Timer::after_millis(500).await;"
+    }
+   ],
+   "upstream_note": "Timer::after_millis(500): the relay held high"
   },
   "Event": {
    "kind": "inductive",
@@ -169,28 +145,19 @@
    "kernel_line": 39,
    "kernel_code": "pub enum Event {\n    /// `POST /vrata/api/butn`.\n    Request,\n    /// The timer armed by the last step fired.\n    Timer,\n}",
    "lean": "@[discriminant isize]\ninductive Event where\n| Request : Event\n| Timer : Event",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "step": {
-   "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::step",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 62,
-   "kernel_code": "pub fn step(v: &Vrata, ev: Event, now: u64) -> (Vrata, Act) {\n    match (v.phase, ev) {\n        (Phase::Idle, Event::Request) => start(now),\n        (Phase::Idle, Event::Timer) => (*v, NONE),\n        (Phase::Pulse { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pulse { until }, pending: true }, NONE)\n        }\n        (Phase::Pulse { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else {\n                let next = now.saturating_add(PAUSE_MS);\n                (\n                    Vrata { phase: Phase::Pause { until: next }, pending: v.pending },\n                    Act { relay: Some(false), timer_at: Some(next) },\n                )\n            }\n        }\n        (Phase::Pause { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pause { until }, pending: true }, NONE)\n        }\n        (Phase::Pause { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else if v.pending {\n                start(now)\n            } else {\n                (Vrata { phase: Phase::Idle, pending: false }, NONE)\n            }\n        }\n    }\n}",
-   "lean": "def step (v : Vrata) (ev : Event) (now : Std.U64) : Result (Vrata \u00d7 Act) := do\n  match v.phase with\n  | Phase.Idle =>\n    match ev with\n    | Event.Request => start now\n    | Event.Timer => ok (v, NONE)\n  | Phase.Pulse \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        let next \u2190 lift (core.num.U64.saturating_add now PAUSE_MS)\n        ok ({ v with phase := (Phase.Pause next) },\n          { relay := (some false), timer_at := (some next) })\n  | Phase.Pause \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        if v.pending\n        then start now\n        else ok ({ phase := Phase.Idle, pending := false }, NONE)",
-   "upstream": [],
-   "upstream_note": ""
-  },
-  "PULSE_MS": {
-   "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::PULSE_MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 16,
-   "kernel_code": "pub const PULSE_MS: u64 = 500;",
-   "lean": "@[global_simps, irreducible] def PULSE_MS : Std.U64 := 500#u64",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 81,
+     "code": "async fn butn() -> &'static str {\n    SIGNAL.signal(());\n    \"{\\\"status\\\": \\\"ok\\\"}\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 91,
+     "code": "        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;"
+    }
+   ],
+   "upstream_note": "a request (butn's SIGNAL.signal) or a timer firing"
   },
   "NONE": {
    "kind": "def",
@@ -200,7 +167,23 @@
    "kernel_code": "const NONE: Act = Act { relay: None, timer_at: None };",
    "lean": "@[global_simps, irreducible]\ndef NONE : Act := { relay := none, timer_at := none }",
    "upstream": [],
-   "upstream_note": ""
+   "upstream_note": "port-only: the step that changes nothing"
+  },
+  "Phase": {
+   "kind": "inductive",
+   "rust_path": "garaza_pico_rs_kernel::Phase",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 20,
+   "kernel_code": "pub enum Phase {\n    /// Waiting for a request (relay low).\n    Idle,\n    /// The relay is high until `until`.\n    Pulse { until: u64 },\n    /// The relay is low; the next pulse can start at `until`.\n    Pause { until: u64 },\n}",
+   "lean": "@[discriminant isize]\ninductive Phase where\n| Idle : Phase\n| Pulse : Std.U64 \u2192 Phase\n| Pause : Std.U64 \u2192 Phase",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 88,
+     "code": "    loop {\n        let _ = SIGNAL.wait().await;\n        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;\n    }"
+    }
+   ],
+   "upstream_note": "where vrata_task's loop is: waiting on the signal, in the pulse, in the pause"
   },
   "start": {
    "kind": "def",
@@ -209,8 +192,88 @@
    "kernel_line": 56,
    "kernel_code": "fn start(now: u64) -> (Vrata, Act) {\n    let until = now.saturating_add(PULSE_MS);\n    (Vrata { phase: Phase::Pulse { until }, pending: false }, Act { relay: Some(true), timer_at: Some(until) })\n}",
    "lean": "def start (now : Std.U64) : Result (Vrata \u00d7 Act) := do\n  let \u00abuntil\u00bb \u2190 lift (core.num.U64.saturating_add now PULSE_MS)\n  ok ({ phase := (Phase.Pulse \u00abuntil\u00bb), pending := false },\n    { relay := (some true), timer_at := (some \u00abuntil\u00bb) })",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 89,
+     "code": "        let _ = SIGNAL.wait().await;\n        pin.set_high();\n        Timer::after_millis(500).await;"
+    }
+   ],
+   "upstream_note": "a pulse starts: set_high, 500 ms"
+  },
+  "Act": {
+   "kind": "structure",
+   "rust_path": "garaza_pico_rs_kernel::Act",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub struct Act {\n    pub relay: Option<bool>,\n    pub timer_at: Option<u64>,\n}",
+   "lean": "structure Act where\n  relay : Option Bool\n  timer_at : Option Std.U64",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 90,
+     "code": "        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;"
+    }
+   ],
+   "upstream_note": "the relay level set and the next timer armed"
+  },
+  "PAUSE_MS": {
+   "kind": "def",
+   "rust_path": "garaza_pico_rs_kernel::PAUSE_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 17,
+   "kernel_code": "pub const PAUSE_MS: u64 = 2000;",
+   "lean": "@[global_simps, irreducible] def PAUSE_MS : Std.U64 := 2000#u64",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 93,
+     "code": "        Timer::after_secs(2).await;"
+    }
+   ],
+   "upstream_note": "Timer::after_secs(2): the pause after a pulse"
+  },
+  "step": {
+   "kind": "def",
+   "rust_path": "garaza_pico_rs_kernel::step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 62,
+   "kernel_code": "pub fn step(v: &Vrata, ev: Event, now: u64) -> (Vrata, Act) {\n    match (v.phase, ev) {\n        (Phase::Idle, Event::Request) => start(now),\n        (Phase::Idle, Event::Timer) => (*v, NONE),\n        (Phase::Pulse { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pulse { until }, pending: true }, NONE)\n        }\n        (Phase::Pulse { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else {\n                let next = now.saturating_add(PAUSE_MS);\n                (\n                    Vrata { phase: Phase::Pause { until: next }, pending: v.pending },\n                    Act { relay: Some(false), timer_at: Some(next) },\n                )\n            }\n        }\n        (Phase::Pause { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pause { until }, pending: true }, NONE)\n        }\n        (Phase::Pause { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else if v.pending {\n                start(now)\n            } else {\n                (Vrata { phase: Phase::Idle, pending: false }, NONE)\n            }\n        }\n    }\n}",
+   "lean": "def step (v : Vrata) (ev : Event) (now : Std.U64) : Result (Vrata \u00d7 Act) := do\n  match v.phase with\n  | Phase.Idle =>\n    match ev with\n    | Event.Request => start now\n    | Event.Timer => ok (v, NONE)\n  | Phase.Pulse \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        let next \u2190 lift (core.num.U64.saturating_add now PAUSE_MS)\n        ok ({ v with phase := (Phase.Pause next) },\n          { relay := (some false), timer_at := (some next) })\n  | Phase.Pause \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        if v.pending\n        then start now\n        else ok ({ phase := Phase.Idle, pending := false }, NONE)",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 81,
+     "code": "async fn butn() -> &'static str {\n    SIGNAL.signal(());\n    \"{\\\"status\\\": \\\"ok\\\"}\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 87,
+     "code": "async fn vrata_task(mut pin : Output<'static>) -> ! {\n    loop {\n        let _ = SIGNAL.wait().await;\n        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;\n    }\n}"
+    }
+   ],
+   "upstream_note": "vrata_task's loop and butn's signal as one event-driven state machine"
+  },
+  "Vrata": {
+   "kind": "structure",
+   "rust_path": "garaza_pico_rs_kernel::Vrata",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub struct Vrata {\n    pub phase: Phase,\n    /// A request waits (the `Signal` is set).\n    pub pending: bool,\n}",
+   "lean": "structure Vrata where\n  phase : Phase\n  pending : Bool",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 77,
+     "code": "static SIGNAL : Signal<CriticalSectionRawMutex, ()> = Signal::new();"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 88,
+     "code": "    loop {\n        let _ = SIGNAL.wait().await;\n        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;\n    }"
+    }
+   ],
+   "upstream_note": "the loop's phase and the Signal's pending flag"
   }
  },
  "specs": {}

@@ -4,7 +4,7 @@
  "pin": "29a9c9d",
  "upstream_head": "29a9c9d",
  "pin_ok": true,
- "mapped": false,
+ "mapped": true,
  "theorems": [
   {
    "name": "no_such_motor",
@@ -73,16 +73,6 @@
   }
  ],
  "decls": {
-  "command": {
-   "kind": "def",
-   "rust_path": "esp32_http_stepper_kernel::command",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 30,
-   "kernel_code": "pub fn command(index: u32, speed: u32, accel: u32) -> Decision {\n    if index >= MOTORS {\n        Decision::NoMotor\n    } else if speed == 0 || accel == 0 {\n        Decision::BadMove\n    } else {\n        Decision::Queue { motor: index }\n    }\n}",
-   "lean": "def command\n  (index : Std.U32) (speed : Std.U32) (accel : Std.U32) : Result Decision := do\n  if index >= MOTORS\n  then ok Decision.NoMotor\n  else\n    if speed = 0#u32\n    then ok Decision.BadMove\n    else\n      if accel = 0#u32\n      then ok Decision.BadMove\n      else ok (Decision.Queue index)",
-   "upstream": [],
-   "upstream_note": ""
-  },
   "Decision": {
    "kind": "inductive",
    "rust_path": "esp32_http_stepper_kernel::Decision",
@@ -90,8 +80,19 @@
    "kernel_line": 21,
    "kernel_code": "pub enum Decision {\n    /// Queue the move for this motor.\n    Queue { motor: u32 },\n    /// No such motor (404).\n    NoMotor,\n    /// A speed or acceleration of 0 (400).\n    BadMove,\n}",
    "lean": "@[discriminant isize]\ninductive Decision where\n| Queue : Std.U32 \u2192 Decision\n| NoMotor : Decision\n| BadMove : Decision",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 169,
+     "code": "async fn post_command(motor_index: usize, Form(payload): Form<MoveCommand>, State(app_state): State<Rc<RefCell<AppState>>>)-> impl IntoResponse {\n    app_state.borrow().senders[motor_index].send(payload).await;\n    \"command sent!\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 197,
+     "code": "    loop {\n        let command = receiver.receive().await;\n        driver.set_max_speed(command.speed as f32);\n        driver.set_acceleration(command.accel as f32);            \n        driver.move_by(command.distance as i64);"
+    }
+   ],
+   "upstream_note": "what post_command's send leads to: queued for the motor, or upstream's panics (index) and accel-stepper's (speed 0, accel 0) refused"
   },
   "MOTORS": {
    "kind": "def",
@@ -100,8 +101,40 @@
    "kernel_line": 18,
    "kernel_code": "pub const MOTORS: u32 = 2;",
    "lean": "@[global_simps, irreducible] def MOTORS : Std.U32 := 2#u32",
-   "upstream": [],
-   "upstream_note": ""
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 80,
+     "code": "struct AppState {\n    senders: [Sender<'static, NoopRawMutex, MoveCommand, QUEUE_SIZE>; 2]\n}"
+    }
+   ],
+   "upstream_note": "the two senders of AppState: the motors a command can name"
+  },
+  "command": {
+   "kind": "def",
+   "rust_path": "esp32_http_stepper_kernel::command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub fn command(index: u32, speed: u32, accel: u32) -> Decision {\n    if index >= MOTORS {\n        Decision::NoMotor\n    } else if speed == 0 || accel == 0 {\n        Decision::BadMove\n    } else {\n        Decision::Queue { motor: index }\n    }\n}",
+   "lean": "def command\n  (index : Std.U32) (speed : Std.U32) (accel : Std.U32) : Result Decision := do\n  if index >= MOTORS\n  then ok Decision.NoMotor\n  else\n    if speed = 0#u32\n    then ok Decision.BadMove\n    else\n      if accel = 0#u32\n      then ok Decision.BadMove\n      else ok (Decision.Queue index)",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 169,
+     "code": "async fn post_command(motor_index: usize, Form(payload): Form<MoveCommand>, State(app_state): State<Rc<RefCell<AppState>>>)-> impl IntoResponse {\n    app_state.borrow().senders[motor_index].send(payload).await;\n    \"command sent!\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 252,
+     "code": "        let app = Router::new()\n            .route((\"/cmd\", parse_path_segment::<usize>()), get(post_command))\n        ;"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 197,
+     "code": "    loop {\n        let command = receiver.receive().await;\n        driver.set_max_speed(command.speed as f32);\n        driver.set_acceleration(command.accel as f32);            \n        driver.move_by(command.distance as i64);"
+    }
+   ],
+   "upstream_note": "post_command's senders[motor_index] (index from the /cmd route) and the motor task's set_max_speed/set_acceleration, as one decision before the queue"
   }
  },
  "specs": {}
