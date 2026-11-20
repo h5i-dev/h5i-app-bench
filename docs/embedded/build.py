@@ -194,6 +194,8 @@ def main():
     sources = json.loads((HERE / "sources.json").read_text())
     data = json.loads((HERE / "data.json").read_text())
     by_name = {p["name"]: p for p in data["projects"]}
+    # Property type per "<slug>/<theorem>", assigned by hand (types.json); unlisted ones default to state integrity.
+    types = json.loads((HERE / "types.json").read_text())
     (HERE / "projects").mkdir(exist_ok=True)
     for e in sources:
         if args.only and e["slug"] != args.only:
@@ -207,7 +209,8 @@ def main():
         s = by_name[e["name"]]
         s["slug"] = e["slug"]
         s["theorems"] = len([t for t in p["theorems"] if not t.get("missing")])
-        s["theorem_list"] = [{"name": t["name"], "doc": t.get("doc", "")} for t in p["theorems"] if not t.get("missing")]
+        s["theorem_list"] = [{"name": t["name"], "doc": t.get("doc", ""), "type": types.get(f"{e['slug']}/{t['name']}", "state integrity")}
+                             for t in p["theorems"] if not t.get("missing")]
         missing = [t["name"] for t in p["theorems"] if t.get("missing")]
         print(f"{e['slug']:24} {s['theorems']:3} theorems, {len(p['decls']):3} decls, "
               f"map={'yes' if p['mapped'] else 'no '} pin={'ok' if p['pin_ok'] else 'MISMATCH ' + p['upstream_head']}"
