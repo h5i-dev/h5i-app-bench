@@ -1,0 +1,509 @@
+{
+ "updated": "2026-11-20",
+ "projects": [
+  {
+   "name": "M5AirQ-Rust",
+   "url": "https://github.com/andrico21/M5AirQ-Rust",
+   "pin": "f7e35cb",
+   "chip": "ESP32-S3",
+   "isa": "Xtensa LX7",
+   "interface": "HTTP (picoserve): OTA + auth",
+   "theorems": 56,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 870,
+    "explained": 130,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Requests without a valid session, bearer token or API key are never granted; expired sessions and empty secrets never grant",
+    "State-changing routes require admin rights; token-over-HTTP is refused when disabled",
+    "OTA writes target the inactive slot, stay in bounds and are sequential",
+    "A failed flash write poisons the session; an update completes only if read-back, magic, CRC and activation all succeed"
+   ]
+  },
+  {
+   "name": "SpoolEase",
+   "url": "https://github.com/bberrevoets/SpoolEase",
+   "pin": "3532f8d",
+   "chip": "ESP32-S3",
+   "isa": "Xtensa LX7",
+   "interface": "HTTP: spool inventory",
+   "theorems": 93,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 474,
+    "explained": 526,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Unauthenticated requests are refused",
+    "Every committed inventory row can be read back after a reboot",
+    "New spool ids are fresh; edits that change nothing write nothing; deleting an absent spool is a no-op",
+    "Rows stay within the store's size limits when they grow or are relocated"
+   ]
+  },
+  {
+   "name": "td-free",
+   "url": "https://github.com/mawoka-myblock/td-free",
+   "pin": "5e67e73",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "HTTP: filament sensor + Spoolman",
+   "theorems": 41,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 465,
+    "explained": 535,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Spoolman requests are forwarded only to a usable server; calibration needs a client; device info needs a ready sensor",
+    "Read-only requests change no stored state; Wi-Fi updates reset the connection",
+    "Boot never locks the user out of Wi-Fi setup",
+    "Sensor register updates change only the intended bits"
+   ]
+  },
+  {
+   "name": "pico-bit",
+   "url": "https://github.com/anapeksha/pico-bit",
+   "pin": "b6349e2",
+   "chip": "RP2350",
+   "isa": "Cortex-M33",
+   "interface": "HTTP + USB NCM: file storage",
+   "theorems": 93,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 674,
+    "explained": 326,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "File names cannot traverse paths and decode to confined, ASCII names",
+    "Percent-decoding and request classification are total (never fail)",
+    "Mutations need POST or DELETE; deletes never touch the payload",
+    "Uploads are bounded; the network route exposes only the staged binary"
+   ]
+  },
+  {
+   "name": "anova-oven-rs",
+   "url": "https://github.com/robdimsdale/anova-oven-rs",
+   "pin": "43ac1a7",
+   "chip": "RP2040",
+   "isa": "Cortex-M0+",
+   "interface": "decision loop + /health, /metrics",
+   "theorems": 73,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 214,
+    "explained": 786,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Retry backoff is bounded and monotone; a successful poll recovers",
+    "User requests pre-empt polling; queue operations keep other entries",
+    "Reset classification never masks a panic; cold boot dominates",
+    "The invariant holds in every reachable state"
+   ]
+  },
+  {
+   "name": "esp-hal-wifimanager",
+   "url": "https://github.com/filipton/esp-hal-wifimanager",
+   "pin": "ab5fbd8",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "HTTP captive portal: Wi-Fi provisioning + OTA",
+   "theorems": 29,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 784,
+    "explained": 216,
+    "unexplained": 0
+   },
+   "normal": {
+    "scenarios": 300,
+    "identical": 300,
+    "cosmetic": 0,
+    "other": 0
+   },
+   "properties": [
+    "Only credentials that connected are stored; invalid or superseded setups are never stored",
+    "Oversized setups are ignored; setups after connecting are refused",
+    "OTA needs its parameters; reset only after a verified image",
+    "Read-only requests change nothing"
+   ]
+  },
+  {
+   "name": "heater-control",
+   "url": "https://github.com/abreis/heater-control",
+   "pin": "ba651d8",
+   "chip": "ESP32-C6",
+   "isa": "RV32IMAC",
+   "interface": "MQTT control path",
+   "theorems": 31,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "explained": 0,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Duty sent to the heater is at most 100%; out-of-range duty is refused",
+    "Anonymous, mismatched or expired remotes are refused and send nothing",
+    "Over-temperature locks the heater until it cools; a missing reading locks it",
+    "SSR pulse patterns stay within 0\u2013100%"
+   ]
+  },
+  {
+   "name": "rc-car",
+   "url": "https://github.com/flyaruu/rc-car",
+   "pin": "575837e",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "ESP-NOW commands",
+   "theorems": 26,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 398,
+    "explained": 602,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Motor and steering percentages stay in range for every command",
+    "Servo duty stays within the pulse range; the arithmetic cannot overflow",
+    "Brake light only on deceleration and off after its timeout",
+    "Blinker commands take effect; blinker off turns the lamps off"
+   ]
+  },
+  {
+   "name": "crown-of-the-lamb",
+   "url": "https://github.com/wielorzeczownik/crown-of-the-lamb",
+   "pin": "2ce6937",
+   "chip": "ESP32",
+   "isa": "Xtensa LX6",
+   "interface": "HTTP captive portal: config + OTA",
+   "theorems": 28,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 158,
+    "explained": 842,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Only valid AP names are stored; settings are clamped into range",
+    "A pending save completes before a restart",
+    "OTA is POST-only, one at a time, bounded, checks the first sector's magic",
+    "The device restarts only into a committed image"
+   ]
+  },
+  {
+   "name": "AM03127-Controller",
+   "url": "https://github.com/giomf/AM03127-Controller",
+   "pin": "5e07e35",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "REST \u2192 LED panel (RS232)",
+   "theorems": 22,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 300,
+    "explained": 700,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Page and schedule ids are valid; encoded messages contain no raw protocol brackets",
+    "Message encoding is total; dates and times are two digits",
+    "OTA proceeds only with a length and completes exactly when all bytes arrived"
+   ]
+  },
+  {
+   "name": "autodoggo",
+   "url": "https://github.com/a3ng7n/autodoggo",
+   "pin": "c59c0b9",
+   "chip": "ESP32",
+   "isa": "Xtensa LX6",
+   "interface": "GPIO/ADC control path (door)",
+   "theorems": 46,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 101,
+    "explained": 899,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Overcurrent reverses a closing door and stops an opening one; the timeout stops the motor",
+    "A stale overcurrent flag is ignored; no motion is commanded without the driver",
+    "A stop is kept while the pulley ramps down",
+    "Only one H-bridge channel is driven at a time; duty never exceeds the maximum"
+   ]
+  },
+  {
+   "name": "blind_controller.rs",
+   "url": "https://github.com/cs2dsb/blind_controller.rs",
+   "pin": "04beb1b",
+   "chip": "ESP32",
+   "isa": "Xtensa LX6",
+   "interface": "HTTP: blind motor",
+   "theorems": 17,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 39,
+    "explained": 961,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "A move never exceeds the full travel; lowering stops at the bottom",
+    "The position estimate follows the moves; idle at the limits",
+    "Microstep counts saturate instead of overflowing"
+   ]
+  },
+  {
+   "name": "garaza-pico-rs",
+   "url": "https://github.com/bozzzzo/garaza-pico-rs",
+   "pin": "4f18df8",
+   "chip": "RP2040",
+   "isa": "Cortex-M0+",
+   "interface": "HTTP: garage-door relay",
+   "theorems": 13,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 413,
+    "explained": 587,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "A request starts one pulse of the configured length, which always ends low",
+    "Requests during a pulse are coalesced; the next pulse waits for the pause",
+    "The relay is high only while a pulse is running"
+   ]
+  },
+  {
+   "name": "omni-wheel-bot",
+   "url": "https://github.com/Token-Thinker/omni-wheel-bot",
+   "pin": "942db26",
+   "chip": "ESP32-S3",
+   "isa": "Xtensa LX7",
+   "interface": "WebSocket/HTTP robot commands",
+   "theorems": 6,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 1000,
+    "explained": 0,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "The watchdog stops the motors when commands are overdue and is quiet when disarmed",
+    "An active command arms it; a held lease is not taken",
+    "The closed control surface needs the secret"
+   ]
+  },
+  {
+   "name": "energy-monitor-ha",
+   "url": "https://github.com/martin2250/energy-monitor-ha",
+   "pin": "cb1b356",
+   "chip": "ESP32",
+   "isa": "Xtensa LX6",
+   "interface": "HTTP config + MQTT",
+   "theorems": 9,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 550,
+    "explained": 450,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "The stored password is never served",
+    "Sample-count and period computations never divide by zero",
+    "MQTT publishing needs its ids"
+   ]
+  },
+  {
+   "name": "aquarium-lid-pcb",
+   "url": "https://github.com/mawoka-myblock/aquarium-lid-pcb",
+   "pin": "41772a4",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "HTTP/MQTT/BLE config",
+   "theorems": 11,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 66,
+    "explained": 934,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Only consistent alarm and fan configurations are admitted",
+    "The alarm fires above the high and below the low threshold, is reachable, and clears with hysteresis",
+    "The fan turns on above, off below, and holds in between"
+   ]
+  },
+  {
+   "name": "thermal-printer",
+   "url": "https://github.com/Weshnaw/thermal-printer",
+   "pin": "4a3875b",
+   "chip": "ESP32",
+   "isa": "Xtensa LX6",
+   "interface": "HTTP print jobs",
+   "theorems": 19,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 7,
+    "explained": 993,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Text is only cut at UTF-8 character boundaries and every cut makes progress",
+    "Printable output excludes control bytes"
+   ]
+  },
+  {
+   "name": "esp-sign",
+   "url": "https://github.com/iMobs/esp-sign",
+   "pin": "5ec4640",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "HTTP display commands",
+   "theorems": 8,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 27,
+    "explained": 973,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Colour parsing is total and accepts exactly the #rrggbb shape"
+   ]
+  },
+  {
+   "name": "esp32-http-stepper",
+   "url": "https://github.com/flyaruu/esp32-http-stepper",
+   "pin": "29a9c9d",
+   "chip": "ESP32-C3",
+   "isa": "RV32IMC",
+   "interface": "HTTP motor commands",
+   "theorems": 7,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 257,
+    "explained": 743,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Commands for a motor that does not exist are refused",
+    "Zero speed and zero acceleration are refused",
+    "Exactly the valid commands are queued"
+   ]
+  },
+  {
+   "name": "chlorophyll",
+   "url": "https://github.com/PGIII/chlorophyll",
+   "pin": "2b30e20",
+   "chip": "RP2350",
+   "isa": "Cortex-M33",
+   "interface": "UDP commands",
+   "theorems": 13,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 172,
+    "explained": 828,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Commands for another device are ignored",
+    "An over-long name keeps the old one; an unchanged name is not written",
+    "Flash writes are spaced; only valid configurations are stored; over-long datagrams are dropped"
+   ]
+  },
+  {
+   "name": "cloggo",
+   "url": "https://github.com/wseaton/cloggo",
+   "pin": "449d9ff",
+   "chip": "RP2040",
+   "isa": "Cortex-M0+",
+   "interface": "HTTP calibration + readings",
+   "theorems": 30,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 278,
+    "explained": 722,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "The linear regression never panics for any calibration data; zero divisors are refused",
+    "Pressure conversion never panics",
+    "Fixed-point arithmetic is modelled bit-exactly (I32F32)"
+   ]
+  },
+  {
+   "name": "diy-weather-station",
+   "url": "https://github.com/tazz4843/diy-weather-station",
+   "pin": "882fc24",
+   "chip": "RP2040",
+   "isa": "Cortex-M0+",
+   "interface": "HTTP firmware update (DFU)",
+   "theorems": 13,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 33,
+    "explained": 965,
+    "unexplained": 2
+   },
+   "normal": null,
+   "properties": [
+    "An update starts only with a token and a length that fits",
+    "Chunks are contiguous and within the declared length",
+    "An update completes iff every byte was written; an aborted update never completes",
+    "The new image is confirmed only after the web server is up"
+   ]
+  },
+  {
+   "name": "pico_dhcp_dns_server",
+   "url": "https://github.com/maxastyler/pico_dhcp_dns_server",
+   "pin": "cf2b3f5",
+   "chip": "RP2040",
+   "isa": "Cortex-M0+",
+   "interface": "DHCP + DNS servers",
+   "theorems": 8,
+   "mixed": {
+    "scenarios": 1000,
+    "identical": 393,
+    "explained": 607,
+    "unexplained": 0
+   },
+   "normal": null,
+   "properties": [
+    "Discovery keeps live leases; a request is acknowledged only for its own lease",
+    "DNS answers stay within the packet bounds"
+   ]
+  }
+ ],
+ "not_ported": [
+  "panometer",
+  "ChipIsCloud",
+  "pinot-voir",
+  "timeserv-esp32",
+  "xiao-esp32s3-sense",
+  "stemma-soil-sensor-embassy",
+  "pico-matrix-controller (covered by pico_dhcp_dns_server)"
+ ]
+}

@@ -553,7 +553,7 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .scenario-tabs { padding: 0; margin-bottom: 4px; border: 0; border-bottom: 1px solid var(--line2); }
 
 /* landing page */
-.bench-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-bottom: 1px solid var(--line2); }
+.bench-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line2); }
 .bench-card { display: flex; flex-direction: column; gap: 14px; padding: 40px var(--gut) 44px; border-right: 1px solid var(--line2); color: var(--text); transition: background .15s; }
 .bench-card:last-child { border-right: 0; }
 .bench-card:hover { background: color-mix(in srgb, var(--spot-solid) 4%, transparent); text-decoration: none; }
@@ -585,3 +585,14 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .source-item { margin: 12px 0; border: 1px solid var(--line2); border-radius: 4px; padding: 10px; }
 .source-item > summary { cursor: pointer; font-family: var(--mono); overflow-wrap: anywhere; }
 .source-item .code { margin-top: 12px; }
+
+/* embedded page */
+.embedded-page .dim { color: var(--faint); }
+.embedded-page #overview-table td, .embedded-page #overview-table th[scope="row"] { font-size: 13.5px; }
+.embedded-page #overview-table .bar-track { min-width: 70px; }
+.emb-props { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 0; border-top: 1px solid var(--line2); border-left: 1px solid var(--line2); }
+.emb-prop { padding: 20px 22px; border-right: 1px solid var(--line2); border-bottom: 1px solid var(--line2); }
+.emb-prop h3 { margin: 0; font: 600 17px var(--disp); color: var(--ink); }
+.emb-prop p { margin: 6px 0 0; font-size: 12.5px; }
+.emb-prop ul { margin: 12px 0 0; padding-left: 18px; color: var(--text); font-size: 14px; line-height: 1.6; }
+@media (max-width: 900px) { .emb-props { grid-template-columns: 1fr; } }

@@ -1,7 +1,7 @@
 # Benchmark website
 
 This directory contains the static assets for `benchmark.h5i.dev`: the landing
-page, verification dashboard (`prove/`) and performance dashboard (`performance/`).
+page, verification dashboard (`prove/`), performance dashboard (`performance/`) and embedded-firmware page (`embedded/`, data in `embedded/data.json`).
 Committing or pushing these assets does not confirm a hosting deployment.
 
 ## Verification checkpoint
