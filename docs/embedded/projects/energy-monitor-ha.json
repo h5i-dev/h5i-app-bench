@@ -1,0 +1,190 @@
+{
+ "slug": "energy-monitor-ha",
+ "name": "energy-monitor-ha",
+ "pin": "cb1b356",
+ "upstream_head": "cb1b356",
+ "pin_ok": true,
+ "mapped": true,
+ "theorems": [
+  {
+   "name": "password_never_served",
+   "file": "Properties.lean",
+   "doc": "(S) A password is never served: the marker always replaces it.",
+   "statement": "theorem password_never_served : serve_password = ok true",
+   "proof": "theorem password_never_served : serve_password = ok true := by\n  simp [serve_password]",
+   "deps": [
+    "serve_password"
+   ],
+   "spec": []
+  },
+  {
+   "name": "keep_marker",
+   "file": "Properties.lean",
+   "doc": "(S) The marker keeps the stored password; anything else replaces it.",
+   "statement": "theorem keep_marker (b : Bool) : password b = ok (if b then Password.KeepStored else Password.Replace)",
+   "proof": "theorem keep_marker (b : Bool) : password b = ok (if b then Password.KeepStored else Password.Replace) := by\n  cases b <;> simp [password]",
+   "deps": [
+    "password",
+    "Password"
+   ],
+   "spec": []
+  },
+  {
+   "name": "zero_samples_refused",
+   "file": "Properties.lean",
+   "doc": "(S) An STPM config that averages no sample is refused (upstream takes it, and the calibration then divides by zero).",
+   "statement": "theorem zero_samples_refused : stpm_ok 0#u32 = ok false",
+   "proof": "theorem zero_samples_refused : stpm_ok 0#u32 = ok false := by\n  simp [stpm_ok]",
+   "deps": [
+    "stpm_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "no_division_by_zero_samples",
+   "file": "Properties.lean",
+   "doc": "(S) No sample with zero readings is calibrated.",
+   "statement": "theorem no_division_by_zero_samples (n : Std.U32) (h : publish_ok n = ok true) : 0 < n.val",
+   "proof": "theorem no_division_by_zero_samples (n : Std.U32) (h : publish_ok n = ok true) : 0 < n.val := by\n  unfold publish_ok at h\n  simp at h\n  scalar_tac",
+   "deps": [
+    "publish_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "no_division_by_zero_period",
+   "file": "Properties.lean",
+   "doc": "(S) The frequency is computed only from a measured period.",
+   "statement": "theorem no_division_by_zero_period (t : Std.U32) (h : frequency_ok t = ok true) : t.val \u2260 0",
+   "proof": "theorem no_division_by_zero_period (t : Std.U32) (h : frequency_ok t = ok true) : t.val \u2260 0 := by\n  unfold frequency_ok at h\n  simp at h\n  scalar_tac",
+   "deps": [
+    "frequency_ok"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "frequency_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::frequency_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 73,
+   "kernel_code": "pub fn frequency_ok(tdiff: u32) -> bool {\n    tdiff != 0\n}",
+   "lean": "def frequency_ok (tdiff : Std.U32) : Result Bool := do\n  ok (tdiff != 0#u32)",
+   "upstream": [
+    {
+     "file": "src/zcr.rs",
+     "line": 37,
+     "code": "pub fn get_frequency() -> u64 {\n    let zcr_frequency_numerator =\n        unsafe { core::ptr::read_volatile(&ZCR_FREQUENCY_NUMERATOR) } as u64;\n    // in microseconds\n    let zcr_tdiff = unsafe { core::ptr::read_volatile(&ZCR_TDIFF) } as u64;\n    // 4 decimal places\n    zcr_frequency_numerator / zcr_tdiff\n}"
+    },
+    {
+     "file": "src/mqtt/mod.rs",
+     "line": 207,
+     "code": "                if config.channel_enable[0].frequency || config.channel_enable[1].frequency {\n                    ms.frequency = Some(super::zcr::get_frequency());"
+    }
+   ],
+   "upstream_note": "get_frequency divides by the measured period (0 panics, U2); the port omits the frequency without one"
+  },
+  "publish_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::publish_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 66,
+   "kernel_code": "pub fn publish_ok(num_samples: u32) -> bool {\n    num_samples >= 1\n}",
+   "lean": "def publish_ok (num_samples : Std.U32) : Result Bool := do\n  ok (num_samples >= 1#u32)",
+   "upstream": [
+    {
+     "file": "src/stpm/calibration.rs",
+     "line": 154,
+     "code": "    pub fn apply(&self, sample: RawSampleApp) -> IntCalibratedSample {\n        IntCalibratedSample {\n            // voltage: ignore current gain\n            voltage_rms: (sample.voltage_rms * self.voltage_rms_lsb as u64)\n                / (sample.num_samples as u64)\n                / (1 << FIXED_DECIMALS_VOLTAGE),\n            // current and power: use num_samples and current gain\n            current_rms: (sample.current_rms * self.current_rms_lsb as u64)\n                / (sample.num_samples as u64)\n                / (1 << FIXED_DECIMALS_CURRENT),\n            power_active: (sample.power_active * self.power_lsb as i64)\n                / (sample.num_samples as i64)\n                / (1 << FIXED_DECIMALS_POWER),\n            power_reactive: (sample.power_reactive * self.power_lsb as i64)\n                / (sample.num_samples as i64)\n                / (1 << FIXED_DECIMALS_POWER),\n            // energy: ignore num_samples\n            energy_active: (sample.energy_active * self.energy_lsb) / (1 << FIXED_DECIMALS_ENERGY),\n        }\n    }"
+    }
+   ],
+   "upstream_note": "IntCalibration::apply divides by num_samples (0 panics, U1); the port publishes only with at least one sample"
+  },
+  "stpm_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::stpm_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 59,
+   "kernel_code": "pub fn stpm_ok(samples: u32) -> bool {\n    samples >= 1\n}",
+   "lean": "def stpm_ok (samples : Std.U32) : Result Bool := do\n  ok (samples >= 1#u32)",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 219,
+     "code": "async fn post_config_stpm(JsonBody(new_config): JsonBody<StpmConfig>) -> impl IntoResponse {\n    let mut state = STATE.lock().await;\n    let state = state.as_mut().unwrap();\n\n    state.stpm = new_config.clone();\n    CONFIG_STPM.signal(new_config);\n}"
+    }
+   ],
+   "upstream_note": "post_config_stpm takes any samples_stpm; the port refuses 0 (U1)"
+  },
+  "serve_password": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::serve_password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub fn serve_password() -> bool {\n    true\n}",
+   "lean": "def serve_password : Result Bool := do\n  ok true",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 146,
+     "code": "    config.mqtt_password = KEEP_PASSWORD.try_into().unwrap();"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 175,
+     "code": "    config.wifi_key = KEEP_PASSWORD.try_into().unwrap();"
+    }
+   ],
+   "upstream_note": "a served config always carries the marker, never the password"
+  },
+  "Password": {
+   "kind": "inductive",
+   "rust_path": "energy_monitor_ha_kernel::Password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub enum Password {\n    /// `--keep--`: the stored password stays.\n    KeepStored,\n    /// A new password.\n    Replace,\n}",
+   "lean": "@[discriminant isize]\ninductive Password where\n| KeepStored : Password\n| Replace : Password",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 21,
+     "code": "const KEEP_PASSWORD: &str = \"--keep--\";"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 158,
+     "code": "    if new_config.mqtt_password == KEEP_PASSWORD {\n        new_config.mqtt_password = state.mqtt.mqtt_password.clone();\n    }"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 183,
+     "code": "    if new_config.wifi_key == KEEP_PASSWORD {\n        new_config.wifi_key = state.wifi.wifi_key.clone();\n    }"
+    }
+   ],
+   "upstream_note": "a submitted password: the --keep-- marker keeps the stored one, anything else replaces it"
+  },
+  "password": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub fn password(is_keep_marker: bool) -> Password {\n    if is_keep_marker { Password::KeepStored } else { Password::Replace }\n}",
+   "lean": "def password (is_keep_marker : Bool) : Result Password := do\n  if is_keep_marker\n  then ok Password.KeepStored\n  else ok Password.Replace",
+   "upstream": [
+    {
+     "file": "src/config/server.rs",
+     "line": 158,
+     "code": "    if new_config.mqtt_password == KEEP_PASSWORD {\n        new_config.mqtt_password = state.mqtt.mqtt_password.clone();\n    }"
+    },
+    {
+     "file": "src/config/server.rs",
+     "line": 183,
+     "code": "    if new_config.wifi_key == KEEP_PASSWORD {\n        new_config.wifi_key = state.wifi.wifi_key.clone();\n    }"
+    }
+   ],
+   "upstream_note": "the keep-marker check of post_config_mqtt and post_config_wifi"
+  }
+ },
+ "specs": {}
+}

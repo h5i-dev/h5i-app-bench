@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Embedded Firmware | h5i-app Benchmark</title>
+    <meta
+      name="description"
+      content="Decision logic from open-source embedded Rust firmware (ESP32, RP2040, RP2350) ported to h5i-app, proved in Lean 4, and compared with the original firmware on the target instruction set in Renode."
+    />
+    <meta name="theme-color" content="#070707" />
+    <link rel="canonical" href="https://benchmark.h5i.dev/embedded/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="h5i-app Benchmark" />
+    <meta property="og:title" content="Can a verified kernel replace firmware logic on the device?" />
+    <meta property="og:description" content="Embedded Rust firmware ported to h5i-app, proved in Lean 4, and compared with the original on the target ISA in Renode." />
+    <meta property="og:url" content="https://benchmark.h5i.dev/embedded/" />
+    <meta property="og:image" content="https://benchmark.h5i.dev/og-image.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/png" href="../favicon.png" />
+    <link rel="apple-touch-icon" href="../favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+    />
+    <script>
+      try { const t = localStorage.getItem("theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    <link rel="stylesheet" href="../site.css" />
+    <script src="./embedded.js" defer></script>
+  </head>
+  <body class="embedded-page">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="h5i-app benchmark home">
+        <img src="../logo.png" alt="" />
+        <span>h5i-app</span><span class="brand-reading">/ embedded</span>
+      </a>
+      <nav class="site-nav" aria-label="Embedded sections">
+        <a href="#overview">Overview</a>
+        <a href="#properties">Properties</a>
+        <a href="#equivalence">Equivalence</a>
+        <a href="#method">Method</a>
+      </nav>
+      <div class="theme" role="group" aria-label="Color theme">
+        <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="intro">
+        <p class="prompt"><span class="ps">$</span> renode <span class="arg">sim/equivalence.sh 1000</span><span class="caret" aria-hidden="true"></span></p>
+        <h1>Can a verified kernel replace firmware logic on the device?</h1>
+        <p class="lede">The decisions in open-source embedded Rust firmware (who may do what, which values are allowed, what state comes next) are moved into an h5i-app kernel and proved in Lean 4. Then the original firmware and the port run side by side on the target instruction set in Renode, on the same scripted input, and every difference a client or the device would observe is counted.</p>
+      </section>
+
+      <div class="tiles" id="tiles" aria-live="polite"></div>
+
+      <section id="overview" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="01">Overview</h2>
+          <p>One row per firmware. Properties are the theorems gated by <code>h5i app check</code> (helper lemmas are not counted). The two equivalence columns are the share of scenarios in which the original firmware and the port behaved identically.</p>
+        </div>
+        <div class="table-wrap">
+          <table class="sortable" id="overview-table">
+            <thead>
+              <tr>
+                <th scope="col" data-sort="name">Firmware</th>
+                <th scope="col" data-sort="chip">Device</th>
+                <th scope="col">Interface</th>
+                <th scope="col" class="num" data-sort="theorems">Properties</th>
+                <th scope="col" data-sort="normal">Normal input</th>
+                <th scope="col" data-sort="mixed">With malformed and edge-case input</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="caption">– = not run yet. Normal-input runs use only what the firmware's own client sends; they are in progress.</p>
+        <noscript><p>Enable JavaScript to see the results.</p></noscript>
+      </section>
+
+      <section id="properties" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="02">Verified properties</h2>
+          <p>Every property gated by <code>h5i app check</code>: no <code>sorry</code>, no <code>native_decide</code>, standard axioms only. Choose one for its Lean statement, the kernel Rust beside the upstream Rust it ports, the extracted Lean and the proof. A property covers the kernel's decision function, not the I/O around it.</p>
+        </div>
+        <div class="filters" role="search" aria-label="Filter properties">
+          <label class="field"><span>Firmware</span><select id="f-app"><option value="">All</option></select></label>
+          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="property or theorem" /></label>
+        </div>
+        <div class="table-wrap">
+          <table class="matrix" id="matrix">
+            <thead><tr><th scope="col">Theorem</th><th scope="col">Property</th><th scope="col">Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="count" id="matrix-count" aria-live="polite"></p>
+      </section>
+
+      <section id="equivalence" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="03">Equivalence in detail</h2>
+          <p>Every scenario ends in one of three classes. <strong>Identical</strong>: same responses, same device state. <strong>Explained</strong>: the difference is traced to the input that caused it and to a named cause (a cosmetic response, the port refusing input the original accepts, or the original's behaviour on that input). <strong>Unexplained</strong>: anything else; a port is not done while it has one.</p>
+        </div>
+        <div class="table-wrap">
+          <table id="detail-table">
+            <thead>
+              <tr>
+                <th scope="col">Firmware</th>
+                <th scope="col">Input</th>
+                <th scope="col" class="num">Scenarios</th>
+                <th scope="col" class="num">Identical</th>
+                <th scope="col" class="num">Explained / cosmetic</th>
+                <th scope="col" class="num">Unexplained / other</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="caption">Mixed-input scenarios deliberately include malformed requests and boundary values, so their identical share mostly reflects how often the generator hits such input, not how often the firmwares disagree in normal use.</p>
+      </section>
+
+      <section id="method" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="04">Method</h2>
+          <p>Per firmware: audit the upstream source, port its decisions to an h5i-app kernel, prove properties of the kernel, make the rest of the port a drop-in for upstream's network path, then compare both on the target ISA.</p>
+        </div>
+        <ul class="limits">
+          <li><strong>Two firmwares per project.</strong> The original is built from upstream's own source files, unmodified and SHA-256 pinned, with minimal stand-ins for the hardware items they name. The port runs the h5i-app kernel behind <code>h5i-app-embedded</code> (its HTTP parser, <code>h5i-app-h1</code>, is itself verified).</li>
+          <li><strong>Target instruction set.</strong> Both are built for the real target (Xtensa LX6/LX7, RV32IMC/IMAC, Cortex-M0+/M33) and run on Renode's CPU model with memory at the SoC's addresses. Renode has no ESP32/RP2040/RP2350 SoC models, so peripherals are modelled in a shared harness.</li>
+          <li><strong>Shared harness.</strong> A scripted socket at the <code>embedded_io_async</code> boundary (requests arrive in random fragments), and shared models of flash (alignment and NOR semantics), clock, sensors and actuators. Wi-Fi, TCP and the HAL sit below the socket and are not emulated.</li>
+          <li><strong>What is compared.</strong> What a client observes (status, body, the headers that matter, connection close) and device state (flash contents, outputs such as relays and motors, reboots), per scenario.</li>
+          <li><strong>Trusted.</strong> The I/O and encoding code around the kernel, the HAL, the device models and the Rust-to-Lean extraction. Their agreement with upstream is tested by the equivalence runs, not proved.</li>
+          <li>Single-host simulation. One scenario is a fresh boot; a panic ends the scenario. Not a substitute for tests on hardware.</li>
+        </ul>
+        <p class="caption" id="not-ported"></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="footer-brand" href="https://h5i.dev/"><img src="../logo.png" alt="" /><span>h5i<span class="sub"> / high-five</span></span></a>
+      <nav aria-label="h5i">
+        <a href="https://h5i.dev/">h5i.dev</a>
+        <a href="https://github.com/h5i-dev/h5i">h5i on GitHub</a>
+        <a href="../prove/">Verification</a>
+        <a href="../performance/">Performance</a>
+      </nav>
+      <span class="legal">Apache 2.0</span>
+    </footer>
+
+    <div class="drawer" id="drawer" hidden>
+      <div class="drawer-scrim" data-close></div>
+      <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="d-title">
+        <header class="drawer-head">
+          <div>
+            <p class="eyebrow" id="d-app"></p>
+            <h2 id="d-title"></h2>
+            <p class="d-property" id="d-property"></p>
+          </div>
+          <button class="close" type="button" data-close aria-label="Close">×</button>
+        </header>
+        <div class="tabs" role="tablist" id="d-tabs"></div>
+        <div class="drawer-body" id="d-body"></div>
+      </aside>
+    </div>
+  </body>
+</html>

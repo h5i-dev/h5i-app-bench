@@ -1,0 +1,266 @@
+{
+ "slug": "aquarium-lid-pcb",
+ "name": "aquarium-lid-pcb",
+ "pin": "41772a4",
+ "upstream_head": "41772a4",
+ "pin_ok": true,
+ "mapped": true,
+ "theorems": [
+  {
+   "name": "alarm_fires_high",
+   "file": "Properties.lean",
+   "doc": "**S (U1).** With an admitted configuration the high alarm sounds at any reading at or above `hi_on`, whatever its state.",
+   "statement": "theorem alarm_fires_high (on : Bool) (t : Std.I32) (b : AlarmBands)\n    (hv : alarm_valid b = ok true) (ht : b.hi_on.val \u2264 t.val) :\n    alarm_next on t b = ok true",
+   "proof": "theorem alarm_fires_high (on : Bool) (t : Std.I32) (b : AlarmBands)\n    (hv : alarm_valid b = ok true) (ht : b.hi_on.val \u2264 t.val) :\n    alarm_next on t b = ok true := by\n  have := alarm_valid_facts b hv\n  unfold alarm_next\n  split_ifs <;> simp_all <;> scalar_tac",
+   "deps": [
+    "AlarmBands",
+    "alarm_next",
+    "alarm_valid",
+    "SENSOR_MIN",
+    "SENSOR_MAX"
+   ],
+   "spec": []
+  },
+  {
+   "name": "alarm_fires_low",
+   "file": "Properties.lean",
+   "doc": "**S (U1).** \u2026 and the low alarm at any reading at or below `lo_on`.",
+   "statement": "theorem alarm_fires_low (on : Bool) (t : Std.I32) (b : AlarmBands)\n    (hv : alarm_valid b = ok true) (ht : t.val \u2264 b.lo_on.val) :\n    alarm_next on t b = ok true",
+   "proof": "theorem alarm_fires_low (on : Bool) (t : Std.I32) (b : AlarmBands)\n    (hv : alarm_valid b = ok true) (ht : t.val \u2264 b.lo_on.val) :\n    alarm_next on t b = ok true := by\n  have := alarm_valid_facts b hv\n  unfold alarm_next\n  split_ifs <;> simp_all <;> scalar_tac",
+   "deps": [
+    "AlarmBands",
+    "alarm_next",
+    "alarm_valid",
+    "SENSOR_MIN",
+    "SENSOR_MAX"
+   ],
+   "spec": []
+  },
+  {
+   "name": "alarm_reachable",
+   "file": "Properties.lean",
+   "doc": "**S (U1).** Both alarm thresholds lie inside the sensor's range, so there is a reading for each that sounds it (upstream accepts `max_safe_temp = 1000`, which no reading reaches).",
+   "statement": "theorem alarm_reachable (b : AlarmBands) (hv : alarm_valid b = ok true) :\n    b.hi_on.val \u2264 2000 \u2227 -880 \u2264 b.lo_on.val",
+   "proof": "theorem alarm_reachable (b : AlarmBands) (hv : alarm_valid b = ok true) :\n    b.hi_on.val \u2264 2000 \u2227 -880 \u2264 b.lo_on.val := by\n  have := alarm_valid_facts b hv\n  omega",
+   "deps": [
+    "AlarmBands",
+    "alarm_valid",
+    "SENSOR_MIN",
+    "SENSOR_MAX"
+   ],
+   "spec": []
+  },
+  {
+   "name": "alarm_clears",
+   "file": "Properties.lean",
+   "doc": "**S (U1).** In the quiet band the alarm is off, whatever its state, and an admitted configuration has a quiet band (upstream with `2\u00b7h \u2265 max \u2212 min` keeps it on forever once it fired).",
+   "statement": "theorem alarm_clears (on : Bool) (t : Std.I32) (b : AlarmBands)\n    (hv : alarm_valid b = ok true) (h1 : b.lo_off.val < t.val) (h2 : t.val < b.hi_off.val) :\n    alarm_next on t b = ok false \u2227 b.lo_off.val + 1 < b.hi_off.val",
+   "proof": "theorem alarm_clears (on : Bool) (t : Std.I32) (b : AlarmBands)\n    (hv : alarm_valid b = ok true) (h1 : b.lo_off.val < t.val) (h2 : t.val < b.hi_off.val) :\n    alarm_next on t b = ok false \u2227 b.lo_off.val + 1 < b.hi_off.val := by\n  have := alarm_valid_facts b hv\n  refine \u27e8?_, by omega\u27e9\n  unfold alarm_next\n  split_ifs <;> simp_all <;> scalar_tac",
+   "deps": [
+    "alarm_next",
+    "alarm_valid",
+    "AlarmBands",
+    "SENSOR_MIN",
+    "SENSOR_MAX"
+   ],
+   "spec": []
+  },
+  {
+   "name": "alarm_hysteresis",
+   "file": "Properties.lean",
+   "doc": "**S.** An admitted configuration has a non-negative hysteresis: the \"on\" thresholds lie outside the \"stay on\" thresholds.",
+   "statement": "theorem alarm_hysteresis (b : AlarmBands) (hv : alarm_valid b = ok true) :\n    b.lo_on.val \u2264 b.lo_off.val \u2227 b.hi_off.val \u2264 b.hi_on.val",
+   "proof": "theorem alarm_hysteresis (b : AlarmBands) (hv : alarm_valid b = ok true) :\n    b.lo_on.val \u2264 b.lo_off.val \u2227 b.hi_off.val \u2264 b.hi_on.val := by\n  have := alarm_valid_facts b hv\n  omega",
+   "deps": [
+    "AlarmBands",
+    "alarm_valid",
+    "SENSOR_MIN",
+    "SENSOR_MAX"
+   ],
+   "spec": []
+  },
+  {
+   "name": "fan_on_above",
+   "file": "Properties.lean",
+   "doc": "**C.** The fan is on at or above `on_at`.",
+   "statement": "theorem fan_on_above (on : Bool) (t : Std.I32) (f : FanBands) (ht : f.on_at.val \u2264 t.val) :\n    fan_next on t f = ok true",
+   "proof": "theorem fan_on_above (on : Bool) (t : Std.I32) (f : FanBands) (ht : f.on_at.val \u2264 t.val) :\n    fan_next on t f = ok true := by\n  unfold fan_next\n  split_ifs <;> simp_all <;> scalar_tac",
+   "deps": [
+    "FanBands",
+    "fan_next"
+   ],
+   "spec": []
+  },
+  {
+   "name": "fan_off_below",
+   "file": "Properties.lean",
+   "doc": "**S.** With an admitted fan configuration it is off at or below `off_at` (no reading is both above `on_at` and below `off_at`).",
+   "statement": "theorem fan_off_below (on : Bool) (t : Std.I32) (f : FanBands)\n    (hv : fan_valid f = ok true) (ht : t.val \u2264 f.off_at.val) :\n    fan_next on t f = ok false",
+   "proof": "theorem fan_off_below (on : Bool) (t : Std.I32) (f : FanBands)\n    (hv : fan_valid f = ok true) (ht : t.val \u2264 f.off_at.val) :\n    fan_next on t f = ok false := by\n  have := fan_valid_facts f hv\n  unfold fan_next\n  split_ifs <;> simp_all <;> scalar_tac",
+   "deps": [
+    "FanBands",
+    "fan_valid",
+    "fan_next",
+    "SENSOR_MAX",
+    "SENSOR_MIN"
+   ],
+   "spec": []
+  },
+  {
+   "name": "fan_holds_between",
+   "file": "Properties.lean",
+   "doc": "**C.** Between the thresholds the fan keeps its state (hysteresis).",
+   "statement": "theorem fan_holds_between (on : Bool) (t : Std.I32) (f : FanBands)\n    (h1 : f.off_at.val < t.val) (h2 : t.val < f.on_at.val) :\n    fan_next on t f = ok on",
+   "proof": "theorem fan_holds_between (on : Bool) (t : Std.I32) (f : FanBands)\n    (h1 : f.off_at.val < t.val) (h2 : t.val < f.on_at.val) :\n    fan_next on t f = ok on := by\n  unfold fan_next\n  split_ifs <;> simp_all <;> scalar_tac",
+   "deps": [
+    "FanBands",
+    "fan_next"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "fan_next": {
+   "kind": "def",
+   "rust_path": "aquarium_kernel::fan_next",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub fn fan_next(on: bool, t: i32, f: FanBands) -> bool {\n    if t >= f.on_at {\n        true\n    } else if t <= f.off_at {\n        false\n    } else {\n        on\n    }\n}",
+   "lean": "def fan_next (on : Bool) (t : Std.I32) (f : FanBands) : Result Bool := do\n  if t >= f.on_at\n  then ok true\n  else if t <= f.off_at\n       then ok false\n       else ok on",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/fan.rs",
+     "line": 69,
+     "code": "            let current_on = if temp >= thresholds.fan_on {\n                true\n            } else if temp <= thresholds.fan_off {\n                false\n            } else {\n                prev_on\n            };"
+    }
+   ],
+   "upstream_note": "control_fan's on/off/hold decision"
+  },
+  "AlarmBands": {
+   "kind": "structure",
+   "rust_path": "aquarium_kernel::AlarmBands",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 25,
+   "kernel_code": "pub struct AlarmBands {\n    /// `ceil16(max_safe_temp + alarm_hysteresis)`\n    pub hi_on: i32,\n    /// `ceil16(max_safe_temp - alarm_hysteresis)`\n    pub hi_off: i32,\n    /// `floor16(min_safe_temp - alarm_hysteresis)`\n    pub lo_on: i32,\n    /// `floor16(min_safe_temp + alarm_hysteresis)`\n    pub lo_off: i32,\n}",
+   "lean": "structure AlarmBands where\n  hi_on : Std.I32\n  hi_off : Std.I32\n  lo_on : Std.I32\n  lo_off : Std.I32",
+   "upstream": [
+    {
+     "file": "firmware/src/lib.rs",
+     "line": 78,
+     "code": "#[derive(Debug, Clone, PartialEq)]\npub struct AlarmThreshold {\n    pub min_safe_temp: f32,\n    pub max_safe_temp: f32,\n    pub alarm_hysteresis: f32,\n}"
+    },
+    {
+     "file": "firmware/src/tasks/alarm.rs",
+     "line": 58,
+     "code": "                temp >= (thresholds.max_safe_temp - thresholds.alarm_hysteresis)\n                    || temp <= (thresholds.min_safe_temp + thresholds.alarm_hysteresis)\n            } else {\n                // Currently OFF:\n                // only turn ON when clearly outside the safe range\n                temp >= (thresholds.max_safe_temp + thresholds.alarm_hysteresis)\n                    || temp <= (thresholds.min_safe_temp - thresholds.alarm_hysteresis)"
+    }
+   ],
+   "upstream_note": "AlarmThreshold (f32); the four bands are the sums max +/- h, min -/+ h that control_alarm compares with, in sixteenths"
+  },
+  "FanBands": {
+   "kind": "structure",
+   "rust_path": "aquarium_kernel::FanBands",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 39,
+   "kernel_code": "pub struct FanBands {\n    /// `ceil16(fan_on_threshold)`\n    pub on_at: i32,\n    /// `floor16(fan_off_threshold)`\n    pub off_at: i32,\n}",
+   "lean": "structure FanBands where\n  on_at : Std.I32\n  off_at : Std.I32",
+   "upstream": [
+    {
+     "file": "firmware/src/lib.rs",
+     "line": 72,
+     "code": "#[derive(Debug, Clone, PartialEq)]\npub struct FanThreshold {\n    pub fan_on: f32,\n    pub fan_off: f32,\n}"
+    }
+   ],
+   "upstream_note": "FanThreshold (f32 fan_on/fan_off), in sixteenths"
+  },
+  "alarm_next": {
+   "kind": "def",
+   "rust_path": "aquarium_kernel::alarm_next",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 47,
+   "kernel_code": "pub fn alarm_next(on: bool, t: i32, b: AlarmBands) -> bool {\n    if on {\n        t >= b.hi_off || t <= b.lo_off\n    } else {\n        t >= b.hi_on || t <= b.lo_on\n    }\n}",
+   "lean": "def alarm_next (on : Bool) (t : Std.I32) (b : AlarmBands) : Result Bool := do\n  if on\n  then if t >= b.hi_off\n       then ok true\n       else ok (t <= b.lo_off)\n  else if t >= b.hi_on\n       then ok true\n       else ok (t <= b.lo_on)",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/alarm.rs",
+     "line": 55,
+     "code": "            let current_on = if prev_on {\n                // Currently ON:\n                // stay ON until we're comfortably back inside the safe range\n                temp >= (thresholds.max_safe_temp - thresholds.alarm_hysteresis)\n                    || temp <= (thresholds.min_safe_temp + thresholds.alarm_hysteresis)\n            } else {\n                // Currently OFF:\n                // only turn ON when clearly outside the safe range\n                temp >= (thresholds.max_safe_temp + thresholds.alarm_hysteresis)\n                    || temp <= (thresholds.min_safe_temp - thresholds.alarm_hysteresis)\n            };"
+    }
+   ],
+   "upstream_note": "control_alarm's hysteresis decision"
+  },
+  "fan_valid": {
+   "kind": "def",
+   "rust_path": "aquarium_kernel::fan_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 87,
+   "kernel_code": "pub fn fan_valid(f: FanBands) -> bool {\n    SENSOR_MIN <= f.off_at && f.off_at < f.on_at && f.on_at <= SENSOR_MAX\n}",
+   "lean": "def fan_valid (f : FanBands) : Result Bool := do\n  if SENSOR_MIN <= f.off_at\n  then if f.off_at < f.on_at\n       then ok (f.on_at <= SENSOR_MAX)\n       else ok false\n  else ok false",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/api.rs",
+     "line": 27,
+     "code": "async fn set_config(Json(cfg): Json<crate::Config>) -> impl IntoResponse {\n    COMMANDS\n        .immediate_publisher()\n        .publish_immediate(crate::Command::Reconfigure(cfg.clone()));\n    picoserve::response::Json(cfg)\n}"
+    },
+    {
+     "file": "firmware/src/tasks/mqtt/mod.rs",
+     "line": 180,
+     "code": "            [BASE_TOPIC, \"control\", \"config\", action, \"set\"] => match *action {\n                \"fan_above\" => {\n                    let mut cfg = crate::Config::get_from_signal();\n                    cfg.fan_on_threshold = pl.parse::<f32>().unwrap();\n                    cmd_pub.publish_immediate(crate::Command::Reconfigure(cfg));\n                }\n                \"fan_below\" => {\n                    let mut cfg = crate::Config::get_from_signal();\n                    cfg.fan_off_threshold = pl.parse::<f32>().unwrap();\n                    cmd_pub.publish_immediate(crate::Command::Reconfigure(cfg));"
+    },
+    {
+     "file": "firmware/src/storage/config.rs",
+     "line": 21,
+     "code": "    pub async fn from_nvs(nvs_mutex: NvsMutex) -> Self {\n        let data_from_nvs = {\n            let nvs = nvs_mutex.lock().await;\n            nvs.get_key(b\"CFG\").await.ok()\n        };\n\n        if let Some(d) = data_from_nvs {\n            let crc = Crc::<u32>::new(&CRC_32_ISCSI);\n            match from_bytes_crc32::<Self>(&d, crc.digest()) {\n                Ok(d) => d,\n                Err(_) => {\n                    defmt::error!(\"Couldn't read nvs Config data, using default\");\n                    Self::default()\n                }\n            }\n        } else {\n            Self::default()\n        }\n    }"
+    }
+   ],
+   "upstream_note": "upstream has no check (U1); guards the fan thresholds applied by set_config, MQTT fan_above/fan_below and from_nvs"
+  },
+  "SENSOR_MIN": {
+   "kind": "def",
+   "rust_path": "aquarium_kernel::SENSOR_MIN",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 18,
+   "kernel_code": "pub const SENSOR_MIN: i32 = -880;",
+   "lean": "@[global_simps, irreducible] def SENSOR_MIN : Std.I32 := (-880)#i32",
+   "upstream": [],
+   "upstream_note": "port-only: DS18B20 datasheet lower bound (-55 C); upstream has no sensor-range constant"
+  },
+  "alarm_valid": {
+   "kind": "def",
+   "rust_path": "aquarium_kernel::alarm_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 74,
+   "kernel_code": "pub fn alarm_valid(b: AlarmBands) -> bool {\n    // (`lo_off < hi_off` first, so `lo_off + 1` cannot overflow; an earlier\n    // `hi_off - 1` underflowed at i32::MIN, which the proof caught)\n    SENSOR_MIN <= b.lo_on\n        && b.lo_on <= b.lo_off\n        && b.lo_off < b.hi_off\n        && b.lo_off + 1 < b.hi_off\n        && b.hi_off <= b.hi_on\n        && b.hi_on <= SENSOR_MAX\n}",
+   "lean": "def alarm_valid (b : AlarmBands) : Result Bool := do\n  if SENSOR_MIN <= b.lo_on\n  then\n    if b.lo_on <= b.lo_off\n    then\n      if b.lo_off < b.hi_off\n      then\n        let i \u2190 b.lo_off + 1#i32\n        if i < b.hi_off\n        then\n          if b.hi_off <= b.hi_on\n          then ok (b.hi_on <= SENSOR_MAX)\n          else ok false\n        else ok false\n      else ok false\n    else ok false\n  else ok false",
+   "upstream": [
+    {
+     "file": "firmware/src/tasks/http/api.rs",
+     "line": 27,
+     "code": "async fn set_config(Json(cfg): Json<crate::Config>) -> impl IntoResponse {\n    COMMANDS\n        .immediate_publisher()\n        .publish_immediate(crate::Command::Reconfigure(cfg.clone()));\n    picoserve::response::Json(cfg)\n}"
+    },
+    {
+     "file": "firmware/src/tasks/mqtt/mod.rs",
+     "line": 180,
+     "code": "            [BASE_TOPIC, \"control\", \"config\", action, \"set\"] => match *action {\n                \"fan_above\" => {\n                    let mut cfg = crate::Config::get_from_signal();\n                    cfg.fan_on_threshold = pl.parse::<f32>().unwrap();\n                    cmd_pub.publish_immediate(crate::Command::Reconfigure(cfg));\n                }\n                \"fan_below\" => {\n                    let mut cfg = crate::Config::get_from_signal();\n                    cfg.fan_off_threshold = pl.parse::<f32>().unwrap();\n                    cmd_pub.publish_immediate(crate::Command::Reconfigure(cfg));\n                }\n                \"max_safe_temp\" => {\n                    let mut cfg = crate::Config::get_from_signal();\n                    cfg.max_safe_temp = pl.parse::<f32>().unwrap();\n                    cmd_pub.publish_immediate(crate::Command::Reconfigure(cfg));\n                }\n                \"min_safe_temp\" => {\n                    let mut cfg = crate::Config::get_from_signal();\n                    cfg.min_safe_temp = pl.parse::<f32>().unwrap();\n                    cmd_pub.publish_immediate(crate::Command::Reconfigure(cfg));\n                }"
+    },
+    {
+     "file": "firmware/src/storage/config.rs",
+     "line": 21,
+     "code": "    pub async fn from_nvs(nvs_mutex: NvsMutex) -> Self {\n        let data_from_nvs = {\n            let nvs = nvs_mutex.lock().await;\n            nvs.get_key(b\"CFG\").await.ok()\n        };\n\n        if let Some(d) = data_from_nvs {\n            let crc = Crc::<u32>::new(&CRC_32_ISCSI);\n            match from_bytes_crc32::<Self>(&d, crc.digest()) {\n                Ok(d) => d,\n                Err(_) => {\n                    defmt::error!(\"Couldn't read nvs Config data, using default\");\n                    Self::default()\n                }\n            }\n        } else {\n            Self::default()\n        }\n    }"
+    }
+   ],
+   "upstream_note": "upstream has no check (U1); guards the Config applied by set_config, the MQTT config/set arms and from_nvs"
+  },
+  "SENSOR_MAX": {
+   "kind": "def",
+   "rust_path": "aquarium_kernel::SENSOR_MAX",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 19,
+   "kernel_code": "pub const SENSOR_MAX: i32 = 2000;",
+   "lean": "@[global_simps, irreducible] def SENSOR_MAX : Std.I32 := 2000#i32",
+   "upstream": [],
+   "upstream_note": "port-only: DS18B20 datasheet upper bound (125 C); upstream has no sensor-range constant"
+  }
+ },
+ "specs": {}
+}

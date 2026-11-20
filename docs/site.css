@@ -553,7 +553,7 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .scenario-tabs { padding: 0; margin-bottom: 4px; border: 0; border-bottom: 1px solid var(--line2); }
 
 /* landing page */
-.bench-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border-bottom: 1px solid var(--line2); }
+.bench-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--line2); }
 .bench-card { display: flex; flex-direction: column; gap: 14px; padding: 40px var(--gut) 44px; border-right: 1px solid var(--line2); color: var(--text); transition: background .15s; }
 .bench-card:last-child { border-right: 0; }
 .bench-card:hover { background: color-mix(in srgb, var(--spot-solid) 4%, transparent); text-decoration: none; }
@@ -585,3 +585,16 @@ details.data-table td.scope { color: var(--faint); font-size: 12px; max-width: 6
 .source-item { margin: 12px 0; border: 1px solid var(--line2); border-radius: 4px; padding: 10px; }
 .source-item > summary { cursor: pointer; font-family: var(--mono); overflow-wrap: anywhere; }
 .source-item .code { margin-top: 12px; }
+
+/* embedded page */
+.embedded-page .dim { color: var(--faint); }
+.embedded-page #overview-table td, .embedded-page #overview-table th[scope="row"] { font-size: 13.5px; color: var(--text); }
+.embedded-page #overview-table th[scope="row"] a { color: var(--ink); }
+.embedded-page #overview-table .bar-track { min-width: 70px; }
+.embedded-page #overview-table .spec-link, .embedded-page .matrix .spec-link { background: none; border: 0; padding: 0; color: var(--spot); font: inherit; cursor: pointer; }
+.embedded-page #detail-table td, .embedded-page #detail-table th { color: var(--text); font-size: 13.5px; }
+.embedded-page #detail-table th[scope="row"] { color: var(--ink); font-weight: 500; border-bottom: 1px solid var(--line2); }
+.embedded-page #detail-table tr:nth-child(2n) td { border-bottom: 1px solid var(--line2); }
+.embedded-page #detail-table td.num { color: var(--ink); }
+.embedded-page #detail-table td.pending { color: var(--dim); }
+.embedded-page .matrix .t-prop { color: var(--text); }

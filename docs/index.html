@@ -46,6 +46,7 @@
       <nav class="site-nav" aria-label="Benchmarks">
         <a href="./prove/">Verification</a>
         <a href="./performance/">Performance</a>
+        <a href="./embedded/">Embedded</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
         <button type="button" data-theme-set="light">light</button><button type="button" data-theme-set="dark">dark</button>
@@ -57,7 +58,7 @@
       <section class="intro">
         <p class="prompt"><span class="ps">$</span> h5i app check<span class="caret" aria-hidden="true"></span></p>
         <h1>Can a web backend be proved correct and still be fast?</h1>
-        <p class="lede"><a href="https://github.com/h5i-dev/h5i">h5i-app</a> is a Rust framework whose kernel, the code that makes the decisions, is extracted to Lean 4 and proved there. This site holds two benchmarks for it: how much real code it can verify, and what that costs at runtime.</p>
+        <p class="lede"><a href="https://github.com/h5i-dev/h5i">h5i-app</a> is a Rust framework whose kernel, the code that makes the decisions, is extracted to Lean 4 and proved there. This site holds three benchmarks for it: how much real code it can verify, what that costs at runtime, and whether a verified kernel can replace firmware logic on a device.</p>
       </section>
 
       <div class="bench-cards">
@@ -75,6 +76,13 @@
           <div class="facts" id="perf-facts" aria-live="polite"></div>
           <span class="go">Open the performance results →</span>
         </a>
+        <a class="bench-card" href="./embedded/">
+          <span class="step-k">Benchmark 3 · Renode</span>
+          <h2>Embedded firmware</h2>
+          <p>Decision logic from open-source embedded Rust firmware (ESP32, RP2040, RP2350) ported to h5i-app and proved in Lean 4. The original and the port run side by side on the target instruction set in Renode, on the same input.</p>
+          <div class="facts" id="emb-facts" aria-live="polite"></div>
+          <span class="go">Open the embedded results →</span>
+        </a>
       </div>
 
       <section id="about" class="block">
@@ -84,7 +92,8 @@
         <ul class="landing-list">
           <li><strong>Verification</strong> asks how much of a real server's security logic fits in a verified kernel. A theorem proves one property of a function, not all of its behavior. Parsing, the database and I/O around the kernel are trusted. Source: <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/prove"><code>prove/</code></a>.</li>
           <li><strong>Web performance</strong> asks whether a server built that way is slower than one written without proofs. The h5i-app servers run their kernels on every request. Source: <a href="https://github.com/h5i-dev/h5i-app-bench/tree/main/performance"><code>performance/</code></a>.</li>
-          <li>Both are runs on one host. The scripts, raw results and summaries are in the repository.</li>
+          <li><strong>Embedded firmware</strong> asks whether a verified kernel can stand in for the decision logic of real device firmware. The original and the port run on the target instruction set in Renode; I/O, the HAL and the device models are trusted. Source: the <code>prove/ports-embed/</code> ports.</li>
+          <li>All are runs on one host. The scripts, raw results and summaries are in the repository.</li>
         </ul>
       </section>
     </main>

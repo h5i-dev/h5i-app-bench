@@ -1,0 +1,141 @@
+{
+ "slug": "esp32-http-stepper",
+ "name": "esp32-http-stepper",
+ "pin": "29a9c9d",
+ "upstream_head": "29a9c9d",
+ "pin_ok": true,
+ "mapped": true,
+ "theorems": [
+  {
+   "name": "no_such_motor",
+   "file": "Properties.lean",
+   "doc": "(S) An index past the two motors is refused (upstream: `senders[index]` panics, the device resets).",
+   "statement": "theorem no_such_motor (i s a : Std.U32) (h : 2 \u2264 i.val) :\n    command i s a = ok .NoMotor",
+   "proof": "theorem no_such_motor (i s a : Std.U32) (h : 2 \u2264 i.val) :\n    command i s a = ok .NoMotor := by\n  have : i \u2265 MOTORS := by have := motors_val; scalar_tac\n  simp only [command, this, \u2193reduceIte]",
+   "deps": [
+    "command",
+    "Decision",
+    "MOTORS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "zero_speed_refused",
+   "file": "Properties.lean",
+   "doc": "(S) A speed of 0 is refused (upstream: accel-stepper's `set_max_speed(0)` takes `1/0` into a `Duration` and panics).",
+   "statement": "theorem zero_speed_refused (i s a : Std.U32) (hi : i.val < 2) (hs : s.val = 0) :\n    command i s a = ok .BadMove",
+   "proof": "theorem zero_speed_refused (i s a : Std.U32) (hi : i.val < 2) (hs : s.val = 0) :\n    command i s a = ok .BadMove := by\n  have h1 : \u00ac i \u2265 MOTORS := by have := motors_val; scalar_tac\n  have h2 : s = 0#u32 := by scalar_tac\n  simp only [command, h1, h2, \u2193reduceIte]",
+   "deps": [
+    "command",
+    "Decision",
+    "MOTORS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "zero_accel_refused",
+   "file": "Properties.lean",
+   "doc": "(S) An acceleration of 0 is refused (upstream ignores it: in a motor's first command the driver keeps acceleration 0 and never finishes).",
+   "statement": "theorem zero_accel_refused (i s a : Std.U32) (hi : i.val < 2) (ha : a.val = 0) :\n    command i s a = ok .BadMove",
+   "proof": "theorem zero_accel_refused (i s a : Std.U32) (hi : i.val < 2) (ha : a.val = 0) :\n    command i s a = ok .BadMove := by\n  have h1 : \u00ac i \u2265 MOTORS := by have := motors_val; scalar_tac\n  have h2 : a = 0#u32 := by scalar_tac\n  have h3 : \u00ac s = 0#u32 \u2228 s = 0#u32 := by tauto\n  rcases h3 with h3 | h3 <;> simp only [command, h1, h2, h3, \u2193reduceIte]",
+   "deps": [
+    "command",
+    "Decision",
+    "MOTORS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "valid_command_queued",
+   "file": "Properties.lean",
+   "doc": "(S) A valid command reaches the motor it names, unchanged.",
+   "statement": "theorem valid_command_queued (i s a : Std.U32) (h : Spec.valid i s a) :\n    command i s a = ok (.Queue i)",
+   "proof": "theorem valid_command_queued (i s a : Std.U32) (h : Spec.valid i s a) :\n    command i s a = ok (.Queue i) := by\n  obtain \u27e8hi, hs, ha\u27e9 := h\n  have h1 : \u00ac i \u2265 MOTORS := by have := motors_val; scalar_tac\n  have h2 : s \u2260 0#u32 := by intro e; apply hs; rw [e]; rfl\n  have h3 : a \u2260 0#u32 := by intro e; apply ha; rw [e]; rfl\n  simp only [command, h1, h2, h3, \u2193reduceIte]",
+   "deps": [
+    "command",
+    "Decision",
+    "MOTORS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "queued_only_valid",
+   "file": "Properties.lean",
+   "doc": "(S) Every command is either valid and queued for the motor it names, or not valid and refused (no such motor, or a bad move): nothing reaches a queue past the two senders, or with a speed or acceleration of 0.",
+   "statement": "theorem queued_only_valid (i s a : Std.U32) :\n    (Spec.valid i s a \u2227 command i s a = ok (.Queue i)) \u2228\n    (\u00ac Spec.valid i s a \u2227 (command i s a = ok .NoMotor \u2228 command i s a = ok .BadMove))",
+   "proof": "theorem queued_only_valid (i s a : Std.U32) :\n    (Spec.valid i s a \u2227 command i s a = ok (.Queue i)) \u2228\n    (\u00ac Spec.valid i s a \u2227 (command i s a = ok .NoMotor \u2228 command i s a = ok .BadMove)) := by\n  by_cases hv : Spec.valid i s a\n  \u00b7 exact Or.inl \u27e8hv, valid_command_queued i s a hv\u27e9\n  \u00b7 refine Or.inr \u27e8hv, ?_\u27e9\n    by_cases hi : 2 \u2264 i.val\n    \u00b7 exact Or.inl (no_such_motor i s a hi)\n    by_cases hs : s.val = 0\n    \u00b7 exact Or.inr (zero_speed_refused i s a (by omega) hs)\n    have ha : a.val = 0 := by\n      by_contra ha\n      exact hv \u27e8by omega, hs, ha\u27e9\n    exact Or.inr (zero_accel_refused i s a (by omega) ha)",
+   "deps": [
+    "command",
+    "Decision",
+    "MOTORS"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "Decision": {
+   "kind": "inductive",
+   "rust_path": "esp32_http_stepper_kernel::Decision",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 21,
+   "kernel_code": "pub enum Decision {\n    /// Queue the move for this motor.\n    Queue { motor: u32 },\n    /// No such motor (404).\n    NoMotor,\n    /// A speed or acceleration of 0 (400).\n    BadMove,\n}",
+   "lean": "@[discriminant isize]\ninductive Decision where\n| Queue : Std.U32 \u2192 Decision\n| NoMotor : Decision\n| BadMove : Decision",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 169,
+     "code": "async fn post_command(motor_index: usize, Form(payload): Form<MoveCommand>, State(app_state): State<Rc<RefCell<AppState>>>)-> impl IntoResponse {\n    app_state.borrow().senders[motor_index].send(payload).await;\n    \"command sent!\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 197,
+     "code": "    loop {\n        let command = receiver.receive().await;\n        driver.set_max_speed(command.speed as f32);\n        driver.set_acceleration(command.accel as f32);            \n        driver.move_by(command.distance as i64);"
+    }
+   ],
+   "upstream_note": "what post_command's send leads to: queued for the motor, or upstream's panics (index) and accel-stepper's (speed 0, accel 0) refused"
+  },
+  "MOTORS": {
+   "kind": "def",
+   "rust_path": "esp32_http_stepper_kernel::MOTORS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 18,
+   "kernel_code": "pub const MOTORS: u32 = 2;",
+   "lean": "@[global_simps, irreducible] def MOTORS : Std.U32 := 2#u32",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 80,
+     "code": "struct AppState {\n    senders: [Sender<'static, NoopRawMutex, MoveCommand, QUEUE_SIZE>; 2]\n}"
+    }
+   ],
+   "upstream_note": "the two senders of AppState: the motors a command can name"
+  },
+  "command": {
+   "kind": "def",
+   "rust_path": "esp32_http_stepper_kernel::command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub fn command(index: u32, speed: u32, accel: u32) -> Decision {\n    if index >= MOTORS {\n        Decision::NoMotor\n    } else if speed == 0 || accel == 0 {\n        Decision::BadMove\n    } else {\n        Decision::Queue { motor: index }\n    }\n}",
+   "lean": "def command\n  (index : Std.U32) (speed : Std.U32) (accel : Std.U32) : Result Decision := do\n  if index >= MOTORS\n  then ok Decision.NoMotor\n  else\n    if speed = 0#u32\n    then ok Decision.BadMove\n    else\n      if accel = 0#u32\n      then ok Decision.BadMove\n      else ok (Decision.Queue index)",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 169,
+     "code": "async fn post_command(motor_index: usize, Form(payload): Form<MoveCommand>, State(app_state): State<Rc<RefCell<AppState>>>)-> impl IntoResponse {\n    app_state.borrow().senders[motor_index].send(payload).await;\n    \"command sent!\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 252,
+     "code": "        let app = Router::new()\n            .route((\"/cmd\", parse_path_segment::<usize>()), get(post_command))\n        ;"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 197,
+     "code": "    loop {\n        let command = receiver.receive().await;\n        driver.set_max_speed(command.speed as f32);\n        driver.set_acceleration(command.accel as f32);            \n        driver.move_by(command.distance as i64);"
+    }
+   ],
+   "upstream_note": "post_command's senders[motor_index] (index from the /cmd route) and the motor task's set_max_speed/set_acceleration, as one decision before the queue"
+  }
+ },
+ "specs": {}
+}

@@ -1,0 +1,277 @@
+{
+ "slug": "diy-weather-station",
+ "name": "diy-weather-station",
+ "pin": "882fc24",
+ "upstream_head": "882fc24",
+ "pin_ok": true,
+ "mapped": true,
+ "theorems": [
+  {
+   "name": "begin_requires_token_and_fit",
+   "file": "Properties.lean",
+   "doc": "**S (U1, U3).** An upload starts only with no upload running, the token, a declared length, and an image that fits the active slot.",
+   "statement": "theorem begin_requires_token_and_fit (cur : Session) (a h : Bool) (len : Std.U32) (s : Session)\n    (hb : begin cur a h len = ok (some s)) :\n    cur.active = false \u2227 a = true \u2227 h = true \u2227 0 < len.val \u2227 len.val \u2264 876 * 1024 \u2227\n      s.active = true \u2227 s.written.val = 0 \u2227 s.declared = len",
+   "proof": "theorem begin_requires_token_and_fit (cur : Session) (a h : Bool) (len : Std.U32) (s : Session)\n    (hb : begin cur a h len = ok (some s)) :\n    cur.active = false \u2227 a = true \u2227 h = true \u2227 0 < len.val \u2227 len.val \u2264 876 * 1024 \u2227\n      s.active = true \u2227 s.written.val = 0 \u2227 s.declared = len := by\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 (begin_spec cur a h len)\n  rw [hb] at hr\n  simp only [Result.ok.injEq] at hr\n  exact hp s hr.symm",
+   "deps": [
+    "Session",
+    "begin",
+    "ACTIVE_SIZE"
+   ],
+   "spec": []
+  },
+  {
+   "name": "chunk_within_declared",
+   "file": "Properties.lean",
+   "doc": "**S (U2).** A chunk is accepted only within the declared length.",
+   "statement": "theorem chunk_within_declared (s : Session) (n : Std.U32) (off : Std.U32) (s' : Session)\n    (hinv : s.written.val \u2264 s.declared.val) (h : chunk s n = ok (some (off, s'))) :\n    s'.written.val \u2264 s'.declared.val \u2227 s'.declared = s.declared \u2227 s'.active = true",
+   "proof": "theorem chunk_within_declared (s : Session) (n : Std.U32) (off : Std.U32) (s' : Session)\n    (hinv : s.written.val \u2264 s.declared.val) (h : chunk s n = ok (some (off, s'))) :\n    s'.written.val \u2264 s'.declared.val \u2227 s'.declared = s.declared \u2227 s'.active = true := by\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 (chunk_spec s n hinv)\n  rw [h] at hr\n  simp only [Result.ok.injEq] at hr\n  obtain \u27e8h1, h2, h3, _, _\u27e9 := hp off s' hr.symm\n  exact \u27e8h1, h2, h3\u27e9",
+   "deps": [
+    "Session",
+    "chunk"
+   ],
+   "spec": []
+  },
+  {
+   "name": "chunk_contiguous",
+   "file": "Properties.lean",
+   "doc": "**S (U2).** Chunks are written contiguously: each at the bytes written so far, which then grow by its length.",
+   "statement": "theorem chunk_contiguous (s : Session) (n : Std.U32) (off : Std.U32) (s' : Session)\n    (hinv : s.written.val \u2264 s.declared.val) (h : chunk s n = ok (some (off, s'))) :\n    off = s.written \u2227 s'.written.val = s.written.val + n.val",
+   "proof": "theorem chunk_contiguous (s : Session) (n : Std.U32) (off : Std.U32) (s' : Session)\n    (hinv : s.written.val \u2264 s.declared.val) (h : chunk s n = ok (some (off, s'))) :\n    off = s.written \u2227 s'.written.val = s.written.val + n.val := by\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 (chunk_spec s n hinv)\n  rw [h] at hr\n  simp only [Result.ok.injEq] at hr\n  obtain \u27e8_, _, _, h4, h5\u27e9 := hp off s' hr.symm\n  exact \u27e8h4, h5\u27e9",
+   "deps": [
+    "Session",
+    "chunk"
+   ],
+   "spec": []
+  },
+  {
+   "name": "complete_iff_all_written",
+   "file": "Properties.lean",
+   "doc": "**S.** An image is marked for swap exactly when all its declared bytes were written.",
+   "statement": "theorem complete_iff_all_written (s : Session) :\n    complete s = ok (s.active && decide (s.written = s.declared) && decide (0 < s.declared.val))",
+   "proof": "theorem complete_iff_all_written (s : Session) :\n    complete s = ok (s.active && decide (s.written = s.declared) && decide (0 < s.declared.val)) := by\n  unfold complete\n  cases ha : s.active <;> simp\n  split_ifs with hw <;> simp_all <;> scalar_tac",
+   "deps": [
+    "Session",
+    "complete"
+   ],
+   "spec": []
+  },
+  {
+   "name": "abort_never_completes",
+   "file": "Properties.lean",
+   "doc": "**S (U3).** An aborted session is never marked.",
+   "statement": "theorem abort_never_completes (s : Session) : (do let t \u2190 abort s; complete t) = ok false",
+   "proof": "theorem abort_never_completes (s : Session) : (do let t \u2190 abort s; complete t) = ok false := by\n  first\n    | rfl\n    | (simp only [abort, bind_tc_ok]; unfold complete IDLE; simp)\n    | decide",
+   "deps": [
+    "abort",
+    "Session",
+    "complete",
+    "IDLE"
+   ],
+   "spec": []
+  },
+  {
+   "name": "token_ok_needs_configured",
+   "file": "Properties.lean",
+   "doc": "**S (U1).** With no token configured (all zero), no request is authorised.",
+   "statement": "theorem token_ok_needs_configured (g : Array Std.U8 32#usize) :\n    token_ok g (Array.repeat 32#usize 0#u8) = ok false",
+   "proof": "theorem token_ok_needs_configured (g : Array Std.U8 32#usize) :\n    token_ok g (Array.repeat 32#usize 0#u8) = ok false := by\n  have spec : token_ok g (Array.repeat 32#usize 0#u8) \u2983 r => r = false \u2984 := by\n    unfold token_ok\n    have hl := token_ok_loop_zero g 0#u8 0#usize (by simp)\n    step*\n    all_goals first | (simp_all; done) | (split <;> simp_all) | scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 spec\n  rw [hr, hp]",
+   "deps": [
+    "token_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "confirm_boot_needs_up",
+   "file": "Properties.lean",
+   "doc": "**S (U4).** A swapped-in image is confirmed only once the firmware is up.",
+   "statement": "theorem confirm_boot_needs_up (sw up : Bool) (h : confirm_boot sw up = ok true) :\n    sw = true \u2227 up = true",
+   "proof": "theorem confirm_boot_needs_up (sw up : Bool) (h : confirm_boot sw up = ok true) :\n    sw = true \u2227 up = true := by\n  unfold confirm_boot at h\n  cases sw <;> cases up <;> simp_all",
+   "deps": [
+    "confirm_boot"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "abort": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::abort",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 82,
+   "kernel_code": "pub fn abort(_s: Session) -> Session {\n    IDLE\n}",
+   "lean": "def abort (_s : Session) : Result Session := do\n  ok IDLE",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 100,
+     "code": "\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}"
+    },
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 117,
+     "code": "\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}"
+    },
+    {
+     "file": "client/app/src/http_server/endpoints.rs",
+     "line": 69,
+     "code": "\t\t\tread = match select(body_rdr.read(&mut buf), DFU_UPDATE_SIGNAL.wait()).await {\n\t\t\t\tEither::First(res) => res?,\n\t\t\t\tEither::Second(DfuUpdateResult::Failure(err)) => {\n\t\t\t\t\treturn picoserve::response::Response::new(\n\t\t\t\t\t\tStatusCode::new(500),\n\t\t\t\t\t\tformat_args!(\"{:?}\", err),\n\t\t\t\t\t)\n\t\t\t\t\t.write_to(request.body_connection.finalize().await?, response_writer)\n\t\t\t\t\t.await\n\t\t\t\t}\n\t\t\t\tEither::Second(DfuUpdateResult::Success) => {\n\t\t\t\t\tpanic!(\"unexpected DfuUpdateResult::Success\")\n\t\t\t\t}\n\t\t\t};"
+    }
+   ],
+   "upstream_note": "write-failure paths back to 'outer; upstream has no abort on disconnect (res? returns, init_dfu keeps the offset: U3)"
+  },
+  "Session": {
+   "kind": "structure",
+   "rust_path": "diy_weather_kernel::Session",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 27,
+   "kernel_code": "pub struct Session {\n    pub active: bool,\n    /// Content-Length of the upload.\n    pub declared: u32,\n    /// Bytes written so far, contiguous from offset 0.\n    pub written: u32,\n}",
+   "lean": "structure Session where\n  active : Bool\n  declared : Std.U32\n  written : Std.U32",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 86,
+     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;\n\n\t\tlet flash = match updater.prepare_update().await {\n\t\t\tOk(flash) => flash,\n\t\t\tErr(e) => {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t};\n\n\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;\n\n\t\tlet mut read;\n\t\tloop {\n\t\t\tlet res = select(\n\t\t\t\tDFU_PIPE_DONE_SIGNAL.wait(),\n\t\t\t\tDFU_UPDATE_PIPE.read(&mut buf.0),\n\t\t\t)\n\t\t\t.await;\n\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,\n\t\t\t\tEither::Second(read) => read as u32,\n\t\t\t};\n\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}\n\t\t\toffset += read;\n\t\t}"
+    }
+   ],
+   "upstream_note": "init_dfu's upload state (the offset local); the port adds the declared Content-Length and an active flag"
+  },
+  "confirm_boot": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::confirm_boot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 91,
+   "kernel_code": "pub fn confirm_boot(state_is_swap: bool, up: bool) -> bool {\n    state_is_swap && up\n}",
+   "lean": "def confirm_boot (state_is_swap : Bool) (up : Bool) : Result Bool := do\n  if state_is_swap\n  then ok up\n  else ok false",
+   "upstream": [
+    {
+     "file": "client/app/src/main.rs",
+     "line": 220,
+     "code": "\t// start web server\n\twatchdog.feed();\n\tset_up_and_spawn_webserver(&spawner, net_stack).await;\n\n\t// boot complete, turn off red LED and green on for 0.5s"
+    }
+   ],
+   "upstream_note": "upstream never calls mark_booted (U4); the port confirms where main has brought up the web server"
+  },
+  "token_ok": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::token_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 40,
+   "kernel_code": "pub fn token_ok(given: &[u8; TOKEN_LEN], configured: &[u8; TOKEN_LEN]) -> bool {\n    let mut diff: u8 = 0;\n    let mut any: u8 = 0;\n    let mut i = 0;\n    while i < TOKEN_LEN {\n        diff |= given[i] ^ configured[i];\n        any |= configured[i];\n        i += 1;\n    }\n    diff == 0 && any != 0\n}",
+   "lean": "def token_ok\n  (given : Array Std.U8 32#usize) (configured : Array Std.U8 32#usize) :\n  Result Bool\n  := do\n  let (diff, any) \u2190 token_ok_loop given configured 0#u8 0#u8 0#usize\n  if diff = 0#u8\n  then ok (any != 0#u8)\n  else ok false",
+   "upstream": [
+    {
+     "file": "client/app/src/http_server/endpoints.rs",
+     "line": 26,
+     "code": "\t\t.route(\n\t\t\t\"/dfu\",\n\t\t\tpicoserve::routing::get(method_not_allowed).post_service(DfuUpdateEndpoint),\n\t\t)"
+    },
+    {
+     "file": "client/app/src/http_server/endpoints.rs",
+     "line": 56,
+     "code": "impl picoserve::routing::RequestHandlerService<AppState> for DfuUpdateEndpoint {\n\tasync fn call_request_handler_service<R: Read, W: ResponseWriter<Error = R::Error>>(\n\t\t&self,\n\t\t_state: &AppState,\n\t\t_path_parameters: (),\n\t\tmut request: Request<'_, R>,\n\t\tresponse_writer: W,\n\t) -> Result<ResponseSent, W::Error> {\n\t\tlet mut body_rdr = request.body_connection.body().reader();"
+    }
+   ],
+   "upstream_note": "upstream has no check (U1); guards POST /dfu (DfuUpdateEndpoint), which accepts a body from any client"
+  },
+  "IDLE": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::IDLE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub const IDLE: Session = Session { active: false, declared: 0, written: 0 };",
+   "lean": "@[global_simps, irreducible]\ndef IDLE : Session := { active := false, declared := 0#u32, written := 0#u32 }",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 86,
+     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;"
+    }
+   ],
+   "upstream_note": "init_dfu at the top of 'outer, waiting for the first bytes of an upload"
+  },
+  "begin": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::begin",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 55,
+   "kernel_code": "pub fn begin(current: Session, authorised: bool, has_length: bool, len: u32) -> Option<Session> {\n    if !current.active && authorised && has_length && len > 0 && len <= ACTIVE_SIZE {\n        Some(Session { active: true, declared: len, written: 0 })\n    } else {\n        None\n    }\n}",
+   "lean": "def begin\n  (current : Session) (authorised : Bool) (has_length : Bool) (len : Std.U32) :\n  Result (Option Session)\n  := do\n  if current.active\n  then ok none\n  else\n    if authorised\n    then\n      if has_length\n      then\n        if len > 0#u32\n        then\n          let i \u2190 ACTIVE_SIZE\n          if len <= i\n          then ok (some { active := true, declared := len, written := 0#u32 })\n          else ok none\n        else ok none\n      else ok none\n    else ok none",
+   "upstream": [
+    {
+     "file": "client/app/src/http_server/endpoints.rs",
+     "line": 56,
+     "code": "impl picoserve::routing::RequestHandlerService<AppState> for DfuUpdateEndpoint {\n\tasync fn call_request_handler_service<R: Read, W: ResponseWriter<Error = R::Error>>(\n\t\t&self,\n\t\t_state: &AppState,\n\t\t_path_parameters: (),\n\t\tmut request: Request<'_, R>,\n\t\tresponse_writer: W,\n\t) -> Result<ResponseSent, W::Error> {\n\t\tlet mut body_rdr = request.body_connection.body().reader();\n\n\t\tlet mut buf = [0; DFU_PIPE_BUFFER_SIZE];\n\t\tlet mut read;\n\t\tloop {"
+    },
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 86,
+     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;\n\n\t\tlet flash = match updater.prepare_update().await {\n\t\t\tOk(flash) => flash,\n\t\t\tErr(e) => {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t};\n\n\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;"
+    }
+   ],
+   "upstream_note": "start of an upload: endpoint begins streaming, init_dfu prepare_update + first write; upstream has no single-session/length check (U3)"
+  },
+  "chunk": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::chunk",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 66,
+   "kernel_code": "pub fn chunk(s: Session, n: u32) -> Option<(u32, Session)> {\n    if s.active && n > 0 && n <= s.declared - s.written {\n        Some((s.written, Session { active: true, declared: s.declared, written: s.written + n }))\n    } else {\n        None\n    }\n}",
+   "lean": "def chunk\n  (s : Session) (n : Std.U32) : Result (Option (Std.U32 \u00d7 Session)) := do\n  if s.active\n  then\n    if n > 0#u32\n    then\n      let i \u2190 s.declared - s.written\n      if n <= i\n      then\n        let i1 \u2190 s.written + n\n        ok (some (s.written, { s with written := i1 }))\n      else ok none\n    else ok none\n  else ok none",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 99,
+     "code": "\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;"
+    },
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 106,
+     "code": "\t\tlet mut read;\n\t\tloop {\n\t\t\tlet res = select(\n\t\t\t\tDFU_PIPE_DONE_SIGNAL.wait(),\n\t\t\t\tDFU_UPDATE_PIPE.read(&mut buf.0),\n\t\t\t)\n\t\t\t.await;\n\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,\n\t\t\t\tEither::Second(read) => read as u32,\n\t\t\t};\n\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}\n\t\t\toffset += read;\n\t\t}"
+    }
+   ],
+   "upstream_note": "flash.write(offset, ..) then offset += read; upstream writes the whole buffer (U2) and never bounds offset"
+  },
+  "ACTIVE_SIZE": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::ACTIVE_SIZE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 19,
+   "kernel_code": "pub const ACTIVE_SIZE: u32 = 876 * 1024;",
+   "lean": "@[global_simps, irreducible]\ndef ACTIVE_SIZE : Result Std.U32 := 876#u32 * 1024#u32",
+   "upstream": [
+    {
+     "file": "client/app/memory.x",
+     "line": 7,
+     "code": "  FLASH                             : ORIGIN = 0x1000b000, LENGTH = 876K\n  DFU                               : ORIGIN = 0x100e6000, LENGTH = 880K"
+    }
+   ],
+   "upstream_note": "FLASH (active slot) 876K; the DFU partition is one page larger"
+  },
+  "complete": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::complete",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 76,
+   "kernel_code": "pub fn complete(s: Session) -> bool {\n    s.active && s.written == s.declared && s.declared > 0\n}",
+   "lean": "def complete (s : Session) : Result Bool := do\n  if s.active\n  then if s.written = s.declared\n       then ok (s.declared > 0#u32)\n       else ok false\n  else ok false",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 113,
+     "code": "\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,"
+    },
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 124,
+     "code": "\t\tif let Err(e) = updater.mark_updated().await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Success);"
+    },
+    {
+     "file": "client/app/src/http_server/endpoints.rs",
+     "line": 107,
+     "code": "\t\tDFU_PIPE_DONE_SIGNAL.signal(());"
+    }
+   ],
+   "upstream_note": "body end (done signal / read 0) -> mark_updated; upstream marks whatever length was written"
+  }
+ },
+ "specs": {}
+}

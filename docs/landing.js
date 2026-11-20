@@ -45,7 +45,21 @@ async function performance() {
     fact(`${wins}<small>/${total}</small>`, "fastest is h5i-app, at 64 clients");
 }
 
+async function embedded() {
+  const d = await fetch("./embedded/data.json").then((r) => r.json());
+  const ps = d.projects;
+  const thms = ps.reduce((s, p) => s + p.theorems, 0);
+  const runs = ps.flatMap((p) => [p.mixed, p.normal].filter(Boolean));
+  const scen = runs.reduce((s, r) => s + r.scenarios, 0);
+  $("#emb-facts").innerHTML =
+    fact(ps.length, "firmwares") +
+    fact(fmt(thms), "theorems proved") +
+    fact(new Set(ps.map((p) => p.isa)).size, "instruction sets") +
+    fact(kLines(scen), "Renode scenarios");
+}
+
 setTheme(document.documentElement.dataset.theme || "dark");
 for (const b of document.querySelectorAll("[data-theme-set]")) b.addEventListener("click", () => setTheme(b.dataset.themeSet));
 prove().catch(() => {});
 performance().catch(() => {});
+embedded().catch(() => {});
