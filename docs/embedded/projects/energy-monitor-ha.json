@@ -1,0 +1,129 @@
+{
+ "slug": "energy-monitor-ha",
+ "name": "energy-monitor-ha",
+ "pin": "cb1b356",
+ "upstream_head": "cb1b356",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "password_never_served",
+   "file": "Properties.lean",
+   "doc": "(S) A password is never served: the marker always replaces it.",
+   "statement": "theorem password_never_served : serve_password = ok true",
+   "proof": "theorem password_never_served : serve_password = ok true := by\n  simp [serve_password]",
+   "deps": [
+    "serve_password"
+   ],
+   "spec": []
+  },
+  {
+   "name": "keep_marker",
+   "file": "Properties.lean",
+   "doc": "(S) The marker keeps the stored password; anything else replaces it.",
+   "statement": "theorem keep_marker (b : Bool) : password b = ok (if b then Password.KeepStored else Password.Replace)",
+   "proof": "theorem keep_marker (b : Bool) : password b = ok (if b then Password.KeepStored else Password.Replace) := by\n  cases b <;> simp [password]",
+   "deps": [
+    "password",
+    "Password"
+   ],
+   "spec": []
+  },
+  {
+   "name": "zero_samples_refused",
+   "file": "Properties.lean",
+   "doc": "(S) An STPM config that averages no sample is refused (upstream takes it, and the calibration then divides by zero).",
+   "statement": "theorem zero_samples_refused : stpm_ok 0#u32 = ok false",
+   "proof": "theorem zero_samples_refused : stpm_ok 0#u32 = ok false := by\n  simp [stpm_ok]",
+   "deps": [
+    "stpm_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "no_division_by_zero_samples",
+   "file": "Properties.lean",
+   "doc": "(S) No sample with zero readings is calibrated.",
+   "statement": "theorem no_division_by_zero_samples (n : Std.U32) (h : publish_ok n = ok true) : 0 < n.val",
+   "proof": "theorem no_division_by_zero_samples (n : Std.U32) (h : publish_ok n = ok true) : 0 < n.val := by\n  unfold publish_ok at h\n  simp at h\n  scalar_tac",
+   "deps": [
+    "publish_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "no_division_by_zero_period",
+   "file": "Properties.lean",
+   "doc": "(S) The frequency is computed only from a measured period.",
+   "statement": "theorem no_division_by_zero_period (t : Std.U32) (h : frequency_ok t = ok true) : t.val \u2260 0",
+   "proof": "theorem no_division_by_zero_period (t : Std.U32) (h : frequency_ok t = ok true) : t.val \u2260 0 := by\n  unfold frequency_ok at h\n  simp at h\n  scalar_tac",
+   "deps": [
+    "frequency_ok"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "frequency_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::frequency_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 73,
+   "kernel_code": "pub fn frequency_ok(tdiff: u32) -> bool {\n    tdiff != 0\n}",
+   "lean": "def frequency_ok (tdiff : Std.U32) : Result Bool := do\n  ok (tdiff != 0#u32)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "password": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub fn password(is_keep_marker: bool) -> Password {\n    if is_keep_marker { Password::KeepStored } else { Password::Replace }\n}",
+   "lean": "def password (is_keep_marker : Bool) : Result Password := do\n  if is_keep_marker\n  then ok Password.KeepStored\n  else ok Password.Replace",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Password": {
+   "kind": "inductive",
+   "rust_path": "energy_monitor_ha_kernel::Password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub enum Password {\n    /// `--keep--`: the stored password stays.\n    KeepStored,\n    /// A new password.\n    Replace,\n}",
+   "lean": "@[discriminant isize]\ninductive Password where\n| KeepStored : Password\n| Replace : Password",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "publish_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::publish_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 66,
+   "kernel_code": "pub fn publish_ok(num_samples: u32) -> bool {\n    num_samples >= 1\n}",
+   "lean": "def publish_ok (num_samples : Std.U32) : Result Bool := do\n  ok (num_samples >= 1#u32)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "stpm_ok": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::stpm_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 59,
+   "kernel_code": "pub fn stpm_ok(samples: u32) -> bool {\n    samples >= 1\n}",
+   "lean": "def stpm_ok (samples : Std.U32) : Result Bool := do\n  ok (samples >= 1#u32)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "serve_password": {
+   "kind": "def",
+   "rust_path": "energy_monitor_ha_kernel::serve_password",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub fn serve_password() -> bool {\n    true\n}",
+   "lean": "def serve_password : Result Bool := do\n  ok true",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

@@ -1,0 +1,122 @@
+{
+ "slug": "pico-dhcp-dns-server",
+ "name": "pico_dhcp_dns_server",
+ "pin": "cf2b3f5",
+ "upstream_head": "cf2b3f5",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "discover_keeps_live_leases",
+   "file": "Properties.lean",
+   "doc": "**S.** A DISCOVER never takes a slot assigned to another client whose lease is still running.",
+   "statement": "theorem discover_keeps_live_leases (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64)\n    (r : Option Std.Usize) (slots' : Slice Slot)\n    (h : discover slots cid txid now = ok (r, slots')) :\n    \u2200 k, k < slots.val.length \u2192 (slots.val[k]!).kind = Kind.Assigned \u2192\n      (slots.val[k]!).id \u2260 cid \u2192 now.val < (slots.val[k]!).lease_end.val \u2192\n      slots'.val[k]! = slots.val[k]!",
+   "proof": "theorem discover_keeps_live_leases (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64)\n    (r : Option Std.Usize) (slots' : Slice Slot)\n    (h : discover slots cid txid now = ok (r, slots')) :\n    \u2200 k, k < slots.val.length \u2192 (slots.val[k]!).kind = Kind.Assigned \u2192\n      (slots.val[k]!).id \u2260 cid \u2192 now.val < (slots.val[k]!).lease_end.val \u2192\n      slots'.val[k]! = slots.val[k]! := by\n  obtain \u27e8res, hres, hp\u27e9 := (WP.spec_equiv_exists _ _).1\n    (discover_loop_spec slots cid txid now none 0#usize (by simp) (by simp))\n  unfold discover at h\n  rw [hres] at h\n  simp only [Result.ok.injEq] at h\n  intro k hk h1 h2 h3\n  have := hp k hk \u27e8h1, h2, h3\u27e9\n  rw [h] at this\n  exact this",
+   "deps": [
+    "Slot",
+    "discover",
+    "Kind"
+   ],
+   "spec": []
+  },
+  {
+   "name": "request_acks_only_its_own",
+   "file": "Properties.lean",
+   "doc": "**S.** A REQUEST is acknowledged only for a slot offered to this client with this transaction, or assigned to it with this transaction and an unexpired lease.",
+   "statement": "theorem request_acks_only_its_own (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now e : Std.U64)\n    (i : Std.Usize) (slots' : Slice Slot)\n    (h : request slots cid txid now e = ok (some i, slots')) :\n    (slots.val[i.val]!).id = cid \u2227 (slots.val[i.val]!).txid = txid \u2227\n      ((slots.val[i.val]!).kind = Kind.Offered \u2228\n        ((slots.val[i.val]!).kind = Kind.Assigned \u2227 now.val < (slots.val[i.val]!).lease_end.val))",
+   "proof": "theorem request_acks_only_its_own (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now e : Std.U64)\n    (i : Std.Usize) (slots' : Slice Slot)\n    (h : request slots cid txid now e = ok (some i, slots')) :\n    (slots.val[i.val]!).id = cid \u2227 (slots.val[i.val]!).txid = txid \u2227\n      ((slots.val[i.val]!).kind = Kind.Offered \u2228\n        ((slots.val[i.val]!).kind = Kind.Assigned \u2227 now.val < (slots.val[i.val]!).lease_end.val)) := by\n  obtain \u27e8res, hres, hp\u27e9 := (WP.spec_equiv_exists _ _).1\n    (request_loop_spec slots cid txid now e 0#usize (by simp))\n  unfold request at h\n  rw [hres] at h\n  simp only [Result.ok.injEq] at h\n  subst h\n  exact hp i rfl",
+   "deps": [
+    "Slot",
+    "request",
+    "Kind"
+   ],
+   "spec": []
+  },
+  {
+   "name": "answer_fits_bounds",
+   "file": "Properties.lean",
+   "doc": "**S (U1 fix).** An answer is written only inside the received question and the buffer.",
+   "statement": "theorem answer_fits_bounds (rcv buf q : Std.Usize) (hq : q.val < 65536)\n    (h : answer_fits rcv buf q = ok true) :\n    12 + q.val \u2264 rcv.val \u2227 12 + q.val + 16 \u2264 buf.val",
+   "proof": "theorem answer_fits_bounds (rcv buf q : Std.Usize) (hq : q.val < 65536)\n    (h : answer_fits rcv buf q = ok true) :\n    12 + q.val \u2264 rcv.val \u2227 12 + q.val + 16 \u2264 buf.val := by\n  have spec : answer_fits rcv buf q \u2983 r => r = true \u2192 12 + q.val \u2264 rcv.val \u2227 12 + q.val + 16 \u2264 buf.val \u2984 := by\n    unfold answer_fits DNS_HEADER_SIZE ANSWER_SIZE\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals first | (intro h; simp_all; done) | (intro h; simp_all; scalar_tac) | scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 spec\n  rw [h] at hr\n  simp only [Result.ok.injEq] at hr\n  exact hp hr.symm",
+   "deps": [
+    "answer_fits",
+    "DNS_HEADER_SIZE",
+    "ANSWER_SIZE"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "ANSWER_SIZE": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::ANSWER_SIZE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 142,
+   "kernel_code": "pub const ANSWER_SIZE: usize = 16;",
+   "lean": "@[global_simps, irreducible] def ANSWER_SIZE : Std.Usize := 16#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Slot": {
+   "kind": "structure",
+   "rust_path": "pico_dhcp_kernel::Slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 25,
+   "kernel_code": "pub struct Slot {\n    pub kind: Kind,\n    pub id: u64,\n    pub txid: u32,\n    pub lease_end: u64,\n}",
+   "lean": "structure Slot where\n  kind : Kind\n  id : Std.U64\n  txid : Std.U32\n  lease_end : Std.U64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Kind": {
+   "kind": "inductive",
+   "rust_path": "pico_dhcp_kernel::Kind",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 18,
+   "kernel_code": "pub enum Kind {\n    Free,\n    Offered,\n    Assigned,\n}",
+   "lean": "@[discriminant isize]\ninductive Kind where\n| Free : Kind\n| Offered : Kind\n| Assigned : Kind",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "answer_fits": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::answer_fits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 160,
+   "kernel_code": "pub fn answer_fits(received: usize, buffer: usize, question_len: usize) -> bool {\n    let end = DNS_HEADER_SIZE + question_len;\n    end <= received && end + ANSWER_SIZE <= buffer\n}",
+   "lean": "def answer_fits\n  (received : Std.Usize) (buffer : Std.Usize) (question_len : Std.Usize) :\n  Result Bool\n  := do\n  let \u00abend\u00bb \u2190 DNS_HEADER_SIZE + question_len\n  if \u00abend\u00bb <= received\n  then let i \u2190 \u00abend\u00bb + ANSWER_SIZE\n       ok (i <= buffer)\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "request": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::request",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 105,
+   "kernel_code": "pub fn request(slots: &mut [Slot], cid: u64, txid: u32, now: u64, new_end: u64) -> Option<usize> {\n    let mut i: usize = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        let hit = match s.kind {\n            Kind::Offered => {\n                if s.id == cid && s.txid == txid {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Assigned => {\n                if s.id == cid && s.txid == txid && now < s.lease_end {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Free => false,\n        };\n        if hit {\n            slots[i] = Slot { kind: Kind::Assigned, id: cid, txid, lease_end: new_end };\n            return Some(i);\n        }\n        i += 1;\n    }\n    None\n}",
+   "lean": "@[reducible]\ndef request\n  (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64)\n  (new_end : Std.U64) :\n  Result ((Option Std.Usize) \u00d7 (Slice Slot))\n  := do\n  request_loop slots cid txid now new_end 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DNS_HEADER_SIZE": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::DNS_HEADER_SIZE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 139,
+   "kernel_code": "pub const DNS_HEADER_SIZE: usize = 12;",
+   "lean": "@[global_simps, irreducible] def DNS_HEADER_SIZE : Std.Usize := 12#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "discover": {
+   "kind": "def",
+   "rust_path": "pico_dhcp_kernel::discover",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 36,
+   "kernel_code": "pub fn discover(slots: &mut [Slot], cid: u64, txid: u32, now: u64) -> Option<usize> {\n    let mut first_offered: Option<usize> = None;\n    let mut i: usize = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        let usable = match s.kind {\n            Kind::Offered => {\n                if s.id != cid {\n                    first_offered = Some(i);\n                    false\n                } else {\n                    true\n                }\n            }\n            // (explicit ifs: the same, and Bool results Aeneas types right)\n            Kind::Assigned => {\n                if s.id == cid {\n                    true\n                } else if now >= s.lease_end {\n                    true\n                } else {\n                    false\n                }\n            }\n            Kind::Free => true,\n        };\n        if usable {\n            slots[i] = Slot { kind: Kind::Offered, id: cid, txid, lease_end: s.lease_end };\n            return Some(i);\n        }\n        i += 1;\n    }\n    match first_offered {\n        Some(j) => {\n            let le = slots[j].lease_end;\n            slots[j] = Slot { kind: Kind::Offered, id: cid, txid, lease_end: le };\n            Some(j)\n        }\n        None => None,\n    }\n}",
+   "lean": "@[reducible]\ndef discover\n  (slots : Slice Slot) (cid : Std.U64) (txid : Std.U32) (now : Std.U64) :\n  Result ((Option Std.Usize) \u00d7 (Slice Slot))\n  := do\n  discover_loop slots cid txid now none 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

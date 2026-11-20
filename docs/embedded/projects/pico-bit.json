@@ -1,0 +1,561 @@
+{
+ "slug": "pico-bit",
+ "name": "pico-bit",
+ "pin": "b6349e2",
+ "upstream_head": "b6349e2",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "valid_name_no_traversal",
+   "file": "Properties.lean",
+   "doc": "**Security (S): no path traversal.** Every filename the gate accepts is a non-empty, \u226464-byte component that is neither `.` nor `..` and contains no path separator or NUL. Appending it after `/armory/` therefore names a direct child of the armory directory: the device can never be steered to a file outside `/armory`. Falsified by `drop_slash_check` (a `/`/`\\` could pass) and `drop_dotdot_check` (`..` could pass).",
+   "statement": "theorem valid_name_no_traversal (nm : Slice Std.U8) (h : valid_name nm = ok true) :\n    Spec.SafeNameAt nm.val nm.val.length",
+   "proof": "theorem valid_name_no_traversal (nm : Slice Std.U8) (h : valid_name nm = ok true) :\n    Spec.SafeNameAt nm.val nm.val.length := by\n  unfold valid_name at h\n  obtain \u27e8r, hr, hpost\u27e9 := (WP.spec_equiv_exists _ _).1 (valid_name_prefix_facts nm (Slice.len nm))\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  subst h\n  simpa [Slice.len_val] using hpost rfl",
+   "deps": [
+    "valid_name",
+    "valid_name_prefix",
+    "NAME_MAX",
+    "is_dot_name",
+    "DOT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "decode_filename_confined",
+   "file": "Properties.lean",
+   "doc": "**Security (S): decode-then-validate confinement.** Even after percent-decoding, any filename `decode_filename` accepts satisfies the confinement policy on the decoded bytes. This is what makes `%2e%2e` (`..`) and `%2f` (`/`) harmless: they are decoded first and then rejected. Falsified by `validate_before_decode` (validating the raw, still-encoded bytes would accept a decoded `..`).",
+   "statement": "theorem decode_filename_confined (raw out out' : Slice Std.U8) (n : Std.Usize)\n    (h : decode_filename raw out = ok (some n, out')) :\n    Spec.SafeNameAt out'.val n.val",
+   "proof": "theorem decode_filename_confined (raw out out' : Slice Std.U8) (n : Std.Usize)\n    (h : decode_filename raw out = ok (some n, out')) :\n    Spec.SafeNameAt out'.val n.val := by\n  obtain \u27e8r, hr, hpost\u27e9 := (WP.spec_equiv_exists _ _).1 (decode_filename_wp raw out)\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  exact hpost n out' h",
+   "deps": [
+    "decode_filename",
+    "percent_decode",
+    "valid_name_prefix",
+    "RAW_MAX",
+    "NAME_MAX",
+    "is_dot_name",
+    "DOT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "decode_filename_total",
+   "file": "Properties.lean",
+   "doc": "`decode_filename` is total (never panics). (C)",
+   "statement": "theorem decode_filename_total (raw out : Slice Std.U8) :\n    \u2203 r, decode_filename raw out = ok r",
+   "proof": "theorem decode_filename_total (raw out : Slice Std.U8) :\n    \u2203 r, decode_filename raw out = ok r := by\n  obtain \u27e8r, hr, -\u27e9 := (WP.spec_equiv_exists _ _).1 (decode_filename_wp raw out)\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "decode_filename",
+    "percent_decode",
+    "valid_name_prefix",
+    "RAW_MAX",
+    "NAME_MAX",
+    "is_dot_name",
+    "DOT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "percent_decode_total",
+   "file": "Properties.lean",
+   "doc": "`percent_decode` is total (never panics), for any input and buffer. (C)",
+   "statement": "theorem percent_decode_total (raw out : Slice Std.U8) :\n    \u2203 r, percent_decode raw out = ok r",
+   "proof": "theorem percent_decode_total (raw out : Slice Std.U8) :\n    \u2203 r, percent_decode raw out = ok r := by\n  obtain \u27e8r, hr, -\u27e9 := (WP.spec_equiv_exists _ _).1 (percent_decode_wp raw out)\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "percent_decode",
+    "RAW_MAX",
+    "NAME_MAX"
+   ],
+   "spec": []
+  },
+  {
+   "name": "valid_name_total",
+   "file": "Properties.lean",
+   "doc": "`valid_name` is total (never panics), for any slice. (C)",
+   "statement": "theorem valid_name_total (nm : Slice Std.U8) :\n    \u2203 r, valid_name nm = ok r",
+   "proof": "theorem valid_name_total (nm : Slice Std.U8) :\n    \u2203 r, valid_name nm = ok r := by\n  unfold valid_name\n  obtain \u27e8r, hr, -\u27e9 := (WP.spec_equiv_exists _ _).1 (valid_name_prefix_facts nm (Slice.len nm))\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "valid_name",
+    "valid_name_prefix",
+    "NAME_MAX",
+    "is_dot_name",
+    "DOT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "classify_total",
+   "file": "Properties.lean",
+   "doc": "`classify` is total (never panics), for any input. (C)",
+   "statement": "theorem classify_total (bytes : Slice Std.U8) :\n    \u2203 r, classify bytes = ok r",
+   "proof": "theorem classify_total (bytes : Slice Std.U8) :\n    \u2203 r, classify bytes = ok r := by\n  have h : classify bytes \u2983 _ => True \u2984 := by unfold classify; step*\n  obtain \u27e8r, hr, -\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "classify",
+    "starts_with",
+    "Class"
+   ],
+   "spec": []
+  },
+  {
+   "name": "dispatch_pending_goes_to_parser",
+   "file": "Port.lean",
+   "doc": "**S (U1 fix).** A preflight on which some route pattern is still open (`pending`) is never handed to a hand-written handler: it goes to the full HTTP parser. Upstream classified such a preflight by a two-way prefix match (a fragmented `POST /api/payload/run` became a payload save).",
+   "statement": "theorem dispatch_pending_goes_to_parser (bytes : Slice Std.U8)\n    (h : pending bytes = ok true) : dispatch bytes = ok Class.Other",
+   "proof": "theorem dispatch_pending_goes_to_parser (bytes : Slice Std.U8)\n    (h : pending bytes = ok true) : dispatch bytes = ok Class.Other := by\n  unfold dispatch preflight_ready\n  simp [h]",
+   "deps": [
+    "pending",
+    "dispatch",
+    "strict_prefix",
+    "preflight_ready",
+    "classify",
+    "Class",
+    "starts_with"
+   ],
+   "spec": []
+  },
+  {
+   "name": "dispatch_ready_classifies",
+   "file": "Port.lean",
+   "doc": "**C.** On a decisive preflight the port runs upstream's classifier.",
+   "statement": "theorem dispatch_ready_classifies (bytes : Slice Std.U8)\n    (h : pending bytes = ok false) : dispatch bytes = classify bytes",
+   "proof": "theorem dispatch_ready_classifies (bytes : Slice Std.U8)\n    (h : pending bytes = ok false) : dispatch bytes = classify bytes := by\n  unfold dispatch preflight_ready\n  simp [h]",
+   "deps": [
+    "classify",
+    "dispatch",
+    "pending",
+    "starts_with",
+    "Class",
+    "preflight_ready",
+    "strict_prefix"
+   ],
+   "spec": []
+  },
+  {
+   "name": "dispatch_total",
+   "file": "Port.lean",
+   "doc": "`dispatch` never panics. (C)",
+   "statement": "theorem dispatch_total (bytes : Slice Std.U8) : \u2203 c, dispatch bytes = ok c",
+   "proof": "theorem dispatch_total (bytes : Slice Std.U8) : \u2203 c, dispatch bytes = ok c := by\n  obtain \u27e8r, hr, -\u27e9 := (WP.spec_equiv_exists _ _).1 (dispatch_mut_spec bytes)\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "dispatch",
+    "preflight_ready",
+    "classify",
+    "Class",
+    "pending",
+    "starts_with",
+    "strict_prefix"
+   ],
+   "spec": []
+  },
+  {
+   "name": "decode_filename_ascii",
+   "file": "Port.lean",
+   "doc": "**S (U5 fix).** Every byte of a name `decode_filename` accepts is ASCII, so building the LittleFS path from it cannot fail: upstream's `StorageManager::with_path` unwraps that conversion, and a DELETE of `%e2%82%ac` (a valid UTF-8, non-ASCII name) panicked the device.",
+   "statement": "theorem decode_filename_ascii (raw out out' : Slice Std.U8) (n : Std.Usize)\n    (h : decode_filename raw out = ok (some n, out')) :\n    \u2200 k, k < n.val \u2192 (out'.val[k]!).val < 128",
+   "proof": "theorem decode_filename_ascii (raw out out' : Slice Std.U8) (n : Std.Usize)\n    (h : decode_filename raw out = ok (some n, out')) :\n    \u2200 k, k < n.val \u2192 (out'.val[k]!).val < 128 := by\n  have hs := Properties.decode_filename_confined raw out out' n h\n  intro k hk\n  have := hs.2.2.2.2.2 k hk\n  simp only [PicoBit.Spec.IsSep, not_or] at this\n  omega",
+   "deps": [
+    "decode_filename",
+    "percent_decode",
+    "valid_name_prefix",
+    "RAW_MAX",
+    "NAME_MAX",
+    "is_dot_name",
+    "DOT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "mutation_needs_post_or_delete",
+   "file": "Port.lean",
+   "doc": "**S.** Whatever the port dispatches to a state-changing handler (upload, delete, payload save or run, keyboard target) came with a `POST ` or `DELETE ` method: no GET/HEAD (a link, an image tag, a prefetch) changes the device.",
+   "statement": "theorem mutation_needs_post_or_delete (bytes : Slice Std.U8) (c : Class)\n    (h : dispatch bytes = ok c) (hm : is_mutating c = ok true) :\n    MethodIs bytes POST \u2228 MethodIs bytes DELETE",
+   "proof": "theorem mutation_needs_post_or_delete (bytes : Slice Std.U8) (c : Class)\n    (h : dispatch bytes = ok c) (hm : is_mutating c = ok true) :\n    MethodIs bytes POST \u2228 MethodIs bytes DELETE := by\n  rw [is_mutating_iff] at hm\n  obtain \u27e8r, hr, hpost\u27e9 := (WP.spec_equiv_exists _ _).1 (dispatch_mut_spec bytes)\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  subst h\n  exact hpost hm",
+   "deps": [
+    "is_mutating",
+    "Class",
+    "dispatch",
+    "preflight_ready",
+    "classify",
+    "pending",
+    "starts_with",
+    "strict_prefix"
+   ],
+   "spec": [
+    "DELETE",
+    "MethodIs",
+    "POST"
+   ]
+  },
+  {
+   "name": "ncm_route_restricted",
+   "file": "Port.lean",
+   "doc": "**S.** The USB NCM worker serves nothing but the Armory listing, Armory downloads and OPTIONS: every other class is an empty 404.",
+   "statement": "theorem ncm_route_restricted (c : Class) (r : NcmRoute)\n    (h : ncm_route c = ok r) (hr : r \u2260 NcmRoute.NotFound) :\n    c = Class.Armory \u2228 c = Class.ArmoryAsset \u2228 c = Class.Options",
+   "proof": "theorem ncm_route_restricted (c : Class) (r : NcmRoute)\n    (h : ncm_route c = ok r) (hr : r \u2260 NcmRoute.NotFound) :\n    c = Class.Armory \u2228 c = Class.ArmoryAsset \u2228 c = Class.Options := by\n  cases c <;> simp_all [ncm_route]",
+   "deps": [
+    "ncm_route",
+    "NcmRoute",
+    "Class"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ncm_exposes_only_staged_binary",
+   "file": "Port.lean",
+   "doc": "**S.** On NCM, the only file a download can return is the staged binary (`/armory/payload.bin`); `payload.dd` is portal-only.",
+   "statement": "theorem ncm_exposes_only_staged_binary (t : Target)\n    (h : ncm_exposes t = ok true) : t = Target.StagedBin",
+   "proof": "theorem ncm_exposes_only_staged_binary (t : Target)\n    (h : ncm_exposes t = ok true) : t = Target.StagedBin := by\n  cases t <;> simp_all [ncm_exposes]",
+   "deps": [
+    "Target",
+    "ncm_exposes"
+   ],
+   "spec": []
+  },
+  {
+   "name": "delete_never_payload_dd",
+   "file": "Port.lean",
+   "doc": "**S.** A DELETE that the kernel lets through (`Erase`) never names `payload.dd`, the editor's file (upstream answers 403 for it).",
+   "statement": "theorem delete_never_payload_dd (buf : Slice Std.U8) (len : Std.Usize)\n    (h : delete_action buf len = ok DeleteAction.Erase) :\n    \u00ac (len.val = PAYLOAD_DD.val.length \u2227 len.val \u2264 buf.val.length \u2227\n        \u2200 k, k < len.val \u2192 buf.val[k]! = PAYLOAD_DD.val[k]!)",
+   "proof": "theorem delete_never_payload_dd (buf : Slice Std.U8) (len : Std.Usize)\n    (h : delete_action buf len = ok DeleteAction.Erase) :\n    \u00ac (len.val = PAYLOAD_DD.val.length \u2227 len.val \u2264 buf.val.length \u2227\n        \u2200 k, k < len.val \u2192 buf.val[k]! = PAYLOAD_DD.val[k]!) := by\n  have hw := name_is_spec buf PAYLOAD_DD len\n  unfold delete_action at h\n  obtain \u27e8r, hr, hpost\u27e9 := (WP.spec_equiv_exists _ _).1 hw\n  rw [hr] at h\n  cases r <;> simp_all",
+   "deps": [
+    "delete_action",
+    "PAYLOAD_DD",
+    "name_is",
+    "DeleteAction"
+   ],
+   "spec": []
+  },
+  {
+   "name": "upload_bounded",
+   "file": "Port.lean",
+   "doc": "",
+   "statement": "theorem upload_bounded (n : Std.Usize) (h : upload_accepts n = ok true) :\n    n.val \u2264 768000",
+   "proof": "theorem upload_bounded (n : Std.Usize) (h : upload_accepts n = ok true) :\n    n.val \u2264 768000 := by\n  obtain \u27e8r, hr, hpost\u27e9 := (WP.spec_equiv_exists _ _).1 (upload_accepts_spec n)\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  exact hpost h",
+   "deps": [
+    "upload_accepts",
+    "UPLOAD_LIMIT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "list_entry_one_asset",
+   "file": "Port.lean",
+   "doc": "**C.** Once an asset is listed, no further one is (the listing shows at most one Armory file).",
+   "statement": "theorem list_entry_one_asset (e p a n v : Bool)\n    (r : ListEntry) (h : list_entry e p a n v true = ok r) : r \u2260 ListEntry.Asset",
+   "proof": "theorem list_entry_one_asset (e p a n v : Bool)\n    (r : ListEntry) (h : list_entry e p a n v true = ok r) : r \u2260 ListEntry.Asset := by\n  cases e <;> cases p <;> cases a <;> cases n <;> cases v <;>\n    (simp only [list_entry] at h; simp at h; subst h; simp)",
+   "deps": [
+    "list_entry",
+    "ListEntry"
+   ],
+   "spec": []
+  },
+  {
+   "name": "list_entry_ncm_hidden",
+   "file": "Port.lean",
+   "doc": "**S.** On NCM a file that is not the staged binary is never listed.",
+   "statement": "theorem list_entry_ncm_hidden (e p a w : Bool) (r : ListEntry)\n    (h : list_entry e p a true false w = ok r) : r = ListEntry.Skip",
+   "proof": "theorem list_entry_ncm_hidden (e p a w : Bool) (r : ListEntry)\n    (h : list_entry e p a true false w = ok r) : r = ListEntry.Skip := by\n  cases e <;> cases p <;> cases a <;> cases w <;>\n    (simp only [list_entry] at h; simp at h; subst h; rfl)",
+   "deps": [
+    "list_entry",
+    "ListEntry"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "NcmRoute": {
+   "kind": "inductive",
+   "rust_path": "pico_bit_kernel::NcmRoute",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 386,
+   "kernel_code": "pub enum NcmRoute {\n    Armory,\n    ArmoryAsset,\n    Options,\n    NotFound,\n}",
+   "lean": "@[discriminant isize]\ninductive NcmRoute where\n| Armory : NcmRoute\n| ArmoryAsset : NcmRoute\n| Options : NcmRoute\n| NotFound : NcmRoute",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "UPLOAD_LIMIT": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::UPLOAD_LIMIT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 467,
+   "kernel_code": "pub const UPLOAD_LIMIT: usize = 750 * 1024;",
+   "lean": "@[global_simps, irreducible]\ndef UPLOAD_LIMIT : Result Std.Usize := 750#usize * 1024#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "dispatch": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::dispatch",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 341,
+   "kernel_code": "pub fn dispatch(bytes: &[u8]) -> Class {\n    if preflight_ready(bytes) {\n        classify(bytes)\n    } else {\n        Class::Other\n    }\n}",
+   "lean": "def dispatch (bytes : Slice Std.U8) : Result Class := do\n  let b \u2190 preflight_ready bytes\n  if b\n  then classify bytes\n  else ok Class.Other",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DOT": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::DOT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub const DOT: u8 = 46; // '.'",
+   "lean": "@[global_simps, irreducible] def DOT : Std.U8 := 46#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "starts_with": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::starts_with",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 214,
+   "kernel_code": "pub fn starts_with(bytes: &[u8], prefix: &[u8]) -> bool {\n    if bytes.len() < prefix.len() {\n        return false;\n    }\n    let mut i: usize = 0;\n    while i < prefix.len() {\n        if bytes[i] != prefix[i] {\n            return false;\n        }\n        i += 1;\n    }\n    true\n}",
+   "lean": "def starts_with\n  (bytes : Slice Std.U8) (\u00abprefix\u00bb : Slice Std.U8) : Result Bool := do\n  let i := Slice.len bytes\n  let i1 := Slice.len \u00abprefix\u00bb\n  if i < i1\n  then ok false\n  else starts_with_loop bytes \u00abprefix\u00bb 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ncm_route": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::ncm_route",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 393,
+   "kernel_code": "pub fn ncm_route(c: Class) -> NcmRoute {\n    match c {\n        Class::Armory => NcmRoute::Armory,\n        Class::ArmoryAsset => NcmRoute::ArmoryAsset,\n        Class::Options => NcmRoute::Options,\n        _ => NcmRoute::NotFound,\n    }\n}",
+   "lean": "def ncm_route (c : Class) : Result NcmRoute := do\n  match c with\n  | Class.Root => ok NcmRoute.NotFound\n  | Class.Bootstrap => ok NcmRoute.NotFound\n  | Class.Armory => ok NcmRoute.Armory\n  | Class.ArmoryUpload => ok NcmRoute.NotFound\n  | Class.ArmoryAsset => ok NcmRoute.ArmoryAsset\n  | Class.ArmoryDelete => ok NcmRoute.NotFound\n  | Class.Payload => ok NcmRoute.NotFound\n  | Class.PayloadSave => ok NcmRoute.NotFound\n  | Class.PayloadRun => ok NcmRoute.NotFound\n  | Class.Runs => ok NcmRoute.NotFound\n  | Class.Metrics => ok NcmRoute.NotFound\n  | Class.IgnoredBrowserProbe => ok NcmRoute.NotFound\n  | Class.OtherGet => ok NcmRoute.NotFound\n  | Class.Options => ok NcmRoute.Options\n  | Class.KeyboardTarget => ok NcmRoute.NotFound\n  | Class.Other => ok NcmRoute.NotFound",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ncm_exposes": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::ncm_exposes",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 443,
+   "kernel_code": "pub fn ncm_exposes(t: Target) -> bool {\n    match t {\n        Target::StagedBin => true,\n        _ => false,\n    }\n}",
+   "lean": "def ncm_exposes (t : Target) : Result Bool := do\n  match t with\n  | Target.PayloadDd => ok false\n  | Target.StagedBin => ok true\n  | Target.NotFound => ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "PAYLOAD_DD": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::PAYLOAD_DD",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 412,
+   "kernel_code": "pub const PAYLOAD_DD: &[u8] = b\"payload.dd\";",
+   "lean": "@[global_simps, irreducible]\ndef PAYLOAD_DD : Slice Std.U8 :=\n  Array.to_slice\n    (Array.make 10#usize [\n      112#u8, 97#u8, 121#u8, 108#u8, 111#u8, 97#u8, 100#u8, 46#u8, 100#u8,\n      100#u8\n      ])",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ListEntry": {
+   "kind": "inductive",
+   "rust_path": "pico_bit_kernel::ListEntry",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 477,
+   "kernel_code": "pub enum ListEntry {\n    Skip,\n    /// `payload.dd`, listed as `\"kind\":\"ducky\"`.\n    Ducky,\n    /// An Armory file, listed as `\"kind\":\"asset\"`.\n    Asset,\n}",
+   "lean": "@[discriminant isize]\ninductive ListEntry where\n| Skip : ListEntry\n| Ducky : ListEntry\n| Asset : ListEntry",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "is_dot_name": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::is_dot_name",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 123,
+   "kernel_code": "pub fn is_dot_name(buf: &[u8], len: usize) -> bool {\n    if buf.len() < len {\n        return false;\n    }\n    if len == 1 {\n        return buf[0] == DOT;\n    }\n    if len == 2 {\n        return buf[0] == DOT && buf[1] == DOT;\n    }\n    false\n}",
+   "lean": "def is_dot_name (buf : Slice Std.U8) (len : Std.Usize) : Result Bool := do\n  let i := Slice.len buf\n  if i < len\n  then ok false\n  else\n    if len = 1#usize\n    then let i1 \u2190 Slice.index_usize buf 0#usize\n         ok (i1 = DOT)\n    else\n      if len = 2#usize\n      then\n        let i1 \u2190 Slice.index_usize buf 0#usize\n        if i1 = DOT\n        then let i2 \u2190 Slice.index_usize buf 1#usize\n             ok (i2 = DOT)\n        else ok false\n      else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Target": {
+   "kind": "inductive",
+   "rust_path": "pico_bit_kernel::Target",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 406,
+   "kernel_code": "pub enum Target {\n    PayloadDd,\n    StagedBin,\n    NotFound,\n}",
+   "lean": "@[discriminant isize]\ninductive Target where\n| PayloadDd : Target\n| StagedBin : Target\n| NotFound : Target",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "preflight_ready": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::preflight_ready",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 333,
+   "kernel_code": "pub fn preflight_ready(bytes: &[u8]) -> bool {\n    !pending(bytes)\n}",
+   "lean": "def preflight_ready (bytes : Slice Std.U8) : Result Bool := do\n  let b \u2190 pending bytes\n  ok (\u00ac b)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "delete_action": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::delete_action",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 458,
+   "kernel_code": "pub fn delete_action(buf: &[u8], len: usize) -> DeleteAction {\n    if name_is(buf, len, PAYLOAD_DD) {\n        DeleteAction::Protected\n    } else {\n        DeleteAction::Erase\n    }\n}",
+   "lean": "def delete_action\n  (buf : Slice Std.U8) (len : Std.Usize) : Result DeleteAction := do\n  let b \u2190 name_is buf len PAYLOAD_DD\n  if b\n  then ok DeleteAction.Protected\n  else ok DeleteAction.Erase",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "name_is": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::name_is",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 416,
+   "kernel_code": "pub fn name_is(buf: &[u8], len: usize, word: &[u8]) -> bool {\n    if len != word.len() || len > buf.len() {\n        return false;\n    }\n    let mut i: usize = 0;\n    while i < len {\n        if buf[i] != word[i] {\n            return false;\n        }\n        i += 1;\n    }\n    true\n}",
+   "lean": "def name_is\n  (buf : Slice Std.U8) (len : Std.Usize) (word : Slice Std.U8) :\n  Result Bool\n  := do\n  let i := Slice.len word\n  if len != i\n  then ok false\n  else\n    let i1 := Slice.len buf\n    if len > i1\n    then ok false\n    else name_is_loop buf len word 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NAME_MAX": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::NAME_MAX",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub const NAME_MAX: usize = 64;",
+   "lean": "@[global_simps, irreducible] def NAME_MAX : Std.Usize := 64#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "classify": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::classify",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 234,
+   "kernel_code": "pub fn classify(bytes: &[u8]) -> Class {\n    if starts_with(bytes, b\"GET / \") || starts_with(bytes, b\"HEAD / \") {\n        return Class::Root;\n    }\n    if starts_with(bytes, b\"GET /api/bootstrap \") {\n        return Class::Bootstrap;\n    }\n    if starts_with(bytes, b\"GET /api/armory \") {\n        return Class::Armory;\n    }\n    if starts_with(bytes, b\"POST /api/armory/upload \") {\n        return Class::ArmoryUpload;\n    }\n    if starts_with(bytes, b\"DELETE /api/armory/\") {\n        return Class::ArmoryDelete;\n    }\n    if starts_with(bytes, b\"GET /api/armory/\") || starts_with(bytes, b\"HEAD /api/armory/\") {\n        return Class::ArmoryAsset;\n    }\n    if starts_with(bytes, b\"GET /api/payload \") {\n        return Class::Payload;\n    }\n    if starts_with(bytes, b\"POST /api/payload \") {\n        return Class::PayloadSave;\n    }\n    if starts_with(bytes, b\"POST /api/payload/run \") {\n        return Class::PayloadRun;\n    }\n    if starts_with(bytes, b\"GET /api/runs \") {\n        return Class::Runs;\n    }\n    if starts_with(bytes, b\"GET /api/metrics \") {\n        return Class::Metrics;\n    }\n    if starts_with(bytes, b\"GET /favicon.ico \")\n        || starts_with(bytes, b\"GET /apple-touch-icon\")\n        || starts_with(bytes, b\"GET /.well-known/\")\n        || starts_with(bytes, b\"GET /manifest\")\n        || starts_with(bytes, b\"GET /robots.txt \")\n    {\n        return Class::IgnoredBrowserProbe;\n    }\n    if starts_with(bytes, b\"GET \") || starts_with(bytes, b\"HEAD \") {\n        return Class::OtherGet;\n    }\n    if starts_with(bytes, b\"OPTIONS \") {\n        return Class::Options;\n    }\n    if starts_with(bytes, b\"POST /api/keyboard/layout \") {\n        return Class::KeyboardTarget;\n    }\n    Class::Other\n}",
+   "lean": "def classify (bytes : Slice Std.U8) : Result Class := do\n  let s \u2190\n    lift (Array.to_slice\n      (Array.make 6#usize [ 71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 32#u8 ]))\n  let b \u2190 starts_with bytes s\n  if b\n  then ok Class.Root\n  else\n    let s1 \u2190\n      lift (Array.to_slice\n        (Array.make 7#usize [\n          72#u8, 69#u8, 65#u8, 68#u8, 32#u8, 47#u8, 32#u8\n          ]))\n    let b1 \u2190 starts_with bytes s1\n    if b1\n    then ok Class.Root\n    else\n      let s2 \u2190\n        lift (Array.to_slice\n          (Array.make 19#usize [\n            71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8,\n            98#u8, 111#u8, 111#u8, 116#u8, 115#u8, 116#u8, 114#u8, 97#u8,\n            112#u8, 32#u8\n            ]))\n      let b2 \u2190 starts_with bytes s2\n      if b2\n      then ok Class.Bootstrap\n      else\n        let s3 \u2190\n          lift (Array.to_slice\n            (Array.make 16#usize [\n              71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8,\n              97#u8, 114#u8, 109#u8, 111#u8, 114#u8, 121#u8, 32#u8\n              ]))\n        let b3 \u2190 starts_with bytes s3\n        if b3\n        then ok Class.Armory\n        else\n          let s4 \u2190\n            lift (Array.to_slice\n              (Array.make 24#usize [\n                80#u8, 79#u8, 83#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                105#u8, 47#u8, 97#u8, 114#u8, 109#u8, 111#u8, 114#u8, 121#u8,\n                47#u8, 117#u8, 112#u8, 108#u8, 111#u8, 97#u8, 100#u8, 32#u8\n                ]))\n          let b4 \u2190 starts_with bytes s4\n          if b4\n          then ok Class.ArmoryUpload\n          else\n            let s5 \u2190\n              lift (Array.to_slice\n                (Array.make 19#usize [\n                  68#u8, 69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 32#u8, 47#u8,\n                  97#u8, 112#u8, 105#u8, 47#u8, 97#u8, 114#u8, 109#u8, 111#u8,\n                  114#u8, 121#u8, 47#u8\n                  ]))\n            let b5 \u2190 starts_with bytes s5\n            if b5\n            then ok Class.ArmoryDelete\n            else\n              let s6 \u2190\n                lift (Array.to_slice\n                  (Array.make 16#usize [\n                    71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8, 105#u8,\n                    47#u8, 97#u8, 114#u8, 109#u8, 111#u8, 114#u8, 121#u8, 47#u8\n                    ]))\n              let b6 \u2190 starts_with bytes s6\n              if b6\n              then ok Class.ArmoryAsset\n              else\n                let s7 \u2190\n                  lift (Array.to_slice\n                    (Array.make 17#usize [\n                      72#u8, 69#u8, 65#u8, 68#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                      105#u8, 47#u8, 97#u8, 114#u8, 109#u8, 111#u8, 114#u8,\n                      121#u8, 47#u8\n                      ]))\n                let b7 \u2190 starts_with bytes s7\n                if b7\n                then ok Class.ArmoryAsset\n                else\n                  let s8 \u2190\n                    lift (Array.to_slice\n                      (Array.make 17#usize [\n                        71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                        105#u8, 47#u8, 112#u8, 97#u8, 121#u8, 108#u8, 111#u8,\n                        97#u8, 100#u8, 32#u8\n                        ]))\n                  let b8 \u2190 starts_with bytes s8\n                  if b8\n                  then ok Class.Payload\n                  else\n                    let s9 \u2190\n                      lift (Array.to_slice\n                        (Array.make 18#usize [\n                          80#u8, 79#u8, 83#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                          112#u8, 105#u8, 47#u8, 112#u8, 97#u8, 121#u8, 108#u8,\n                          111#u8, 97#u8, 100#u8, 32#u8\n                          ]))\n                    let b9 \u2190 starts_with bytes s9\n                    if b9\n                    then ok Class.PayloadSave\n                    else\n                      let s10 \u2190\n                        lift (Array.to_slice\n                          (Array.make 22#usize [\n                            80#u8, 79#u8, 83#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                            112#u8, 105#u8, 47#u8, 112#u8, 97#u8, 121#u8,\n                            108#u8, 111#u8, 97#u8, 100#u8, 47#u8, 114#u8,\n                            117#u8, 110#u8, 32#u8\n                            ]))\n                      let b10 \u2190 starts_with bytes s10\n                      if b10\n                      then ok Class.PayloadRun\n                      else\n                        let s11 \u2190\n                          lift (Array.to_slice\n                            (Array.make 14#usize [\n                              71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                              105#u8, 47#u8, 114#u8, 117#u8, 110#u8, 115#u8,\n                              32#u8\n                              ]))\n                        let b11 \u2190 starts_with bytes s11\n                        if b11\n                        then ok Class.Runs\n                        else\n                          let s12 \u2190\n                            lift (Array.to_slice\n                              (Array.make 17#usize [\n                                71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                                112#u8, 105#u8, 47#u8, 109#u8, 101#u8, 116#u8,\n                                114#u8, 105#u8, 99#u8, 115#u8, 32#u8\n                                ]))\n                          let b12 \u2190 starts_with bytes s12\n                          if b12\n                          then ok Class.Metrics\n                          else\n                            let s13 \u2190\n                              lift (Array.to_slice\n                                (Array.make 17#usize [\n                                  71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 102#u8,\n                                  97#u8, 118#u8, 105#u8, 99#u8, 111#u8, 110#u8,\n                                  46#u8, 105#u8, 99#u8, 111#u8, 32#u8\n                                  ]))\n                            let b13 \u2190 starts_with bytes s13\n                            if b13\n                            then ok Class.IgnoredBrowserProbe\n                            else\n                              let s14 \u2190\n                                lift (Array.to_slice\n                                  (Array.make 21#usize [\n                                    71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                                    112#u8, 112#u8, 108#u8, 101#u8, 45#u8,\n                                    116#u8, 111#u8, 117#u8, 99#u8, 104#u8,\n                                    45#u8, 105#u8, 99#u8, 111#u8, 110#u8\n                                    ]))\n                              let b14 \u2190 starts_with bytes s14\n                              if b14\n                              then ok Class.IgnoredBrowserProbe\n                              else\n                                let s15 \u2190\n                                  lift (Array.to_slice\n                                    (Array.make 17#usize [\n                                      71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 46#u8,\n                                      119#u8, 101#u8, 108#u8, 108#u8, 45#u8,\n                                      107#u8, 110#u8, 111#u8, 119#u8, 110#u8,\n                                      47#u8\n                                      ]))\n                                let b15 \u2190 starts_with bytes s15\n                                if b15\n                                then ok Class.IgnoredBrowserProbe\n                                else\n                                  let s16 \u2190\n                                    lift (Array.to_slice\n                                      (Array.make 13#usize [\n                                        71#u8, 69#u8, 84#u8, 32#u8, 47#u8,\n                                        109#u8, 97#u8, 110#u8, 105#u8, 102#u8,\n                                        101#u8, 115#u8, 116#u8\n                                        ]))\n                                  let b16 \u2190 starts_with bytes s16\n                                  if b16\n                                  then ok Class.IgnoredBrowserProbe\n                                  else\n                                    let s17 \u2190\n                                      lift (Array.to_slice\n                                        (Array.make 16#usize [\n                                          71#u8, 69#u8, 84#u8, 32#u8, 47#u8,\n                                          114#u8, 111#u8, 98#u8, 111#u8,\n                                          116#u8, 115#u8, 46#u8, 116#u8,\n                                          120#u8, 116#u8, 32#u8\n                                          ]))\n                                    let b17 \u2190 starts_with bytes s17\n                                    if b17\n                                    then ok Class.IgnoredBrowserProbe\n                                    else\n                                      let s18 \u2190\n                                        lift (Array.to_slice\n                                          (Array.make 4#usize [\n                                            71#u8, 69#u8, 84#u8, 32#u8\n                                            ]))\n                                      let b18 \u2190 starts_with bytes s18\n                                      if b18\n                                      then ok Class.OtherGet\n                                      else\n                                        let s19 \u2190\n                                          lift (Array.to_slice\n                                            (Array.make 5#usize [\n                                              72#u8, 69#u8, 65#u8, 68#u8, 32#u8\n                                              ]))\n                                        let b19 \u2190 starts_with bytes s19\n                                        if b19\n                                        then ok Class.OtherGet\n                                        else\n                                          let s20 \u2190\n                                            lift (Array.to_slice\n                                              (Array.make 8#usize [\n                                                79#u8, 80#u8, 84#u8, 73#u8,\n                                                79#u8, 78#u8, 83#u8, 32#u8\n                                                ]))\n                                          let b20 \u2190 starts_with bytes s20\n                                          if b20\n                                          then ok Class.Options\n                                          else\n                                            let s21 \u2190\n                                              lift (Array.to_slice\n                                                (Array.make 26#usize [\n                                                  80#u8, 79#u8, 83#u8, 84#u8,\n                                                  32#u8, 47#u8, 97#u8, 112#u8,\n                                                  105#u8, 47#u8, 107#u8,\n                                                  101#u8, 121#u8, 98#u8,\n                                                  111#u8, 97#u8, 114#u8,\n                                                  100#u8, 47#u8, 108#u8, 97#u8,\n                                                  121#u8, 111#u8, 117#u8,\n                                                  116#u8, 32#u8\n                                                  ]))\n                                            let b21 \u2190 starts_with bytes s21\n                                            if b21\n                                            then ok Class.KeyboardTarget\n                                            else ok Class.Other",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "decode_filename": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::decode_filename",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 173,
+   "kernel_code": "pub fn decode_filename(raw: &[u8], out: &mut [u8]) -> Option<usize> {\n    match percent_decode(raw, out) {\n        Some(n) => {\n            if valid_name_prefix(out, n) {\n                Some(n)\n            } else {\n                None\n            }\n        }\n        None => None,\n    }\n}",
+   "lean": "def decode_filename\n  (raw : Slice Std.U8) (out : Slice Std.U8) :\n  Result ((Option Std.Usize) \u00d7 (Slice Std.U8))\n  := do\n  let (o, out1) \u2190 percent_decode raw out\n  match o with\n  | none => ok (none, out1)\n  | some n =>\n    let b \u2190 valid_name_prefix out1 n\n    if b\n    then ok (o, out1)\n    else ok (none, out1)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "strict_prefix": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::strict_prefix",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 294,
+   "kernel_code": "pub fn strict_prefix(bytes: &[u8], pattern: &[u8]) -> bool {\n    bytes.len() < pattern.len() && starts_with(pattern, bytes)\n}",
+   "lean": "def strict_prefix\n  (bytes : Slice Std.U8) (pattern : Slice Std.U8) : Result Bool := do\n  let i := Slice.len bytes\n  let i1 := Slice.len pattern\n  if i < i1\n  then starts_with pattern bytes\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "valid_name": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::valid_name",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 162,
+   "kernel_code": "pub fn valid_name(name: &[u8]) -> bool {\n    valid_name_prefix(name, name.len())\n}",
+   "lean": "def valid_name (\u00abname\u00bb : Slice Std.U8) : Result Bool := do\n  let i := Slice.len \u00abname\u00bb\n  valid_name_prefix \u00abname\u00bb i",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "percent_decode": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::percent_decode",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 76,
+   "kernel_code": "pub fn percent_decode(raw: &[u8], out: &mut [u8]) -> Option<usize> {\n    if raw.len() > RAW_MAX {\n        return None;\n    }\n    let mut i: usize = 0;\n    let mut n: usize = 0;\n    while i < raw.len() {\n        let byte: u8;\n        if raw[i] == PERCENT {\n            // Need two more bytes after '%'.\n            if raw.len() - i < 3 {\n                return None;\n            }\n            let hi = hex_digit(raw[i + 1]);\n            if hi < 0 {\n                return None;\n            }\n            let lo = hex_digit(raw[i + 2]);\n            if lo < 0 {\n                return None;\n            }\n            byte = ((hi << 4) | lo) as u8;\n            i += 3;\n        } else {\n            byte = raw[i];\n            i += 1;\n        }\n        if n >= out.len() {\n            return None;\n        }\n        out[n] = byte;\n        n += 1;\n    }\n    Some(n)\n}",
+   "lean": "def percent_decode\n  (raw : Slice Std.U8) (out : Slice Std.U8) :\n  Result ((Option Std.Usize) \u00d7 (Slice Std.U8))\n  := do\n  let i := Slice.len raw\n  let i1 \u2190 RAW_MAX\n  if i > i1\n  then ok (none, out)\n  else percent_decode_loop raw out 0#usize 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DeleteAction": {
+   "kind": "inductive",
+   "rust_path": "pico_bit_kernel::DeleteAction",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 453,
+   "kernel_code": "pub enum DeleteAction {\n    Protected,\n    Erase,\n}",
+   "lean": "@[discriminant isize]\ninductive DeleteAction where\n| Protected : DeleteAction\n| Erase : DeleteAction",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "upload_accepts": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::upload_accepts",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 471,
+   "kernel_code": "pub fn upload_accepts(content_length: usize) -> bool {\n    content_length <= UPLOAD_LIMIT\n}",
+   "lean": "def upload_accepts (content_length : Std.Usize) : Result Bool := do\n  let i \u2190 UPLOAD_LIMIT\n  ok (content_length <= i)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "is_mutating": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::is_mutating",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 368,
+   "kernel_code": "pub fn is_mutating(c: Class) -> bool {\n    match c {\n        Class::ArmoryUpload => true,\n        Class::ArmoryDelete => true,\n        Class::PayloadSave => true,\n        Class::PayloadRun => true,\n        Class::KeyboardTarget => true,\n        _ => false,\n    }\n}",
+   "lean": "def is_mutating (c : Class) : Result Bool := do\n  match c with\n  | Class.Root => ok false\n  | Class.Bootstrap => ok false\n  | Class.Armory => ok false\n  | Class.ArmoryUpload => ok true\n  | Class.ArmoryAsset => ok false\n  | Class.ArmoryDelete => ok true\n  | Class.Payload => ok false\n  | Class.PayloadSave => ok true\n  | Class.PayloadRun => ok true\n  | Class.Runs => ok false\n  | Class.Metrics => ok false\n  | Class.IgnoredBrowserProbe => ok false\n  | Class.OtherGet => ok false\n  | Class.Options => ok false\n  | Class.KeyboardTarget => ok true\n  | Class.Other => ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Class": {
+   "kind": "inductive",
+   "rust_path": "pico_bit_kernel::Class",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 193,
+   "kernel_code": "pub enum Class {\n    Root,\n    Bootstrap,\n    Armory,\n    ArmoryUpload,\n    ArmoryAsset,\n    ArmoryDelete,\n    Payload,\n    PayloadSave,\n    PayloadRun,\n    Runs,\n    Metrics,\n    IgnoredBrowserProbe,\n    OtherGet,\n    Options,\n    KeyboardTarget,\n    /// Not a hand-written route: upstream's picoserve router serves it.\n    Other,\n}",
+   "lean": "@[discriminant isize]\ninductive Class where\n| Root : Class\n| Bootstrap : Class\n| Armory : Class\n| ArmoryUpload : Class\n| ArmoryAsset : Class\n| ArmoryDelete : Class\n| Payload : Class\n| PayloadSave : Class\n| PayloadRun : Class\n| Runs : Class\n| Metrics : Class\n| IgnoredBrowserProbe : Class\n| OtherGet : Class\n| Options : Class\n| KeyboardTarget : Class\n| Other : Class",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "pending": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::pending",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 304,
+   "kernel_code": "pub fn pending(bytes: &[u8]) -> bool {\n    strict_prefix(bytes, b\"GET / \")\n        || strict_prefix(bytes, b\"HEAD / \")\n        || strict_prefix(bytes, b\"GET /api/bootstrap \")\n        || strict_prefix(bytes, b\"GET /api/armory \")\n        || strict_prefix(bytes, b\"POST /api/armory/upload \")\n        || strict_prefix(bytes, b\"DELETE /api/armory/\")\n        || strict_prefix(bytes, b\"GET /api/armory/\")\n        || strict_prefix(bytes, b\"HEAD /api/armory/\")\n        || strict_prefix(bytes, b\"GET /api/payload \")\n        || strict_prefix(bytes, b\"POST /api/payload \")\n        || strict_prefix(bytes, b\"POST /api/payload/run \")\n        || strict_prefix(bytes, b\"GET /api/runs \")\n        || strict_prefix(bytes, b\"GET /api/metrics \")\n        || strict_prefix(bytes, b\"GET /favicon.ico \")\n        || strict_prefix(bytes, b\"GET /apple-touch-icon\")\n        || strict_prefix(bytes, b\"GET /.well-known/\")\n        || strict_prefix(bytes, b\"GET /manifest\")\n        || strict_prefix(bytes, b\"GET /robots.txt \")\n        || strict_prefix(bytes, b\"GET \")\n        || strict_prefix(bytes, b\"HEAD \")\n        || strict_prefix(bytes, b\"OPTIONS \")\n        || strict_prefix(bytes, b\"POST /api/keyboard/layout \")\n}",
+   "lean": "def pending (bytes : Slice Std.U8) : Result Bool := do\n  let s \u2190\n    lift (Array.to_slice\n      (Array.make 6#usize [ 71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 32#u8 ]))\n  let b \u2190 strict_prefix bytes s\n  if b\n  then ok true\n  else\n    let s1 \u2190\n      lift (Array.to_slice\n        (Array.make 7#usize [\n          72#u8, 69#u8, 65#u8, 68#u8, 32#u8, 47#u8, 32#u8\n          ]))\n    let b1 \u2190 strict_prefix bytes s1\n    if b1\n    then ok true\n    else\n      let s2 \u2190\n        lift (Array.to_slice\n          (Array.make 19#usize [\n            71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8,\n            98#u8, 111#u8, 111#u8, 116#u8, 115#u8, 116#u8, 114#u8, 97#u8,\n            112#u8, 32#u8\n            ]))\n      let b2 \u2190 strict_prefix bytes s2\n      if b2\n      then ok true\n      else\n        let s3 \u2190\n          lift (Array.to_slice\n            (Array.make 16#usize [\n              71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8, 105#u8, 47#u8,\n              97#u8, 114#u8, 109#u8, 111#u8, 114#u8, 121#u8, 32#u8\n              ]))\n        let b3 \u2190 strict_prefix bytes s3\n        if b3\n        then ok true\n        else\n          let s4 \u2190\n            lift (Array.to_slice\n              (Array.make 24#usize [\n                80#u8, 79#u8, 83#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                105#u8, 47#u8, 97#u8, 114#u8, 109#u8, 111#u8, 114#u8, 121#u8,\n                47#u8, 117#u8, 112#u8, 108#u8, 111#u8, 97#u8, 100#u8, 32#u8\n                ]))\n          let b4 \u2190 strict_prefix bytes s4\n          if b4\n          then ok true\n          else\n            let s5 \u2190\n              lift (Array.to_slice\n                (Array.make 19#usize [\n                  68#u8, 69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 32#u8, 47#u8,\n                  97#u8, 112#u8, 105#u8, 47#u8, 97#u8, 114#u8, 109#u8, 111#u8,\n                  114#u8, 121#u8, 47#u8\n                  ]))\n            let b5 \u2190 strict_prefix bytes s5\n            if b5\n            then ok true\n            else\n              let s6 \u2190\n                lift (Array.to_slice\n                  (Array.make 16#usize [\n                    71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8, 105#u8,\n                    47#u8, 97#u8, 114#u8, 109#u8, 111#u8, 114#u8, 121#u8, 47#u8\n                    ]))\n              let b6 \u2190 strict_prefix bytes s6\n              if b6\n              then ok true\n              else\n                let s7 \u2190\n                  lift (Array.to_slice\n                    (Array.make 17#usize [\n                      72#u8, 69#u8, 65#u8, 68#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                      105#u8, 47#u8, 97#u8, 114#u8, 109#u8, 111#u8, 114#u8,\n                      121#u8, 47#u8\n                      ]))\n                let b7 \u2190 strict_prefix bytes s7\n                if b7\n                then ok true\n                else\n                  let s8 \u2190\n                    lift (Array.to_slice\n                      (Array.make 17#usize [\n                        71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                        105#u8, 47#u8, 112#u8, 97#u8, 121#u8, 108#u8, 111#u8,\n                        97#u8, 100#u8, 32#u8\n                        ]))\n                  let b8 \u2190 strict_prefix bytes s8\n                  if b8\n                  then ok true\n                  else\n                    let s9 \u2190\n                      lift (Array.to_slice\n                        (Array.make 18#usize [\n                          80#u8, 79#u8, 83#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                          112#u8, 105#u8, 47#u8, 112#u8, 97#u8, 121#u8, 108#u8,\n                          111#u8, 97#u8, 100#u8, 32#u8\n                          ]))\n                    let b9 \u2190 strict_prefix bytes s9\n                    if b9\n                    then ok true\n                    else\n                      let s10 \u2190\n                        lift (Array.to_slice\n                          (Array.make 22#usize [\n                            80#u8, 79#u8, 83#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                            112#u8, 105#u8, 47#u8, 112#u8, 97#u8, 121#u8,\n                            108#u8, 111#u8, 97#u8, 100#u8, 47#u8, 114#u8,\n                            117#u8, 110#u8, 32#u8\n                            ]))\n                      let b10 \u2190 strict_prefix bytes s10\n                      if b10\n                      then ok true\n                      else\n                        let s11 \u2190\n                          lift (Array.to_slice\n                            (Array.make 14#usize [\n                              71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8, 112#u8,\n                              105#u8, 47#u8, 114#u8, 117#u8, 110#u8, 115#u8,\n                              32#u8\n                              ]))\n                        let b11 \u2190 strict_prefix bytes s11\n                        if b11\n                        then ok true\n                        else\n                          let s12 \u2190\n                            lift (Array.to_slice\n                              (Array.make 17#usize [\n                                71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                                112#u8, 105#u8, 47#u8, 109#u8, 101#u8, 116#u8,\n                                114#u8, 105#u8, 99#u8, 115#u8, 32#u8\n                                ]))\n                          let b12 \u2190 strict_prefix bytes s12\n                          if b12\n                          then ok true\n                          else\n                            let s13 \u2190\n                              lift (Array.to_slice\n                                (Array.make 17#usize [\n                                  71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 102#u8,\n                                  97#u8, 118#u8, 105#u8, 99#u8, 111#u8, 110#u8,\n                                  46#u8, 105#u8, 99#u8, 111#u8, 32#u8\n                                  ]))\n                            let b13 \u2190 strict_prefix bytes s13\n                            if b13\n                            then ok true\n                            else\n                              let s14 \u2190\n                                lift (Array.to_slice\n                                  (Array.make 21#usize [\n                                    71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 97#u8,\n                                    112#u8, 112#u8, 108#u8, 101#u8, 45#u8,\n                                    116#u8, 111#u8, 117#u8, 99#u8, 104#u8,\n                                    45#u8, 105#u8, 99#u8, 111#u8, 110#u8\n                                    ]))\n                              let b14 \u2190 strict_prefix bytes s14\n                              if b14\n                              then ok true\n                              else\n                                let s15 \u2190\n                                  lift (Array.to_slice\n                                    (Array.make 17#usize [\n                                      71#u8, 69#u8, 84#u8, 32#u8, 47#u8, 46#u8,\n                                      119#u8, 101#u8, 108#u8, 108#u8, 45#u8,\n                                      107#u8, 110#u8, 111#u8, 119#u8, 110#u8,\n                                      47#u8\n                                      ]))\n                                let b15 \u2190 strict_prefix bytes s15\n                                if b15\n                                then ok true\n                                else\n                                  let s16 \u2190\n                                    lift (Array.to_slice\n                                      (Array.make 13#usize [\n                                        71#u8, 69#u8, 84#u8, 32#u8, 47#u8,\n                                        109#u8, 97#u8, 110#u8, 105#u8, 102#u8,\n                                        101#u8, 115#u8, 116#u8\n                                        ]))\n                                  let b16 \u2190 strict_prefix bytes s16\n                                  if b16\n                                  then ok true\n                                  else\n                                    let s17 \u2190\n                                      lift (Array.to_slice\n                                        (Array.make 16#usize [\n                                          71#u8, 69#u8, 84#u8, 32#u8, 47#u8,\n                                          114#u8, 111#u8, 98#u8, 111#u8,\n                                          116#u8, 115#u8, 46#u8, 116#u8,\n                                          120#u8, 116#u8, 32#u8\n                                          ]))\n                                    let b17 \u2190 strict_prefix bytes s17\n                                    if b17\n                                    then ok true\n                                    else\n                                      let s18 \u2190\n                                        lift (Array.to_slice\n                                          (Array.make 4#usize [\n                                            71#u8, 69#u8, 84#u8, 32#u8\n                                            ]))\n                                      let b18 \u2190 strict_prefix bytes s18\n                                      if b18\n                                      then ok true\n                                      else\n                                        let s19 \u2190\n                                          lift (Array.to_slice\n                                            (Array.make 5#usize [\n                                              72#u8, 69#u8, 65#u8, 68#u8, 32#u8\n                                              ]))\n                                        let b19 \u2190 strict_prefix bytes s19\n                                        if b19\n                                        then ok true\n                                        else\n                                          let s20 \u2190\n                                            lift (Array.to_slice\n                                              (Array.make 8#usize [\n                                                79#u8, 80#u8, 84#u8, 73#u8,\n                                                79#u8, 78#u8, 83#u8, 32#u8\n                                                ]))\n                                          let b20 \u2190 strict_prefix bytes s20\n                                          if b20\n                                          then ok true\n                                          else\n                                            let s21 \u2190\n                                              lift (Array.to_slice\n                                                (Array.make 26#usize [\n                                                  80#u8, 79#u8, 83#u8, 84#u8,\n                                                  32#u8, 47#u8, 97#u8, 112#u8,\n                                                  105#u8, 47#u8, 107#u8,\n                                                  101#u8, 121#u8, 98#u8,\n                                                  111#u8, 97#u8, 114#u8,\n                                                  100#u8, 47#u8, 108#u8, 97#u8,\n                                                  121#u8, 111#u8, 117#u8,\n                                                  116#u8, 32#u8\n                                                  ]))\n                                            strict_prefix bytes s21",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "valid_name_prefix": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::valid_name_prefix",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 140,
+   "kernel_code": "pub fn valid_name_prefix(buf: &[u8], len: usize) -> bool {\n    if len == 0 || len > NAME_MAX {\n        return false;\n    }\n    if len > buf.len() {\n        return false;\n    }\n    if is_dot_name(buf, len) {\n        return false;\n    }\n    let mut i: usize = 0;\n    while i < len {\n        if is_separator(buf[i]) {\n            return false;\n        }\n        i += 1;\n    }\n    true\n}",
+   "lean": "def valid_name_prefix\n  (buf : Slice Std.U8) (len : Std.Usize) : Result Bool := do\n  if len = 0#usize\n  then ok false\n  else\n    if len > NAME_MAX\n    then ok false\n    else\n      let i := Slice.len buf\n      if len > i\n      then ok false\n      else\n        let b \u2190 is_dot_name buf len\n        if b\n        then ok false\n        else valid_name_prefix_loop buf len 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "list_entry": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::list_entry",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 489,
+   "kernel_code": "pub fn list_entry(\n    name_empty: bool,\n    is_payload: bool,\n    in_armory: bool,\n    ncm: bool,\n    ncm_visible: bool,\n    wrote_asset: bool,\n) -> ListEntry {\n    if name_empty || !(is_payload || in_armory) {\n        return ListEntry::Skip;\n    }\n    if ncm && !ncm_visible {\n        return ListEntry::Skip;\n    }\n    if is_payload {\n        return ListEntry::Ducky;\n    }\n    if wrote_asset {\n        return ListEntry::Skip;\n    }\n    ListEntry::Asset\n}",
+   "lean": "def list_entry\n  (name_empty : Bool) (is_payload : Bool) (in_armory : Bool) (ncm : Bool)\n  (ncm_visible : Bool) (wrote_asset : Bool) :\n  Result ListEntry\n  := do\n  if name_empty\n  then ok ListEntry.Skip\n  else\n    if is_payload\n    then\n      if ncm\n      then if ncm_visible\n           then ok ListEntry.Ducky\n           else ok ListEntry.Skip\n      else ok ListEntry.Ducky\n    else\n      if in_armory\n      then\n        if ncm\n        then\n          if ncm_visible\n          then if wrote_asset\n               then ok ListEntry.Skip\n               else ok ListEntry.Asset\n          else ok ListEntry.Skip\n        else if wrote_asset\n             then ok ListEntry.Skip\n             else ok ListEntry.Asset\n      else ok ListEntry.Skip",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "RAW_MAX": {
+   "kind": "def",
+   "rust_path": "pico_bit_kernel::RAW_MAX",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 50,
+   "kernel_code": "pub const RAW_MAX: usize = NAME_MAX * 3;",
+   "lean": "@[global_simps, irreducible]\ndef RAW_MAX : Result Std.Usize := NAME_MAX * 3#usize",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {
+  "DELETE": {
+   "file": "Port.lean",
+   "code": "abbrev DELETE : List Std.U8 := [68#u8, 69#u8, 76#u8, 69#u8, 84#u8, 69#u8, 32#u8]"
+  },
+  "MethodIs": {
+   "file": "Port.lean",
+   "code": "/-- The request starts with the method `m` (its bytes, space included). -/\ndef MethodIs (b : Slice Std.U8) (m : List Std.U8) : Prop :=\n  \u2200 k, k < m.length \u2192 b.val[k]! = m[k]!"
+  },
+  "POST": {
+   "file": "Port.lean",
+   "code": "/-- `\"POST \"` and `\"DELETE \"`. -/\nabbrev POST : List Std.U8 := [80#u8, 79#u8, 83#u8, 84#u8, 32#u8]"
+  }
+ }
+}

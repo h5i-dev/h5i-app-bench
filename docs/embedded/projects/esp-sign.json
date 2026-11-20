@@ -1,0 +1,92 @@
+{
+ "slug": "esp-sign",
+ "name": "esp-sign",
+ "pin": "5ec4640",
+ "upstream_head": "5ec4640",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "parse_color_total",
+   "file": "Properties.lean",
+   "doc": "**S (U1 fix).** Parsing a colour never panics, for any bytes.",
+   "statement": "theorem parse_color_total (s : Slice Std.U8) : \u2203 r, parse_color s = ok r",
+   "proof": "theorem parse_color_total (s : Slice Std.U8) : \u2203 r, parse_color s = ok r := by\n  obtain \u27e8r, hr, _\u27e9 := (WP.spec_equiv_exists _ _).1 (parse_color_spec s)\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "parse_color",
+    "Rgb",
+    "byte_at",
+    "hex_value"
+   ],
+   "spec": []
+  },
+  {
+   "name": "parse_color_shape",
+   "file": "Properties.lean",
+   "doc": "**S.** An accepted colour is 7 bytes with an ASCII first byte.",
+   "statement": "theorem parse_color_shape (s : Slice Std.U8) (c : Rgb)\n    (h : parse_color s = ok (some c)) : s.val.length = 7 \u2227 (s.val[0]!).val < 128",
+   "proof": "theorem parse_color_shape (s : Slice Std.U8) (c : Rgb)\n    (h : parse_color s = ok (some c)) : s.val.length = 7 \u2227 (s.val[0]!).val < 128 := by\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 (parse_color_spec s)\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  exact hp c h",
+   "deps": [
+    "Rgb",
+    "parse_color",
+    "byte_at",
+    "hex_value"
+   ],
+   "spec": []
+  },
+  {
+   "name": "hex_value_digit",
+   "file": "Properties.lean",
+   "doc": "**C.** `hex_value` is a digit's value (\u2264 15) or 16.",
+   "statement": "theorem hex_value_digit (b : Std.U8) : \u2203 v, hex_value b = ok v \u2227 v.val \u2264 16",
+   "proof": "theorem hex_value_digit (b : Std.U8) : \u2203 v, hex_value b = ok v \u2227 v.val \u2264 16 := by\n  exact (WP.spec_equiv_exists _ _).1 (hex_value_spec b)",
+   "deps": [
+    "hex_value"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "byte_at": {
+   "kind": "def",
+   "rust_path": "esp_sign_kernel::byte_at",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "fn byte_at(s: &[u8], i: usize) -> Option<u8> {\n    let hi = hex_value(s[i]);\n    let lo = hex_value(s[i + 1]);\n    if hi > 15 || lo > 15 {\n        None\n    } else {\n        Some(hi * 16 + lo)\n    }\n}",
+   "lean": "def byte_at (s : Slice Std.U8) (i : Std.Usize) : Result (Option Std.U8) := do\n  let i1 \u2190 Slice.index_usize s i\n  let hi \u2190 hex_value i1\n  let i2 \u2190 i + 1#usize\n  let i3 \u2190 Slice.index_usize s i2\n  let lo \u2190 hex_value i3\n  if hi > 15#u8\n  then ok none\n  else\n    if lo > 15#u8\n    then ok none\n    else let i4 \u2190 hi * 16#u8\n         let i5 \u2190 i4 + lo\n         ok (some i5)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "hex_value": {
+   "kind": "def",
+   "rust_path": "esp_sign_kernel::hex_value",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 16,
+   "kernel_code": "pub fn hex_value(b: u8) -> u8 {\n    if b >= 48 && b <= 57 {\n        b - 48\n    } else if b >= 97 && b <= 102 {\n        b - 87\n    } else if b >= 65 && b <= 70 {\n        b - 55\n    } else {\n        16\n    }\n}",
+   "lean": "def hex_value (b : Std.U8) : Result Std.U8 := do\n  if b >= 48#u8\n  then\n    if b <= 57#u8\n    then b - 48#u8\n    else\n      if b >= 97#u8\n      then\n        if b <= 102#u8\n        then b - 87#u8\n        else\n          if b >= 65#u8\n          then if b <= 70#u8\n               then b - 55#u8\n               else ok 16#u8\n          else ok 16#u8\n      else\n        if b >= 65#u8\n        then if b <= 70#u8\n             then b - 55#u8\n             else ok 16#u8\n        else ok 16#u8\n  else\n    if b >= 97#u8\n    then\n      if b <= 102#u8\n      then b - 87#u8\n      else\n        if b >= 65#u8\n        then if b <= 70#u8\n             then b - 55#u8\n             else ok 16#u8\n        else ok 16#u8\n    else\n      if b >= 65#u8\n      then if b <= 70#u8\n           then b - 55#u8\n           else ok 16#u8\n      else ok 16#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "parse_color": {
+   "kind": "def",
+   "rust_path": "esp_sign_kernel::parse_color",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 48,
+   "kernel_code": "pub fn parse_color(s: &[u8]) -> Option<Rgb> {\n    if s.len() != 7 || s[0] >= 0x80 {\n        return None;\n    }\n    // (explicit matches rather than `?`: the same, and plain control flow\n    // for the extraction)\n    let r = match byte_at(s, 1) {\n        Some(v) => v,\n        None => return None,\n    };\n    let g = match byte_at(s, 3) {\n        Some(v) => v,\n        None => return None,\n    };\n    let b = match byte_at(s, 5) {\n        Some(v) => v,\n        None => return None,\n    };\n    Some(Rgb { r, g, b })\n}",
+   "lean": "def parse_color (s : Slice Std.U8) : Result (Option Rgb) := do\n  let i := Slice.len s\n  if i != 7#usize\n  then ok none\n  else\n    let i1 \u2190 Slice.index_usize s 0#usize\n    if i1 >= 128#u8\n    then ok none\n    else\n      let o \u2190 byte_at s 1#usize\n      match o with\n      | none => ok none\n      | some v =>\n        let o1 \u2190 byte_at s 3#usize\n        match o1 with\n        | none => ok none\n        | some v1 =>\n          let o2 \u2190 byte_at s 5#usize\n          match o2 with\n          | none => ok none\n          | some v2 => ok (some { r := v, g := v1, b := v2 })",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Rgb": {
+   "kind": "structure",
+   "rust_path": "esp_sign_kernel::Rgb",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 29,
+   "kernel_code": "pub struct Rgb {\n    pub r: u8,\n    pub g: u8,\n    pub b: u8,\n}",
+   "lean": "structure Rgb where\n  r : Std.U8\n  g : Std.U8\n  b : Std.U8",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

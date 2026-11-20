@@ -1,0 +1,155 @@
+{
+ "slug": "chlorophyll",
+ "name": "chlorophyll",
+ "pin": "2b30e20",
+ "upstream_head": "2b30e20",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "other_device_ignored",
+   "file": "Properties.lean",
+   "doc": "(S) A packet for another device changes nothing.",
+   "statement": "theorem other_device_ignored (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64) :\n    set_name false len same lw now = ok .Ignore",
+   "proof": "theorem other_device_ignored (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64) :\n    set_name false len same lw now = ok .Ignore := by\n  simp [set_name]",
+   "deps": [
+    "set_name",
+    "MAX_NAME_LEN",
+    "SetName",
+    "MIN_WRITE_INTERVAL_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "long_name_kept_old",
+   "file": "Properties.lean",
+   "doc": "(S) A name over 64 bytes is refused: the stored name stays (upstream stores it empty).",
+   "statement": "theorem long_name_kept_old (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : 64 < len.val) : set_name b len same lw now = ok .Ignore",
+   "proof": "theorem long_name_kept_old (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : 64 < len.val) : set_name b len same lw now = ok .Ignore := by\n  have : len > MAX_NAME_LEN := by have := max_len_val; scalar_tac\n  simp [set_name, this]",
+   "deps": [
+    "set_name",
+    "MAX_NAME_LEN",
+    "SetName",
+    "MIN_WRITE_INTERVAL_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "unchanged_name_not_written",
+   "file": "Properties.lean",
+   "doc": "(S) The name the device already has is announced, never written.",
+   "statement": "theorem unchanged_name_not_written (len : Std.U32) (lw : Option Std.U64) (now : Std.U64)\n    (h : len.val \u2264 64) : set_name true len true lw now = ok .Announce",
+   "proof": "theorem unchanged_name_not_written (len : Std.U32) (lw : Option Std.U64) (now : Std.U64)\n    (h : len.val \u2264 64) : set_name true len true lw now = ok .Announce := by\n  have : \u00ac len > MAX_NAME_LEN := by have := max_len_val; scalar_tac\n  simp [set_name, this]",
+   "deps": [
+    "set_name",
+    "MAX_NAME_LEN",
+    "SetName",
+    "MIN_WRITE_INTERVAL_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "writes_spaced",
+   "file": "Properties.lean",
+   "doc": "(S) A write happens only when allowed: none since boot, or the last one at least 10 s before (no flash wear by a flood).",
+   "statement": "theorem writes_spaced (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : set_name b len same lw now = ok .Store) : Spec.write_allowed lw now",
+   "proof": "theorem writes_spaced (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : set_name b len same lw now = ok .Store) : Spec.write_allowed lw now := by\n  intro t ht\n  subst ht\n  have hi := interval_val\n  by_cases hb : b = true\n  \u00b7 subst hb\n    by_cases hl : len > MAX_NAME_LEN\n    \u00b7 simp [set_name, hl] at h\n    by_cases hs : same = true\n    \u00b7 subst hs; simp [set_name, hl] at h\n    have hs' : same = false := by simpa using hs\n    subst hs'\n    by_cases hw : (core.num.U64.saturating_sub now t).val < MIN_WRITE_INTERVAL_MS.val\n    \u00b7 simp [set_name, hl, lift, hw] at h\n    \u00b7 have hv := sat_sub64_val now t\n      have h1 : 10000 \u2264 (core.num.U64.saturating_sub now t).val := by\n        rw [\u2190 hi]; omega\n      rw [hv] at h1\n      constructor <;> omega\n  \u00b7 have : b = false := by simpa using hb\n    subst this; simp [set_name] at h",
+   "deps": [
+    "set_name",
+    "MAX_NAME_LEN",
+    "SetName",
+    "MIN_WRITE_INTERVAL_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "store_only_valid",
+   "file": "Properties.lean",
+   "doc": "(S) A name is stored only when it is for this device, fits, and differs from the stored one.",
+   "statement": "theorem store_only_valid (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : set_name b len same lw now = ok .Store) : b = true \u2227 len.val \u2264 64 \u2227 same = false",
+   "proof": "theorem store_only_valid (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : set_name b len same lw now = ok .Store) : b = true \u2227 len.val \u2264 64 \u2227 same = false := by\n  by_cases hb : b = true\n  \u00b7 subst hb\n    by_cases hl : len > MAX_NAME_LEN\n    \u00b7 simp [set_name, hl] at h\n    by_cases hs : same = true\n    \u00b7 subst hs; simp [set_name, hl] at h\n    refine \u27e8rfl, by have := max_len_val; scalar_tac, by simpa using hs\u27e9\n  \u00b7 have : b = false := by simpa using hb\n    subst this; simp [set_name] at h",
+   "deps": [
+    "set_name",
+    "MAX_NAME_LEN",
+    "SetName",
+    "MIN_WRITE_INTERVAL_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "long_datagram_dropped",
+   "file": "Properties.lean",
+   "doc": "(S) A datagram over 128 bytes is not decoded (upstream decodes up to 1500 bytes into its 1 KiB heap: a long `SetName` exhausts it, the device resets).",
+   "statement": "theorem long_datagram_dropped (len : Std.U32) (h : 128 < len.val) : datagram_ok len = ok false",
+   "proof": "theorem long_datagram_dropped (len : Std.U32) (h : 128 < len.val) : datagram_ok len = ok false := by\n  have : MAX_DATAGRAM.val = 128 := by unfold MAX_DATAGRAM; rfl\n  have h2 : \u00ac len \u2264 MAX_DATAGRAM := by scalar_tac\n  simp [datagram_ok, h2]",
+   "deps": [
+    "datagram_ok",
+    "MAX_DATAGRAM"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "set_name": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::set_name",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub fn set_name(for_me: bool, len: u32, same: bool, last_write: Option<u64>, now: u64) -> SetName {\n    if !for_me || len > MAX_NAME_LEN {\n        return SetName::Ignore;\n    }\n    if same {\n        return SetName::Announce;\n    }\n    match last_write {\n        Some(t) if now.saturating_sub(t) < MIN_WRITE_INTERVAL_MS => SetName::Announce,\n        _ => SetName::Store,\n    }\n}",
+   "lean": "def set_name\n  (for_me : Bool) (len : Std.U32) (same : Bool) (last_write : Option Std.U64)\n  (now : Std.U64) :\n  Result SetName\n  := do\n  if for_me\n  then\n    if len > MAX_NAME_LEN\n    then ok SetName.Ignore\n    else\n      if same\n      then ok SetName.Announce\n      else\n        match last_write with\n        | none => ok SetName.Store\n        | some t =>\n          let i \u2190 lift (core.num.U64.saturating_sub now t)\n          if i < MIN_WRITE_INTERVAL_MS\n          then ok SetName.Announce\n          else ok SetName.Store\n  else ok SetName.Ignore",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SetName": {
+   "kind": "inductive",
+   "rust_path": "chlorophyll_kernel::SetName",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub enum SetName {\n    /// Not for this device, or a name that does not fit: nothing.\n    Ignore,\n    /// Multicast the current name; no flash write.\n    Announce,\n    /// Store the new name (erase + write), then multicast it.\n    Store,\n}",
+   "lean": "@[discriminant isize]\ninductive SetName where\n| Ignore : SetName\n| Announce : SetName\n| Store : SetName",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MAX_NAME_LEN": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::MAX_NAME_LEN",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 24,
+   "kernel_code": "pub const MAX_NAME_LEN: u32 = 64;",
+   "lean": "@[global_simps, irreducible] def MAX_NAME_LEN : Std.U32 := 64#u32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MIN_WRITE_INTERVAL_MS": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::MIN_WRITE_INTERVAL_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 31,
+   "kernel_code": "pub const MIN_WRITE_INTERVAL_MS: u64 = 10_000;",
+   "lean": "@[global_simps, irreducible] def MIN_WRITE_INTERVAL_MS : Std.U64 := 10000#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "datagram_ok": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::datagram_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 44,
+   "kernel_code": "pub fn datagram_ok(len: u32) -> bool {\n    len <= MAX_DATAGRAM\n}",
+   "lean": "def datagram_ok (len : Std.U32) : Result Bool := do\n  ok (len <= MAX_DATAGRAM)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MAX_DATAGRAM": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::MAX_DATAGRAM",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 29,
+   "kernel_code": "pub const MAX_DATAGRAM: u32 = 128;",
+   "lean": "@[global_simps, irreducible] def MAX_DATAGRAM : Std.U32 := 128#u32",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

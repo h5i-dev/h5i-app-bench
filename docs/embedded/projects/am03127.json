@@ -1,0 +1,259 @@
+{
+ "slug": "am03127",
+ "name": "AM03127-Controller",
+ "pin": "5e07e35",
+ "upstream_head": "5e07e35",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "encode_message_no_raw_brackets",
+   "file": "Properties.lean",
+   "doc": "**S (U1 fix).** No byte of the message is copied into the frame as a raw `<` or `>`: every `<` in the encoding starts one of upstream's umlaut tokens `<U..>`, and every `>` ends one. So a message cannot close the frame (`<E>`) or open another command.",
+   "statement": "theorem encode_message_no_raw_brackets (msg out out' : Slice Std.U8) (n : Std.Usize)\n    (h : encode_message msg out = ok (some n, out')) :\n    \u2200 k, k < n.val \u2192 out'.val[k]! = 60#u8 \u2192\n      out'.val[k + 1]! = 85#u8 \u2227 out'.val[k + 4]! = 62#u8",
+   "proof": "theorem encode_message_no_raw_brackets (msg out out' : Slice Std.U8) (n : Std.Usize)\n    (h : encode_message msg out = ok (some n, out')) :\n    \u2200 k, k < n.val \u2192 out'.val[k]! = 60#u8 \u2192\n      out'.val[k + 1]! = 85#u8 \u2227 out'.val[k + 4]! = 62#u8 := by\n  have hs := encode_message_loop_spec msg out 0#usize 0#usize (by simp) (by simp)\n    (fun k hk => absurd hk (by simp))\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 hs\n  unfold encode_message at h\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  subst h\n  intro k hk h60\n  exact ((hp n rfl).2 k hk h60).2",
+   "deps": [
+    "encode_message"
+   ],
+   "spec": []
+  },
+  {
+   "name": "encode_message_total",
+   "file": "Properties.lean",
+   "doc": "**C.** `encode_message` never panics.",
+   "statement": "theorem encode_message_total (msg out : Slice Std.U8) :\n    \u2203 r, encode_message msg out = ok r",
+   "proof": "theorem encode_message_total (msg out : Slice Std.U8) :\n    \u2203 r, encode_message msg out = ok r := by\n  have hs := encode_message_loop_spec msg out 0#usize 0#usize (by simp) (by simp)\n    (fun k hk => absurd hk (by simp))\n  obtain \u27e8r, hr, _\u27e9 := (WP.spec_equiv_exists _ _).1 hs\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "encode_message"
+   ],
+   "spec": []
+  },
+  {
+   "name": "pages_valid_only_ids",
+   "file": "Properties.lean",
+   "doc": "**S (U1 fix).** An accepted schedule page list holds page IDs only.",
+   "statement": "theorem pages_valid_only_ids (pages : Slice Std.U8)\n    (h : pages_valid pages = ok true) :\n    \u2200 k, k < pages.val.length \u2192 65 \u2264 (pages.val[k]!).val \u2227 (pages.val[k]!).val \u2264 90",
+   "proof": "theorem pages_valid_only_ids (pages : Slice Std.U8)\n    (h : pages_valid pages = ok true) :\n    \u2200 k, k < pages.val.length \u2192 65 \u2264 (pages.val[k]!).val \u2227 (pages.val[k]!).val \u2264 90 := by\n  have hs := pages_valid_loop_spec pages 0#usize (by simp)\n  unfold pages_valid at h\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 hs\n  rw [hr] at h\n  simp only [Result.ok.injEq] at h\n  intro k hk\n  exact hp h k (by simp) hk",
+   "deps": [
+    "pages_valid"
+   ],
+   "spec": []
+  },
+  {
+   "name": "page_id_valid_iff",
+   "file": "Properties.lean",
+   "doc": "**C.** Upstream's page-ID check: 'A'..='Z'.",
+   "statement": "theorem page_id_valid_iff (id : Std.U32) :\n    page_id_valid id = ok (decide (65 \u2264 id.val \u2227 id.val \u2264 90))",
+   "proof": "theorem page_id_valid_iff (id : Std.U32) :\n    page_id_valid id = ok (decide (65 \u2264 id.val \u2227 id.val \u2264 90)) := by\n  unfold page_id_valid CAP_A CAP_Z\n  first\n    | (simp only [lift, bind_tc_ok]; split <;> simp_all <;> scalar_tac)\n    | (simp [lift]; split <;> simp_all <;> omega)\n    | (simp [lift, UScalar.cast_val_eq]; by_cases h1 : 65 \u2264 id.val <;> simp_all <;> omega)",
+   "deps": [
+    "page_id_valid",
+    "CAP_A",
+    "CAP_Z"
+   ],
+   "spec": []
+  },
+  {
+   "name": "schedule_id_valid_iff",
+   "file": "Properties.lean",
+   "doc": "**C.** Upstream's schedule-ID check: 'A'..='E'.",
+   "statement": "theorem schedule_id_valid_iff (id : Std.U32) :\n    schedule_id_valid id = ok (decide (65 \u2264 id.val \u2227 id.val \u2264 69))",
+   "proof": "theorem schedule_id_valid_iff (id : Std.U32) :\n    schedule_id_valid id = ok (decide (65 \u2264 id.val \u2227 id.val \u2264 69)) := by\n  unfold schedule_id_valid CAP_A CAP_E\n  first\n    | (simp only [lift, bind_tc_ok]; split <;> simp_all <;> scalar_tac)\n    | (simp [lift]; split <;> simp_all <;> omega)\n    | (simp [lift, UScalar.cast_val_eq]; by_cases h1 : 65 \u2264 id.val <;> simp_all <;> omega)",
+   "deps": [
+    "schedule_id_valid",
+    "CAP_E",
+    "CAP_A"
+   ],
+   "spec": []
+  },
+  {
+   "name": "date_time_two_digits",
+   "file": "Properties.lean",
+   "doc": "**S (U2 fix).** An accepted date/time has every field \u2264 99, so each `{:02}` field is two digits and the frame keeps its fixed width.",
+   "statement": "theorem date_time_two_digits (y w mo d h mi s : Std.U8)\n    (hv : date_time_valid y w mo d h mi s = ok true) :\n    y.val \u2264 99 \u2227 w.val \u2264 99 \u2227 mo.val \u2264 99 \u2227 d.val \u2264 99 \u2227 h.val \u2264 99 \u2227 mi.val \u2264 99 \u2227 s.val \u2264 99",
+   "proof": "theorem date_time_two_digits (y w mo d h mi s : Std.U8)\n    (hv : date_time_valid y w mo d h mi s = ok true) :\n    y.val \u2264 99 \u2227 w.val \u2264 99 \u2227 mo.val \u2264 99 \u2227 d.val \u2264 99 \u2227 h.val \u2264 99 \u2227 mi.val \u2264 99 \u2227 s.val \u2264 99 := by\n  unfold date_time_valid two_digits at hv\n  simp at hv\n  split_ifs at hv <;> simp_all",
+   "deps": [
+    "date_time_valid",
+    "two_digits"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_proceeds_only_with_a_length",
+   "file": "Properties.lean",
+   "doc": "**S.** The flash is only touched for an octet-stream upload with a declared, non-zero length.",
+   "statement": "theorem ota_proceeds_only_with_a_length (o : Bool) (n : Std.Usize) (te : Bool)\n    (h : ota_start o n te = ok OtaStart.Proceed) : o = true \u2227 0 < n.val",
+   "proof": "theorem ota_proceeds_only_with_a_length (o : Bool) (n : Std.Usize) (te : Bool)\n    (h : ota_start o n te = ok OtaStart.Proceed) : o = true \u2227 0 < n.val := by\n  unfold ota_start at h\n  cases o <;> simp at h\n  by_cases hn : n = 0#usize <;> simp_all\n  \u00b7 cases te <;> simp at h\n  \u00b7 scalar_tac",
+   "deps": [
+    "ota_start",
+    "OtaStart"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_complete_iff",
+   "file": "Properties.lean",
+   "doc": "**S.** An image counts as complete exactly when every declared byte was written and nothing is left over.",
+   "statement": "theorem ota_complete_iff (w n r : Std.Usize) :\n    ota_complete w n r = ok (decide (r.val = 0 \u2227 w.val = n.val))",
+   "proof": "theorem ota_complete_iff (w n r : Std.Usize) :\n    ota_complete w n r = ok (decide (r.val = 0 \u2227 w.val = n.val)) := by\n  unfold ota_complete\n  by_cases h1 : r = 0#usize <;> by_cases h2 : w = n <;> simp_all <;> scalar_tac",
+   "deps": [
+    "ota_complete"
+   ],
+   "spec": []
+  },
+  {
+   "name": "waiting_time_letter",
+   "file": "Properties.lean",
+   "doc": "**S (U3 fix).** An admitted waiting time prints as 'A'..='Z' (`value + 65 \u2264 90`, no wrap).",
+   "statement": "theorem waiting_time_letter (v : Std.U8) (h : waiting_time_valid v = ok true) :\n    65 \u2264 v.val + 65 \u2227 v.val + 65 \u2264 90",
+   "proof": "theorem waiting_time_letter (v : Std.U8) (h : waiting_time_valid v = ok true) :\n    65 \u2264 v.val + 65 \u2227 v.val + 65 \u2264 90 := by\n  unfold waiting_time_valid WAITING_TIME_MAX at h\n  simp at h\n  scalar_tac",
+   "deps": [
+    "waiting_time_valid",
+    "WAITING_TIME_MAX"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "CAP_E": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::CAP_E",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 33,
+   "kernel_code": "pub const CAP_E: u8 = 69; // 'E'",
+   "lean": "@[global_simps, irreducible] def CAP_E : Std.U8 := 69#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "date_time_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::date_time_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 156,
+   "kernel_code": "pub fn date_time_valid(year: u8, week: u8, month: u8, day: u8, hour: u8, minute: u8, second: u8) -> bool {\n    two_digits(year)\n        && two_digits(week)\n        && two_digits(month)\n        && two_digits(day)\n        && two_digits(hour)\n        && two_digits(minute)\n        && two_digits(second)\n}",
+   "lean": "def date_time_valid\n  (year : Std.U8) (week : Std.U8) (month : Std.U8) (day : Std.U8)\n  (hour : Std.U8) (minute : Std.U8) (second : Std.U8) :\n  Result Bool\n  := do\n  let b \u2190 two_digits year\n  if b\n  then\n    let b1 \u2190 two_digits week\n    if b1\n    then\n      let b2 \u2190 two_digits month\n      if b2\n      then\n        let b3 \u2190 two_digits day\n        if b3\n        then\n          let b4 \u2190 two_digits hour\n          if b4\n          then\n            let b5 \u2190 two_digits minute\n            if b5\n            then two_digits second\n            else ok false\n          else ok false\n        else ok false\n      else ok false\n    else ok false\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "WAITING_TIME_MAX": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::WAITING_TIME_MAX",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 140,
+   "kernel_code": "pub const WAITING_TIME_MAX: u8 = 25;",
+   "lean": "@[global_simps, irreducible] def WAITING_TIME_MAX : Std.U8 := 25#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "page_id_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::page_id_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 44,
+   "kernel_code": "pub fn page_id_valid(id: u32) -> bool {\n    id >= CAP_A as u32 && id <= CAP_Z as u32\n}",
+   "lean": "def page_id_valid (id : Std.U32) : Result Bool := do\n  let i \u2190 lift (UScalar.cast .U32 CAP_A)\n  if id >= i\n  then let i1 \u2190 lift (UScalar.cast .U32 CAP_Z)\n       ok (id <= i1)\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "CAP_A": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::CAP_A",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub const CAP_A: u8 = 65; // 'A'",
+   "lean": "@[global_simps, irreducible] def CAP_A : Std.U8 := 65#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "pages_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::pages_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub fn pages_valid(pages: &[u8]) -> bool {\n    let mut i: usize = 0;\n    while i < pages.len() {\n        if !page_id_valid(pages[i] as u32) {\n            return false;\n        }\n        i += 1;\n    }\n    true\n}",
+   "lean": "@[reducible]\ndef pages_valid (pages : Slice Std.U8) : Result Bool := do\n  pages_valid_loop pages 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "schedule_id_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::schedule_id_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub fn schedule_id_valid(id: u32) -> bool {\n    id >= CAP_A as u32 && id <= CAP_E as u32\n}",
+   "lean": "def schedule_id_valid (id : Std.U32) : Result Bool := do\n  let i \u2190 lift (UScalar.cast .U32 CAP_A)\n  if id >= i\n  then let i1 \u2190 lift (UScalar.cast .U32 CAP_E)\n       ok (id <= i1)\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "encode_message": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::encode_message",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 104,
+   "kernel_code": "pub fn encode_message(msg: &[u8], out: &mut [u8]) -> Option<usize> {\n    let mut i: usize = 0;\n    let mut n: usize = 0;\n    while i < msg.len() {\n        let b = msg[i];\n        if b == LT || b == GT {\n            return None;\n        }\n        let code = if b == UTF8_C3 && i + 1 < msg.len() { umlaut_code(msg[i + 1]) } else { 0 };\n        if code != 0 {\n            if out.len() < 5 || n > out.len() - 5 {\n                return None;\n            }\n            out[n] = LT;\n            out[n + 1] = CAP_U;\n            out[n + 2] = hex_upper(code >> 4);\n            out[n + 3] = hex_upper(code & 15);\n            out[n + 4] = GT;\n            n += 5;\n            i += 2;\n        } else {\n            if n >= out.len() {\n                return None;\n            }\n            out[n] = b;\n            n += 1;\n            i += 1;\n        }\n    }\n    Some(n)\n}",
+   "lean": "@[reducible]\ndef encode_message\n  (msg : Slice Std.U8) (out : Slice Std.U8) :\n  Result ((Option Std.Usize) \u00d7 (Slice Std.U8))\n  := do\n  encode_message_loop msg out 0#usize 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ota_start": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::ota_start",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 199,
+   "kernel_code": "pub fn ota_start(octet_stream: bool, content_length: usize, transfer_encoding: bool) -> OtaStart {\n    if !octet_stream {\n        OtaStart::WrongContentType\n    } else if content_length == 0 {\n        if transfer_encoding { OtaStart::Chunked } else { OtaStart::Empty }\n    } else {\n        OtaStart::Proceed\n    }\n}",
+   "lean": "def ota_start\n  (octet_stream : Bool) (content_length : Std.Usize) (transfer_encoding : Bool)\n  :\n  Result OtaStart\n  := do\n  if octet_stream\n  then\n    if content_length = 0#usize\n    then if transfer_encoding\n         then ok OtaStart.Chunked\n         else ok OtaStart.Empty\n    else ok OtaStart.Proceed\n  else ok OtaStart.WrongContentType",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "OtaStart": {
+   "kind": "inductive",
+   "rust_path": "am03127_kernel::OtaStart",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 191,
+   "kernel_code": "pub enum OtaStart {\n    WrongContentType,\n    Chunked,\n    Empty,\n    Proceed,\n}",
+   "lean": "@[discriminant isize]\ninductive OtaStart where\n| WrongContentType : OtaStart\n| Chunked : OtaStart\n| Empty : OtaStart\n| Proceed : OtaStart",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "two_digits": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::two_digits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 151,
+   "kernel_code": "pub fn two_digits(v: u8) -> bool {\n    v <= 99\n}",
+   "lean": "def two_digits (v : Std.U8) : Result Bool := do\n  ok (v <= 99#u8)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "waiting_time_valid": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::waiting_time_valid",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 142,
+   "kernel_code": "pub fn waiting_time_valid(v: u8) -> bool {\n    v <= WAITING_TIME_MAX\n}",
+   "lean": "def waiting_time_valid (v : Std.U8) : Result Bool := do\n  ok (v <= WAITING_TIME_MAX)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ota_complete": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::ota_complete",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 216,
+   "kernel_code": "pub fn ota_complete(bytes_written: usize, content_length: usize, remainder: usize) -> bool {\n    remainder == 0 && bytes_written == content_length\n}",
+   "lean": "def ota_complete\n  (bytes_written : Std.Usize) (content_length : Std.Usize)\n  (remainder : Std.Usize) :\n  Result Bool\n  := do\n  if remainder = 0#usize\n  then ok (bytes_written = content_length)\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "CAP_Z": {
+   "kind": "def",
+   "rust_path": "am03127_kernel::CAP_Z",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub const CAP_Z: u8 = 90; // 'Z'",
+   "lean": "@[global_simps, irreducible] def CAP_Z : Std.U8 := 90#u8",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

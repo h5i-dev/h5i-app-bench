@@ -1,0 +1,875 @@
+{
+ "slug": "spoolease",
+ "name": "SpoolEase",
+ "pin": "3532f8d",
+ "upstream_head": "3532f8d",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "place_capacity",
+   "file": "Properties.lean",
+   "doc": "(S) `place` never lets the file grow past the cap, and the row it places lies wholly inside the new file (given the old slot, if any, was in it).",
+   "statement": "theorem place_capacity (file_len : U32) (prev : Option Slot) (len : U32)\n    (hlen : 1 \u2264 len.val \u2227 len.val \u2264 1024) (hfile : file_len.val \u2264 16777216)\n    (hprev : \u2200 p, prev = some p \u2192 slotEnd p \u2264 file_len.val)\n    {off plan fl} (h : place file_len prev len = ok (.Ok (off, plan, fl))) :\n    fl.val \u2264 16777216 \u2227 off.val + len.val \u2264 fl.val",
+   "proof": "theorem place_capacity (file_len : U32) (prev : Option Slot) (len : U32)\n    (hlen : 1 \u2264 len.val \u2227 len.val \u2264 1024) (hfile : file_len.val \u2264 16777216)\n    (hprev : \u2200 p, prev = some p \u2192 slotEnd p \u2264 file_len.val)\n    {off plan fl} (h : place file_len prev len = ok (.Ok (off, plan, fl))) :\n    fl.val \u2264 16777216 \u2227 off.val + len.val \u2264 fl.val := by\n  obtain \u27e8hlen1, hlen2\u27e9 := hlen\n  have hmf : MAX_FILE.val = 16777216 := max_file_val\n  unfold place at h\n  cases prev with\n  | none =>\n    h5i_invert h <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := h) <;>\n      (simp only [slotEnd] at *; h5i_ok_facts; scalar_tac)\n  | some p =>\n    have hp := hprev p rfl\n    h5i_invert h <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := h) <;>\n      (simp only [slotEnd] at *; h5i_ok_facts; scalar_tac)",
+   "deps": [
+    "Slot",
+    "place",
+    "Tag",
+    "NO_REGION",
+    "Plan",
+    "MAX_FILE",
+    "Error",
+    "Region"
+   ],
+   "spec": [
+    "slotEnd"
+   ]
+  },
+  {
+   "name": "place_local",
+   "file": "Properties.lean",
+   "doc": "(S) Every byte `place` writes (its `void` and `data` regions) lies in fresh space at/after the old end of file or in the record's *own* old slot, never in another record's bytes.",
+   "statement": "theorem place_local (file_len : U32) (prev : Option Slot) (len : U32)\n    (hlen : 1 \u2264 len.val \u2227 len.val \u2264 1024) (hfile : file_len.val \u2264 16777216)\n    {off plan fl} (h : place file_len prev len = ok (.Ok (off, plan, fl))) :\n    \u2200 q : Nat, (inSlot (Slot.mk 0#u32 NO_TAG plan.data.off plan.data.len) q \u2228\n                inSlot (Slot.mk 0#u32 NO_TAG plan.void.off plan.void.len) q) \u2192\n      (file_len.val \u2264 q) \u2228 (\u2203 w, prev = some w \u2227 inSlot w q)",
+   "proof": "theorem place_local (file_len : U32) (prev : Option Slot) (len : U32)\n    (hlen : 1 \u2264 len.val \u2227 len.val \u2264 1024) (hfile : file_len.val \u2264 16777216)\n    {off plan fl} (h : place file_len prev len = ok (.Ok (off, plan, fl))) :\n    \u2200 q : Nat, (inSlot (Slot.mk 0#u32 NO_TAG plan.data.off plan.data.len) q \u2228\n                inSlot (Slot.mk 0#u32 NO_TAG plan.void.off plan.void.len) q) \u2192\n      (file_len.val \u2264 q) \u2228 (\u2203 w, prev = some w \u2227 inSlot w q) := by\n  obtain \u27e8hlen1, hlen2\u27e9 := hlen\n  intro q hq\n  unfold place at h\n  cases prev with\n  | none =>\n    h5i_invert h <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := h) <;>\n      (left; rcases hq with hh | hh <;>\n        (simp only [inSlot, slotEnd, no_region_off, no_region_len] at hh; scalar_tac))\n  | some p =>\n    h5i_invert h <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := h) <;>\n      (rcases hq with hh | hh <;>\n        simp only [inSlot, slotEnd, no_region_off, no_region_len] at hh <;>\n        first\n          | (left; scalar_tac)\n          | (right; exact \u27e8p, rfl, by simp only [inSlot, slotEnd]; scalar_tac\u27e9))",
+   "deps": [
+    "Slot",
+    "NO_TAG",
+    "place",
+    "Tag",
+    "NO_REGION",
+    "Plan",
+    "MAX_FILE",
+    "Error",
+    "Region"
+   ],
+   "spec": [
+    "inSlot"
+   ]
+  },
+  {
+   "name": "place_inplace_fits",
+   "file": "Properties.lean",
+   "doc": "(S) An in-place rewrite (the file does not grow) happens only when the row fits the old slot, and then it writes exactly the old slot (nothing voided).",
+   "statement": "theorem place_inplace_fits (file_len : U32) (p : Slot) (len : U32)\n    (hlen : 1 \u2264 len.val \u2227 len.val \u2264 1024) (hfile : file_len.val \u2264 16777216)\n    {off plan fl} (h : place file_len (some p) len = ok (.Ok (off, plan, fl)))\n    (hinplace : fl = file_len) :\n    len.val \u2264 p.length.val \u2227 plan.data.off = p.offset \u2227 plan.data.len = p.length \u2227\n      plan.void = NO_REGION",
+   "proof": "theorem place_inplace_fits (file_len : U32) (p : Slot) (len : U32)\n    (hlen : 1 \u2264 len.val \u2227 len.val \u2264 1024) (hfile : file_len.val \u2264 16777216)\n    {off plan fl} (h : place file_len (some p) len = ok (.Ok (off, plan, fl)))\n    (hinplace : fl = file_len) :\n    len.val \u2264 p.length.val \u2227 plan.data.off = p.offset \u2227 plan.data.len = p.length \u2227\n      plan.void = NO_REGION := by\n  obtain \u27e8hlen1, hlen2\u27e9 := hlen\n  unfold place at h\n  h5i_invert h <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := h) <;>\n    first\n      | exact \u27e8by scalar_tac, rfl, rfl, rfl\u27e9\n      | (exfalso\n         have hadd := add_ok_val (by assumption)\n         rw [hinplace] at hadd\n         omega)",
+   "deps": [
+    "Slot",
+    "NO_REGION",
+    "place",
+    "Tag",
+    "Region",
+    "Plan",
+    "MAX_FILE",
+    "Error"
+   ],
+   "spec": []
+  },
+  {
+   "name": "place_grow_relocates",
+   "file": "Properties.lean",
+   "doc": "(S) A row that grows past its old slot is never written in place: it is appended at the old end of file and its old slot is voided whole.",
+   "statement": "theorem place_grow_relocates (file_len : U32) (p : Slot) (len : U32)\n    (hgrow : p.length.val < len.val)\n    {off plan fl} (h : place file_len (some p) len = ok (.Ok (off, plan, fl))) :\n    off = file_len \u2227 plan.data.off = file_len \u2227 plan.data.len = len \u2227\n      plan.void.off = p.offset \u2227 plan.void.len = p.length",
+   "proof": "theorem place_grow_relocates (file_len : U32) (p : Slot) (len : U32)\n    (hgrow : p.length.val < len.val)\n    {off plan fl} (h : place file_len (some p) len = ok (.Ok (off, plan, fl))) :\n    off = file_len \u2227 plan.data.off = file_len \u2227 plan.data.len = len \u2227\n      plan.void.off = p.offset \u2227 plan.void.len = p.length := by\n  unfold place at h\n  h5i_invert h <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := h) <;>\n    first\n      | exact \u27e8rfl, rfl, rfl, rfl, rfl\u27e9\n      | (exfalso; scalar_tac)",
+   "deps": [
+    "Slot",
+    "place",
+    "Tag",
+    "NO_REGION",
+    "Plan",
+    "MAX_FILE",
+    "Error",
+    "Region"
+   ],
+   "spec": []
+  },
+  {
+   "name": "strike_relocates",
+   "file": "Properties.lean",
+   "doc": "(S) When an add strikes out the spool that held its tag, the struck row (one byte longer) is appended at or past the old end of file, and the spool's whole old slot (one byte shorter than the new row) is voided: it is never rewritten in place, where it would overrun into the next record. Rules out the `strike_inplace` mutant.",
+   "statement": "theorem strike_relocates (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ws id plan bid btag bplan}\n    (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan (.Done bid btag bplan)))) :\n    s.file_len.val \u2264 bplan.data.off.val \u2227 bplan.void.len.val + 1 = bplan.data.len.val",
+   "proof": "theorem strike_relocates (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ws id plan bid btag bplan}\n    (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan (.Done bid btag bplan)))) :\n    s.file_len.val \u2264 bplan.data.off.val \u2227 bplan.void.len.val + 1 = bplan.data.len.val := by\n  have := max_rec_val; have := max_id_val; have := max_file_val\n  have hw : transition a s (.AddSpool tag len rd) \u2983 res =>\n      \u2200 ws id plan bid btag bplan, res = .Ok (ws, Reply.Added id plan (.Done bid btag bplan)) \u2192\n        s.file_len.val \u2264 bplan.data.off.val \u2227 bplan.void.len.val + 1 = bplan.data.len.val \u2984 := by\n    unfold transition add_spool place\n    by_cases hl : len.val \u2264 1024\n    all_goals spool_auto\n    all_goals (intros; simp_all <;> scalar_tac)\n  exact post_of_ok hw h ws id plan bid btag bplan rfl",
+   "deps": [
+    "transition",
+    "Device",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "fresh_id_is_new",
+   "file": "Properties.lean",
+   "doc": "(S) The spool id `AddSpool` hands out is new: no record already has it. Rules out the `fresh_id_reuse` mutant (a new spool shadowing an existing record's storage). Needs only that existing ids are `\u2264 last_id`.",
+   "statement": "theorem fresh_id_is_new (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    (hids : \u2200 sl \u2208 s.slots.val, sl.id.val \u2264 s.last_id.val)\n    {ws id plan st} (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan st))) :\n    \u2200 sl \u2208 s.slots.val, sl.id \u2260 id",
+   "proof": "theorem fresh_id_is_new (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    (hids : \u2200 sl \u2208 s.slots.val, sl.id.val \u2264 s.last_id.val)\n    {ws id plan st} (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan st))) :\n    \u2200 sl \u2208 s.slots.val, sl.id \u2260 id := by\n  have hid := addspool_id a s tag len rd hcap hicap h\n  intro sl hsl heq\n  have h2 := hids sl hsl\n  have hv : sl.id.val = id.val := by rw [heq]\n  omega",
+   "deps": [
+    "transition",
+    "Device",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "add_len_ok",
+   "file": "Properties.lean",
+   "doc": "(S) An add is only accepted for a row of `1 ..= MAX_REC` bytes (one that serialises in `max_record_width`). Rules out the `add_no_len_check` mutant.",
+   "statement": "theorem add_len_ok (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ws id plan st} (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan st))) :\n    1 \u2264 len.val \u2227 len.val \u2264 1024",
+   "proof": "theorem add_len_ok (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ws id plan st} (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan st))) :\n    1 \u2264 len.val \u2227 len.val \u2264 1024 := by\n  have := max_rec_val; have := max_id_val\n  have hw : transition a s (.AddSpool tag len rd) \u2983 res =>\n      \u2200 ws id plan st, res = .Ok (ws, Reply.Added id plan st) \u2192 1 \u2264 len.val \u2227 len.val \u2264 1024 \u2984 := by\n    unfold transition add_spool\n    by_cases hl : len.val \u2264 1024\n    all_goals spool_auto\n    all_goals (intros; simp_all <;> scalar_tac)\n  exact post_of_ok hw h ws id plan st rfl",
+   "deps": [
+    "transition",
+    "Device",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "edit_same_writes_nothing",
+   "file": "Properties.lean",
+   "doc": "(S) An edit that changes nothing writes nothing (`CsvDb::insert` returns early for an equal record): no region of the file is touched and it does not grow.",
+   "statement": "theorem edit_same_writes_nothing (a : Device) (s : Store) (id : U32) (tag : Tag) (len : U32) (rd : Bool) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ns plan} (h : transition a s (.EditSpool id tag len true rd) = ok (.Ok (some ns, Reply.Wrote plan))) :\n    plan = NO_PLAN \u2227 ns.file_len = s.file_len",
+   "proof": "theorem edit_same_writes_nothing (a : Device) (s : Store) (id : U32) (tag : Tag) (len : U32) (rd : Bool) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ns plan} (h : transition a s (.EditSpool id tag len true rd) = ok (.Ok (some ns, Reply.Wrote plan))) :\n    plan = NO_PLAN \u2227 ns.file_len = s.file_len := by\n  have hw : transition a s (.EditSpool id tag len true rd) \u2983 res =>\n      \u2200 ns plan, res = .Ok (some ns, Reply.Wrote plan) \u2192 plan = NO_PLAN \u2227 ns.file_len = s.file_len \u2984 := by\n    unfold transition edit_spool\n    spool_auto\n    all_goals (intros; simp_all)\n  exact post_of_ok hw h ns plan rfl",
+   "deps": [
+    "transition",
+    "Device",
+    "NO_PLAN",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Plan",
+    "NO_REGION",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "remove_id",
+    "index_insert"
+   ],
+   "spec": []
+  },
+  {
+   "name": "delete_absent_noop",
+   "file": "Properties.lean",
+   "doc": "(S) Deleting a spool that does not exist changes nothing.",
+   "statement": "theorem delete_absent_noop (s : Store) (id : U32)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    (habs : s.slots.val.find? (fun x => decide (x.id = id)) = none) :\n    \u2203 r, transition \u27e8true\u27e9 s (.DeleteSpool id) = ok (.Ok (none, r))",
+   "proof": "theorem delete_absent_noop (s : Store) (id : U32)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    (habs : s.slots.val.find? (fun x => decide (x.id = id)) = none) :\n    \u2203 r, transition \u27e8true\u27e9 s (.DeleteSpool id) = ok (.Ok (none, r)) := by\n  have hw : transition \u27e8true\u27e9 s (.DeleteSpool id) \u2983 res => \u2203 r, res = .Ok (none, r) \u2984 := by\n    unfold transition delete_spool\n    spool_auto\n    all_goals simp_all\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 hw\n  obtain \u27e8rr, rfl\u27e9 := hp\n  exact \u27e8rr, hr\u27e9",
+   "deps": [
+    "transition",
+    "Store",
+    "Device",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "Tag",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "unauth_refused",
+   "file": "Properties.lean",
+   "doc": "(S) A request that did not decrypt (`admin = false`) never mutates: every write command is refused with `Forbidden`, before any state change.",
+   "statement": "theorem unauth_refused (s : Store) (tag : Tag) (len id : U32) (same rd : Bool) :\n    transition \u27e8false\u27e9 s (.AddSpool tag len rd) = ok (.Err .Forbidden) \u2227\n    transition \u27e8false\u27e9 s (.EditSpool id tag len same rd) = ok (.Err .Forbidden) \u2227\n    transition \u27e8false\u27e9 s (.DeleteSpool id) = ok (.Err .Forbidden)",
+   "proof": "theorem unauth_refused (s : Store) (tag : Tag) (len id : U32) (same rd : Bool) :\n    transition \u27e8false\u27e9 s (.AddSpool tag len rd) = ok (.Err .Forbidden) \u2227\n    transition \u27e8false\u27e9 s (.EditSpool id tag len same rd) = ok (.Err .Forbidden) \u2227\n    transition \u27e8false\u27e9 s (.DeleteSpool id) = ok (.Err .Forbidden) := by\n  refine \u27e8?_, ?_, ?_\u27e9 <;> (unfold transition; simp)",
+   "deps": [
+    "transition",
+    "Store",
+    "Tag",
+    "Device",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "committed_rows_readable",
+   "file": "Properties.lean",
+   "doc": "(S) The kernel only commits a row that the boot loader reads back: an accepted add, or an accepted edit that writes, had `readable` set. Upstream writes such rows (a note over 256 bytes or with a line break) and its whole inventory is unavailable after the next reset (found in Renode). Rules out the `unreadable_add` mutant.",
+   "statement": "theorem committed_rows_readable (a : Device) (s : Store) (tag : Tag) (len id : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max) :\n    (\u2200 ws r, transition a s (.AddSpool tag len rd) = ok (.Ok (ws, r)) \u2192 rd = true) \u2227\n    (\u2200 ws r, transition a s (.EditSpool id tag len false rd) = ok (.Ok (ws, r)) \u2192 rd = true)",
+   "proof": "theorem committed_rows_readable (a : Device) (s : Store) (tag : Tag) (len id : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max) :\n    (\u2200 ws r, transition a s (.AddSpool tag len rd) = ok (.Ok (ws, r)) \u2192 rd = true) \u2227\n    (\u2200 ws r, transition a s (.EditSpool id tag len false rd) = ok (.Ok (ws, r)) \u2192 rd = true) := by\n  have := max_rec_val; have := max_id_val\n  constructor\n  \u00b7 intro ws r h\n    have hw : transition a s (.AddSpool tag len rd) \u2983 res => \u2200 ws r, res = .Ok (ws, r) \u2192 rd = true \u2984 := by\n      unfold transition add_spool\n      by_cases hl : len.val \u2264 1024\n      all_goals spool_auto\n      all_goals (intros; simp_all)\n    exact post_of_ok hw h ws r rfl\n  \u00b7 intro ws r h\n    have hw : transition a s (.EditSpool id tag len false rd) \u2983 res => \u2200 ws r, res = .Ok (ws, r) \u2192 rd = true \u2984 := by\n      unfold transition edit_spool\n      by_cases hl : len.val \u2264 1024\n      all_goals spool_auto\n      all_goals (intros; simp_all)\n    exact post_of_ok hw h ws r rfl",
+   "deps": [
+    "transition",
+    "Device",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "sound",
+   "file": "ReadOnly.lean",
+   "doc": "Every accepted `Query` writes nothing, for all actors and states.",
+   "statement": "theorem sound : H5iAppLib.ReadOnly.Sound read_only transition writesOf",
+   "proof": "theorem sound : H5iAppLib.ReadOnly.Sound read_only transition writesOf := by\n  apply H5iAppLib.ReadOnly.sound_of_spec\n  intro a s c hro\n  cases c <;> simp [read_only] at hro\n  unfold transition\n  simp [H5iAppLib.OnOk, writesOf]",
+   "deps": [
+    "transition",
+    "read_only",
+    "Device",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Store",
+    "Reply",
+    "Error",
+    "Command",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "Tag",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get",
+    "MAX_REC"
+   ],
+   "spec": [
+    "writesOf"
+   ]
+  },
+  {
+   "name": "transition_total",
+   "file": "Properties.lean",
+   "doc": "(C) `transition` never panics / overflows, for any actor, store and command (given the record and index counts fit a `usize`). A panic on the device is a reset.",
+   "statement": "theorem transition_total (a : Device) (s : Store) (c : Command)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max) :\n    \u2203 r, transition a s c = ok r",
+   "proof": "theorem transition_total (a : Device) (s : Store) (c : Command)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max) :\n    \u2203 r, transition a s c = ok r := by\n  have h : transition a s c \u2983 _ => True \u2984 := by\n    unfold transition\n    cases c <;> spool_auto\n  obtain \u27e8r, hr, -\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr\u27e9",
+   "deps": [
+    "Command",
+    "transition",
+    "Device",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "addspool_id",
+   "file": "Properties.lean",
+   "doc": "`AddSpool` assigns `last_id + 1`.",
+   "statement": "theorem addspool_id (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ws id plan st} (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan st))) :\n    id.val = s.last_id.val + 1",
+   "proof": "theorem addspool_id (a : Device) (s : Store) (tag : Tag) (len : U32) (rd : Bool)\n    (hcap : s.slots.val.length < Usize.max) (hicap : s.index.val.length < Usize.max)\n    {ws id plan st} (h : transition a s (.AddSpool tag len rd) = ok (.Ok (ws, Reply.Added id plan st))) :\n    id.val = s.last_id.val + 1 := by\n  have := max_rec_val; have := max_id_val\n  have hw : transition a s (.AddSpool tag len rd) \u2983 res =>\n      \u2200 ws id plan st, res = .Ok (ws, Reply.Added id plan st) \u2192 id.val = s.last_id.val + 1 \u2984 := by\n    unfold transition add_spool\n    by_cases hl : len.val \u2264 1024\n    all_goals spool_auto\n    all_goals (intros; simp_all)\n  exact post_of_ok hw h ws id plan st rfl",
+   "deps": [
+    "transition",
+    "Device",
+    "Store",
+    "Tag",
+    "edit_spool",
+    "delete_spool",
+    "add_spool",
+    "Reply",
+    "Error",
+    "Command",
+    "Slot",
+    "IndexEntry",
+    "len_ok",
+    "index_remove_tag",
+    "NO_PLAN",
+    "replace_slot",
+    "tag_empty",
+    "lookup",
+    "place",
+    "NO_TAG",
+    "NO_REGION",
+    "remove_id",
+    "index_insert",
+    "index_get"
+   ],
+   "spec": []
+  },
+  {
+   "name": "lookup_spec",
+   "file": "Properties.lean",
+   "doc": "",
+   "statement": "@[step] theorem lookup_spec (slots : Slice Slot) (id : U32) :\n    lookup slots id \u2983 r => r = slots.val.find? (fun s => decide (s.id = id)) \u2984",
+   "proof": "@[step] theorem lookup_spec (slots : Slice Slot) (id : U32) :\n    lookup slots id \u2983 r => r = slots.val.find? (fun s => decide (s.id = id)) \u2984 := by\n  unfold lookup lookup_loop\n  h5i_search_find slots.val (fun s => decide (s.id = id))",
+   "deps": [
+    "lookup",
+    "Slot",
+    "Tag"
+   ],
+   "spec": []
+  },
+  {
+   "name": "index_get_spec",
+   "file": "Properties.lean",
+   "doc": "",
+   "statement": "@[step] theorem index_get_spec (index : Slice IndexEntry) (tag : Tag) :\n    index_get index tag \u2983 r => r = (index.val.find? (fun e => tagEq e.tag tag)).map (fun e => e.id) \u2984",
+   "proof": "@[step] theorem index_get_spec (index : Slice IndexEntry) (tag : Tag) :\n    index_get index tag \u2983 r => r = (index.val.find? (fun e => tagEq e.tag tag)).map (fun e => e.id) \u2984 := by\n  unfold index_get index_get_loop\n  apply WP.spec_mono (H5iAppLib.loop_search index.val (fun e => tagEq e.tag tag) id\n    (fun _ x => some x.id) none _ ?step 0#usize (by simp))\n  \u00b7 intro r hr; simp only [id] at hr; rw [hr, searchFrom_find _ _ (fun x : IndexEntry => x.id)]; simp\n  \u00b7 intro j hj; unfold index_get_loop.body; h5i_step",
+   "deps": [
+    "index_get",
+    "Tag",
+    "IndexEntry"
+   ],
+   "spec": [
+    "tagEq"
+   ]
+  },
+  {
+   "name": "index_insert_spec",
+   "file": "Properties.lean",
+   "doc": "`index_insert` keeps at most one more entry than it was given.",
+   "statement": "@[step] theorem index_insert_spec (index : Slice IndexEntry) (tag : Tag) (id : U32)\n    (hcap : index.val.length < Usize.max) :\n    index_insert index tag id \u2983 r =>\n      r.val = index.val.map (fun x => if tagEq x.tag tag then \u27e8tag, id\u27e9 else x) ++\n        (if index.val.any (fun x => tagEq x.tag tag) then [] else [\u27e8tag, id\u27e9]) \u2984",
+   "proof": "@[step] theorem index_insert_spec (index : Slice IndexEntry) (tag : Tag) (id : U32)\n    (hcap : index.val.length < Usize.max) :\n    index_insert index tag id \u2983 r =>\n      r.val = index.val.map (fun x => if tagEq x.tag tag then \u27e8tag, id\u27e9 else x) ++\n        (if index.val.any (fun x => tagEq x.tag tag) then [] else [\u27e8tag, id\u27e9]) \u2984 := by\n  unfold index_insert\n  have hloop : index_insert_loop index tag id (alloc.vec.Vec.new IndexEntry) false 0#usize \u2983 r =>\n      (r.1.val, r.2) = (index.val.map (fun x => if tagEq x.tag tag then \u27e8tag, id\u27e9 else x),\n        index.val.any (fun x => tagEq x.tag tag)) \u2984 := by\n    unfold index_insert_loop\n    apply WP.spec_mono (loop_fold2 index.val (fun (v : alloc.vec.Vec IndexEntry) (b : Bool) => (v.val, b))\n      (insStep tag id) (fun v _ i => v.val.length \u2264 i) _ ?step\n      (alloc.vec.Vec.new IndexEntry) false 0#usize (by simp) (by simp))\n    \u00b7 intro r \u27e8hr, _\u27e9\n      simpa only [UScalar.ofNatCore_val_eq, List.drop_zero, vec_new_val, insStep_fold, List.nil_append,\n        Bool.false_or] using hr\n    \u00b7 intro a b i hi hI; unfold index_insert_loop.body; h5i_step [insStep]\n  step* <;> simp_all",
+   "deps": [
+    "Tag",
+    "IndexEntry",
+    "index_insert"
+   ],
+   "spec": [
+    "tagEq"
+   ]
+  },
+  {
+   "name": "index_remove_tag_spec",
+   "file": "Properties.lean",
+   "doc": "",
+   "statement": "@[step] theorem index_remove_tag_spec (index : Slice IndexEntry) (tag : Tag) :\n    index_remove_tag index tag \u2983 r => r.val = index.val.filter (fun e => !tagEq e.tag tag) \u2984",
+   "proof": "@[step] theorem index_remove_tag_spec (index : Slice IndexEntry) (tag : Tag) :\n    index_remove_tag index tag \u2983 r => r.val = index.val.filter (fun e => !tagEq e.tag tag) \u2984 := by\n  unfold index_remove_tag index_remove_tag_loop\n  apply WP.spec_mono (loop_fold index.val (fun v : alloc.vec.Vec IndexEntry => v.val)\n    (fun acc x => if !tagEq x.tag tag then acc ++ [x] else acc) (fun v i => v.val.length \u2264 i) _ ?step\n    (alloc.vec.Vec.new IndexEntry) 0#usize (by simp) (by simp))\n  \u00b7 intro r hr\n    simpa only [UScalar.ofNatCore_val_eq, List.drop_zero, vec_new_val, foldl_filter, List.nil_append] using hr\n  \u00b7 intro s i hi hI; unfold index_remove_tag_loop.body; h5i_step",
+   "deps": [
+    "index_remove_tag",
+    "Tag",
+    "IndexEntry"
+   ],
+   "spec": [
+    "tagEq"
+   ]
+  },
+  {
+   "name": "index_remove_id_spec",
+   "file": "Properties.lean",
+   "doc": "",
+   "statement": "@[step] theorem index_remove_id_spec (index : Slice IndexEntry) (id : U32) :\n    index_remove_id index id \u2983 r => r.val = index.val.filter (fun e => e.id != id) \u2227\n      r.val.length \u2264 index.val.length \u2984",
+   "proof": "@[step] theorem index_remove_id_spec (index : Slice IndexEntry) (id : U32) :\n    index_remove_id index id \u2983 r => r.val = index.val.filter (fun e => e.id != id) \u2227\n      r.val.length \u2264 index.val.length \u2984 := by\n  unfold index_remove_id index_remove_id_loop\n  apply WP.spec_mono (loop_fold index.val (fun v : alloc.vec.Vec IndexEntry => v.val)\n    (fun acc x => if x.id != id then acc ++ [x] else acc) (fun v i => v.val.length \u2264 i) _ ?step\n    (alloc.vec.Vec.new IndexEntry) 0#usize (by simp) (by simp))\n  \u00b7 intro r hr\n    have h : r.val = index.val.filter (fun e => e.id != id) := by\n      simpa only [UScalar.ofNatCore_val_eq, List.drop_zero, vec_new_val, foldl_filter, List.nil_append] using hr\n    exact \u27e8h, h \u25b8 List.length_filter_le _ _\u27e9\n  \u00b7 intro s i hi hI; unfold index_remove_id_loop.body; h5i_step",
+   "deps": [
+    "index_remove_id",
+    "IndexEntry",
+    "Tag"
+   ],
+   "spec": []
+  },
+  {
+   "name": "append_slot_spec",
+   "file": "Properties.lean",
+   "doc": "The append loop copies every slot; the final push adds `slot`.",
+   "statement": "@[step] theorem append_slot_spec (slots : Slice Slot) (slot : Slot)\n    (hcap : slots.val.length < Usize.max) :\n    append_slot slots slot \u2983 r => r.val = slots.val ++ [slot] \u2984",
+   "proof": "@[step] theorem append_slot_spec (slots : Slice Slot) (slot : Slot)\n    (hcap : slots.val.length < Usize.max) :\n    append_slot slots slot \u2983 r => r.val = slots.val ++ [slot] \u2984 := by\n  unfold append_slot\n  have hloop : append_slot_loop slots (alloc.vec.Vec.new Slot) 0#usize \u2983 r => r.val = slots.val \u2984 := by\n    unfold append_slot_loop\n    apply WP.spec_mono (loop_fold slots.val (fun v : alloc.vec.Vec Slot => v.val)\n      (fun acc x => acc ++ [x]) (fun v i => v.val.length \u2264 i) _ ?step (alloc.vec.Vec.new Slot) 0#usize (by simp) (by simp))\n    \u00b7 intro r hr\n      simpa only [UScalar.ofNatCore_val_eq, List.drop_zero, vec_new_val, foldl_snoc, List.nil_append] using hr\n    \u00b7 intro s i hi hI; unfold append_slot_loop.body; h5i_step\n  step* <;> simp_all",
+   "deps": [
+    "Slot",
+    "append_slot",
+    "Tag"
+   ],
+   "spec": []
+  },
+  {
+   "name": "replace_slot_spec",
+   "file": "Properties.lean",
+   "doc": "",
+   "statement": "@[step] theorem replace_slot_spec (slots : Slice Slot) (id : U32) (ns : Slot) :\n    replace_slot slots id ns \u2983 r => r.val = slots.val.map (replaceOne id ns) \u2984",
+   "proof": "@[step] theorem replace_slot_spec (slots : Slice Slot) (id : U32) (ns : Slot) :\n    replace_slot slots id ns \u2983 r => r.val = slots.val.map (replaceOne id ns) \u2984 := by\n  unfold replace_slot replace_slot_loop\n  apply WP.spec_mono (loop_fold slots.val (fun v : alloc.vec.Vec Slot => v.val)\n    (fun acc x => acc ++ [replaceOne id ns x]) (fun v i => v.val.length \u2264 i) _ ?step\n    (alloc.vec.Vec.new Slot) 0#usize (by simp) (by simp))\n  \u00b7 intro r hr\n    simpa only [UScalar.ofNatCore_val_eq, List.drop_zero, vec_new_val, foldl_map, List.nil_append] using hr\n  \u00b7 intro s i hi hI; unfold replace_slot_loop.body; h5i_step [replaceOne]",
+   "deps": [
+    "Slot",
+    "replace_slot",
+    "Tag"
+   ],
+   "spec": [
+    "replaceOne"
+   ]
+  },
+  {
+   "name": "remove_id_spec",
+   "file": "Properties.lean",
+   "doc": "",
+   "statement": "@[step] theorem remove_id_spec (slots : Slice Slot) (id : U32) :\n    remove_id slots id \u2983 r => r.val = slots.val.filter (fun s => s.id != id) \u2984",
+   "proof": "@[step] theorem remove_id_spec (slots : Slice Slot) (id : U32) :\n    remove_id slots id \u2983 r => r.val = slots.val.filter (fun s => s.id != id) \u2984 := by\n  unfold remove_id remove_id_loop\n  apply WP.spec_mono (loop_fold slots.val (fun v : alloc.vec.Vec Slot => v.val)\n    (fun acc x => if x.id != id then acc ++ [x] else acc) (fun v i => v.val.length \u2264 i) _ ?step\n    (alloc.vec.Vec.new Slot) 0#usize (by simp) (by simp))\n  \u00b7 intro r hr\n    simpa only [UScalar.ofNatCore_val_eq, List.drop_zero, vec_new_val, foldl_filter, List.nil_append] using hr\n  \u00b7 intro s i hi hI; unfold remove_id_loop.body; h5i_step",
+   "deps": [
+    "Slot",
+    "remove_id",
+    "Tag"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "len_ok": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::len_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 340,
+   "kernel_code": "fn len_ok(len: u32) -> bool {\n    len >= 1 && len <= MAX_REC\n}",
+   "lean": "def len_ok (len : Std.U32) : Result Bool := do\n  if len >= 1#u32\n  then ok (len <= MAX_REC)\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Region": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::Region",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 103,
+   "kernel_code": "pub struct Region {\n    pub off: u32,\n    pub len: u32,\n}",
+   "lean": "structure Region where\n  off : Std.U32\n  len : Std.U32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "transition": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::transition",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 442,
+   "kernel_code": "pub fn transition(actor: &Device, s: &Store, cmd: &Command) -> Result<(Option<Store>, Reply), Error> {\n    match cmd {\n        Command::Query => Ok((None, Reply::Listing)),\n        Command::AddSpool { tag, len, readable } => {\n            if !actor.admin {\n                return Err(Error::Forbidden);\n            }\n            add_spool(s, *tag, *len, *readable)\n        }\n        Command::EditSpool { id, tag, len, same, readable } => {\n            if !actor.admin {\n                return Err(Error::Forbidden);\n            }\n            edit_spool(s, *id, *tag, *len, *same, *readable)\n        }\n        Command::DeleteSpool { id } => {\n            if !actor.admin {\n                return Err(Error::Forbidden);\n            }\n            delete_spool(s, *id)\n        }\n    }\n}",
+   "lean": "def transition\n  (actor : Device) (s : Store) (cmd : Command) :\n  Result (core.result.Result ((Option Store) \u00d7 Reply) Error)\n  := do\n  match cmd with\n  | Command.AddSpool tag len readable =>\n    if actor.admin\n    then add_spool s tag len readable\n    else ok (core.result.Result.Err Error.Forbidden)\n  | Command.EditSpool id tag len same readable =>\n    if actor.admin\n    then edit_spool s id tag len same readable\n    else ok (core.result.Result.Err Error.Forbidden)\n  | Command.DeleteSpool id =>\n    if actor.admin\n    then delete_spool s id\n    else ok (core.result.Result.Err Error.Forbidden)\n  | Command.Query => ok (core.result.Result.Ok (none, Reply.Listing))",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MAX_REC": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::MAX_REC",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 46,
+   "kernel_code": "pub const MAX_REC: u32 = 1024;",
+   "lean": "@[global_simps, irreducible] def MAX_REC : Std.U32 := 1024#u32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Slot": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::Slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 72,
+   "kernel_code": "pub struct Slot {\n    pub id: u32,\n    pub tag: Tag,\n    pub offset: u32,\n    pub length: u32,\n}",
+   "lean": "structure Slot where\n  id : Std.U32\n  tag : Tag\n  offset : Std.U32\n  length : Std.U32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Device": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::Device",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 55,
+   "kernel_code": "pub struct Device {\n    pub admin: bool,\n}",
+   "lean": "structure Device where\n  admin : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "index_remove_tag": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::index_remove_tag",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 236,
+   "kernel_code": "fn index_remove_tag(index: &[IndexEntry], tag: Tag) -> Vec<IndexEntry> {\n    let mut out: Vec<IndexEntry> = Vec::new();\n    let mut i = 0;\n    while i < index.len() {\n        let e = index[i];\n        if !tag_eq(e.tag, tag) {\n            out.push(e);\n        }\n        i += 1;\n    }\n    out\n}",
+   "lean": "@[reducible]\ndef index_remove_tag\n  (index : Slice IndexEntry) (tag : Tag) :\n  Result (alloc.vec.Vec IndexEntry)\n  := do\n  index_remove_tag_loop index tag (alloc.vec.Vec.new IndexEntry) 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NO_PLAN": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::NO_PLAN",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 118,
+   "kernel_code": "pub const NO_PLAN: Plan = Plan { void: NO_REGION, data: NO_REGION };",
+   "lean": "@[global_simps, irreducible]\ndef NO_PLAN : Plan := { void := NO_REGION, data := NO_REGION }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "replace_slot": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::replace_slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 294,
+   "kernel_code": "fn replace_slot(slots: &[Slot], id: u32, ns: Slot) -> Vec<Slot> {\n    let mut out: Vec<Slot> = Vec::new();\n    let mut i = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        if s.id == id {\n            out.push(ns);\n        } else {\n            out.push(s);\n        }\n        i += 1;\n    }\n    out\n}",
+   "lean": "@[reducible]\ndef replace_slot\n  (slots : Slice Slot) (id : Std.U32) (ns : Slot) :\n  Result (alloc.vec.Vec Slot)\n  := do\n  replace_slot_loop slots id ns (alloc.vec.Vec.new Slot) 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NO_TAG": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::NO_TAG",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 68,
+   "kernel_code": "pub const NO_TAG: Tag = Tag { base: 0, dash: 0 };",
+   "lean": "@[global_simps, irreducible]\ndef NO_TAG : Tag := { base := 0#u32, dash := 0#u32 }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "delete_spool": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::delete_spool",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 428,
+   "kernel_code": "fn delete_spool(s: &Store, id: u32) -> Result<(Option<Store>, Reply), Error> {\n    match lookup(&s.slots, id) {\n        None => Ok((None, Reply::Deleted { found: false, void: NO_REGION, tag: NO_TAG })),\n        Some(p) => {\n            let slots = remove_id(&s.slots, id);\n            let index = index_remove_tag(&s.index, p.tag);\n            let ns = Store { file_len: s.file_len, last_id: s.last_id, slots, index };\n            Ok((Some(ns), Reply::Deleted { found: true, void: Region { off: p.offset, len: p.length }, tag: p.tag }))\n        }\n    }\n}",
+   "lean": "def delete_spool\n  (s : Store) (id : Std.U32) :\n  Result (core.result.Result ((Option Store) \u00d7 Reply) Error)\n  := do\n  let s1 := alloc.vec.Vec.deref s.slots\n  let o \u2190 lookup s1 id\n  match o with\n  | none =>\n    ok (core.result.Result.Ok (none, Reply.Deleted false NO_REGION NO_TAG))\n  | some p =>\n    let s2 := alloc.vec.Vec.deref s.slots\n    let slots \u2190 remove_id s2 id\n    let s3 := alloc.vec.Vec.deref s.index\n    let index \u2190 index_remove_tag s3 p.tag\n    ok (core.result.Result.Ok (some { s with slots, index }, Reply.Deleted true\n      { off := p.offset, len := p.length } p.tag))",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "edit_spool": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::edit_spool",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 402,
+   "kernel_code": "fn edit_spool(s: &Store, id: u32, tag: Tag, len: u32, same: bool, readable: bool) -> Result<(Option<Store>, Reply), Error> {\n    match lookup(&s.slots, id) {\n        None => Err(Error::NotFound),\n        Some(p) => {\n            let (off, plan, fl, nlen) = if same {\n                (p.offset, NO_PLAN, s.file_len, p.length)\n            } else {\n                if !len_ok(len) {\n                    return Err(Error::TooBig);\n                }\n                if !readable {\n                    return Err(Error::Unreadable);\n                }\n                let (o, pl, f) = place(s.file_len, Some(p), len)?;\n                (o, pl, f, len)\n            };\n            let slots = replace_slot(&s.slots, id, Slot { id, tag, offset: off, length: nlen });\n            let index = if !tag_empty(p.tag) && tag_empty(tag) { index_remove_tag(&s.index, p.tag) } else { s.index.clone() };\n            let ns = Store { file_len: fl, last_id: s.last_id, slots, index };\n            Ok((Some(ns), Reply::Wrote { plan }))\n        }\n    }\n}",
+   "lean": "def edit_spool\n  (s : Store) (id : Std.U32) (tag : Tag) (len : Std.U32) (same : Bool)\n  (readable : Bool) :\n  Result (core.result.Result ((Option Store) \u00d7 Reply) Error)\n  := do\n  let s1 := alloc.vec.Vec.deref s.slots\n  let o \u2190 lookup s1 id\n  match o with\n  | none => ok (core.result.Result.Err Error.NotFound)\n  | some p =>\n    if same\n    then\n      let s2 := alloc.vec.Vec.deref s.slots\n      let slots \u2190 replace_slot s2 id { p with id, tag }\n      let b \u2190 tag_empty p.tag\n      if b\n      then\n        let index \u2190\n          alloc.vec.CloneVec.clone IndexEntry.Insts.CoreCloneClone s.index\n        ok (core.result.Result.Ok (some { s with slots, index }, Reply.Wrote\n          NO_PLAN))\n      else\n        let b1 \u2190 tag_empty tag\n        if b1\n        then\n          let s3 := alloc.vec.Vec.deref s.index\n          let index \u2190 index_remove_tag s3 p.tag\n          ok (core.result.Result.Ok (some { s with slots, index }, Reply.Wrote\n            NO_PLAN))\n        else\n          let index \u2190\n            alloc.vec.CloneVec.clone IndexEntry.Insts.CoreCloneClone s.index\n          ok (core.result.Result.Ok (some { s with slots, index }, Reply.Wrote\n            NO_PLAN))\n    else\n      let b \u2190 len_ok len\n      if b\n      then\n        if readable\n        then\n          let r \u2190 place s.file_len o len\n          let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n          match cf with\n          | core.ops.control_flow.ControlFlow.Continue val =>\n            let (o1, pl, f) := val\n            let s2 := alloc.vec.Vec.deref s.slots\n            let slots \u2190\n              replace_slot s2 id { id, tag, offset := o1, length := len }\n            let b1 \u2190 tag_empty p.tag\n            if b1\n            then\n              let index \u2190\n                alloc.vec.CloneVec.clone IndexEntry.Insts.CoreCloneClone\n                  s.index\n              ok (core.result.Result.Ok (some\n                { s with file_len := f, slots, index }, Reply.Wrote pl))\n            else\n              let b2 \u2190 tag_empty tag\n              if b2\n              then\n                let s3 := alloc.vec.Vec.deref s.index\n                let index \u2190 index_remove_tag s3 p.tag\n                ok (core.result.Result.Ok (some\n                  { s with file_len := f, slots, index }, Reply.Wrote pl))\n              else\n                let index \u2190\n                  alloc.vec.CloneVec.clone IndexEntry.Insts.CoreCloneClone\n                    s.index\n                ok (core.result.Result.Ok (some\n                  { s with file_len := f, slots, index }, Reply.Wrote pl))\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              ((Option Store) \u00d7 Reply) (core.convert.FromSame Error) residual\n        else ok (core.result.Result.Err Error.Unreadable)\n      else ok (core.result.Result.Err Error.TooBig)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NO_REGION": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::NO_REGION",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 117,
+   "kernel_code": "pub const NO_REGION: Region = Region { off: 0, len: 0 };",
+   "lean": "@[global_simps, irreducible]\ndef NO_REGION : Region := { off := 0#u32, len := 0#u32 }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "tag_empty": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::tag_empty",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 178,
+   "kernel_code": "fn tag_empty(t: Tag) -> bool {\n    if t.base == 0 { t.dash == 0 } else { false }\n}",
+   "lean": "def tag_empty (t : Tag) : Result Bool := do\n  if t.base = 0#u32\n  then ok (t.dash = 0#u32)\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "add_spool": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::add_spool",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 349,
+   "kernel_code": "fn add_spool(s: &Store, tag: Tag, len: u32, readable: bool) -> Result<(Option<Store>, Reply), Error> {\n    if !len_ok(len) {\n        return Err(Error::TooBig);\n    }\n    if !readable {\n        return Err(Error::Unreadable);\n    }\n    if s.last_id >= MAX_ID {\n        return Err(Error::Full);\n    }\n    let id = s.last_id + 1;\n    let prev = lookup(&s.slots, id);\n    let had = match prev {\n        Some(_) => true,\n        None => false,\n    };\n    let (off, plan, fl) = place(s.file_len, prev, len)?;\n    let slots1 = put_slot(&s.slots, had, Slot { id, tag, offset: off, length: len });\n    if tag_empty(tag) {\n        let ns = Store { file_len: fl, last_id: id, slots: slots1, index: s.index.clone() };\n        return Ok((Some(ns), Reply::Added { id, plan, strike: Strike::None }));\n    }\n    // `get_spool_by_hex_tag`: the index entry, if its spool still exists.\n    let holder = lookup_opt(&slots1, index_get(&s.index, tag));\n    match holder {\n        None => {\n            let index = index_insert(&s.index, tag, id);\n            let ns = Store { file_len: fl, last_id: id, slots: slots1, index };\n            Ok((Some(ns), Reply::Added { id, plan, strike: Strike::None }))\n        }\n        Some(b) => {\n            if b.length >= MAX_REC || b.tag.dash >= MAX_REC {\n                // The struck row does not serialise: `update_spool` fails\n                // before touching the index; the tag still moves.\n                let index = index_insert(&s.index, tag, id);\n                let ns = Store { file_len: fl, last_id: id, slots: slots1, index };\n                return Ok((Some(ns), Reply::Added { id, plan, strike: Strike::Failed { id: b.id } }));\n            }\n            let btag = Tag { base: b.tag.base, dash: b.tag.dash + 1 };\n            let blen = b.length + 1;\n            let (boff, bplan, fl2) = place(fl, Some(b), blen)?;\n            let slots2 = replace_slot(&slots1, b.id, Slot { id: b.id, tag: btag, offset: boff, length: blen });\n            let index1 = index_remove_id(&s.index, b.id);\n            let index = index_insert(&index1, tag, id);\n            let ns = Store { file_len: fl2, last_id: id, slots: slots2, index };\n            Ok((Some(ns), Reply::Added { id, plan, strike: Strike::Done { id: b.id, tag: btag, plan: bplan } }))\n        }\n    }\n}",
+   "lean": "def add_spool\n  (s : Store) (tag : Tag) (len : Std.U32) (readable : Bool) :\n  Result (core.result.Result ((Option Store) \u00d7 Reply) Error)\n  := do\n  let b \u2190 len_ok len\n  if b\n  then\n    if readable\n    then\n      if s.last_id >= MAX_ID\n      then ok (core.result.Result.Err Error.Full)\n      else\n        let id \u2190 s.last_id + 1#u32\n        let s1 := alloc.vec.Vec.deref s.slots\n        let prev \u2190 lookup s1 id\n        let had \u2190 match prev with\n                    | none => ok false\n                    | some _ => ok true\n        let r \u2190 place s.file_len prev len\n        let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n        match cf with\n        | core.ops.control_flow.ControlFlow.Continue val =>\n          let (off, plan, fl) := val\n          let s2 := alloc.vec.Vec.deref s.slots\n          let slots1 \u2190\n            put_slot s2 had { id, tag, offset := off, length := len }\n          let b1 \u2190 tag_empty tag\n          if b1\n          then\n            let v \u2190\n              alloc.vec.CloneVec.clone IndexEntry.Insts.CoreCloneClone s.index\n            ok (core.result.Result.Ok (some\n              { file_len := fl, last_id := id, slots := slots1, index := v },\n              Reply.Added id plan Strike.None))\n          else\n            let s3 := alloc.vec.Vec.deref slots1\n            let s4 := alloc.vec.Vec.deref s.index\n            let o \u2190 index_get s4 tag\n            let holder \u2190 lookup_opt s3 o\n            match holder with\n            | none =>\n              let s5 := alloc.vec.Vec.deref s.index\n              let index \u2190 index_insert s5 tag id\n              ok (core.result.Result.Ok (some\n                { file_len := fl, last_id := id, slots := slots1, index },\n                Reply.Added id plan Strike.None))\n            | some b2 =>\n              if b2.length >= MAX_REC\n              then\n                let s5 := alloc.vec.Vec.deref s.index\n                let index \u2190 index_insert s5 tag id\n                ok (core.result.Result.Ok (some\n                  { file_len := fl, last_id := id, slots := slots1, index },\n                  Reply.Added id plan (Strike.Failed b2.id)))\n              else\n                if b2.tag.dash >= MAX_REC\n                then\n                  let s5 := alloc.vec.Vec.deref s.index\n                  let index \u2190 index_insert s5 tag id\n                  ok (core.result.Result.Ok (some\n                    { file_len := fl, last_id := id, slots := slots1, index },\n                    Reply.Added id plan (Strike.Failed b2.id)))\n                else\n                  let i \u2190 b2.tag.dash + 1#u32\n                  let blen \u2190 b2.length + 1#u32\n                  let r1 \u2190 place fl holder blen\n                  let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n                  match cf1 with\n                  | core.ops.control_flow.ControlFlow.Continue val1 =>\n                    let (boff, bplan, fl2) := val1\n                    let s5 := alloc.vec.Vec.deref slots1\n                    let slots2 \u2190\n                      replace_slot s5 b2.id\n                        {\n                          b2\n                            with\n                            tag := { b2.tag with dash := i },\n                            offset := boff,\n                            length := blen\n                        }\n                    let s6 := alloc.vec.Vec.deref s.index\n                    let index1 \u2190 index_remove_id s6 b2.id\n                    let s7 := alloc.vec.Vec.deref index1\n                    let index \u2190 index_insert s7 tag id\n                    ok (core.result.Result.Ok (some\n                      { file_len := fl2, last_id := id, slots := slots2, index\n                      }, Reply.Added id plan (Strike.Done b2.id\n                      { b2.tag with dash := i } bplan)))\n                  | core.ops.control_flow.ControlFlow.Break residual =>\n                    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                      ((Option Store) \u00d7 Reply) (core.convert.FromSame Error)\n                      residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            ((Option Store) \u00d7 Reply) (core.convert.FromSame Error) residual\n    else ok (core.result.Result.Err Error.Unreadable)\n  else ok (core.result.Result.Err Error.TooBig)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Plan": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::Plan",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 112,
+   "kernel_code": "pub struct Plan {\n    pub void: Region,\n    pub data: Region,\n}",
+   "lean": "structure Plan where\n  void : Region\n  data : Region",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Store": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::Store",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 88,
+   "kernel_code": "pub struct Store {\n    pub file_len: u32,\n    pub last_id: u32,\n    pub slots: Vec<Slot>,\n    pub index: Vec<IndexEntry>,\n}",
+   "lean": "structure Store where\n  file_len : Std.U32\n  last_id : Std.U32\n  slots : alloc.vec.Vec Slot\n  index : alloc.vec.Vec IndexEntry",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Tag": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::Tag",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 63,
+   "kernel_code": "pub struct Tag {\n    pub base: u32,\n    pub dash: u32,\n}",
+   "lean": "structure Tag where\n  base : Std.U32\n  dash : Std.U32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "append_slot": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::append_slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 324,
+   "kernel_code": "fn append_slot(slots: &[Slot], slot: Slot) -> Vec<Slot> {\n    let mut out: Vec<Slot> = Vec::new();\n    let mut i = 0;\n    while i < slots.len() {\n        out.push(slots[i]);\n        i += 1;\n    }\n    out.push(slot);\n    out\n}",
+   "lean": "def append_slot\n  (slots : Slice Slot) (slot : Slot) : Result (alloc.vec.Vec Slot) := do\n  let out \u2190 append_slot_loop slots (alloc.vec.Vec.new Slot) 0#usize\n  alloc.vec.Vec.push out slot",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "place": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::place",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 267,
+   "kernel_code": "fn place(file_len: u32, prev: Option<Slot>, len: u32) -> Result<(u32, Plan, u32), Error> {\n    match prev {\n        None => {\n            if file_len > MAX_FILE - len {\n                return Err(Error::Full);\n            }\n            let plan = Plan { void: NO_REGION, data: Region { off: file_len, len } };\n            Ok((file_len, plan, file_len + len))\n        }\n        Some(p) => {\n            if len <= p.length {\n                // Fits: the whole old slot is rewritten (row, `-` padding,\n                // `\\n`); the record's tracked length becomes `len`.\n                let plan = Plan { void: NO_REGION, data: Region { off: p.offset, len: p.length } };\n                Ok((p.offset, plan, file_len))\n            } else {\n                if file_len > MAX_FILE - len {\n                    return Err(Error::Full);\n                }\n                let plan = Plan { void: Region { off: p.offset, len: p.length }, data: Region { off: file_len, len } };\n                Ok((file_len, plan, file_len + len))\n            }\n        }\n    }\n}",
+   "lean": "def place\n  (file_len : Std.U32) (prev : Option Slot) (len : Std.U32) :\n  Result (core.result.Result (Std.U32 \u00d7 Plan \u00d7 Std.U32) Error)\n  := do\n  match prev with\n  | none =>\n    let i \u2190 MAX_FILE - len\n    if file_len > i\n    then ok (core.result.Result.Err Error.Full)\n    else\n      let i1 \u2190 file_len + len\n      ok (core.result.Result.Ok (file_len,\n        { void := NO_REGION, data := { off := file_len, len } }, i1))\n  | some p =>\n    if len <= p.length\n    then\n      ok (core.result.Result.Ok (p.offset,\n        { void := NO_REGION, data := { off := p.offset, len := p.length } },\n        file_len))\n    else\n      let i \u2190 MAX_FILE - len\n      if file_len > i\n      then ok (core.result.Result.Err Error.Full)\n      else\n        let i1 \u2190 file_len + len\n        ok (core.result.Result.Ok (file_len,\n          {\n            void := { off := p.offset, len := p.length },\n            data := { off := file_len, len }\n          }, i1))",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "lookup": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::lookup",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 183,
+   "kernel_code": "fn lookup(slots: &[Slot], id: u32) -> Option<Slot> {\n    let mut i = 0;\n    while i < slots.len() {\n        if slots[i].id == id {\n            return Some(slots[i]);\n        }\n        i += 1;\n    }\n    None\n}",
+   "lean": "@[reducible]\ndef lookup (slots : Slice Slot) (id : Std.U32) : Result (Option Slot) := do\n  lookup_loop slots id 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "index_remove_id": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::index_remove_id",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 251,
+   "kernel_code": "fn index_remove_id(index: &[IndexEntry], id: u32) -> Vec<IndexEntry> {\n    let mut out: Vec<IndexEntry> = Vec::new();\n    let mut i = 0;\n    while i < index.len() {\n        let e = index[i];\n        if e.id != id {\n            out.push(e);\n        }\n        i += 1;\n    }\n    out\n}",
+   "lean": "@[reducible]\ndef index_remove_id\n  (index : Slice IndexEntry) (id : Std.U32) :\n  Result (alloc.vec.Vec IndexEntry)\n  := do\n  index_remove_id_loop index id (alloc.vec.Vec.new IndexEntry) 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MAX_FILE": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::MAX_FILE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 43,
+   "kernel_code": "pub const MAX_FILE: u32 = 16_777_216;",
+   "lean": "@[global_simps, irreducible] def MAX_FILE : Std.U32 := 16777216#u32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "remove_id": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::remove_id",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 310,
+   "kernel_code": "fn remove_id(slots: &[Slot], id: u32) -> Vec<Slot> {\n    let mut out: Vec<Slot> = Vec::new();\n    let mut i = 0;\n    while i < slots.len() {\n        let s = slots[i];\n        if s.id != id {\n            out.push(s);\n        }\n        i += 1;\n    }\n    out\n}",
+   "lean": "@[reducible]\ndef remove_id\n  (slots : Slice Slot) (id : Std.U32) : Result (alloc.vec.Vec Slot) := do\n  remove_id_loop slots id (alloc.vec.Vec.new Slot) 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IndexEntry": {
+   "kind": "structure",
+   "rust_path": "spoolease_kernel::IndexEntry",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 81,
+   "kernel_code": "pub struct IndexEntry {\n    pub tag: Tag,\n    pub id: u32,\n}",
+   "lean": "structure IndexEntry where\n  tag : Tag\n  id : Std.U32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "index_insert": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::index_insert",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 215,
+   "kernel_code": "fn index_insert(index: &[IndexEntry], tag: Tag, id: u32) -> Vec<IndexEntry> {\n    let mut out: Vec<IndexEntry> = Vec::new();\n    let mut found = false;\n    let mut i = 0;\n    while i < index.len() {\n        let e = index[i];\n        if tag_eq(e.tag, tag) {\n            out.push(IndexEntry { tag, id });\n            found = true;\n        } else {\n            out.push(e);\n        }\n        i += 1;\n    }\n    if !found {\n        out.push(IndexEntry { tag, id });\n    }\n    out\n}",
+   "lean": "def index_insert\n  (index : Slice IndexEntry) (tag : Tag) (id : Std.U32) :\n  Result (alloc.vec.Vec IndexEntry)\n  := do\n  let (out, found) \u2190\n    index_insert_loop index tag id (alloc.vec.Vec.new IndexEntry) false 0#usize\n  if found\n  then ok out\n  else alloc.vec.Vec.push out ({ tag, id } : IndexEntry)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "read_only": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::read_only",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 475,
+   "kernel_code": "pub fn read_only(cmd: &Command) -> bool {\n    match cmd {\n        Command::Query => true,\n        _ => false,\n    }\n}",
+   "lean": "def read_only (cmd : Command) : Result Bool := do\n  match cmd with\n  | Command.AddSpool _ _ _ => ok false\n  | Command.EditSpool _ _ _ _ _ => ok false\n  | Command.DeleteSpool _ => ok false\n  | Command.Query => ok true",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Reply": {
+   "kind": "inductive",
+   "rust_path": "spoolease_kernel::Reply",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 150,
+   "kernel_code": "pub enum Reply {\n    Added { id: u32, plan: Plan, strike: Strike },\n    Wrote { plan: Plan },\n    /// `found`: there was such a spool, and `void` is its old slot.\n    Deleted { found: bool, void: Region, tag: Tag },\n    Listing,\n}",
+   "lean": "@[discriminant isize]\ninductive Reply where\n| Added : Std.U32 \u2192 Plan \u2192 Strike \u2192 Reply\n| Wrote : Plan \u2192 Reply\n| Deleted : Bool \u2192 Region \u2192 Tag \u2192 Reply\n| Listing : Reply",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "index_get": {
+   "kind": "def",
+   "rust_path": "spoolease_kernel::index_get",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 203,
+   "kernel_code": "fn index_get(index: &[IndexEntry], tag: Tag) -> Option<u32> {\n    let mut i = 0;\n    while i < index.len() {\n        if tag_eq(index[i].tag, tag) {\n            return Some(index[i].id);\n        }\n        i += 1;\n    }\n    None\n}",
+   "lean": "@[reducible]\ndef index_get\n  (index : Slice IndexEntry) (tag : Tag) : Result (Option Std.U32) := do\n  index_get_loop index tag 0#usize",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Error": {
+   "kind": "inductive",
+   "rust_path": "spoolease_kernel::Error",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 159,
+   "kernel_code": "pub enum Error {\n    /// The row does not serialise in `MAX_REC` bytes.\n    TooBig,\n    /// The file would grow past `MAX_FILE`, or ids are exhausted.\n    Full,\n    /// No such spool id (edit).\n    NotFound,\n    /// The request did not decrypt.\n    Forbidden,\n    /// The row would not load back at boot (a field over the reader's\n    /// 256-byte buffer, a newline in a field). Upstream writes it, and the\n    /// whole inventory is unavailable after the next reset.\n    Unreadable,\n}",
+   "lean": "@[discriminant isize]\ninductive Error where\n| TooBig : Error\n| Full : Error\n| NotFound : Error\n| Forbidden : Error\n| Unreadable : Error",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Command": {
+   "kind": "inductive",
+   "rust_path": "spoolease_kernel::Command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 135,
+   "kernel_code": "pub enum Command {\n    /// Add a spool whose row is `len` bytes, with NFC tag `tag`;\n    /// `readable`: the row reads back as the same record through the boot\n    /// loader (`CsvDb::start`: one line, a 256-byte field buffer).\n    AddSpool { tag: Tag, len: u32, readable: bool },\n    /// Rewrite spool `id`: its row is now `len` bytes and its tag `tag`;\n    /// `same`: the record is unchanged (`CsvDb::insert` writes nothing).\n    EditSpool { id: u32, tag: Tag, len: u32, same: bool, readable: bool },\n    /// Delete spool `id` (a missing id is not an error upstream).\n    DeleteSpool { id: u32 },\n    /// Read the inventory.\n    Query,\n}",
+   "lean": "@[discriminant isize]\ninductive Command where\n| AddSpool : Tag \u2192 Std.U32 \u2192 Bool \u2192 Command\n| EditSpool : Std.U32 \u2192 Tag \u2192 Std.U32 \u2192 Bool \u2192 Bool \u2192 Command\n| DeleteSpool : Std.U32 \u2192 Command\n| Query : Command",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {
+  "slotEnd": {
+   "file": "Spec.lean",
+   "code": "/-- Last byte+1 of a slot's region in the `.db` file. -/\ndef slotEnd (s : Slot) : Nat := s.offset.val + s.length.val"
+  },
+  "inSlot": {
+   "file": "Spec.lean",
+   "code": "/-- Position `p` lies inside slot `s`'s region. -/\ndef inSlot (s : Slot) (p : Nat) : Prop := s.offset.val \u2264 p \u2227 p < slotEnd s"
+  },
+  "writesOf": {
+   "file": "ReadOnly.lean",
+   "code": "def writesOf : Option Store \u2192 List Store\n  | none => []\n  | some n => [n]"
+  },
+  "tagEq": {
+   "file": "Spec.lean",
+   "code": "/-- Tag equality as the kernel computes it. -/\ndef tagEq (a b : Tag) : Bool := decide (a.base = b.base) && decide (a.dash = b.dash)"
+  },
+  "replaceOne": {
+   "file": "Spec.lean",
+   "code": "/-- `replace_slot`'s per-element rewrite. -/\ndef replaceOne (id : U32) (ns s : Slot) : Slot := if s.id = id then ns else s"
+  }
+ }
+}

@@ -1,0 +1,198 @@
+{
+ "slug": "omni-wheel-bot",
+ "name": "omni-wheel-bot",
+ "pin": "942db26",
+ "upstream_head": "942db26",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "watchdog_stops_when_overdue",
+   "file": "Properties.lean",
+   "doc": "**S.** An armed watchdog whose last active motion command is more than 300 ms old stops the wheels and disarms.",
+   "statement": "theorem watchdog_stops_when_overdue (w : Watchdog) (now : Std.U64)\n    (ha : w.active = true) (ht : w.last_motion_ms.val + 300 < now.val) :\n    \u2203 w', watchdog_trip w now = ok (w', true) \u2227 w'.active = false",
+   "proof": "theorem watchdog_stops_when_overdue (w : Watchdog) (now : Std.U64)\n    (ha : w.active = true) (ht : w.last_motion_ms.val + 300 < now.val) :\n    \u2203 w', watchdog_trip w now = ok (w', true) \u2227 w'.active = false := by\n  have spec : watchdog_trip w now \u2983 r => r.2 = true \u2227 r.1.active = false \u2984 := by\n    unfold watchdog_trip MOTION_WATCHDOG_MS\n    simp only [ha, if_true]\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals first | (simp_all; done) | scalar_tac | (simp_all; scalar_tac)\n  obtain \u27e8r, hr, h1, h2\u27e9 := (WP.spec_equiv_exists _ _).1 spec\n  obtain \u27e8w', b\u27e9 := r\n  simp only at h1 h2\n  subst h1\n  exact \u27e8w', hr, h2\u27e9",
+   "deps": [
+    "Watchdog",
+    "watchdog_trip",
+    "MOTION_WATCHDOG_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "watchdog_quiet_when_disarmed",
+   "file": "Properties.lean",
+   "doc": "**C.** A disarmed watchdog never stops anything.",
+   "statement": "theorem watchdog_quiet_when_disarmed (w : Watchdog) (now : Std.U64)\n    (ha : w.active = false) : watchdog_trip w now = ok (w, false)",
+   "proof": "theorem watchdog_quiet_when_disarmed (w : Watchdog) (now : Std.U64)\n    (ha : w.active = false) : watchdog_trip w now = ok (w, false) := by\n  unfold watchdog_trip\n  simp [ha]",
+   "deps": [
+    "Watchdog",
+    "watchdog_trip",
+    "MOTION_WATCHDOG_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "active_command_arms",
+   "file": "Properties.lean",
+   "doc": "**S.** An active motion command arms the watchdog at its time.",
+   "statement": "theorem active_command_arms (w : Watchdog) (now : Std.U64) :\n    watchdog_on_command w MotionKind.Active now = ok { active := true, last_motion_ms := now }",
+   "proof": "theorem active_command_arms (w : Watchdog) (now : Std.U64) :\n    watchdog_on_command w MotionKind.Active now = ok { active := true, last_motion_ms := now } := by\n  unfold watchdog_on_command\n  rfl",
+   "deps": [
+    "Watchdog",
+    "watchdog_on_command",
+    "MotionKind"
+   ],
+   "spec": []
+  },
+  {
+   "name": "held_lease_not_taken",
+   "file": "Properties.lean",
+   "doc": "**S.** A controller seen within the last 30 s keeps the slot.",
+   "statement": "theorem held_lease_not_taken (last now : Std.U64) (h : now.val \u2264 last.val + 30) :\n    may_acquire (some last) now = ok false",
+   "proof": "theorem held_lease_not_taken (last now : Std.U64) (h : now.val \u2264 last.val + 30) :\n    may_acquire (some last) now = ok false := by\n  have spec : may_acquire (some last) now \u2983 r => r = false \u2984 := by\n    unfold may_acquire SESSION_TIMEOUT_SECS\n    simp only\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals first | (simp_all; done) | scalar_tac | (simp_all; scalar_tac)\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 spec\n  rw [hr, hp]",
+   "deps": [
+    "may_acquire",
+    "SESSION_TIMEOUT_SECS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "closed_surface_needs_the_secret",
+   "file": "Properties.lean",
+   "doc": "**S.** Unless the surface was explicitly opened, a WebSocket is authorized only with a configured secret that matches.",
+   "statement": "theorem closed_surface_needs_the_secret (s m : Bool)\n    (h : verify false s m = ok true) : s = true \u2227 m = true",
+   "proof": "theorem closed_surface_needs_the_secret (s m : Bool)\n    (h : verify false s m = ok true) : s = true \u2227 m = true := by\n  unfold verify at h\n  cases s <;> cases m <;> simp_all",
+   "deps": [
+    "verify"
+   ],
+   "spec": []
+  },
+  {
+   "name": "idle_wait_bounds",
+   "file": "Properties.lean",
+   "doc": "**C.** The idle wait is 1..=10 ms.",
+   "statement": "theorem idle_wait_bounds (d now : Std.U64) :\n    \u2203 w, idle_wait d now = ok w \u2227 1 \u2264 w.val \u2227 w.val \u2264 10",
+   "proof": "theorem idle_wait_bounds (d now : Std.U64) :\n    \u2203 w, idle_wait d now = ok w \u2227 1 \u2264 w.val \u2227 w.val \u2264 10 := by\n  have spec : idle_wait d now \u2983 w => 1 \u2264 w.val \u2227 w.val \u2264 10 \u2984 := by\n    unfold idle_wait COMMAND_IDLE_POLL_MS MOTION_WATCHDOG_POLL_MS\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals (try split)\n    all_goals (try step*)\n    all_goals first | (simp_all; done) | scalar_tac | (simp_all; scalar_tac)\n  exact (WP.spec_equiv_exists _ _).1 spec",
+   "deps": [
+    "idle_wait",
+    "MOTION_WATCHDOG_POLL_MS",
+    "COMMAND_IDLE_POLL_MS"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "verify": {
+   "kind": "def",
+   "rust_path": "owb_kernel::verify",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 167,
+   "kernel_code": "pub fn verify(open_surface: bool, secret_set: bool, matches: bool) -> bool {\n    if open_surface {\n        return true;\n    }\n    secret_set && matches\n}",
+   "lean": "def verify\n  (open_surface : Bool) (secret_set : Bool) (\u00abmatches\u00bb : Bool) :\n  Result Bool\n  := do\n  if open_surface\n  then ok true\n  else if secret_set\n       then ok \u00abmatches\u00bb\n       else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Watchdog": {
+   "kind": "structure",
+   "rust_path": "owb_kernel::Watchdog",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 44,
+   "kernel_code": "pub struct Watchdog {\n    pub active: bool,\n    pub last_motion_ms: u64,\n}",
+   "lean": "structure Watchdog where\n  active : Bool\n  last_motion_ms : Std.U64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MOTION_WATCHDOG_MS": {
+   "kind": "def",
+   "rust_path": "owb_kernel::MOTION_WATCHDOG_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 24,
+   "kernel_code": "pub const MOTION_WATCHDOG_MS: u64 = 300;",
+   "lean": "@[global_simps, irreducible] def MOTION_WATCHDOG_MS : Std.U64 := 300#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "may_acquire": {
+   "kind": "def",
+   "rust_path": "owb_kernel::may_acquire",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 126,
+   "kernel_code": "pub fn may_acquire(held_last_seen: Option<u64>, now_secs: u64) -> bool {\n    match held_last_seen {\n        None => true,\n        Some(last) => {\n            let age = if now_secs > last { now_secs - last } else { 0 };\n            age > SESSION_TIMEOUT_SECS\n        }\n    }\n}",
+   "lean": "def may_acquire\n  (held_last_seen : Option Std.U64) (now_secs : Std.U64) : Result Bool := do\n  match held_last_seen with\n  | none => ok true\n  | some last =>\n    let age \u2190 if now_secs > last\n                then now_secs - last\n                else ok 0#u64\n    ok (age > SESSION_TIMEOUT_SECS)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MotionKind": {
+   "kind": "inductive",
+   "rust_path": "owb_kernel::MotionKind",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub enum MotionKind {\n    /// Not a motion stream or probe command: leaves the watchdog as it is.\n    Other,\n    /// A motion/probe command asking for zero motion: an explicit stop.\n    Stop,\n    /// A motion/probe command asking for motion.\n    Active,\n}",
+   "lean": "@[discriminant isize]\ninductive MotionKind where\n| Other : MotionKind\n| Stop : MotionKind\n| Active : MotionKind",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "watchdog_on_command": {
+   "kind": "def",
+   "rust_path": "owb_kernel::watchdog_on_command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 51,
+   "kernel_code": "pub fn watchdog_on_command(w: Watchdog, kind: MotionKind, now_ms: u64) -> Watchdog {\n    match kind {\n        MotionKind::Active => Watchdog { active: true, last_motion_ms: now_ms },\n        MotionKind::Stop => Watchdog { active: false, last_motion_ms: w.last_motion_ms },\n        MotionKind::Other => w,\n    }\n}",
+   "lean": "def watchdog_on_command\n  (w : Watchdog) (kind : MotionKind) (now_ms : Std.U64) : Result Watchdog := do\n  match kind with\n  | MotionKind.Other => ok w\n  | MotionKind.Stop => ok { w with active := false }\n  | MotionKind.Active => ok { active := true, last_motion_ms := now_ms }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SESSION_TIMEOUT_SECS": {
+   "kind": "def",
+   "rust_path": "owb_kernel::SESSION_TIMEOUT_SECS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 122,
+   "kernel_code": "pub const SESSION_TIMEOUT_SECS: u64 = 30;",
+   "lean": "@[global_simps, irreducible] def SESSION_TIMEOUT_SECS : Std.U64 := 30#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MOTION_WATCHDOG_POLL_MS": {
+   "kind": "def",
+   "rust_path": "owb_kernel::MOTION_WATCHDOG_POLL_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 28,
+   "kernel_code": "pub const MOTION_WATCHDOG_POLL_MS: u64 = 50;",
+   "lean": "@[global_simps, irreducible] def MOTION_WATCHDOG_POLL_MS : Std.U64 := 50#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "watchdog_trip": {
+   "kind": "def",
+   "rust_path": "owb_kernel::watchdog_trip",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 61,
+   "kernel_code": "pub fn watchdog_trip(w: Watchdog, now_ms: u64) -> (Watchdog, bool) {\n    if !w.active {\n        return (w, false);\n    }\n    let age = if now_ms > w.last_motion_ms { now_ms - w.last_motion_ms } else { 0 };\n    if age > MOTION_WATCHDOG_MS {\n        (Watchdog { active: false, last_motion_ms: w.last_motion_ms }, true)\n    } else {\n        (w, false)\n    }\n}",
+   "lean": "def watchdog_trip\n  (w : Watchdog) (now_ms : Std.U64) : Result (Watchdog \u00d7 Bool) := do\n  if w.active\n  then\n    let age \u2190\n      if now_ms > w.last_motion_ms\n      then now_ms - w.last_motion_ms\n      else ok 0#u64\n    if age > MOTION_WATCHDOG_MS\n    then ok ({ w with active := false }, true)\n    else ok (w, false)\n  else ok (w, false)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "idle_wait": {
+   "kind": "def",
+   "rust_path": "owb_kernel::idle_wait",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 110,
+   "kernel_code": "pub fn idle_wait(next_deadline: u64, now_ms: u64) -> u64 {\n    let w = if next_deadline > now_ms { next_deadline - now_ms } else { 0 };\n    let w = if w > COMMAND_IDLE_POLL_MS { COMMAND_IDLE_POLL_MS } else { w };\n    let w = if w > MOTION_WATCHDOG_POLL_MS { MOTION_WATCHDOG_POLL_MS } else { w };\n    if w < 1 { 1 } else { w }\n}",
+   "lean": "def idle_wait\n  (next_deadline : Std.U64) (now_ms : Std.U64) : Result Std.U64 := do\n  let w \u2190 if next_deadline > now_ms\n            then next_deadline - now_ms\n            else ok 0#u64\n  let w1 \u2190 if w > COMMAND_IDLE_POLL_MS\n             then ok COMMAND_IDLE_POLL_MS\n             else ok w\n  let w2 \u2190\n    if w1 > MOTION_WATCHDOG_POLL_MS\n    then ok MOTION_WATCHDOG_POLL_MS\n    else ok w1\n  if w2 < 1#u64\n  then ok 1#u64\n  else ok w2",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "COMMAND_IDLE_POLL_MS": {
+   "kind": "def",
+   "rust_path": "owb_kernel::COMMAND_IDLE_POLL_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 29,
+   "kernel_code": "pub const COMMAND_IDLE_POLL_MS: u64 = 10;",
+   "lean": "@[global_simps, irreducible] def COMMAND_IDLE_POLL_MS : Std.U64 := 10#u64",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

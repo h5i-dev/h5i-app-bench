@@ -1,0 +1,315 @@
+{
+ "slug": "rc-car",
+ "name": "rc-car",
+ "pin": "575837e",
+ "upstream_head": "575837e",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "motor_percentage_bounded",
+   "file": "Properties.lean",
+   "doc": "**S.** Whatever `MotorPower` arrives over the air (any `i32`), the ESC gets 0..=100 %. Upstream's `(value + 50) as u8` gives 255 % for -51.",
+   "statement": "theorem motor_percentage_bounded (v : Std.I32) :\n    \u2203 r, motor_percentage v = ok r \u2227 r.val \u2264 100",
+   "proof": "theorem motor_percentage_bounded (v : Std.I32) :\n    \u2203 r, motor_percentage v = ok r \u2227 r.val \u2264 100 := by\n  have h : motor_percentage v \u2983 r => r.val \u2264 100 \u2984 := by\n    unfold motor_percentage MOTOR_LIMIT\n    step*\n    have := hcast_u8_small i1 (by scalar_tac) (by scalar_tac)\n    scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
+   "deps": [
+    "motor_percentage",
+    "clamp",
+    "MOTOR_LIMIT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "motor_percentage_upstream_range",
+   "file": "Properties.lean",
+   "doc": "**C.** On the controller's range -50..=50 the percentage is upstream's `value + 50`.",
+   "statement": "theorem motor_percentage_upstream_range (v : Std.I32)\n    (h1 : -50 \u2264 v.val) (h2 : v.val \u2264 50) :\n    \u2203 r, motor_percentage v = ok r \u2227 (r.val : Int) = v.val + 50",
+   "proof": "theorem motor_percentage_upstream_range (v : Std.I32)\n    (h1 : -50 \u2264 v.val) (h2 : v.val \u2264 50) :\n    \u2203 r, motor_percentage v = ok r \u2227 (r.val : Int) = v.val + 50 := by\n  have h : motor_percentage v \u2983 r => (r.val : Int) = v.val + 50 \u2984 := by\n    unfold motor_percentage MOTOR_LIMIT\n    step*\n    have := hcast_u8_small i1 (by scalar_tac) (by scalar_tac)\n    scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
+   "deps": [
+    "motor_percentage",
+    "clamp",
+    "MOTOR_LIMIT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "steering_percentage_bounded",
+   "file": "Properties.lean",
+   "doc": "**S.** The steering servo gets 38..=62 % for any `SteeringPosition`.",
+   "statement": "theorem steering_percentage_bounded (v : Std.I32) :\n    \u2203 r, steering_percentage v = ok r \u2227 38 \u2264 r.val \u2227 r.val \u2264 62",
+   "proof": "theorem steering_percentage_bounded (v : Std.I32) :\n    \u2203 r, steering_percentage v = ok r \u2227 38 \u2264 r.val \u2227 r.val \u2264 62 := by\n  have h : steering_percentage v \u2983 r => 38 \u2264 r.val \u2227 r.val \u2264 62 \u2984 := by\n    unfold steering_percentage STEER_LIMIT\n    step*\n    have := hcast_u8_small i1 (by scalar_tac) (by scalar_tac)\n    scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
+   "deps": [
+    "steering_percentage",
+    "clamp",
+    "STEER_LIMIT"
+   ],
+   "spec": []
+  },
+  {
+   "name": "servo_duty_within_pulse_range",
+   "file": "Properties.lean",
+   "doc": "**S.** The PWM duty stays within the servo's pulse range: between the duties of `min_us` and `max_us`, for the servo's constants (`min \u2264 max`, `(max - min) \u00b7 100` and `max \u00b7 duty_space` fit in 32 bits, a non-zero cycle; upstream's `types.rs` constants satisfy them).",
+   "statement": "theorem servo_duty_within_pulse_range (p : Std.U8) (mn mx ds cy : Std.U32)\n    (h1 : mn.val \u2264 mx.val) (h2 : mx.val * ds.val \u2264 U32.max)\n    (h4 : (mx.val - mn.val) * 100 \u2264 U32.max) (h3 : 0 < cy.val) :\n    \u2203 r, servo_duty p mn mx ds cy = ok r \u2227\n      mn.val * ds.val / cy.val \u2264 r.val \u2227 r.val \u2264 mx.val * ds.val / cy.val",
+   "proof": "theorem servo_duty_within_pulse_range (p : Std.U8) (mn mx ds cy : Std.U32)\n    (h1 : mn.val \u2264 mx.val) (h2 : mx.val * ds.val \u2264 U32.max)\n    (h4 : (mx.val - mn.val) * 100 \u2264 U32.max) (h3 : 0 < cy.val) :\n    \u2203 r, servo_duty p mn mx ds cy = ok r \u2227\n      mn.val * ds.val / cy.val \u2264 r.val \u2227 r.val \u2264 mx.val * ds.val / cy.val := by\n  have h : servo_duty p mn mx ds cy \u2983 r =>\n      mn.val * ds.val / cy.val \u2264 r.val \u2227 r.val \u2264 mx.val * ds.val / cy.val \u2984 := by\n    unfold servo_duty\n    -- percentage is capped at 100 in both branches (`servo_math`)\n    split\n    \u00b7 have hq : (100 : Nat) \u2264 100 := le_refl 100\n      step*\n      all_goals first\n        | exact servo_mul_fits hq range_post h4\n        | exact servo_add_fits hq h1 range_post i_post i1_post (by scalar_tac)\n        | exact (servo_math (cy := cy.val) hq h1 h2 range_post i_post i1_post abs_duty_post).1\n        | (rw [r_post, i2_post]; exact (servo_math hq h1 h2 range_post i_post i1_post abs_duty_post).2)\n    \u00b7 rename_i hp\n      have hq : (UScalar.cast UScalarTy.U32 p).val \u2264 100 := by scalar_tac\n      step*\n      all_goals first\n        | exact servo_mul_fits hq range_post h4\n        | exact servo_add_fits hq h1 range_post i_post i1_post (by scalar_tac)\n        | exact (servo_math (cy := cy.val) hq h1 h2 range_post i_post i1_post abs_duty_post).1\n        | (rw [r_post, i2_post]; exact (servo_math hq h1 h2 range_post i_post i1_post abs_duty_post).2)\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
+   "deps": [
+    "servo_duty"
+   ],
+   "spec": []
+  },
+  {
+   "name": "magnitude_spec",
+   "file": "Properties.lean",
+   "doc": "**S.** `magnitude` is `|v|`, also for `i32::MIN` (upstream's `abs` overflows there).",
+   "statement": "theorem magnitude_spec (v : Std.I32) :\n    \u2203 r, magnitude v = ok r \u2227 (r.val : Int) = v.val.natAbs",
+   "proof": "theorem magnitude_spec (v : Std.I32) :\n    \u2203 r, magnitude v = ok r \u2227 (r.val : Int) = v.val.natAbs := by\n  have h : magnitude v \u2983 r => (r.val : Int) = v.val.natAbs \u2984 := by\n    unfold magnitude\n    step*\n    \u00b7 have h := hcast_u32_nonneg i1 (by scalar_tac)\n      rw [\u2190 i2_post] at h\n      scalar_tac\n    \u00b7 have h := hcast_u32_nonneg i1 (by scalar_tac)\n      rw [\u2190 i2_post] at h\n      have hn := Int.ofNat_natAbs_of_nonpos (show v.val \u2264 0 by scalar_tac)\n      scalar_tac\n    \u00b7 have h := hcast_u32_nonneg v (by scalar_tac)\n      have hn := Int.natAbs_of_nonneg (show 0 \u2264 v.val by scalar_tac)\n      scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
+   "deps": [
+    "magnitude"
+   ],
+   "spec": []
+  },
+  {
+   "name": "brake_off_after_timeout",
+   "file": "Properties.lean",
+   "doc": "**S.** A brake light on for more than 500 ms goes off at the next tick.",
+   "statement": "theorem brake_off_after_timeout (s : Brake) (now : Std.U64)\n    (hon : s.on = true) (ht : s.last_update_ms.val + 500 < now.val) :\n    \u2203 s', brake_on_tick s now = ok (s', true) \u2227 s'.on = false",
+   "proof": "theorem brake_off_after_timeout (s : Brake) (now : Std.U64)\n    (hon : s.on = true) (ht : s.last_update_ms.val + 500 < now.val) :\n    \u2203 s', brake_on_tick s now = ok (s', true) \u2227 s'.on = false := by\n  have h : brake_on_tick s now \u2983 r => r.2 = true \u2227 r.1.on = false \u2984 := by\n    unfold brake_on_tick BRAKELIGHT_TIMEOUT_MS\n    simp only [hon, if_true]\n    step*\n  obtain \u27e8r, hr, h1, h2\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  obtain \u27e8s', b\u27e9 := r\n  simp only at h1 h2\n  subst h1\n  exact \u27e8s', hr, h2\u27e9",
+   "deps": [
+    "Brake",
+    "brake_on_tick",
+    "BRAKELIGHT_TIMEOUT_MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "brake_on_only_when_slowing",
+   "file": "Properties.lean",
+   "doc": "**S.** The brake light comes on exactly when the motor's magnitude drops (for every `i32`, `i32::MIN` included).",
+   "statement": "theorem brake_on_only_when_slowing (s : Brake) (v : Std.I32) (now : Std.U64) :\n    \u2203 s', brake_on_motor s v now = ok s' \u2227\n      (s'.on = true \u2194 v.val.natAbs < s.last_setting.val.natAbs) \u2227\n      s'.last_setting = v \u2227 s'.last_update_ms = now",
+   "proof": "theorem brake_on_only_when_slowing (s : Brake) (v : Std.I32) (now : Std.U64) :\n    \u2203 s', brake_on_motor s v now = ok s' \u2227\n      (s'.on = true \u2194 v.val.natAbs < s.last_setting.val.natAbs) \u2227\n      s'.last_setting = v \u2227 s'.last_update_ms = now := by\n  obtain \u27e8a, ha, hav\u27e9 := magnitude_spec v\n  obtain \u27e8b, hb, hbv\u27e9 := magnitude_spec s.last_setting\n  refine \u27e8{ last_setting := v, last_update_ms := now, on := decide (a < b) },\n    by unfold brake_on_motor; simp [ha, hb], ?_, rfl, rfl\u27e9\n  simp only [decide_eq_true_eq]\n  constructor <;> intro h <;> scalar_tac",
+   "deps": [
+    "Brake",
+    "brake_on_motor",
+    "magnitude"
+   ],
+   "spec": []
+  },
+  {
+   "name": "blinker_command_takes_effect",
+   "file": "Properties.lean",
+   "doc": "**S (U2 fix).** While a pattern blinks, a blinker command takes effect: the new pattern is the command (upstream kept toggling the first one).",
+   "statement": "theorem blinker_command_takes_effect (s : Blinker) (cmd : Blink)\n    (h : s.pattern \u2260 Blink.Off) :\n    \u2203 s' l, blinker_command s cmd = ok (s', l) \u2227 s'.pattern = cmd",
+   "proof": "theorem blinker_command_takes_effect (s : Blinker) (cmd : Blink)\n    (h : s.pattern \u2260 Blink.Off) :\n    \u2203 s' l, blinker_command s cmd = ok (s', l) \u2227 s'.pattern = cmd := by\n  rcases s with \u27e8p, ph\u27e9\n  cases p <;> cases cmd <;> simp_all [blinker_command, lamps]",
+   "deps": [
+    "Blink",
+    "blinker_command",
+    "Blinker",
+    "Lamps",
+    "lamps"
+   ],
+   "spec": []
+  },
+  {
+   "name": "blinker_off_lamps_off",
+   "file": "Properties.lean",
+   "doc": "**S.** `Off` always leaves the blinker idle with both lamps off (idle: the lamps are driven off; blinking: the command's lamps are off).",
+   "statement": "theorem blinker_off_lamps_off (s : Blinker) :\n    \u2203 s' l, blinker_command s Blink.Off = ok (s', l) \u2227 s'.pattern = Blink.Off \u2227\n      \u2200 x, l = some x \u2192 x.left = false \u2227 x.right = false",
+   "proof": "theorem blinker_off_lamps_off (s : Blinker) :\n    \u2203 s' l, blinker_command s Blink.Off = ok (s', l) \u2227 s'.pattern = Blink.Off \u2227\n      \u2200 x, l = some x \u2192 x.left = false \u2227 x.right = false := by\n  rcases s with \u27e8p, ph\u27e9\n  cases p <;> simp [blinker_command, lamps]",
+   "deps": [
+    "blinker_command",
+    "Blinker",
+    "Lamps",
+    "Blink",
+    "lamps"
+   ],
+   "spec": []
+  },
+  {
+   "name": "blinker_tick_alternates",
+   "file": "Properties.lean",
+   "doc": "**C.** A tick flips the phase; the lamps are off in the off phase and follow the pattern in the on phase.",
+   "statement": "theorem blinker_tick_alternates (s : Blinker) :\n    \u2203 s' l, blinker_tick s = ok (s', l) \u2227 s'.phase = !s.phase \u2227 s'.pattern = s.pattern \u2227\n      (s.phase = true \u2192 l.left = false \u2227 l.right = false)",
+   "proof": "theorem blinker_tick_alternates (s : Blinker) :\n    \u2203 s' l, blinker_tick s = ok (s', l) \u2227 s'.phase = !s.phase \u2227 s'.pattern = s.pattern \u2227\n      (s.phase = true \u2192 l.left = false \u2227 l.right = false) := by\n  rcases s with \u27e8p, ph\u27e9\n  cases p <;> cases ph <;> simp [blinker_tick, lamps]",
+   "deps": [
+    "blinker_tick",
+    "Blinker",
+    "lamps",
+    "Lamps",
+    "Blink"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "Brake": {
+   "kind": "structure",
+   "rust_path": "rc_car_kernel::Brake",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 95,
+   "kernel_code": "pub struct Brake {\n    pub last_setting: i32,\n    pub last_update_ms: u64,\n    pub on: bool,\n}",
+   "lean": "structure Brake where\n  last_setting : Std.I32\n  last_update_ms : Std.U64\n  on : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "lamps": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::lamps",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 149,
+   "kernel_code": "pub fn lamps(phase: bool, pattern: Blink) -> Lamps {\n    if !phase {\n        return Lamps { left: false, right: false };\n    }\n    match pattern {\n        Blink::Left => Lamps { left: true, right: false },\n        Blink::Right => Lamps { left: false, right: true },\n        Blink::Off => Lamps { left: false, right: false },\n        Blink::Alarm => Lamps { left: true, right: true },\n    }\n}",
+   "lean": "def lamps (phase : Bool) (pattern : Blink) : Result Lamps := do\n  if phase\n  then\n    match pattern with\n    | Blink.Left => ok { left := true, right := false }\n    | Blink.Right => ok { left := false, right := true }\n    | Blink.Off => ok { left := false, right := false }\n    | Blink.Alarm => ok { left := true, right := true }\n  else ok { left := false, right := false }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "brake_on_motor": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::brake_on_motor",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 106,
+   "kernel_code": "pub fn brake_on_motor(s: Brake, value: i32, now_ms: u64) -> Brake {\n    let braking = magnitude(value) < magnitude(s.last_setting);\n    Brake { last_setting: value, last_update_ms: now_ms, on: braking }\n}",
+   "lean": "def brake_on_motor\n  (s : Brake) (value : Std.I32) (now_ms : Std.U64) : Result Brake := do\n  let i \u2190 magnitude value\n  let i1 \u2190 magnitude s.last_setting\n  ok { last_setting := value, last_update_ms := now_ms, on := (i < i1) }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Blinker": {
+   "kind": "structure",
+   "rust_path": "rc_car_kernel::Blinker",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 136,
+   "kernel_code": "pub struct Blinker {\n    pub pattern: Blink,\n    pub phase: bool,\n}",
+   "lean": "structure Blinker where\n  pattern : Blink\n  phase : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "clamp": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::clamp",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 38,
+   "kernel_code": "pub fn clamp(value: i32, limit: i32) -> i32 {\n    if value < -limit {\n        -limit\n    } else if value > limit {\n        limit\n    } else {\n        value\n    }\n}",
+   "lean": "def clamp (value : Std.I32) (limit : Std.I32) : Result Std.I32 := do\n  let i \u2190 -. limit\n  if value < i\n  then ok i\n  else if value > limit\n       then ok limit\n       else ok value",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "magnitude": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::magnitude",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 84,
+   "kernel_code": "pub fn magnitude(v: i32) -> u32 {\n    if v < 0 {\n        // -(v + 1) + 1, so i32::MIN maps to 2^31\n        ((-(v + 1)) as u32) + 1\n    } else {\n        v as u32\n    }\n}",
+   "lean": "def magnitude (v : Std.I32) : Result Std.U32 := do\n  if v < 0#i32\n  then\n    let i \u2190 v + 1#i32\n    let i1 \u2190 -. i\n    let i2 \u2190 lift (IScalar.hcast .U32 i1)\n    i2 + 1#u32\n  else ok (IScalar.hcast .U32 v)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Lamps": {
+   "kind": "structure",
+   "rust_path": "rc_car_kernel::Lamps",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 143,
+   "kernel_code": "pub struct Lamps {\n    pub left: bool,\n    pub right: bool,\n}",
+   "lean": "structure Lamps where\n  left : Bool\n  right : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "motor_percentage": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::motor_percentage",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub fn motor_percentage(value: i32) -> u8 {\n    (clamp(value, MOTOR_LIMIT) + 50) as u8\n}",
+   "lean": "def motor_percentage (value : Std.I32) : Result Std.U8 := do\n  let i \u2190 clamp value MOTOR_LIMIT\n  let i1 \u2190 i + 50#i32\n  ok (IScalar.hcast .U8 i1)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MOTOR_LIMIT": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::MOTOR_LIMIT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub const MOTOR_LIMIT: i32 = 50;",
+   "lean": "@[global_simps, irreducible] def MOTOR_LIMIT : Std.I32 := 50#i32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "blinker_tick": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::blinker_tick",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 180,
+   "kernel_code": "pub fn blinker_tick(s: Blinker) -> (Blinker, Lamps) {\n    let phase = !s.phase;\n    (Blinker { pattern: s.pattern, phase }, lamps(phase, s.pattern))\n}",
+   "lean": "def blinker_tick (s : Blinker) : Result (Blinker \u00d7 Lamps) := do\n  let l \u2190 lamps (\u00ac s.phase) s.pattern\n  ok ({ s with phase := (\u00ac s.phase) }, l)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "servo_duty": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::servo_duty",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 64,
+   "kernel_code": "pub fn servo_duty(percentage: u8, min_us: u32, max_us: u32, duty_space: u32, cycle_us: u32) -> u32 {\n    let p = if percentage > 100 { 100 } else { percentage as u32 };\n    let range = max_us - min_us;\n    let abs_duty = min_us + range * p / 100;\n    abs_duty * duty_space / cycle_us\n}",
+   "lean": "def servo_duty\n  (percentage : Std.U8) (min_us : Std.U32) (max_us : Std.U32)\n  (duty_space : Std.U32) (cycle_us : Std.U32) :\n  Result Std.U32\n  := do\n  let p \u2190\n    if percentage > 100#u8\n    then ok 100#u32\n    else ok (UScalar.cast .U32 percentage)\n  let range \u2190 max_us - min_us\n  let i \u2190 range * p\n  let i1 \u2190 i / 100#u32\n  let abs_duty \u2190 min_us + i1\n  let i2 \u2190 abs_duty * duty_space\n  i2 / cycle_us",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "brake_on_tick": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::brake_on_tick",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 113,
+   "kernel_code": "pub fn brake_on_tick(s: Brake, now_ms: u64) -> (Brake, bool) {\n    if s.on && now_ms > s.last_update_ms && now_ms - s.last_update_ms > BRAKELIGHT_TIMEOUT_MS {\n        (Brake { last_setting: s.last_setting, last_update_ms: s.last_update_ms, on: false }, true)\n    } else {\n        (s, false)\n    }\n}",
+   "lean": "def brake_on_tick (s : Brake) (now_ms : Std.U64) : Result (Brake \u00d7 Bool) := do\n  if s.on\n  then\n    if now_ms > s.last_update_ms\n    then\n      let i \u2190 now_ms - s.last_update_ms\n      if i > BRAKELIGHT_TIMEOUT_MS\n      then ok ({ s with on := false }, true)\n      else ok (s, false)\n    else ok (s, false)\n  else ok (s, false)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "BRAKELIGHT_TIMEOUT_MS": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::BRAKELIGHT_TIMEOUT_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 101,
+   "kernel_code": "pub const BRAKELIGHT_TIMEOUT_MS: u64 = 500;",
+   "lean": "@[global_simps, irreducible] def BRAKELIGHT_TIMEOUT_MS : Std.U64 := 500#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "blinker_command": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::blinker_command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 166,
+   "kernel_code": "pub fn blinker_command(s: Blinker, cmd: Blink) -> (Blinker, Option<Lamps>) {\n    match s.pattern {\n        Blink::Off => match cmd {\n            Blink::Off => (s, Some(Lamps { left: false, right: false })),\n            _ => (Blinker { pattern: cmd, phase: s.phase }, None),\n        },\n        _ => {\n            let l = lamps(true, cmd);\n            (Blinker { pattern: cmd, phase: true }, Some(l))\n        }\n    }\n}",
+   "lean": "def blinker_command\n  (s : Blinker) (cmd : Blink) : Result (Blinker \u00d7 (Option Lamps)) := do\n  match s.pattern with\n  | Blink.Left =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)\n  | Blink.Right =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)\n  | Blink.Off =>\n    match cmd with\n    | Blink.Left => ok ({ s with pattern := Blink.Left }, none)\n    | Blink.Right => ok ({ s with pattern := Blink.Right }, none)\n    | Blink.Off => ok (s, some { left := false, right := false })\n    | Blink.Alarm => ok ({ s with pattern := Blink.Alarm }, none)\n  | Blink.Alarm =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "steering_percentage": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::steering_percentage",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 50,
+   "kernel_code": "pub fn steering_percentage(value: i32) -> u8 {\n    (clamp(value, STEER_LIMIT) + 50) as u8\n}",
+   "lean": "def steering_percentage (value : Std.I32) : Result Std.U8 := do\n  let i \u2190 clamp value STEER_LIMIT\n  let i1 \u2190 i + 50#i32\n  ok (IScalar.hcast .U8 i1)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "STEER_LIMIT": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::STEER_LIMIT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub const STEER_LIMIT: i32 = 12;",
+   "lean": "@[global_simps, irreducible] def STEER_LIMIT : Std.I32 := 12#i32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Blink": {
+   "kind": "inductive",
+   "rust_path": "rc_car_kernel::Blink",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 126,
+   "kernel_code": "pub enum Blink {\n    Left,\n    Right,\n    Off,\n    Alarm,\n}",
+   "lean": "@[discriminant isize]\ninductive Blink where\n| Left : Blink\n| Right : Blink\n| Off : Blink\n| Alarm : Blink",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

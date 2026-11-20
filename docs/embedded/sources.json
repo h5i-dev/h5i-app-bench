@@ -1,0 +1,163 @@
+[
+ {
+  "slug": "m5airq",
+  "name": "M5AirQ-Rust",
+  "port": "wt-i/prove/ports-embed/m5airq",
+  "upstream": "M5AirQ-Rust",
+  "pin": "f7e35cb"
+ },
+ {
+  "slug": "spoolease",
+  "name": "SpoolEase",
+  "port": "wt-j/prove/ports-embed/spoolease",
+  "upstream": "SpoolEase",
+  "pin": "3532f8d"
+ },
+ {
+  "slug": "td-free",
+  "name": "td-free",
+  "port": "wt-l/prove/ports-embed/td-free",
+  "upstream": "td-free",
+  "pin": "5e67e73"
+ },
+ {
+  "slug": "pico-bit",
+  "name": "pico-bit",
+  "port": "wt-l/prove/ports-embed/pico-bit",
+  "upstream": "pico-bit",
+  "pin": "b6349e2"
+ },
+ {
+  "slug": "anova-oven-rs",
+  "name": "anova-oven-rs",
+  "port": "wt-k/prove/ports-embed/anova-oven-rs",
+  "upstream": "anova-oven-rs",
+  "pin": "43ac1a7"
+ },
+ {
+  "slug": "esp-hal-wifimanager",
+  "name": "esp-hal-wifimanager",
+  "port": "wt-esp-hal-wifimanager/prove/ports-embed/esp-hal-wifimanager",
+  "upstream": "esp-hal-wifimanager",
+  "pin": "ab5fbd8"
+ },
+ {
+  "slug": "heater-control",
+  "name": "heater-control",
+  "port": "wt-heater-control/prove/ports-embed/heater-control",
+  "upstream": "heater-control",
+  "pin": "ba651d8"
+ },
+ {
+  "slug": "rc-car",
+  "name": "rc-car",
+  "port": "wt-rc-car/prove/ports-embed/rc-car",
+  "upstream": "rc-car",
+  "pin": "575837e"
+ },
+ {
+  "slug": "crown-of-the-lamb",
+  "name": "crown-of-the-lamb",
+  "port": "wt-crown-of-the-lamb/prove/ports-embed/crown-of-the-lamb",
+  "upstream": "crown-of-the-lamb",
+  "pin": "2ce6937"
+ },
+ {
+  "slug": "am03127",
+  "name": "AM03127-Controller",
+  "port": "wt-am03127/prove/ports-embed/am03127",
+  "upstream": "AM03127-Controller",
+  "pin": "5e07e35"
+ },
+ {
+  "slug": "autodoggo",
+  "name": "autodoggo",
+  "port": "wt-autodoggo/prove/ports-embed/autodoggo",
+  "upstream": "autodoggo",
+  "pin": "c59c0b9"
+ },
+ {
+  "slug": "blind-controller",
+  "name": "blind_controller.rs",
+  "port": "wt-blind-controller/prove/ports-embed/blind-controller",
+  "upstream": "blind_controller.rs",
+  "pin": "04beb1b"
+ },
+ {
+  "slug": "garaza-pico-rs",
+  "name": "garaza-pico-rs",
+  "port": "wt-garaza/prove/ports-embed/garaza-pico-rs",
+  "upstream": "garaza-pico-rs",
+  "pin": "4f18df8"
+ },
+ {
+  "slug": "omni-wheel-bot",
+  "name": "omni-wheel-bot",
+  "port": "wt-omni-wheel-bot/prove/ports-embed/omni-wheel-bot",
+  "upstream": "omni-wheel-bot",
+  "pin": "942db26"
+ },
+ {
+  "slug": "energy-monitor-ha",
+  "name": "energy-monitor-ha",
+  "port": "wt-energy-monitor-ha/prove/ports-embed/energy-monitor-ha",
+  "upstream": "energy-monitor-ha",
+  "pin": "cb1b356"
+ },
+ {
+  "slug": "aquarium-lid-pcb",
+  "name": "aquarium-lid-pcb",
+  "port": "wt-aquarium/prove/ports-embed/aquarium-lid-pcb",
+  "upstream": "aquarium-lid-pcb",
+  "pin": "41772a4"
+ },
+ {
+  "slug": "thermal-printer",
+  "name": "thermal-printer",
+  "port": "wt-thermal-printer/prove/ports-embed/thermal-printer",
+  "upstream": "thermal-printer",
+  "pin": "4a3875b"
+ },
+ {
+  "slug": "esp-sign",
+  "name": "esp-sign",
+  "port": "wt-esp-sign/prove/ports-embed/esp-sign",
+  "upstream": "esp-sign",
+  "pin": "5ec4640"
+ },
+ {
+  "slug": "esp32-http-stepper",
+  "name": "esp32-http-stepper",
+  "port": "wt-http-stepper/prove/ports-embed/esp32-http-stepper",
+  "upstream": "esp32-http-stepper",
+  "pin": "29a9c9d"
+ },
+ {
+  "slug": "chlorophyll",
+  "name": "chlorophyll",
+  "port": "wt-chlorophyll/prove/ports-embed/chlorophyll",
+  "upstream": "chlorophyll",
+  "pin": "2b30e20"
+ },
+ {
+  "slug": "cloggo",
+  "name": "cloggo",
+  "port": "wt-cloggo/prove/ports-embed/cloggo",
+  "upstream": "cloggo",
+  "pin": "449d9ff"
+ },
+ {
+  "slug": "diy-weather-station",
+  "name": "diy-weather-station",
+  "port": "wt-diy-weather/prove/ports-embed/diy-weather-station",
+  "upstream": "diy-weather-station",
+  "pin": "882fc24"
+ },
+ {
+  "slug": "pico-dhcp-dns-server",
+  "name": "pico_dhcp_dns_server",
+  "port": "wt-pico-dhcp-dns/prove/ports-embed/pico_dhcp_dns_server",
+  "upstream": "pico_dhcp_dns_server",
+  "pin": "cf2b3f5"
+ }
+]

@@ -40,8 +40,8 @@
       </a>
       <nav class="site-nav" aria-label="Embedded sections">
         <a href="#overview">Overview</a>
-        <a href="#equivalence">Equivalence</a>
         <a href="#properties">Properties</a>
+        <a href="#equivalence">Equivalence</a>
         <a href="#method">Method</a>
       </nav>
       <div class="theme" role="group" aria-label="Color theme">
@@ -61,7 +61,7 @@
       <section id="overview" class="block">
         <div class="block-head">
           <h2 class="term" data-n="01">Overview</h2>
-          <p>One row per firmware. Theorems are those accepted by <code>h5i app check</code>. The two equivalence columns are the share of scenarios in which the original firmware and the port behaved identically.</p>
+          <p>One row per firmware. Properties are the theorems gated by <code>h5i app check</code> (helper lemmas are not counted). The two equivalence columns are the share of scenarios in which the original firmware and the port behaved identically.</p>
         </div>
         <div class="table-wrap">
           <table class="sortable" id="overview-table">
@@ -70,7 +70,7 @@
                 <th scope="col" data-sort="name">Firmware</th>
                 <th scope="col" data-sort="chip">Device</th>
                 <th scope="col">Interface</th>
-                <th scope="col" class="num" data-sort="theorems">Theorems</th>
+                <th scope="col" class="num" data-sort="theorems">Properties</th>
                 <th scope="col" data-sort="normal">Normal input</th>
                 <th scope="col" data-sort="mixed">With malformed and edge-case input</th>
               </tr>
@@ -82,9 +82,27 @@
         <noscript><p>Enable JavaScript to see the results.</p></noscript>
       </section>
 
+      <section id="properties" class="block">
+        <div class="block-head">
+          <h2 class="term" data-n="02">Verified properties</h2>
+          <p>Every property gated by <code>h5i app check</code>: no <code>sorry</code>, no <code>native_decide</code>, standard axioms only. Choose one for its Lean statement, the kernel Rust beside the upstream Rust it ports, the extracted Lean and the proof. A property covers the kernel's decision function, not the I/O around it.</p>
+        </div>
+        <div class="filters" role="search" aria-label="Filter properties">
+          <label class="field"><span>Firmware</span><select id="f-app"><option value="">All</option></select></label>
+          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="property or theorem" /></label>
+        </div>
+        <div class="table-wrap">
+          <table class="matrix" id="matrix">
+            <thead><tr><th scope="col">Theorem</th><th scope="col">Property</th><th scope="col">Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="count" id="matrix-count" aria-live="polite"></p>
+      </section>
+
       <section id="equivalence" class="block">
         <div class="block-head">
-          <h2 class="term" data-n="02">Equivalence in detail</h2>
+          <h2 class="term" data-n="03">Equivalence in detail</h2>
           <p>Every scenario ends in one of three classes. <strong>Identical</strong>: same responses, same device state. <strong>Explained</strong>: the difference is traced to the input that caused it and to a named cause (a cosmetic response, the port refusing input the original accepts, or the original's behaviour on that input). <strong>Unexplained</strong>: anything else; a port is not done while it has one.</p>
         </div>
         <div class="table-wrap">
@@ -95,25 +113,14 @@
                 <th scope="col">Input</th>
                 <th scope="col" class="num">Scenarios</th>
                 <th scope="col" class="num">Identical</th>
-                <th scope="col" class="num">Explained</th>
-                <th scope="col" class="num">Unexplained</th>
+                <th scope="col" class="num">Explained / cosmetic</th>
+                <th scope="col" class="num">Unexplained / other</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
         <p class="caption">Mixed-input scenarios deliberately include malformed requests and boundary values, so their identical share mostly reflects how often the generator hits such input, not how often the firmwares disagree in normal use.</p>
-      </section>
-
-      <section id="properties" class="block">
-        <div class="block-head">
-          <h2 class="term" data-n="03">Verified properties</h2>
-          <p>What the kernel's theorems state, per firmware, in plain words. A theorem covers the kernel's decision function, not the I/O around it.</p>
-        </div>
-        <div class="filters" role="search" aria-label="Filter properties">
-          <label class="field grow"><span>Search</span><input id="f-q" type="search" placeholder="firmware or property" /></label>
-        </div>
-        <div id="props" class="emb-props"></div>
       </section>
 
       <section id="method" class="block">
@@ -143,5 +150,21 @@
       </nav>
       <span class="legal">Apache 2.0</span>
     </footer>
+
+    <div class="drawer" id="drawer" hidden>
+      <div class="drawer-scrim" data-close></div>
+      <aside class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="d-title">
+        <header class="drawer-head">
+          <div>
+            <p class="eyebrow" id="d-app"></p>
+            <h2 id="d-title"></h2>
+            <p class="d-property" id="d-property"></p>
+          </div>
+          <button class="close" type="button" data-close aria-label="Close">×</button>
+        </header>
+        <div class="tabs" role="tablist" id="d-tabs"></div>
+        <div class="drawer-body" id="d-body"></div>
+      </aside>
+    </div>
   </body>
 </html>

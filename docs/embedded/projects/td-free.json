@@ -1,0 +1,756 @@
+{
+ "slug": "td-free",
+ "name": "td-free",
+ "pin": "5e67e73",
+ "upstream_head": "5e67e73",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "spoolman_forward_needs_usable_server",
+   "file": "Properties.lean",
+   "doc": "(S) A Spoolman request is handed to the Spoolman client only when a server is configured with an IPv4 host and a port. Upstream hands it over with any host and the client crashes (`Ipv4Address::from_str(..).unwrap()`, found in Renode); rules out the `spoolman_any_host` mutant.",
+   "statement": "theorem spoolman_forward_needs_usable_server (env : Env) (st : DevState) (cmd : DevCmd)\n    (hc : cmd = .GetFilaments \u2228 cmd = .SetFilament) {w}\n    (h : dev_transition env st cmd = ok (w, Outcome.Forward)) :\n    st.spool.host_set = true \u2227 st.spool.port_set = true \u2227 st.spool.host_ipv4 = true",
+   "proof": "theorem spoolman_forward_needs_usable_server (env : Env) (st : DevState) (cmd : DevCmd)\n    (hc : cmd = .GetFilaments \u2228 cmd = .SetFilament) {w}\n    (h : dev_transition env st cmd = ok (w, Outcome.Forward)) :\n    st.spool.host_set = true \u2227 st.spool.port_set = true \u2227 st.spool.host_ipv4 = true := by\n  rcases hc with rfl | rfl <;>\n    (simp only [dev_transition, spool_usable_val] at h\n     revert h\n     cases st.spool.host_set <;> cases st.spool.port_set <;> cases st.spool.host_ipv4 <;> simp)",
+   "deps": [
+    "DevCmd",
+    "dev_transition",
+    "DevState",
+    "Env",
+    "Spool",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "calibrate_needs_client",
+   "file": "Properties.lean",
+   "doc": "(S) A calibration is started only when a client is listening for its result (upstream's 428 otherwise).",
+   "statement": "theorem calibrate_needs_client (env : Env) (st : DevState) {w}\n    (h : dev_transition env st .Calibrate = ok (w, Outcome.Forward)) :\n    env.client_connected = true",
+   "proof": "theorem calibrate_needs_client (env : Env) (st : DevState) {w}\n    (h : dev_transition env st .Calibrate = ok (w, Outcome.Forward)) :\n    env.client_connected = true := by\n  simp only [dev_transition] at h\n  revert h; cases env.client_connected <;> simp",
+   "deps": [
+    "dev_transition",
+    "DevState",
+    "Env",
+    "DevCmd",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Spool",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "info_needs_ready",
+   "file": "Properties.lean",
+   "doc": "(S) The device info is served only once the sensor task has published it; before, the request is refused (503). Upstream unwraps an empty watch and the device resets (found in Renode); rules out the `info_unguarded` mutant.",
+   "statement": "theorem info_needs_ready (env : Env) (st : DevState) {w o}\n    (h : dev_transition env st .ReadInfo = ok (w, o)) :\n    o = Outcome.Read \u2192 env.info_ready = true",
+   "proof": "theorem info_needs_ready (env : Env) (st : DevState) {w o}\n    (h : dev_transition env st .ReadInfo = ok (w, o)) :\n    o = Outcome.Read \u2192 env.info_ready = true := by\n  simp only [dev_transition] at h\n  revert h; cases env.info_ready <;> simp <;> intro _ h <;> subst h <;> simp",
+   "deps": [
+    "dev_transition",
+    "DevState",
+    "Env",
+    "DevCmd",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Spool",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "wifi_update_resets",
+   "file": "Properties.lean",
+   "doc": "(S) A Wi-Fi update is stored and the device resets to use it (upstream `data_update_save_task`): the reset is always scheduled.",
+   "statement": "theorem wifi_update_resets (env : Env) (st : DevState) {w o}\n    (h : dev_transition env st .WriteWifi = ok (w, o)) :\n    o = Outcome.PersistThenReset Key.Wifi \u2227 \u2203 n, w = some n \u2227 n.reset_pending = true",
+   "proof": "theorem wifi_update_resets (env : Env) (st : DevState) {w o}\n    (h : dev_transition env st .WriteWifi = ok (w, o)) :\n    o = Outcome.PersistThenReset Key.Wifi \u2227 \u2203 n, w = some n \u2227 n.reset_pending = true := by\n  simp only [dev_transition] at h\n  obtain \u27e8rfl, rfl\u27e9 := Prod.mk.inj (by simpa using h)\n  exact \u27e8rfl, _, rfl, rfl\u27e9",
+   "deps": [
+    "dev_transition",
+    "DevState",
+    "Env",
+    "DevCmd",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Spool",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "updates_keyed",
+   "file": "Properties.lean",
+   "doc": "(S) Every update is stored under its own NVS key: settings under `SET`, RGB multipliers under `RGB`, Wi-Fi credentials under `WF_CR`; no update overwrites another kind.",
+   "statement": "theorem updates_keyed (env : Env) (st : DevState) (sp : Spool) :\n    dev_transition env st (.WriteSettings sp) = ok (some { st with spool := sp }, Outcome.Persist Key.Settings) \u2227\n    dev_transition env st .WriteRgb = ok (none, Outcome.Persist Key.Rgb) \u2227\n    dev_transition env st .WriteWifi = ok (some { st with reset_pending := true }, Outcome.PersistThenReset Key.Wifi)",
+   "proof": "theorem updates_keyed (env : Env) (st : DevState) (sp : Spool) :\n    dev_transition env st (.WriteSettings sp) = ok (some { st with spool := sp }, Outcome.Persist Key.Settings) \u2227\n    dev_transition env st .WriteRgb = ok (none, Outcome.Persist Key.Rgb) \u2227\n    dev_transition env st .WriteWifi = ok (some { st with reset_pending := true }, Outcome.PersistThenReset Key.Wifi) := by\n  simp [dev_transition]",
+   "deps": [
+    "Spool",
+    "dev_transition",
+    "DevState",
+    "Env",
+    "DevCmd",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "reads_store_nothing",
+   "file": "Properties.lean",
+   "doc": "(S) Reads store nothing: settings, RGB multipliers and device info are answered without a write set.",
+   "statement": "theorem reads_store_nothing (env : Env) (st : DevState) (cmd : DevCmd)\n    (hc : cmd = .ReadSettings \u2228 cmd = .ReadRgb \u2228 cmd = .ReadInfo) {w o}\n    (h : dev_transition env st cmd = ok (w, o)) : w = none",
+   "proof": "theorem reads_store_nothing (env : Env) (st : DevState) (cmd : DevCmd)\n    (hc : cmd = .ReadSettings \u2228 cmd = .ReadRgb \u2228 cmd = .ReadInfo) {w o}\n    (h : dev_transition env st cmd = ok (w, o)) : w = none := by\n  rcases hc with rfl | rfl | rfl <;> simp only [dev_transition] at h <;> (try split at h) <;>\n    (simp only [ok.injEq, Prod.mk.injEq] at h; exact h.1.symm)",
+   "deps": [
+    "dev_transition",
+    "DevState",
+    "DevCmd",
+    "Env",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Spool",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "boot_wifi_no_lockout",
+   "file": "Properties.lean",
+   "doc": "(S) Stored Wi-Fi credentials that do not work (no connection, or no address) are always forgotten and the device resets into its access point: a wrong Wi-Fi update can never lock the device out.",
+   "statement": "theorem boot_wifi_no_lockout (c g : Bool) :\n    boot_wifi true c g = ok BootWifi.Station \u2194 (c = true \u2227 g = true)",
+   "proof": "theorem boot_wifi_no_lockout (c g : Bool) :\n    boot_wifi true c g = ok BootWifi.Station \u2194 (c = true \u2227 g = true) := by\n  unfold boot_wifi; cases c <;> cases g <;> simp",
+   "deps": [
+    "boot_wifi",
+    "BootWifi"
+   ],
+   "spec": []
+  },
+  {
+   "name": "dev_transition_total",
+   "file": "Properties.lean",
+   "doc": "(C) The HTTP decision never fails (no panic, no overflow): any request, any state.",
+   "statement": "theorem dev_transition_total (env : Env) (st : DevState) (cmd : DevCmd) :\n    \u2203 r, dev_transition env st cmd = ok r",
+   "proof": "theorem dev_transition_total (env : Env) (st : DevState) (cmd : DevCmd) :\n    \u2203 r, dev_transition env st cmd = ok r := by\n  unfold dev_transition\n  cases cmd <;> simp [spool_usable_val] <;> split <;> simp",
+   "deps": [
+    "dev_transition",
+    "DevState",
+    "DevCmd",
+    "Env",
+    "NOT_READY",
+    "Outcome",
+    "NOT_CONFIGURED",
+    "spool_usable",
+    "NO_CLIENT",
+    "Spool",
+    "Key"
+   ],
+   "spec": []
+  },
+  {
+   "name": "boot_wifi_ap",
+   "file": "Properties.lean",
+   "doc": "(C) Without credentials the device is an access point.",
+   "statement": "theorem boot_wifi_ap (c g : Bool) : boot_wifi false c g = ok BootWifi.AccessPoint",
+   "proof": "theorem boot_wifi_ap (c g : Bool) : boot_wifi false c g = ok BootWifi.AccessPoint := by\n  unfold boot_wifi; simp",
+   "deps": [
+    "boot_wifi",
+    "BootWifi"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_bits_preserves_complement",
+   "file": "Properties.lean",
+   "doc": "(S) Field isolation: writing the `mask` field leaves every bit of a disjoint field `m` unchanged (mutant `set_bits_value_unmasked`).",
+   "statement": "theorem set_bits_preserves_complement (c : Config) (mask value m : Std.U16)\n    (hdisj : m &&& mask = 0#u16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& m = c.bits &&& m",
+   "proof": "theorem set_bits_preserves_complement (c : Config) (mask value m : Std.U16)\n    (hdisj : m &&& mask = 0#u16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& m = c.bits &&& m := by\n  intro cfg h\n  rw [set_bits_eq h]\n  bvify 16 at hdisj \u22a2\n  ext i hi\n  have h := congrArg (fun x => x[i]) hdisj\n  simp only [BitVec.getElem_and, BitVec.getElem_or, BitVec.getElem_not, BitVec.getElem_zero] at h \u22a2\n  generalize c.bits.bv[i] = a at h \u22a2\n  generalize mask.bv[i] = b at h \u22a2\n  generalize value.bv[i] = d at h \u22a2\n  generalize m.bv[i] = e at h \u22a2\n  cases a <;> cases b <;> cases d <;> cases e <;> simp_all",
+   "deps": [
+    "Config",
+    "set_bits"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_bits_sets_masked",
+   "file": "Properties.lean",
+   "doc": "(C) The `mask` field is set to `value` (restricted to the field).",
+   "statement": "theorem set_bits_sets_masked (c : Config) (mask value : Std.U16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& mask = value &&& mask",
+   "proof": "theorem set_bits_sets_masked (c : Config) (mask value : Std.U16) :\n    \u2200 cfg, set_bits c mask value = ok cfg \u2192 cfg.bits &&& mask = value &&& mask := by\n  intro cfg h\n  rw [set_bits_eq h]\n  bvify 16\n  ext i hi\n  simp only [BitVec.getElem_and, BitVec.getElem_or, BitVec.getElem_not]\n  generalize c.bits.bv[i] = a\n  generalize mask.bv[i] = b\n  generalize value.bv[i] = d\n  cases a <;> cases b <;> cases d <;> simp",
+   "deps": [
+    "Config",
+    "set_bits"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_gain_preserves_shutdown",
+   "file": "Properties.lean",
+   "doc": "(S) Setting the gain never changes the shutdown bits (mutant `set_gain_wrong_mask`).",
+   "statement": "theorem set_gain_preserves_shutdown (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN",
+   "proof": "theorem set_gain_preserves_shutdown (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_gain_val c g\n  rw [hv] at h\n  exact set_bits_preserves_complement c GAIN_MASK v SHUTDOWN TdFree.Spec.shutdown_gain_disjoint cfg h",
+   "deps": [
+    "Config",
+    "set_gain_config",
+    "Gain",
+    "SHUTDOWN",
+    "gain_bits",
+    "GAIN_MASK",
+    "set_bits",
+    "GAIN_ONE_EIGHTH",
+    "GAIN_ONE",
+    "GAIN_ONE_QUARTER",
+    "GAIN_TWO"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_it_preserves_shutdown",
+   "file": "Properties.lean",
+   "doc": "(S) Setting the integration time never changes the shutdown bits.",
+   "statement": "theorem set_it_preserves_shutdown (c : Config) (it : IntegrationTime) :\n    \u2200 cfg, set_it_config c it = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN",
+   "proof": "theorem set_it_preserves_shutdown (c : Config) (it : IntegrationTime) :\n    \u2200 cfg, set_it_config c it = ok cfg \u2192 cfg.bits &&& SHUTDOWN = c.bits &&& SHUTDOWN := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_it_val c it\n  rw [hv] at h\n  exact set_bits_preserves_complement c IT_MASK v SHUTDOWN TdFree.Spec.shutdown_it_disjoint cfg h",
+   "deps": [
+    "set_it_config",
+    "SHUTDOWN",
+    "Config",
+    "IntegrationTime",
+    "it_bits",
+    "IT_MASK",
+    "set_bits",
+    "IT_100MS",
+    "IT_50MS",
+    "IT_200MS",
+    "IT_800MS",
+    "IT_400MS",
+    "IT_25MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_it_preserves_gain",
+   "file": "Properties.lean",
+   "doc": "(S) Setting the integration time never changes the gain.",
+   "statement": "theorem set_it_preserves_gain (c : Config) (it : IntegrationTime) :\n    \u2200 cfg, set_it_config c it = ok cfg \u2192 cfg.bits &&& GAIN_MASK = c.bits &&& GAIN_MASK",
+   "proof": "theorem set_it_preserves_gain (c : Config) (it : IntegrationTime) :\n    \u2200 cfg, set_it_config c it = ok cfg \u2192 cfg.bits &&& GAIN_MASK = c.bits &&& GAIN_MASK := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_it_val c it\n  rw [hv] at h\n  exact set_bits_preserves_complement c IT_MASK v GAIN_MASK TdFree.Spec.gain_it_disjoint cfg h",
+   "deps": [
+    "set_it_config",
+    "Config",
+    "GAIN_MASK",
+    "IntegrationTime",
+    "it_bits",
+    "IT_MASK",
+    "set_bits",
+    "IT_100MS",
+    "IT_50MS",
+    "IT_200MS",
+    "IT_800MS",
+    "IT_400MS",
+    "IT_25MS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_gain_preserves_it",
+   "file": "Properties.lean",
+   "doc": "(S) Setting the gain never changes the integration time.",
+   "statement": "theorem set_gain_preserves_it (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& IT_MASK = c.bits &&& IT_MASK",
+   "proof": "theorem set_gain_preserves_it (c : Config) (g : Gain) :\n    \u2200 cfg, set_gain_config c g = ok cfg \u2192 cfg.bits &&& IT_MASK = c.bits &&& IT_MASK := by\n  intro cfg h\n  obtain \u27e8v, hv\u27e9 := set_gain_val c g\n  rw [hv] at h\n  have hdisj : IT_MASK &&& GAIN_MASK = 0#u16 := by unfold IT_MASK GAIN_MASK; decide\n  exact set_bits_preserves_complement c GAIN_MASK v IT_MASK hdisj cfg h",
+   "deps": [
+    "Config",
+    "set_gain_config",
+    "Gain",
+    "IT_MASK",
+    "gain_bits",
+    "GAIN_MASK",
+    "set_bits",
+    "GAIN_ONE_EIGHTH",
+    "GAIN_ONE",
+    "GAIN_ONE_QUARTER",
+    "GAIN_TWO"
+   ],
+   "spec": []
+  },
+  {
+   "name": "enable_clears_shutdown",
+   "file": "Properties.lean",
+   "doc": "(S) `enable` powers the sensor on: both shutdown bits clear.",
+   "statement": "theorem enable_clears_shutdown :\n    \u2200 cfg, enable_config = ok cfg \u2192 cfg.bits &&& SHUTDOWN = 0#u16",
+   "proof": "theorem enable_clears_shutdown :\n    \u2200 cfg, enable_config = ok cfg \u2192 cfg.bits &&& SHUTDOWN = 0#u16 := by\n  intro cfg h\n  have hw : with_low \u27e80#u16\u27e9 SHUTDOWN = ok \u27e80#u16 &&& ~~~SHUTDOWN\u27e9 := by simp [with_low, lift]\n  unfold enable_config config_new at h\n  rw [bind_ok, hw, bind_ok, set_bits_val, bind_ok] at h\n  rw [set_bits_eq h]\n  simp only [SHUTDOWN, IT_MASK, IT_100MS, GAIN_MASK, GAIN_ONE]\n  bvify 16",
+   "deps": [
+    "enable_config",
+    "SHUTDOWN",
+    "IT_100MS",
+    "GAIN_MASK",
+    "config_new",
+    "with_low",
+    "Config",
+    "GAIN_ONE",
+    "IT_MASK",
+    "set_bits"
+   ],
+   "spec": []
+  },
+  {
+   "name": "disable_sets_shutdown",
+   "file": "Properties.lean",
+   "doc": "(C) `disable` sets the chip-shutdown bit.",
+   "statement": "theorem disable_sets_shutdown :\n    \u2200 c cfg, disable_config c = ok cfg \u2192 cfg.bits &&& SD0 = SD0",
+   "proof": "theorem disable_sets_shutdown :\n    \u2200 c cfg, disable_config c = ok cfg \u2192 cfg.bits &&& SD0 = SD0 := by\n  intro c cfg h\n  have e : cfg.bits = c.bits ||| SD0 := by\n    simp only [disable_config, with_high, lift, bind_ok, ok.injEq] at h; rw [\u2190 h]\n  rw [e]\n  bvify 16\n  ext i hi\n  simp only [BitVec.getElem_and, BitVec.getElem_or]\n  generalize c.bits.bv[i] = a\n  cases a <;> simp",
+   "deps": [
+    "disable_config",
+    "SD0",
+    "with_high",
+    "Config"
+   ],
+   "spec": []
+  },
+  {
+   "name": "set_bits_total",
+   "file": "Properties.lean",
+   "doc": "(C) `set_bits` is total.",
+   "statement": "theorem set_bits_total (c : Config) (mask value : Std.U16) :\n    \u2203 r, set_bits c mask value = ok r",
+   "proof": "theorem set_bits_total (c : Config) (mask value : Std.U16) :\n    \u2203 r, set_bits c mask value = ok r :=\n  \u27e8_, set_bits_val c mask value\u27e9",
+   "deps": [
+    "Config",
+    "set_bits"
+   ],
+   "spec": []
+  },
+  {
+   "name": "it_mask_collision",
+   "file": "Properties.lean",
+   "doc": "(F) The integration-time encodings overflow `IT_MASK`: `IT_25MS` and `IT_50MS` set bits outside the 3-bit field, so after masking `_50ms` and `_100ms` are the same. Latent: `set_integration_time` is never called.",
+   "statement": "theorem it_mask_collision :\n    (IT_50MS &&& IT_MASK = IT_100MS &&& IT_MASK) \u2227 (IT_25MS &&& ~~~IT_MASK \u2260 0#u16)",
+   "proof": "theorem it_mask_collision :\n    (IT_50MS &&& IT_MASK = IT_100MS &&& IT_MASK) \u2227 (IT_25MS &&& ~~~IT_MASK \u2260 0#u16) := by\n  refine \u27e8?_, ?_\u27e9\n  \u00b7 unfold IT_50MS IT_100MS IT_MASK; decide\n  \u00b7 unfold IT_25MS IT_MASK; decide",
+   "deps": [
+    "IT_100MS",
+    "IT_25MS",
+    "IT_50MS",
+    "IT_MASK"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "IT_100MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_100MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 39,
+   "kernel_code": "pub const IT_100MS: u16 = 0; //       0b0000 << 4",
+   "lean": "@[global_simps, irreducible] def IT_100MS : Std.U16 := 0#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "enable_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::enable_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 111,
+   "kernel_code": "pub fn enable_config() -> Config {\n    set_bits(\n        set_bits(with_low(config_new(), SHUTDOWN), IT_MASK, IT_100MS),\n        GAIN_MASK,\n        GAIN_ONE,\n    )\n}",
+   "lean": "def enable_config : Result Config := do\n  let c \u2190 config_new\n  let c1 \u2190 with_low c SHUTDOWN\n  let c2 \u2190 set_bits c1 IT_MASK IT_100MS\n  set_bits c2 GAIN_MASK GAIN_ONE",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "with_low": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::with_low",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 79,
+   "kernel_code": "pub fn with_low(c: Config, mask: u16) -> Config {\n    Config { bits: c.bits & !mask }\n}",
+   "lean": "def with_low (c : Config) (mask : Std.U16) : Result Config := do\n  let i \u2190 lift (~~~ mask)\n  let i1 \u2190 lift (c.bits &&& i)\n  ok { bits := i1 }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IT_50MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_50MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 38,
+   "kernel_code": "pub const IT_50MS: u16 = 128; //      0b1000 << 4",
+   "lean": "@[global_simps, irreducible] def IT_50MS : Std.U16 := 128#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IT_200MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_200MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 40,
+   "kernel_code": "pub const IT_200MS: u16 = 16; //      0b0001 << 4",
+   "lean": "@[global_simps, irreducible] def IT_200MS : Std.U16 := 16#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Config": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::Config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 46,
+   "kernel_code": "pub struct Config {\n    pub bits: u16,\n}",
+   "lean": "structure Config where\n  bits : Std.U16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "gain_bits": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::gain_bits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 89,
+   "kernel_code": "pub fn gain_bits(g: Gain) -> u16 {\n    match g {\n        Gain::OneEighth => GAIN_ONE_EIGHTH,\n        Gain::OneQuarter => GAIN_ONE_QUARTER,\n        Gain::One => GAIN_ONE,\n        Gain::Two => GAIN_TWO,\n    }\n}",
+   "lean": "def gain_bits (g : Gain) : Result Std.U16 := do\n  match g with\n  | Gain.OneEighth => ok GAIN_ONE_EIGHTH\n  | Gain.OneQuarter => ok GAIN_ONE_QUARTER\n  | Gain.One => ok GAIN_ONE\n  | Gain.Two => ok GAIN_TWO",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Spool": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::Spool",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 151,
+   "kernel_code": "pub struct Spool {\n    pub host_set: bool,\n    /// The host is an IPv4 address (the Spoolman client connects to an\n    /// address; upstream parses it with `unwrap`).\n    pub host_ipv4: bool,\n    pub port_set: bool,\n}",
+   "lean": "structure Spool where\n  host_set : Bool\n  host_ipv4 : Bool\n  port_set : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DevCmd": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::DevCmd",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 186,
+   "kernel_code": "pub enum DevCmd {\n    ReadSettings,\n    WriteSettings { spool: Spool },\n    ReadRgb,\n    WriteRgb,\n    WriteWifi,\n    ReadInfo,\n    Calibrate,\n    GetFilaments,\n    SetFilament,\n}",
+   "lean": "@[discriminant isize]\ninductive DevCmd where\n| ReadSettings : DevCmd\n| WriteSettings : Spool \u2192 DevCmd\n| ReadRgb : DevCmd\n| WriteRgb : DevCmd\n| WriteWifi : DevCmd\n| ReadInfo : DevCmd\n| Calibrate : DevCmd\n| GetFilaments : DevCmd\n| SetFilament : DevCmd",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "GAIN_MASK": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_MASK",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub const GAIN_MASK: u16 = 6144; //   0b11 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_MASK : Std.U16 := 6144#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NOT_READY": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::NOT_READY",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 218,
+   "kernel_code": "pub const NOT_READY: u16 = 503;",
+   "lean": "@[global_simps, irreducible] def NOT_READY : Std.U16 := 503#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "GAIN_ONE_QUARTER": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_ONE_QUARTER",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub const GAIN_ONE_QUARTER: u16 = 4096; // 0b10 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_ONE_QUARTER : Std.U16 := 4096#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "GAIN_TWO": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_TWO",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub const GAIN_TWO: u16 = 2048; //    0b01 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_TWO : Std.U16 := 2048#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "set_bits": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::set_bits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 85,
+   "kernel_code": "pub fn set_bits(c: Config, mask: u16, value: u16) -> Config {\n    Config { bits: (c.bits & !mask) | (value & mask) }\n}",
+   "lean": "def set_bits\n  (c : Config) (mask : Std.U16) (value : Std.U16) : Result Config := do\n  let i \u2190 lift (~~~ mask)\n  let i1 \u2190 lift (c.bits &&& i)\n  let i2 \u2190 lift (value &&& mask)\n  let i3 \u2190 lift (i1 ||| i2)\n  ok { bits := i3 }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IT_MASK": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_MASK",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 36,
+   "kernel_code": "pub const IT_MASK: u16 = 112; //      0b111 << 4",
+   "lean": "@[global_simps, irreducible] def IT_MASK : Std.U16 := 112#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SD0": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::SD0",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 26,
+   "kernel_code": "pub const SD0: u16 = 1; //            1 << 0   \u2014 chip shutdown",
+   "lean": "@[global_simps, irreducible] def SD0 : Std.U16 := 1#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "set_it_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::set_it_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 130,
+   "kernel_code": "pub fn set_it_config(c: Config, it: IntegrationTime) -> Config {\n    set_bits(c, IT_MASK, it_bits(it))\n}",
+   "lean": "def set_it_config (c : Config) (it : IntegrationTime) : Result Config := do\n  let i \u2190 it_bits it\n  set_bits c IT_MASK i",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IT_800MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_800MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub const IT_800MS: u16 = 48; //      0b0011 << 4",
+   "lean": "@[global_simps, irreducible] def IT_800MS : Std.U16 := 48#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "disable_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::disable_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 120,
+   "kernel_code": "pub fn disable_config(c: Config) -> Config {\n    with_high(c, SD0)\n}",
+   "lean": "def disable_config (c : Config) : Result Config := do\n  with_high c SD0",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "it_bits": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::it_bits",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 98,
+   "kernel_code": "pub fn it_bits(it: IntegrationTime) -> u16 {\n    match it {\n        IntegrationTime::_25ms => IT_25MS,\n        IntegrationTime::_50ms => IT_50MS,\n        IntegrationTime::_100ms => IT_100MS,\n        IntegrationTime::_200ms => IT_200MS,\n        IntegrationTime::_400ms => IT_400MS,\n        IntegrationTime::_800ms => IT_800MS,\n    }\n}",
+   "lean": "def it_bits (it : IntegrationTime) : Result Std.U16 := do\n  match it with\n  | IntegrationTime._25ms => ok IT_25MS\n  | IntegrationTime._50ms => ok IT_50MS\n  | IntegrationTime._100ms => ok IT_100MS\n  | IntegrationTime._200ms => ok IT_200MS\n  | IntegrationTime._400ms => ok IT_400MS\n  | IntegrationTime._800ms => ok IT_800MS",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IT_400MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_400MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 41,
+   "kernel_code": "pub const IT_400MS: u16 = 32; //      0b0010 << 4",
+   "lean": "@[global_simps, irreducible] def IT_400MS : Std.U16 := 32#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "with_high": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::with_high",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 74,
+   "kernel_code": "pub fn with_high(c: Config, mask: u16) -> Config {\n    Config { bits: c.bits | mask }\n}",
+   "lean": "def with_high (c : Config) (mask : Std.U16) : Result Config := do\n  let i \u2190 lift (c.bits ||| mask)\n  ok { bits := i }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "set_gain_config": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::set_gain_config",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 125,
+   "kernel_code": "pub fn set_gain_config(c: Config, g: Gain) -> Config {\n    set_bits(c, GAIN_MASK, gain_bits(g))\n}",
+   "lean": "def set_gain_config (c : Config) (g : Gain) : Result Config := do\n  let i \u2190 gain_bits g\n  set_bits c GAIN_MASK i",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NOT_CONFIGURED": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::NOT_CONFIGURED",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 214,
+   "kernel_code": "pub const NOT_CONFIGURED: u16 = 412;",
+   "lean": "@[global_simps, irreducible] def NOT_CONFIGURED : Std.U16 := 412#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Outcome": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::Outcome",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 199,
+   "kernel_code": "pub enum Outcome {\n    /// Answer from the current state; nothing stored.\n    Read,\n    /// Store the body under `key` (replacing the old value) and answer it.\n    Persist(Key),\n    /// Store, then reset the device (to use the new Wi-Fi credentials).\n    PersistThenReset(Key),\n    /// Hand the request to the task that serves it (Spoolman client,\n    /// calibration).\n    Forward,\n    /// Refuse with this status.\n    Refuse(u16),\n}",
+   "lean": "@[discriminant isize]\ninductive Outcome where\n| Read : Outcome\n| Persist : Key \u2192 Outcome\n| PersistThenReset : Key \u2192 Outcome\n| Forward : Outcome\n| Refuse : Std.U16 \u2192 Outcome",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "dev_transition": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::dev_transition",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 229,
+   "kernel_code": "pub fn dev_transition(env: &Env, st: &DevState, cmd: &DevCmd) -> (Option<DevState>, Outcome) {\n    match cmd {\n        DevCmd::ReadSettings => (None, Outcome::Read),\n        DevCmd::ReadRgb => (None, Outcome::Read),\n        DevCmd::WriteSettings { spool } => {\n            (Some(DevState { spool: *spool, reset_pending: st.reset_pending }), Outcome::Persist(Key::Settings))\n        }\n        DevCmd::WriteRgb => (None, Outcome::Persist(Key::Rgb)),\n        DevCmd::WriteWifi => {\n            (Some(DevState { spool: st.spool, reset_pending: true }), Outcome::PersistThenReset(Key::Wifi))\n        }\n        DevCmd::ReadInfo => {\n            if env.info_ready { (None, Outcome::Read) } else { (None, Outcome::Refuse(NOT_READY)) }\n        }\n        DevCmd::Calibrate => {\n            if env.client_connected { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NO_CLIENT)) }\n        }\n        DevCmd::GetFilaments => {\n            if spool_usable(st.spool) { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NOT_CONFIGURED)) }\n        }\n        DevCmd::SetFilament => {\n            if spool_usable(st.spool) { (None, Outcome::Forward) } else { (None, Outcome::Refuse(NOT_CONFIGURED)) }\n        }\n    }\n}",
+   "lean": "def dev_transition\n  (env : Env) (st : DevState) (cmd : DevCmd) :\n  Result ((Option DevState) \u00d7 Outcome)\n  := do\n  match cmd with\n  | DevCmd.ReadSettings => ok (none, Outcome.Read)\n  | DevCmd.WriteSettings spool =>\n    ok (some { st with spool }, Outcome.Persist Key.Settings)\n  | DevCmd.ReadRgb => ok (none, Outcome.Read)\n  | DevCmd.WriteRgb => ok (none, Outcome.Persist Key.Rgb)\n  | DevCmd.WriteWifi =>\n    ok (some { st with reset_pending := true }, Outcome.PersistThenReset\n      Key.Wifi)\n  | DevCmd.ReadInfo =>\n    if env.info_ready\n    then ok (none, Outcome.Read)\n    else ok (none, Outcome.Refuse NOT_READY)\n  | DevCmd.Calibrate =>\n    if env.client_connected\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NO_CLIENT)\n  | DevCmd.GetFilaments =>\n    let b \u2190 spool_usable st.spool\n    if b\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NOT_CONFIGURED)\n  | DevCmd.SetFilament =>\n    let b \u2190 spool_usable st.spool\n    if b\n    then ok (none, Outcome.Forward)\n    else ok (none, Outcome.Refuse NOT_CONFIGURED)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "GAIN_ONE_EIGHTH": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_ONE_EIGHTH",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 31,
+   "kernel_code": "pub const GAIN_ONE_EIGHTH: u16 = 6144; // 0b11 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_ONE_EIGHTH : Std.U16 := 6144#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "spool_usable": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::spool_usable",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 220,
+   "kernel_code": "fn spool_usable(s: Spool) -> bool {\n    if s.host_set {\n        if s.port_set { s.host_ipv4 } else { false }\n    } else {\n        false\n    }\n}",
+   "lean": "def spool_usable (s : Spool) : Result Bool := do\n  if s.host_set\n  then if s.port_set\n       then ok s.host_ipv4\n       else ok false\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IT_25MS": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::IT_25MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 37,
+   "kernel_code": "pub const IT_25MS: u16 = 192; //      0b1100 << 4",
+   "lean": "@[global_simps, irreducible] def IT_25MS : Std.U16 := 192#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Gain": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::Gain",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 51,
+   "kernel_code": "pub enum Gain {\n    OneEighth,\n    OneQuarter,\n    One,\n    Two,\n}",
+   "lean": "@[discriminant isize]\ninductive Gain where\n| OneEighth : Gain\n| OneQuarter : Gain\n| One : Gain\n| Two : Gain",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SHUTDOWN": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::SHUTDOWN",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 28,
+   "kernel_code": "pub const SHUTDOWN: u16 = 32769; //   SD0 | SD1",
+   "lean": "@[global_simps, irreducible] def SHUTDOWN : Std.U16 := 32769#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "IntegrationTime": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::IntegrationTime",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 59,
+   "kernel_code": "pub enum IntegrationTime {\n    _25ms,\n    _50ms,\n    _100ms,\n    _200ms,\n    _400ms,\n    _800ms,\n}",
+   "lean": "@[discriminant isize]\ninductive IntegrationTime where\n| _25ms : IntegrationTime\n| _50ms : IntegrationTime\n| _100ms : IntegrationTime\n| _200ms : IntegrationTime\n| _400ms : IntegrationTime\n| _800ms : IntegrationTime",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NO_CLIENT": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::NO_CLIENT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 216,
+   "kernel_code": "pub const NO_CLIENT: u16 = 428;",
+   "lean": "@[global_simps, irreducible] def NO_CLIENT : Std.U16 := 428#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "boot_wifi": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::boot_wifi",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 276,
+   "kernel_code": "pub fn boot_wifi(has_creds: bool, connected: bool, got_ip: bool) -> BootWifi {\n    if !has_creds {\n        BootWifi::AccessPoint\n    } else if !connected {\n        BootWifi::ForgetAndReset\n    } else if !got_ip {\n        BootWifi::ForgetAndReset\n    } else {\n        BootWifi::Station\n    }\n}",
+   "lean": "def boot_wifi\n  (has_creds : Bool) (connected : Bool) (got_ip : Bool) : Result BootWifi := do\n  if has_creds\n  then\n    if connected\n    then if got_ip\n         then ok BootWifi.Station\n         else ok BootWifi.ForgetAndReset\n    else ok BootWifi.ForgetAndReset\n  else ok BootWifi.AccessPoint",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "BootWifi": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::BootWifi",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 264,
+   "kernel_code": "pub enum BootWifi {\n    /// No credentials: the open access point `Td-Free`.\n    AccessPoint,\n    /// Connected with an address: station mode.\n    Station,\n    /// The stored credentials did not work: delete them and reset (the next\n    /// boot is an access point).\n    ForgetAndReset,\n}",
+   "lean": "@[discriminant isize]\ninductive BootWifi where\n| AccessPoint : BootWifi\n| Station : BootWifi\n| ForgetAndReset : BootWifi",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DevState": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::DevState",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 160,
+   "kernel_code": "pub struct DevState {\n    pub spool: Spool,\n    pub reset_pending: bool,\n}",
+   "lean": "structure DevState where\n  spool : Spool\n  reset_pending : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "config_new": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::config_new",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 69,
+   "kernel_code": "pub fn config_new() -> Config {\n    Config { bits: 0 }\n}",
+   "lean": "def config_new : Result Config := do\n  ok { bits := 0#u16 }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "GAIN_ONE": {
+   "kind": "def",
+   "rust_path": "td_free_kernel::GAIN_ONE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 33,
+   "kernel_code": "pub const GAIN_ONE: u16 = 0; //       0b00 << 11",
+   "lean": "@[global_simps, irreducible] def GAIN_ONE : Std.U16 := 0#u16",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Key": {
+   "kind": "inductive",
+   "rust_path": "td_free_kernel::Key",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 179,
+   "kernel_code": "pub enum Key {\n    Settings,\n    Rgb,\n    Wifi,\n}",
+   "lean": "@[discriminant isize]\ninductive Key where\n| Settings : Key\n| Rgb : Key\n| Wifi : Key",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Env": {
+   "kind": "structure",
+   "rust_path": "td_free_kernel::Env",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 172,
+   "kernel_code": "pub struct Env {\n    pub client_connected: bool,\n    pub info_ready: bool,\n}",
+   "lean": "structure Env where\n  client_connected : Bool\n  info_ready : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

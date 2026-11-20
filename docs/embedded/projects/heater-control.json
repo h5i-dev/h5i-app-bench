@@ -1,0 +1,581 @@
+{
+ "slug": "heater-control",
+ "name": "heater-control",
+ "pin": "ba651d8",
+ "upstream_head": "ba651d8",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "duty_out_of_range_refused",
+   "file": "Properties.lean",
+   "doc": "(S) A duty over 100 % is refused and changes nothing.",
+   "statement": "theorem duty_out_of_range_refused (st : Heater) (m : DutyMsg) (hu : m.utf8 = true) (hp : m.parsed = true)\n    (hd : m.duty.val > 100) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS)",
+   "proof": "theorem duty_out_of_range_refused (st : Heater) (m : DutyMsg) (hu : m.utf8 = true) (hp : m.parsed = true)\n    (hd : m.duty.val > 100) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS) := by\n  unfold duty_set\n  have : m.duty > 100#u8 := by scalar_tac\n  simp [hu, hp, this]",
+   "deps": [
+    "Heater",
+    "DutyMsg",
+    "duty_set",
+    "NO_EFFECTS",
+    "Ctl",
+    "Control",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "sent_duty_le_100",
+   "file": "Properties.lean",
+   "doc": "(S) Whatever is sent to the SSR is the message's duty, at most 100 %.",
+   "statement": "theorem sent_duty_le_100 (st : Heater) (m : DutyMsg) {st' h e d}\n    (hr : duty_set st m = ok (st', h, e)) (hs : e.send = some d) : d = m.duty \u2227 d.val \u2264 100",
+   "proof": "theorem sent_duty_le_100 (st : Heater) (m : DutyMsg) {st' h e d}\n    (hr : duty_set st m = ok (st', h, e)) (hs : e.send = some d) : d = m.duty \u2227 d.val \u2264 100 := by\n  rcases st with \u27e8ctl, sd\u27e9\n  rcases m with \u27e8u, p, d0, s, c, sr, sm, now\u27e9\n  simp only [duty_set, expires_after] at hr\n  cases u <;> cases p <;> cases s <;> cases c <;> cases ctl <;> (try simp [NO_EFFECTS] at hr) <;>\n    (try split_ifs at hr) <;> (try simp [NO_EFFECTS] at hr) <;> (try obtain \u27e8_, _, rfl\u27e9 := hr) <;>\n    (try simp_all) <;> scalar_tac",
+   "deps": [
+    "Heater",
+    "DutyMsg",
+    "duty_set",
+    "Ctl",
+    "Control",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "NO_EFFECTS",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "remote_mismatch_refused",
+   "file": "Properties.lean",
+   "doc": "(S) A remote that is not the one in control is refused: nothing changes, nothing is sent.",
+   "statement": "theorem remote_mismatch_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (hn : m.same_remote = false) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS)",
+   "proof": "theorem remote_mismatch_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (hn : m.same_remote = false) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS) := by\n  have : \u00ac m.duty > 100#u8 := by scalar_tac\n  simp [duty_set, hc, hu, hp, hs, hk, hn, this]",
+   "deps": [
+    "Heater",
+    "duty_set",
+    "DutyMsg",
+    "NO_EFFECTS",
+    "Ctl",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "Control",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "expired_remote_refused",
+   "file": "Properties.lean",
+   "doc": "(S) The remote in control that missed its check-in is refused (the expiry task then takes the duty to 0).",
+   "statement": "theorem expired_remote_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (he : exp.val \u2264 m.now.val) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS)",
+   "proof": "theorem expired_remote_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (he : exp.val \u2264 m.now.val) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS) := by\n  have : \u00ac m.duty > 100#u8 := by scalar_tac\n  have he' : m.now \u2265 exp := by scalar_tac\n  cases hn : m.same_remote <;> simp [duty_set, hc, hu, hp, hs, hk, hn, this, he']",
+   "deps": [
+    "Heater",
+    "duty_set",
+    "DutyMsg",
+    "NO_EFFECTS",
+    "Ctl",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "Control",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "anonymous_refused",
+   "file": "Properties.lean",
+   "doc": "(S) A command without a non-blank `device` property is refused.",
+   "statement": "theorem anonymous_refused (st : Heater) (m : DutyMsg) (hu : m.utf8 = true) (hp : m.parsed = true)\n    (hd : m.duty.val \u2264 100) (hs : m.sender = false) :\n    duty_set st m = ok (st, Handled.Invalid, NO_EFFECTS)",
+   "proof": "theorem anonymous_refused (st : Heater) (m : DutyMsg) (hu : m.utf8 = true) (hp : m.parsed = true)\n    (hd : m.duty.val \u2264 100) (hs : m.sender = false) :\n    duty_set st m = ok (st, Handled.Invalid, NO_EFFECTS) := by\n  have : \u00ac m.duty > 100#u8 := by scalar_tac\n  simp [duty_set, hu, hp, hs, this]",
+   "deps": [
+    "Heater",
+    "duty_set",
+    "DutyMsg",
+    "NO_EFFECTS",
+    "Ctl",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "Control",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "remote_must_check_in",
+   "file": "Properties.lean",
+   "doc": "(S) A remote in control after a command expires at most 60 s after it: a remote that stops checking in loses control.",
+   "statement": "theorem remote_must_check_in (st : Heater) (m : DutyMsg) {st' h e} (exp : Std.U64)\n    (hr : duty_set st m = ok (st', h, e)) (hc : st'.ctl = Ctl.Remote exp) :\n    st'.ctl = st.ctl \u2228 exp.val \u2264 m.now.val + 60000000",
+   "proof": "theorem remote_must_check_in (st : Heater) (m : DutyMsg) {st' h e} (exp : Std.U64)\n    (hr : duty_set st m = ok (st', h, e)) (hc : st'.ctl = Ctl.Remote exp) :\n    st'.ctl = st.ctl \u2228 exp.val \u2264 m.now.val + 60000000 := by\n  rcases st with \u27e8ctl, sd\u27e9\n  rcases m with \u27e8u, p, d0, s, c, sr, sm, now\u27e9\n  simp only [duty_set, expires_after] at hr\n  have hv := sat_le now REMOTE_CHECKIN_US\n  have hk : REMOTE_CHECKIN_US.val = 60000000 := by unfold REMOTE_CHECKIN_US; rfl\n  cases u <;> cases p <;> cases s <;> cases c <;> cases ctl <;> (try simp [NO_EFFECTS] at hr) <;>\n    (try split_ifs at hr) <;> (try simp [NO_EFFECTS] at hr) <;> (try obtain \u27e8rfl, _, rfl\u27e9 := hr) <;>\n    (try simp_all) <;> (try (subst_vars; omega)) <;> (try (left; rfl))",
+   "deps": [
+    "Heater",
+    "duty_set",
+    "DutyMsg",
+    "Ctl",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "NO_EFFECTS",
+    "Control",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "refused_sends_nothing",
+   "file": "Properties.lean",
+   "doc": "(S) Only a remote's check-in or a manual command sends a duty, and only the message's: an unparsed, anonymous or refused one sends nothing.",
+   "statement": "theorem refused_sends_nothing (st : Heater) (m : DutyMsg) {st' h e}\n    (hr : duty_set st m = ok (st', h, e)) (hh : h \u2260 Handled.Ok) : e.send = none \u2227 st' = st",
+   "proof": "theorem refused_sends_nothing (st : Heater) (m : DutyMsg) {st' h e}\n    (hr : duty_set st m = ok (st', h, e)) (hh : h \u2260 Handled.Ok) : e.send = none \u2227 st' = st := by\n  rcases st with \u27e8ctl, sd\u27e9\n  rcases m with \u27e8u, p, d0, s, c, sr, sm, now\u27e9\n  simp only [duty_set, expires_after] at hr\n  cases u <;> cases p <;> cases s <;> cases c <;> cases ctl <;> (try simp [NO_EFFECTS] at hr) <;>\n    (try split_ifs at hr) <;> (try simp [NO_EFFECTS] at hr) <;> (try obtain \u27e8rfl, rfl, rfl\u27e9 := hr) <;>\n    simp_all [NO_EFFECTS]",
+   "deps": [
+    "Heater",
+    "DutyMsg",
+    "duty_set",
+    "Ctl",
+    "Control",
+    "expires_after",
+    "Handled",
+    "Effects",
+    "NO_EFFECTS",
+    "REMOTE_CHECKIN_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "expire_zeroes",
+   "file": "Properties.lean",
+   "doc": "(S) A remote past its check-in loses control and the duty goes to 0.",
+   "statement": "theorem expire_zeroes (st : Heater) (now exp : Std.U64) (hc : st.ctl = Ctl.Remote exp) (he : exp.val \u2264 now.val) :\n    expire st now = ok ({ st with ctl := Ctl.Nobody }, some 0#u8)",
+   "proof": "theorem expire_zeroes (st : Heater) (now exp : Std.U64) (hc : st.ctl = Ctl.Remote exp) (he : exp.val \u2264 now.val) :\n    expire st now = ok ({ st with ctl := Ctl.Nobody }, some 0#u8) := by\n  have : now \u2265 exp := by scalar_tac\n  simp [expire, hc, this]",
+   "deps": [
+    "expire",
+    "Heater",
+    "Ctl"
+   ],
+   "spec": []
+  },
+  {
+   "name": "expire_only_expired",
+   "file": "Properties.lean",
+   "doc": "(S) The expiry touches nothing else: a live remote, manual control or no controller.",
+   "statement": "theorem expire_only_expired (st : Heater) (now : Std.U64) {st' o} (hr : expire st now = ok (st', o))\n    (hl : \u2200 exp, st.ctl = Ctl.Remote exp \u2192 now.val < exp.val) : st' = st \u2227 o = none",
+   "proof": "theorem expire_only_expired (st : Heater) (now : Std.U64) {st' o} (hr : expire st now = ok (st', o))\n    (hl : \u2200 exp, st.ctl = Ctl.Remote exp \u2192 now.val < exp.val) : st' = st \u2227 o = none := by\n  rcases hc : st.ctl with _ | exp | _\n  \u00b7 simp [expire, hc] at hr; exact \u27e8hr.1.symm, hr.2.symm\u27e9\n  \u00b7 have h1 := hl exp hc\n    have : \u00ac exp.val \u2264 now.val := by omega\n    simp [expire, hc, this] at hr; exact \u27e8hr.1.symm, hr.2.symm\u27e9\n  \u00b7 simp [expire, hc] at hr; exact \u27e8hr.1.symm, hr.2.symm\u27e9",
+   "deps": [
+    "expire",
+    "Heater",
+    "Ctl"
+   ],
+   "spec": []
+  },
+  {
+   "name": "reset_only_unretained",
+   "file": "Properties.lean",
+   "doc": "(S) A retained `reset` does not reset the device (no reset loop at every connection).",
+   "statement": "theorem reset_only_unretained (r : Bool) : reset_allowed r = ok (!r)",
+   "proof": "theorem reset_only_unretained (r : Bool) : reset_allowed r = ok (!r) := by\n  simp [reset_allowed]",
+   "deps": [
+    "reset_allowed"
+   ],
+   "spec": []
+  },
+  {
+   "name": "overtemp_locks",
+   "file": "Properties.lean",
+   "doc": "(S) A valid reading at or over 70 \u00b0C locks the SSR.",
+   "statement": "theorem overtemp_locks (st : Safety) (t16 : Std.I32) (ts : Std.U64) (ht : t16.val \u2265 1120) {st' o}\n    (hr : on_reading st true t16 ts = ok (st', o)) : st'.locked = true",
+   "proof": "theorem overtemp_locks (st : Safety) (t16 : Std.I32) (ts : Std.U64) (ht : t16.val \u2265 1120) {st' o}\n    (hr : on_reading st true t16 ts = ok (st', o)) : st'.locked = true := by\n  have hl : t16 \u2265 LOCK_T16 := by simp [LOCK_T16]; scalar_tac\n  have hu : \u00ac t16 < UNLOCK_T16 := by simp [UNLOCK_T16]; scalar_tac\n  unfold on_reading sat_add at hr\n  cases hk : st.locked <;> simp [hk, hl, hu] at hr <;> rw [\u2190 hr.1]",
+   "deps": [
+    "Safety",
+    "on_reading",
+    "SafetyOut",
+    "LOCK_T16",
+    "sat_add",
+    "UNLOCK_T16",
+    "MISSING_WINDOW_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "locked_until_cool",
+   "file": "Properties.lean",
+   "doc": "(S) A locked SSR stays locked until a valid reading under 30 \u00b0C.",
+   "statement": "theorem locked_until_cool (st : Safety) (v : Bool) (t16 : Std.I32) (ts : Std.U64) (hk : st.locked = true)\n    (hc : v = false \u2228 t16.val \u2265 480) {st' o} (hr : on_reading st v t16 ts = ok (st', o)) : st'.locked = true",
+   "proof": "theorem locked_until_cool (st : Safety) (v : Bool) (t16 : Std.I32) (ts : Std.U64) (hk : st.locked = true)\n    (hc : v = false \u2228 t16.val \u2265 480) {st' o} (hr : on_reading st v t16 ts = ok (st', o)) : st'.locked = true := by\n  unfold on_reading sat_add at hr\n  rcases hc with rfl | hc\n  \u00b7 simp at hr; rw [\u2190 hr.1, hk]\n  \u00b7 have hu : \u00ac t16 < UNLOCK_T16 := by simp [UNLOCK_T16]; scalar_tac\n    cases v <;> simp [hk, hu] at hr <;> rw [\u2190 hr.1] <;> simp [hk]",
+   "deps": [
+    "on_reading",
+    "Safety",
+    "SafetyOut",
+    "LOCK_T16",
+    "sat_add",
+    "UNLOCK_T16",
+    "MISSING_WINDOW_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "invalid_reading_ignored",
+   "file": "Properties.lean",
+   "doc": "(S) A reading without a temperature (a sensor error) changes nothing: in particular it does not move the deadline.",
+   "statement": "theorem invalid_reading_ignored (st : Safety) (t16 : Std.I32) (ts : Std.U64) :\n    on_reading st false t16 ts = ok (st, SafetyOut.Nothing)",
+   "proof": "theorem invalid_reading_ignored (st : Safety) (t16 : Std.I32) (ts : Std.U64) :\n    on_reading st false t16 ts = ok (st, SafetyOut.Nothing) := by\n  simp [on_reading]",
+   "deps": [
+    "Safety",
+    "on_reading",
+    "SafetyOut",
+    "LOCK_T16",
+    "sat_add",
+    "UNLOCK_T16",
+    "MISSING_WINDOW_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "missing_locks",
+   "file": "Properties.lean",
+   "doc": "(S) No valid reading by the deadline locks the SSR.",
+   "statement": "theorem missing_locks (st : Safety) (now : Std.U64) {st' o} (hr : on_missing st now = ok (st', o)) :\n    st'.locked = true",
+   "proof": "theorem missing_locks (st : Safety) (now : Std.U64) {st' o} (hr : on_missing st now = ok (st', o)) :\n    st'.locked = true := by\n  unfold on_missing sat_add at hr\n  cases hk : st.locked <;> simp [hk] at hr <;> rw [\u2190 hr.1]",
+   "deps": [
+    "Safety",
+    "on_missing",
+    "SafetyOut",
+    "sat_add",
+    "MISSING_WINDOW_US"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ssr_lock_zeroes",
+   "file": "Properties.lean",
+   "doc": "(S) A lock zeroes the pattern.",
+   "statement": "theorem ssr_lock_zeroes (st : Ssr) (d : Option Std.U8) :\n    ssr_step st (some SsrCmd.Lock) d = ok { locked := true, pattern := 0#u8 }",
+   "proof": "theorem ssr_lock_zeroes (st : Ssr) (d : Option Std.U8) :\n    ssr_step st (some SsrCmd.Lock) d = ok { locked := true, pattern := 0#u8 } := by\n  simp [ssr_step]",
+   "deps": [
+    "ssr_step",
+    "Ssr",
+    "SsrCmd"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ssr_locked_ignores_duty",
+   "file": "Properties.lean",
+   "doc": "(S) While locked (and not unlocked), a duty is ignored.",
+   "statement": "theorem ssr_locked_ignores_duty (st : Ssr) (d : Option Std.U8) (hk : st.locked = true) :\n    ssr_step st none d = ok st",
+   "proof": "theorem ssr_locked_ignores_duty (st : Ssr) (d : Option Std.U8) (hk : st.locked = true) :\n    ssr_step st none d = ok st := by\n  simp [ssr_step, hk]",
+   "deps": [
+    "ssr_step",
+    "Ssr",
+    "SsrCmd"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ssr_pattern_le_100",
+   "file": "Properties.lean",
+   "doc": "(S) The pattern's duty is never over 100 %.",
+   "statement": "theorem ssr_pattern_le_100 (st : Ssr) (c : Option SsrCmd) (d : Option Std.U8) (hs : st.pattern.val \u2264 100) {st'}\n    (hr : ssr_step st c d = ok st') : st'.pattern.val \u2264 100",
+   "proof": "theorem ssr_pattern_le_100 (st : Ssr) (c : Option SsrCmd) (d : Option Std.U8) (hs : st.pattern.val \u2264 100) {st'}\n    (hr : ssr_step st c d = ok st') : st'.pattern.val \u2264 100 := by\n  unfold ssr_step at hr\n  rcases c with _ | \u27e8_ | _\u27e9 <;> rcases d with _ | d <;> simp at hr <;> (try split_ifs at hr) <;>\n    (try simp at hr) <;> subst_vars <;> simp_all <;> (try scalar_tac)",
+   "deps": [
+    "ssr_step",
+    "Ssr",
+    "SsrCmd"
+   ],
+   "spec": []
+  },
+  {
+   "name": "pattern_zero_off",
+   "file": "Properties.lean",
+   "doc": "(S) 0 % never conducts.",
+   "statement": "theorem pattern_zero_off (i : Std.U32) (hi : i.val < 100) : pattern_on 0#u8 i = ok false",
+   "proof": "theorem pattern_zero_off (i : Std.U32) (hi : i.val < 100) : pattern_on 0#u8 i = ok false := by\n  obtain \u27e8b, hb, hp\u27e9 := WP.spec_imp_exists (pattern_on_spec 0#u8 i (by simp) hi)\n  rw [hb]; simp at hp; cases b <;> simp_all",
+   "deps": [
+    "pattern_on",
+    "STEPS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "pattern_full_on",
+   "file": "Properties.lean",
+   "doc": "(S) 100 % conducts at every step.",
+   "statement": "theorem pattern_full_on (i : Std.U32) (hi : i.val < 100) : pattern_on 100#u8 i = ok true",
+   "proof": "theorem pattern_full_on (i : Std.U32) (hi : i.val < 100) : pattern_on 100#u8 i = ok true := by\n  obtain \u27e8b, hb, hp\u27e9 := WP.spec_imp_exists (pattern_on_spec 100#u8 i (by simp) hi)\n  rw [hb]; simp at hp; cases b <;> simp_all; omega",
+   "deps": [
+    "pattern_on",
+    "STEPS"
+   ],
+   "spec": []
+  },
+  {
+   "name": "pattern_out_of_range_off",
+   "file": "Properties.lean",
+   "doc": "(C) Outside 0..100 % or past the last step, nothing conducts (upstream panics on a duty over 100; no caller passes one).",
+   "statement": "theorem pattern_out_of_range_off (d : Std.U8) (i : Std.U32) (h : d.val > 100 \u2228 i.val \u2265 100) :\n    pattern_on d i = ok false",
+   "proof": "theorem pattern_out_of_range_off (d : Std.U8) (i : Std.U32) (h : d.val > 100 \u2228 i.val \u2265 100) :\n    pattern_on d i = ok false := by\n  unfold pattern_on\n  have hS : STEPS.val = 100 := by unfold STEPS; rfl\n  rcases h with h | h\n  \u00b7 have : d > 100#u8 := by scalar_tac\n    simp [this]\n  \u00b7 have : i \u2265 STEPS := by scalar_tac\n    split_ifs <;> simp",
+   "deps": [
+    "pattern_on",
+    "STEPS"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "expire": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::expire",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 164,
+   "kernel_code": "pub fn expire(st: &Heater, now: u64) -> (Heater, Option<u8>) {\n    match st.ctl {\n        Ctl::Remote { expires } => {\n            if now >= expires {\n                (Heater { ctl: Ctl::Nobody, duty: st.duty }, Some(0))\n            } else {\n                (*st, None)\n            }\n        }\n        _ => (*st, None),\n    }\n}",
+   "lean": "def expire\n  (st : Heater) (now : Std.U64) : Result (Heater \u00d7 (Option Std.U8)) := do\n  match st.ctl with\n  | Ctl.Nobody => ok (st, none)\n  | Ctl.Remote expires =>\n    if now >= expires\n    then ok ({ st with ctl := Ctl.Nobody }, some 0#u8)\n    else ok (st, none)\n  | Ctl.Manual => ok (st, none)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ssr_step": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::ssr_step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 262,
+   "kernel_code": "pub fn ssr_step(st: &Ssr, cmd: Option<SsrCmd>, new_duty: Option<u8>) -> Ssr {\n    let s1 = match cmd {\n        Some(SsrCmd::Lock) => Ssr { locked: true, pattern: 0 },\n        Some(SsrCmd::Unlock) => Ssr { locked: false, pattern: st.pattern },\n        None => *st,\n    };\n    if s1.locked {\n        s1\n    } else {\n        match new_duty {\n            Some(d) => {\n                if d <= 100 { Ssr { locked: false, pattern: d } } else { s1 }\n            }\n            None => s1,\n        }\n    }\n}",
+   "lean": "def ssr_step\n  (st : Ssr) (cmd : Option SsrCmd) (new_duty : Option Std.U8) :\n  Result Ssr\n  := do\n  let s1 \u2190\n    match cmd with\n    | none => ok st\n    | some sc =>\n      do\n      let (b, i) \u2190\n        match sc with\n        | SsrCmd.Lock => ok (true, 0#u8)\n        | SsrCmd.Unlock => ok (false, st.pattern)\n      ok ({ locked := b, pattern := i } : Ssr)\n  if s1.locked\n  then ok s1\n  else\n    match new_duty with\n    | none => ok s1\n    | some d =>\n      if d <= 100#u8\n      then ok { locked := false, pattern := d }\n      else ok s1",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SafetyOut": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::SafetyOut",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 210,
+   "kernel_code": "pub enum SafetyOut {\n    Nothing,\n    LockOvertemp,\n    LockMissing,\n    Unlock,\n}",
+   "lean": "@[discriminant isize]\ninductive SafetyOut where\n| Nothing : SafetyOut\n| LockOvertemp : SafetyOut\n| LockMissing : SafetyOut\n| Unlock : SafetyOut",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Ctl": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::Ctl",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub enum Ctl {\n    /// No remote or manual controller.\n    Nobody,\n    /// A remote controls the heater until `expires` (it must check in).\n    Remote { expires: u64 },\n    /// A device controls it manually (no expiry).\n    Manual,\n}",
+   "lean": "@[discriminant isize]\ninductive Ctl where\n| Nobody : Ctl\n| Remote : Std.U64 \u2192 Ctl\n| Manual : Ctl",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "LOCK_T16": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::LOCK_T16",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 24,
+   "kernel_code": "pub const LOCK_T16: i32 = 1120;",
+   "lean": "@[global_simps, irreducible] def LOCK_T16 : Std.I32 := 1120#i32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Heater": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Heater",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 46,
+   "kernel_code": "pub struct Heater {\n    pub ctl: Ctl,\n    /// The duty last recorded.\n    pub duty: u8,\n}",
+   "lean": "structure Heater where\n  ctl : Ctl\n  duty : Std.U8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "duty_set": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::duty_set",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 109,
+   "kernel_code": "pub fn duty_set(st: &Heater, m: &DutyMsg) -> (Heater, Handled, Effects) {\n    if !m.utf8 {\n        return (*st, Handled::Utf8, NO_EFFECTS);\n    }\n    if !m.parsed {\n        return (*st, Handled::Invalid, NO_EFFECTS);\n    }\n    if m.duty > 100 {\n        return (*st, Handled::Unexpected, NO_EFFECTS);\n    }\n    if !m.sender {\n        return (*st, Handled::Invalid, NO_EFFECTS);\n    }\n    match m.control {\n        Control::Manual => {\n            // `transition_to_manual`: always possible.\n            let changed = match st.ctl {\n                Ctl::Manual => !m.same_manual,\n                _ => true,\n            };\n            (\n                Heater { ctl: Ctl::Manual, duty: m.duty },\n                Handled::Ok,\n                Effects { send: Some(m.duty), announce: changed, record_sender: changed },\n            )\n        }\n        Control::Remote => match st.ctl {\n            // A new remote announces itself.\n            Ctl::Nobody | Ctl::Manual => (\n                Heater { ctl: Ctl::Remote { expires: expires_after(m.now) }, duty: m.duty },\n                Handled::Ok,\n                Effects { send: Some(m.duty), announce: true, record_sender: true },\n            ),\n            Ctl::Remote { expires } => {\n                if !m.same_remote {\n                    (*st, Handled::Unexpected, NO_EFFECTS)\n                } else if m.now >= expires {\n                    // It failed to check in in time.\n                    (*st, Handled::Unexpected, NO_EFFECTS)\n                } else {\n                    (\n                        Heater { ctl: Ctl::Remote { expires: expires_after(m.now) }, duty: m.duty },\n                        Handled::Ok,\n                        Effects { send: Some(m.duty), announce: false, record_sender: false },\n                    )\n                }\n            }\n        },\n        Control::Other => (*st, Handled::Unexpected, NO_EFFECTS),\n        Control::Missing => (*st, Handled::Invalid, NO_EFFECTS),\n    }\n}",
+   "lean": "def duty_set\n  (st : Heater) (m : DutyMsg) : Result (Heater \u00d7 Handled \u00d7 Effects) := do\n  if m.utf8\n  then\n    if m.parsed\n    then\n      if m.duty > 100#u8\n      then ok (st, Handled.Unexpected, NO_EFFECTS)\n      else\n        if m.sender\n        then\n          match m.control with\n          | Control.Manual =>\n            match st.ctl with\n            | Ctl.Nobody =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Remote _ =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Manual =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := (\u00ac m.same_manual),\n                  record_sender := (\u00ac m.same_manual)\n                })\n          | Control.Remote =>\n            match st.ctl with\n            | Ctl.Nobody =>\n              let i \u2190 expires_after m.now\n              ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Remote expires =>\n              if m.same_remote\n              then\n                if m.now >= expires\n                then ok (st, Handled.Unexpected, NO_EFFECTS)\n                else\n                  let i \u2190 expires_after m.now\n                  ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                    {\n                      send := (some m.duty),\n                      announce := false,\n                      record_sender := false\n                    })\n              else ok (st, Handled.Unexpected, NO_EFFECTS)\n            | Ctl.Manual =>\n              let i \u2190 expires_after m.now\n              ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n          | Control.Other => ok (st, Handled.Unexpected, NO_EFFECTS)\n          | Control.Missing => ok (st, Handled.Invalid, NO_EFFECTS)\n        else ok (st, Handled.Invalid, NO_EFFECTS)\n    else ok (st, Handled.Invalid, NO_EFFECTS)\n  else ok (st, Handled.Utf8, NO_EFFECTS)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "expires_after": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::expires_after",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 104,
+   "kernel_code": "fn expires_after(now: u64) -> u64 {\n    now.saturating_add(REMOTE_CHECKIN_US)\n}",
+   "lean": "def expires_after (now : Std.U64) : Result Std.U64 := do\n  ok (core.num.U64.saturating_add now REMOTE_CHECKIN_US)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Ssr": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Ssr",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 250,
+   "kernel_code": "pub struct Ssr {\n    pub locked: bool,\n    /// The duty of the pattern being played.\n    pub pattern: u8,\n}",
+   "lean": "structure Ssr where\n  locked : Bool\n  pattern : Std.U8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "on_reading": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::on_reading",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 219,
+   "kernel_code": "pub fn on_reading(st: &Safety, valid: bool, t16: i32, ts: u64) -> (Safety, SafetyOut) {\n    if !valid {\n        return (*st, SafetyOut::Nothing);\n    }\n    let deadline = sat_add(ts, MISSING_WINDOW_US);\n    if !st.locked && t16 >= LOCK_T16 {\n        // (upstream checks the unlock next; it can not apply: the lock\n        // needs >= 70 \u00b0C, the unlock < 30 \u00b0C)\n        return (Safety { locked: true, deadline }, SafetyOut::LockOvertemp);\n    }\n    if st.locked && t16 < UNLOCK_T16 {\n        return (Safety { locked: false, deadline }, SafetyOut::Unlock);\n    }\n    (Safety { locked: st.locked, deadline }, SafetyOut::Nothing)\n}",
+   "lean": "def on_reading\n  (st : Safety) (valid : Bool) (t16 : Std.I32) (ts : Std.U64) :\n  Result (Safety \u00d7 SafetyOut)\n  := do\n  if valid\n  then\n    let deadline \u2190 sat_add ts MISSING_WINDOW_US\n    if st.locked\n    then\n      if t16 < UNLOCK_T16\n      then ok ({ locked := false, deadline }, SafetyOut.Unlock)\n      else ok ({ locked := true, deadline }, SafetyOut.Nothing)\n    else\n      if t16 >= LOCK_T16\n      then ok ({ locked := true, deadline }, SafetyOut.LockOvertemp)\n      else ok ({ locked := false, deadline }, SafetyOut.Nothing)\n  else ok (st, SafetyOut.Nothing)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "pattern_on": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::pattern_on",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 284,
+   "kernel_code": "pub fn pattern_on(duty: u8, i: u32) -> bool {\n    if duty > 100 || i >= STEPS {\n        return false;\n    }\n    let d = duty as u32;\n    (50 + d * (i + 1)) / 100 > (50 + d * i) / 100\n}",
+   "lean": "def pattern_on (duty : Std.U8) (i : Std.U32) : Result Bool := do\n  if duty > 100#u8\n  then ok false\n  else\n    if i >= STEPS\n    then ok false\n    else\n      let d \u2190 lift (UScalar.cast .U32 duty)\n      let i1 \u2190 i + 1#u32\n      let i2 \u2190 d * i1\n      let i3 \u2190 50#u32 + i2\n      let i4 \u2190 i3 / 100#u32\n      let i5 \u2190 d * i\n      let i6 \u2190 50#u32 + i5\n      let i7 \u2190 i6 / 100#u32\n      ok (i4 > i7)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "sat_add": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::sat_add",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 198,
+   "kernel_code": "fn sat_add(a: u64, b: u64) -> u64 {\n    a.saturating_add(b)\n}",
+   "lean": "def sat_add (a : Std.U64) (b : Std.U64) : Result Std.U64 := do\n  ok (core.num.U64.saturating_add a b)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Safety": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Safety",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 188,
+   "kernel_code": "pub struct Safety {\n    pub locked: bool,\n    /// No valid reading by then locks the SSR.\n    pub deadline: u64,\n}",
+   "lean": "structure Safety where\n  locked : Bool\n  deadline : Std.U64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "UNLOCK_T16": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::UNLOCK_T16",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 26,
+   "kernel_code": "pub const UNLOCK_T16: i32 = 480;",
+   "lean": "@[global_simps, irreducible] def UNLOCK_T16 : Std.I32 := 480#i32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Handled": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::Handled",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 84,
+   "kernel_code": "pub enum Handled {\n    Ok,\n    Utf8,\n    Invalid,\n    Unexpected,\n}",
+   "lean": "@[discriminant isize]\ninductive Handled where\n| Ok : Handled\n| Utf8 : Handled\n| Invalid : Handled\n| Unexpected : Handled",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "REMOTE_CHECKIN_US": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::REMOTE_CHECKIN_US",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 21,
+   "kernel_code": "pub const REMOTE_CHECKIN_US: u64 = 60_000_000;",
+   "lean": "@[global_simps, irreducible] def REMOTE_CHECKIN_US : Std.U64 := 60000000#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SsrCmd": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::SsrCmd",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 203,
+   "kernel_code": "pub enum SsrCmd {\n    Lock,\n    Unlock,\n}",
+   "lean": "@[discriminant isize]\ninductive SsrCmd where\n| Lock : SsrCmd\n| Unlock : SsrCmd",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DutyMsg": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::DutyMsg",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 66,
+   "kernel_code": "pub struct DutyMsg {\n    /// The payload is UTF-8.\n    pub utf8: bool,\n    /// It parses as a `u8`.\n    pub parsed: bool,\n    pub duty: u8,\n    /// A non-blank `device` property.\n    pub sender: bool,\n    pub control: Control,\n    /// The sender is the remote in control (if a remote is).\n    pub same_remote: bool,\n    /// The sender is the device in manual control (if one is).\n    pub same_manual: bool,\n    pub now: u64,\n}",
+   "lean": "structure DutyMsg where\n  utf8 : Bool\n  parsed : Bool\n  duty : Std.U8\n  sender : Bool\n  control : Control\n  same_remote : Bool\n  same_manual : Bool\n  now : Std.U64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Control": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::Control",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 55,
+   "kernel_code": "pub enum Control {\n    Manual,\n    Remote,\n    /// A `control` property with another value.\n    Other,\n    /// No `control` property.\n    Missing,\n}",
+   "lean": "@[discriminant isize]\ninductive Control where\n| Manual : Control\n| Remote : Control\n| Other : Control\n| Missing : Control",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "reset_allowed": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::reset_allowed",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 179,
+   "kernel_code": "pub fn reset_allowed(retained: bool) -> bool {\n    !retained\n}",
+   "lean": "def reset_allowed (retained : Bool) : Result Bool := do\n  ok (\u00ac retained)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "MISSING_WINDOW_US": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::MISSING_WINDOW_US",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub const MISSING_WINDOW_US: u64 = 29_000_000;",
+   "lean": "@[global_simps, irreducible] def MISSING_WINDOW_US : Std.U64 := 29000000#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "on_missing": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::on_missing",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 236,
+   "kernel_code": "pub fn on_missing(st: &Safety, now: u64) -> (Safety, SafetyOut) {\n    let deadline = sat_add(now, MISSING_WINDOW_US);\n    if !st.locked {\n        (Safety { locked: true, deadline }, SafetyOut::LockMissing)\n    } else {\n        (Safety { locked: true, deadline }, SafetyOut::Nothing)\n    }\n}",
+   "lean": "def on_missing\n  (st : Safety) (now : Std.U64) : Result (Safety \u00d7 SafetyOut) := do\n  let deadline \u2190 sat_add now MISSING_WINDOW_US\n  if st.locked\n  then ok ({ locked := true, deadline }, SafetyOut.Nothing)\n  else ok ({ locked := true, deadline }, SafetyOut.LockMissing)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Effects": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Effects",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 93,
+   "kernel_code": "pub struct Effects {\n    /// The duty sent to the SSR (`None`: none sent).\n    pub send: Option<u8>,\n    /// The controller changed (the buzzer sounds, the watch is told).\n    pub announce: bool,\n    /// Who controls the heater is now this sender (the app records its id).\n    pub record_sender: bool,\n}",
+   "lean": "structure Effects where\n  send : Option Std.U8\n  announce : Bool\n  record_sender : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "STEPS": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::STEPS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub const STEPS: u32 = 100;",
+   "lean": "@[global_simps, irreducible] def STEPS : Std.U32 := 100#u32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NO_EFFECTS": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::NO_EFFECTS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 102,
+   "kernel_code": "const NO_EFFECTS: Effects = Effects { send: None, announce: false, record_sender: false };",
+   "lean": "@[global_simps, irreducible]\ndef NO_EFFECTS : Effects :=\n  { send := none, announce := false, record_sender := false }",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

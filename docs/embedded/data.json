@@ -8,7 +8,7 @@
    "chip": "ESP32-S3",
    "isa": "Xtensa LX7",
    "interface": "HTTP (picoserve): OTA + auth",
-   "theorems": 56,
+   "theorems": 19,
    "mixed": {
     "scenarios": 1000,
     "identical": 870,
@@ -21,6 +21,85 @@
     "State-changing routes require admin rights; token-over-HTTP is refused when disabled",
     "OTA writes target the inactive slot, stay in bounds and are sequential",
     "A failed flash write poisons the session; an update completes only if read-back, magic, CRC and activation all succeed"
+   ],
+   "slug": "m5airq",
+   "theorem_list": [
+    {
+     "name": "transition_total",
+     "doc": "No command panics, for any actor and state."
+    },
+    {
+     "name": "sound",
+     "doc": "Every accepted read-only command writes nothing, for all actors/states."
+    },
+    {
+     "name": "write_bounded",
+     "doc": "A committed chunk never pushes the cursor past the declared image size."
+    },
+    {
+     "name": "write_sequential",
+     "doc": "A committed chunk writes exactly at the cursor and advances it by its length: writes are strictly sequential."
+    },
+    {
+     "name": "end_integrity",
+     "doc": "`end` activates a new image only when it is complete, has the ESP image magic, and matches the declared CRC."
+    },
+    {
+     "name": "end_failure_closes",
+     "doc": "A failed verification (read-back, magic, CRC or activation) closes the session with the error set: the device never keeps accepting chunks into an image that failed, and never reports it as activated."
+    },
+    {
+     "name": "write_io_failure_poisons",
+     "doc": "A chunk whose flash write failed is not counted: the cursor does not move and the session is poisoned (later writes are refused). Rules out a port that commits the chunk before its IO succeeded -- the divergence the Renode equivalence run found in the first version of this kernel."
+    },
+    {
+     "name": "begin_targets_other_slot",
+     "doc": "`begin` never targets the running slot (it writes the inactive one)."
+    },
+    {
+     "name": "mutating_needs_admin",
+     "doc": "Every mutating OTA command is refused without the admin actor."
+    },
+    {
+     "name": "inv_reachable",
+     "doc": "The invariant holds in every reachable state, after any sequence of commands from any actors, successful or refused."
+    },
+    {
+     "name": "end_accepts_any_matching_crc",
+     "doc": "For *any* fully-written session and *any* image CRC, `end` succeeds when the declared CRC equals the (client-chosen) image CRC and the magic byte is present. The only integrity gate is a value the uploader controls: there is no signature / authenticity check (CWE-347)."
+    },
+    {
+     "name": "check_auth_total",
+     "doc": "`check_auth` never panics."
+    },
+    {
+     "name": "validate_session_sound",
+     "doc": "If `validate_session` accepts a token then some slot accepts it."
+    },
+    {
+     "name": "slot_valid_fresh",
+     "doc": "SECURITY (S): a slot accepts a token only while it is within its TTL \u2014 `slot_valid` genuinely checks `age_ok`. Kills a kernel that drops the expiry check."
+    },
+    {
+     "name": "unauth_never_granted",
+     "doc": "SECURITY (S): with `public_access` off, a non-health request that carries no valid credential is never granted (refused with `Forbidden` or `Challenge`)."
+    },
+    {
+     "name": "token_over_http_forbidden",
+     "doc": "SECURITY (S): a bearer token or API key presented over plaintext HTTP, with token-over-HTTP disabled and no valid session cookie, is refused."
+    },
+    {
+     "name": "expired_session_never_grants",
+     "doc": "SECURITY (S): an expired session cookie never grants access."
+    },
+    {
+     "name": "empty_secret_no_bypass",
+     "doc": "SECURITY (S): an unset bearer token / API key never grants access, even if the (empty) comparison reported a match."
+    },
+    {
+     "name": "public_access_opens_everything",
+     "doc": "FINDING (F): `public_access` (the shipped default) grants every request with no credential at all."
+    }
    ]
   },
   {
@@ -30,7 +109,7 @@
    "chip": "ESP32-S3",
    "isa": "Xtensa LX7",
    "interface": "HTTP: spool inventory",
-   "theorems": 93,
+   "theorems": 22,
    "mixed": {
     "scenarios": 1000,
     "identical": 474,
@@ -43,6 +122,97 @@
     "Every committed inventory row can be read back after a reboot",
     "New spool ids are fresh; edits that change nothing write nothing; deleting an absent spool is a no-op",
     "Rows stay within the store's size limits when they grow or are relocated"
+   ],
+   "slug": "spoolease",
+   "theorem_list": [
+    {
+     "name": "place_capacity",
+     "doc": "(S) `place` never lets the file grow past the cap, and the row it places lies wholly inside the new file (given the old slot, if any, was in it)."
+    },
+    {
+     "name": "place_local",
+     "doc": "(S) Every byte `place` writes (its `void` and `data` regions) lies in fresh space at/after the old end of file or in the record's *own* old slot, never in another record's bytes."
+    },
+    {
+     "name": "place_inplace_fits",
+     "doc": "(S) An in-place rewrite (the file does not grow) happens only when the row fits the old slot, and then it writes exactly the old slot (nothing voided)."
+    },
+    {
+     "name": "place_grow_relocates",
+     "doc": "(S) A row that grows past its old slot is never written in place: it is appended at the old end of file and its old slot is voided whole."
+    },
+    {
+     "name": "strike_relocates",
+     "doc": "(S) When an add strikes out the spool that held its tag, the struck row (one byte longer) is appended at or past the old end of file, and the spool's whole old slot (one byte shorter than the new row) is voided: it is never rewritten in place, where it would overrun into the next record. Rules out the `strike_inplace` mutant."
+    },
+    {
+     "name": "fresh_id_is_new",
+     "doc": "(S) The spool id `AddSpool` hands out is new: no record already has it. Rules out the `fresh_id_reuse` mutant (a new spool shadowing an existing record's storage). Needs only that existing ids are `\u2264 last_id`."
+    },
+    {
+     "name": "add_len_ok",
+     "doc": "(S) An add is only accepted for a row of `1 ..= MAX_REC` bytes (one that serialises in `max_record_width`). Rules out the `add_no_len_check` mutant."
+    },
+    {
+     "name": "edit_same_writes_nothing",
+     "doc": "(S) An edit that changes nothing writes nothing (`CsvDb::insert` returns early for an equal record): no region of the file is touched and it does not grow."
+    },
+    {
+     "name": "delete_absent_noop",
+     "doc": "(S) Deleting a spool that does not exist changes nothing."
+    },
+    {
+     "name": "unauth_refused",
+     "doc": "(S) A request that did not decrypt (`admin = false`) never mutates: every write command is refused with `Forbidden`, before any state change."
+    },
+    {
+     "name": "committed_rows_readable",
+     "doc": "(S) The kernel only commits a row that the boot loader reads back: an accepted add, or an accepted edit that writes, had `readable` set. Upstream writes such rows (a note over 256 bytes or with a line break) and its whole inventory is unavailable after the next reset (found in Renode). Rules out the `unreadable_add` mutant."
+    },
+    {
+     "name": "sound",
+     "doc": "Every accepted `Query` writes nothing, for all actors and states."
+    },
+    {
+     "name": "transition_total",
+     "doc": "(C) `transition` never panics / overflows, for any actor, store and command (given the record and index counts fit a `usize`). A panic on the device is a reset."
+    },
+    {
+     "name": "addspool_id",
+     "doc": "`AddSpool` assigns `last_id + 1`."
+    },
+    {
+     "name": "lookup_spec",
+     "doc": ""
+    },
+    {
+     "name": "index_get_spec",
+     "doc": ""
+    },
+    {
+     "name": "index_insert_spec",
+     "doc": "`index_insert` keeps at most one more entry than it was given."
+    },
+    {
+     "name": "index_remove_tag_spec",
+     "doc": ""
+    },
+    {
+     "name": "index_remove_id_spec",
+     "doc": ""
+    },
+    {
+     "name": "append_slot_spec",
+     "doc": "The append loop copies every slot; the final push adds `slot`."
+    },
+    {
+     "name": "replace_slot_spec",
+     "doc": ""
+    },
+    {
+     "name": "remove_id_spec",
+     "doc": ""
+    }
    ]
   },
   {
@@ -52,7 +222,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "HTTP: filament sensor + Spoolman",
-   "theorems": 41,
+   "theorems": 19,
    "mixed": {
     "scenarios": 1000,
     "identical": 465,
@@ -65,6 +235,85 @@
     "Read-only requests change no stored state; Wi-Fi updates reset the connection",
     "Boot never locks the user out of Wi-Fi setup",
     "Sensor register updates change only the intended bits"
+   ],
+   "slug": "td-free",
+   "theorem_list": [
+    {
+     "name": "spoolman_forward_needs_usable_server",
+     "doc": "(S) A Spoolman request is handed to the Spoolman client only when a server is configured with an IPv4 host and a port. Upstream hands it over with any host and the client crashes (`Ipv4Address::from_str(..).unwrap()`, found in Renode); rules out the `spoolman_any_host` mutant."
+    },
+    {
+     "name": "calibrate_needs_client",
+     "doc": "(S) A calibration is started only when a client is listening for its result (upstream's 428 otherwise)."
+    },
+    {
+     "name": "info_needs_ready",
+     "doc": "(S) The device info is served only once the sensor task has published it; before, the request is refused (503). Upstream unwraps an empty watch and the device resets (found in Renode); rules out the `info_unguarded` mutant."
+    },
+    {
+     "name": "wifi_update_resets",
+     "doc": "(S) A Wi-Fi update is stored and the device resets to use it (upstream `data_update_save_task`): the reset is always scheduled."
+    },
+    {
+     "name": "updates_keyed",
+     "doc": "(S) Every update is stored under its own NVS key: settings under `SET`, RGB multipliers under `RGB`, Wi-Fi credentials under `WF_CR`; no update overwrites another kind."
+    },
+    {
+     "name": "reads_store_nothing",
+     "doc": "(S) Reads store nothing: settings, RGB multipliers and device info are answered without a write set."
+    },
+    {
+     "name": "boot_wifi_no_lockout",
+     "doc": "(S) Stored Wi-Fi credentials that do not work (no connection, or no address) are always forgotten and the device resets into its access point: a wrong Wi-Fi update can never lock the device out."
+    },
+    {
+     "name": "dev_transition_total",
+     "doc": "(C) The HTTP decision never fails (no panic, no overflow): any request, any state."
+    },
+    {
+     "name": "boot_wifi_ap",
+     "doc": "(C) Without credentials the device is an access point."
+    },
+    {
+     "name": "set_bits_preserves_complement",
+     "doc": "(S) Field isolation: writing the `mask` field leaves every bit of a disjoint field `m` unchanged (mutant `set_bits_value_unmasked`)."
+    },
+    {
+     "name": "set_bits_sets_masked",
+     "doc": "(C) The `mask` field is set to `value` (restricted to the field)."
+    },
+    {
+     "name": "set_gain_preserves_shutdown",
+     "doc": "(S) Setting the gain never changes the shutdown bits (mutant `set_gain_wrong_mask`)."
+    },
+    {
+     "name": "set_it_preserves_shutdown",
+     "doc": "(S) Setting the integration time never changes the shutdown bits."
+    },
+    {
+     "name": "set_it_preserves_gain",
+     "doc": "(S) Setting the integration time never changes the gain."
+    },
+    {
+     "name": "set_gain_preserves_it",
+     "doc": "(S) Setting the gain never changes the integration time."
+    },
+    {
+     "name": "enable_clears_shutdown",
+     "doc": "(S) `enable` powers the sensor on: both shutdown bits clear."
+    },
+    {
+     "name": "disable_sets_shutdown",
+     "doc": "(C) `disable` sets the chip-shutdown bit."
+    },
+    {
+     "name": "set_bits_total",
+     "doc": "(C) `set_bits` is total."
+    },
+    {
+     "name": "it_mask_collision",
+     "doc": "(F) The integration-time encodings overflow `IT_MASK`: `IT_25MS` and `IT_50MS` set bits outside the 3-bit field, so after masking `_50ms` and `_100ms` are the same. Latent: `set_integration_time` is never called."
+    }
    ]
   },
   {
@@ -74,7 +323,7 @@
    "chip": "RP2350",
    "isa": "Cortex-M33",
    "interface": "HTTP + USB NCM: file storage",
-   "theorems": 93,
+   "theorems": 17,
    "mixed": {
     "scenarios": 1000,
     "identical": 674,
@@ -87,6 +336,77 @@
     "Percent-decoding and request classification are total (never fail)",
     "Mutations need POST or DELETE; deletes never touch the payload",
     "Uploads are bounded; the network route exposes only the staged binary"
+   ],
+   "slug": "pico-bit",
+   "theorem_list": [
+    {
+     "name": "valid_name_no_traversal",
+     "doc": "**Security (S): no path traversal.** Every filename the gate accepts is a non-empty, \u226464-byte component that is neither `.` nor `..` and contains no path separator or NUL. Appending it after `/armory/` therefore names a direct child of the armory directory: the device can never be steered to a file outside `/armory`. Falsified by `drop_slash_check` (a `/`/`\\` could pass) and `drop_dotdot_check` (`..` could pass)."
+    },
+    {
+     "name": "decode_filename_confined",
+     "doc": "**Security (S): decode-then-validate confinement.** Even after percent-decoding, any filename `decode_filename` accepts satisfies the confinement policy on the decoded bytes. This is what makes `%2e%2e` (`..`) and `%2f` (`/`) harmless: they are decoded first and then rejected. Falsified by `validate_before_decode` (validating the raw, still-encoded bytes would accept a decoded `..`)."
+    },
+    {
+     "name": "decode_filename_total",
+     "doc": "`decode_filename` is total (never panics). (C)"
+    },
+    {
+     "name": "percent_decode_total",
+     "doc": "`percent_decode` is total (never panics), for any input and buffer. (C)"
+    },
+    {
+     "name": "valid_name_total",
+     "doc": "`valid_name` is total (never panics), for any slice. (C)"
+    },
+    {
+     "name": "classify_total",
+     "doc": "`classify` is total (never panics), for any input. (C)"
+    },
+    {
+     "name": "dispatch_pending_goes_to_parser",
+     "doc": "**S (U1 fix).** A preflight on which some route pattern is still open (`pending`) is never handed to a hand-written handler: it goes to the full HTTP parser. Upstream classified such a preflight by a two-way prefix match (a fragmented `POST /api/payload/run` became a payload save)."
+    },
+    {
+     "name": "dispatch_ready_classifies",
+     "doc": "**C.** On a decisive preflight the port runs upstream's classifier."
+    },
+    {
+     "name": "dispatch_total",
+     "doc": "`dispatch` never panics. (C)"
+    },
+    {
+     "name": "decode_filename_ascii",
+     "doc": "**S (U5 fix).** Every byte of a name `decode_filename` accepts is ASCII, so building the LittleFS path from it cannot fail: upstream's `StorageManager::with_path` unwraps that conversion, and a DELETE of `%e2%82%ac` (a valid UTF-8, non-ASCII name) panicked the device."
+    },
+    {
+     "name": "mutation_needs_post_or_delete",
+     "doc": "**S.** Whatever the port dispatches to a state-changing handler (upload, delete, payload save or run, keyboard target) came with a `POST ` or `DELETE ` method: no GET/HEAD (a link, an image tag, a prefetch) changes the device."
+    },
+    {
+     "name": "ncm_route_restricted",
+     "doc": "**S.** The USB NCM worker serves nothing but the Armory listing, Armory downloads and OPTIONS: every other class is an empty 404."
+    },
+    {
+     "name": "ncm_exposes_only_staged_binary",
+     "doc": "**S.** On NCM, the only file a download can return is the staged binary (`/armory/payload.bin`); `payload.dd` is portal-only."
+    },
+    {
+     "name": "delete_never_payload_dd",
+     "doc": "**S.** A DELETE that the kernel lets through (`Erase`) never names `payload.dd`, the editor's file (upstream answers 403 for it)."
+    },
+    {
+     "name": "upload_bounded",
+     "doc": ""
+    },
+    {
+     "name": "list_entry_one_asset",
+     "doc": "**C.** Once an asset is listed, no further one is (the listing shows at most one Armory file)."
+    },
+    {
+     "name": "list_entry_ncm_hidden",
+     "doc": "**S.** On NCM a file that is not the staged binary is never listed."
+    }
    ]
   },
   {
@@ -96,7 +416,7 @@
    "chip": "RP2040",
    "isa": "Cortex-M0+",
    "interface": "decision loop + /health, /metrics",
-   "theorems": 73,
+   "theorems": 16,
    "mixed": {
     "scenarios": 1000,
     "identical": 214,
@@ -109,6 +429,73 @@
     "User requests pre-empt polling; queue operations keep other entries",
     "Reset classification never masks a panic; cold boot dominates",
     "The invariant holds in every reachable state"
+   ],
+   "slug": "anova-oven-rs",
+   "theorem_list": [
+    {
+     "name": "transition_total",
+     "doc": "No command panics, on any state."
+    },
+    {
+     "name": "inv_reachable",
+     "doc": "In every reachable scheduler state \u2014 after any sequence of commands, successful or refused \u2014 the next poll is scheduled within 30 s."
+    },
+    {
+     "name": "enqueue_keeps_others",
+     "doc": "Enqueuing one kind never evicts another: every other kind's pending state is unchanged. A scheduled Stop therefore survives any later poll scheduling."
+    },
+    {
+     "name": "enqueue_never_delays",
+     "doc": "A `PreferEarlier` re-enqueue never *delays* a command already pending: if `k` was due at `e`, after the enqueue it is due at some time `\u2264 e`. So re-scheduling a Stop can only move it earlier, never later."
+    },
+    {
+     "name": "pop_clears",
+     "doc": "A popped event's slot is cleared: after `pop_due` returns a kind, that kind is no longer pending, so the same scheduled event is never executed twice."
+    },
+    {
+     "name": "pop_keeps_others",
+     "doc": "Popping one event leaves every other pending event pending, at its time."
+    },
+    {
+     "name": "ties_follow_vector_order",
+     "doc": "Two polls due at the same instant (same priority) pop in upstream's vector order: the one at the lower index first \u2014 `soonest_index`'s `min_by` keeps the first of equal elements."
+    },
+    {
+     "name": "fill_hole_moves_last",
+     "doc": "`swap_remove`'s move: a pending kind at the last index takes the freed index `p`; nothing else moves."
+    },
+    {
+     "name": "poll_fail_counts",
+     "doc": "A failed poll counts one more consecutive failure (until `u64::MAX`), so `/health` and the display show upstream's count, not one capped at a tier."
+    },
+    {
+     "name": "user_preempts_poll",
+     "doc": "A representative preemption: a status poll and a Stop both due at the same instant `t`, the poll first in the vector \u2014 the Stop still pops first. The `user_loses_priority` mutant (swapping the tie-break) makes this pop the poll."
+    },
+    {
+     "name": "poll_ok_recovers",
+     "doc": "A single successful poll clears the failure count, so the device leaves the offline/backoff regime immediately: not offline, and polling at the 1 s rate."
+    },
+    {
+     "name": "backoff_bounded",
+     "doc": "The next poll is always scheduled between 1 and 30 seconds out: the backoff is bounded, so a failing device keeps retrying and never abandons the server."
+    },
+    {
+     "name": "backoff_monotone",
+     "doc": "More consecutive failures never shorten the poll interval."
+    },
+    {
+     "name": "panic_never_masked",
+     "doc": "A panic is attributed to the panic even when the watchdog also fired: the root cause is never masked as a plain watchdog timeout."
+    },
+    {
+     "name": "coldboot_dominates",
+     "doc": "With RAM lost (invalid magic) the boot is always a cold boot, whatever the other breadcrumbs say."
+    },
+    {
+     "name": "sound",
+     "doc": "Every accepted read-only command writes nothing, for all states."
+    }
    ]
   },
   {
@@ -118,7 +505,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "HTTP captive portal: Wi-Fi provisioning + OTA",
-   "theorems": 29,
+   "theorems": 15,
    "mixed": {
     "scenarios": 1000,
     "identical": 784,
@@ -136,6 +523,69 @@
     "Oversized setups are ignored; setups after connecting are refused",
     "OTA needs its parameters; reset only after a verified image",
     "Read-only requests change nothing"
+   ],
+   "slug": "esp-hal-wifimanager",
+   "theorem_list": [
+    {
+     "name": "store_only_connected",
+     "doc": "(S) A setup is stored in NVS only after it connected, and only if no newer setup was submitted meanwhile: a wrong password, an unknown network, an unparsable or rejected setup is never stored (so a bad setup can not survive a reset and keep the device off the network)."
+    },
+    {
+     "name": "ip_only_when_connected",
+     "doc": "(S) `/status` shows the station address only when connected."
+    },
+    {
+     "name": "end_only_connected",
+     "doc": "(S) Provisioning (the open AP) ends only after a connection."
+    },
+    {
+     "name": "invalid_never_stored",
+     "doc": "(S) An invalid setup (unparsable, or rejected by the driver) is reported as `failed:invalid` and never stored."
+    },
+    {
+     "name": "setup_starts_connecting",
+     "doc": "(S) A submitted setup sets the status to `connecting` (the panel never reads the previous attempt's result as this one's)."
+    },
+    {
+     "name": "oversized_setup_ignored",
+     "doc": "(S) An oversized setup changes nothing (413)."
+    },
+    {
+     "name": "unparsable_stored_deleted",
+     "doc": "(S) A stored setup that does not parse is deleted (a corrupt entry can not make every boot fail)."
+    },
+    {
+     "name": "ota_needs_params",
+     "doc": "(S) An upload begins only with its size, CRC and length."
+    },
+    {
+     "name": "ota_reset_only_verified",
+     "doc": "(S) The device resets into an uploaded image only if every write succeeded, the image is complete and it verified."
+    },
+    {
+     "name": "reads_change_nothing",
+     "doc": "(S) Requests other than `/setup` and a connected `/status` change nothing."
+    },
+    {
+     "name": "no_attempt_without_setup",
+     "doc": "(C) The worker reports nothing unless it is trying a setup."
+    },
+    {
+     "name": "superseded_not_stored",
+     "doc": "(S) An attempt overtaken by a newer submission reports nothing, stores nothing and does not end provisioning: `/status` keeps saying `connecting` for the newer setup."
+    },
+    {
+     "name": "take_only_pending",
+     "doc": "(C) The worker takes a setup only when one was submitted, and then reports `connecting`."
+    },
+    {
+     "name": "setup_after_connect_refused",
+     "doc": "(S) Once a setup connected and was stored, a later setup is refused and changes nothing: it can neither replace the stored one nor keep the AP up."
+    },
+    {
+     "name": "connected_stays_until_end",
+     "doc": "(L) After the connection, no request moves the status off `connected` (so `end` fires: the AP goes down)."
+    }
    ]
   },
   {
@@ -145,7 +595,7 @@
    "chip": "ESP32-C6",
    "isa": "RV32IMAC",
    "interface": "MQTT control path",
-   "theorems": 31,
+   "theorems": 20,
    "mixed": {
     "scenarios": 1000,
     "identical": 1000,
@@ -158,6 +608,89 @@
     "Anonymous, mismatched or expired remotes are refused and send nothing",
     "Over-temperature locks the heater until it cools; a missing reading locks it",
     "SSR pulse patterns stay within 0\u2013100%"
+   ],
+   "slug": "heater-control",
+   "theorem_list": [
+    {
+     "name": "duty_out_of_range_refused",
+     "doc": "(S) A duty over 100 % is refused and changes nothing."
+    },
+    {
+     "name": "sent_duty_le_100",
+     "doc": "(S) Whatever is sent to the SSR is the message's duty, at most 100 %."
+    },
+    {
+     "name": "remote_mismatch_refused",
+     "doc": "(S) A remote that is not the one in control is refused: nothing changes, nothing is sent."
+    },
+    {
+     "name": "expired_remote_refused",
+     "doc": "(S) The remote in control that missed its check-in is refused (the expiry task then takes the duty to 0)."
+    },
+    {
+     "name": "anonymous_refused",
+     "doc": "(S) A command without a non-blank `device` property is refused."
+    },
+    {
+     "name": "remote_must_check_in",
+     "doc": "(S) A remote in control after a command expires at most 60 s after it: a remote that stops checking in loses control."
+    },
+    {
+     "name": "refused_sends_nothing",
+     "doc": "(S) Only a remote's check-in or a manual command sends a duty, and only the message's: an unparsed, anonymous or refused one sends nothing."
+    },
+    {
+     "name": "expire_zeroes",
+     "doc": "(S) A remote past its check-in loses control and the duty goes to 0."
+    },
+    {
+     "name": "expire_only_expired",
+     "doc": "(S) The expiry touches nothing else: a live remote, manual control or no controller."
+    },
+    {
+     "name": "reset_only_unretained",
+     "doc": "(S) A retained `reset` does not reset the device (no reset loop at every connection)."
+    },
+    {
+     "name": "overtemp_locks",
+     "doc": "(S) A valid reading at or over 70 \u00b0C locks the SSR."
+    },
+    {
+     "name": "locked_until_cool",
+     "doc": "(S) A locked SSR stays locked until a valid reading under 30 \u00b0C."
+    },
+    {
+     "name": "invalid_reading_ignored",
+     "doc": "(S) A reading without a temperature (a sensor error) changes nothing: in particular it does not move the deadline."
+    },
+    {
+     "name": "missing_locks",
+     "doc": "(S) No valid reading by the deadline locks the SSR."
+    },
+    {
+     "name": "ssr_lock_zeroes",
+     "doc": "(S) A lock zeroes the pattern."
+    },
+    {
+     "name": "ssr_locked_ignores_duty",
+     "doc": "(S) While locked (and not unlocked), a duty is ignored."
+    },
+    {
+     "name": "ssr_pattern_le_100",
+     "doc": "(S) The pattern's duty is never over 100 %."
+    },
+    {
+     "name": "pattern_zero_off",
+     "doc": "(S) 0 % never conducts."
+    },
+    {
+     "name": "pattern_full_on",
+     "doc": "(S) 100 % conducts at every step."
+    },
+    {
+     "name": "pattern_out_of_range_off",
+     "doc": "(C) Outside 0..100 % or past the last step, nothing conducts (upstream panics on a duty over 100; no caller passes one)."
+    }
    ]
   },
   {
@@ -167,7 +700,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "ESP-NOW commands",
-   "theorems": 26,
+   "theorems": 10,
    "mixed": {
     "scenarios": 1000,
     "identical": 398,
@@ -180,6 +713,49 @@
     "Servo duty stays within the pulse range; the arithmetic cannot overflow",
     "Brake light only on deceleration and off after its timeout",
     "Blinker commands take effect; blinker off turns the lamps off"
+   ],
+   "slug": "rc-car",
+   "theorem_list": [
+    {
+     "name": "motor_percentage_bounded",
+     "doc": "**S.** Whatever `MotorPower` arrives over the air (any `i32`), the ESC gets 0..=100 %. Upstream's `(value + 50) as u8` gives 255 % for -51."
+    },
+    {
+     "name": "motor_percentage_upstream_range",
+     "doc": "**C.** On the controller's range -50..=50 the percentage is upstream's `value + 50`."
+    },
+    {
+     "name": "steering_percentage_bounded",
+     "doc": "**S.** The steering servo gets 38..=62 % for any `SteeringPosition`."
+    },
+    {
+     "name": "servo_duty_within_pulse_range",
+     "doc": "**S.** The PWM duty stays within the servo's pulse range: between the duties of `min_us` and `max_us`, for the servo's constants (`min \u2264 max`, `(max - min) \u00b7 100` and `max \u00b7 duty_space` fit in 32 bits, a non-zero cycle; upstream's `types.rs` constants satisfy them)."
+    },
+    {
+     "name": "magnitude_spec",
+     "doc": "**S.** `magnitude` is `|v|`, also for `i32::MIN` (upstream's `abs` overflows there)."
+    },
+    {
+     "name": "brake_off_after_timeout",
+     "doc": "**S.** A brake light on for more than 500 ms goes off at the next tick."
+    },
+    {
+     "name": "brake_on_only_when_slowing",
+     "doc": "**S.** The brake light comes on exactly when the motor's magnitude drops (for every `i32`, `i32::MIN` included)."
+    },
+    {
+     "name": "blinker_command_takes_effect",
+     "doc": "**S (U2 fix).** While a pattern blinks, a blinker command takes effect: the new pattern is the command (upstream kept toggling the first one)."
+    },
+    {
+     "name": "blinker_off_lamps_off",
+     "doc": "**S.** `Off` always leaves the blinker idle with both lamps off (idle: the lamps are driven off; blinking: the command's lamps are off)."
+    },
+    {
+     "name": "blinker_tick_alternates",
+     "doc": "**C.** A tick flips the phase; the lamps are off in the off phase and follow the pattern in the on phase."
+    }
    ]
   },
   {
@@ -189,7 +765,7 @@
    "chip": "ESP32",
    "isa": "Xtensa LX6",
    "interface": "HTTP captive portal: config + OTA",
-   "theorems": 28,
+   "theorems": 11,
    "mixed": {
     "scenarios": 1000,
     "identical": 158,
@@ -202,6 +778,53 @@
     "A pending save completes before a restart",
     "OTA is POST-only, one at a time, bounded, checks the first sector's magic",
     "The device restarts only into a committed image"
+   ],
+   "slug": "crown-of-the-lamb",
+   "theorem_list": [
+    {
+     "name": "clamp_in_range",
+     "doc": "(S) Every stored configuration value is within its field's range (the eye renderer and the colour packing rely on it)."
+    },
+    {
+     "name": "clamp_keeps_in_range",
+     "doc": "(S) A value already in range is stored as submitted."
+    },
+    {
+     "name": "expression_codes",
+     "doc": "(S) Exactly the documented codes are taken."
+    },
+    {
+     "name": "wifi_refuses_bad_name",
+     "doc": "(S) An empty AP name, or one over 32 bytes, is refused (upstream stores it as an empty name and restarts into it)."
+    },
+    {
+     "name": "wifi_stores_only_valid_name",
+     "doc": "(S) A name is stored only if it is 1 to 32 bytes."
+    },
+    {
+     "name": "pending_save_before_restart",
+     "doc": "(S) A configuration change answered `204` is saved before any restart."
+    },
+    {
+     "name": "ota_post_only",
+     "doc": "(S) Only a POST uploads."
+    },
+    {
+     "name": "ota_one_at_a_time",
+     "doc": "(S) One upload at a time."
+    },
+    {
+     "name": "ota_stream_bounded",
+     "doc": "(S) An image is streamed only if it is not empty and fits the slot."
+    },
+    {
+     "name": "ota_first_sector_magic",
+     "doc": "(S) The first sector is written only if it starts with the image magic."
+    },
+    {
+     "name": "ota_restart_only_committed",
+     "doc": "(S) The device restarts into an upload only if it streamed and committed."
+    }
    ]
   },
   {
@@ -211,7 +834,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "REST \u2192 LED panel (RS232)",
-   "theorems": 22,
+   "theorems": 9,
    "mixed": {
     "scenarios": 1000,
     "identical": 300,
@@ -223,6 +846,45 @@
     "Page and schedule ids are valid; encoded messages contain no raw protocol brackets",
     "Message encoding is total; dates and times are two digits",
     "OTA proceeds only with a length and completes exactly when all bytes arrived"
+   ],
+   "slug": "am03127",
+   "theorem_list": [
+    {
+     "name": "encode_message_no_raw_brackets",
+     "doc": "**S (U1 fix).** No byte of the message is copied into the frame as a raw `<` or `>`: every `<` in the encoding starts one of upstream's umlaut tokens `<U..>`, and every `>` ends one. So a message cannot close the frame (`<E>`) or open another command."
+    },
+    {
+     "name": "encode_message_total",
+     "doc": "**C.** `encode_message` never panics."
+    },
+    {
+     "name": "pages_valid_only_ids",
+     "doc": "**S (U1 fix).** An accepted schedule page list holds page IDs only."
+    },
+    {
+     "name": "page_id_valid_iff",
+     "doc": "**C.** Upstream's page-ID check: 'A'..='Z'."
+    },
+    {
+     "name": "schedule_id_valid_iff",
+     "doc": "**C.** Upstream's schedule-ID check: 'A'..='E'."
+    },
+    {
+     "name": "date_time_two_digits",
+     "doc": "**S (U2 fix).** An accepted date/time has every field \u2264 99, so each `{:02}` field is two digits and the frame keeps its fixed width."
+    },
+    {
+     "name": "ota_proceeds_only_with_a_length",
+     "doc": "**S.** The flash is only touched for an octet-stream upload with a declared, non-zero length."
+    },
+    {
+     "name": "ota_complete_iff",
+     "doc": "**S.** An image counts as complete exactly when every declared byte was written and nothing is left over."
+    },
+    {
+     "name": "waiting_time_letter",
+     "doc": "**S (U3 fix).** An admitted waiting time prints as 'A'..='Z' (`value + 65 \u2264 90`, no wrap)."
+    }
    ]
   },
   {
@@ -232,7 +894,7 @@
    "chip": "ESP32",
    "isa": "Xtensa LX6",
    "interface": "GPIO/ADC control path (door)",
-   "theorems": 46,
+   "theorems": 9,
    "mixed": {
     "scenarios": 1000,
     "identical": 101,
@@ -245,6 +907,45 @@
     "A stale overcurrent flag is ignored; no motion is commanded without the driver",
     "A stop is kept while the pulley ramps down",
     "Only one H-bridge channel is driven at a time; duty never exceeds the maximum"
+   ],
+   "slug": "autodoggo",
+   "theorem_list": [
+    {
+     "name": "overcurrent_reverses_closing",
+     "doc": "(S) An overcurrent while closing reverses the door (it opens)."
+    },
+    {
+     "name": "overcurrent_stops_opening",
+     "doc": "(S) An overcurrent while opening stops the door."
+    },
+    {
+     "name": "timeout_stops",
+     "doc": "(S) A movement still going at its deadline (10 s after it started) stops: the door goes Idle (and, entering Idle, stops the pulley)."
+    },
+    {
+     "name": "stale_overcurrent_ignored",
+     "doc": "(S) F1: an overcurrent flag already pending when a close starts is taken and discarded: the close goes on (upstream reverses at once)."
+    },
+    {
+     "name": "no_motion_without_driver",
+     "doc": "(S) F2: without the pulley driver, a stopped door stays stopped: no command moves it and it sends the pulley nothing but a stop."
+    },
+    {
+     "name": "stop_kept_while_ramping_down",
+     "doc": "(S) F3: a stop while ramping down is kept: the pulley stops instead of ramping up the other way."
+    },
+    {
+     "name": "stop_in_hold_cancels",
+     "doc": "(S) F3: a stop in Hold cancels a pending reversal."
+    },
+    {
+     "name": "one_channel_at_a_time",
+     "doc": "(S) One channel at a time (the H-bridge's two inputs never both on)."
+    },
+    {
+     "name": "duty_at_most_max",
+     "doc": "(S) No duty over 100 %."
+    }
    ]
   },
   {
@@ -254,7 +955,7 @@
    "chip": "ESP32",
    "isa": "Xtensa LX6",
    "interface": "HTTP: blind motor",
-   "theorems": 17,
+   "theorems": 7,
    "mixed": {
     "scenarios": 1000,
     "identical": 39,
@@ -266,6 +967,37 @@
     "A move never exceeds the full travel; lowering stops at the bottom",
     "The position estimate follows the moves; idle at the limits",
     "Microstep counts saturate instead of overflowing"
+   ],
+   "slug": "blind-controller",
+   "theorem_list": [
+    {
+     "name": "move_at_most_travel",
+     "doc": "(S) No command drives more than a full travel."
+    },
+    {
+     "name": "lower_stops_at_bottom",
+     "doc": "(S) From inside the travel, `Lower` stops at the bottom: it never drives past it (upstream drives a full travel from wherever a jog left the blind)."
+    },
+    {
+     "name": "raise_to_top",
+     "doc": "(S) `Raise` drives up exactly to the top from inside the travel."
+    },
+    {
+     "name": "idle_at_limits",
+     "doc": "(S) A command at a limit it would drive past does nothing: `Lower` at or past the bottom, `Raise` at the top."
+    },
+    {
+     "name": "microsteps_saturate",
+     "doc": "(C) The microstep count never wraps (upstream's `n * microsteps` wraps with overflow checks off): the product when it fits, else u32::MAX."
+    },
+    {
+     "name": "estimate_follows",
+     "doc": "(S) A jog down moves the estimate by the steps driven, at most a full travel, downwards."
+    },
+    {
+     "name": "ramp",
+     "doc": "(C) The first and last 100 microsteps are slow."
+    }
    ]
   },
   {
@@ -275,7 +1007,7 @@
    "chip": "RP2040",
    "isa": "Cortex-M0+",
    "interface": "HTTP: garage-door relay",
-   "theorems": 13,
+   "theorems": 6,
    "mixed": {
     "scenarios": 1000,
     "identical": 413,
@@ -287,6 +1019,33 @@
     "A request starts one pulse of the configured length, which always ends low",
     "Requests during a pulse are coalesced; the next pulse waits for the pause",
     "The relay is high only while a pulse is running"
+   ],
+   "slug": "garaza-pico-rs",
+   "theorem_list": [
+    {
+     "name": "request_starts_pulse",
+     "doc": "(S) A request while idle drives the relay high now, until 500 ms later."
+    },
+    {
+     "name": "pulse_ends_low",
+     "doc": "(S) The relay is never left high: at the pulse's end it goes low, and the pause (2 s) starts; a waiting request stays waiting."
+    },
+    {
+     "name": "pulse_lasts_its_time",
+     "doc": "(S) A pulse is never cut short: before its end a timer changes nothing."
+    },
+    {
+     "name": "busy_request_coalesced",
+     "doc": "(S) Requests during a pulse or its pause are coalesced: the relay is not touched, nothing is armed, one request waits (as upstream's `Signal`)."
+    },
+    {
+     "name": "next_pulse_after_pause",
+     "doc": "(S) After a pause, the next pulse starts only once the pause is over, and only for a waiting request."
+    },
+    {
+     "name": "high_only_starting",
+     "doc": "(S) The relay goes high only to start a pulse: for a request while idle, or at the end of a pause with a request waiting."
+    }
    ]
   },
   {
@@ -308,6 +1067,33 @@
     "The watchdog stops the motors when commands are overdue and is quiet when disarmed",
     "An active command arms it; a held lease is not taken",
     "The closed control surface needs the secret"
+   ],
+   "slug": "omni-wheel-bot",
+   "theorem_list": [
+    {
+     "name": "watchdog_stops_when_overdue",
+     "doc": "**S.** An armed watchdog whose last active motion command is more than 300 ms old stops the wheels and disarms."
+    },
+    {
+     "name": "watchdog_quiet_when_disarmed",
+     "doc": "**C.** A disarmed watchdog never stops anything."
+    },
+    {
+     "name": "active_command_arms",
+     "doc": "**S.** An active motion command arms the watchdog at its time."
+    },
+    {
+     "name": "held_lease_not_taken",
+     "doc": "**S.** A controller seen within the last 30 s keeps the slot."
+    },
+    {
+     "name": "closed_surface_needs_the_secret",
+     "doc": "**S.** Unless the surface was explicitly opened, a WebSocket is authorized only with a configured secret that matches."
+    },
+    {
+     "name": "idle_wait_bounds",
+     "doc": "**C.** The idle wait is 1..=10 ms."
+    }
    ]
   },
   {
@@ -317,7 +1103,7 @@
    "chip": "ESP32",
    "isa": "Xtensa LX6",
    "interface": "HTTP config + MQTT",
-   "theorems": 9,
+   "theorems": 5,
    "mixed": {
     "scenarios": 1000,
     "identical": 550,
@@ -329,6 +1115,29 @@
     "The stored password is never served",
     "Sample-count and period computations never divide by zero",
     "MQTT publishing needs its ids"
+   ],
+   "slug": "energy-monitor-ha",
+   "theorem_list": [
+    {
+     "name": "password_never_served",
+     "doc": "(S) A password is never served: the marker always replaces it."
+    },
+    {
+     "name": "keep_marker",
+     "doc": "(S) The marker keeps the stored password; anything else replaces it."
+    },
+    {
+     "name": "zero_samples_refused",
+     "doc": "(S) An STPM config that averages no sample is refused (upstream takes it, and the calibration then divides by zero)."
+    },
+    {
+     "name": "no_division_by_zero_samples",
+     "doc": "(S) No sample with zero readings is calibrated."
+    },
+    {
+     "name": "no_division_by_zero_period",
+     "doc": "(S) The frequency is computed only from a measured period."
+    }
    ]
   },
   {
@@ -338,7 +1147,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "HTTP/MQTT/BLE config",
-   "theorems": 11,
+   "theorems": 8,
    "mixed": {
     "scenarios": 1000,
     "identical": 66,
@@ -350,6 +1159,41 @@
     "Only consistent alarm and fan configurations are admitted",
     "The alarm fires above the high and below the low threshold, is reachable, and clears with hysteresis",
     "The fan turns on above, off below, and holds in between"
+   ],
+   "slug": "aquarium-lid-pcb",
+   "theorem_list": [
+    {
+     "name": "alarm_fires_high",
+     "doc": "**S (U1).** With an admitted configuration the high alarm sounds at any reading at or above `hi_on`, whatever its state."
+    },
+    {
+     "name": "alarm_fires_low",
+     "doc": "**S (U1).** \u2026 and the low alarm at any reading at or below `lo_on`."
+    },
+    {
+     "name": "alarm_reachable",
+     "doc": "**S (U1).** Both alarm thresholds lie inside the sensor's range, so there is a reading for each that sounds it (upstream accepts `max_safe_temp = 1000`, which no reading reaches)."
+    },
+    {
+     "name": "alarm_clears",
+     "doc": "**S (U1).** In the quiet band the alarm is off, whatever its state, and an admitted configuration has a quiet band (upstream with `2\u00b7h \u2265 max \u2212 min` keeps it on forever once it fired)."
+    },
+    {
+     "name": "alarm_hysteresis",
+     "doc": "**S.** An admitted configuration has a non-negative hysteresis: the \"on\" thresholds lie outside the \"stay on\" thresholds."
+    },
+    {
+     "name": "fan_on_above",
+     "doc": "**C.** The fan is on at or above `on_at`."
+    },
+    {
+     "name": "fan_off_below",
+     "doc": "**S.** With an admitted fan configuration it is off at or below `off_at` (no reading is both above `on_at` and below `off_at`)."
+    },
+    {
+     "name": "fan_holds_between",
+     "doc": "**C.** Between the thresholds the fan keeps its state (hysteresis)."
+    }
    ]
   },
   {
@@ -359,7 +1203,7 @@
    "chip": "ESP32",
    "isa": "Xtensa LX6",
    "interface": "HTTP print jobs",
-   "theorems": 19,
+   "theorems": 4,
    "mixed": {
     "scenarios": 1000,
     "identical": 7,
@@ -370,6 +1214,25 @@
    "properties": [
     "Text is only cut at UTF-8 character boundaries and every cut makes progress",
     "Printable output excludes control bytes"
+   ],
+   "slug": "thermal-printer",
+   "theorem_list": [
+    {
+     "name": "split_index_progress",
+     "doc": "**S (U1 fix).** A non-empty line is always cut somewhere in `1..=len` (the loop makes progress; no slicing panic)."
+    },
+    {
+     "name": "split_index_boundary",
+     "doc": "**S (U1 fix).** The cut is a UTF-8 character boundary."
+    },
+    {
+     "name": "chunk_end_progress",
+     "doc": "**S (U1 fix).** A chunk always advances."
+    },
+    {
+     "name": "printable_excludes_controls",
+     "doc": "**S (U2 fix).** No C0 control byte (ESC, GS, FS, DLE...) and no DEL is printable."
+    }
    ]
   },
   {
@@ -379,7 +1242,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "HTTP display commands",
-   "theorems": 8,
+   "theorems": 3,
    "mixed": {
     "scenarios": 1000,
     "identical": 27,
@@ -389,6 +1252,21 @@
    "normal": null,
    "properties": [
     "Colour parsing is total and accepts exactly the #rrggbb shape"
+   ],
+   "slug": "esp-sign",
+   "theorem_list": [
+    {
+     "name": "parse_color_total",
+     "doc": "**S (U1 fix).** Parsing a colour never panics, for any bytes."
+    },
+    {
+     "name": "parse_color_shape",
+     "doc": "**S.** An accepted colour is 7 bytes with an ASCII first byte."
+    },
+    {
+     "name": "hex_value_digit",
+     "doc": "**C.** `hex_value` is a digit's value (\u2264 15) or 16."
+    }
    ]
   },
   {
@@ -398,7 +1276,7 @@
    "chip": "ESP32-C3",
    "isa": "RV32IMC",
    "interface": "HTTP motor commands",
-   "theorems": 7,
+   "theorems": 5,
    "mixed": {
     "scenarios": 1000,
     "identical": 257,
@@ -410,6 +1288,29 @@
     "Commands for a motor that does not exist are refused",
     "Zero speed and zero acceleration are refused",
     "Exactly the valid commands are queued"
+   ],
+   "slug": "esp32-http-stepper",
+   "theorem_list": [
+    {
+     "name": "no_such_motor",
+     "doc": "(S) An index past the two motors is refused (upstream: `senders[index]` panics, the device resets)."
+    },
+    {
+     "name": "zero_speed_refused",
+     "doc": "(S) A speed of 0 is refused (upstream: accel-stepper's `set_max_speed(0)` takes `1/0` into a `Duration` and panics)."
+    },
+    {
+     "name": "zero_accel_refused",
+     "doc": "(S) An acceleration of 0 is refused (upstream ignores it: in a motor's first command the driver keeps acceleration 0 and never finishes)."
+    },
+    {
+     "name": "valid_command_queued",
+     "doc": "(S) A valid command reaches the motor it names, unchanged."
+    },
+    {
+     "name": "queued_only_valid",
+     "doc": "(S) Every command is either valid and queued for the motor it names, or not valid and refused (no such motor, or a bad move): nothing reaches a queue past the two senders, or with a speed or acceleration of 0."
+    }
    ]
   },
   {
@@ -419,7 +1320,7 @@
    "chip": "RP2350",
    "isa": "Cortex-M33",
    "interface": "UDP commands",
-   "theorems": 13,
+   "theorems": 6,
    "mixed": {
     "scenarios": 1000,
     "identical": 172,
@@ -431,6 +1332,33 @@
     "Commands for another device are ignored",
     "An over-long name keeps the old one; an unchanged name is not written",
     "Flash writes are spaced; only valid configurations are stored; over-long datagrams are dropped"
+   ],
+   "slug": "chlorophyll",
+   "theorem_list": [
+    {
+     "name": "other_device_ignored",
+     "doc": "(S) A packet for another device changes nothing."
+    },
+    {
+     "name": "long_name_kept_old",
+     "doc": "(S) A name over 64 bytes is refused: the stored name stays (upstream stores it empty)."
+    },
+    {
+     "name": "unchanged_name_not_written",
+     "doc": "(S) The name the device already has is announced, never written."
+    },
+    {
+     "name": "writes_spaced",
+     "doc": "(S) A write happens only when allowed: none since boot, or the last one at least 10 s before (no flash wear by a flood)."
+    },
+    {
+     "name": "store_only_valid",
+     "doc": "(S) A name is stored only when it is for this device, fits, and differs from the stored one."
+    },
+    {
+     "name": "long_datagram_dropped",
+     "doc": "(S) A datagram over 128 bytes is not decoded (upstream decodes up to 1500 bytes into its 1 KiB heap: a long `SetName` exhausts it, the device resets)."
+    }
    ]
   },
   {
@@ -440,7 +1368,7 @@
    "chip": "RP2040",
    "isa": "Cortex-M0+",
    "interface": "HTTP calibration + readings",
-   "theorems": 30,
+   "theorems": 5,
    "mixed": {
     "scenarios": 1000,
     "identical": 278,
@@ -452,6 +1380,29 @@
     "The linear regression never panics for any calibration data; zero divisors are refused",
     "Pressure conversion never panics",
     "Fixed-point arithmetic is modelled bit-exactly (I32F32)"
+   ],
+   "slug": "cloggo",
+   "theorem_list": [
+    {
+     "name": "linreg_never_panics",
+     "doc": "(S) The regression never panics, for any 10 readings: a zero divisor (all readings at one ADC value, or at one pressure) or an overflow is a returned error (upstream: a panic on `GET /linreg`, or wrapped constants)."
+    },
+    {
+     "name": "pressure_never_panics",
+     "doc": "(S) A pressure reading never panics: an overflow is a returned error (upstream wraps)."
+    },
+    {
+     "name": "div_by_zero_refused",
+     "doc": "(S) A zero divisor is an error, never a panic (upstream's `/` panics)."
+    },
+    {
+     "name": "mul_total",
+     "doc": "(C) An `I32F32` product never panics (the exact product fits i128)."
+    },
+    {
+     "name": "div_total",
+     "doc": "(C) An `I32F32` quotient never panics."
+    }
    ]
   },
   {
@@ -461,7 +1412,7 @@
    "chip": "RP2040",
    "isa": "Cortex-M0+",
    "interface": "HTTP firmware update (DFU)",
-   "theorems": 13,
+   "theorems": 7,
    "mixed": {
     "scenarios": 1000,
     "identical": 33,
@@ -474,6 +1425,37 @@
     "Chunks are contiguous and within the declared length",
     "An update completes iff every byte was written; an aborted update never completes",
     "The new image is confirmed only after the web server is up"
+   ],
+   "slug": "diy-weather-station",
+   "theorem_list": [
+    {
+     "name": "begin_requires_token_and_fit",
+     "doc": "**S (U1, U3).** An upload starts only with no upload running, the token, a declared length, and an image that fits the active slot."
+    },
+    {
+     "name": "chunk_within_declared",
+     "doc": "**S (U2).** A chunk is accepted only within the declared length."
+    },
+    {
+     "name": "chunk_contiguous",
+     "doc": "**S (U2).** Chunks are written contiguously: each at the bytes written so far, which then grow by its length."
+    },
+    {
+     "name": "complete_iff_all_written",
+     "doc": "**S.** An image is marked for swap exactly when all its declared bytes were written."
+    },
+    {
+     "name": "abort_never_completes",
+     "doc": "**S (U3).** An aborted session is never marked."
+    },
+    {
+     "name": "token_ok_needs_configured",
+     "doc": "**S (U1).** With no token configured (all zero), no request is authorised."
+    },
+    {
+     "name": "confirm_boot_needs_up",
+     "doc": "**S (U4).** A swapped-in image is confirmed only once the firmware is up."
+    }
    ]
   },
   {
@@ -483,7 +1465,7 @@
    "chip": "RP2040",
    "isa": "Cortex-M0+",
    "interface": "DHCP + DNS servers",
-   "theorems": 8,
+   "theorems": 3,
    "mixed": {
     "scenarios": 1000,
     "identical": 393,
@@ -494,6 +1476,21 @@
    "properties": [
     "Discovery keeps live leases; a request is acknowledged only for its own lease",
     "DNS answers stay within the packet bounds"
+   ],
+   "slug": "pico-dhcp-dns-server",
+   "theorem_list": [
+    {
+     "name": "discover_keeps_live_leases",
+     "doc": "**S.** A DISCOVER never takes a slot assigned to another client whose lease is still running."
+    },
+    {
+     "name": "request_acks_only_its_own",
+     "doc": "**S.** A REQUEST is acknowledged only for a slot offered to this client with this transaction, or assigned to it with this transaction and an unexpired lease."
+    },
+    {
+     "name": "answer_fits_bounds",
+     "doc": "**S (U1 fix).** An answer is written only inside the received question and the buffer."
+    }
    ]
   }
  ],

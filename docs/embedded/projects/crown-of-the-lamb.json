@@ -1,0 +1,276 @@
+{
+ "slug": "crown-of-the-lamb",
+ "name": "crown-of-the-lamb",
+ "pin": "2ce6937",
+ "upstream_head": "2ce6937",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "clamp_in_range",
+   "file": "Properties.lean",
+   "doc": "(S) Every stored configuration value is within its field's range (the eye renderer and the colour packing rely on it).",
+   "statement": "theorem clamp_in_range (f : Field) (v : Std.I32) {lo hi r}\n    (hr : range f = ok (lo, hi)) (hc : clamp_field f v = ok r) :\n    lo.val \u2264 r.val \u2227 r.val \u2264 hi.val",
+   "proof": "theorem clamp_in_range (f : Field) (v : Std.I32) {lo hi r}\n    (hr : range f = ok (lo, hi)) (hc : clamp_field f v = ok r) :\n    lo.val \u2264 r.val \u2227 r.val \u2264 hi.val := by\n  unfold clamp_field at hc\n  rw [hr] at hc\n  have hlh : lo.val \u2264 hi.val := by\n    cases f <;> simp [range] at hr <;> obtain \u27e8rfl, rfl\u27e9 := hr <;> decide\n  by_cases h1 : v.val < lo.val <;> by_cases h2 : hi.val < v.val <;>\n    simp [h1, h2] at hc <;> subst hc <;> scalar_tac",
+   "deps": [
+    "range",
+    "clamp_field",
+    "Field"
+   ],
+   "spec": []
+  },
+  {
+   "name": "clamp_keeps_in_range",
+   "file": "Properties.lean",
+   "doc": "(S) A value already in range is stored as submitted.",
+   "statement": "theorem clamp_keeps_in_range (f : Field) (v : Std.I32) {lo hi}\n    (hr : range f = ok (lo, hi)) (h1 : lo.val \u2264 v.val) (h2 : v.val \u2264 hi.val) :\n    clamp_field f v = ok v",
+   "proof": "theorem clamp_keeps_in_range (f : Field) (v : Std.I32) {lo hi}\n    (hr : range f = ok (lo, hi)) (h1 : lo.val \u2264 v.val) (h2 : v.val \u2264 hi.val) :\n    clamp_field f v = ok v := by\n  unfold clamp_field\n  rw [hr]\n  have n1 : \u00ac v.val < lo.val := by omega\n  have n2 : \u00ac hi.val < v.val := by omega\n  simp [n1, n2]",
+   "deps": [
+    "range",
+    "clamp_field",
+    "Field"
+   ],
+   "spec": []
+  },
+  {
+   "name": "expression_codes",
+   "file": "Properties.lean",
+   "doc": "(S) Exactly the documented codes are taken.",
+   "statement": "theorem expression_codes (c : Std.I32) :\n    expression_ok c = ok (decide ((1 \u2264 c.val \u2227 c.val \u2264 5) \u2228 (7 \u2264 c.val \u2227 c.val \u2264 10)))",
+   "proof": "theorem expression_codes (c : Std.I32) :\n    expression_ok c = ok (decide ((1 \u2264 c.val \u2227 c.val \u2264 5) \u2228 (7 \u2264 c.val \u2227 c.val \u2264 10))) := by\n  unfold expression_ok\n  by_cases a : (1 : Int) \u2264 c.val <;> by_cases b : c.val \u2264 5 <;>\n    by_cases d : (7 : Int) \u2264 c.val <;> by_cases e : c.val \u2264 10 <;>\n    simp [a, b, d, e] <;> omega",
+   "deps": [
+    "expression_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "wifi_refuses_bad_name",
+   "file": "Properties.lean",
+   "doc": "(S) An empty AP name, or one over 32 bytes, is refused (upstream stores it as an empty name and restarts into it).",
+   "statement": "theorem wifi_refuses_bad_name (len : Std.U32) (h : len.val = 0 \u2228 len.val > 32) :\n    wifi_set true len = ok Wifi.Refuse",
+   "proof": "theorem wifi_refuses_bad_name (len : Std.U32) (h : len.val = 0 \u2228 len.val > 32) :\n    wifi_set true len = ok Wifi.Refuse := by\n  unfold wifi_set\n  have hm : SSID_MAX_LEN.val = 32 := by unfold SSID_MAX_LEN; rfl\n  rcases h with h | h\n  \u00b7 simp [h]\n  \u00b7 have h0 : \u00ac len.val = 0 := by omega\n    have h1 : SSID_MAX_LEN.val < len.val := by omega\n    simp [h0, h1]",
+   "deps": [
+    "wifi_set",
+    "Wifi",
+    "SSID_MAX_LEN"
+   ],
+   "spec": []
+  },
+  {
+   "name": "wifi_stores_only_valid_name",
+   "file": "Properties.lean",
+   "doc": "(S) A name is stored only if it is 1 to 32 bytes.",
+   "statement": "theorem wifi_stores_only_valid_name (len : Std.U32) (h : wifi_set true len = ok Wifi.StoreAndRestart) :\n    0 < len.val \u2227 len.val \u2264 32",
+   "proof": "theorem wifi_stores_only_valid_name (len : Std.U32) (h : wifi_set true len = ok Wifi.StoreAndRestart) :\n    0 < len.val \u2227 len.val \u2264 32 := by\n  unfold wifi_set at h\n  have hm : SSID_MAX_LEN.val = 32 := by unfold SSID_MAX_LEN; rfl\n  by_cases a : len.val = 0\n  \u00b7 simp [a] at h\n  \u00b7 by_cases b : SSID_MAX_LEN.val < len.val\n    \u00b7 simp [a, b] at h\n    \u00b7 constructor <;> omega",
+   "deps": [
+    "wifi_set",
+    "Wifi",
+    "SSID_MAX_LEN"
+   ],
+   "spec": []
+  },
+  {
+   "name": "pending_save_before_restart",
+   "file": "Properties.lean",
+   "doc": "(S) A configuration change answered `204` is saved before any restart.",
+   "statement": "theorem pending_save_before_restart : save_before_restart true = ok true",
+   "proof": "theorem pending_save_before_restart : save_before_restart true = ok true := by\n  simp [save_before_restart]",
+   "deps": [
+    "save_before_restart"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_post_only",
+   "file": "Properties.lean",
+   "doc": "(S) Only a POST uploads.",
+   "statement": "theorem ota_post_only (b t : Bool) (n m : Std.U32) : ota_start false b t n m = ok OtaStart.MethodNotAllowed",
+   "proof": "theorem ota_post_only (b t : Bool) (n m : Std.U32) : ota_start false b t n m = ok OtaStart.MethodNotAllowed := by\n  simp [ota_start]",
+   "deps": [
+    "ota_start",
+    "OtaStart"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_one_at_a_time",
+   "file": "Properties.lean",
+   "doc": "(S) One upload at a time.",
+   "statement": "theorem ota_one_at_a_time (t : Bool) (n m : Std.U32) : ota_start true true t n m = ok OtaStart.Conflict",
+   "proof": "theorem ota_one_at_a_time (t : Bool) (n m : Std.U32) : ota_start true true t n m = ok OtaStart.Conflict := by\n  simp [ota_start]",
+   "deps": [
+    "ota_start",
+    "OtaStart"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_stream_bounded",
+   "file": "Properties.lean",
+   "doc": "(S) An image is streamed only if it is not empty and fits the slot.",
+   "statement": "theorem ota_stream_bounded (b t : Bool) (n m : Std.U32) (h : ota_start true b t n m = ok OtaStart.Stream) :\n    b = false \u2227 t = true \u2227 0 < n.val \u2227 n.val \u2264 m.val",
+   "proof": "theorem ota_stream_bounded (b t : Bool) (n m : Std.U32) (h : ota_start true b t n m = ok OtaStart.Stream) :\n    b = false \u2227 t = true \u2227 0 < n.val \u2227 n.val \u2264 m.val := by\n  unfold ota_start at h\n  cases b <;> cases t <;> simp at h\n  split_ifs at h with h1 <;> simp at h\n  refine \u27e8rfl, rfl, ?_, ?_\u27e9 <;> scalar_tac",
+   "deps": [
+    "ota_start",
+    "OtaStart"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_first_sector_magic",
+   "file": "Properties.lean",
+   "doc": "(S) The first sector is written only if it starts with the image magic.",
+   "statement": "theorem ota_first_sector_magic (b : Std.U8) (w : Bool) (h : sector_ok true b w = ok true) : b = ESP_IMAGE_MAGIC",
+   "proof": "theorem ota_first_sector_magic (b : Std.U8) (w : Bool) (h : sector_ok true b w = ok true) : b = ESP_IMAGE_MAGIC := by\n  unfold sector_ok at h\n  by_cases hb : b = ESP_IMAGE_MAGIC\n  \u00b7 exact hb\n  \u00b7 simp_all",
+   "deps": [
+    "ESP_IMAGE_MAGIC",
+    "sector_ok"
+   ],
+   "spec": []
+  },
+  {
+   "name": "ota_restart_only_committed",
+   "file": "Properties.lean",
+   "doc": "(S) The device restarts into an upload only if it streamed and committed.",
+   "statement": "theorem ota_restart_only_committed (s c : Bool) (h : ota_done s c = ok true) : s = true \u2227 c = true",
+   "proof": "theorem ota_restart_only_committed (s c : Bool) (h : ota_done s c = ok true) : s = true \u2227 c = true := by\n  unfold ota_done at h\n  cases s <;> cases c <;> simp_all",
+   "deps": [
+    "ota_done"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "ESP_IMAGE_MAGIC": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::ESP_IMAGE_MAGIC",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 135,
+   "kernel_code": "pub const ESP_IMAGE_MAGIC: u8 = 0xE9;",
+   "lean": "@[global_simps, irreducible] def ESP_IMAGE_MAGIC : Std.U8 := 233#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Wifi": {
+   "kind": "inductive",
+   "rust_path": "crown_of_the_lamb_kernel::Wifi",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 81,
+   "kernel_code": "pub enum Wifi {\n    /// Store this name (or, without one, the stored config unchanged) and\n    /// restart into it: `200 restarting`.\n    StoreAndRestart,\n    /// An empty name or one over 32 bytes: `400`, nothing stored, no\n    /// restart (upstream stores an empty name).\n    Refuse,\n}",
+   "lean": "@[discriminant isize]\ninductive Wifi where\n| StoreAndRestart : Wifi\n| Refuse : Wifi",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "SSID_MAX_LEN": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::SSID_MAX_LEN",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 77,
+   "kernel_code": "pub const SSID_MAX_LEN: u32 = 32;",
+   "lean": "@[global_simps, irreducible] def SSID_MAX_LEN : Std.U32 := 32#u32",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "range": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::range",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 42,
+   "kernel_code": "pub fn range(f: Field) -> (i32, i32) {\n    match f {\n        Field::PupilLength => (20, 120),\n        Field::WiggleAmp => (0, 400),\n        Field::BlinkInterval => (60, 600),\n        Field::EyeRed => (0, 31),\n        Field::EyeGreen => (0, 63),\n        Field::EyeBlue => (0, 31),\n        Field::SoundThreshold => (10, 400),\n        _ => (0, 100),\n    }\n}",
+   "lean": "def range (f : Field) : Result (Std.I32 \u00d7 Std.I32) := do\n  match f with\n  | Field.PupilLength => ok (20#i32, 120#i32)\n  | Field.WiggleAmp => ok (0#i32, 400#i32)\n  | Field.BlinkInterval => ok (60#i32, 600#i32)\n  | Field.EyeRed => ok (0#i32, 31#i32)\n  | Field.EyeGreen => ok (0#i32, 63#i32)\n  | Field.EyeBlue => ok (0#i32, 31#i32)\n  | Field.SoundThreshold => ok (10#i32, 400#i32)\n  | Field.SinRarity => ok (0#i32, 100#i32)\n  | Field.EyerollRarity => ok (0#i32, 100#i32)\n  | Field.StartledRarity => ok (0#i32, 100#i32)\n  | Field.SuspiciousRarity => ok (0#i32, 100#i32)\n  | Field.AngryRarity => ok (0#i32, 100#i32)\n  | Field.YawnRarity => ok (0#i32, 100#i32)\n  | Field.DelightRarity => ok (0#i32, 100#i32)\n  | Field.DizzyRarity => ok (0#i32, 100#i32)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "expression_ok": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::expression_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 68,
+   "kernel_code": "pub fn expression_ok(code: i32) -> bool {\n    // Two ranges (comparisons extract to Lean as plain inequalities).\n    if code >= 1 && code <= 5 {\n        true\n    } else {\n        code >= 7 && code <= 10\n    }\n}",
+   "lean": "def expression_ok (code : Std.I32) : Result Bool := do\n  if code >= 1#i32\n  then\n    if code <= 5#i32\n    then ok true\n    else if code >= 7#i32\n         then ok (code <= 10#i32)\n         else ok false\n  else if code >= 7#i32\n       then ok (code <= 10#i32)\n       else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ota_done": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::ota_done",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 143,
+   "kernel_code": "pub fn ota_done(streamed: bool, committed: bool) -> bool {\n    if streamed { committed } else { false }\n}",
+   "lean": "def ota_done (streamed : Bool) (committed : Bool) : Result Bool := do\n  if streamed\n  then ok committed\n  else ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "wifi_set": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::wifi_set",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 91,
+   "kernel_code": "pub fn wifi_set(given: bool, len: u32) -> Wifi {\n    if !given {\n        Wifi::StoreAndRestart\n    } else if len == 0 || len > SSID_MAX_LEN {\n        Wifi::Refuse\n    } else {\n        Wifi::StoreAndRestart\n    }\n}",
+   "lean": "def wifi_set (given : Bool) (len : Std.U32) : Result Wifi := do\n  if given\n  then\n    if len = 0#u32\n    then ok Wifi.Refuse\n    else if len > SSID_MAX_LEN\n         then ok Wifi.Refuse\n         else ok Wifi.StoreAndRestart\n  else ok Wifi.StoreAndRestart",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "save_before_restart": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::save_before_restart",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 103,
+   "kernel_code": "pub fn save_before_restart(save_pending: bool) -> bool {\n    save_pending\n}",
+   "lean": "def save_before_restart (save_pending : Bool) : Result Bool := do\n  ok save_pending",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "ota_start": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::ota_start",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 121,
+   "kernel_code": "pub fn ota_start(post: bool, busy: bool, has_target: bool, total: u32, max_size: u32) -> OtaStart {\n    if !post {\n        OtaStart::MethodNotAllowed\n    } else if busy {\n        OtaStart::Conflict\n    } else if !has_target {\n        OtaStart::NoTarget\n    } else if total == 0 || total > max_size {\n        OtaStart::BadRequest\n    } else {\n        OtaStart::Stream\n    }\n}",
+   "lean": "def ota_start\n  (post : Bool) (busy : Bool) (has_target : Bool) (total : Std.U32)\n  (max_size : Std.U32) :\n  Result OtaStart\n  := do\n  if post\n  then\n    if busy\n    then ok OtaStart.Conflict\n    else\n      if has_target\n      then\n        if total = 0#u32\n        then ok OtaStart.BadRequest\n        else\n          if total > max_size\n          then ok OtaStart.BadRequest\n          else ok OtaStart.Stream\n      else ok OtaStart.NoTarget\n  else ok OtaStart.MethodNotAllowed",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "OtaStart": {
+   "kind": "inductive",
+   "rust_path": "crown_of_the_lamb_kernel::OtaStart",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 109,
+   "kernel_code": "pub enum OtaStart {\n    MethodNotAllowed,\n    /// Another upload is running.\n    Conflict,\n    /// No slot to write (the partition table).\n    NoTarget,\n    /// Empty, or larger than the slot.\n    BadRequest,\n    /// Stream the image into the slot.\n    Stream,\n}",
+   "lean": "@[discriminant isize]\ninductive OtaStart where\n| MethodNotAllowed : OtaStart\n| Conflict : OtaStart\n| NoTarget : OtaStart\n| BadRequest : OtaStart\n| Stream : OtaStart",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "clamp_field": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::clamp_field",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub fn clamp_field(f: Field, v: i32) -> i32 {\n    let (lo, hi) = range(f);\n    if v < lo {\n        lo\n    } else if v > hi {\n        hi\n    } else {\n        v\n    }\n}",
+   "lean": "def clamp_field (f : Field) (v : Std.I32) : Result Std.I32 := do\n  let (lo, hi) \u2190 range f\n  if v < lo\n  then ok lo\n  else if v > hi\n       then ok hi\n       else ok v",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "sector_ok": {
+   "kind": "def",
+   "rust_path": "crown_of_the_lamb_kernel::sector_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 138,
+   "kernel_code": "pub fn sector_ok(first: bool, first_byte: u8, write_ok: bool) -> bool {\n    if first && first_byte != ESP_IMAGE_MAGIC { false } else { write_ok }\n}",
+   "lean": "def sector_ok\n  (first : Bool) (first_byte : Std.U8) (write_ok : Bool) : Result Bool := do\n  if first\n  then if first_byte != ESP_IMAGE_MAGIC\n       then ok false\n       else ok write_ok\n  else ok write_ok",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Field": {
+   "kind": "inductive",
+   "rust_path": "crown_of_the_lamb_kernel::Field",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 23,
+   "kernel_code": "pub enum Field {\n    PupilLength,\n    WiggleAmp,\n    BlinkInterval,\n    EyeRed,\n    EyeGreen,\n    EyeBlue,\n    SoundThreshold,\n    SinRarity,\n    EyerollRarity,\n    StartledRarity,\n    SuspiciousRarity,\n    AngryRarity,\n    YawnRarity,\n    DelightRarity,\n    DizzyRarity,\n}",
+   "lean": "@[discriminant isize]\ninductive Field where\n| PupilLength : Field\n| WiggleAmp : Field\n| BlinkInterval : Field\n| EyeRed : Field\n| EyeGreen : Field\n| EyeBlue : Field\n| SoundThreshold : Field\n| SinRarity : Field\n| EyerollRarity : Field\n| StartledRarity : Field\n| SuspiciousRarity : Field\n| AngryRarity : Field\n| YawnRarity : Field\n| DelightRarity : Field\n| DizzyRarity : Field",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}

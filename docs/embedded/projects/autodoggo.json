@@ -1,0 +1,342 @@
+{
+ "slug": "autodoggo",
+ "name": "autodoggo",
+ "pin": "c59c0b9",
+ "upstream_head": "c59c0b9",
+ "pin_ok": true,
+ "mapped": false,
+ "theorems": [
+  {
+   "name": "overcurrent_reverses_closing",
+   "file": "Properties.lean",
+   "doc": "(S) An overcurrent while closing reverses the door (it opens).",
+   "statement": "theorem overcurrent_reverses_closing (t now : Std.U64) (drv : Bool) (ol : Option Bool) :\n    door_step { state := .Closing, last := .Closing, timeout := t }\n      { open_limit := ol, close_limit := none, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Opening, last := .Closing, timeout := t }, { NOTHING with take_overcurrent := true })",
+   "proof": "theorem overcurrent_reverses_closing (t now : Std.U64) (drv : Bool) (ol : Option Bool) :\n    door_step { state := .Closing, last := .Closing, timeout := t }\n      { open_limit := ol, close_limit := none, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Opening, last := .Closing, timeout := t }, { NOTHING with take_overcurrent := true }) := by\n  simp [door_step, same]",
+   "deps": [
+    "door_step",
+    "NOTHING",
+    "DoorOut",
+    "Pending",
+    "is_open",
+    "DOOR_TIMEOUT_MS",
+    "Door",
+    "same",
+    "PulleyCommand",
+    "DoorCommand",
+    "DoorState"
+   ],
+   "spec": []
+  },
+  {
+   "name": "overcurrent_stops_opening",
+   "file": "Properties.lean",
+   "doc": "(S) An overcurrent while opening stops the door.",
+   "statement": "theorem overcurrent_stops_opening (t now : Std.U64) (drv : Bool) (cl : Option Bool) :\n    door_step { state := .Opening, last := .Opening, timeout := t }\n      { open_limit := none, close_limit := cl, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Idle, last := .Opening, timeout := t }, { NOTHING with take_overcurrent := true })",
+   "proof": "theorem overcurrent_stops_opening (t now : Std.U64) (drv : Bool) (cl : Option Bool) :\n    door_step { state := .Opening, last := .Opening, timeout := t }\n      { open_limit := none, close_limit := cl, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Idle, last := .Opening, timeout := t }, { NOTHING with take_overcurrent := true }) := by\n  simp [door_step, same]",
+   "deps": [
+    "door_step",
+    "NOTHING",
+    "DoorOut",
+    "Pending",
+    "is_open",
+    "DOOR_TIMEOUT_MS",
+    "Door",
+    "same",
+    "PulleyCommand",
+    "DoorCommand",
+    "DoorState"
+   ],
+   "spec": []
+  },
+  {
+   "name": "timeout_stops",
+   "file": "Properties.lean",
+   "doc": "(S) A movement still going at its deadline (10 s after it started) stops: the door goes Idle (and, entering Idle, stops the pulley).",
+   "statement": "theorem timeout_stops (s : DoorState) (hs : s = .Opening \u2228 s = .Closing) (t now : Std.U64) (drv : Bool)\n    (ol cl : Option Bool) (hol : s = .Opening \u2192 ol = none) (hcl : s = .Closing \u2192 cl = none)\n    (h : t.val \u2264 now.val) :\n    door_step { state := s, last := s, timeout := t }\n      { open_limit := ol, close_limit := cl, cmd := none, overcurrent := false } now drv\n      = ok ({ state := .Idle, last := s, timeout := t }, NOTHING)",
+   "proof": "theorem timeout_stops (s : DoorState) (hs : s = .Opening \u2228 s = .Closing) (t now : Std.U64) (drv : Bool)\n    (ol cl : Option Bool) (hol : s = .Opening \u2192 ol = none) (hcl : s = .Closing \u2192 cl = none)\n    (h : t.val \u2264 now.val) :\n    door_step { state := s, last := s, timeout := t }\n      { open_limit := ol, close_limit := cl, cmd := none, overcurrent := false } now drv\n      = ok ({ state := .Idle, last := s, timeout := t }, NOTHING) := by\n  have ht : now \u2265 t := by scalar_tac\n  rcases hs with rfl | rfl\n  \u00b7 simp at hol; subst hol; simp [door_step, same, h]\n  \u00b7 simp at hcl; subst hcl; simp [door_step, same, h]",
+   "deps": [
+    "door_step",
+    "DoorState",
+    "NOTHING",
+    "DoorOut",
+    "Pending",
+    "is_open",
+    "DOOR_TIMEOUT_MS",
+    "Door",
+    "same",
+    "PulleyCommand",
+    "DoorCommand"
+   ],
+   "spec": []
+  },
+  {
+   "name": "stale_overcurrent_ignored",
+   "file": "Properties.lean",
+   "doc": "(S) F1: an overcurrent flag already pending when a close starts is taken and discarded: the close goes on (upstream reverses at once).",
+   "statement": "theorem stale_overcurrent_ignored (last : DoorState) (hl : last \u2260 .Closing) (t now : Std.U64) (drv : Bool)\n    (ol : Option Bool) (hn : now.val < 2 ^ 63) :\n    \u2203 d o, door_step { state := .Closing, last := last, timeout := t }\n        { open_limit := ol, close_limit := none, cmd := none, overcurrent := true } now drv = ok (d, o) \u2227\n      d.state = .Closing \u2227 o.take_overcurrent = true \u2227 o.pulley = some .RampUpCW",
+   "proof": "theorem stale_overcurrent_ignored (last : DoorState) (hl : last \u2260 .Closing) (t now : Std.U64) (drv : Bool)\n    (ol : Option Bool) (hn : now.val < 2 ^ 63) :\n    \u2203 d o, door_step { state := .Closing, last := last, timeout := t }\n        { open_limit := ol, close_limit := none, cmd := none, overcurrent := true } now drv = ok (d, o) \u2227\n      d.state = .Closing \u2227 o.take_overcurrent = true \u2227 o.pulley = some .RampUpCW := by\n  have hv := sat64_val now DOOR_TIMEOUT_MS\n  rw [timeout_val] at hv\n  have hlt : \u00ac ((core.num.U64.saturating_add now DOOR_TIMEOUT_MS).val \u2264 now.val) := by rw [hv]; omega\n  cases last <;> simp at hl <;> simp [door_step, same, lift, hlt]",
+   "deps": [
+    "door_step",
+    "DoorState",
+    "DoorOut",
+    "Pending",
+    "is_open",
+    "DOOR_TIMEOUT_MS",
+    "NOTHING",
+    "Door",
+    "same",
+    "PulleyCommand",
+    "DoorCommand"
+   ],
+   "spec": []
+  },
+  {
+   "name": "no_motion_without_driver",
+   "file": "Properties.lean",
+   "doc": "(S) F2: without the pulley driver, a stopped door stays stopped: no command moves it and it sends the pulley nothing but a stop.",
+   "statement": "theorem no_motion_without_driver (d : Door) (p : Pending) (now : Std.U64)\n    (hs : d.state = .Idle \u2228 d.state = .Opened \u2228 d.state = .Closed) :\n    \u2203 d' o, door_step d p now false = ok (d', o) \u2227 d'.state = d.state \u2227\n      (o.pulley = none \u2228 o.pulley = some .Stop)",
+   "proof": "theorem no_motion_without_driver (d : Door) (p : Pending) (now : Std.U64)\n    (hs : d.state = .Idle \u2228 d.state = .Opened \u2228 d.state = .Closed) :\n    \u2203 d' o, door_step d p now false = ok (d', o) \u2227 d'.state = d.state \u2227\n      (o.pulley = none \u2228 o.pulley = some .Stop) := by\n  rcases d with \u27e8st, la, t\u27e9\n  rcases p with \u27e8ol, cl, cmd, oc\u27e9\n  simp only at hs\n  rcases hs with rfl | rfl | rfl <;> cases la <;> rcases cmd with _ | c <;>\n    (try cases c) <;> simp [door_step, same, is_open, NOTHING]",
+   "deps": [
+    "door_step",
+    "Pending",
+    "Door",
+    "DoorOut",
+    "is_open",
+    "DOOR_TIMEOUT_MS",
+    "NOTHING",
+    "same",
+    "DoorCommand",
+    "DoorState",
+    "PulleyCommand"
+   ],
+   "spec": []
+  },
+  {
+   "name": "stop_kept_while_ramping_down",
+   "file": "Properties.lean",
+   "doc": "(S) F3: a stop while ramping down is kept: the pulley stops instead of ramping up the other way.",
+   "statement": "theorem stop_kept_while_ramping_down (dest : PulleyState) (duty : Std.U8) :\n    pulley_step { state := .RampingDownCCW, dest, duty } (some .Stop)\n      = ok ({ state := .RampingDownCCW, dest := .Hold, duty }, none) \u2227\n    pulley_step { state := .RampingDownCW, dest, duty } (some .Stop)\n      = ok ({ state := .RampingDownCW, dest := .Hold, duty }, none)",
+   "proof": "theorem stop_kept_while_ramping_down (dest : PulleyState) (duty : Std.U8) :\n    pulley_step { state := .RampingDownCCW, dest, duty } (some .Stop)\n      = ok ({ state := .RampingDownCCW, dest := .Hold, duty }, none) \u2227\n    pulley_step { state := .RampingDownCW, dest, duty } (some .Stop)\n      = ok ({ state := .RampingDownCW, dest := .Hold, duty }, none) := by\n  constructor <;> simp [pulley_step]",
+   "deps": [
+    "PulleyState",
+    "pulley_step",
+    "PULLEY_DUTY_MAX",
+    "Duty",
+    "Pulley",
+    "PulleyCommand"
+   ],
+   "spec": []
+  },
+  {
+   "name": "stop_in_hold_cancels",
+   "file": "Properties.lean",
+   "doc": "(S) F3: a stop in Hold cancels a pending reversal.",
+   "statement": "theorem stop_in_hold_cancels (dest : PulleyState) (duty : Std.U8) :\n    pulley_step { state := .Hold, dest, duty } (some .Stop)\n      = ok ({ state := .Hold, dest := .Hold, duty }, some { a := 0#u8, b := 0#u8 })",
+   "proof": "theorem stop_in_hold_cancels (dest : PulleyState) (duty : Std.U8) :\n    pulley_step { state := .Hold, dest, duty } (some .Stop)\n      = ok ({ state := .Hold, dest := .Hold, duty }, some { a := 0#u8, b := 0#u8 }) := by\n  simp [pulley_step]",
+   "deps": [
+    "PulleyState",
+    "pulley_step",
+    "PULLEY_DUTY_MAX",
+    "Duty",
+    "Pulley",
+    "PulleyCommand"
+   ],
+   "spec": []
+  },
+  {
+   "name": "one_channel_at_a_time",
+   "file": "Properties.lean",
+   "doc": "(S) One channel at a time (the H-bridge's two inputs never both on).",
+   "statement": "theorem one_channel_at_a_time (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => \u2200 d, r.2 = some d \u2192 d.a.val = 0 \u2228 d.b.val = 0 \u2984",
+   "proof": "theorem one_channel_at_a_time (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => \u2200 d, r.2 = some d \u2192 d.a.val = 0 \u2228 d.b.val = 0 \u2984 := by\n  have hm := max_val\n  rcases p with \u27e8st, de, du\u27e9\n  simp only at h\n  cases st\n  case Hold =>\n    cases de <;> rcases c with _ | pc <;> (try cases pc) <;> simp_all [pulley_step]\n  all_goals\n    rcases c with _ | pc <;> (try cases pc) <;> simp only [pulley_step] <;>\n      (try split_ifs) <;> step* <;> (try simp_all) <;> (try scalar_tac) <;> (try omega)",
+   "deps": [
+    "Pulley",
+    "PulleyCommand",
+    "pulley_step",
+    "PulleyState",
+    "PULLEY_DUTY_MAX",
+    "Duty"
+   ],
+   "spec": []
+  },
+  {
+   "name": "duty_at_most_max",
+   "file": "Properties.lean",
+   "doc": "(S) No duty over 100 %.",
+   "statement": "theorem duty_at_most_max (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => r.1.duty.val \u2264 100 \u2227 \u2200 d, r.2 = some d \u2192 d.a.val \u2264 100 \u2227 d.b.val \u2264 100 \u2984",
+   "proof": "theorem duty_at_most_max (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => r.1.duty.val \u2264 100 \u2227 \u2200 d, r.2 = some d \u2192 d.a.val \u2264 100 \u2227 d.b.val \u2264 100 \u2984 := by\n  have hm := max_val\n  rcases p with \u27e8st, de, du\u27e9\n  simp only at h\n  cases st\n  case Hold =>\n    cases de <;> rcases c with _ | pc <;> (try cases pc) <;> simp_all [pulley_step]\n  all_goals\n    rcases c with _ | pc <;> (try cases pc) <;> simp only [pulley_step] <;>\n      (try split_ifs) <;> step* <;> (try simp_all) <;> (try scalar_tac) <;> (try omega)",
+   "deps": [
+    "Pulley",
+    "PulleyCommand",
+    "pulley_step",
+    "PulleyState",
+    "PULLEY_DUTY_MAX",
+    "Duty"
+   ],
+   "spec": []
+  }
+ ],
+ "decls": {
+  "door_step": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::door_step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 105,
+   "kernel_code": "pub fn door_step(d: &Door, p: &Pending, now: u64, driver: bool) -> (Door, DoorOut) {\n    let mut o = NOTHING;\n    let mut last = d.last;\n    let mut timeout = d.timeout;\n    let entering = !same(d.last, d.state);\n    let state = match d.state {\n        DoorState::Idle | DoorState::Opened | DoorState::Closed => {\n            if entering {\n                last = d.state;\n                o.pulley = Some(PulleyCommand::Stop);\n            }\n            match p.cmd {\n                Some(c) => {\n                    o.take_cmd = true;\n                    let open = is_open(c);\n                    match d.state {\n                        // F2: no movement without the driver.\n                        _ if !driver => d.state,\n                        DoorState::Idle => {\n                            if open { DoorState::Opening } else { DoorState::Closing }\n                        }\n                        DoorState::Opened => {\n                            if open { DoorState::Opened } else { DoorState::Closing }\n                        }\n                        _ => {\n                            if open { DoorState::Opening } else { DoorState::Closed }\n                        }\n                    }\n                }\n                None => d.state,\n            }\n        }\n        DoorState::Opening | DoorState::Closing => {\n            let opening = match d.state {\n                DoorState::Opening => true,\n                _ => false,\n            };\n            let mut stale = false;\n            if entering {\n                last = d.state;\n                o.pulley = Some(if opening { PulleyCommand::RampUpCCW } else { PulleyCommand::RampUpCW });\n                timeout = now.saturating_add(DOOR_TIMEOUT_MS);\n                // F1: a flag raised before this movement started is not\n                // this movement's overcurrent.\n                if p.overcurrent {\n                    o.take_overcurrent = true;\n                    stale = true;\n                }\n            }\n            let limit = if opening { p.open_limit } else { p.close_limit };\n            match limit {\n                Some(hit) => {\n                    if opening {\n                        o.take_open_limit = true;\n                    } else {\n                        o.take_close_limit = true;\n                    }\n                    if hit {\n                        if opening { DoorState::Opened } else { DoorState::Closed }\n                    } else {\n                        d.state\n                    }\n                }\n                None => match p.cmd {\n                    Some(c) => {\n                        o.take_cmd = true;\n                        let open = is_open(c);\n                        if opening && !open {\n                            DoorState::Closing\n                        } else if !opening && open {\n                            DoorState::Opening\n                        } else {\n                            d.state\n                        }\n                    }\n                    None => {\n                        if p.overcurrent && !stale {\n                            o.take_overcurrent = true;\n                            // Opening stops; closing reverses (upstream).\n                            if opening { DoorState::Idle } else { DoorState::Opening }\n                        } else if now >= timeout {\n                            DoorState::Idle\n                        } else {\n                            d.state\n                        }\n                    }\n                },\n            }\n        }\n    };\n    (Door { state, last, timeout }, o)\n}",
+   "lean": "def door_step\n  (d : Door) (p : Pending) (now : Std.U64) (driver : Bool) :\n  Result (Door \u00d7 DoorOut)\n  := do\n  let b \u2190 same d.last d.state\n  match d.state with\n  | DoorState.Idle =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Idle)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then\n          ok ({ d with state := DoorState.Opening, last },\n            { o with take_cmd := true })\n        else\n          ok ({ d with state := DoorState.Closing, last },\n            { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })\n  | DoorState.Opening =>\n    let (p1, o, last, timeout, stale) \u2190\n      if \u00ac b\n      then\n        do\n        let timeout1 \u2190 lift (core.num.U64.saturating_add now DOOR_TIMEOUT_MS)\n        let (b1, b2, b3) \u2190\n          if p.overcurrent\n          then ok (true, true, true)\n          else ok (false, NOTHING.take_overcurrent, false)\n        ok ({ p with overcurrent := b1 },\n          {\n            NOTHING\n              with\n              pulley := (some PulleyCommand.RampUpCCW), take_overcurrent := b2\n          }, DoorState.Opening, timeout1, b3)\n      else ok (p, NOTHING, d.last, d.timeout, false)\n    match p1.open_limit with\n    | none =>\n      match p1.cmd with\n      | none =>\n        if p1.overcurrent\n        then\n          if stale\n          then\n            if now >= timeout\n            then ok ({ state := DoorState.Idle, last, timeout }, o)\n            else ok ({ state := DoorState.Opening, last, timeout }, o)\n          else\n            ok ({ state := DoorState.Idle, last, timeout },\n              { o with take_overcurrent := true })\n        else\n          if now >= timeout\n          then ok ({ state := DoorState.Idle, last, timeout }, o)\n          else ok ({ state := DoorState.Opening, last, timeout }, o)\n      | some c =>\n        let \u00abopen\u00bb \u2190 is_open c\n        if \u00abopen\u00bb\n        then\n          ok ({ state := DoorState.Opening, last, timeout },\n            { o with take_cmd := true })\n        else\n          ok ({ state := DoorState.Closing, last, timeout },\n            { o with take_cmd := true })\n    | some hit =>\n      if hit\n      then\n        ok ({ state := DoorState.Opened, last, timeout },\n          { o with take_open_limit := true })\n      else\n        ok ({ state := DoorState.Opening, last, timeout },\n          { o with take_open_limit := true })\n  | DoorState.Opened =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Opened)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then ok ({ d with last }, { o with take_cmd := true })\n        else\n          ok ({ d with state := DoorState.Closing, last },\n            { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })\n  | DoorState.Closing =>\n    let (p1, o, last, timeout, stale) \u2190\n      if \u00ac b\n      then\n        do\n        let timeout1 \u2190 lift (core.num.U64.saturating_add now DOOR_TIMEOUT_MS)\n        let (b1, b2, b3) \u2190\n          if p.overcurrent\n          then ok (true, true, true)\n          else ok (false, NOTHING.take_overcurrent, false)\n        ok ({ p with overcurrent := b1 },\n          {\n            NOTHING\n              with\n              pulley := (some PulleyCommand.RampUpCW), take_overcurrent := b2\n          }, DoorState.Closing, timeout1, b3)\n      else ok (p, NOTHING, d.last, d.timeout, false)\n    match p1.close_limit with\n    | none =>\n      match p1.cmd with\n      | none =>\n        if p1.overcurrent\n        then\n          if stale\n          then\n            if now >= timeout\n            then ok ({ state := DoorState.Idle, last, timeout }, o)\n            else ok ({ state := DoorState.Closing, last, timeout }, o)\n          else\n            ok ({ state := DoorState.Opening, last, timeout },\n              { o with take_overcurrent := true })\n        else\n          if now >= timeout\n          then ok ({ state := DoorState.Idle, last, timeout }, o)\n          else ok ({ state := DoorState.Closing, last, timeout }, o)\n      | some c =>\n        let \u00abopen\u00bb \u2190 is_open c\n        if \u00abopen\u00bb\n        then\n          ok ({ state := DoorState.Opening, last, timeout },\n            { o with take_cmd := true })\n        else\n          ok ({ state := DoorState.Closing, last, timeout },\n            { o with take_cmd := true })\n    | some hit =>\n      if hit\n      then\n        ok ({ state := DoorState.Closed, last, timeout },\n          { o with take_close_limit := true })\n      else\n        ok ({ state := DoorState.Closing, last, timeout },\n          { o with take_close_limit := true })\n  | DoorState.Closed =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Closed)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then\n          ok ({ d with state := DoorState.Opening, last },\n            { o with take_cmd := true })\n        else ok ({ d with last }, { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "PulleyState": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::PulleyState",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 199,
+   "kernel_code": "pub enum PulleyState {\n    Hold,\n    RampingUpCCW,\n    DrivingCCW,\n    RampingDownCCW,\n    RampingUpCW,\n    DrivingCW,\n    RampingDownCW,\n}",
+   "lean": "@[discriminant isize]\ninductive PulleyState where\n| Hold : PulleyState\n| RampingUpCCW : PulleyState\n| DrivingCCW : PulleyState\n| RampingDownCCW : PulleyState\n| RampingUpCW : PulleyState\n| DrivingCW : PulleyState\n| RampingDownCW : PulleyState",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DoorState": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::DoorState",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 38,
+   "kernel_code": "pub enum DoorState {\n    Idle,\n    Opening,\n    Opened,\n    Closing,\n    Closed,\n}",
+   "lean": "@[discriminant isize]\ninductive DoorState where\n| Idle : DoorState\n| Opening : DoorState\n| Opened : DoorState\n| Closing : DoorState\n| Closed : DoorState",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Pulley": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::Pulley",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 211,
+   "kernel_code": "pub struct Pulley {\n    pub state: PulleyState,\n    pub dest: PulleyState,\n    pub duty: u8,\n}",
+   "lean": "structure Pulley where\n  state : PulleyState\n  dest : PulleyState\n  duty : Std.U8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DoorOut": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::DoorOut",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 74,
+   "kernel_code": "pub struct DoorOut {\n    pub pulley: Option<PulleyCommand>,\n    pub take_open_limit: bool,\n    pub take_close_limit: bool,\n    pub take_cmd: bool,\n    pub take_overcurrent: bool,\n}",
+   "lean": "structure DoorOut where\n  pulley : Option PulleyCommand\n  take_open_limit : Bool\n  take_close_limit : Bool\n  take_cmd : Bool\n  take_overcurrent : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "NOTHING": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::NOTHING",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 82,
+   "kernel_code": "const NOTHING: DoorOut =\n    DoorOut { pulley: None, take_open_limit: false, take_close_limit: false, take_cmd: false, take_overcurrent: false };",
+   "lean": "@[global_simps, irreducible]\ndef NOTHING : DoorOut :=\n  {\n    pulley := none,\n    take_open_limit := false,\n    take_close_limit := false,\n    take_cmd := false,\n    take_overcurrent := false\n  }",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Pending": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::Pending",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 65,
+   "kernel_code": "pub struct Pending {\n    pub open_limit: Option<bool>,\n    pub close_limit: Option<bool>,\n    pub cmd: Option<DoorCommand>,\n    pub overcurrent: bool,\n}",
+   "lean": "structure Pending where\n  open_limit : Option Bool\n  close_limit : Option Bool\n  cmd : Option DoorCommand\n  overcurrent : Bool",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Door": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::Door",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 55,
+   "kernel_code": "pub struct Door {\n    pub state: DoorState,\n    pub last: DoorState,\n    pub timeout: u64,\n}",
+   "lean": "structure Door where\n  state : DoorState\n  last : DoorState\n  timeout : Std.U64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "same": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::same",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 85,
+   "kernel_code": "fn same(a: DoorState, b: DoorState) -> bool {\n    match (a, b) {\n        (DoorState::Idle, DoorState::Idle) => true,\n        (DoorState::Opening, DoorState::Opening) => true,\n        (DoorState::Opened, DoorState::Opened) => true,\n        (DoorState::Closing, DoorState::Closing) => true,\n        (DoorState::Closed, DoorState::Closed) => true,\n        _ => false,\n    }\n}",
+   "lean": "def same (a : DoorState) (b : DoorState) : Result Bool := do\n  match a with\n  | DoorState.Idle =>\n    match b with\n    | DoorState.Idle => ok true\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Opening =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok true\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Opened =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok true\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Closing =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok true\n    | DoorState.Closed => ok false\n  | DoorState.Closed =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok true",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "is_open": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::is_open",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 96,
+   "kernel_code": "fn is_open(c: DoorCommand) -> bool {\n    match c {\n        DoorCommand::Open => true,\n        DoorCommand::Close => false,\n    }\n}",
+   "lean": "def is_open (c : DoorCommand) : Result Bool := do\n  match c with\n  | DoorCommand.Open => ok true\n  | DoorCommand.Close => ok false",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "PulleyCommand": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::PulleyCommand",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 47,
+   "kernel_code": "pub enum PulleyCommand {\n    RampUpCCW,\n    RampUpCW,\n    Stop,\n}",
+   "lean": "@[discriminant isize]\ninductive PulleyCommand where\n| RampUpCCW : PulleyCommand\n| RampUpCW : PulleyCommand\n| Stop : PulleyCommand",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "pulley_step": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::pulley_step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 228,
+   "kernel_code": "pub fn pulley_step(p: &Pulley, cmd: Option<PulleyCommand>) -> (Pulley, Option<Duty>) {\n    let Pulley { state, dest, duty } = *p;\n    match state {\n        PulleyState::Hold => {\n            let set = Some(Duty { a: 0, b: 0 });\n            match cmd {\n                Some(PulleyCommand::RampUpCCW) => {\n                    (Pulley { state: PulleyState::RampingUpCCW, dest: PulleyState::RampingUpCCW, duty: 0 }, set)\n                }\n                Some(PulleyCommand::RampUpCW) => {\n                    (Pulley { state: PulleyState::RampingUpCW, dest: PulleyState::RampingUpCW, duty: 0 }, set)\n                }\n                // F3: a stop in Hold cancels a pending reversal.\n                Some(PulleyCommand::Stop) => (Pulley { state, dest: PulleyState::Hold, duty }, set),\n                None => match dest {\n                    PulleyState::RampingUpCCW => (Pulley { state: PulleyState::RampingUpCCW, dest, duty: 0 }, set),\n                    PulleyState::RampingUpCW => (Pulley { state: PulleyState::RampingUpCW, dest, duty: 0 }, set),\n                    _ => (*p, set),\n                },\n            }\n        }\n        PulleyState::RampingUpCCW | PulleyState::DrivingCCW => match cmd {\n            Some(PulleyCommand::RampUpCW) => {\n                (Pulley { state: PulleyState::RampingDownCCW, dest: PulleyState::RampingUpCW, duty }, None)\n            }\n            Some(PulleyCommand::Stop) => (Pulley { state: PulleyState::RampingDownCCW, dest: PulleyState::Hold, duty }, None),\n            Some(PulleyCommand::RampUpCCW) => (*p, None),\n            None => match state {\n                PulleyState::RampingUpCCW => {\n                    if duty < PULLEY_DUTY_MAX {\n                        let duty = duty + 1;\n                        (Pulley { state, dest, duty }, Some(Duty { a: duty, b: 0 }))\n                    } else {\n                        (Pulley { state: PulleyState::DrivingCCW, dest: PulleyState::DrivingCCW, duty }, None)\n                    }\n                }\n                _ => (*p, Some(Duty { a: PULLEY_DUTY_MAX, b: 0 })),\n            },\n        },\n        PulleyState::RampingUpCW | PulleyState::DrivingCW => match cmd {\n            Some(PulleyCommand::RampUpCCW) => {\n                (Pulley { state: PulleyState::RampingDownCW, dest: PulleyState::RampingUpCCW, duty }, None)\n            }\n            Some(PulleyCommand::Stop) => (Pulley { state: PulleyState::RampingDownCW, dest: PulleyState::Hold, duty }, None),\n            Some(PulleyCommand::RampUpCW) => (*p, None),\n            None => match state {\n                PulleyState::RampingUpCW => {\n                    if duty < PULLEY_DUTY_MAX {\n                        let duty = duty + 1;\n                        (Pulley { state, dest, duty }, Some(Duty { a: 0, b: duty }))\n                    } else {\n                        (Pulley { state: PulleyState::DrivingCW, dest: PulleyState::DrivingCW, duty }, None)\n                    }\n                }\n                _ => (*p, Some(Duty { a: 0, b: PULLEY_DUTY_MAX })),\n            },\n        },\n        PulleyState::RampingDownCCW => match cmd {\n            Some(PulleyCommand::RampUpCCW) => {\n                (Pulley { state: PulleyState::RampingUpCCW, dest: PulleyState::RampingUpCCW, duty }, None)\n            }\n            // F3: a stop while ramping down is kept.\n            Some(PulleyCommand::Stop) => (Pulley { state, dest: PulleyState::Hold, duty }, None),\n            Some(PulleyCommand::RampUpCW) => (Pulley { state, dest: PulleyState::RampingUpCW, duty }, None),\n            None => {\n                if duty > 0 {\n                    let duty = duty - 1;\n                    (Pulley { state, dest, duty }, Some(Duty { a: duty, b: 0 }))\n                } else {\n                    (Pulley { state: PulleyState::Hold, dest, duty }, None)\n                }\n            }\n        },\n        PulleyState::RampingDownCW => match cmd {\n            Some(PulleyCommand::RampUpCW) => {\n                (Pulley { state: PulleyState::RampingUpCW, dest: PulleyState::RampingUpCW, duty }, None)\n            }\n            // F3: a stop while ramping down is kept.\n            Some(PulleyCommand::Stop) => (Pulley { state, dest: PulleyState::Hold, duty }, None),\n            Some(PulleyCommand::RampUpCCW) => (Pulley { state, dest: PulleyState::RampingUpCCW, duty }, None),\n            None => {\n                if duty > 0 {\n                    let duty = duty - 1;\n                    (Pulley { state, dest, duty }, Some(Duty { a: 0, b: duty }))\n                } else {\n                    (Pulley { state: PulleyState::Hold, dest, duty }, None)\n                }\n            }\n        },\n    }\n}",
+   "lean": "def pulley_step\n  (p : Pulley) (cmd : Option PulleyCommand) :\n  Result (Pulley \u00d7 (Option Duty))\n  := do\n  match p.state with\n  | PulleyState.Hold =>\n    match cmd with\n    | none =>\n      match p.dest with\n      | PulleyState.Hold => ok (p, some { a := 0#u8, b := 0#u8 })\n      | PulleyState.RampingUpCCW =>\n        ok\n          ({\n             state := PulleyState.RampingUpCCW,\n             dest := PulleyState.RampingUpCCW,\n             duty := 0#u8\n           }, some { a := 0#u8, b := 0#u8 })\n      | PulleyState.DrivingCCW => ok (p, some { a := 0#u8, b := 0#u8 })\n      | PulleyState.RampingDownCCW => ok (p, some { a := 0#u8, b := 0#u8 })\n      | PulleyState.RampingUpCW =>\n        ok\n          ({\n             state := PulleyState.RampingUpCW,\n             dest := PulleyState.RampingUpCW,\n             duty := 0#u8\n           }, some { a := 0#u8, b := 0#u8 })\n      | PulleyState.DrivingCW => ok (p, some { a := 0#u8, b := 0#u8 })\n      | PulleyState.RampingDownCW => ok (p, some { a := 0#u8, b := 0#u8 })\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW =>\n        ok\n          ({\n             state := PulleyState.RampingUpCCW,\n             dest := PulleyState.RampingUpCCW,\n             duty := 0#u8\n           }, some { a := 0#u8, b := 0#u8 })\n      | PulleyCommand.RampUpCW =>\n        ok\n          ({\n             state := PulleyState.RampingUpCW,\n             dest := PulleyState.RampingUpCW,\n             duty := 0#u8\n           }, some { a := 0#u8, b := 0#u8 })\n      | PulleyCommand.Stop =>\n        ok ({ p with dest := PulleyState.Hold }, some { a := 0#u8, b := 0#u8 })\n  | PulleyState.RampingUpCCW =>\n    match cmd with\n    | none =>\n      if p.duty < PULLEY_DUTY_MAX\n      then\n        let duty \u2190 p.duty + 1#u8\n        ok ({ p with duty }, some { a := duty, b := 0#u8 })\n      else\n        ok\n          ({\n             p\n               with\n               state := PulleyState.DrivingCCW, dest := PulleyState.DrivingCCW\n           }, none)\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW => ok (p, none)\n      | PulleyCommand.RampUpCW =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCCW,\n               dest := PulleyState.RampingUpCW\n           }, none)\n      | PulleyCommand.Stop =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCCW, dest := PulleyState.Hold\n           }, none)\n  | PulleyState.DrivingCCW =>\n    match cmd with\n    | none => ok (p, some { a := PULLEY_DUTY_MAX, b := 0#u8 })\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW => ok (p, none)\n      | PulleyCommand.RampUpCW =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCCW,\n               dest := PulleyState.RampingUpCW\n           }, none)\n      | PulleyCommand.Stop =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCCW, dest := PulleyState.Hold\n           }, none)\n  | PulleyState.RampingDownCCW =>\n    match cmd with\n    | none =>\n      if p.duty > 0#u8\n      then\n        let duty \u2190 p.duty - 1#u8\n        ok ({ p with duty }, some { a := duty, b := 0#u8 })\n      else ok ({ p with state := PulleyState.Hold }, none)\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingUpCCW,\n               dest := PulleyState.RampingUpCCW\n           }, none)\n      | PulleyCommand.RampUpCW =>\n        ok ({ p with dest := PulleyState.RampingUpCW }, none)\n      | PulleyCommand.Stop => ok ({ p with dest := PulleyState.Hold }, none)\n  | PulleyState.RampingUpCW =>\n    match cmd with\n    | none =>\n      if p.duty < PULLEY_DUTY_MAX\n      then\n        let duty \u2190 p.duty + 1#u8\n        ok ({ p with duty }, some { a := 0#u8, b := duty })\n      else\n        ok\n          ({\n             p\n               with\n               state := PulleyState.DrivingCW, dest := PulleyState.DrivingCW\n           }, none)\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCW,\n               dest := PulleyState.RampingUpCCW\n           }, none)\n      | PulleyCommand.RampUpCW => ok (p, none)\n      | PulleyCommand.Stop =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCW, dest := PulleyState.Hold\n           }, none)\n  | PulleyState.DrivingCW =>\n    match cmd with\n    | none => ok (p, some { a := 0#u8, b := PULLEY_DUTY_MAX })\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCW,\n               dest := PulleyState.RampingUpCCW\n           }, none)\n      | PulleyCommand.RampUpCW => ok (p, none)\n      | PulleyCommand.Stop =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingDownCW, dest := PulleyState.Hold\n           }, none)\n  | PulleyState.RampingDownCW =>\n    match cmd with\n    | none =>\n      if p.duty > 0#u8\n      then\n        let duty \u2190 p.duty - 1#u8\n        ok ({ p with duty }, some { a := 0#u8, b := duty })\n      else ok ({ p with state := PulleyState.Hold }, none)\n    | some pc =>\n      match pc with\n      | PulleyCommand.RampUpCCW =>\n        ok ({ p with dest := PulleyState.RampingUpCCW }, none)\n      | PulleyCommand.RampUpCW =>\n        ok\n          ({\n             p\n               with\n               state := PulleyState.RampingUpCW,\n               dest := PulleyState.RampingUpCW\n           }, none)\n      | PulleyCommand.Stop => ok ({ p with dest := PulleyState.Hold }, none)",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DoorCommand": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::DoorCommand",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub enum DoorCommand {\n    Open,\n    Close,\n}",
+   "lean": "@[discriminant isize]\ninductive DoorCommand where\n| Open : DoorCommand\n| Close : DoorCommand",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "PULLEY_DUTY_MAX": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::PULLEY_DUTY_MAX",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 29,
+   "kernel_code": "pub const PULLEY_DUTY_MAX: u8 = 100;",
+   "lean": "@[global_simps, irreducible] def PULLEY_DUTY_MAX : Std.U8 := 100#u8",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "DOOR_TIMEOUT_MS": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::DOOR_TIMEOUT_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 28,
+   "kernel_code": "pub const DOOR_TIMEOUT_MS: u64 = 10_000;",
+   "lean": "@[global_simps, irreducible] def DOOR_TIMEOUT_MS : Std.U64 := 10000#u64",
+   "upstream": [],
+   "upstream_note": ""
+  },
+  "Duty": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::Duty",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 221,
+   "kernel_code": "pub struct Duty {\n    pub a: u8,\n    pub b: u8,\n}",
+   "lean": "structure Duty where\n  a : Std.U8\n  b : Std.U8",
+   "upstream": [],
+   "upstream_note": ""
+  }
+ },
+ "specs": {}
+}
