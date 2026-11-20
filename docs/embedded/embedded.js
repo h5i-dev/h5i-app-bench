@@ -104,12 +104,14 @@ function detail() {
 
 function propRows() {
   const app = $("#f-app").value;
+  const ty = $("#f-type").value;
   const q = $("#f-q").value.trim().toLowerCase();
   const out = [];
   for (const p of D.projects) {
     if (app && p.slug !== app) continue;
     for (const t of p.theorem_list || []) {
-      if (q && !`${p.name} ${t.name} ${t.doc}`.toLowerCase().includes(q)) continue;
+      if (ty && t.type !== ty) continue;
+      if (q && !`${p.name} ${t.name} ${t.doc} ${t.type}`.toLowerCase().includes(q)) continue;
       out.push({ p, t });
     }
   }
@@ -122,12 +124,12 @@ function renderMatrix() {
   for (const { p, t } of rows) {
     if (p !== cur) {
       cur = p;
-      html += `<tr class="group"><td colspan="3">${esc(p.name)} · ${esc(p.chip)} · ${esc(p.interface)} · ${fmt(p.theorems)} properties</td></tr>`;
+      html += `<tr class="group"><td colspan="4">${esc(p.name)} · ${esc(p.chip)} · ${esc(p.interface)} · ${fmt(p.theorems)} properties</td></tr>`;
     }
     html += `<tr class="task" tabindex="0" data-app="${esc(p.slug)}" data-thm="${esc(t.name)}"><td class="t-name"><button type="button" class="spec-link">${esc(t.name)}</button></td>` +
-      `<td class="t-prop">${esc(t.doc || "")}</td><td><span class="chip good">✓ verified</span></td></tr>`;
+      `<td><span class="chip type">${esc(t.type)}</span></td><td class="t-prop">${esc(t.doc || "")}</td><td><span class="chip good">✓ verified</span></td></tr>`;
   }
-  if (!rows.length) html = `<tr><td class="count" colspan="3">No property matches the filters.</td></tr>`;
+  if (!rows.length) html = `<tr><td class="count" colspan="4">No property matches the filters.</td></tr>`;
   $("#matrix tbody").innerHTML = html;
   const total = D.projects.reduce((s, p) => s + (p.theorem_list || []).length, 0);
   $("#matrix-count").textContent = `${rows.length} of ${total} properties`;
@@ -210,7 +212,7 @@ async function openProp(slug, thm, tab) {
   lastFocus = document.activeElement;
   $("#drawer").hidden = false;
   document.body.style.overflow = "hidden";
-  $("#d-app").textContent = `${p.name} · ${p.chip}`;
+  $("#d-app").textContent = `${p.name} · ${p.chip} · ${t0.type}`;
   $("#d-title").textContent = thm;
   $("#d-property").textContent = t0.doc || "";
   $("#d-body").innerHTML = `<p class="empty">Loading…</p>`;
@@ -246,6 +248,8 @@ async function main() {
   tiles();
   overview();
   detail();
+  const types = [...new Set(D.projects.flatMap((p) => (p.theorem_list || []).map((t) => t.type)))].sort();
+  $("#f-type").innerHTML += types.map((t) => `<option value="${esc(t)}">${esc(t)}</option>`).join("");
   $("#f-app").innerHTML += D.projects.map((p) => `<option value="${esc(p.slug)}">${esc(p.name)}</option>`).join("");
   renderMatrix();
   $("#not-ported").textContent = `Audited and not ported (no input-driven logic to verify): ${D.not_ported.join(", ")}. Data as of ${D.updated}.`;
@@ -265,6 +269,7 @@ async function main() {
     $("#properties").scrollIntoView({ behavior: "smooth" });
   });
   $("#f-app").addEventListener("change", renderMatrix);
+  $("#f-type").addEventListener("change", renderMatrix);
   $("#f-q").addEventListener("input", renderMatrix);
   const open = (e) => {
     const tr = e.target.closest("tr.task");
