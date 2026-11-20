@@ -14,8 +14,8 @@
    "proof": "theorem other_device_ignored (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64) :\n    set_name false len same lw now = ok .Ignore := by\n  simp [set_name]",
    "deps": [
     "set_name",
-    "MIN_WRITE_INTERVAL_MS",
     "MAX_NAME_LEN",
+    "MIN_WRITE_INTERVAL_MS",
     "SetName"
    ],
    "spec": []
@@ -28,8 +28,8 @@
    "proof": "theorem long_name_kept_old (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : 64 < len.val) : set_name b len same lw now = ok .Ignore := by\n  have : len > MAX_NAME_LEN := by have := max_len_val; scalar_tac\n  simp [set_name, this]",
    "deps": [
     "set_name",
-    "MIN_WRITE_INTERVAL_MS",
     "MAX_NAME_LEN",
+    "MIN_WRITE_INTERVAL_MS",
     "SetName"
    ],
    "spec": []
@@ -42,8 +42,8 @@
    "proof": "theorem unchanged_name_not_written (len : Std.U32) (lw : Option Std.U64) (now : Std.U64)\n    (h : len.val \u2264 64) : set_name true len true lw now = ok .Announce := by\n  have : \u00ac len > MAX_NAME_LEN := by have := max_len_val; scalar_tac\n  simp [set_name, this]",
    "deps": [
     "set_name",
-    "MIN_WRITE_INTERVAL_MS",
     "MAX_NAME_LEN",
+    "MIN_WRITE_INTERVAL_MS",
     "SetName"
    ],
    "spec": []
@@ -56,8 +56,8 @@
    "proof": "theorem writes_spaced (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : set_name b len same lw now = ok .Store) : Spec.write_allowed lw now := by\n  intro t ht\n  subst ht\n  have hi := interval_val\n  by_cases hb : b = true\n  \u00b7 subst hb\n    by_cases hl : len > MAX_NAME_LEN\n    \u00b7 simp [set_name, hl] at h\n    by_cases hs : same = true\n    \u00b7 subst hs; simp [set_name, hl] at h\n    have hs' : same = false := by simpa using hs\n    subst hs'\n    by_cases hw : (core.num.U64.saturating_sub now t).val < MIN_WRITE_INTERVAL_MS.val\n    \u00b7 simp [set_name, hl, lift, hw] at h\n    \u00b7 have hv := sat_sub64_val now t\n      have h1 : 10000 \u2264 (core.num.U64.saturating_sub now t).val := by\n        rw [\u2190 hi]; omega\n      rw [hv] at h1\n      constructor <;> omega\n  \u00b7 have : b = false := by simpa using hb\n    subst this; simp [set_name] at h",
    "deps": [
     "set_name",
-    "MIN_WRITE_INTERVAL_MS",
     "MAX_NAME_LEN",
+    "MIN_WRITE_INTERVAL_MS",
     "SetName"
    ],
    "spec": []
@@ -70,8 +70,8 @@
    "proof": "theorem store_only_valid (b : Bool) (len : Std.U32) (same : Bool) (lw : Option Std.U64) (now : Std.U64)\n    (h : set_name b len same lw now = ok .Store) : b = true \u2227 len.val \u2264 64 \u2227 same = false := by\n  by_cases hb : b = true\n  \u00b7 subst hb\n    by_cases hl : len > MAX_NAME_LEN\n    \u00b7 simp [set_name, hl] at h\n    by_cases hs : same = true\n    \u00b7 subst hs; simp [set_name, hl] at h\n    refine \u27e8rfl, by have := max_len_val; scalar_tac, by simpa using hs\u27e9\n  \u00b7 have : b = false := by simpa using hb\n    subst this; simp [set_name] at h",
    "deps": [
     "set_name",
-    "MIN_WRITE_INTERVAL_MS",
     "MAX_NAME_LEN",
+    "MIN_WRITE_INTERVAL_MS",
     "SetName"
    ],
    "spec": []
@@ -90,48 +90,6 @@
   }
  ],
  "decls": {
-  "SetName": {
-   "kind": "inductive",
-   "rust_path": "chlorophyll_kernel::SetName",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 34,
-   "kernel_code": "pub enum SetName {\n    /// Not for this device, or a name that does not fit: nothing.\n    Ignore,\n    /// Multicast the current name; no flash write.\n    Announce,\n    /// Store the new name (erase + write), then multicast it.\n    Store,\n}",
-   "lean": "@[discriminant isize]\ninductive SetName where\n| Ignore : SetName\n| Announce : SetName\n| Store : SetName",
-   "upstream": [
-    {
-     "file": "pico_2w/src/main.rs",
-     "line": 275,
-     "code": "                        } else if let PacketCommand::SetName(ref name) = packet.command().clone() {\n                            if packet.id() == get_unique_id() {\n                                info!(\"SetName: storing \\\"{}\\\" to NVM\", name.as_str());\n                                cfg.name = name.as_str().try_into().unwrap_or_default();\n                                device_config::save(&mut flash, SETTINGS_OFFSET, ERASE_SIZE as u32, &cfg);\n                                // Multicast confirmation so all servers learn the new name immediately.\n                                let ann = packet_builder.build(PacketCommand::SensorsInfo(Some(cfg.name.as_str().into())));\n                                if let Ok(data) = to_allocvec(&ann) {\n                                    if let Err(e) = socket.send_to(&data, multicast_ep).await {\n                                        warn!(\"SetName confirm send error: {:?}\", e);\n                                    }\n                                }\n                            }\n                        }"
-    }
-   ],
-   "upstream_note": "the outcomes of upstream's SetName branch: ignored (other id), stored and announced; the port adds announce-only"
-  },
-  "datagram_ok": {
-   "kind": "def",
-   "rust_path": "chlorophyll_kernel::datagram_ok",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 44,
-   "kernel_code": "pub fn datagram_ok(len: u32) -> bool {\n    len <= MAX_DATAGRAM\n}",
-   "lean": "def datagram_ok (len : Std.U32) : Result Bool := do\n  ok (len <= MAX_DATAGRAM)",
-   "upstream": [
-    {
-     "file": "pico_2w/src/main.rs",
-     "line": 262,
-     "code": "                    if let Ok(packet) = postcard::from_bytes::<Packet>(&recv_buf[..len]) {"
-    }
-   ],
-   "upstream_note": "the postcard decode of every datagram, which the port does only for datagrams within MAX_DATAGRAM"
-  },
-  "MIN_WRITE_INTERVAL_MS": {
-   "kind": "def",
-   "rust_path": "chlorophyll_kernel::MIN_WRITE_INTERVAL_MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 31,
-   "kernel_code": "pub const MIN_WRITE_INTERVAL_MS: u64 = 10_000;",
-   "lean": "@[global_simps, irreducible] def MIN_WRITE_INTERVAL_MS : Std.U64 := 10000#u64",
-   "upstream": [],
-   "upstream_note": "port-only: upstream writes the config sector on every SetName (pico_2w/src/main.rs:279); the port spaces writes 10 s apart"
-  },
   "MAX_DATAGRAM": {
    "kind": "def",
    "rust_path": "chlorophyll_kernel::MAX_DATAGRAM",
@@ -158,22 +116,6 @@
    ],
    "upstream_note": "upstream decodes up to the 1500-byte receive buffer into its 1 KiB heap; the port bounds what it decodes (128 bytes, a valid packet is at most 85)"
   },
-  "set_name": {
-   "kind": "def",
-   "rust_path": "chlorophyll_kernel::set_name",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 56,
-   "kernel_code": "pub fn set_name(for_me: bool, len: u32, same: bool, last_write: Option<u64>, now: u64) -> SetName {\n    if !for_me || len > MAX_NAME_LEN {\n        return SetName::Ignore;\n    }\n    if same {\n        return SetName::Announce;\n    }\n    match last_write {\n        Some(t) if now.saturating_sub(t) < MIN_WRITE_INTERVAL_MS => SetName::Announce,\n        _ => SetName::Store,\n    }\n}",
-   "lean": "def set_name\n  (for_me : Bool) (len : Std.U32) (same : Bool) (last_write : Option Std.U64)\n  (now : Std.U64) :\n  Result SetName\n  := do\n  if for_me\n  then\n    if len > MAX_NAME_LEN\n    then ok SetName.Ignore\n    else\n      if same\n      then ok SetName.Announce\n      else\n        match last_write with\n        | none => ok SetName.Store\n        | some t =>\n          let i \u2190 lift (core.num.U64.saturating_sub now t)\n          if i < MIN_WRITE_INTERVAL_MS\n          then ok SetName.Announce\n          else ok SetName.Store\n  else ok SetName.Ignore",
-   "upstream": [
-    {
-     "file": "pico_2w/src/main.rs",
-     "line": 275,
-     "code": "                        } else if let PacketCommand::SetName(ref name) = packet.command().clone() {\n                            if packet.id() == get_unique_id() {\n                                info!(\"SetName: storing \\\"{}\\\" to NVM\", name.as_str());\n                                cfg.name = name.as_str().try_into().unwrap_or_default();\n                                device_config::save(&mut flash, SETTINGS_OFFSET, ERASE_SIZE as u32, &cfg);\n                                // Multicast confirmation so all servers learn the new name immediately.\n                                let ann = packet_builder.build(PacketCommand::SensorsInfo(Some(cfg.name.as_str().into())));\n                                if let Ok(data) = to_allocvec(&ann) {\n                                    if let Err(e) = socket.send_to(&data, multicast_ep).await {\n                                        warn!(\"SetName confirm send error: {:?}\", e);\n                                    }\n                                }\n                            }\n                        }"
-    }
-   ],
-   "upstream_note": "the id check, the String<64> conversion (unwrap_or_default), the save and the multicast confirmation, as one decision"
-  },
   "MAX_NAME_LEN": {
    "kind": "def",
    "rust_path": "chlorophyll_kernel::MAX_NAME_LEN",
@@ -194,6 +136,64 @@
     }
    ],
    "upstream_note": "the heapless String<64> a name must fit"
+  },
+  "set_name": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::set_name",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub fn set_name(for_me: bool, len: u32, same: bool, last_write: Option<u64>, now: u64) -> SetName {\n    if !for_me || len > MAX_NAME_LEN {\n        return SetName::Ignore;\n    }\n    if same {\n        return SetName::Announce;\n    }\n    match last_write {\n        Some(t) if now.saturating_sub(t) < MIN_WRITE_INTERVAL_MS => SetName::Announce,\n        _ => SetName::Store,\n    }\n}",
+   "lean": "def set_name\n  (for_me : Bool) (len : Std.U32) (same : Bool) (last_write : Option Std.U64)\n  (now : Std.U64) :\n  Result SetName\n  := do\n  if for_me\n  then\n    if len > MAX_NAME_LEN\n    then ok SetName.Ignore\n    else\n      if same\n      then ok SetName.Announce\n      else\n        match last_write with\n        | none => ok SetName.Store\n        | some t =>\n          let i \u2190 lift (core.num.U64.saturating_sub now t)\n          if i < MIN_WRITE_INTERVAL_MS\n          then ok SetName.Announce\n          else ok SetName.Store\n  else ok SetName.Ignore",
+   "upstream": [
+    {
+     "file": "pico_2w/src/main.rs",
+     "line": 275,
+     "code": "                        } else if let PacketCommand::SetName(ref name) = packet.command().clone() {\n                            if packet.id() == get_unique_id() {\n                                info!(\"SetName: storing \\\"{}\\\" to NVM\", name.as_str());\n                                cfg.name = name.as_str().try_into().unwrap_or_default();\n                                device_config::save(&mut flash, SETTINGS_OFFSET, ERASE_SIZE as u32, &cfg);\n                                // Multicast confirmation so all servers learn the new name immediately.\n                                let ann = packet_builder.build(PacketCommand::SensorsInfo(Some(cfg.name.as_str().into())));\n                                if let Ok(data) = to_allocvec(&ann) {\n                                    if let Err(e) = socket.send_to(&data, multicast_ep).await {\n                                        warn!(\"SetName confirm send error: {:?}\", e);\n                                    }\n                                }\n                            }\n                        }"
+    }
+   ],
+   "upstream_note": "the id check, the String<64> conversion (unwrap_or_default), the save and the multicast confirmation, as one decision"
+  },
+  "MIN_WRITE_INTERVAL_MS": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::MIN_WRITE_INTERVAL_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 31,
+   "kernel_code": "pub const MIN_WRITE_INTERVAL_MS: u64 = 10_000;",
+   "lean": "@[global_simps, irreducible] def MIN_WRITE_INTERVAL_MS : Std.U64 := 10000#u64",
+   "upstream": [],
+   "upstream_note": "port-only: upstream writes the config sector on every SetName (pico_2w/src/main.rs:279); the port spaces writes 10 s apart"
+  },
+  "datagram_ok": {
+   "kind": "def",
+   "rust_path": "chlorophyll_kernel::datagram_ok",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 44,
+   "kernel_code": "pub fn datagram_ok(len: u32) -> bool {\n    len <= MAX_DATAGRAM\n}",
+   "lean": "def datagram_ok (len : Std.U32) : Result Bool := do\n  ok (len <= MAX_DATAGRAM)",
+   "upstream": [
+    {
+     "file": "pico_2w/src/main.rs",
+     "line": 262,
+     "code": "                    if let Ok(packet) = postcard::from_bytes::<Packet>(&recv_buf[..len]) {"
+    }
+   ],
+   "upstream_note": "the postcard decode of every datagram, which the port does only for datagrams within MAX_DATAGRAM"
+  },
+  "SetName": {
+   "kind": "inductive",
+   "rust_path": "chlorophyll_kernel::SetName",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 34,
+   "kernel_code": "pub enum SetName {\n    /// Not for this device, or a name that does not fit: nothing.\n    Ignore,\n    /// Multicast the current name; no flash write.\n    Announce,\n    /// Store the new name (erase + write), then multicast it.\n    Store,\n}",
+   "lean": "@[discriminant isize]\ninductive SetName where\n| Ignore : SetName\n| Announce : SetName\n| Store : SetName",
+   "upstream": [
+    {
+     "file": "pico_2w/src/main.rs",
+     "line": 275,
+     "code": "                        } else if let PacketCommand::SetName(ref name) = packet.command().clone() {\n                            if packet.id() == get_unique_id() {\n                                info!(\"SetName: storing \\\"{}\\\" to NVM\", name.as_str());\n                                cfg.name = name.as_str().try_into().unwrap_or_default();\n                                device_config::save(&mut flash, SETTINGS_OFFSET, ERASE_SIZE as u32, &cfg);\n                                // Multicast confirmation so all servers learn the new name immediately.\n                                let ann = packet_builder.build(PacketCommand::SensorsInfo(Some(cfg.name.as_str().into())));\n                                if let Ok(data) = to_allocvec(&ann) {\n                                    if let Err(e) = socket.send_to(&data, multicast_ep).await {\n                                        warn!(\"SetName confirm send error: {:?}\", e);\n                                    }\n                                }\n                            }\n                        }"
+    }
+   ],
+   "upstream_note": "the outcomes of upstream's SetName branch: ignored (other id), stored and announced; the port adds announce-only"
   }
  },
  "specs": {}

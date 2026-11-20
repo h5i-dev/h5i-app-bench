@@ -13,8 +13,8 @@
    "statement": "theorem begin_requires_token_and_fit (cur : Session) (a h : Bool) (len : Std.U32) (s : Session)\n    (hb : begin cur a h len = ok (some s)) :\n    cur.active = false \u2227 a = true \u2227 h = true \u2227 0 < len.val \u2227 len.val \u2264 876 * 1024 \u2227\n      s.active = true \u2227 s.written.val = 0 \u2227 s.declared = len",
    "proof": "theorem begin_requires_token_and_fit (cur : Session) (a h : Bool) (len : Std.U32) (s : Session)\n    (hb : begin cur a h len = ok (some s)) :\n    cur.active = false \u2227 a = true \u2227 h = true \u2227 0 < len.val \u2227 len.val \u2264 876 * 1024 \u2227\n      s.active = true \u2227 s.written.val = 0 \u2227 s.declared = len := by\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 (begin_spec cur a h len)\n  rw [hb] at hr\n  simp only [Result.ok.injEq] at hr\n  exact hp s hr.symm",
    "deps": [
-    "Session",
     "begin",
+    "Session",
     "ACTIVE_SIZE"
    ],
    "spec": []
@@ -62,8 +62,8 @@
    "statement": "theorem abort_never_completes (s : Session) : (do let t \u2190 abort s; complete t) = ok false",
    "proof": "theorem abort_never_completes (s : Session) : (do let t \u2190 abort s; complete t) = ok false := by\n  first\n    | rfl\n    | (simp only [abort, bind_tc_ok]; unfold complete IDLE; simp)\n    | decide",
    "deps": [
-    "abort",
     "Session",
+    "abort",
     "complete",
     "IDLE"
    ],
@@ -93,6 +93,59 @@
   }
  ],
  "decls": {
+  "chunk": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::chunk",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 66,
+   "kernel_code": "pub fn chunk(s: Session, n: u32) -> Option<(u32, Session)> {\n    if s.active && n > 0 && n <= s.declared - s.written {\n        Some((s.written, Session { active: true, declared: s.declared, written: s.written + n }))\n    } else {\n        None\n    }\n}",
+   "lean": "def chunk\n  (s : Session) (n : Std.U32) : Result (Option (Std.U32 \u00d7 Session)) := do\n  if s.active\n  then\n    if n > 0#u32\n    then\n      let i \u2190 s.declared - s.written\n      if n <= i\n      then\n        let i1 \u2190 s.written + n\n        ok (some (s.written, { s with written := i1 }))\n      else ok none\n    else ok none\n  else ok none",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 99,
+     "code": "\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;"
+    },
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 106,
+     "code": "\t\tlet mut read;\n\t\tloop {\n\t\t\tlet res = select(\n\t\t\t\tDFU_PIPE_DONE_SIGNAL.wait(),\n\t\t\t\tDFU_UPDATE_PIPE.read(&mut buf.0),\n\t\t\t)\n\t\t\t.await;\n\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,\n\t\t\t\tEither::Second(read) => read as u32,\n\t\t\t};\n\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}\n\t\t\toffset += read;\n\t\t}"
+    }
+   ],
+   "upstream_note": "flash.write(offset, ..) then offset += read; upstream writes the whole buffer (U2) and never bounds offset"
+  },
+  "Session": {
+   "kind": "structure",
+   "rust_path": "diy_weather_kernel::Session",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 27,
+   "kernel_code": "pub struct Session {\n    pub active: bool,\n    /// Content-Length of the upload.\n    pub declared: u32,\n    /// Bytes written so far, contiguous from offset 0.\n    pub written: u32,\n}",
+   "lean": "structure Session where\n  active : Bool\n  declared : Std.U32\n  written : Std.U32",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 86,
+     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;\n\n\t\tlet flash = match updater.prepare_update().await {\n\t\t\tOk(flash) => flash,\n\t\t\tErr(e) => {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t};\n\n\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;\n\n\t\tlet mut read;\n\t\tloop {\n\t\t\tlet res = select(\n\t\t\t\tDFU_PIPE_DONE_SIGNAL.wait(),\n\t\t\t\tDFU_UPDATE_PIPE.read(&mut buf.0),\n\t\t\t)\n\t\t\t.await;\n\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,\n\t\t\t\tEither::Second(read) => read as u32,\n\t\t\t};\n\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}\n\t\t\toffset += read;\n\t\t}"
+    }
+   ],
+   "upstream_note": "init_dfu's upload state (the offset local); the port adds the declared Content-Length and an active flag"
+  },
+  "IDLE": {
+   "kind": "def",
+   "rust_path": "diy_weather_kernel::IDLE",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub const IDLE: Session = Session { active: false, declared: 0, written: 0 };",
+   "lean": "@[global_simps, irreducible]\ndef IDLE : Session := { active := false, declared := 0#u32, written := 0#u32 }",
+   "upstream": [
+    {
+     "file": "client/app/src/dfu.rs",
+     "line": 86,
+     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;"
+    }
+   ],
+   "upstream_note": "init_dfu at the top of 'outer, waiting for the first bytes of an upload"
+  },
   "abort": {
    "kind": "def",
    "rust_path": "diy_weather_kernel::abort",
@@ -119,38 +172,6 @@
    ],
    "upstream_note": "write-failure paths back to 'outer; upstream has no abort on disconnect (res? returns, init_dfu keeps the offset: U3)"
   },
-  "Session": {
-   "kind": "structure",
-   "rust_path": "diy_weather_kernel::Session",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 27,
-   "kernel_code": "pub struct Session {\n    pub active: bool,\n    /// Content-Length of the upload.\n    pub declared: u32,\n    /// Bytes written so far, contiguous from offset 0.\n    pub written: u32,\n}",
-   "lean": "structure Session where\n  active : Bool\n  declared : Std.U32\n  written : Std.U32",
-   "upstream": [
-    {
-     "file": "client/app/src/dfu.rs",
-     "line": 86,
-     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;\n\n\t\tlet flash = match updater.prepare_update().await {\n\t\t\tOk(flash) => flash,\n\t\t\tErr(e) => {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue;\n\t\t\t}\n\t\t};\n\n\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;\n\n\t\tlet mut read;\n\t\tloop {\n\t\t\tlet res = select(\n\t\t\t\tDFU_PIPE_DONE_SIGNAL.wait(),\n\t\t\t\tDFU_UPDATE_PIPE.read(&mut buf.0),\n\t\t\t)\n\t\t\t.await;\n\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,\n\t\t\t\tEither::Second(read) => read as u32,\n\t\t\t};\n\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}\n\t\t\toffset += read;\n\t\t}"
-    }
-   ],
-   "upstream_note": "init_dfu's upload state (the offset local); the port adds the declared Content-Length and an active flag"
-  },
-  "confirm_boot": {
-   "kind": "def",
-   "rust_path": "diy_weather_kernel::confirm_boot",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 91,
-   "kernel_code": "pub fn confirm_boot(state_is_swap: bool, up: bool) -> bool {\n    state_is_swap && up\n}",
-   "lean": "def confirm_boot (state_is_swap : Bool) (up : Bool) : Result Bool := do\n  if state_is_swap\n  then ok up\n  else ok false",
-   "upstream": [
-    {
-     "file": "client/app/src/main.rs",
-     "line": 220,
-     "code": "\t// start web server\n\twatchdog.feed();\n\tset_up_and_spawn_webserver(&spawner, net_stack).await;\n\n\t// boot complete, turn off red LED and green on for 0.5s"
-    }
-   ],
-   "upstream_note": "upstream never calls mark_booted (U4); the port confirms where main has brought up the web server"
-  },
   "token_ok": {
    "kind": "def",
    "rust_path": "diy_weather_kernel::token_ok",
@@ -172,21 +193,21 @@
    ],
    "upstream_note": "upstream has no check (U1); guards POST /dfu (DfuUpdateEndpoint), which accepts a body from any client"
   },
-  "IDLE": {
+  "confirm_boot": {
    "kind": "def",
-   "rust_path": "diy_weather_kernel::IDLE",
+   "rust_path": "diy_weather_kernel::confirm_boot",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 35,
-   "kernel_code": "pub const IDLE: Session = Session { active: false, declared: 0, written: 0 };",
-   "lean": "@[global_simps, irreducible]\ndef IDLE : Session := { active := false, declared := 0#u32, written := 0#u32 }",
+   "kernel_line": 91,
+   "kernel_code": "pub fn confirm_boot(state_is_swap: bool, up: bool) -> bool {\n    state_is_swap && up\n}",
+   "lean": "def confirm_boot (state_is_swap : Bool) (up : Bool) : Result Bool := do\n  if state_is_swap\n  then ok up\n  else ok false",
    "upstream": [
     {
-     "file": "client/app/src/dfu.rs",
-     "line": 86,
-     "code": "\t'outer: loop {\n\t\t// wait for data to show up in the pipe (which may be never!)\n\t\tlet mut buf = AlignedBuffer([0; DFU_PIPE_BUFFER_SIZE]);\n\t\tlet size = DFU_UPDATE_PIPE.read(&mut buf.0).await as u32;"
+     "file": "client/app/src/main.rs",
+     "line": 220,
+     "code": "\t// start web server\n\twatchdog.feed();\n\tset_up_and_spawn_webserver(&spawner, net_stack).await;\n\n\t// boot complete, turn off red LED and green on for 0.5s"
     }
    ],
-   "upstream_note": "init_dfu at the top of 'outer, waiting for the first bytes of an upload"
+   "upstream_note": "upstream never calls mark_booted (U4); the port confirms where main has brought up the web server"
   },
   "begin": {
    "kind": "def",
@@ -208,27 +229,6 @@
     }
    ],
    "upstream_note": "start of an upload: endpoint begins streaming, init_dfu prepare_update + first write; upstream has no single-session/length check (U3)"
-  },
-  "chunk": {
-   "kind": "def",
-   "rust_path": "diy_weather_kernel::chunk",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 66,
-   "kernel_code": "pub fn chunk(s: Session, n: u32) -> Option<(u32, Session)> {\n    if s.active && n > 0 && n <= s.declared - s.written {\n        Some((s.written, Session { active: true, declared: s.declared, written: s.written + n }))\n    } else {\n        None\n    }\n}",
-   "lean": "def chunk\n  (s : Session) (n : Std.U32) : Result (Option (Std.U32 \u00d7 Session)) := do\n  if s.active\n  then\n    if n > 0#u32\n    then\n      let i \u2190 s.declared - s.written\n      if n <= i\n      then\n        let i1 \u2190 s.written + n\n        ok (some (s.written, { s with written := i1 }))\n      else ok none\n    else ok none\n  else ok none",
-   "upstream": [
-    {
-     "file": "client/app/src/dfu.rs",
-     "line": 99,
-     "code": "\t\tlet mut offset = 0;\n\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\tcontinue;\n\t\t}\n\t\toffset += size;"
-    },
-    {
-     "file": "client/app/src/dfu.rs",
-     "line": 106,
-     "code": "\t\tlet mut read;\n\t\tloop {\n\t\t\tlet res = select(\n\t\t\t\tDFU_PIPE_DONE_SIGNAL.wait(),\n\t\t\t\tDFU_UPDATE_PIPE.read(&mut buf.0),\n\t\t\t)\n\t\t\t.await;\n\t\t\tread = match res {\n\t\t\t\tEither::First(()) | Either::Second(0) => break,\n\t\t\t\tEither::Second(read) => read as u32,\n\t\t\t};\n\t\t\tif let Err(e) = flash.write(offset, &buf.0).await {\n\t\t\t\tDFU_UPDATE_SIGNAL.signal(DfuUpdateResult::Failure(e.into()));\n\t\t\t\tcontinue 'outer;\n\t\t\t}\n\t\t\toffset += read;\n\t\t}"
-    }
-   ],
-   "upstream_note": "flash.write(offset, ..) then offset += read; upstream writes the whole buffer (U2) and never bounds offset"
   },
   "ACTIVE_SIZE": {
    "kind": "def",

@@ -14,8 +14,8 @@
    "proof": "theorem parse_color_total (s : Slice Std.U8) : \u2203 r, parse_color s = ok r := by\n  obtain \u27e8r, hr, _\u27e9 := (WP.spec_equiv_exists _ _).1 (parse_color_spec s)\n  exact \u27e8r, hr\u27e9",
    "deps": [
     "parse_color",
-    "byte_at",
     "Rgb",
+    "byte_at",
     "hex_value"
    ],
    "spec": []
@@ -63,21 +63,21 @@
    ],
    "upstream_note": "one byte (two hex digits) of hex::decode_to_slice into the RGB8"
   },
-  "parse_color": {
+  "hex_value": {
    "kind": "def",
-   "rust_path": "esp_sign_kernel::parse_color",
+   "rust_path": "esp_sign_kernel::hex_value",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 48,
-   "kernel_code": "pub fn parse_color(s: &[u8]) -> Option<Rgb> {\n    if s.len() != 7 || s[0] >= 0x80 {\n        return None;\n    }\n    // (explicit matches rather than `?`: the same, and plain control flow\n    // for the extraction)\n    let r = match byte_at(s, 1) {\n        Some(v) => v,\n        None => return None,\n    };\n    let g = match byte_at(s, 3) {\n        Some(v) => v,\n        None => return None,\n    };\n    let b = match byte_at(s, 5) {\n        Some(v) => v,\n        None => return None,\n    };\n    Some(Rgb { r, g, b })\n}",
-   "lean": "def parse_color (s : Slice Std.U8) : Result (Option Rgb) := do\n  let i := Slice.len s\n  if i != 7#usize\n  then ok none\n  else\n    let i1 \u2190 Slice.index_usize s 0#usize\n    if i1 >= 128#u8\n    then ok none\n    else\n      let o \u2190 byte_at s 1#usize\n      match o with\n      | none => ok none\n      | some v =>\n        let o1 \u2190 byte_at s 3#usize\n        match o1 with\n        | none => ok none\n        | some v1 =>\n          let o2 \u2190 byte_at s 5#usize\n          match o2 with\n          | none => ok none\n          | some v2 => ok (some { r := v, g := v1, b := v2 })",
+   "kernel_line": 16,
+   "kernel_code": "pub fn hex_value(b: u8) -> u8 {\n    if b >= 48 && b <= 57 {\n        b - 48\n    } else if b >= 97 && b <= 102 {\n        b - 87\n    } else if b >= 65 && b <= 70 {\n        b - 55\n    } else {\n        16\n    }\n}",
+   "lean": "def hex_value (b : Std.U8) : Result Std.U8 := do\n  if b >= 48#u8\n  then\n    if b <= 57#u8\n    then b - 48#u8\n    else\n      if b >= 97#u8\n      then\n        if b <= 102#u8\n        then b - 87#u8\n        else\n          if b >= 65#u8\n          then if b <= 70#u8\n               then b - 55#u8\n               else ok 16#u8\n          else ok 16#u8\n      else\n        if b >= 65#u8\n        then if b <= 70#u8\n             then b - 55#u8\n             else ok 16#u8\n        else ok 16#u8\n  else\n    if b >= 97#u8\n    then\n      if b <= 102#u8\n      then b - 87#u8\n      else\n        if b >= 65#u8\n        then if b <= 70#u8\n             then b - 55#u8\n             else ok 16#u8\n        else ok 16#u8\n    else\n      if b >= 65#u8\n      then if b <= 70#u8\n           then b - 55#u8\n           else ok 16#u8\n      else ok 16#u8",
    "upstream": [
     {
      "file": "src/web.rs",
-     "line": 25,
-     "code": "async fn set_color(Json(data): Json<FormData>) -> Json<&'static str> {\n    let mut rgb = rgb::RGB8::default();\n    hex::decode_to_slice(&data.color[1..], bytemuck::bytes_of_mut(&mut rgb)).unwrap();\n    defmt::info!(\"Setting RGB to: {:?}\", rgb);\n    crate::RGB_CHANNEL.send(rgb).await;\n    Json(\"ok\")\n}"
+     "line": 27,
+     "code": "    hex::decode_to_slice(&data.color[1..], bytemuck::bytes_of_mut(&mut rgb)).unwrap();"
     }
    ],
-   "upstream_note": "set_color's &data.color[1..] + decode_to_slice(..).unwrap(); the port returns None exactly where upstream panics (U1)"
+   "upstream_note": "one hex digit of hex::decode_to_slice (upstream unwraps its error: U1)"
   },
   "Rgb": {
    "kind": "structure",
@@ -100,21 +100,21 @@
    ],
    "upstream_note": "rgb::RGB8, the colour set_color decodes into and sends on RGB_CHANNEL"
   },
-  "hex_value": {
+  "parse_color": {
    "kind": "def",
-   "rust_path": "esp_sign_kernel::hex_value",
+   "rust_path": "esp_sign_kernel::parse_color",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 16,
-   "kernel_code": "pub fn hex_value(b: u8) -> u8 {\n    if b >= 48 && b <= 57 {\n        b - 48\n    } else if b >= 97 && b <= 102 {\n        b - 87\n    } else if b >= 65 && b <= 70 {\n        b - 55\n    } else {\n        16\n    }\n}",
-   "lean": "def hex_value (b : Std.U8) : Result Std.U8 := do\n  if b >= 48#u8\n  then\n    if b <= 57#u8\n    then b - 48#u8\n    else\n      if b >= 97#u8\n      then\n        if b <= 102#u8\n        then b - 87#u8\n        else\n          if b >= 65#u8\n          then if b <= 70#u8\n               then b - 55#u8\n               else ok 16#u8\n          else ok 16#u8\n      else\n        if b >= 65#u8\n        then if b <= 70#u8\n             then b - 55#u8\n             else ok 16#u8\n        else ok 16#u8\n  else\n    if b >= 97#u8\n    then\n      if b <= 102#u8\n      then b - 87#u8\n      else\n        if b >= 65#u8\n        then if b <= 70#u8\n             then b - 55#u8\n             else ok 16#u8\n        else ok 16#u8\n    else\n      if b >= 65#u8\n      then if b <= 70#u8\n           then b - 55#u8\n           else ok 16#u8\n      else ok 16#u8",
+   "kernel_line": 48,
+   "kernel_code": "pub fn parse_color(s: &[u8]) -> Option<Rgb> {\n    if s.len() != 7 || s[0] >= 0x80 {\n        return None;\n    }\n    // (explicit matches rather than `?`: the same, and plain control flow\n    // for the extraction)\n    let r = match byte_at(s, 1) {\n        Some(v) => v,\n        None => return None,\n    };\n    let g = match byte_at(s, 3) {\n        Some(v) => v,\n        None => return None,\n    };\n    let b = match byte_at(s, 5) {\n        Some(v) => v,\n        None => return None,\n    };\n    Some(Rgb { r, g, b })\n}",
+   "lean": "def parse_color (s : Slice Std.U8) : Result (Option Rgb) := do\n  let i := Slice.len s\n  if i != 7#usize\n  then ok none\n  else\n    let i1 \u2190 Slice.index_usize s 0#usize\n    if i1 >= 128#u8\n    then ok none\n    else\n      let o \u2190 byte_at s 1#usize\n      match o with\n      | none => ok none\n      | some v =>\n        let o1 \u2190 byte_at s 3#usize\n        match o1 with\n        | none => ok none\n        | some v1 =>\n          let o2 \u2190 byte_at s 5#usize\n          match o2 with\n          | none => ok none\n          | some v2 => ok (some { r := v, g := v1, b := v2 })",
    "upstream": [
     {
      "file": "src/web.rs",
-     "line": 27,
-     "code": "    hex::decode_to_slice(&data.color[1..], bytemuck::bytes_of_mut(&mut rgb)).unwrap();"
+     "line": 25,
+     "code": "async fn set_color(Json(data): Json<FormData>) -> Json<&'static str> {\n    let mut rgb = rgb::RGB8::default();\n    hex::decode_to_slice(&data.color[1..], bytemuck::bytes_of_mut(&mut rgb)).unwrap();\n    defmt::info!(\"Setting RGB to: {:?}\", rgb);\n    crate::RGB_CHANNEL.send(rgb).await;\n    Json(\"ok\")\n}"
     }
    ],
-   "upstream_note": "one hex digit of hex::decode_to_slice (upstream unwraps its error: U1)"
+   "upstream_note": "set_color's &data.color[1..] + decode_to_slice(..).unwrap(); the port returns None exactly where upstream panics (U1)"
   }
  },
  "specs": {}

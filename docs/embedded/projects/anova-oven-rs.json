@@ -16,27 +16,27 @@
     "Queue",
     "transition",
     "Command",
+    "incr_sat",
+    "Reply",
     "Error",
+    "pop_due",
     "is_offline",
     "next_poll_interval",
     "enqueue",
-    "pop_due",
-    "Reply",
-    "incr_sat",
     "Kind",
+    "remove",
+    "kind_of",
+    "soonest_due",
     "OFFLINE_THRESHOLD",
+    "TIER3_FAILS",
+    "TIER3_SECS",
+    "NORMAL_POLL_SECS",
     "TIER2_SECS",
     "TIER1_FAILS",
-    "TIER3_FAILS",
     "TIER1_SECS",
-    "TIER3_SECS",
     "TIER2_FAILS",
-    "NORMAL_POLL_SECS",
-    "slot",
-    "pending_count",
     "with_slot",
-    "with_pos",
-    "soonest_due"
+    "slot"
    ],
    "spec": []
   },
@@ -47,9 +47,9 @@
    "statement": "theorem inv_reachable {st : Queue} {evs : List (H5iAppLib.Event Unit Command Reply Error)}\n    (h : H5iAppLib.Run tr (id : Queue \u2192 Queue) applyW INIT st evs) : Inv st",
    "proof": "theorem inv_reachable {st : Queue} {evs : List (H5iAppLib.Event Unit Command Reply Error)}\n    (h : H5iAppLib.Run tr (id : Queue \u2192 Queue) applyW INIT st evs) : Inv st :=\n  H5iAppLib.Run.inv Inv (inv_all INIT) (fun _ s _ ws _ _ _ => inv_all (applyW s ws)) h",
    "deps": [
-    "Reply",
     "Queue",
     "Command",
+    "Reply",
     "Error",
     "Kind"
    ],
@@ -71,9 +71,9 @@
     "slot",
     "enqueue",
     "Kind",
-    "pending_count",
     "with_slot",
     "with_pos",
+    "pending_count",
     "bit"
    ],
    "spec": []
@@ -86,12 +86,12 @@
    "proof": "theorem enqueue_never_delays (q : Queue) (k : Kind) (time e : U64) (n : Queue)\n    (hpre : slot q k = ok (some e)) (h : enqueue q k time false = ok n) :\n    \u2203 t, slot n k = ok (some t) \u2227 t.val \u2264 e.val := by\n  unfold enqueue at h\n  rw [H5iAppLib.bind_eq_ok] at h\n  obtain \u27e8o, ho, h\u27e9 := h\n  rw [hpre] at ho\n  simp only [Result.ok.injEq] at ho\n  subst ho\n  simp only at h\n  rw [H5iAppLib.bind_eq_ok] at h\n  obtain \u27e8v, hv, h\u27e9 := h\n  refine \u27e8v, slot_with_slot_eq q k (some v) n h, ?_\u27e9\n  simp only [Bool.false_eq_true, if_false] at hv\n  split at hv <;> (simp only [Result.ok.injEq] at hv; subst hv) <;> scalar_tac",
    "deps": [
     "Queue",
+    "Kind",
     "slot",
     "enqueue",
-    "Kind",
-    "pending_count",
     "with_slot",
     "with_pos",
+    "pending_count",
     "bit"
    ],
    "spec": []
@@ -103,21 +103,21 @@
    "statement": "theorem pop_clears (q : Queue) (now : U64) (n : Queue) (k : Kind)\n    (h : pop_due q now = ok (n, some k)) : slot n k = ok none",
    "proof": "theorem pop_clears (q : Queue) (now : U64) (n : Queue) (k : Kind)\n    (h : pop_due q now = ok (n, some k)) : slot n k = ok none := by\n  unfold pop_due at h\n  rw [H5iAppLib.bind_eq_ok] at h\n  obtain \u27e8o, -, h\u27e9 := h\n  rw [H5iAppLib.bind_eq_ok] at h\n  obtain \u27e8o1, -, h\u27e9 := h\n  cases o1 with\n  | none => simp at h\n  | some k' =>\n    simp only at h\n    rw [H5iAppLib.bind_eq_ok] at h\n    obtain \u27e8q1, hq1, h\u27e9 := h\n    simp only [Result.ok.injEq, Prod.mk.injEq, Option.some.injEq] at h\n    obtain \u27e8hn, hk\u27e9 := h\n    rw [\u2190 hn, \u2190 hk]\n    exact (remove_slots q k' q1 hq1).1",
    "deps": [
-    "pop_due",
     "Queue",
     "slot",
+    "pop_due",
     "Kind",
-    "soonest_due",
-    "kind_of",
     "remove",
-    "consider",
-    "pending_count",
+    "kind_of",
+    "soonest_due",
     "with_slot",
     "fill_hole",
     "pos",
-    "better",
-    "bit",
+    "pending_count",
+    "consider",
     "with_pos",
+    "bit",
+    "better",
     "priority"
    ],
    "spec": []
@@ -133,17 +133,17 @@
     "slot",
     "pop_due",
     "Kind",
-    "soonest_due",
-    "kind_of",
     "remove",
-    "consider",
-    "pending_count",
+    "kind_of",
+    "soonest_due",
     "with_slot",
     "fill_hole",
     "pos",
-    "better",
-    "bit",
+    "pending_count",
+    "consider",
     "with_pos",
+    "bit",
+    "better",
     "priority"
    ],
    "spec": []
@@ -157,19 +157,19 @@
    "deps": [
     "pop_due",
     "Queue",
-    "soonest_due",
+    "remove",
     "kind_of",
     "Kind",
-    "remove",
-    "consider",
-    "pending_count",
+    "soonest_due",
     "with_slot",
     "fill_hole",
     "pos",
-    "better",
-    "bit",
+    "pending_count",
+    "consider",
     "slot",
     "with_pos",
+    "bit",
+    "better",
     "priority"
    ],
    "spec": []
@@ -182,10 +182,10 @@
    "proof": "theorem fill_hole_moves_last (q : Queue) (j : Kind) (last p : U8) (n : Queue) (t : U64)\n    (hj : slot q j = ok (some t)) (hl : pos q j = ok last)\n    (h : fill_hole q j last p = ok n) : pos n j = ok p := by\n  unfold fill_hole at h\n  simp [hj, hl] at h\n  unfold with_pos at h\n  cases j <;> (simp only [Result.ok.injEq] at h; subst h) <;> (unfold pos; simp)\n\n-- ------------------------------------------------------------------\n-- Failure count: counted exactly, as upstream reports it (C).\n-- ------------------------------------------------------------------",
    "deps": [
     "Queue",
-    "slot",
-    "Kind",
     "fill_hole",
     "pos",
+    "Kind",
+    "slot",
     "with_pos"
    ],
    "spec": []
@@ -200,27 +200,27 @@
     "Queue",
     "transition",
     "Reply",
+    "incr_sat",
+    "Command",
     "Error",
+    "pop_due",
     "is_offline",
     "next_poll_interval",
     "enqueue",
-    "pop_due",
-    "incr_sat",
-    "Command",
     "Kind",
+    "remove",
+    "kind_of",
+    "soonest_due",
     "OFFLINE_THRESHOLD",
+    "TIER3_FAILS",
+    "TIER3_SECS",
+    "NORMAL_POLL_SECS",
     "TIER2_SECS",
     "TIER1_FAILS",
-    "TIER3_FAILS",
     "TIER1_SECS",
-    "TIER3_SECS",
     "TIER2_FAILS",
-    "NORMAL_POLL_SECS",
-    "slot",
-    "pending_count",
     "with_slot",
-    "with_pos",
-    "soonest_due"
+    "slot"
    ],
    "spec": []
   },
@@ -233,19 +233,19 @@
    "deps": [
     "pop_due",
     "Queue",
-    "soonest_due",
+    "remove",
     "kind_of",
     "Kind",
-    "remove",
-    "consider",
-    "pending_count",
+    "soonest_due",
     "with_slot",
     "fill_hole",
     "pos",
-    "better",
-    "bit",
+    "pending_count",
+    "consider",
     "slot",
     "with_pos",
+    "bit",
+    "better",
     "priority"
    ],
    "spec": []
@@ -258,29 +258,29 @@
    "proof": "theorem poll_ok_recovers (s : Queue) (n : Queue) (r : Reply)\n    (h : transition s Command.PollOk = ok (.Ok (some n, r))) :\n    n.fail_count.val = 0 \u2227 is_offline n.fail_count = ok false \u2227\n      next_poll_interval n.fail_count = ok 1#u64 := by\n  unfold transition at h\n  simp only [Result.ok.injEq, core.result.Result.Ok.injEq, Prod.mk.injEq,\n    Option.some.injEq] at h\n  obtain \u27e8rfl, -\u27e9 := h\n  refine \u27e8by simp, ?_, ?_\u27e9\n  \u00b7 unfold is_offline; simp [OFFLINE_THRESHOLD]\n  \u00b7 unfold next_poll_interval\n    simp [TIER1_FAILS, TIER2_FAILS, TIER3_FAILS, NORMAL_POLL_SECS]\n\n-- ------------------------------------------------------------------\n-- Scheduler: no eviction, kind retained (S).\n-- ------------------------------------------------------------------",
    "deps": [
     "Queue",
-    "is_offline",
-    "next_poll_interval",
     "transition",
     "Reply",
-    "OFFLINE_THRESHOLD",
-    "TIER2_SECS",
-    "TIER1_FAILS",
-    "TIER3_FAILS",
-    "TIER1_SECS",
-    "TIER3_SECS",
-    "TIER2_FAILS",
-    "NORMAL_POLL_SECS",
-    "Error",
-    "enqueue",
-    "pop_due",
+    "is_offline",
+    "next_poll_interval",
     "incr_sat",
     "Command",
+    "Error",
+    "pop_due",
+    "enqueue",
     "Kind",
-    "slot",
-    "pending_count",
+    "OFFLINE_THRESHOLD",
+    "TIER3_FAILS",
+    "TIER3_SECS",
+    "NORMAL_POLL_SECS",
+    "TIER2_SECS",
+    "TIER1_FAILS",
+    "TIER1_SECS",
+    "TIER2_FAILS",
+    "remove",
+    "kind_of",
+    "soonest_due",
     "with_slot",
-    "with_pos",
-    "soonest_due"
+    "slot"
    ],
    "spec": []
   },
@@ -292,13 +292,13 @@
    "proof": "theorem backoff_bounded (fc : U64) :\n    next_poll_interval fc \u2983 r => 1 \u2264 r.val \u2227 r.val \u2264 30 \u2984 := by\n  unfold next_poll_interval\n  split_ifs <;>\n    simp [TIER1_SECS, TIER2_SECS, TIER3_SECS, NORMAL_POLL_SECS]",
    "deps": [
     "next_poll_interval",
+    "TIER3_FAILS",
+    "TIER3_SECS",
+    "NORMAL_POLL_SECS",
     "TIER2_SECS",
     "TIER1_FAILS",
-    "TIER3_FAILS",
     "TIER1_SECS",
-    "TIER3_SECS",
-    "TIER2_FAILS",
-    "NORMAL_POLL_SECS"
+    "TIER2_FAILS"
    ],
    "spec": []
   },
@@ -310,13 +310,13 @@
    "proof": "theorem backoff_monotone (a b : U64) (hab : a.val \u2264 b.val)\n    (ra rb : U64) (ha : next_poll_interval a = ok ra) (hb : next_poll_interval b = ok rb) :\n    ra.val \u2264 rb.val := by\n  unfold next_poll_interval at ha hb\n  simp only [TIER1_FAILS, TIER2_FAILS, TIER3_FAILS, TIER1_SECS, TIER2_SECS, TIER3_SECS,\n    NORMAL_POLL_SECS, ge_iff_le, UScalar.le_equiv] at ha hb\n  split_ifs at ha <;> split_ifs at hb <;>\n    simp_all <;> scalar_tac\n\n-- ------------------------------------------------------------------\n-- Poll health recovery (S).\n-- ------------------------------------------------------------------",
    "deps": [
     "next_poll_interval",
+    "TIER3_FAILS",
+    "TIER3_SECS",
+    "NORMAL_POLL_SECS",
     "TIER2_SECS",
     "TIER1_FAILS",
-    "TIER3_FAILS",
     "TIER1_SECS",
-    "TIER3_SECS",
-    "TIER2_FAILS",
-    "NORMAL_POLL_SECS"
+    "TIER2_FAILS"
    ],
    "spec": []
   },
@@ -328,10 +328,10 @@
    "proof": "theorem panic_never_masked (las : U32) (wt wf : Bool) :\n    classify_reset true true las wt wf = ok ResetReason.Panic := by\n  unfold classify_reset; simp",
    "deps": [
     "classify_reset",
-    "is_init_stage",
     "ResetReason",
-    "INIT_STAGE_WIFI",
-    "INIT_STAGE_DHCP"
+    "is_init_stage",
+    "INIT_STAGE_DHCP",
+    "INIT_STAGE_WIFI"
    ],
    "spec": []
   },
@@ -343,10 +343,10 @@
    "proof": "theorem coldboot_dominates (pa : Bool) (las : U32) (wt wf : Bool) :\n    classify_reset false pa las wt wf = ok ResetReason.ColdBoot := by\n  unfold classify_reset; simp",
    "deps": [
     "classify_reset",
-    "is_init_stage",
     "ResetReason",
-    "INIT_STAGE_WIFI",
-    "INIT_STAGE_DHCP"
+    "is_init_stage",
+    "INIT_STAGE_DHCP",
+    "INIT_STAGE_WIFI"
    ],
    "spec": []
   },
@@ -357,35 +357,140 @@
    "statement": "theorem sound (s : Queue) (c : Command) (ws : Option Queue) (r : Reply)\n    (hro : read_only c = ok true) (ht : transition s c = ok (.Ok (ws, r))) : ws = none",
    "proof": "theorem sound (s : Queue) (c : Command) (ws : Option Queue) (r : Reply)\n    (hro : read_only c = ok true) (ht : transition s c = ok (.Ok (ws, r))) : ws = none := by\n  cases c <;> simp [read_only] at hro\n  unfold transition at ht\n  obtain \u27e8i, hi\u27e9 := H5iAppLib.ok_of (Proofs.next_poll_interval_spec s.fail_count)\n  obtain \u27e8b, hb\u27e9 := H5iAppLib.ok_of (Proofs.is_offline_spec s.fail_count)\n  simp [hi, hb] at ht\n  exact ht.1.symm",
    "deps": [
-    "Reply",
     "Queue",
     "transition",
-    "read_only",
+    "Reply",
     "Command",
-    "Kind",
+    "read_only",
+    "incr_sat",
     "Error",
+    "pop_due",
     "is_offline",
     "next_poll_interval",
     "enqueue",
-    "pop_due",
-    "incr_sat",
+    "Kind",
+    "remove",
+    "kind_of",
+    "soonest_due",
     "OFFLINE_THRESHOLD",
+    "TIER3_FAILS",
+    "TIER3_SECS",
+    "NORMAL_POLL_SECS",
     "TIER2_SECS",
     "TIER1_FAILS",
-    "TIER3_FAILS",
     "TIER1_SECS",
-    "TIER3_SECS",
     "TIER2_FAILS",
-    "NORMAL_POLL_SECS",
-    "slot",
-    "pending_count",
-    "with_slot",
-    "with_pos"
+    "with_slot"
    ],
    "spec": []
   }
  ],
  "decls": {
+  "incr_sat": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::incr_sat",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 362,
+   "kernel_code": "pub fn incr_sat(x: u64) -> u64 {\n    if x == u64::MAX {\n        x\n    } else {\n        x + 1\n    }\n}",
+   "lean": "def incr_sat (x : Std.U64) : Result Std.U64 := do\n  if x = core.num.U64.MAX\n  then ok x\n  else x + 1#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 181,
+     "code": "        self.snapshot.fail_count = self.snapshot.fail_count.saturating_add(1);"
+    }
+   ],
+   "upstream_note": "fail_count.saturating_add(1) in record_fast_poll_failure"
+  },
+  "TIER3_FAILS": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::TIER3_FAILS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub const TIER3_FAILS: u64 = 15;",
+   "lean": "@[global_simps, irreducible] def TIER3_FAILS : Std.U64 := 15#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 32,
+     "code": "const POLL_BACKOFF_TIER3_FAILS: u64 = 15;"
+    }
+   ],
+   "upstream_note": "POLL_BACKOFF_TIER3_FAILS"
+  },
+  "Command": {
+   "kind": "inductive",
+   "rust_path": "anova_oven_kernel::Command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 371,
+   "kernel_code": "pub enum Command {\n    /// Schedule (or re-time) an event of this kind.\n    Enqueue { kind: Kind, time: u64, replace: bool },\n    /// Pop the soonest-due event at or before `now`.\n    PopDue { now: u64 },\n    /// A `/status` poll succeeded: clear the failure count.\n    PollOk,\n    /// A `/status` poll failed: bump the failure count (saturating).\n    PollFail,\n    /// Report poll health without changing state.\n    Peek,\n}",
+   "lean": "@[discriminant isize]\ninductive Command where\n| Enqueue : Kind \u2192 Std.U64 \u2192 Bool \u2192 Command\n| PopDue : Std.U64 \u2192 Command\n| PollOk : Command\n| PollFail : Command\n| Peek : Command",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 148,
+     "code": "    fn enqueue(&mut self, kind: EventKind, execution_time: Instant, mode: EnqueueMode) {\n        if self\n            .event_queue\n            .enqueue(kind, execution_time, mode)\n            .is_err()\n        {\n            error!(\n                \"Api event queue overflow (capacity {}); dropping event\",\n                EVENT_QUEUE_CAPACITY\n            );\n        }\n    }\n\n    fn next_poll_interval_secs(&self) -> u64 {\n        match self.snapshot.fail_count {\n            n if n >= POLL_BACKOFF_TIER3_FAILS => POLL_BACKOFF_TIER3_SECS,\n            n if n >= POLL_BACKOFF_TIER2_FAILS => POLL_BACKOFF_TIER2_SECS,\n            n if n >= POLL_BACKOFF_TIER1_FAILS => POLL_BACKOFF_TIER1_SECS,\n            _ => NORMAL_POLL_INTERVAL_SECS,\n        }\n    }"
+    },
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 174,
+     "code": "    fn record_fast_poll_success(&mut self) {\n        self.snapshot.fail_count = 0;\n        self.snapshot.last_success_at = Some(Instant::now());\n        crate::persist::record_api_fail_count(0);\n    }\n\n    fn record_fast_poll_failure(&mut self, message: &'static str) {\n        self.snapshot.fail_count = self.snapshot.fail_count.saturating_add(1);\n        crate::persist::record_api_fail_count(self.snapshot.fail_count as u32);\n        warn!(\n            \"{} ({} consecutive fast-poll failures)\",\n            message, self.snapshot.fail_count\n        );\n    }"
+    }
+   ],
+   "upstream_note": "port-only command enum; one variant per upstream queue/health operation (enqueue, pop_due, poll success/failure, interval read)"
+  },
+  "priority": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::priority",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 70,
+   "kernel_code": "pub fn priority(k: Kind) -> u8 {\n    match k {\n        Kind::UserStart => 0,\n        Kind::UserStop => 0,\n        Kind::UserNextStage => 0,\n        Kind::PollStatus => 1,\n        Kind::PollCurrentCook => 1,\n        Kind::PollRecipes => 1,\n    }\n}",
+   "lean": "def priority (k : Kind) : Result Std.U8 := do\n  match k with\n  | Kind.PollStatus => ok 1#u8\n  | Kind.PollCurrentCook => ok 1#u8\n  | Kind.PollRecipes => ok 1#u8\n  | Kind.UserStart => ok 0#u8\n  | Kind.UserStop => ok 0#u8\n  | Kind.UserNextStage => ok 0#u8",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 29,
+     "code": "impl EventKind {\n    /// Lower numbers sort first when tie-breaking equal `execution_time`s.\n    /// Commands (`ApiStart`/`ApiStop`/`ApiNextStage`) outrank polls at the\n    /// same instant.\n    pub fn priority(self) -> u8 {\n        match self {\n            EventKind::ApiStart | EventKind::ApiStop | EventKind::ApiNextStage => 0,\n            _ => 1,\n        }\n    }\n}"
+    }
+   ],
+   "upstream_note": "EventKind::priority"
+  },
+  "bit": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::bit",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 194,
+   "kernel_code": "pub fn bit(s: Option<u64>) -> u8 {\n    match s {\n        None => 0,\n        Some(_) => 1,\n    }\n}",
+   "lean": "def bit (s : Option Std.U64) : Result Std.U8 := do\n  match s with\n  | none => ok 0#u8\n  | some _ => ok 1#u8",
+   "upstream": [],
+   "upstream_note": "port-only helper: 1 if a slot is pending, used to count the vector length"
+  },
+  "INIT_STAGE_DHCP": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::INIT_STAGE_DHCP",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 466,
+   "kernel_code": "pub const INIT_STAGE_DHCP: u32 = 101;",
+   "lean": "@[global_simps, irreducible] def INIT_STAGE_DHCP : Std.U32 := 101#u32",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/reset.rs",
+     "line": 76,
+     "code": "pub const INIT_STAGE_DHCP: u32 = 101;"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "with_slot": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::with_slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 155,
+   "kernel_code": "pub fn with_slot(q: &Queue, k: Kind, v: Option<u64>) -> Queue {\n    let mut n = *q;\n    match k {\n        Kind::PollStatus => n.status = v,\n        Kind::PollCurrentCook => n.cook = v,\n        Kind::PollRecipes => n.recipes = v,\n        Kind::UserStart => n.start = v,\n        Kind::UserStop => n.stop = v,\n        Kind::UserNextStage => n.next = v,\n    }\n    n\n}",
+   "lean": "def with_slot (q : Queue) (k : Kind) (v : Option Std.U64) : Result Queue := do\n  match k with\n  | Kind.PollStatus => ok { q with status := v }\n  | Kind.PollCurrentCook => ok { q with cook := v }\n  | Kind.PollRecipes => ok { q with recipes := v }\n  | Kind.UserStart => ok { q with start := v }\n  | Kind.UserStop => ok { q with stop := v }\n  | Kind.UserNextStage => ok { q with next := v }",
+   "upstream": [],
+   "upstream_note": "port-only setter of the per-kind slot record that replaces the heapless::Vec"
+  },
   "Queue": {
    "kind": "structure",
    "rust_path": "anova_oven_kernel::Queue",
@@ -412,279 +517,6 @@
    ],
    "upstream_note": "EventQueue (heapless::Vec) as one slot + vector index per kind, plus ApiSnapshot.fail_count"
   },
-  "TIER1_SECS": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::TIER1_SECS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 52,
-   "kernel_code": "pub const TIER1_SECS: u64 = 5;",
-   "lean": "@[global_simps, irreducible] def TIER1_SECS : Std.U64 := 5#u64",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 33,
-     "code": "const POLL_BACKOFF_TIER1_SECS: u64 = 5;"
-    }
-   ],
-   "upstream_note": "POLL_BACKOFF_TIER1_SECS"
-  },
-  "soonest_due": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::soonest_due",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 276,
-   "kernel_code": "pub fn soonest_due(q: &Queue, now: u64) -> Option<(u64, Kind, u8)> {\n    let b0 = consider(None, q.status, Kind::PollStatus, q.status_pos, now);\n    let b1 = consider(b0, q.cook, Kind::PollCurrentCook, q.cook_pos, now);\n    let b2 = consider(b1, q.recipes, Kind::PollRecipes, q.recipes_pos, now);\n    let b3 = consider(b2, q.start, Kind::UserStart, q.start_pos, now);\n    let b4 = consider(b3, q.stop, Kind::UserStop, q.stop_pos, now);\n    consider(b4, q.next, Kind::UserNextStage, q.next_pos, now)\n}",
-   "lean": "def soonest_due\n  (q : Queue) (now : Std.U64) :\n  Result (Option (Std.U64 \u00d7 Kind \u00d7 Std.U8))\n  := do\n  let b0 \u2190 consider none q.status Kind.PollStatus q.status_pos now\n  let b1 \u2190 consider b0 q.cook Kind.PollCurrentCook q.cook_pos now\n  let b2 \u2190 consider b1 q.recipes Kind.PollRecipes q.recipes_pos now\n  let b3 \u2190 consider b2 q.start Kind.UserStart q.start_pos now\n  let b4 \u2190 consider b3 q.stop Kind.UserStop q.stop_pos now\n  consider b4 q.next Kind.UserNextStage q.next_pos now",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 106,
-     "code": "    /// Index of the soonest-due event, ordered by `(execution_time, priority)`.\n    /// Returns `None` if the queue is empty. On full ties, `min_by` returns\n    /// the *first* element in vector order \u2014 which is insertion order until\n    /// a `pop_due` calls `swap_remove`, after which vector order is scrambled.\n    pub fn soonest_index(&self) -> Option<usize> {\n        self.events\n            .iter()\n            .enumerate()\n            .min_by(|(_, a), (_, b)| {\n                a.execution_time\n                    .cmp(&b.execution_time)\n                    .then(a.priority.cmp(&b.priority))\n            })\n            .map(|(idx, _)| idx)\n    }"
-    },
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 133,
-     "code": "    pub fn pop_due(&mut self, now: Instant) -> Option<ScheduledEvent> {\n        let idx = self.soonest_index()?;\n        if self.events[idx].execution_time > now {\n            return None;\n        }"
-    }
-   ],
-   "upstream_note": "soonest_index plus pop_due's execution_time <= now check"
-  },
-  "slot": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::slot",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 143,
-   "kernel_code": "pub fn slot(q: &Queue, k: Kind) -> Option<u64> {\n    match k {\n        Kind::PollStatus => q.status,\n        Kind::PollCurrentCook => q.cook,\n        Kind::PollRecipes => q.recipes,\n        Kind::UserStart => q.start,\n        Kind::UserStop => q.stop,\n        Kind::UserNextStage => q.next,\n    }\n}",
-   "lean": "def slot (q : Queue) (k : Kind) : Result (Option Std.U64) := do\n  match k with\n  | Kind.PollStatus => ok q.status\n  | Kind.PollCurrentCook => ok q.cook\n  | Kind.PollRecipes => ok q.recipes\n  | Kind.UserStart => ok q.start\n  | Kind.UserStop => ok q.stop\n  | Kind.UserNextStage => ok q.next",
-   "upstream": [],
-   "upstream_note": "port-only accessor of the per-kind slot record; replaces events.iter().find(kind) lookup"
-  },
-  "pending_count": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::pending_count",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 202,
-   "kernel_code": "pub fn pending_count(q: &Queue) -> u8 {\n    let a = bit(q.status);\n    let b = a + bit(q.cook);\n    let c = b + bit(q.recipes);\n    let d = c + bit(q.start);\n    let e = d + bit(q.stop);\n    e + bit(q.next)\n}",
-   "lean": "def pending_count (q : Queue) : Result Std.U8 := do\n  let a \u2190 bit q.status\n  let i \u2190 bit q.cook\n  let b \u2190 a + i\n  let i1 \u2190 bit q.recipes\n  let c \u2190 b + i1\n  let i2 \u2190 bit q.start\n  let d \u2190 c + i2\n  let i3 \u2190 bit q.stop\n  let e \u2190 d + i3\n  let i4 \u2190 bit q.next\n  e + i4",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 142,
-     "code": "    /// Number of pending events. Useful for tests; the bin doesn't use it.\n    pub fn len(&self) -> usize {\n        self.events.len()\n    }"
-    }
-   ],
-   "upstream_note": "EventQueue::len, computed from the slots"
-  },
-  "with_slot": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::with_slot",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 155,
-   "kernel_code": "pub fn with_slot(q: &Queue, k: Kind, v: Option<u64>) -> Queue {\n    let mut n = *q;\n    match k {\n        Kind::PollStatus => n.status = v,\n        Kind::PollCurrentCook => n.cook = v,\n        Kind::PollRecipes => n.recipes = v,\n        Kind::UserStart => n.start = v,\n        Kind::UserStop => n.stop = v,\n        Kind::UserNextStage => n.next = v,\n    }\n    n\n}",
-   "lean": "def with_slot (q : Queue) (k : Kind) (v : Option Std.U64) : Result Queue := do\n  match k with\n  | Kind.PollStatus => ok { q with status := v }\n  | Kind.PollCurrentCook => ok { q with cook := v }\n  | Kind.PollRecipes => ok { q with recipes := v }\n  | Kind.UserStart => ok { q with start := v }\n  | Kind.UserStop => ok { q with stop := v }\n  | Kind.UserNextStage => ok { q with next := v }",
-   "upstream": [],
-   "upstream_note": "port-only setter of the per-kind slot record that replaces the heapless::Vec"
-  },
-  "Error": {
-   "kind": "inductive",
-   "rust_path": "anova_oven_kernel::Error",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 397,
-   "kernel_code": "pub enum Error {\n    Never,\n}",
-   "lean": "@[discriminant isize]\ninductive Error where\n| Never : Error",
-   "upstream": [],
-   "upstream_note": "port-only; kernel refuses nothing, type mirrors the kernel template"
-  },
-  "TIER2_SECS": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::TIER2_SECS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 53,
-   "kernel_code": "pub const TIER2_SECS: u64 = 15;",
-   "lean": "@[global_simps, irreducible] def TIER2_SECS : Std.U64 := 15#u64",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 34,
-     "code": "const POLL_BACKOFF_TIER2_SECS: u64 = 15;"
-    }
-   ],
-   "upstream_note": "POLL_BACKOFF_TIER2_SECS"
-  },
-  "is_init_stage": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::is_init_stage",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 468,
-   "kernel_code": "pub fn is_init_stage(s: u32) -> bool {\n    s == INIT_STAGE_WIFI || s == INIT_STAGE_DHCP\n}",
-   "lean": "def is_init_stage (s : Std.U32) : Result Bool := do\n  if s = INIT_STAGE_WIFI\n  then ok true\n  else ok (s = INIT_STAGE_DHCP)",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/reset.rs",
-     "line": 78,
-     "code": "pub fn is_init_stage(s: u32) -> bool {\n    matches!(s, INIT_STAGE_WIFI | INIT_STAGE_DHCP)\n}"
-    }
-   ],
-   "upstream_note": ""
-  },
-  "with_pos": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::with_pos",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 181,
-   "kernel_code": "pub fn with_pos(q: &Queue, k: Kind, p: u8) -> Queue {\n    let mut n = *q;\n    match k {\n        Kind::PollStatus => n.status_pos = p,\n        Kind::PollCurrentCook => n.cook_pos = p,\n        Kind::PollRecipes => n.recipes_pos = p,\n        Kind::UserStart => n.start_pos = p,\n        Kind::UserStop => n.stop_pos = p,\n        Kind::UserNextStage => n.next_pos = p,\n    }\n    n\n}",
-   "lean": "def with_pos (q : Queue) (k : Kind) (p : Std.U8) : Result Queue := do\n  match k with\n  | Kind.PollStatus => ok { q with status_pos := p }\n  | Kind.PollCurrentCook => ok { q with cook_pos := p }\n  | Kind.PollRecipes => ok { q with recipes_pos := p }\n  | Kind.UserStart => ok { q with start_pos := p }\n  | Kind.UserStop => ok { q with stop_pos := p }\n  | Kind.UserNextStage => ok { q with next_pos := p }",
-   "upstream": [],
-   "upstream_note": "port-only setter of a kind's index in the modelled heapless::Vec"
-  },
-  "OFFLINE_THRESHOLD": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::OFFLINE_THRESHOLD",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 45,
-   "kernel_code": "pub const OFFLINE_THRESHOLD: u64 = 3;",
-   "lean": "@[global_simps, irreducible] def OFFLINE_THRESHOLD : Std.U64 := 3#u64",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/fsm.rs",
-     "line": 22,
-     "code": "/// Number of consecutive fast-poll failures before we consider the server\n/// offline. Lives here so `ApiSnapshot::is_offline` is self-contained.\npub const OFFLINE_THRESHOLD: u64 = 3;"
-    }
-   ],
-   "upstream_note": ""
-  },
-  "is_offline": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::is_offline",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 355,
-   "kernel_code": "pub fn is_offline(fail_count: u64) -> bool {\n    fail_count >= OFFLINE_THRESHOLD\n}",
-   "lean": "def is_offline (fail_count : Std.U64) : Result Bool := do\n  ok (fail_count >= OFFLINE_THRESHOLD)",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/fsm.rs",
-     "line": 128,
-     "code": "    pub fn is_offline(&self) -> bool {\n        self.fail_count >= OFFLINE_THRESHOLD\n    }"
-    }
-   ],
-   "upstream_note": "ApiSnapshot::is_offline"
-  },
-  "next_poll_interval": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::next_poll_interval",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 342,
-   "kernel_code": "pub fn next_poll_interval(fail_count: u64) -> u64 {\n    if fail_count >= TIER3_FAILS {\n        TIER3_SECS\n    } else if fail_count >= TIER2_FAILS {\n        TIER2_SECS\n    } else if fail_count >= TIER1_FAILS {\n        TIER1_SECS\n    } else {\n        NORMAL_POLL_SECS\n    }\n}",
-   "lean": "def next_poll_interval (fail_count : Std.U64) : Result Std.U64 := do\n  if fail_count >= TIER3_FAILS\n  then ok TIER3_SECS\n  else\n    if fail_count >= TIER2_FAILS\n    then ok TIER2_SECS\n    else\n      if fail_count >= TIER1_FAILS\n      then ok TIER1_SECS\n      else ok NORMAL_POLL_SECS",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 161,
-     "code": "    fn next_poll_interval_secs(&self) -> u64 {\n        match self.snapshot.fail_count {\n            n if n >= POLL_BACKOFF_TIER3_FAILS => POLL_BACKOFF_TIER3_SECS,\n            n if n >= POLL_BACKOFF_TIER2_FAILS => POLL_BACKOFF_TIER2_SECS,\n            n if n >= POLL_BACKOFF_TIER1_FAILS => POLL_BACKOFF_TIER1_SECS,\n            _ => NORMAL_POLL_INTERVAL_SECS,\n        }\n    }"
-    }
-   ],
-   "upstream_note": "ApiRuntime::next_poll_interval_secs, taking fail_count as an argument"
-  },
-  "kind_of": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::kind_of",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 294,
-   "kernel_code": "pub fn kind_of(o: Option<(u64, Kind, u8)>) -> Option<Kind> {\n    match o {\n        None => None,\n        Some(b) => Some(b.1),\n    }\n}",
-   "lean": "def kind_of\n  (o : Option (Std.U64 \u00d7 Kind \u00d7 Std.U8)) : Result (Option Kind) := do\n  match o with\n  | none => ok none\n  | some b => let (_, k, _) := b\n              ok (some k)",
-   "upstream": [],
-   "upstream_note": "port-only projection of the best-due tuple to its kind (upstream returns the ScheduledEvent)"
-  },
-  "ResetReason": {
-   "kind": "inductive",
-   "rust_path": "anova_oven_kernel::ResetReason",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 455,
-   "kernel_code": "pub enum ResetReason {\n    Unknown,\n    ColdBoot,\n    Panic,\n    WatchdogTimeout,\n    WatchdogForced,\n    OtherSoftReset,\n    InitTimeout,\n}",
-   "lean": "@[discriminant isize]\ninductive ResetReason where\n| Unknown : ResetReason\n| ColdBoot : ResetReason\n| Panic : ResetReason\n| WatchdogTimeout : ResetReason\n| WatchdogForced : ResetReason\n| OtherSoftReset : ResetReason\n| InitTimeout : ResetReason",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/reset.rs",
-     "line": 8,
-     "code": "/// What caused the boot we're currently in.\n#[derive(Copy, Clone, Debug, PartialEq, Eq)]\n#[cfg_attr(feature = \"defmt\", derive(defmt::Format))]\n#[cfg_attr(feature = \"serde\", derive(serde::Serialize))]\n#[repr(u32)]\npub enum ResetReason {\n    /// Reserved for invalid stored values \u2014 used when decoding old ring\n    /// entries with values outside the known enum range.\n    Unknown = 0,\n    /// Magic word was invalid \u2014 first boot since power-on, or RAM lost.\n    ColdBoot = 1,\n    /// Previous run hit our `#[panic_handler]` (or a fault handler)\n    /// which then soft-reset the chip.\n    Panic = 2,\n    /// Hardware watchdog timed out (no `feed()` within its window). The\n    /// bin reads the chip's watchdog-reason register to tell this apart\n    /// from a forced reset; the classification here is chip-agnostic.\n    WatchdogTimeout = 3,\n    /// Watchdog was deliberately triggered (a forced reset). Not used by\n    /// our firmware today; present for completeness.\n    WatchdogForced = 4,\n    /// Plain soft reset (or external reset pin) without a panic.\n    /// Shouldn't happen in normal operation.\n    OtherSoftReset = 5,\n    /// A bring-up stage (WiFi join / DHCP) didn't complete within its\n    /// deadline and `reboot_init_timeout()` deliberately reset the board.\n    /// Inferred from the `last_app_state` breadcrumb still being an\n    /// `INIT_STAGE_*` value at the next boot.\n    InitTimeout = 6,\n}"
-    }
-   ],
-   "upstream_note": ""
-  },
-  "enqueue": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::enqueue",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 214,
-   "kernel_code": "pub fn enqueue(q: &Queue, k: Kind, time: u64, replace: bool) -> Queue {\n    match slot(q, k) {\n        None => {\n            let n = with_slot(q, k, Some(time));\n            with_pos(&n, k, pending_count(q))\n        }\n        Some(existing) => {\n            let v = if replace {\n                time\n            } else if existing < time {\n                existing\n            } else {\n                time\n            };\n            with_slot(q, k, Some(v))\n        }\n    }\n}",
-   "lean": "def enqueue\n  (q : Queue) (k : Kind) (time : Std.U64) (replace : Bool) : Result Queue := do\n  let o \u2190 slot q k\n  match o with\n  | none =>\n    let n \u2190 with_slot q k (some time)\n    let i \u2190 pending_count q\n    with_pos n k i\n  | some existing =>\n    let v \u2190\n      if replace\n      then ok time\n      else if existing < time\n           then ok existing\n           else ok time\n    with_slot q k (some v)",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 79,
-     "code": "    /// Insert (or update) an event for `kind`. If an entry of the same kind\n    /// is already pending, its `execution_time` is updated per `mode` and no\n    /// new slot is consumed. Returns `Err(QueueOverflow)` only if the kind\n    /// isn't pending *and* the queue is full.\n    pub fn enqueue(\n        &mut self,\n        kind: EventKind,\n        execution_time: Instant,\n        mode: EnqueueMode,\n    ) -> Result<(), QueueOverflow> {\n        if let Some(existing) = self.events.iter_mut().find(|event| event.kind == kind) {\n            existing.execution_time = match mode {\n                EnqueueMode::PreferEarlier => existing.execution_time.min(execution_time),\n                EnqueueMode::Replace => execution_time,\n            };\n            return Ok(());\n        }\n\n        self.events\n            .push(ScheduledEvent {\n                kind,\n                execution_time,\n                priority: kind.priority(),\n            })\n            .map_err(|_| QueueOverflow)\n    }"
-    }
-   ],
-   "upstream_note": "EventQueue::enqueue; overflow is structurally impossible, so no Result"
-  },
-  "Kind": {
-   "kind": "inductive",
-   "rust_path": "anova_oven_kernel::Kind",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 59,
-   "kernel_code": "pub enum Kind {\n    PollStatus,\n    PollCurrentCook,\n    PollRecipes,\n    UserStart,\n    UserStop,\n    UserNextStage,\n}",
-   "lean": "@[discriminant isize]\ninductive Kind where\n| PollStatus : Kind\n| PollCurrentCook : Kind\n| PollRecipes : Kind\n| UserStart : Kind\n| UserStop : Kind\n| UserNextStage : Kind",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 19,
-     "code": "#[derive(Clone, Copy, Debug, PartialEq, Eq)]\npub enum EventKind {\n    PollStatus,\n    PollCurrentCook,\n    PollRecipes,\n    ApiStart,\n    ApiStop,\n    ApiNextStage,\n}"
-    }
-   ],
-   "upstream_note": "EventKind; ApiStart/ApiStop/ApiNextStage renamed UserStart/UserStop/UserNextStage"
-  },
-  "INIT_STAGE_DHCP": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::INIT_STAGE_DHCP",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 466,
-   "kernel_code": "pub const INIT_STAGE_DHCP: u32 = 101;",
-   "lean": "@[global_simps, irreducible] def INIT_STAGE_DHCP : Std.U32 := 101#u32",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/reset.rs",
-     "line": 76,
-     "code": "pub const INIT_STAGE_DHCP: u32 = 101;"
-    }
-   ],
-   "upstream_note": ""
-  },
-  "read_only": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::read_only",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 442,
-   "kernel_code": "pub fn read_only(cmd: &Command) -> bool {\n    match cmd {\n        Command::Peek => true,\n        _ => false,\n    }\n}",
-   "lean": "def read_only (cmd : Command) : Result Bool := do\n  match cmd with\n  | Command.Enqueue _ _ _ => ok false\n  | Command.PopDue _ => ok false\n  | Command.PollOk => ok false\n  | Command.PollFail => ok false\n  | Command.Peek => ok true",
-   "upstream": [],
-   "upstream_note": "port-only kernel-interface predicate (Peek writes nothing)"
-  },
-  "TIER1_FAILS": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::TIER1_FAILS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 47,
-   "kernel_code": "pub const TIER1_FAILS: u64 = 5;",
-   "lean": "@[global_simps, irreducible] def TIER1_FAILS : Std.U64 := 5#u64",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 30,
-     "code": "const POLL_BACKOFF_TIER1_FAILS: u64 = 5;"
-    }
-   ],
-   "upstream_note": "POLL_BACKOFF_TIER1_FAILS"
-  },
   "remove": {
    "kind": "def",
    "rust_path": "anova_oven_kernel::remove",
@@ -700,59 +532,6 @@
     }
    ],
    "upstream_note": "events.swap_remove(idx) over the slot record"
-  },
-  "TIER3_FAILS": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::TIER3_FAILS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub const TIER3_FAILS: u64 = 15;",
-   "lean": "@[global_simps, irreducible] def TIER3_FAILS : Std.U64 := 15#u64",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 32,
-     "code": "const POLL_BACKOFF_TIER3_FAILS: u64 = 15;"
-    }
-   ],
-   "upstream_note": "POLL_BACKOFF_TIER3_FAILS"
-  },
-  "consider": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::consider",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 252,
-   "kernel_code": "pub fn consider(best: Option<(u64, Kind, u8)>, s: Option<u64>, k: Kind, p: u8, now: u64) -> Option<(u64, Kind, u8)> {\n    match s {\n        None => best,\n        Some(t) => {\n            if t > now {\n                best\n            } else {\n                match best {\n                    None => Some((t, k, p)),\n                    Some(b) => {\n                        if better(t, k, p, b.0, b.1, b.2) {\n                            Some((t, k, p))\n                        } else {\n                            best\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
-   "lean": "def consider\n  (best : Option (Std.U64 \u00d7 Kind \u00d7 Std.U8)) (s : Option Std.U64) (k : Kind)\n  (p : Std.U8) (now : Std.U64) :\n  Result (Option (Std.U64 \u00d7 Kind \u00d7 Std.U8))\n  := do\n  match s with\n  | none => ok best\n  | some t =>\n    if t > now\n    then ok best\n    else\n      match best with\n      | none => ok (some (t, k, p))\n      | some b =>\n        let (i, k1, i1) := b\n        let b1 \u2190 better t k p i k1 i1\n        if b1\n        then ok (some (t, k, p))\n        else ok best",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 110,
-     "code": "    pub fn soonest_index(&self) -> Option<usize> {\n        self.events\n            .iter()\n            .enumerate()\n            .min_by(|(_, a), (_, b)| {\n                a.execution_time\n                    .cmp(&b.execution_time)\n                    .then(a.priority.cmp(&b.priority))\n            })\n            .map(|(idx, _)| idx)\n    }"
-    },
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 133,
-     "code": "    pub fn pop_due(&mut self, now: Instant) -> Option<ScheduledEvent> {\n        let idx = self.soonest_index()?;\n        if self.events[idx].execution_time > now {\n            return None;\n        }"
-    }
-   ],
-   "upstream_note": "one fold step of soonest_index's min_by, filtered by pop_due's due check"
-  },
-  "fill_hole": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::fill_hole",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 303,
-   "kernel_code": "pub fn fill_hole(q: &Queue, j: Kind, last: u8, p: u8) -> Queue {\n    match slot(q, j) {\n        None => *q,\n        Some(_) => {\n            if pos(q, j) == last {\n                with_pos(q, j, p)\n            } else {\n                *q\n            }\n        }\n    }\n}",
-   "lean": "def fill_hole\n  (q : Queue) (j : Kind) (last : Std.U8) (p : Std.U8) : Result Queue := do\n  let o \u2190 slot q j\n  match o with\n  | none => ok q\n  | some _ => let i \u2190 pos q j\n              if i = last\n              then with_pos q j p\n              else ok q",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 139,
-     "code": "        Some(self.events.swap_remove(idx))"
-    }
-   ],
-   "upstream_note": "port-only helper: one kind's share of swap_remove (last element moves into the freed index)"
   },
   "transition": {
    "kind": "def",
@@ -785,53 +564,58 @@
    ],
    "upstream_note": "dispatches to enqueue/pop_due and the record_fast_poll_success/failure fail_count updates"
   },
-  "priority": {
+  "consider": {
    "kind": "def",
-   "rust_path": "anova_oven_kernel::priority",
+   "rust_path": "anova_oven_kernel::consider",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 70,
-   "kernel_code": "pub fn priority(k: Kind) -> u8 {\n    match k {\n        Kind::UserStart => 0,\n        Kind::UserStop => 0,\n        Kind::UserNextStage => 0,\n        Kind::PollStatus => 1,\n        Kind::PollCurrentCook => 1,\n        Kind::PollRecipes => 1,\n    }\n}",
-   "lean": "def priority (k : Kind) : Result Std.U8 := do\n  match k with\n  | Kind.PollStatus => ok 1#u8\n  | Kind.PollCurrentCook => ok 1#u8\n  | Kind.PollRecipes => ok 1#u8\n  | Kind.UserStart => ok 0#u8\n  | Kind.UserStop => ok 0#u8\n  | Kind.UserNextStage => ok 0#u8",
+   "kernel_line": 252,
+   "kernel_code": "pub fn consider(best: Option<(u64, Kind, u8)>, s: Option<u64>, k: Kind, p: u8, now: u64) -> Option<(u64, Kind, u8)> {\n    match s {\n        None => best,\n        Some(t) => {\n            if t > now {\n                best\n            } else {\n                match best {\n                    None => Some((t, k, p)),\n                    Some(b) => {\n                        if better(t, k, p, b.0, b.1, b.2) {\n                            Some((t, k, p))\n                        } else {\n                            best\n                        }\n                    }\n                }\n            }\n        }\n    }\n}",
+   "lean": "def consider\n  (best : Option (Std.U64 \u00d7 Kind \u00d7 Std.U8)) (s : Option Std.U64) (k : Kind)\n  (p : Std.U8) (now : Std.U64) :\n  Result (Option (Std.U64 \u00d7 Kind \u00d7 Std.U8))\n  := do\n  match s with\n  | none => ok best\n  | some t =>\n    if t > now\n    then ok best\n    else\n      match best with\n      | none => ok (some (t, k, p))\n      | some b =>\n        let (i, k1, i1) := b\n        let b1 \u2190 better t k p i k1 i1\n        if b1\n        then ok (some (t, k, p))\n        else ok best",
    "upstream": [
     {
      "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 29,
-     "code": "impl EventKind {\n    /// Lower numbers sort first when tie-breaking equal `execution_time`s.\n    /// Commands (`ApiStart`/`ApiStop`/`ApiNextStage`) outrank polls at the\n    /// same instant.\n    pub fn priority(self) -> u8 {\n        match self {\n            EventKind::ApiStart | EventKind::ApiStop | EventKind::ApiNextStage => 0,\n            _ => 1,\n        }\n    }\n}"
+     "line": 110,
+     "code": "    pub fn soonest_index(&self) -> Option<usize> {\n        self.events\n            .iter()\n            .enumerate()\n            .min_by(|(_, a), (_, b)| {\n                a.execution_time\n                    .cmp(&b.execution_time)\n                    .then(a.priority.cmp(&b.priority))\n            })\n            .map(|(idx, _)| idx)\n    }"
+    },
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 133,
+     "code": "    pub fn pop_due(&mut self, now: Instant) -> Option<ScheduledEvent> {\n        let idx = self.soonest_index()?;\n        if self.events[idx].execution_time > now {\n            return None;\n        }"
     }
    ],
-   "upstream_note": "EventKind::priority"
+   "upstream_note": "one fold step of soonest_index's min_by, filtered by pop_due's due check"
   },
-  "pop_due": {
+  "OFFLINE_THRESHOLD": {
    "kind": "def",
-   "rust_path": "anova_oven_kernel::pop_due",
+   "rust_path": "anova_oven_kernel::OFFLINE_THRESHOLD",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 331,
-   "kernel_code": "pub fn pop_due(q: &Queue, now: u64) -> (Queue, Option<Kind>) {\n    match kind_of(soonest_due(q, now)) {\n        None => (*q, None),\n        Some(k) => (remove(q, k), Some(k)),\n    }\n}",
-   "lean": "def pop_due (q : Queue) (now : Std.U64) : Result (Queue \u00d7 (Option Kind)) := do\n  let o \u2190 soonest_due q now\n  let o1 \u2190 kind_of o\n  match o1 with\n  | none => ok (q, none)\n  | some k => let q1 \u2190 remove q k\n              ok (q1, o1)",
+   "kernel_line": 45,
+   "kernel_code": "pub const OFFLINE_THRESHOLD: u64 = 3;",
+   "lean": "@[global_simps, irreducible] def OFFLINE_THRESHOLD : Std.U64 := 3#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/fsm.rs",
+     "line": 22,
+     "code": "/// Number of consecutive fast-poll failures before we consider the server\n/// offline. Lives here so `ApiSnapshot::is_offline` is self-contained.\npub const OFFLINE_THRESHOLD: u64 = 3;"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "fill_hole": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::fill_hole",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 303,
+   "kernel_code": "pub fn fill_hole(q: &Queue, j: Kind, last: u8, p: u8) -> Queue {\n    match slot(q, j) {\n        None => *q,\n        Some(_) => {\n            if pos(q, j) == last {\n                with_pos(q, j, p)\n            } else {\n                *q\n            }\n        }\n    }\n}",
+   "lean": "def fill_hole\n  (q : Queue) (j : Kind) (last : Std.U8) (p : Std.U8) : Result Queue := do\n  let o \u2190 slot q j\n  match o with\n  | none => ok q\n  | some _ => let i \u2190 pos q j\n              if i = last\n              then with_pos q j p\n              else ok q",
    "upstream": [
     {
      "file": "crates/anova-oven-pico-core/src/scheduler.rs",
-     "line": 131,
-     "code": "    /// Pop the soonest event if its `execution_time <= now`. Removed via\n    /// `swap_remove`, which is O(1) but does not preserve vector order.\n    pub fn pop_due(&mut self, now: Instant) -> Option<ScheduledEvent> {\n        let idx = self.soonest_index()?;\n        if self.events[idx].execution_time > now {\n            return None;\n        }\n\n        Some(self.events.swap_remove(idx))\n    }"
+     "line": 139,
+     "code": "        Some(self.events.swap_remove(idx))"
     }
    ],
-   "upstream_note": "EventQueue::pop_due; returns the popped kind"
-  },
-  "TIER2_FAILS": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::TIER2_FAILS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 48,
-   "kernel_code": "pub const TIER2_FAILS: u64 = 10;",
-   "lean": "@[global_simps, irreducible] def TIER2_FAILS : Std.U64 := 10#u64",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 31,
-     "code": "const POLL_BACKOFF_TIER2_FAILS: u64 = 10;"
-    }
-   ],
-   "upstream_note": "POLL_BACKOFF_TIER2_FAILS"
+   "upstream_note": "port-only helper: one kind's share of swap_remove (last element moves into the freed index)"
   },
   "Reply": {
    "kind": "inductive",
@@ -842,6 +626,58 @@
    "lean": "@[discriminant isize]\ninductive Reply where\n| Queued : Reply\n| Popped : Option Kind \u2192 Reply\n| Health : Std.U64 \u2192 Std.U64 \u2192 Bool \u2192 Reply",
    "upstream": [],
    "upstream_note": "port-only reply type of the kernel transition interface"
+  },
+  "TIER3_SECS": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::TIER3_SECS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub const TIER3_SECS: u64 = 30;",
+   "lean": "@[global_simps, irreducible] def TIER3_SECS : Std.U64 := 30#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 35,
+     "code": "const POLL_BACKOFF_TIER3_SECS: u64 = 30;"
+    }
+   ],
+   "upstream_note": "POLL_BACKOFF_TIER3_SECS"
+  },
+  "Error": {
+   "kind": "inductive",
+   "rust_path": "anova_oven_kernel::Error",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 397,
+   "kernel_code": "pub enum Error {\n    Never,\n}",
+   "lean": "@[discriminant isize]\ninductive Error where\n| Never : Error",
+   "upstream": [],
+   "upstream_note": "port-only; kernel refuses nothing, type mirrors the kernel template"
+  },
+  "ResetReason": {
+   "kind": "inductive",
+   "rust_path": "anova_oven_kernel::ResetReason",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 455,
+   "kernel_code": "pub enum ResetReason {\n    Unknown,\n    ColdBoot,\n    Panic,\n    WatchdogTimeout,\n    WatchdogForced,\n    OtherSoftReset,\n    InitTimeout,\n}",
+   "lean": "@[discriminant isize]\ninductive ResetReason where\n| Unknown : ResetReason\n| ColdBoot : ResetReason\n| Panic : ResetReason\n| WatchdogTimeout : ResetReason\n| WatchdogForced : ResetReason\n| OtherSoftReset : ResetReason\n| InitTimeout : ResetReason",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/reset.rs",
+     "line": 8,
+     "code": "/// What caused the boot we're currently in.\n#[derive(Copy, Clone, Debug, PartialEq, Eq)]\n#[cfg_attr(feature = \"defmt\", derive(defmt::Format))]\n#[cfg_attr(feature = \"serde\", derive(serde::Serialize))]\n#[repr(u32)]\npub enum ResetReason {\n    /// Reserved for invalid stored values \u2014 used when decoding old ring\n    /// entries with values outside the known enum range.\n    Unknown = 0,\n    /// Magic word was invalid \u2014 first boot since power-on, or RAM lost.\n    ColdBoot = 1,\n    /// Previous run hit our `#[panic_handler]` (or a fault handler)\n    /// which then soft-reset the chip.\n    Panic = 2,\n    /// Hardware watchdog timed out (no `feed()` within its window). The\n    /// bin reads the chip's watchdog-reason register to tell this apart\n    /// from a forced reset; the classification here is chip-agnostic.\n    WatchdogTimeout = 3,\n    /// Watchdog was deliberately triggered (a forced reset). Not used by\n    /// our firmware today; present for completeness.\n    WatchdogForced = 4,\n    /// Plain soft reset (or external reset pin) without a panic.\n    /// Shouldn't happen in normal operation.\n    OtherSoftReset = 5,\n    /// A bring-up stage (WiFi join / DHCP) didn't complete within its\n    /// deadline and `reboot_init_timeout()` deliberately reset the board.\n    /// Inferred from the `last_app_state` breadcrumb still being an\n    /// `INIT_STAGE_*` value at the next boot.\n    InitTimeout = 6,\n}"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "pos": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::pos",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 169,
+   "kernel_code": "pub fn pos(q: &Queue, k: Kind) -> u8 {\n    match k {\n        Kind::PollStatus => q.status_pos,\n        Kind::PollCurrentCook => q.cook_pos,\n        Kind::PollRecipes => q.recipes_pos,\n        Kind::UserStart => q.start_pos,\n        Kind::UserStop => q.stop_pos,\n        Kind::UserNextStage => q.next_pos,\n    }\n}",
+   "lean": "def pos (q : Queue) (k : Kind) : Result Std.U8 := do\n  match k with\n  | Kind.PollStatus => ok q.status_pos\n  | Kind.PollCurrentCook => ok q.cook_pos\n  | Kind.PollRecipes => ok q.recipes_pos\n  | Kind.UserStart => ok q.start_pos\n  | Kind.UserStop => ok q.stop_pos\n  | Kind.UserNextStage => ok q.next_pos",
+   "upstream": [],
+   "upstream_note": "port-only accessor of a kind's index in the modelled heapless::Vec"
   },
   "NORMAL_POLL_SECS": {
    "kind": "def",
@@ -859,37 +695,194 @@
    ],
    "upstream_note": "NORMAL_POLL_INTERVAL_SECS"
   },
-  "classify_reset": {
+  "TIER2_SECS": {
    "kind": "def",
-   "rust_path": "anova_oven_kernel::classify_reset",
+   "rust_path": "anova_oven_kernel::TIER2_SECS",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 504,
-   "kernel_code": "pub fn classify_reset(\n    magic_was_valid: bool,\n    panic_count_advanced: bool,\n    last_app_state: u32,\n    watchdog_timer: bool,\n    watchdog_force: bool,\n) -> ResetReason {\n    if !magic_was_valid {\n        ResetReason::ColdBoot\n    } else if panic_count_advanced {\n        ResetReason::Panic\n    } else if watchdog_timer {\n        ResetReason::WatchdogTimeout\n    } else if watchdog_force {\n        ResetReason::WatchdogForced\n    } else if is_init_stage(last_app_state) {\n        ResetReason::InitTimeout\n    } else {\n        ResetReason::OtherSoftReset\n    }\n}",
-   "lean": "def classify_reset\n  (magic_was_valid : Bool) (panic_count_advanced : Bool)\n  (last_app_state : Std.U32) (watchdog_timer : Bool) (watchdog_force : Bool) :\n  Result ResetReason\n  := do\n  if magic_was_valid\n  then\n    if panic_count_advanced\n    then ok ResetReason.Panic\n    else\n      if watchdog_timer\n      then ok ResetReason.WatchdogTimeout\n      else\n        if watchdog_force\n        then ok ResetReason.WatchdogForced\n        else\n          let b \u2190 is_init_stage last_app_state\n          if b\n          then ok ResetReason.InitTimeout\n          else ok ResetReason.OtherSoftReset\n  else ok ResetReason.ColdBoot",
-   "upstream": [
-    {
-     "file": "crates/anova-oven-pico-core/src/reset.rs",
-     "line": 115,
-     "code": "pub fn classify_reset(\n    magic_was_valid: bool,\n    panic_count_advanced: bool,\n    last_app_state: u32,\n    watchdog_timer: bool,\n    watchdog_force: bool,\n) -> ResetReason {\n    if !magic_was_valid {\n        ResetReason::ColdBoot\n    } else if panic_count_advanced {\n        ResetReason::Panic\n    } else if watchdog_timer {\n        ResetReason::WatchdogTimeout\n    } else if watchdog_force {\n        ResetReason::WatchdogForced\n    } else if is_init_stage(last_app_state) {\n        ResetReason::InitTimeout\n    } else {\n        ResetReason::OtherSoftReset\n    }\n}"
-    }
-   ],
-   "upstream_note": ""
-  },
-  "incr_sat": {
-   "kind": "def",
-   "rust_path": "anova_oven_kernel::incr_sat",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 362,
-   "kernel_code": "pub fn incr_sat(x: u64) -> u64 {\n    if x == u64::MAX {\n        x\n    } else {\n        x + 1\n    }\n}",
-   "lean": "def incr_sat (x : Std.U64) : Result Std.U64 := do\n  if x = core.num.U64.MAX\n  then ok x\n  else x + 1#u64",
+   "kernel_line": 53,
+   "kernel_code": "pub const TIER2_SECS: u64 = 15;",
+   "lean": "@[global_simps, irreducible] def TIER2_SECS : Std.U64 := 15#u64",
    "upstream": [
     {
      "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 181,
-     "code": "        self.snapshot.fail_count = self.snapshot.fail_count.saturating_add(1);"
+     "line": 34,
+     "code": "const POLL_BACKOFF_TIER2_SECS: u64 = 15;"
     }
    ],
-   "upstream_note": "fail_count.saturating_add(1) in record_fast_poll_failure"
+   "upstream_note": "POLL_BACKOFF_TIER2_SECS"
+  },
+  "kind_of": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::kind_of",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 294,
+   "kernel_code": "pub fn kind_of(o: Option<(u64, Kind, u8)>) -> Option<Kind> {\n    match o {\n        None => None,\n        Some(b) => Some(b.1),\n    }\n}",
+   "lean": "def kind_of\n  (o : Option (Std.U64 \u00d7 Kind \u00d7 Std.U8)) : Result (Option Kind) := do\n  match o with\n  | none => ok none\n  | some b => let (_, k, _) := b\n              ok (some k)",
+   "upstream": [],
+   "upstream_note": "port-only projection of the best-due tuple to its kind (upstream returns the ScheduledEvent)"
+  },
+  "TIER1_FAILS": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::TIER1_FAILS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 47,
+   "kernel_code": "pub const TIER1_FAILS: u64 = 5;",
+   "lean": "@[global_simps, irreducible] def TIER1_FAILS : Std.U64 := 5#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 30,
+     "code": "const POLL_BACKOFF_TIER1_FAILS: u64 = 5;"
+    }
+   ],
+   "upstream_note": "POLL_BACKOFF_TIER1_FAILS"
+  },
+  "TIER1_SECS": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::TIER1_SECS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 52,
+   "kernel_code": "pub const TIER1_SECS: u64 = 5;",
+   "lean": "@[global_simps, irreducible] def TIER1_SECS : Std.U64 := 5#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 33,
+     "code": "const POLL_BACKOFF_TIER1_SECS: u64 = 5;"
+    }
+   ],
+   "upstream_note": "POLL_BACKOFF_TIER1_SECS"
+  },
+  "TIER2_FAILS": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::TIER2_FAILS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 48,
+   "kernel_code": "pub const TIER2_FAILS: u64 = 10;",
+   "lean": "@[global_simps, irreducible] def TIER2_FAILS : Std.U64 := 10#u64",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico/src/api_client.rs",
+     "line": 31,
+     "code": "const POLL_BACKOFF_TIER2_FAILS: u64 = 10;"
+    }
+   ],
+   "upstream_note": "POLL_BACKOFF_TIER2_FAILS"
+  },
+  "pop_due": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::pop_due",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 331,
+   "kernel_code": "pub fn pop_due(q: &Queue, now: u64) -> (Queue, Option<Kind>) {\n    match kind_of(soonest_due(q, now)) {\n        None => (*q, None),\n        Some(k) => (remove(q, k), Some(k)),\n    }\n}",
+   "lean": "def pop_due (q : Queue) (now : Std.U64) : Result (Queue \u00d7 (Option Kind)) := do\n  let o \u2190 soonest_due q now\n  let o1 \u2190 kind_of o\n  match o1 with\n  | none => ok (q, none)\n  | some k => let q1 \u2190 remove q k\n              ok (q1, o1)",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 131,
+     "code": "    /// Pop the soonest event if its `execution_time <= now`. Removed via\n    /// `swap_remove`, which is O(1) but does not preserve vector order.\n    pub fn pop_due(&mut self, now: Instant) -> Option<ScheduledEvent> {\n        let idx = self.soonest_index()?;\n        if self.events[idx].execution_time > now {\n            return None;\n        }\n\n        Some(self.events.swap_remove(idx))\n    }"
+    }
+   ],
+   "upstream_note": "EventQueue::pop_due; returns the popped kind"
+  },
+  "Kind": {
+   "kind": "inductive",
+   "rust_path": "anova_oven_kernel::Kind",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 59,
+   "kernel_code": "pub enum Kind {\n    PollStatus,\n    PollCurrentCook,\n    PollRecipes,\n    UserStart,\n    UserStop,\n    UserNextStage,\n}",
+   "lean": "@[discriminant isize]\ninductive Kind where\n| PollStatus : Kind\n| PollCurrentCook : Kind\n| PollRecipes : Kind\n| UserStart : Kind\n| UserStop : Kind\n| UserNextStage : Kind",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 19,
+     "code": "#[derive(Clone, Copy, Debug, PartialEq, Eq)]\npub enum EventKind {\n    PollStatus,\n    PollCurrentCook,\n    PollRecipes,\n    ApiStart,\n    ApiStop,\n    ApiNextStage,\n}"
+    }
+   ],
+   "upstream_note": "EventKind; ApiStart/ApiStop/ApiNextStage renamed UserStart/UserStop/UserNextStage"
+  },
+  "soonest_due": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::soonest_due",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 276,
+   "kernel_code": "pub fn soonest_due(q: &Queue, now: u64) -> Option<(u64, Kind, u8)> {\n    let b0 = consider(None, q.status, Kind::PollStatus, q.status_pos, now);\n    let b1 = consider(b0, q.cook, Kind::PollCurrentCook, q.cook_pos, now);\n    let b2 = consider(b1, q.recipes, Kind::PollRecipes, q.recipes_pos, now);\n    let b3 = consider(b2, q.start, Kind::UserStart, q.start_pos, now);\n    let b4 = consider(b3, q.stop, Kind::UserStop, q.stop_pos, now);\n    consider(b4, q.next, Kind::UserNextStage, q.next_pos, now)\n}",
+   "lean": "def soonest_due\n  (q : Queue) (now : Std.U64) :\n  Result (Option (Std.U64 \u00d7 Kind \u00d7 Std.U8))\n  := do\n  let b0 \u2190 consider none q.status Kind.PollStatus q.status_pos now\n  let b1 \u2190 consider b0 q.cook Kind.PollCurrentCook q.cook_pos now\n  let b2 \u2190 consider b1 q.recipes Kind.PollRecipes q.recipes_pos now\n  let b3 \u2190 consider b2 q.start Kind.UserStart q.start_pos now\n  let b4 \u2190 consider b3 q.stop Kind.UserStop q.stop_pos now\n  consider b4 q.next Kind.UserNextStage q.next_pos now",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 106,
+     "code": "    /// Index of the soonest-due event, ordered by `(execution_time, priority)`.\n    /// Returns `None` if the queue is empty. On full ties, `min_by` returns\n    /// the *first* element in vector order \u2014 which is insertion order until\n    /// a `pop_due` calls `swap_remove`, after which vector order is scrambled.\n    pub fn soonest_index(&self) -> Option<usize> {\n        self.events\n            .iter()\n            .enumerate()\n            .min_by(|(_, a), (_, b)| {\n                a.execution_time\n                    .cmp(&b.execution_time)\n                    .then(a.priority.cmp(&b.priority))\n            })\n            .map(|(idx, _)| idx)\n    }"
+    },
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 133,
+     "code": "    pub fn pop_due(&mut self, now: Instant) -> Option<ScheduledEvent> {\n        let idx = self.soonest_index()?;\n        if self.events[idx].execution_time > now {\n            return None;\n        }"
+    }
+   ],
+   "upstream_note": "soonest_index plus pop_due's execution_time <= now check"
+  },
+  "read_only": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::read_only",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 442,
+   "kernel_code": "pub fn read_only(cmd: &Command) -> bool {\n    match cmd {\n        Command::Peek => true,\n        _ => false,\n    }\n}",
+   "lean": "def read_only (cmd : Command) : Result Bool := do\n  match cmd with\n  | Command.Enqueue _ _ _ => ok false\n  | Command.PopDue _ => ok false\n  | Command.PollOk => ok false\n  | Command.PollFail => ok false\n  | Command.Peek => ok true",
+   "upstream": [],
+   "upstream_note": "port-only kernel-interface predicate (Peek writes nothing)"
+  },
+  "is_offline": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::is_offline",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 355,
+   "kernel_code": "pub fn is_offline(fail_count: u64) -> bool {\n    fail_count >= OFFLINE_THRESHOLD\n}",
+   "lean": "def is_offline (fail_count : Std.U64) : Result Bool := do\n  ok (fail_count >= OFFLINE_THRESHOLD)",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/fsm.rs",
+     "line": 128,
+     "code": "    pub fn is_offline(&self) -> bool {\n        self.fail_count >= OFFLINE_THRESHOLD\n    }"
+    }
+   ],
+   "upstream_note": "ApiSnapshot::is_offline"
+  },
+  "slot": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::slot",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 143,
+   "kernel_code": "pub fn slot(q: &Queue, k: Kind) -> Option<u64> {\n    match k {\n        Kind::PollStatus => q.status,\n        Kind::PollCurrentCook => q.cook,\n        Kind::PollRecipes => q.recipes,\n        Kind::UserStart => q.start,\n        Kind::UserStop => q.stop,\n        Kind::UserNextStage => q.next,\n    }\n}",
+   "lean": "def slot (q : Queue) (k : Kind) : Result (Option Std.U64) := do\n  match k with\n  | Kind.PollStatus => ok q.status\n  | Kind.PollCurrentCook => ok q.cook\n  | Kind.PollRecipes => ok q.recipes\n  | Kind.UserStart => ok q.start\n  | Kind.UserStop => ok q.stop\n  | Kind.UserNextStage => ok q.next",
+   "upstream": [],
+   "upstream_note": "port-only accessor of the per-kind slot record; replaces events.iter().find(kind) lookup"
+  },
+  "with_pos": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::with_pos",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 181,
+   "kernel_code": "pub fn with_pos(q: &Queue, k: Kind, p: u8) -> Queue {\n    let mut n = *q;\n    match k {\n        Kind::PollStatus => n.status_pos = p,\n        Kind::PollCurrentCook => n.cook_pos = p,\n        Kind::PollRecipes => n.recipes_pos = p,\n        Kind::UserStart => n.start_pos = p,\n        Kind::UserStop => n.stop_pos = p,\n        Kind::UserNextStage => n.next_pos = p,\n    }\n    n\n}",
+   "lean": "def with_pos (q : Queue) (k : Kind) (p : Std.U8) : Result Queue := do\n  match k with\n  | Kind.PollStatus => ok { q with status_pos := p }\n  | Kind.PollCurrentCook => ok { q with cook_pos := p }\n  | Kind.PollRecipes => ok { q with recipes_pos := p }\n  | Kind.UserStart => ok { q with start_pos := p }\n  | Kind.UserStop => ok { q with stop_pos := p }\n  | Kind.UserNextStage => ok { q with next_pos := p }",
+   "upstream": [],
+   "upstream_note": "port-only setter of a kind's index in the modelled heapless::Vec"
+  },
+  "is_init_stage": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::is_init_stage",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 468,
+   "kernel_code": "pub fn is_init_stage(s: u32) -> bool {\n    s == INIT_STAGE_WIFI || s == INIT_STAGE_DHCP\n}",
+   "lean": "def is_init_stage (s : Std.U32) : Result Bool := do\n  if s = INIT_STAGE_WIFI\n  then ok true\n  else ok (s = INIT_STAGE_DHCP)",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/reset.rs",
+     "line": 78,
+     "code": "pub fn is_init_stage(s: u32) -> bool {\n    matches!(s, INIT_STAGE_WIFI | INIT_STAGE_DHCP)\n}"
+    }
+   ],
+   "upstream_note": ""
   },
   "better": {
    "kind": "def",
@@ -923,62 +916,69 @@
    ],
    "upstream_note": ""
   },
-  "pos": {
+  "classify_reset": {
    "kind": "def",
-   "rust_path": "anova_oven_kernel::pos",
+   "rust_path": "anova_oven_kernel::classify_reset",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 169,
-   "kernel_code": "pub fn pos(q: &Queue, k: Kind) -> u8 {\n    match k {\n        Kind::PollStatus => q.status_pos,\n        Kind::PollCurrentCook => q.cook_pos,\n        Kind::PollRecipes => q.recipes_pos,\n        Kind::UserStart => q.start_pos,\n        Kind::UserStop => q.stop_pos,\n        Kind::UserNextStage => q.next_pos,\n    }\n}",
-   "lean": "def pos (q : Queue) (k : Kind) : Result Std.U8 := do\n  match k with\n  | Kind.PollStatus => ok q.status_pos\n  | Kind.PollCurrentCook => ok q.cook_pos\n  | Kind.PollRecipes => ok q.recipes_pos\n  | Kind.UserStart => ok q.start_pos\n  | Kind.UserStop => ok q.stop_pos\n  | Kind.UserNextStage => ok q.next_pos",
-   "upstream": [],
-   "upstream_note": "port-only accessor of a kind's index in the modelled heapless::Vec"
+   "kernel_line": 504,
+   "kernel_code": "pub fn classify_reset(\n    magic_was_valid: bool,\n    panic_count_advanced: bool,\n    last_app_state: u32,\n    watchdog_timer: bool,\n    watchdog_force: bool,\n) -> ResetReason {\n    if !magic_was_valid {\n        ResetReason::ColdBoot\n    } else if panic_count_advanced {\n        ResetReason::Panic\n    } else if watchdog_timer {\n        ResetReason::WatchdogTimeout\n    } else if watchdog_force {\n        ResetReason::WatchdogForced\n    } else if is_init_stage(last_app_state) {\n        ResetReason::InitTimeout\n    } else {\n        ResetReason::OtherSoftReset\n    }\n}",
+   "lean": "def classify_reset\n  (magic_was_valid : Bool) (panic_count_advanced : Bool)\n  (last_app_state : Std.U32) (watchdog_timer : Bool) (watchdog_force : Bool) :\n  Result ResetReason\n  := do\n  if magic_was_valid\n  then\n    if panic_count_advanced\n    then ok ResetReason.Panic\n    else\n      if watchdog_timer\n      then ok ResetReason.WatchdogTimeout\n      else\n        if watchdog_force\n        then ok ResetReason.WatchdogForced\n        else\n          let b \u2190 is_init_stage last_app_state\n          if b\n          then ok ResetReason.InitTimeout\n          else ok ResetReason.OtherSoftReset\n  else ok ResetReason.ColdBoot",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/reset.rs",
+     "line": 115,
+     "code": "pub fn classify_reset(\n    magic_was_valid: bool,\n    panic_count_advanced: bool,\n    last_app_state: u32,\n    watchdog_timer: bool,\n    watchdog_force: bool,\n) -> ResetReason {\n    if !magic_was_valid {\n        ResetReason::ColdBoot\n    } else if panic_count_advanced {\n        ResetReason::Panic\n    } else if watchdog_timer {\n        ResetReason::WatchdogTimeout\n    } else if watchdog_force {\n        ResetReason::WatchdogForced\n    } else if is_init_stage(last_app_state) {\n        ResetReason::InitTimeout\n    } else {\n        ResetReason::OtherSoftReset\n    }\n}"
+    }
+   ],
+   "upstream_note": ""
   },
-  "TIER3_SECS": {
+  "next_poll_interval": {
    "kind": "def",
-   "rust_path": "anova_oven_kernel::TIER3_SECS",
+   "rust_path": "anova_oven_kernel::next_poll_interval",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 54,
-   "kernel_code": "pub const TIER3_SECS: u64 = 30;",
-   "lean": "@[global_simps, irreducible] def TIER3_SECS : Std.U64 := 30#u64",
+   "kernel_line": 342,
+   "kernel_code": "pub fn next_poll_interval(fail_count: u64) -> u64 {\n    if fail_count >= TIER3_FAILS {\n        TIER3_SECS\n    } else if fail_count >= TIER2_FAILS {\n        TIER2_SECS\n    } else if fail_count >= TIER1_FAILS {\n        TIER1_SECS\n    } else {\n        NORMAL_POLL_SECS\n    }\n}",
+   "lean": "def next_poll_interval (fail_count : Std.U64) : Result Std.U64 := do\n  if fail_count >= TIER3_FAILS\n  then ok TIER3_SECS\n  else\n    if fail_count >= TIER2_FAILS\n    then ok TIER2_SECS\n    else\n      if fail_count >= TIER1_FAILS\n      then ok TIER1_SECS\n      else ok NORMAL_POLL_SECS",
    "upstream": [
     {
      "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 35,
-     "code": "const POLL_BACKOFF_TIER3_SECS: u64 = 30;"
+     "line": 161,
+     "code": "    fn next_poll_interval_secs(&self) -> u64 {\n        match self.snapshot.fail_count {\n            n if n >= POLL_BACKOFF_TIER3_FAILS => POLL_BACKOFF_TIER3_SECS,\n            n if n >= POLL_BACKOFF_TIER2_FAILS => POLL_BACKOFF_TIER2_SECS,\n            n if n >= POLL_BACKOFF_TIER1_FAILS => POLL_BACKOFF_TIER1_SECS,\n            _ => NORMAL_POLL_INTERVAL_SECS,\n        }\n    }"
     }
    ],
-   "upstream_note": "POLL_BACKOFF_TIER3_SECS"
+   "upstream_note": "ApiRuntime::next_poll_interval_secs, taking fail_count as an argument"
   },
-  "bit": {
+  "pending_count": {
    "kind": "def",
-   "rust_path": "anova_oven_kernel::bit",
+   "rust_path": "anova_oven_kernel::pending_count",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 194,
-   "kernel_code": "pub fn bit(s: Option<u64>) -> u8 {\n    match s {\n        None => 0,\n        Some(_) => 1,\n    }\n}",
-   "lean": "def bit (s : Option Std.U64) : Result Std.U8 := do\n  match s with\n  | none => ok 0#u8\n  | some _ => ok 1#u8",
-   "upstream": [],
-   "upstream_note": "port-only helper: 1 if a slot is pending, used to count the vector length"
-  },
-  "Command": {
-   "kind": "inductive",
-   "rust_path": "anova_oven_kernel::Command",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 371,
-   "kernel_code": "pub enum Command {\n    /// Schedule (or re-time) an event of this kind.\n    Enqueue { kind: Kind, time: u64, replace: bool },\n    /// Pop the soonest-due event at or before `now`.\n    PopDue { now: u64 },\n    /// A `/status` poll succeeded: clear the failure count.\n    PollOk,\n    /// A `/status` poll failed: bump the failure count (saturating).\n    PollFail,\n    /// Report poll health without changing state.\n    Peek,\n}",
-   "lean": "@[discriminant isize]\ninductive Command where\n| Enqueue : Kind \u2192 Std.U64 \u2192 Bool \u2192 Command\n| PopDue : Std.U64 \u2192 Command\n| PollOk : Command\n| PollFail : Command\n| Peek : Command",
+   "kernel_line": 202,
+   "kernel_code": "pub fn pending_count(q: &Queue) -> u8 {\n    let a = bit(q.status);\n    let b = a + bit(q.cook);\n    let c = b + bit(q.recipes);\n    let d = c + bit(q.start);\n    let e = d + bit(q.stop);\n    e + bit(q.next)\n}",
+   "lean": "def pending_count (q : Queue) : Result Std.U8 := do\n  let a \u2190 bit q.status\n  let i \u2190 bit q.cook\n  let b \u2190 a + i\n  let i1 \u2190 bit q.recipes\n  let c \u2190 b + i1\n  let i2 \u2190 bit q.start\n  let d \u2190 c + i2\n  let i3 \u2190 bit q.stop\n  let e \u2190 d + i3\n  let i4 \u2190 bit q.next\n  e + i4",
    "upstream": [
     {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 148,
-     "code": "    fn enqueue(&mut self, kind: EventKind, execution_time: Instant, mode: EnqueueMode) {\n        if self\n            .event_queue\n            .enqueue(kind, execution_time, mode)\n            .is_err()\n        {\n            error!(\n                \"Api event queue overflow (capacity {}); dropping event\",\n                EVENT_QUEUE_CAPACITY\n            );\n        }\n    }\n\n    fn next_poll_interval_secs(&self) -> u64 {\n        match self.snapshot.fail_count {\n            n if n >= POLL_BACKOFF_TIER3_FAILS => POLL_BACKOFF_TIER3_SECS,\n            n if n >= POLL_BACKOFF_TIER2_FAILS => POLL_BACKOFF_TIER2_SECS,\n            n if n >= POLL_BACKOFF_TIER1_FAILS => POLL_BACKOFF_TIER1_SECS,\n            _ => NORMAL_POLL_INTERVAL_SECS,\n        }\n    }"
-    },
-    {
-     "file": "crates/anova-oven-pico/src/api_client.rs",
-     "line": 174,
-     "code": "    fn record_fast_poll_success(&mut self) {\n        self.snapshot.fail_count = 0;\n        self.snapshot.last_success_at = Some(Instant::now());\n        crate::persist::record_api_fail_count(0);\n    }\n\n    fn record_fast_poll_failure(&mut self, message: &'static str) {\n        self.snapshot.fail_count = self.snapshot.fail_count.saturating_add(1);\n        crate::persist::record_api_fail_count(self.snapshot.fail_count as u32);\n        warn!(\n            \"{} ({} consecutive fast-poll failures)\",\n            message, self.snapshot.fail_count\n        );\n    }"
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 142,
+     "code": "    /// Number of pending events. Useful for tests; the bin doesn't use it.\n    pub fn len(&self) -> usize {\n        self.events.len()\n    }"
     }
    ],
-   "upstream_note": "port-only command enum; one variant per upstream queue/health operation (enqueue, pop_due, poll success/failure, interval read)"
+   "upstream_note": "EventQueue::len, computed from the slots"
+  },
+  "enqueue": {
+   "kind": "def",
+   "rust_path": "anova_oven_kernel::enqueue",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 214,
+   "kernel_code": "pub fn enqueue(q: &Queue, k: Kind, time: u64, replace: bool) -> Queue {\n    match slot(q, k) {\n        None => {\n            let n = with_slot(q, k, Some(time));\n            with_pos(&n, k, pending_count(q))\n        }\n        Some(existing) => {\n            let v = if replace {\n                time\n            } else if existing < time {\n                existing\n            } else {\n                time\n            };\n            with_slot(q, k, Some(v))\n        }\n    }\n}",
+   "lean": "def enqueue\n  (q : Queue) (k : Kind) (time : Std.U64) (replace : Bool) : Result Queue := do\n  let o \u2190 slot q k\n  match o with\n  | none =>\n    let n \u2190 with_slot q k (some time)\n    let i \u2190 pending_count q\n    with_pos n k i\n  | some existing =>\n    let v \u2190\n      if replace\n      then ok time\n      else if existing < time\n           then ok existing\n           else ok time\n    with_slot q k (some v)",
+   "upstream": [
+    {
+     "file": "crates/anova-oven-pico-core/src/scheduler.rs",
+     "line": 79,
+     "code": "    /// Insert (or update) an event for `kind`. If an entry of the same kind\n    /// is already pending, its `execution_time` is updated per `mode` and no\n    /// new slot is consumed. Returns `Err(QueueOverflow)` only if the kind\n    /// isn't pending *and* the queue is full.\n    pub fn enqueue(\n        &mut self,\n        kind: EventKind,\n        execution_time: Instant,\n        mode: EnqueueMode,\n    ) -> Result<(), QueueOverflow> {\n        if let Some(existing) = self.events.iter_mut().find(|event| event.kind == kind) {\n            existing.execution_time = match mode {\n                EnqueueMode::PreferEarlier => existing.execution_time.min(execution_time),\n                EnqueueMode::Replace => execution_time,\n            };\n            return Ok(());\n        }\n\n        self.events\n            .push(ScheduledEvent {\n                kind,\n                execution_time,\n                priority: kind.priority(),\n            })\n            .map_err(|_| QueueOverflow)\n    }"
+    }
+   ],
+   "upstream_note": "EventQueue::enqueue; overflow is structurally impossible, so no Result"
   }
  },
  "specs": {

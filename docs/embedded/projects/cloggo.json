@@ -14,23 +14,23 @@
    "proof": "theorem linreg_never_panics (p : Std.Array (Std.I64 \u00d7 Std.I64) 10#usize) : linreg p \u2983 _ => True \u2984 := by\n  unfold linreg\n  step*",
    "deps": [
     "linreg",
-    "Error",
-    "sums",
     "sums_of_squares",
     "Fit",
-    "ONE",
     "sub",
     "div",
+    "Error",
+    "sums",
     "line",
-    "accumulate",
-    "Sums",
+    "ONE",
     "squares",
     "Squares",
     "narrow",
     "ONE_WIDE",
+    "accumulate",
+    "Sums",
+    "Line",
     "N_FIX",
     "mul",
-    "Line",
     "add",
     "FRAC"
    ],
@@ -60,9 +60,9 @@
    "proof": "theorem div_by_zero_refused (a : Std.I64) : div a 0#i64 = ok (.Err .DivZero) := by\n  simp [div]",
    "deps": [
     "div",
-    "Error",
+    "ONE_WIDE",
     "narrow",
-    "ONE_WIDE"
+    "Error"
    ],
    "spec": []
   },
@@ -75,8 +75,8 @@
    "deps": [
     "mul",
     "FRAC",
-    "Error",
-    "narrow"
+    "narrow",
+    "Error"
    ],
    "spec": []
   },
@@ -88,30 +88,14 @@
    "proof": "@[step] theorem div_total (a b : Std.I64) : div a b \u2983 _ => True \u2984 := by\n  unfold div\n  have ha1 : -2 ^ 63 \u2264 a.val := by scalar_tac\n  have ha2 : a.val < 2 ^ 63 := by scalar_tac\n  have hw := one_wide_val\n  step*",
    "deps": [
     "div",
-    "Error",
+    "ONE_WIDE",
     "narrow",
-    "ONE_WIDE"
+    "Error"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "FRAC": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::FRAC",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 17,
-   "kernel_code": "pub const FRAC: u32 = 32;",
-   "lean": "@[global_simps, irreducible] def FRAC : Std.U32 := 32#u32",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 1,
-     "code": "use fixed::types::I32F32;"
-    }
-   ],
-   "upstream_note": "I32F32's 32 fraction bits"
-  },
   "accumulate": {
    "kind": "def",
    "rust_path": "cloggo_kernel::accumulate",
@@ -128,42 +112,21 @@
    ],
    "upstream_note": "one point of the first loop"
   },
-  "Error": {
-   "kind": "inductive",
-   "rust_path": "cloggo_kernel::Error",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 28,
-   "kernel_code": "pub enum Error {\n    /// A division by zero (upstream panics).\n    DivZero,\n    /// A value outside `I32F32` (upstream wraps).\n    Overflow,\n}",
-   "lean": "@[discriminant isize]\ninductive Error where\n| DivZero : Error\n| Overflow : Error",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 19,
-     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
-    },
-    {
-     "file": "src/linreg.rs",
-     "line": 35,
-     "code": "    let r_squared = I32F32::from_num(1) - (ss_res / ss_tot);"
-    }
-   ],
-   "upstream_note": "where upstream's operators panic (a zero divisor) or wrap (overflow); the port returns these errors instead"
-  },
-  "sums": {
+  "FRAC": {
    "kind": "def",
-   "rust_path": "cloggo_kernel::sums",
+   "rust_path": "cloggo_kernel::FRAC",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 108,
-   "kernel_code": "pub fn sums(p: &[(i64, i64); 10]) -> Result<Sums, Error> {\n    let z = Sums { x: 0, y: 0, xy: 0, x2: 0 };\n    let s = accumulate(z, p[0].0, p[0].1)?;\n    let s = accumulate(s, p[1].0, p[1].1)?;\n    let s = accumulate(s, p[2].0, p[2].1)?;\n    let s = accumulate(s, p[3].0, p[3].1)?;\n    let s = accumulate(s, p[4].0, p[4].1)?;\n    let s = accumulate(s, p[5].0, p[5].1)?;\n    let s = accumulate(s, p[6].0, p[6].1)?;\n    let s = accumulate(s, p[7].0, p[7].1)?;\n    let s = accumulate(s, p[8].0, p[8].1)?;\n    accumulate(s, p[9].0, p[9].1)\n}",
-   "lean": "def sums\n  (p : Array (Std.I64 \u00d7 Std.I64) 10#usize) :\n  Result (core.result.Result Sums Error)\n  := do\n  let (i, i1) \u2190 Array.index_usize p 0#usize\n  let r \u2190\n    accumulate { x := 0#i64, y := 0#i64, xy := 0#i64, x2 := 0#i64 } i i1\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val =>\n    let (i2, i3) \u2190 Array.index_usize p 1#usize\n    let r1 \u2190 accumulate val i2 i3\n    let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n    match cf1 with\n    | core.ops.control_flow.ControlFlow.Continue val1 =>\n      let (i4, i5) \u2190 Array.index_usize p 2#usize\n      let r2 \u2190 accumulate val1 i4 i5\n      let cf2 \u2190 core.result.Result.Insts.CoreOpsTry.branch r2\n      match cf2 with\n      | core.ops.control_flow.ControlFlow.Continue val2 =>\n        let (i6, i7) \u2190 Array.index_usize p 3#usize\n        let r3 \u2190 accumulate val2 i6 i7\n        let cf3 \u2190 core.result.Result.Insts.CoreOpsTry.branch r3\n        match cf3 with\n        | core.ops.control_flow.ControlFlow.Continue val3 =>\n          let (i8, i9) \u2190 Array.index_usize p 4#usize\n          let r4 \u2190 accumulate val3 i8 i9\n          let cf4 \u2190 core.result.Result.Insts.CoreOpsTry.branch r4\n          match cf4 with\n          | core.ops.control_flow.ControlFlow.Continue val4 =>\n            let (i10, i11) \u2190 Array.index_usize p 5#usize\n            let r5 \u2190 accumulate val4 i10 i11\n            let cf5 \u2190 core.result.Result.Insts.CoreOpsTry.branch r5\n            match cf5 with\n            | core.ops.control_flow.ControlFlow.Continue val5 =>\n              let (i12, i13) \u2190 Array.index_usize p 6#usize\n              let r6 \u2190 accumulate val5 i12 i13\n              let cf6 \u2190 core.result.Result.Insts.CoreOpsTry.branch r6\n              match cf6 with\n              | core.ops.control_flow.ControlFlow.Continue val6 =>\n                let (i14, i15) \u2190 Array.index_usize p 7#usize\n                let r7 \u2190 accumulate val6 i14 i15\n                let cf7 \u2190 core.result.Result.Insts.CoreOpsTry.branch r7\n                match cf7 with\n                | core.ops.control_flow.ControlFlow.Continue val7 =>\n                  let (i16, i17) \u2190 Array.index_usize p 8#usize\n                  let r8 \u2190 accumulate val7 i16 i17\n                  let cf8 \u2190 core.result.Result.Insts.CoreOpsTry.branch r8\n                  match cf8 with\n                  | core.ops.control_flow.ControlFlow.Continue val8 =>\n                    let (i18, i19) \u2190 Array.index_usize p 9#usize\n                    accumulate val8 i18 i19\n                  | core.ops.control_flow.ControlFlow.Break residual =>\n                    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                      Sums (core.convert.FromSame Error) residual\n                | core.ops.control_flow.ControlFlow.Break residual =>\n                  core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                    Sums (core.convert.FromSame Error) residual\n              | core.ops.control_flow.ControlFlow.Break residual =>\n                core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                  Sums (core.convert.FromSame Error) residual\n            | core.ops.control_flow.ControlFlow.Break residual =>\n              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                Sums (core.convert.FromSame Error) residual\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              Sums (core.convert.FromSame Error) residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            Sums (core.convert.FromSame Error) residual\n      | core.ops.control_flow.ControlFlow.Break residual =>\n        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n          Sums (core.convert.FromSame Error) residual\n    | core.ops.control_flow.ControlFlow.Break residual =>\n      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n        Sums (core.convert.FromSame Error) residual\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Sums (core.convert.FromSame Error) residual",
+   "kernel_line": 17,
+   "kernel_code": "pub const FRAC: u32 = 32;",
+   "lean": "@[global_simps, irreducible] def FRAC : Std.U32 := 32#u32",
    "upstream": [
     {
      "file": "src/linreg.rs",
-     "line": 7,
-     "code": "    let mut sum_x = I32F32::from_num(0);\n    let mut sum_y = I32F32::from_num(0);\n    let mut sum_xy = I32F32::from_num(0);\n    let mut sum_x2 = I32F32::from_num(0);\n\n    for &(x, y) in data_points {\n        sum_x += x;\n        sum_y += y;\n        sum_xy += x * y;\n        sum_x2 += x * x;\n    }"
+     "line": 1,
+     "code": "use fixed::types::I32F32;"
     }
    ],
-   "upstream_note": "the first loop over the 10 points, unrolled"
+   "upstream_note": "I32F32's 32 fraction bits"
   },
   "sums_of_squares": {
    "kind": "def",
@@ -181,37 +144,31 @@
    ],
    "upstream_note": "the second loop over the 10 points, unrolled"
   },
-  "Sums": {
+  "Line": {
    "kind": "structure",
-   "rust_path": "cloggo_kernel::Sums",
+   "rust_path": "cloggo_kernel::Line",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 69,
-   "kernel_code": "pub struct Sums {\n    pub x: i64,\n    pub y: i64,\n    pub xy: i64,\n    pub x2: i64,\n}",
-   "lean": "structure Sums where\n  x : Std.I64\n  y : Std.I64\n  xy : Std.I64\n  x2 : Std.I64",
+   "kernel_line": 123,
+   "kernel_code": "pub struct Line {\n    pub mean_y: i64,\n    pub slope: i64,\n    pub intercept: i64,\n}",
+   "lean": "structure Line where\n  mean_y : Std.I64\n  slope : Std.I64\n  intercept : Std.I64",
    "upstream": [
     {
      "file": "src/linreg.rs",
-     "line": 7,
-     "code": "    let mut sum_x = I32F32::from_num(0);\n    let mut sum_y = I32F32::from_num(0);\n    let mut sum_xy = I32F32::from_num(0);\n    let mut sum_x2 = I32F32::from_num(0);"
+     "line": 19,
+     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
     }
    ],
-   "upstream_note": "sum_x, sum_y, sum_xy, sum_x2"
+   "upstream_note": "mean_y, slope, intercept"
   },
-  "add": {
+  "ONE_WIDE": {
    "kind": "def",
-   "rust_path": "cloggo_kernel::add",
+   "rust_path": "cloggo_kernel::ONE_WIDE",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 39,
-   "kernel_code": "pub fn add(a: i64, b: i64) -> Result<i64, Error> {\n    narrow(a as i128 + b as i128)\n}",
-   "lean": "def add\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 a)\n  let i1 \u2190 lift (IScalar.cast .I128 b)\n  let i2 \u2190 i + i1\n  narrow i2",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 13,
-     "code": "        sum_x += x;\n        sum_y += y;"
-    }
-   ],
-   "upstream_note": "I32F32 +, exact or Overflow"
+   "kernel_line": 21,
+   "kernel_code": "const ONE_WIDE: i128 = 4_294_967_296;",
+   "lean": "@[global_simps, irreducible] def ONE_WIDE : Std.I128 := 4294967296#i128",
+   "upstream": [],
+   "upstream_note": "port-only: 2^32 as i128, the exact widening of an I32F32 for the quotient"
   },
   "Fit": {
    "kind": "structure",
@@ -234,6 +191,38 @@
    ],
    "upstream_note": "(slope, intercept, r_squared)"
   },
+  "pressure": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::pressure",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 167,
+   "kernel_code": "pub fn pressure(slope: i64, intercept: i64, raw: i64) -> Result<i64, Error> {\n    add(mul(slope, raw)?, intercept)\n}",
+   "lean": "def pressure\n  (slope : Std.I64) (intercept : Std.I64) (raw : Std.I64) :\n  Result (core.result.Result Std.I64 Error)\n  := do\n  let r \u2190 mul slope raw\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val => add val intercept\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Std.I64 (core.convert.FromSame Error) residual",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 443,
+     "code": "        let res = I32F32::from_num(res);\n        let pressure = cal_constants.slope * res + cal_constants.intercept;"
+    }
+   ],
+   "upstream_note": "get_pressure's slope * from_num(raw) + intercept"
+  },
+  "sub": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::sub",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 43,
+   "kernel_code": "pub fn sub(a: i64, b: i64) -> Result<i64, Error> {\n    narrow(a as i128 - b as i128)\n}",
+   "lean": "def sub\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 a)\n  let i1 \u2190 lift (IScalar.cast .I128 b)\n  let i2 \u2190 i - i1\n  narrow i2",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 20,
+     "code": "    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
+    }
+   ],
+   "upstream_note": "I32F32 -, exact or Overflow"
+  },
   "narrow": {
    "kind": "def",
    "rust_path": "cloggo_kernel::narrow",
@@ -243,6 +232,59 @@
    "lean": "def narrow (v : Std.I128) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 core.num.I64.MIN)\n  if v < i\n  then ok (core.result.Result.Err Error.Overflow)\n  else\n    let i1 \u2190 lift (IScalar.cast .I128 core.num.I64.MAX)\n    if v > i1\n    then ok (core.result.Result.Err Error.Overflow)\n    else let i2 \u2190 lift (IScalar.cast .I64 v)\n         ok (core.result.Result.Ok i2)",
    "upstream": [],
    "upstream_note": "port-only: an exact i128 result back into I32F32's range, or Overflow (upstream's release build wraps)"
+  },
+  "div": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::div",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 54,
+   "kernel_code": "pub fn div(a: i64, b: i64) -> Result<i64, Error> {\n    if b == 0 {\n        return Err(Error::DivZero);\n    }\n    // |a| < 2^63, so a * 2^32 < 2^95: no overflow in i128.\n    narrow((a as i128 * ONE_WIDE) / b as i128)\n}",
+   "lean": "def div\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  if b = 0#i64\n  then ok (core.result.Result.Err Error.DivZero)\n  else\n    let i \u2190 lift (IScalar.cast .I128 a)\n    let i1 \u2190 i * ONE_WIDE\n    let i2 \u2190 lift (IScalar.cast .I128 b)\n    let i3 \u2190 i1 / i2\n    narrow i3",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 19,
+     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
+    }
+   ],
+   "upstream_note": "I32F32 / (the exact quotient truncated), DivZero or Overflow"
+  },
+  "Error": {
+   "kind": "inductive",
+   "rust_path": "cloggo_kernel::Error",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 28,
+   "kernel_code": "pub enum Error {\n    /// A division by zero (upstream panics).\n    DivZero,\n    /// A value outside `I32F32` (upstream wraps).\n    Overflow,\n}",
+   "lean": "@[discriminant isize]\ninductive Error where\n| DivZero : Error\n| Overflow : Error",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 19,
+     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
+    },
+    {
+     "file": "src/linreg.rs",
+     "line": 35,
+     "code": "    let r_squared = I32F32::from_num(1) - (ss_res / ss_tot);"
+    }
+   ],
+   "upstream_note": "where upstream's operators panic (a zero divisor) or wrap (overflow); the port returns these errors instead"
+  },
+  "add": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::add",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 39,
+   "kernel_code": "pub fn add(a: i64, b: i64) -> Result<i64, Error> {\n    narrow(a as i128 + b as i128)\n}",
+   "lean": "def add\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 a)\n  let i1 \u2190 lift (IScalar.cast .I128 b)\n  let i2 \u2190 i + i1\n  narrow i2",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 13,
+     "code": "        sum_x += x;\n        sum_y += y;"
+    }
+   ],
+   "upstream_note": "I32F32 +, exact or Overflow"
   },
   "N_FIX": {
    "kind": "def",
@@ -260,15 +302,101 @@
    ],
    "upstream_note": "n = I32F32::from_num(data_points.len()), 10 (ds.rs CAPACITY)"
   },
-  "ONE_WIDE": {
+  "sums": {
    "kind": "def",
-   "rust_path": "cloggo_kernel::ONE_WIDE",
+   "rust_path": "cloggo_kernel::sums",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 21,
-   "kernel_code": "const ONE_WIDE: i128 = 4_294_967_296;",
-   "lean": "@[global_simps, irreducible] def ONE_WIDE : Std.I128 := 4294967296#i128",
-   "upstream": [],
-   "upstream_note": "port-only: 2^32 as i128, the exact widening of an I32F32 for the quotient"
+   "kernel_line": 108,
+   "kernel_code": "pub fn sums(p: &[(i64, i64); 10]) -> Result<Sums, Error> {\n    let z = Sums { x: 0, y: 0, xy: 0, x2: 0 };\n    let s = accumulate(z, p[0].0, p[0].1)?;\n    let s = accumulate(s, p[1].0, p[1].1)?;\n    let s = accumulate(s, p[2].0, p[2].1)?;\n    let s = accumulate(s, p[3].0, p[3].1)?;\n    let s = accumulate(s, p[4].0, p[4].1)?;\n    let s = accumulate(s, p[5].0, p[5].1)?;\n    let s = accumulate(s, p[6].0, p[6].1)?;\n    let s = accumulate(s, p[7].0, p[7].1)?;\n    let s = accumulate(s, p[8].0, p[8].1)?;\n    accumulate(s, p[9].0, p[9].1)\n}",
+   "lean": "def sums\n  (p : Array (Std.I64 \u00d7 Std.I64) 10#usize) :\n  Result (core.result.Result Sums Error)\n  := do\n  let (i, i1) \u2190 Array.index_usize p 0#usize\n  let r \u2190\n    accumulate { x := 0#i64, y := 0#i64, xy := 0#i64, x2 := 0#i64 } i i1\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val =>\n    let (i2, i3) \u2190 Array.index_usize p 1#usize\n    let r1 \u2190 accumulate val i2 i3\n    let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n    match cf1 with\n    | core.ops.control_flow.ControlFlow.Continue val1 =>\n      let (i4, i5) \u2190 Array.index_usize p 2#usize\n      let r2 \u2190 accumulate val1 i4 i5\n      let cf2 \u2190 core.result.Result.Insts.CoreOpsTry.branch r2\n      match cf2 with\n      | core.ops.control_flow.ControlFlow.Continue val2 =>\n        let (i6, i7) \u2190 Array.index_usize p 3#usize\n        let r3 \u2190 accumulate val2 i6 i7\n        let cf3 \u2190 core.result.Result.Insts.CoreOpsTry.branch r3\n        match cf3 with\n        | core.ops.control_flow.ControlFlow.Continue val3 =>\n          let (i8, i9) \u2190 Array.index_usize p 4#usize\n          let r4 \u2190 accumulate val3 i8 i9\n          let cf4 \u2190 core.result.Result.Insts.CoreOpsTry.branch r4\n          match cf4 with\n          | core.ops.control_flow.ControlFlow.Continue val4 =>\n            let (i10, i11) \u2190 Array.index_usize p 5#usize\n            let r5 \u2190 accumulate val4 i10 i11\n            let cf5 \u2190 core.result.Result.Insts.CoreOpsTry.branch r5\n            match cf5 with\n            | core.ops.control_flow.ControlFlow.Continue val5 =>\n              let (i12, i13) \u2190 Array.index_usize p 6#usize\n              let r6 \u2190 accumulate val5 i12 i13\n              let cf6 \u2190 core.result.Result.Insts.CoreOpsTry.branch r6\n              match cf6 with\n              | core.ops.control_flow.ControlFlow.Continue val6 =>\n                let (i14, i15) \u2190 Array.index_usize p 7#usize\n                let r7 \u2190 accumulate val6 i14 i15\n                let cf7 \u2190 core.result.Result.Insts.CoreOpsTry.branch r7\n                match cf7 with\n                | core.ops.control_flow.ControlFlow.Continue val7 =>\n                  let (i16, i17) \u2190 Array.index_usize p 8#usize\n                  let r8 \u2190 accumulate val7 i16 i17\n                  let cf8 \u2190 core.result.Result.Insts.CoreOpsTry.branch r8\n                  match cf8 with\n                  | core.ops.control_flow.ControlFlow.Continue val8 =>\n                    let (i18, i19) \u2190 Array.index_usize p 9#usize\n                    accumulate val8 i18 i19\n                  | core.ops.control_flow.ControlFlow.Break residual =>\n                    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                      Sums (core.convert.FromSame Error) residual\n                | core.ops.control_flow.ControlFlow.Break residual =>\n                  core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                    Sums (core.convert.FromSame Error) residual\n              | core.ops.control_flow.ControlFlow.Break residual =>\n                core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                  Sums (core.convert.FromSame Error) residual\n            | core.ops.control_flow.ControlFlow.Break residual =>\n              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                Sums (core.convert.FromSame Error) residual\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              Sums (core.convert.FromSame Error) residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            Sums (core.convert.FromSame Error) residual\n      | core.ops.control_flow.ControlFlow.Break residual =>\n        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n          Sums (core.convert.FromSame Error) residual\n    | core.ops.control_flow.ControlFlow.Break residual =>\n      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n        Sums (core.convert.FromSame Error) residual\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Sums (core.convert.FromSame Error) residual",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 7,
+     "code": "    let mut sum_x = I32F32::from_num(0);\n    let mut sum_y = I32F32::from_num(0);\n    let mut sum_xy = I32F32::from_num(0);\n    let mut sum_x2 = I32F32::from_num(0);\n\n    for &(x, y) in data_points {\n        sum_x += x;\n        sum_y += y;\n        sum_xy += x * y;\n        sum_x2 += x * x;\n    }"
+    }
+   ],
+   "upstream_note": "the first loop over the 10 points, unrolled"
+  },
+  "Sums": {
+   "kind": "structure",
+   "rust_path": "cloggo_kernel::Sums",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 69,
+   "kernel_code": "pub struct Sums {\n    pub x: i64,\n    pub y: i64,\n    pub xy: i64,\n    pub x2: i64,\n}",
+   "lean": "structure Sums where\n  x : Std.I64\n  y : Std.I64\n  xy : Std.I64\n  x2 : Std.I64",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 7,
+     "code": "    let mut sum_x = I32F32::from_num(0);\n    let mut sum_y = I32F32::from_num(0);\n    let mut sum_xy = I32F32::from_num(0);\n    let mut sum_x2 = I32F32::from_num(0);"
+    }
+   ],
+   "upstream_note": "sum_x, sum_y, sum_xy, sum_x2"
+  },
+  "mul": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::mul",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub fn mul(a: i64, b: i64) -> Result<i64, Error> {\n    narrow((a as i128 * b as i128) >> FRAC)\n}",
+   "lean": "def mul\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 a)\n  let i1 \u2190 lift (IScalar.cast .I128 b)\n  let i2 \u2190 i * i1\n  let i3 \u2190 i2 >>> FRAC\n  narrow i3",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 15,
+     "code": "        sum_xy += x * y;\n        sum_x2 += x * x;"
+    }
+   ],
+   "upstream_note": "I32F32 * (the exact product shifted, rounded toward negative infinity), or Overflow"
+  },
+  "Squares": {
+   "kind": "structure",
+   "rust_path": "cloggo_kernel::Squares",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 85,
+   "kernel_code": "pub struct Squares {\n    pub tot: i64,\n    pub res: i64,\n}",
+   "lean": "structure Squares where\n  tot : Std.I64\n  res : Std.I64",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 24,
+     "code": "    let mut ss_tot = I32F32::from_num(0); // Total sum of squares\n    let mut ss_res = I32F32::from_num(0); // Residual sum of squares"
+    }
+   ],
+   "upstream_note": "ss_tot, ss_res"
+  },
+  "line": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::line",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 130,
+   "kernel_code": "pub fn line(s: Sums) -> Result<Line, Error> {\n    let n = N_FIX;\n    let mean_y = div(s.y, n)?;\n    let num = sub(mul(n, s.xy)?, mul(s.x, s.y)?)?;\n    let den = sub(mul(n, s.x2)?, mul(s.x, s.x)?)?;\n    let slope = div(num, den)?;\n    let intercept = div(sub(s.y, mul(slope, s.x)?)?, n)?;\n    Ok(Line { mean_y, slope, intercept })\n}",
+   "lean": "def line (s : Sums) : Result (core.result.Result Line Error) := do\n  let r \u2190 div s.y N_FIX\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val =>\n    let r1 \u2190 mul N_FIX s.xy\n    let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n    match cf1 with\n    | core.ops.control_flow.ControlFlow.Continue val1 =>\n      let r2 \u2190 mul s.x s.y\n      let cf2 \u2190 core.result.Result.Insts.CoreOpsTry.branch r2\n      match cf2 with\n      | core.ops.control_flow.ControlFlow.Continue val2 =>\n        let r3 \u2190 sub val1 val2\n        let cf3 \u2190 core.result.Result.Insts.CoreOpsTry.branch r3\n        match cf3 with\n        | core.ops.control_flow.ControlFlow.Continue val3 =>\n          let r4 \u2190 mul N_FIX s.x2\n          let cf4 \u2190 core.result.Result.Insts.CoreOpsTry.branch r4\n          match cf4 with\n          | core.ops.control_flow.ControlFlow.Continue val4 =>\n            let r5 \u2190 mul s.x s.x\n            let cf5 \u2190 core.result.Result.Insts.CoreOpsTry.branch r5\n            match cf5 with\n            | core.ops.control_flow.ControlFlow.Continue val5 =>\n              let r6 \u2190 sub val4 val5\n              let cf6 \u2190 core.result.Result.Insts.CoreOpsTry.branch r6\n              match cf6 with\n              | core.ops.control_flow.ControlFlow.Continue val6 =>\n                let r7 \u2190 div val3 val6\n                let cf7 \u2190 core.result.Result.Insts.CoreOpsTry.branch r7\n                match cf7 with\n                | core.ops.control_flow.ControlFlow.Continue val7 =>\n                  let r8 \u2190 mul val7 s.x\n                  let cf8 \u2190 core.result.Result.Insts.CoreOpsTry.branch r8\n                  match cf8 with\n                  | core.ops.control_flow.ControlFlow.Continue val8 =>\n                    let r9 \u2190 sub s.y val8\n                    let cf9 \u2190 core.result.Result.Insts.CoreOpsTry.branch r9\n                    match cf9 with\n                    | core.ops.control_flow.ControlFlow.Continue val9 =>\n                      let r10 \u2190 div val9 N_FIX\n                      let cf10 \u2190\n                        core.result.Result.Insts.CoreOpsTry.branch r10\n                      match cf10 with\n                      | core.ops.control_flow.ControlFlow.Continue val10 =>\n                        ok (core.result.Result.Ok\n                          { mean_y := val, slope := val7, intercept := val10 })\n                      | core.ops.control_flow.ControlFlow.Break residual =>\n                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                          Line (core.convert.FromSame Error) residual\n                    | core.ops.control_flow.ControlFlow.Break residual =>\n                      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                        Line (core.convert.FromSame Error) residual\n                  | core.ops.control_flow.ControlFlow.Break residual =>\n                    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                      Line (core.convert.FromSame Error) residual\n                | core.ops.control_flow.ControlFlow.Break residual =>\n                  core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                    Line (core.convert.FromSame Error) residual\n              | core.ops.control_flow.ControlFlow.Break residual =>\n                core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                  Line (core.convert.FromSame Error) residual\n            | core.ops.control_flow.ControlFlow.Break residual =>\n              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                Line (core.convert.FromSame Error) residual\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              Line (core.convert.FromSame Error) residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            Line (core.convert.FromSame Error) residual\n      | core.ops.control_flow.ControlFlow.Break residual =>\n        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n          Line (core.convert.FromSame Error) residual\n    | core.ops.control_flow.ControlFlow.Break residual =>\n      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n        Line (core.convert.FromSame Error) residual\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Line (core.convert.FromSame Error) residual",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 19,
+     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
+    }
+   ],
+   "upstream_note": "upstream's three expressions, in its order of operations"
+  },
+  "linreg": {
+   "kind": "def",
+   "rust_path": "cloggo_kernel::linreg",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 157,
+   "kernel_code": "pub fn linreg(p: &[(i64, i64); 10]) -> Result<Fit, Error> {\n    let s = sums(p)?;\n    let l = line(s)?;\n    let q = sums_of_squares(p, l.slope, l.intercept, l.mean_y)?;\n    let r_squared = sub(ONE, div(q.res, q.tot)?)?;\n    Ok(Fit { slope: l.slope, intercept: l.intercept, r_squared })\n}",
+   "lean": "def linreg\n  (p : Array (Std.I64 \u00d7 Std.I64) 10#usize) :\n  Result (core.result.Result Fit Error)\n  := do\n  let r \u2190 sums p\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val =>\n    let r1 \u2190 line val\n    let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n    match cf1 with\n    | core.ops.control_flow.ControlFlow.Continue val1 =>\n      let r2 \u2190 sums_of_squares p val1.slope val1.intercept val1.mean_y\n      let cf2 \u2190 core.result.Result.Insts.CoreOpsTry.branch r2\n      match cf2 with\n      | core.ops.control_flow.ControlFlow.Continue val2 =>\n        let r3 \u2190 div val2.res val2.tot\n        let cf3 \u2190 core.result.Result.Insts.CoreOpsTry.branch r3\n        match cf3 with\n        | core.ops.control_flow.ControlFlow.Continue val3 =>\n          let r4 \u2190 sub ONE val3\n          let cf4 \u2190 core.result.Result.Insts.CoreOpsTry.branch r4\n          match cf4 with\n          | core.ops.control_flow.ControlFlow.Continue val4 =>\n            ok (core.result.Result.Ok\n              {\n                slope := val1.slope,\n                intercept := val1.intercept,\n                r_squared := val4\n              })\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              Fit (core.convert.FromSame Error) residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            Fit (core.convert.FromSame Error) residual\n      | core.ops.control_flow.ControlFlow.Break residual =>\n        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n          Fit (core.convert.FromSame Error) residual\n    | core.ops.control_flow.ControlFlow.Break residual =>\n      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n        Fit (core.convert.FromSame Error) residual\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Fit (core.convert.FromSame Error) residual",
+   "upstream": [
+    {
+     "file": "src/linreg.rs",
+     "line": 3,
+     "code": "pub fn linear_regression_and_r_squared(\n    data_points: &[(I32F32, I32F32); 10],\n) -> (I32F32, I32F32, I32F32) {\n    let n = I32F32::from_num(data_points.len());\n    let mut sum_x = I32F32::from_num(0);\n    let mut sum_y = I32F32::from_num(0);\n    let mut sum_xy = I32F32::from_num(0);\n    let mut sum_x2 = I32F32::from_num(0);\n\n    for &(x, y) in data_points {\n        sum_x += x;\n        sum_y += y;\n        sum_xy += x * y;\n        sum_x2 += x * x;\n    }\n\n    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;\n\n    // Calculate R squared\n    let mut ss_tot = I32F32::from_num(0); // Total sum of squares\n    let mut ss_res = I32F32::from_num(0); // Residual sum of squares\n\n    for &(x, y) in data_points {\n        let y_hat = slope * x + intercept;\n        let diff_y = y - mean_y;\n        let diff_y_hat = y - y_hat;\n        ss_tot += diff_y * diff_y; // Squaring by multiplication\n        ss_res += diff_y_hat * diff_y_hat; // Squaring by multiplication\n    }\n\n    let r_squared = I32F32::from_num(1) - (ss_res / ss_tot);\n\n    (slope, intercept, r_squared)\n}"
+    }
+   ],
+   "upstream_note": "linear_regression_and_r_squared, total: a zero divisor or an overflow is a returned error"
   },
   "ONE": {
    "kind": "def",
@@ -301,134 +429,6 @@
     }
    ],
    "upstream_note": "one point of the second loop"
-  },
-  "mul": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::mul",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub fn mul(a: i64, b: i64) -> Result<i64, Error> {\n    narrow((a as i128 * b as i128) >> FRAC)\n}",
-   "lean": "def mul\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 a)\n  let i1 \u2190 lift (IScalar.cast .I128 b)\n  let i2 \u2190 i * i1\n  let i3 \u2190 i2 >>> FRAC\n  narrow i3",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 15,
-     "code": "        sum_xy += x * y;\n        sum_x2 += x * x;"
-    }
-   ],
-   "upstream_note": "I32F32 * (the exact product shifted, rounded toward negative infinity), or Overflow"
-  },
-  "sub": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::sub",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 43,
-   "kernel_code": "pub fn sub(a: i64, b: i64) -> Result<i64, Error> {\n    narrow(a as i128 - b as i128)\n}",
-   "lean": "def sub\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  let i \u2190 lift (IScalar.cast .I128 a)\n  let i1 \u2190 lift (IScalar.cast .I128 b)\n  let i2 \u2190 i - i1\n  narrow i2",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 20,
-     "code": "    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
-    }
-   ],
-   "upstream_note": "I32F32 -, exact or Overflow"
-  },
-  "div": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::div",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 54,
-   "kernel_code": "pub fn div(a: i64, b: i64) -> Result<i64, Error> {\n    if b == 0 {\n        return Err(Error::DivZero);\n    }\n    // |a| < 2^63, so a * 2^32 < 2^95: no overflow in i128.\n    narrow((a as i128 * ONE_WIDE) / b as i128)\n}",
-   "lean": "def div\n  (a : Std.I64) (b : Std.I64) : Result (core.result.Result Std.I64 Error) := do\n  if b = 0#i64\n  then ok (core.result.Result.Err Error.DivZero)\n  else\n    let i \u2190 lift (IScalar.cast .I128 a)\n    let i1 \u2190 i * ONE_WIDE\n    let i2 \u2190 lift (IScalar.cast .I128 b)\n    let i3 \u2190 i1 / i2\n    narrow i3",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 19,
-     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
-    }
-   ],
-   "upstream_note": "I32F32 / (the exact quotient truncated), DivZero or Overflow"
-  },
-  "linreg": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::linreg",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 157,
-   "kernel_code": "pub fn linreg(p: &[(i64, i64); 10]) -> Result<Fit, Error> {\n    let s = sums(p)?;\n    let l = line(s)?;\n    let q = sums_of_squares(p, l.slope, l.intercept, l.mean_y)?;\n    let r_squared = sub(ONE, div(q.res, q.tot)?)?;\n    Ok(Fit { slope: l.slope, intercept: l.intercept, r_squared })\n}",
-   "lean": "def linreg\n  (p : Array (Std.I64 \u00d7 Std.I64) 10#usize) :\n  Result (core.result.Result Fit Error)\n  := do\n  let r \u2190 sums p\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val =>\n    let r1 \u2190 line val\n    let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n    match cf1 with\n    | core.ops.control_flow.ControlFlow.Continue val1 =>\n      let r2 \u2190 sums_of_squares p val1.slope val1.intercept val1.mean_y\n      let cf2 \u2190 core.result.Result.Insts.CoreOpsTry.branch r2\n      match cf2 with\n      | core.ops.control_flow.ControlFlow.Continue val2 =>\n        let r3 \u2190 div val2.res val2.tot\n        let cf3 \u2190 core.result.Result.Insts.CoreOpsTry.branch r3\n        match cf3 with\n        | core.ops.control_flow.ControlFlow.Continue val3 =>\n          let r4 \u2190 sub ONE val3\n          let cf4 \u2190 core.result.Result.Insts.CoreOpsTry.branch r4\n          match cf4 with\n          | core.ops.control_flow.ControlFlow.Continue val4 =>\n            ok (core.result.Result.Ok\n              {\n                slope := val1.slope,\n                intercept := val1.intercept,\n                r_squared := val4\n              })\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              Fit (core.convert.FromSame Error) residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            Fit (core.convert.FromSame Error) residual\n      | core.ops.control_flow.ControlFlow.Break residual =>\n        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n          Fit (core.convert.FromSame Error) residual\n    | core.ops.control_flow.ControlFlow.Break residual =>\n      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n        Fit (core.convert.FromSame Error) residual\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Fit (core.convert.FromSame Error) residual",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 3,
-     "code": "pub fn linear_regression_and_r_squared(\n    data_points: &[(I32F32, I32F32); 10],\n) -> (I32F32, I32F32, I32F32) {\n    let n = I32F32::from_num(data_points.len());\n    let mut sum_x = I32F32::from_num(0);\n    let mut sum_y = I32F32::from_num(0);\n    let mut sum_xy = I32F32::from_num(0);\n    let mut sum_x2 = I32F32::from_num(0);\n\n    for &(x, y) in data_points {\n        sum_x += x;\n        sum_y += y;\n        sum_xy += x * y;\n        sum_x2 += x * x;\n    }\n\n    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;\n\n    // Calculate R squared\n    let mut ss_tot = I32F32::from_num(0); // Total sum of squares\n    let mut ss_res = I32F32::from_num(0); // Residual sum of squares\n\n    for &(x, y) in data_points {\n        let y_hat = slope * x + intercept;\n        let diff_y = y - mean_y;\n        let diff_y_hat = y - y_hat;\n        ss_tot += diff_y * diff_y; // Squaring by multiplication\n        ss_res += diff_y_hat * diff_y_hat; // Squaring by multiplication\n    }\n\n    let r_squared = I32F32::from_num(1) - (ss_res / ss_tot);\n\n    (slope, intercept, r_squared)\n}"
-    }
-   ],
-   "upstream_note": "linear_regression_and_r_squared, total: a zero divisor or an overflow is a returned error"
-  },
-  "Line": {
-   "kind": "structure",
-   "rust_path": "cloggo_kernel::Line",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 123,
-   "kernel_code": "pub struct Line {\n    pub mean_y: i64,\n    pub slope: i64,\n    pub intercept: i64,\n}",
-   "lean": "structure Line where\n  mean_y : Std.I64\n  slope : Std.I64\n  intercept : Std.I64",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 19,
-     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
-    }
-   ],
-   "upstream_note": "mean_y, slope, intercept"
-  },
-  "pressure": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::pressure",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 167,
-   "kernel_code": "pub fn pressure(slope: i64, intercept: i64, raw: i64) -> Result<i64, Error> {\n    add(mul(slope, raw)?, intercept)\n}",
-   "lean": "def pressure\n  (slope : Std.I64) (intercept : Std.I64) (raw : Std.I64) :\n  Result (core.result.Result Std.I64 Error)\n  := do\n  let r \u2190 mul slope raw\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val => add val intercept\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Std.I64 (core.convert.FromSame Error) residual",
-   "upstream": [
-    {
-     "file": "src/main.rs",
-     "line": 443,
-     "code": "        let res = I32F32::from_num(res);\n        let pressure = cal_constants.slope * res + cal_constants.intercept;"
-    }
-   ],
-   "upstream_note": "get_pressure's slope * from_num(raw) + intercept"
-  },
-  "line": {
-   "kind": "def",
-   "rust_path": "cloggo_kernel::line",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 130,
-   "kernel_code": "pub fn line(s: Sums) -> Result<Line, Error> {\n    let n = N_FIX;\n    let mean_y = div(s.y, n)?;\n    let num = sub(mul(n, s.xy)?, mul(s.x, s.y)?)?;\n    let den = sub(mul(n, s.x2)?, mul(s.x, s.x)?)?;\n    let slope = div(num, den)?;\n    let intercept = div(sub(s.y, mul(slope, s.x)?)?, n)?;\n    Ok(Line { mean_y, slope, intercept })\n}",
-   "lean": "def line (s : Sums) : Result (core.result.Result Line Error) := do\n  let r \u2190 div s.y N_FIX\n  let cf \u2190 core.result.Result.Insts.CoreOpsTry.branch r\n  match cf with\n  | core.ops.control_flow.ControlFlow.Continue val =>\n    let r1 \u2190 mul N_FIX s.xy\n    let cf1 \u2190 core.result.Result.Insts.CoreOpsTry.branch r1\n    match cf1 with\n    | core.ops.control_flow.ControlFlow.Continue val1 =>\n      let r2 \u2190 mul s.x s.y\n      let cf2 \u2190 core.result.Result.Insts.CoreOpsTry.branch r2\n      match cf2 with\n      | core.ops.control_flow.ControlFlow.Continue val2 =>\n        let r3 \u2190 sub val1 val2\n        let cf3 \u2190 core.result.Result.Insts.CoreOpsTry.branch r3\n        match cf3 with\n        | core.ops.control_flow.ControlFlow.Continue val3 =>\n          let r4 \u2190 mul N_FIX s.x2\n          let cf4 \u2190 core.result.Result.Insts.CoreOpsTry.branch r4\n          match cf4 with\n          | core.ops.control_flow.ControlFlow.Continue val4 =>\n            let r5 \u2190 mul s.x s.x\n            let cf5 \u2190 core.result.Result.Insts.CoreOpsTry.branch r5\n            match cf5 with\n            | core.ops.control_flow.ControlFlow.Continue val5 =>\n              let r6 \u2190 sub val4 val5\n              let cf6 \u2190 core.result.Result.Insts.CoreOpsTry.branch r6\n              match cf6 with\n              | core.ops.control_flow.ControlFlow.Continue val6 =>\n                let r7 \u2190 div val3 val6\n                let cf7 \u2190 core.result.Result.Insts.CoreOpsTry.branch r7\n                match cf7 with\n                | core.ops.control_flow.ControlFlow.Continue val7 =>\n                  let r8 \u2190 mul val7 s.x\n                  let cf8 \u2190 core.result.Result.Insts.CoreOpsTry.branch r8\n                  match cf8 with\n                  | core.ops.control_flow.ControlFlow.Continue val8 =>\n                    let r9 \u2190 sub s.y val8\n                    let cf9 \u2190 core.result.Result.Insts.CoreOpsTry.branch r9\n                    match cf9 with\n                    | core.ops.control_flow.ControlFlow.Continue val9 =>\n                      let r10 \u2190 div val9 N_FIX\n                      let cf10 \u2190\n                        core.result.Result.Insts.CoreOpsTry.branch r10\n                      match cf10 with\n                      | core.ops.control_flow.ControlFlow.Continue val10 =>\n                        ok (core.result.Result.Ok\n                          { mean_y := val, slope := val7, intercept := val10 })\n                      | core.ops.control_flow.ControlFlow.Break residual =>\n                        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                          Line (core.convert.FromSame Error) residual\n                    | core.ops.control_flow.ControlFlow.Break residual =>\n                      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                        Line (core.convert.FromSame Error) residual\n                  | core.ops.control_flow.ControlFlow.Break residual =>\n                    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                      Line (core.convert.FromSame Error) residual\n                | core.ops.control_flow.ControlFlow.Break residual =>\n                  core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                    Line (core.convert.FromSame Error) residual\n              | core.ops.control_flow.ControlFlow.Break residual =>\n                core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                  Line (core.convert.FromSame Error) residual\n            | core.ops.control_flow.ControlFlow.Break residual =>\n              core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n                Line (core.convert.FromSame Error) residual\n          | core.ops.control_flow.ControlFlow.Break residual =>\n            core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n              Line (core.convert.FromSame Error) residual\n        | core.ops.control_flow.ControlFlow.Break residual =>\n          core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n            Line (core.convert.FromSame Error) residual\n      | core.ops.control_flow.ControlFlow.Break residual =>\n        core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n          Line (core.convert.FromSame Error) residual\n    | core.ops.control_flow.ControlFlow.Break residual =>\n      core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n        Line (core.convert.FromSame Error) residual\n  | core.ops.control_flow.ControlFlow.Break residual =>\n    core.result.Result.Insts.CoreOpsTry_traitFromResidualResult.from_residual\n      Line (core.convert.FromSame Error) residual",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 19,
-     "code": "    let mean_y = sum_y / n;\n    let slope = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);\n    let intercept = (sum_y - slope * sum_x) / n;"
-    }
-   ],
-   "upstream_note": "upstream's three expressions, in its order of operations"
-  },
-  "Squares": {
-   "kind": "structure",
-   "rust_path": "cloggo_kernel::Squares",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 85,
-   "kernel_code": "pub struct Squares {\n    pub tot: i64,\n    pub res: i64,\n}",
-   "lean": "structure Squares where\n  tot : Std.I64\n  res : Std.I64",
-   "upstream": [
-    {
-     "file": "src/linreg.rs",
-     "line": 24,
-     "code": "    let mut ss_tot = I32F32::from_num(0); // Total sum of squares\n    let mut ss_res = I32F32::from_num(0); // Residual sum of squares"
-    }
-   ],
-   "upstream_note": "ss_tot, ss_res"
   }
  },
  "specs": {}

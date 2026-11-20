@@ -13,12 +13,12 @@
    "statement": "theorem move_at_most_travel (st : Blind) (c : Cmd) :\n    plan st c \u2983 r => r.2.steps.val \u2264 4450 \u2984",
    "proof": "theorem move_at_most_travel (st : Blind) (c : Cmd) :\n    plan st c \u2983 r => r.2.steps.val \u2264 4450 \u2984 := by\n  have hh := height_val\n  rcases c with n | n | _ | _ <;> simp only [plan, lift, bind_ok]\n  \u00b7 step* <;> blind_auto\n  \u00b7 step* <;> blind_auto\n  \u00b7 step* <;> blind_auto\n  \u00b7 by_cases h1 : st.pos.val \u2265 BLIND_HEIGHT.val\n    \u00b7 have : st.pos \u2265 BLIND_HEIGHT := by scalar_tac\n      simp [this]\n    \u00b7 have : \u00ac st.pos \u2265 BLIND_HEIGHT := by scalar_tac\n      simp only [this, if_false]\n      step* <;> blind_auto",
    "deps": [
-    "Blind",
     "plan",
+    "Blind",
     "Cmd",
-    "min",
+    "BLIND_HEIGHT",
     "Move",
-    "BLIND_HEIGHT"
+    "min"
    ],
    "spec": []
   },
@@ -29,12 +29,12 @@
    "statement": "theorem lower_stops_at_bottom (st : Blind) (hin : st.pos.val \u2264 4450) :\n    plan st .Lower \u2983 r => st.pos.val + r.2.steps.val = 4450 \u2227 r.1.pos.val = 4450 \u2227 r.2.up = false \u2984",
    "proof": "theorem lower_stops_at_bottom (st : Blind) (hin : st.pos.val \u2264 4450) :\n    plan st .Lower \u2983 r => st.pos.val + r.2.steps.val = 4450 \u2227 r.1.pos.val = 4450 \u2227 r.2.up = false \u2984 := by\n  have hh := height_val\n  simp only [plan]\n  by_cases h1 : st.pos.val \u2265 BLIND_HEIGHT.val\n  \u00b7 have : st.pos \u2265 BLIND_HEIGHT := by scalar_tac\n    simp [this]; omega\n  \u00b7 have : \u00ac st.pos \u2265 BLIND_HEIGHT := by scalar_tac\n    simp only [this, if_false]\n    step* <;> blind_auto",
    "deps": [
-    "Blind",
     "plan",
-    "min",
-    "Move",
+    "Blind",
     "BLIND_HEIGHT",
-    "Cmd"
+    "Cmd",
+    "Move",
+    "min"
    ],
    "spec": []
   },
@@ -45,12 +45,12 @@
    "statement": "theorem raise_to_top (st : Blind) (hin : st.pos.val \u2264 4450) :\n    plan st .Raise \u2983 r => r.2.steps.val = st.pos.val \u2227 r.1.pos.val = 0 \u2227 r.2.up = true \u2984",
    "proof": "theorem raise_to_top (st : Blind) (hin : st.pos.val \u2264 4450) :\n    plan st .Raise \u2983 r => r.2.steps.val = st.pos.val \u2227 r.1.pos.val = 0 \u2227 r.2.up = true \u2984 := by\n  have hh := height_val\n  simp only [plan]\n  step* <;> blind_auto",
    "deps": [
-    "Blind",
     "plan",
-    "min",
-    "Move",
+    "Blind",
     "BLIND_HEIGHT",
-    "Cmd"
+    "Cmd",
+    "Move",
+    "min"
    ],
    "spec": []
   },
@@ -61,12 +61,12 @@
    "statement": "theorem idle_at_limits (st : Blind) :\n    (st.pos.val \u2265 4450 \u2192 \u2203 st', plan st .Lower = ok (st', { up := false, steps := 0#u32 })) \u2227\n    (st.pos.val = 0 \u2192 plan st .Raise = ok ({ pos := 0#u32 }, { up := true, steps := 0#u32 }))",
    "proof": "theorem idle_at_limits (st : Blind) :\n    (st.pos.val \u2265 4450 \u2192 \u2203 st', plan st .Lower = ok (st', { up := false, steps := 0#u32 })) \u2227\n    (st.pos.val = 0 \u2192 plan st .Raise = ok ({ pos := 0#u32 }, { up := true, steps := 0#u32 })) := by\n  have hh := height_val\n  constructor\n  \u00b7 intro h\n    have : st.pos \u2265 BLIND_HEIGHT := by scalar_tac\n    exact \u27e8st, by simp [plan, this]\u27e9\n  \u00b7 intro h\n    have hz : st.pos = 0#u32 := by scalar_tac\n    unfold plan min\n    simp [hz]\n    split_ifs <;> simp <;> scalar_tac",
    "deps": [
-    "Blind",
     "plan",
-    "min",
-    "Move",
+    "Blind",
     "BLIND_HEIGHT",
-    "Cmd"
+    "Cmd",
+    "Move",
+    "min"
    ],
    "spec": []
   },
@@ -88,12 +88,12 @@
    "statement": "theorem estimate_follows (st : Blind) (n : Std.U32) :\n    plan st (.Backward n) \u2983 r => r.2.up = false \u2227 r.2.steps.val \u2264 4450 \u2227 st.pos.val \u2264 r.1.pos.val \u2984",
    "proof": "theorem estimate_follows (st : Blind) (n : Std.U32) :\n    plan st (.Backward n) \u2983 r => r.2.up = false \u2227 r.2.steps.val \u2264 4450 \u2227 st.pos.val \u2264 r.1.pos.val \u2984 := by\n  have hh := height_val\n  simp only [plan, lift, bind_ok]\n  step* <;> (try exact \u27e8by omega, sat_mono _ _\u27e9) <;> blind_auto",
    "deps": [
-    "Blind",
     "plan",
-    "min",
-    "Move",
+    "Blind",
     "BLIND_HEIGHT",
-    "Cmd"
+    "Cmd",
+    "Move",
+    "min"
    ],
    "spec": []
   },
@@ -110,21 +110,21 @@
   }
  ],
  "decls": {
-  "slow_step": {
+  "plan": {
    "kind": "def",
-   "rust_path": "blind_controller_kernel::slow_step",
+   "rust_path": "blind_controller_kernel::plan",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 85,
-   "kernel_code": "pub fn slow_step(i: u32, n: u32) -> bool {\n    i < 100 || i.saturating_add(100) >= n\n}",
-   "lean": "def slow_step (i : Std.U32) (n : Std.U32) : Result Bool := do\n  if i < 100#u32\n  then ok true\n  else let i1 \u2190 lift (core.num.U32.saturating_add i 100#u32)\n       ok (i1 >= n)",
+   "kernel_line": 53,
+   "kernel_code": "pub fn plan(st: &Blind, cmd: &Cmd) -> (Blind, Move) {\n    match cmd {\n        Cmd::Forward(n) => {\n            let n = min(*n, BLIND_HEIGHT);\n            let pos = if st.pos > n { st.pos - n } else { 0 };\n            (Blind { pos }, Move { up: true, steps: n })\n        }\n        Cmd::Backward(n) => {\n            let n = min(*n, BLIND_HEIGHT);\n            let pos = st.pos.saturating_add(n);\n            (Blind { pos }, Move { up: false, steps: n })\n        }\n        Cmd::Raise => (Blind { pos: 0 }, Move { up: true, steps: min(st.pos, BLIND_HEIGHT) }),\n        Cmd::Lower => {\n            if st.pos >= BLIND_HEIGHT {\n                (*st, Move { up: false, steps: 0 })\n            } else {\n                (Blind { pos: BLIND_HEIGHT }, Move { up: false, steps: BLIND_HEIGHT - st.pos })\n            }\n        }\n    }\n}",
+   "lean": "def plan (st : Blind) (cmd : Cmd) : Result (Blind \u00d7 Move) := do\n  match cmd with\n  | Cmd.Forward n =>\n    let n1 \u2190 min n BLIND_HEIGHT\n    if st.pos > n1\n    then let pos \u2190 st.pos - n1\n         ok ({ pos }, { up := true, steps := n1 })\n    else ok ({ pos := 0#u32 }, { up := true, steps := n1 })\n  | Cmd.Backward n =>\n    let n1 \u2190 min n BLIND_HEIGHT\n    let pos \u2190 lift (core.num.U32.saturating_add st.pos n1)\n    ok ({ pos }, { up := false, steps := n1 })\n  | Cmd.Raise =>\n    let i \u2190 min st.pos BLIND_HEIGHT\n    ok ({ pos := 0#u32 }, { up := true, steps := i })\n  | Cmd.Lower =>\n    if st.pos >= BLIND_HEIGHT\n    then ok (st, { up := false, steps := 0#u32 })\n    else\n      let i \u2190 BLIND_HEIGHT - st.pos\n      ok ({ pos := BLIND_HEIGHT }, { up := false, steps := i })",
    "upstream": [
     {
      "file": "src/bin/blind.rs",
-     "line": 443,
-     "code": "            let speed = if i < 100 || i >= n - 100 { slow } else { fast };"
+     "line": 414,
+     "code": "        match (raised, &msg) {\n            (true, StepCommand::Raise) => {\n                warn!(\"Already raised, skipping raise command\");\n                continue;\n            },\n            (false, StepCommand::Lower) => {\n                warn!(\"Already lowered, skipping lower command\");\n                continue;\n            },\n            (false, StepCommand::Raise) | (true, StepCommand::Lower) => {\n                raised = !raised;\n            },\n            _ => {},\n        }\n\n        let (dir, n) = match msg {\n            StepCommand::Forward(n) => (Level::High, n),\n            StepCommand::Backward(n) => (Level::Low, n),\n            StepCommand::Raise => (Level::High, BLIND_HEIGHT),\n            StepCommand::Lower => (Level::Low, BLIND_HEIGHT),\n        };"
     }
    ],
-   "upstream_note": "the ramp: the first and last 100 microsteps slow"
+   "upstream_note": "motor_task's raised check and its (dir, n): the port plans from the position and caps at a full travel (U1, U3)"
   },
   "Blind": {
    "kind": "structure",
@@ -158,53 +158,15 @@
    ],
    "upstream_note": "a full travel in steps"
   },
-  "Cmd": {
-   "kind": "inductive",
-   "rust_path": "blind_controller_kernel::Cmd",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 24,
-   "kernel_code": "pub enum Cmd {\n    /// Up by n steps (`/forward/<n>`: upstream's `Level::High`, as `Raise`).\n    Forward(u32),\n    /// Down by n steps (`/backward/<n>`).\n    Backward(u32),\n    Raise,\n    Lower,\n}",
-   "lean": "@[discriminant isize]\ninductive Cmd where\n| Forward : Std.U32 \u2192 Cmd\n| Backward : Std.U32 \u2192 Cmd\n| Raise : Cmd\n| Lower : Cmd",
-   "upstream": [
-    {
-     "file": "src/bin/blind.rs",
-     "line": 91,
-     "code": "enum StepCommand {\n    Forward(usize),\n    Backward(usize),\n    Raise,\n    Lower,\n}"
-    }
-   ],
-   "upstream_note": "StepCommand: Forward, Backward, Raise, Lower"
-  },
-  "plan": {
+  "min": {
    "kind": "def",
-   "rust_path": "blind_controller_kernel::plan",
+   "rust_path": "blind_controller_kernel::min",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 53,
-   "kernel_code": "pub fn plan(st: &Blind, cmd: &Cmd) -> (Blind, Move) {\n    match cmd {\n        Cmd::Forward(n) => {\n            let n = min(*n, BLIND_HEIGHT);\n            let pos = if st.pos > n { st.pos - n } else { 0 };\n            (Blind { pos }, Move { up: true, steps: n })\n        }\n        Cmd::Backward(n) => {\n            let n = min(*n, BLIND_HEIGHT);\n            let pos = st.pos.saturating_add(n);\n            (Blind { pos }, Move { up: false, steps: n })\n        }\n        Cmd::Raise => (Blind { pos: 0 }, Move { up: true, steps: min(st.pos, BLIND_HEIGHT) }),\n        Cmd::Lower => {\n            if st.pos >= BLIND_HEIGHT {\n                (*st, Move { up: false, steps: 0 })\n            } else {\n                (Blind { pos: BLIND_HEIGHT }, Move { up: false, steps: BLIND_HEIGHT - st.pos })\n            }\n        }\n    }\n}",
-   "lean": "def plan (st : Blind) (cmd : Cmd) : Result (Blind \u00d7 Move) := do\n  match cmd with\n  | Cmd.Forward n =>\n    let n1 \u2190 min n BLIND_HEIGHT\n    if st.pos > n1\n    then let pos \u2190 st.pos - n1\n         ok ({ pos }, { up := true, steps := n1 })\n    else ok ({ pos := 0#u32 }, { up := true, steps := n1 })\n  | Cmd.Backward n =>\n    let n1 \u2190 min n BLIND_HEIGHT\n    let pos \u2190 lift (core.num.U32.saturating_add st.pos n1)\n    ok ({ pos }, { up := false, steps := n1 })\n  | Cmd.Raise =>\n    let i \u2190 min st.pos BLIND_HEIGHT\n    ok ({ pos := 0#u32 }, { up := true, steps := i })\n  | Cmd.Lower =>\n    if st.pos >= BLIND_HEIGHT\n    then ok (st, { up := false, steps := 0#u32 })\n    else\n      let i \u2190 BLIND_HEIGHT - st.pos\n      ok ({ pos := BLIND_HEIGHT }, { up := false, steps := i })",
-   "upstream": [
-    {
-     "file": "src/bin/blind.rs",
-     "line": 414,
-     "code": "        match (raised, &msg) {\n            (true, StepCommand::Raise) => {\n                warn!(\"Already raised, skipping raise command\");\n                continue;\n            },\n            (false, StepCommand::Lower) => {\n                warn!(\"Already lowered, skipping lower command\");\n                continue;\n            },\n            (false, StepCommand::Raise) | (true, StepCommand::Lower) => {\n                raised = !raised;\n            },\n            _ => {},\n        }\n\n        let (dir, n) = match msg {\n            StepCommand::Forward(n) => (Level::High, n),\n            StepCommand::Backward(n) => (Level::Low, n),\n            StepCommand::Raise => (Level::High, BLIND_HEIGHT),\n            StepCommand::Lower => (Level::Low, BLIND_HEIGHT),\n        };"
-    }
-   ],
-   "upstream_note": "motor_task's raised check and its (dir, n): the port plans from the position and caps at a full travel (U1, U3)"
-  },
-  "Move": {
-   "kind": "structure",
-   "rust_path": "blind_controller_kernel::Move",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 35,
-   "kernel_code": "pub struct Move {\n    pub up: bool,\n    pub steps: u32,\n}",
-   "lean": "structure Move where\n  up : Bool\n  steps : Std.U32",
-   "upstream": [
-    {
-     "file": "src/bin/blind.rs",
-     "line": 429,
-     "code": "        let (dir, n) = match msg {\n            StepCommand::Forward(n) => (Level::High, n),\n            StepCommand::Backward(n) => (Level::Low, n),\n            StepCommand::Raise => (Level::High, BLIND_HEIGHT),\n            StepCommand::Lower => (Level::Low, BLIND_HEIGHT),\n        };"
-    }
-   ],
-   "upstream_note": "the (direction, steps) motor_task drives"
+   "kernel_line": 49,
+   "kernel_code": "fn min(a: u32, b: u32) -> u32 {\n    if a < b { a } else { b }\n}",
+   "lean": "def min (a : Std.U32) (b : Std.U32) : Result Std.U32 := do\n  if a < b\n  then ok a\n  else ok b",
+   "upstream": [],
+   "upstream_note": "port-only helper: the cap at a full travel (upstream drives any usize, U3)"
   },
   "microsteps": {
    "kind": "def",
@@ -222,15 +184,53 @@
    ],
    "upstream_note": "n * microsteps, saturated (upstream's usize product wraps)"
   },
-  "min": {
-   "kind": "def",
-   "rust_path": "blind_controller_kernel::min",
+  "Cmd": {
+   "kind": "inductive",
+   "rust_path": "blind_controller_kernel::Cmd",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "fn min(a: u32, b: u32) -> u32 {\n    if a < b { a } else { b }\n}",
-   "lean": "def min (a : Std.U32) (b : Std.U32) : Result Std.U32 := do\n  if a < b\n  then ok a\n  else ok b",
-   "upstream": [],
-   "upstream_note": "port-only helper: the cap at a full travel (upstream drives any usize, U3)"
+   "kernel_line": 24,
+   "kernel_code": "pub enum Cmd {\n    /// Up by n steps (`/forward/<n>`: upstream's `Level::High`, as `Raise`).\n    Forward(u32),\n    /// Down by n steps (`/backward/<n>`).\n    Backward(u32),\n    Raise,\n    Lower,\n}",
+   "lean": "@[discriminant isize]\ninductive Cmd where\n| Forward : Std.U32 \u2192 Cmd\n| Backward : Std.U32 \u2192 Cmd\n| Raise : Cmd\n| Lower : Cmd",
+   "upstream": [
+    {
+     "file": "src/bin/blind.rs",
+     "line": 91,
+     "code": "enum StepCommand {\n    Forward(usize),\n    Backward(usize),\n    Raise,\n    Lower,\n}"
+    }
+   ],
+   "upstream_note": "StepCommand: Forward, Backward, Raise, Lower"
+  },
+  "Move": {
+   "kind": "structure",
+   "rust_path": "blind_controller_kernel::Move",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub struct Move {\n    pub up: bool,\n    pub steps: u32,\n}",
+   "lean": "structure Move where\n  up : Bool\n  steps : Std.U32",
+   "upstream": [
+    {
+     "file": "src/bin/blind.rs",
+     "line": 429,
+     "code": "        let (dir, n) = match msg {\n            StepCommand::Forward(n) => (Level::High, n),\n            StepCommand::Backward(n) => (Level::Low, n),\n            StepCommand::Raise => (Level::High, BLIND_HEIGHT),\n            StepCommand::Lower => (Level::Low, BLIND_HEIGHT),\n        };"
+    }
+   ],
+   "upstream_note": "the (direction, steps) motor_task drives"
+  },
+  "slow_step": {
+   "kind": "def",
+   "rust_path": "blind_controller_kernel::slow_step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 85,
+   "kernel_code": "pub fn slow_step(i: u32, n: u32) -> bool {\n    i < 100 || i.saturating_add(100) >= n\n}",
+   "lean": "def slow_step (i : Std.U32) (n : Std.U32) : Result Bool := do\n  if i < 100#u32\n  then ok true\n  else let i1 \u2190 lift (core.num.U32.saturating_add i 100#u32)\n       ok (i1 >= n)",
+   "upstream": [
+    {
+     "file": "src/bin/blind.rs",
+     "line": 443,
+     "code": "            let speed = if i < 100 || i >= n - 100 { slow } else { fast };"
+    }
+   ],
+   "upstream_note": "the ramp: the first and last 100 microsteps slow"
   }
  },
  "specs": {}
