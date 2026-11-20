@@ -14,8 +14,8 @@
    "proof": "theorem motor_percentage_bounded (v : Std.I32) :\n    \u2203 r, motor_percentage v = ok r \u2227 r.val \u2264 100 := by\n  have h : motor_percentage v \u2983 r => r.val \u2264 100 \u2984 := by\n    unfold motor_percentage MOTOR_LIMIT\n    step*\n    have := hcast_u8_small i1 (by scalar_tac) (by scalar_tac)\n    scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
    "deps": [
     "motor_percentage",
-    "MOTOR_LIMIT",
-    "clamp"
+    "clamp",
+    "MOTOR_LIMIT"
    ],
    "spec": []
   },
@@ -27,8 +27,8 @@
    "proof": "theorem motor_percentage_upstream_range (v : Std.I32)\n    (h1 : -50 \u2264 v.val) (h2 : v.val \u2264 50) :\n    \u2203 r, motor_percentage v = ok r \u2227 (r.val : Int) = v.val + 50 := by\n  have h : motor_percentage v \u2983 r => (r.val : Int) = v.val + 50 \u2984 := by\n    unfold motor_percentage MOTOR_LIMIT\n    step*\n    have := hcast_u8_small i1 (by scalar_tac) (by scalar_tac)\n    scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
    "deps": [
     "motor_percentage",
-    "MOTOR_LIMIT",
-    "clamp"
+    "clamp",
+    "MOTOR_LIMIT"
    ],
    "spec": []
   },
@@ -40,8 +40,8 @@
    "proof": "theorem steering_percentage_bounded (v : Std.I32) :\n    \u2203 r, steering_percentage v = ok r \u2227 38 \u2264 r.val \u2227 r.val \u2264 62 := by\n  have h : steering_percentage v \u2983 r => 38 \u2264 r.val \u2227 r.val \u2264 62 \u2984 := by\n    unfold steering_percentage STEER_LIMIT\n    step*\n    have := hcast_u8_small i1 (by scalar_tac) (by scalar_tac)\n    scalar_tac\n  obtain \u27e8r, hr, hp\u27e9 := (WP.spec_equiv_exists _ _).1 h\n  exact \u27e8r, hr, hp\u27e9",
    "deps": [
     "steering_percentage",
-    "STEER_LIMIT",
-    "clamp"
+    "clamp",
+    "STEER_LIMIT"
    ],
    "spec": []
   },
@@ -101,10 +101,10 @@
    "proof": "theorem blinker_command_takes_effect (s : Blinker) (cmd : Blink)\n    (h : s.pattern \u2260 Blink.Off) :\n    \u2203 s' l, blinker_command s cmd = ok (s', l) \u2227 s'.pattern = cmd := by\n  rcases s with \u27e8p, ph\u27e9\n  cases p <;> cases cmd <;> simp_all [blinker_command, lamps]",
    "deps": [
     "Blink",
-    "Blinker",
     "blinker_command",
-    "Lamps",
-    "lamps"
+    "Blinker",
+    "lamps",
+    "Lamps"
    ],
    "spec": []
   },
@@ -115,11 +115,11 @@
    "statement": "theorem blinker_off_lamps_off (s : Blinker) :\n    \u2203 s' l, blinker_command s Blink.Off = ok (s', l) \u2227 s'.pattern = Blink.Off \u2227\n      \u2200 x, l = some x \u2192 x.left = false \u2227 x.right = false",
    "proof": "theorem blinker_off_lamps_off (s : Blinker) :\n    \u2203 s' l, blinker_command s Blink.Off = ok (s', l) \u2227 s'.pattern = Blink.Off \u2227\n      \u2200 x, l = some x \u2192 x.left = false \u2227 x.right = false := by\n  rcases s with \u27e8p, ph\u27e9\n  cases p <;> simp [blinker_command, lamps]",
    "deps": [
-    "Blinker",
     "blinker_command",
+    "Blinker",
+    "lamps",
     "Blink",
-    "Lamps",
-    "lamps"
+    "Lamps"
    ],
    "spec": []
   },
@@ -130,80 +130,16 @@
    "statement": "theorem blinker_tick_alternates (s : Blinker) :\n    \u2203 s' l, blinker_tick s = ok (s', l) \u2227 s'.phase = !s.phase \u2227 s'.pattern = s.pattern \u2227\n      (s.phase = true \u2192 l.left = false \u2227 l.right = false)",
    "proof": "theorem blinker_tick_alternates (s : Blinker) :\n    \u2203 s' l, blinker_tick s = ok (s', l) \u2227 s'.phase = !s.phase \u2227 s'.pattern = s.pattern \u2227\n      (s.phase = true \u2192 l.left = false \u2227 l.right = false) := by\n  rcases s with \u27e8p, ph\u27e9\n  cases p <;> cases ph <;> simp [blinker_tick, lamps]",
    "deps": [
-    "blinker_tick",
     "Blinker",
-    "Lamps",
+    "blinker_tick",
+    "Blink",
     "lamps",
-    "Blink"
+    "Lamps"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "MOTOR_LIMIT": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::MOTOR_LIMIT",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 35,
-   "kernel_code": "pub const MOTOR_LIMIT: i32 = 50;",
-   "lean": "@[global_simps, irreducible] def MOTOR_LIMIT : Std.I32 := 50#i32",
-   "upstream": [
-    {
-     "file": "controller/src/steering.rs",
-     "line": 58,
-     "code": "                if count < 50 {\n                    count += 1;\n                }\n                let cmd = Message::Control(ControlMessage::MotorPower(count));\n                publisher.publish(cmd).await;\n            }\n            rotary_encoder_hal::Direction::CounterClockwise => {\n                info!(\"ccw\");\n                if count > -50 {\n                    count -= 1;\n                    let cmd = Message::Control(ControlMessage::MotorPower(count));\n                    publisher.publish(cmd).await;\n                }"
-    }
-   ],
-   "upstream_note": "upstream's car has no bound (U1); the controller's count stays in -50..=50"
-  },
-  "Lamps": {
-   "kind": "structure",
-   "rust_path": "rc_car_kernel::Lamps",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 143,
-   "kernel_code": "pub struct Lamps {\n    pub left: bool,\n    pub right: bool,\n}",
-   "lean": "structure Lamps where\n  left : Bool\n  right : Bool",
-   "upstream": [
-    {
-     "file": "car/src/blinkers.rs",
-     "line": 94,
-     "code": "async fn set_blinker_state(\n    blink_state: bool,\n    state: BlinkerState,\n    left_pin: &mut AnyOutput<'static>,\n    right_pin: &mut AnyOutput<'static>,\n    publisher: &mut MessagePublisher,\n) {\n    info!(\"Setting blinker state to: {blink_state} and {:?}\", state);\n    if blink_state {\n        match state {\n            BlinkerState::Left => {\n                left_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Right => {\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Off => {\n                left_pin.set_low();\n                right_pin.set_low();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::AllOff,\n                    )))\n                    .await;\n            }\n            BlinkerState::Alarm => {\n                left_pin.set_high();\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n        }\n    } else {\n        left_pin.set_low();\n        right_pin.set_low();\n        publisher\n            .publish(Message::Telemetry(TelemetryMessage::Blink(\n                BlinkState::AllOff,\n            )))\n            .await;\n    }\n}"
-    }
-   ],
-   "upstream_note": "the left/right pin levels set_blinker_state drives"
-  },
-  "Blink": {
-   "kind": "inductive",
-   "rust_path": "rc_car_kernel::Blink",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 126,
-   "kernel_code": "pub enum Blink {\n    Left,\n    Right,\n    Off,\n    Alarm,\n}",
-   "lean": "@[discriminant isize]\ninductive Blink where\n| Left : Blink\n| Right : Blink\n| Off : Blink\n| Alarm : Blink",
-   "upstream": [
-    {
-     "file": "protocol/src/lib.rs",
-     "line": 32,
-     "code": "#[derive(Serialize, Deserialize, Clone, Debug, Copy, PartialEq, Eq)]\npub enum BlinkerState {\n    Left,\n    Right,\n    Off,\n    Alarm,\n}"
-    }
-   ],
-   "upstream_note": "protocol::BlinkerState"
-  },
-  "lamps": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::lamps",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 149,
-   "kernel_code": "pub fn lamps(phase: bool, pattern: Blink) -> Lamps {\n    if !phase {\n        return Lamps { left: false, right: false };\n    }\n    match pattern {\n        Blink::Left => Lamps { left: true, right: false },\n        Blink::Right => Lamps { left: false, right: true },\n        Blink::Off => Lamps { left: false, right: false },\n        Blink::Alarm => Lamps { left: true, right: true },\n    }\n}",
-   "lean": "def lamps (phase : Bool) (pattern : Blink) : Result Lamps := do\n  if phase\n  then\n    match pattern with\n    | Blink.Left => ok { left := true, right := false }\n    | Blink.Right => ok { left := false, right := true }\n    | Blink.Off => ok { left := false, right := false }\n    | Blink.Alarm => ok { left := true, right := true }\n  else ok { left := false, right := false }",
-   "upstream": [
-    {
-     "file": "car/src/blinkers.rs",
-     "line": 94,
-     "code": "async fn set_blinker_state(\n    blink_state: bool,\n    state: BlinkerState,\n    left_pin: &mut AnyOutput<'static>,\n    right_pin: &mut AnyOutput<'static>,\n    publisher: &mut MessagePublisher,\n) {\n    info!(\"Setting blinker state to: {blink_state} and {:?}\", state);\n    if blink_state {\n        match state {\n            BlinkerState::Left => {\n                left_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Right => {\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Off => {\n                left_pin.set_low();\n                right_pin.set_low();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::AllOff,\n                    )))\n                    .await;\n            }\n            BlinkerState::Alarm => {\n                left_pin.set_high();\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n        }\n    } else {\n        left_pin.set_low();\n        right_pin.set_low();\n        publisher\n            .publish(Message::Telemetry(TelemetryMessage::Blink(\n                BlinkState::AllOff,\n            )))\n            .await;\n    }\n}"
-    }
-   ],
-   "upstream_note": "set_blinker_state's pin levels (telemetry publishes stay in the app)"
-  },
   "servo_duty": {
    "kind": "def",
    "rust_path": "rc_car_kernel::servo_duty",
@@ -225,6 +161,139 @@
    ],
    "upstream_note": "Servo::set_percentage duty arithmetic, CYCLE_TIME/DUTY_SPACE passed in; percentage capped at 100"
   },
+  "clamp": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::clamp",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 38,
+   "kernel_code": "pub fn clamp(value: i32, limit: i32) -> i32 {\n    if value < -limit {\n        -limit\n    } else if value > limit {\n        limit\n    } else {\n        value\n    }\n}",
+   "lean": "def clamp (value : Std.I32) (limit : Std.I32) : Result Std.I32 := do\n  let i \u2190 -. limit\n  if value < i\n  then ok i\n  else if value > limit\n       then ok limit\n       else ok value",
+   "upstream": [
+    {
+     "file": "car/src/main.rs",
+     "line": 317,
+     "code": "            let value = value.clamp(-12, 12) + 50;"
+    }
+   ],
+   "upstream_note": "i32::clamp as steering uses it; the port also applies it to the motor value"
+  },
+  "MOTOR_LIMIT": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::MOTOR_LIMIT",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub const MOTOR_LIMIT: i32 = 50;",
+   "lean": "@[global_simps, irreducible] def MOTOR_LIMIT : Std.I32 := 50#i32",
+   "upstream": [
+    {
+     "file": "controller/src/steering.rs",
+     "line": 58,
+     "code": "                if count < 50 {\n                    count += 1;\n                }\n                let cmd = Message::Control(ControlMessage::MotorPower(count));\n                publisher.publish(cmd).await;\n            }\n            rotary_encoder_hal::Direction::CounterClockwise => {\n                info!(\"ccw\");\n                if count > -50 {\n                    count -= 1;\n                    let cmd = Message::Control(ControlMessage::MotorPower(count));\n                    publisher.publish(cmd).await;\n                }"
+    }
+   ],
+   "upstream_note": "upstream's car has no bound (U1); the controller's count stays in -50..=50"
+  },
+  "magnitude": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::magnitude",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 84,
+   "kernel_code": "pub fn magnitude(v: i32) -> u32 {\n    if v < 0 {\n        // -(v + 1) + 1, so i32::MIN maps to 2^31\n        ((-(v + 1)) as u32) + 1\n    } else {\n        v as u32\n    }\n}",
+   "lean": "def magnitude (v : Std.I32) : Result Std.U32 := do\n  if v < 0#i32\n  then\n    let i \u2190 v + 1#i32\n    let i1 \u2190 -. i\n    let i2 \u2190 lift (IScalar.hcast .U32 i1)\n    i2 + 1#u32\n  else ok (IScalar.hcast .U32 v)",
+   "upstream": [
+    {
+     "file": "car/src/lights.rs",
+     "line": 111,
+     "code": "                    if value.abs() < last_motor_setting.abs() {"
+    }
+   ],
+   "upstream_note": "value.abs() / last_motor_setting.abs(), exact on i32::MIN (U5)"
+  },
+  "Blink": {
+   "kind": "inductive",
+   "rust_path": "rc_car_kernel::Blink",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 126,
+   "kernel_code": "pub enum Blink {\n    Left,\n    Right,\n    Off,\n    Alarm,\n}",
+   "lean": "@[discriminant isize]\ninductive Blink where\n| Left : Blink\n| Right : Blink\n| Off : Blink\n| Alarm : Blink",
+   "upstream": [
+    {
+     "file": "protocol/src/lib.rs",
+     "line": 32,
+     "code": "#[derive(Serialize, Deserialize, Clone, Debug, Copy, PartialEq, Eq)]\npub enum BlinkerState {\n    Left,\n    Right,\n    Off,\n    Alarm,\n}"
+    }
+   ],
+   "upstream_note": "protocol::BlinkerState"
+  },
+  "BRAKELIGHT_TIMEOUT_MS": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::BRAKELIGHT_TIMEOUT_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 101,
+   "kernel_code": "pub const BRAKELIGHT_TIMEOUT_MS: u64 = 500;",
+   "lean": "@[global_simps, irreducible] def BRAKELIGHT_TIMEOUT_MS : Std.U64 := 500#u64",
+   "upstream": [
+    {
+     "file": "car/src/lights.rs",
+     "line": 105,
+     "code": "    const BRAKELIGHT_TIMEOUT: u64 = 500;"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "blinker_command": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::blinker_command",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 166,
+   "kernel_code": "pub fn blinker_command(s: Blinker, cmd: Blink) -> (Blinker, Option<Lamps>) {\n    match s.pattern {\n        Blink::Off => match cmd {\n            Blink::Off => (s, Some(Lamps { left: false, right: false })),\n            _ => (Blinker { pattern: cmd, phase: s.phase }, None),\n        },\n        _ => {\n            let l = lamps(true, cmd);\n            (Blinker { pattern: cmd, phase: true }, Some(l))\n        }\n    }\n}",
+   "lean": "def blinker_command\n  (s : Blinker) (cmd : Blink) : Result (Blinker \u00d7 (Option Lamps)) := do\n  match s.pattern with\n  | Blink.Left =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)\n  | Blink.Right =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)\n  | Blink.Off =>\n    match cmd with\n    | Blink.Left => ok ({ s with pattern := Blink.Left }, none)\n    | Blink.Right => ok ({ s with pattern := Blink.Right }, none)\n    | Blink.Off => ok (s, some { left := false, right := false })\n    | Blink.Alarm => ok ({ s with pattern := Blink.Alarm }, none)\n  | Blink.Alarm =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)",
+   "upstream": [
+    {
+     "file": "car/src/blinkers.rs",
+     "line": 38,
+     "code": "            Message::Control(ControlMessage::BlinkerCommand(blinker)) => {\n                // state = blinker;\n                info!(\"Blinker comman received: {:?}\", blinker);\n                match blinker {\n                    BlinkerState::Off => {\n                        left_pin.set_low();\n                        right_pin.set_low();\n                        continue;\n                    }\n                    _ => loop {"
+    },
+    {
+     "file": "car/src/blinkers.rs",
+     "line": 51,
+     "code": "                            Either::First(command) => {\n                                info!(\"Blinker loop interrupted with command: {:?}\", command);\n                                match command {\n                                    Message::Control(ControlMessage::BlinkerCommand(\n                                        blinker_command,\n                                    )) => {\n                                        // state = blinker_command;\n                                        blink_state = true;\n                                        set_blinker_state(\n                                            blink_state,\n                                            blinker_command,\n                                            &mut left_pin,\n                                            &mut right_pin,\n                                            &mut publisher,\n                                        )\n                                        .await;\n                                        if blinker_command == BlinkerState::Off {\n                                            break;\n                                        }\n                                    }\n                                    _ => {}\n                                }\n                            }"
+    }
+   ],
+   "upstream_note": "BlinkerCommand idle and while blinking; the new command becomes the pattern (U2)"
+  },
+  "steering_percentage": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::steering_percentage",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 50,
+   "kernel_code": "pub fn steering_percentage(value: i32) -> u8 {\n    (clamp(value, STEER_LIMIT) + 50) as u8\n}",
+   "lean": "def steering_percentage (value : Std.I32) : Result Std.U8 := do\n  let i \u2190 clamp value STEER_LIMIT\n  let i1 \u2190 i + 50#i32\n  ok (IScalar.hcast .U8 i1)",
+   "upstream": [
+    {
+     "file": "car/src/main.rs",
+     "line": 307,
+     "code": "#[embassy_executor::task]\nasync fn steering(\n    mut subscriber: MessageSubscriber,\n    steering_servo: &'static mut SteeringServo,\n) -> ! {\n    steering_servo.set_percentage(50_u8); // center steering\n    loop {\n        if let Message::Control(ControlMessage::SteeringPosition(value)) = subscriber.next_message_pure().await {\n            info!(\"Steering value: {}\", value);\n            // assert values min -50 max 50\n            let value = value.clamp(-12, 12) + 50;\n            // let value: u32 = ((value.min(12).max(-12)) as u32) + 50; // normalize to 0..100\n            steering_servo.set_percentage(value as u8);\n        }\n    }\n}"
+    }
+   ],
+   "upstream_note": "steering task: value.clamp(-12, 12) + 50, as u8"
+  },
+  "motor_percentage": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::motor_percentage",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 56,
+   "kernel_code": "pub fn motor_percentage(value: i32) -> u8 {\n    (clamp(value, MOTOR_LIMIT) + 50) as u8\n}",
+   "lean": "def motor_percentage (value : Std.I32) : Result Std.U8 := do\n  let i \u2190 clamp value MOTOR_LIMIT\n  let i1 \u2190 i + 50#i32\n  ok (IScalar.hcast .U8 i1)",
+   "upstream": [
+    {
+     "file": "car/src/main.rs",
+     "line": 324,
+     "code": "#[embassy_executor::task]\nasync fn motor(\n    mut subscriber: MessageSubscriber,\n    motor_servo: &'static mut MotorServo,\n    publisher: MessagePublisher,\n) -> ! {\n    // recalibrate_motor(motor_servo).await;\n    motor_servo.set_percentage(100);\n    loop {\n        match subscriber.next_message_pure().await {\n            Message::Control(ControlMessage::MotorPower(value)) => {\n                let v: u8 = (value + 50) as u8;\n                let duty = motor_servo.set_percentage(v);\n                info!(\"Setting motor percentage: {}. Duty:\", v);\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::MotorSetting(duty)))\n                    .await;\n            }\n            Message::Control(ControlMessage::RecalibrateMotor) => {\n                recalibrate_motor(motor_servo).await;\n            }\n            _ => {}\n        }\n    }\n}"
+    }
+   ],
+   "upstream_note": "motor task: (value + 50) as u8; the port clamps to -50..=50 first (U1)"
+  },
   "Brake": {
    "kind": "structure",
    "rust_path": "rc_car_kernel::Brake",
@@ -240,6 +309,38 @@
     }
    ],
    "upstream_note": "brakelight_motor_monitor's last_motor_setting, last_update_time, brakelight_on"
+  },
+  "brake_on_motor": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::brake_on_motor",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 106,
+   "kernel_code": "pub fn brake_on_motor(s: Brake, value: i32, now_ms: u64) -> Brake {\n    let braking = magnitude(value) < magnitude(s.last_setting);\n    Brake { last_setting: value, last_update_ms: now_ms, on: braking }\n}",
+   "lean": "def brake_on_motor\n  (s : Brake) (value : Std.I32) (now_ms : Std.U64) : Result Brake := do\n  let i \u2190 magnitude value\n  let i1 \u2190 magnitude s.last_setting\n  ok { last_setting := value, last_update_ms := now_ms, on := (i < i1) }",
+   "upstream": [
+    {
+     "file": "car/src/lights.rs",
+     "line": 110,
+     "code": "                Message::Control(ControlMessage::MotorPower(value)) => {\n                    if value.abs() < last_motor_setting.abs() {\n                        info!(\"Braking\");\n                        publisher\n                            .publish(Message::Control(ControlMessage::BrakelightCommand(\n                                protocol::Brakelights::On,\n                            )))\n                            .await;\n                        brakelight_on = true;\n                    } else {\n                        info!(\"Accelerating. Brakelight: {}\", brakelight_on);\n                        if brakelight_on {\n                            info!(\"Accelerating, switching on brakelight\");\n                        }\n                        publisher\n                            .publish(Message::Control(ControlMessage::BrakelightCommand(\n                                protocol::Brakelights::Off,\n                            )))\n                            .await;\n                        brakelight_on = false;\n                    }\n                    last_update_time = rtc.get_time_ms();\n                    last_motor_setting = value;\n                }"
+    }
+   ],
+   "upstream_note": "MotorPower arm: brake light on iff the magnitude drops; record value and time"
+  },
+  "brake_on_tick": {
+   "kind": "def",
+   "rust_path": "rc_car_kernel::brake_on_tick",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 113,
+   "kernel_code": "pub fn brake_on_tick(s: Brake, now_ms: u64) -> (Brake, bool) {\n    if s.on && now_ms > s.last_update_ms && now_ms - s.last_update_ms > BRAKELIGHT_TIMEOUT_MS {\n        (Brake { last_setting: s.last_setting, last_update_ms: s.last_update_ms, on: false }, true)\n    } else {\n        (s, false)\n    }\n}",
+   "lean": "def brake_on_tick (s : Brake) (now_ms : Std.U64) : Result (Brake \u00d7 Bool) := do\n  if s.on\n  then\n    if now_ms > s.last_update_ms\n    then\n      let i \u2190 now_ms - s.last_update_ms\n      if i > BRAKELIGHT_TIMEOUT_MS\n      then ok ({ s with on := false }, true)\n      else ok (s, false)\n    else ok (s, false)\n  else ok (s, false)",
+   "upstream": [
+    {
+     "file": "car/src/lights.rs",
+     "line": 136,
+     "code": "            Either::Second(_) => {\n                if brakelight_on {\n                    let elapsed = rtc.get_time_ms() - last_update_time;\n                    // info!(\"Timeout brakelight: elapsed: {}\",elapsed);\n\n                    if elapsed > BRAKELIGHT_TIMEOUT {\n                        info!(\"Switch off brakelight\");\n                        brakelight_on = false;\n                        publisher\n                            .publish(Message::Control(ControlMessage::BrakelightCommand(\n                                protocol::Brakelights::Off,\n                            )))\n                            .await;\n                    }\n                }\n            }"
+    }
+   ],
+   "upstream_note": "timer arm: switch off after more than 500 ms on"
   },
   "blinker_tick": {
    "kind": "def",
@@ -294,138 +395,37 @@
    ],
    "upstream_note": "the 12 in value.clamp(-12, 12)"
   },
-  "steering_percentage": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::steering_percentage",
+  "Lamps": {
+   "kind": "structure",
+   "rust_path": "rc_car_kernel::Lamps",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 50,
-   "kernel_code": "pub fn steering_percentage(value: i32) -> u8 {\n    (clamp(value, STEER_LIMIT) + 50) as u8\n}",
-   "lean": "def steering_percentage (value : Std.I32) : Result Std.U8 := do\n  let i \u2190 clamp value STEER_LIMIT\n  let i1 \u2190 i + 50#i32\n  ok (IScalar.hcast .U8 i1)",
-   "upstream": [
-    {
-     "file": "car/src/main.rs",
-     "line": 307,
-     "code": "#[embassy_executor::task]\nasync fn steering(\n    mut subscriber: MessageSubscriber,\n    steering_servo: &'static mut SteeringServo,\n) -> ! {\n    steering_servo.set_percentage(50_u8); // center steering\n    loop {\n        if let Message::Control(ControlMessage::SteeringPosition(value)) = subscriber.next_message_pure().await {\n            info!(\"Steering value: {}\", value);\n            // assert values min -50 max 50\n            let value = value.clamp(-12, 12) + 50;\n            // let value: u32 = ((value.min(12).max(-12)) as u32) + 50; // normalize to 0..100\n            steering_servo.set_percentage(value as u8);\n        }\n    }\n}"
-    }
-   ],
-   "upstream_note": "steering task: value.clamp(-12, 12) + 50, as u8"
-  },
-  "motor_percentage": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::motor_percentage",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 56,
-   "kernel_code": "pub fn motor_percentage(value: i32) -> u8 {\n    (clamp(value, MOTOR_LIMIT) + 50) as u8\n}",
-   "lean": "def motor_percentage (value : Std.I32) : Result Std.U8 := do\n  let i \u2190 clamp value MOTOR_LIMIT\n  let i1 \u2190 i + 50#i32\n  ok (IScalar.hcast .U8 i1)",
-   "upstream": [
-    {
-     "file": "car/src/main.rs",
-     "line": 324,
-     "code": "#[embassy_executor::task]\nasync fn motor(\n    mut subscriber: MessageSubscriber,\n    motor_servo: &'static mut MotorServo,\n    publisher: MessagePublisher,\n) -> ! {\n    // recalibrate_motor(motor_servo).await;\n    motor_servo.set_percentage(100);\n    loop {\n        match subscriber.next_message_pure().await {\n            Message::Control(ControlMessage::MotorPower(value)) => {\n                let v: u8 = (value + 50) as u8;\n                let duty = motor_servo.set_percentage(v);\n                info!(\"Setting motor percentage: {}. Duty:\", v);\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::MotorSetting(duty)))\n                    .await;\n            }\n            Message::Control(ControlMessage::RecalibrateMotor) => {\n                recalibrate_motor(motor_servo).await;\n            }\n            _ => {}\n        }\n    }\n}"
-    }
-   ],
-   "upstream_note": "motor task: (value + 50) as u8; the port clamps to -50..=50 first (U1)"
-  },
-  "BRAKELIGHT_TIMEOUT_MS": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::BRAKELIGHT_TIMEOUT_MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 101,
-   "kernel_code": "pub const BRAKELIGHT_TIMEOUT_MS: u64 = 500;",
-   "lean": "@[global_simps, irreducible] def BRAKELIGHT_TIMEOUT_MS : Std.U64 := 500#u64",
-   "upstream": [
-    {
-     "file": "car/src/lights.rs",
-     "line": 105,
-     "code": "    const BRAKELIGHT_TIMEOUT: u64 = 500;"
-    }
-   ],
-   "upstream_note": ""
-  },
-  "magnitude": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::magnitude",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 84,
-   "kernel_code": "pub fn magnitude(v: i32) -> u32 {\n    if v < 0 {\n        // -(v + 1) + 1, so i32::MIN maps to 2^31\n        ((-(v + 1)) as u32) + 1\n    } else {\n        v as u32\n    }\n}",
-   "lean": "def magnitude (v : Std.I32) : Result Std.U32 := do\n  if v < 0#i32\n  then\n    let i \u2190 v + 1#i32\n    let i1 \u2190 -. i\n    let i2 \u2190 lift (IScalar.hcast .U32 i1)\n    i2 + 1#u32\n  else ok (IScalar.hcast .U32 v)",
-   "upstream": [
-    {
-     "file": "car/src/lights.rs",
-     "line": 111,
-     "code": "                    if value.abs() < last_motor_setting.abs() {"
-    }
-   ],
-   "upstream_note": "value.abs() / last_motor_setting.abs(), exact on i32::MIN (U5)"
-  },
-  "clamp": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::clamp",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 38,
-   "kernel_code": "pub fn clamp(value: i32, limit: i32) -> i32 {\n    if value < -limit {\n        -limit\n    } else if value > limit {\n        limit\n    } else {\n        value\n    }\n}",
-   "lean": "def clamp (value : Std.I32) (limit : Std.I32) : Result Std.I32 := do\n  let i \u2190 -. limit\n  if value < i\n  then ok i\n  else if value > limit\n       then ok limit\n       else ok value",
-   "upstream": [
-    {
-     "file": "car/src/main.rs",
-     "line": 317,
-     "code": "            let value = value.clamp(-12, 12) + 50;"
-    }
-   ],
-   "upstream_note": "i32::clamp as steering uses it; the port also applies it to the motor value"
-  },
-  "brake_on_motor": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::brake_on_motor",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 106,
-   "kernel_code": "pub fn brake_on_motor(s: Brake, value: i32, now_ms: u64) -> Brake {\n    let braking = magnitude(value) < magnitude(s.last_setting);\n    Brake { last_setting: value, last_update_ms: now_ms, on: braking }\n}",
-   "lean": "def brake_on_motor\n  (s : Brake) (value : Std.I32) (now_ms : Std.U64) : Result Brake := do\n  let i \u2190 magnitude value\n  let i1 \u2190 magnitude s.last_setting\n  ok { last_setting := value, last_update_ms := now_ms, on := (i < i1) }",
-   "upstream": [
-    {
-     "file": "car/src/lights.rs",
-     "line": 110,
-     "code": "                Message::Control(ControlMessage::MotorPower(value)) => {\n                    if value.abs() < last_motor_setting.abs() {\n                        info!(\"Braking\");\n                        publisher\n                            .publish(Message::Control(ControlMessage::BrakelightCommand(\n                                protocol::Brakelights::On,\n                            )))\n                            .await;\n                        brakelight_on = true;\n                    } else {\n                        info!(\"Accelerating. Brakelight: {}\", brakelight_on);\n                        if brakelight_on {\n                            info!(\"Accelerating, switching on brakelight\");\n                        }\n                        publisher\n                            .publish(Message::Control(ControlMessage::BrakelightCommand(\n                                protocol::Brakelights::Off,\n                            )))\n                            .await;\n                        brakelight_on = false;\n                    }\n                    last_update_time = rtc.get_time_ms();\n                    last_motor_setting = value;\n                }"
-    }
-   ],
-   "upstream_note": "MotorPower arm: brake light on iff the magnitude drops; record value and time"
-  },
-  "blinker_command": {
-   "kind": "def",
-   "rust_path": "rc_car_kernel::blinker_command",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 166,
-   "kernel_code": "pub fn blinker_command(s: Blinker, cmd: Blink) -> (Blinker, Option<Lamps>) {\n    match s.pattern {\n        Blink::Off => match cmd {\n            Blink::Off => (s, Some(Lamps { left: false, right: false })),\n            _ => (Blinker { pattern: cmd, phase: s.phase }, None),\n        },\n        _ => {\n            let l = lamps(true, cmd);\n            (Blinker { pattern: cmd, phase: true }, Some(l))\n        }\n    }\n}",
-   "lean": "def blinker_command\n  (s : Blinker) (cmd : Blink) : Result (Blinker \u00d7 (Option Lamps)) := do\n  match s.pattern with\n  | Blink.Left =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)\n  | Blink.Right =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)\n  | Blink.Off =>\n    match cmd with\n    | Blink.Left => ok ({ s with pattern := Blink.Left }, none)\n    | Blink.Right => ok ({ s with pattern := Blink.Right }, none)\n    | Blink.Off => ok (s, some { left := false, right := false })\n    | Blink.Alarm => ok ({ s with pattern := Blink.Alarm }, none)\n  | Blink.Alarm =>\n    let l \u2190 lamps true cmd\n    ok ({ pattern := cmd, phase := true }, some l)",
+   "kernel_line": 143,
+   "kernel_code": "pub struct Lamps {\n    pub left: bool,\n    pub right: bool,\n}",
+   "lean": "structure Lamps where\n  left : Bool\n  right : Bool",
    "upstream": [
     {
      "file": "car/src/blinkers.rs",
-     "line": 38,
-     "code": "            Message::Control(ControlMessage::BlinkerCommand(blinker)) => {\n                // state = blinker;\n                info!(\"Blinker comman received: {:?}\", blinker);\n                match blinker {\n                    BlinkerState::Off => {\n                        left_pin.set_low();\n                        right_pin.set_low();\n                        continue;\n                    }\n                    _ => loop {"
-    },
-    {
-     "file": "car/src/blinkers.rs",
-     "line": 51,
-     "code": "                            Either::First(command) => {\n                                info!(\"Blinker loop interrupted with command: {:?}\", command);\n                                match command {\n                                    Message::Control(ControlMessage::BlinkerCommand(\n                                        blinker_command,\n                                    )) => {\n                                        // state = blinker_command;\n                                        blink_state = true;\n                                        set_blinker_state(\n                                            blink_state,\n                                            blinker_command,\n                                            &mut left_pin,\n                                            &mut right_pin,\n                                            &mut publisher,\n                                        )\n                                        .await;\n                                        if blinker_command == BlinkerState::Off {\n                                            break;\n                                        }\n                                    }\n                                    _ => {}\n                                }\n                            }"
+     "line": 94,
+     "code": "async fn set_blinker_state(\n    blink_state: bool,\n    state: BlinkerState,\n    left_pin: &mut AnyOutput<'static>,\n    right_pin: &mut AnyOutput<'static>,\n    publisher: &mut MessagePublisher,\n) {\n    info!(\"Setting blinker state to: {blink_state} and {:?}\", state);\n    if blink_state {\n        match state {\n            BlinkerState::Left => {\n                left_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Right => {\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Off => {\n                left_pin.set_low();\n                right_pin.set_low();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::AllOff,\n                    )))\n                    .await;\n            }\n            BlinkerState::Alarm => {\n                left_pin.set_high();\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n        }\n    } else {\n        left_pin.set_low();\n        right_pin.set_low();\n        publisher\n            .publish(Message::Telemetry(TelemetryMessage::Blink(\n                BlinkState::AllOff,\n            )))\n            .await;\n    }\n}"
     }
    ],
-   "upstream_note": "BlinkerCommand idle and while blinking; the new command becomes the pattern (U2)"
+   "upstream_note": "the left/right pin levels set_blinker_state drives"
   },
-  "brake_on_tick": {
+  "lamps": {
    "kind": "def",
-   "rust_path": "rc_car_kernel::brake_on_tick",
+   "rust_path": "rc_car_kernel::lamps",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 113,
-   "kernel_code": "pub fn brake_on_tick(s: Brake, now_ms: u64) -> (Brake, bool) {\n    if s.on && now_ms > s.last_update_ms && now_ms - s.last_update_ms > BRAKELIGHT_TIMEOUT_MS {\n        (Brake { last_setting: s.last_setting, last_update_ms: s.last_update_ms, on: false }, true)\n    } else {\n        (s, false)\n    }\n}",
-   "lean": "def brake_on_tick (s : Brake) (now_ms : Std.U64) : Result (Brake \u00d7 Bool) := do\n  if s.on\n  then\n    if now_ms > s.last_update_ms\n    then\n      let i \u2190 now_ms - s.last_update_ms\n      if i > BRAKELIGHT_TIMEOUT_MS\n      then ok ({ s with on := false }, true)\n      else ok (s, false)\n    else ok (s, false)\n  else ok (s, false)",
+   "kernel_line": 149,
+   "kernel_code": "pub fn lamps(phase: bool, pattern: Blink) -> Lamps {\n    if !phase {\n        return Lamps { left: false, right: false };\n    }\n    match pattern {\n        Blink::Left => Lamps { left: true, right: false },\n        Blink::Right => Lamps { left: false, right: true },\n        Blink::Off => Lamps { left: false, right: false },\n        Blink::Alarm => Lamps { left: true, right: true },\n    }\n}",
+   "lean": "def lamps (phase : Bool) (pattern : Blink) : Result Lamps := do\n  if phase\n  then\n    match pattern with\n    | Blink.Left => ok { left := true, right := false }\n    | Blink.Right => ok { left := false, right := true }\n    | Blink.Off => ok { left := false, right := false }\n    | Blink.Alarm => ok { left := true, right := true }\n  else ok { left := false, right := false }",
    "upstream": [
     {
-     "file": "car/src/lights.rs",
-     "line": 136,
-     "code": "            Either::Second(_) => {\n                if brakelight_on {\n                    let elapsed = rtc.get_time_ms() - last_update_time;\n                    // info!(\"Timeout brakelight: elapsed: {}\",elapsed);\n\n                    if elapsed > BRAKELIGHT_TIMEOUT {\n                        info!(\"Switch off brakelight\");\n                        brakelight_on = false;\n                        publisher\n                            .publish(Message::Control(ControlMessage::BrakelightCommand(\n                                protocol::Brakelights::Off,\n                            )))\n                            .await;\n                    }\n                }\n            }"
+     "file": "car/src/blinkers.rs",
+     "line": 94,
+     "code": "async fn set_blinker_state(\n    blink_state: bool,\n    state: BlinkerState,\n    left_pin: &mut AnyOutput<'static>,\n    right_pin: &mut AnyOutput<'static>,\n    publisher: &mut MessagePublisher,\n) {\n    info!(\"Setting blinker state to: {blink_state} and {:?}\", state);\n    if blink_state {\n        match state {\n            BlinkerState::Left => {\n                left_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Right => {\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n            BlinkerState::Off => {\n                left_pin.set_low();\n                right_pin.set_low();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::AllOff,\n                    )))\n                    .await;\n            }\n            BlinkerState::Alarm => {\n                left_pin.set_high();\n                right_pin.set_high();\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::LeftOn,\n                    )))\n                    .await;\n                publisher\n                    .publish(Message::Telemetry(TelemetryMessage::Blink(\n                        BlinkState::RightOn,\n                    )))\n                    .await;\n            }\n        }\n    } else {\n        left_pin.set_low();\n        right_pin.set_low();\n        publisher\n            .publish(Message::Telemetry(TelemetryMessage::Blink(\n                BlinkState::AllOff,\n            )))\n            .await;\n    }\n}"
     }
    ],
-   "upstream_note": "timer arm: switch off after more than 500 ms on"
+   "upstream_note": "set_blinker_state's pin levels (telemetry publishes stay in the app)"
   }
  },
  "specs": {}

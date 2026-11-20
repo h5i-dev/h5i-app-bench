@@ -16,12 +16,12 @@
     "step",
     "NONE",
     "Act",
-    "Vrata",
     "Event",
     "PAUSE_MS",
     "start",
-    "Phase",
-    "PULSE_MS"
+    "Vrata",
+    "PULSE_MS",
+    "Phase"
    ],
    "spec": []
   },
@@ -35,12 +35,12 @@
     "step",
     "NONE",
     "Act",
-    "Vrata",
     "Event",
     "PAUSE_MS",
     "start",
-    "Phase",
-    "PULSE_MS"
+    "Vrata",
+    "PULSE_MS",
+    "Phase"
    ],
    "spec": []
   },
@@ -54,12 +54,12 @@
     "NONE",
     "step",
     "Act",
-    "Vrata",
     "Event",
     "PAUSE_MS",
     "start",
-    "Phase",
-    "PULSE_MS"
+    "Vrata",
+    "PULSE_MS",
+    "Phase"
    ],
    "spec": []
   },
@@ -73,12 +73,12 @@
     "NONE",
     "step",
     "Act",
-    "Vrata",
     "Event",
     "PAUSE_MS",
     "start",
-    "Phase",
-    "PULSE_MS"
+    "Vrata",
+    "PULSE_MS",
+    "Phase"
    ],
    "spec": []
   },
@@ -92,12 +92,12 @@
     "step",
     "NONE",
     "Act",
-    "Vrata",
     "Event",
     "PAUSE_MS",
     "start",
-    "Phase",
-    "PULSE_MS"
+    "Vrata",
+    "PULSE_MS",
+    "Phase"
    ],
    "spec": []
   },
@@ -108,35 +108,45 @@
    "statement": "theorem high_only_starting (v : Vrata) (ev : Event) (now : Std.U64) :\n    step v ev now \u2983 r => r.2.relay = some true \u2192\n      (v.phase = .Idle \u2227 ev = .Request) \u2228 (\u2203 u, v.phase = .Pause u \u2227 ev = .Timer \u2227 u.val \u2264 now.val \u2227 v.pending = true) \u2984",
    "proof": "theorem high_only_starting (v : Vrata) (ev : Event) (now : Std.U64) :\n    step v ev now \u2983 r => r.2.relay = some true \u2192\n      (v.phase = .Idle \u2227 ev = .Request) \u2228 (\u2203 u, v.phase = .Pause u \u2227 ev = .Timer \u2227 u.val \u2264 now.val \u2227 v.pending = true) \u2984 := by\n  rcases v with \u27e8ph, pe\u27e9\n  rcases ph with _ | u | u <;> cases ev\n  \u00b7 simp [step, start, lift]\n  \u00b7 simp [step, NONE]\n  \u00b7 simp [step, NONE]\n  \u00b7 by_cases h : now.val < u.val\n    \u00b7 have : now < u := by scalar_tac\n      simp [step, this, NONE]\n    \u00b7 have : \u00ac now < u := by scalar_tac\n      simp [step, lift, this]\n  \u00b7 simp [step, NONE]\n  \u00b7 by_cases h : now.val < u.val\n    \u00b7 have : now < u := by scalar_tac\n      simp [step, this, NONE]\n    \u00b7 have : \u00ac now < u := by scalar_tac\n      cases pe <;> simp [step, start, lift, this, NONE] <;> omega",
    "deps": [
-    "Vrata",
     "step",
     "Event",
-    "Phase",
+    "Vrata",
     "NONE",
     "Act",
     "PAUSE_MS",
     "start",
+    "Phase",
     "PULSE_MS"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "PULSE_MS": {
+  "NONE": {
    "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::PULSE_MS",
+   "rust_path": "garaza_pico_rs_kernel::NONE",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 16,
-   "kernel_code": "pub const PULSE_MS: u64 = 500;",
-   "lean": "@[global_simps, irreducible] def PULSE_MS : Std.U64 := 500#u64",
+   "kernel_line": 54,
+   "kernel_code": "const NONE: Act = Act { relay: None, timer_at: None };",
+   "lean": "@[global_simps, irreducible]\ndef NONE : Act := { relay := none, timer_at := none }",
+   "upstream": [],
+   "upstream_note": "port-only: the step that changes nothing"
+  },
+  "Act": {
+   "kind": "structure",
+   "rust_path": "garaza_pico_rs_kernel::Act",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 49,
+   "kernel_code": "pub struct Act {\n    pub relay: Option<bool>,\n    pub timer_at: Option<u64>,\n}",
+   "lean": "structure Act where\n  relay : Option Bool\n  timer_at : Option Std.U64",
    "upstream": [
     {
      "file": "src/main.rs",
-     "line": 91,
-     "code": "        Timer::after_millis(500).await;"
+     "line": 90,
+     "code": "        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;"
     }
    ],
-   "upstream_note": "Timer::after_millis(500): the relay held high"
+   "upstream_note": "the relay level set and the next timer armed"
   },
   "Event": {
    "kind": "inductive",
@@ -159,15 +169,58 @@
    ],
    "upstream_note": "a request (butn's SIGNAL.signal) or a timer firing"
   },
-  "NONE": {
+  "PULSE_MS": {
    "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::NONE",
+   "rust_path": "garaza_pico_rs_kernel::PULSE_MS",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 54,
-   "kernel_code": "const NONE: Act = Act { relay: None, timer_at: None };",
-   "lean": "@[global_simps, irreducible]\ndef NONE : Act := { relay := none, timer_at := none }",
-   "upstream": [],
-   "upstream_note": "port-only: the step that changes nothing"
+   "kernel_line": 16,
+   "kernel_code": "pub const PULSE_MS: u64 = 500;",
+   "lean": "@[global_simps, irreducible] def PULSE_MS : Std.U64 := 500#u64",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 91,
+     "code": "        Timer::after_millis(500).await;"
+    }
+   ],
+   "upstream_note": "Timer::after_millis(500): the relay held high"
+  },
+  "step": {
+   "kind": "def",
+   "rust_path": "garaza_pico_rs_kernel::step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 62,
+   "kernel_code": "pub fn step(v: &Vrata, ev: Event, now: u64) -> (Vrata, Act) {\n    match (v.phase, ev) {\n        (Phase::Idle, Event::Request) => start(now),\n        (Phase::Idle, Event::Timer) => (*v, NONE),\n        (Phase::Pulse { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pulse { until }, pending: true }, NONE)\n        }\n        (Phase::Pulse { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else {\n                let next = now.saturating_add(PAUSE_MS);\n                (\n                    Vrata { phase: Phase::Pause { until: next }, pending: v.pending },\n                    Act { relay: Some(false), timer_at: Some(next) },\n                )\n            }\n        }\n        (Phase::Pause { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pause { until }, pending: true }, NONE)\n        }\n        (Phase::Pause { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else if v.pending {\n                start(now)\n            } else {\n                (Vrata { phase: Phase::Idle, pending: false }, NONE)\n            }\n        }\n    }\n}",
+   "lean": "def step (v : Vrata) (ev : Event) (now : Std.U64) : Result (Vrata \u00d7 Act) := do\n  match v.phase with\n  | Phase.Idle =>\n    match ev with\n    | Event.Request => start now\n    | Event.Timer => ok (v, NONE)\n  | Phase.Pulse \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        let next \u2190 lift (core.num.U64.saturating_add now PAUSE_MS)\n        ok ({ v with phase := (Phase.Pause next) },\n          { relay := (some false), timer_at := (some next) })\n  | Phase.Pause \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        if v.pending\n        then start now\n        else ok ({ phase := Phase.Idle, pending := false }, NONE)",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 81,
+     "code": "async fn butn() -> &'static str {\n    SIGNAL.signal(());\n    \"{\\\"status\\\": \\\"ok\\\"}\"\n}"
+    },
+    {
+     "file": "src/main.rs",
+     "line": 87,
+     "code": "async fn vrata_task(mut pin : Output<'static>) -> ! {\n    loop {\n        let _ = SIGNAL.wait().await;\n        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;\n    }\n}"
+    }
+   ],
+   "upstream_note": "vrata_task's loop and butn's signal as one event-driven state machine"
+  },
+  "PAUSE_MS": {
+   "kind": "def",
+   "rust_path": "garaza_pico_rs_kernel::PAUSE_MS",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 17,
+   "kernel_code": "pub const PAUSE_MS: u64 = 2000;",
+   "lean": "@[global_simps, irreducible] def PAUSE_MS : Std.U64 := 2000#u64",
+   "upstream": [
+    {
+     "file": "src/main.rs",
+     "line": 93,
+     "code": "        Timer::after_secs(2).await;"
+    }
+   ],
+   "upstream_note": "Timer::after_secs(2): the pause after a pulse"
   },
   "Phase": {
    "kind": "inductive",
@@ -200,59 +253,6 @@
     }
    ],
    "upstream_note": "a pulse starts: set_high, 500 ms"
-  },
-  "Act": {
-   "kind": "structure",
-   "rust_path": "garaza_pico_rs_kernel::Act",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 49,
-   "kernel_code": "pub struct Act {\n    pub relay: Option<bool>,\n    pub timer_at: Option<u64>,\n}",
-   "lean": "structure Act where\n  relay : Option Bool\n  timer_at : Option Std.U64",
-   "upstream": [
-    {
-     "file": "src/main.rs",
-     "line": 90,
-     "code": "        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;"
-    }
-   ],
-   "upstream_note": "the relay level set and the next timer armed"
-  },
-  "PAUSE_MS": {
-   "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::PAUSE_MS",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 17,
-   "kernel_code": "pub const PAUSE_MS: u64 = 2000;",
-   "lean": "@[global_simps, irreducible] def PAUSE_MS : Std.U64 := 2000#u64",
-   "upstream": [
-    {
-     "file": "src/main.rs",
-     "line": 93,
-     "code": "        Timer::after_secs(2).await;"
-    }
-   ],
-   "upstream_note": "Timer::after_secs(2): the pause after a pulse"
-  },
-  "step": {
-   "kind": "def",
-   "rust_path": "garaza_pico_rs_kernel::step",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 62,
-   "kernel_code": "pub fn step(v: &Vrata, ev: Event, now: u64) -> (Vrata, Act) {\n    match (v.phase, ev) {\n        (Phase::Idle, Event::Request) => start(now),\n        (Phase::Idle, Event::Timer) => (*v, NONE),\n        (Phase::Pulse { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pulse { until }, pending: true }, NONE)\n        }\n        (Phase::Pulse { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else {\n                let next = now.saturating_add(PAUSE_MS);\n                (\n                    Vrata { phase: Phase::Pause { until: next }, pending: v.pending },\n                    Act { relay: Some(false), timer_at: Some(next) },\n                )\n            }\n        }\n        (Phase::Pause { until }, Event::Request) => {\n            (Vrata { phase: Phase::Pause { until }, pending: true }, NONE)\n        }\n        (Phase::Pause { until }, Event::Timer) => {\n            if now < until {\n                (*v, NONE)\n            } else if v.pending {\n                start(now)\n            } else {\n                (Vrata { phase: Phase::Idle, pending: false }, NONE)\n            }\n        }\n    }\n}",
-   "lean": "def step (v : Vrata) (ev : Event) (now : Std.U64) : Result (Vrata \u00d7 Act) := do\n  match v.phase with\n  | Phase.Idle =>\n    match ev with\n    | Event.Request => start now\n    | Event.Timer => ok (v, NONE)\n  | Phase.Pulse \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        let next \u2190 lift (core.num.U64.saturating_add now PAUSE_MS)\n        ok ({ v with phase := (Phase.Pause next) },\n          { relay := (some false), timer_at := (some next) })\n  | Phase.Pause \u00abuntil\u00bb =>\n    match ev with\n    | Event.Request => ok ({ phase := v.phase, pending := true }, NONE)\n    | Event.Timer =>\n      if now < \u00abuntil\u00bb\n      then ok (v, NONE)\n      else\n        if v.pending\n        then start now\n        else ok ({ phase := Phase.Idle, pending := false }, NONE)",
-   "upstream": [
-    {
-     "file": "src/main.rs",
-     "line": 81,
-     "code": "async fn butn() -> &'static str {\n    SIGNAL.signal(());\n    \"{\\\"status\\\": \\\"ok\\\"}\"\n}"
-    },
-    {
-     "file": "src/main.rs",
-     "line": 87,
-     "code": "async fn vrata_task(mut pin : Output<'static>) -> ! {\n    loop {\n        let _ = SIGNAL.wait().await;\n        pin.set_high();\n        Timer::after_millis(500).await;\n        pin.set_low();\n        Timer::after_secs(2).await;\n    }\n}"
-    }
-   ],
-   "upstream_note": "vrata_task's loop and butn's signal as one event-driven state machine"
   },
   "Vrata": {
    "kind": "structure",

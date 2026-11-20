@@ -13,14 +13,14 @@
    "statement": "theorem overcurrent_reverses_closing (t now : Std.U64) (drv : Bool) (ol : Option Bool) :\n    door_step { state := .Closing, last := .Closing, timeout := t }\n      { open_limit := ol, close_limit := none, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Opening, last := .Closing, timeout := t }, { NOTHING with take_overcurrent := true })",
    "proof": "theorem overcurrent_reverses_closing (t now : Std.U64) (drv : Bool) (ol : Option Bool) :\n    door_step { state := .Closing, last := .Closing, timeout := t }\n      { open_limit := ol, close_limit := none, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Opening, last := .Closing, timeout := t }, { NOTHING with take_overcurrent := true }) := by\n  simp [door_step, same]",
    "deps": [
-    "door_step",
     "NOTHING",
+    "door_step",
     "DoorOut",
     "Pending",
-    "is_open",
-    "Door",
-    "same",
     "DOOR_TIMEOUT_MS",
+    "is_open",
+    "same",
+    "Door",
     "PulleyCommand",
     "DoorCommand",
     "DoorState"
@@ -34,14 +34,14 @@
    "statement": "theorem overcurrent_stops_opening (t now : Std.U64) (drv : Bool) (cl : Option Bool) :\n    door_step { state := .Opening, last := .Opening, timeout := t }\n      { open_limit := none, close_limit := cl, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Idle, last := .Opening, timeout := t }, { NOTHING with take_overcurrent := true })",
    "proof": "theorem overcurrent_stops_opening (t now : Std.U64) (drv : Bool) (cl : Option Bool) :\n    door_step { state := .Opening, last := .Opening, timeout := t }\n      { open_limit := none, close_limit := cl, cmd := none, overcurrent := true } now drv\n      = ok ({ state := .Idle, last := .Opening, timeout := t }, { NOTHING with take_overcurrent := true }) := by\n  simp [door_step, same]",
    "deps": [
-    "door_step",
     "NOTHING",
+    "door_step",
     "DoorOut",
     "Pending",
-    "is_open",
-    "Door",
-    "same",
     "DOOR_TIMEOUT_MS",
+    "is_open",
+    "same",
+    "Door",
     "PulleyCommand",
     "DoorCommand",
     "DoorState"
@@ -58,14 +58,14 @@
     "door_step",
     "DoorState",
     "NOTHING",
-    "DoorOut",
     "Pending",
-    "is_open",
-    "Door",
-    "same",
     "DOOR_TIMEOUT_MS",
-    "PulleyCommand",
-    "DoorCommand"
+    "is_open",
+    "same",
+    "DoorOut",
+    "Door",
+    "DoorCommand",
+    "PulleyCommand"
    ],
    "spec": []
   },
@@ -78,15 +78,15 @@
    "deps": [
     "door_step",
     "DoorState",
-    "DoorOut",
     "Pending",
-    "is_open",
-    "Door",
-    "same",
-    "NOTHING",
     "DOOR_TIMEOUT_MS",
-    "PulleyCommand",
-    "DoorCommand"
+    "is_open",
+    "NOTHING",
+    "same",
+    "DoorOut",
+    "Door",
+    "DoorCommand",
+    "PulleyCommand"
    ],
    "spec": []
   },
@@ -101,11 +101,11 @@
     "door_step",
     "Door",
     "DoorCommand",
-    "DoorOut",
-    "is_open",
-    "same",
-    "NOTHING",
     "DOOR_TIMEOUT_MS",
+    "is_open",
+    "NOTHING",
+    "same",
+    "DoorOut",
     "DoorState",
     "PulleyCommand"
    ],
@@ -150,12 +150,12 @@
    "statement": "theorem one_channel_at_a_time (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => \u2200 d, r.2 = some d \u2192 d.a.val = 0 \u2228 d.b.val = 0 \u2984",
    "proof": "theorem one_channel_at_a_time (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => \u2200 d, r.2 = some d \u2192 d.a.val = 0 \u2228 d.b.val = 0 \u2984 := by\n  have hm := max_val\n  rcases p with \u27e8st, de, du\u27e9\n  simp only at h\n  cases st\n  case Hold =>\n    cases de <;> rcases c with _ | pc <;> (try cases pc) <;> simp_all [pulley_step]\n  all_goals\n    rcases c with _ | pc <;> (try cases pc) <;> simp only [pulley_step] <;>\n      (try split_ifs) <;> step* <;> (try simp_all) <;> (try scalar_tac) <;> (try omega)",
    "deps": [
-    "Pulley",
     "PulleyCommand",
     "pulley_step",
-    "PulleyState",
+    "Pulley",
     "Duty",
-    "PULLEY_DUTY_MAX"
+    "PULLEY_DUTY_MAX",
+    "PulleyState"
    ],
    "spec": []
   },
@@ -166,48 +166,32 @@
    "statement": "theorem duty_at_most_max (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => r.1.duty.val \u2264 100 \u2227 \u2200 d, r.2 = some d \u2192 d.a.val \u2264 100 \u2227 d.b.val \u2264 100 \u2984",
    "proof": "theorem duty_at_most_max (p : Pulley) (c : Option PulleyCommand) (h : p.duty.val \u2264 100) :\n    pulley_step p c \u2983 r => r.1.duty.val \u2264 100 \u2227 \u2200 d, r.2 = some d \u2192 d.a.val \u2264 100 \u2227 d.b.val \u2264 100 \u2984 := by\n  have hm := max_val\n  rcases p with \u27e8st, de, du\u27e9\n  simp only at h\n  cases st\n  case Hold =>\n    cases de <;> rcases c with _ | pc <;> (try cases pc) <;> simp_all [pulley_step]\n  all_goals\n    rcases c with _ | pc <;> (try cases pc) <;> simp only [pulley_step] <;>\n      (try split_ifs) <;> step* <;> (try simp_all) <;> (try scalar_tac) <;> (try omega)",
    "deps": [
-    "Pulley",
     "PulleyCommand",
     "pulley_step",
-    "PulleyState",
+    "Pulley",
     "Duty",
-    "PULLEY_DUTY_MAX"
+    "PULLEY_DUTY_MAX",
+    "PulleyState"
    ],
    "spec": []
   }
  ],
  "decls": {
-  "DoorState": {
-   "kind": "inductive",
-   "rust_path": "autodoggo_kernel::DoorState",
+  "Pending": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::Pending",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 38,
-   "kernel_code": "pub enum DoorState {\n    Idle,\n    Opening,\n    Opened,\n    Closing,\n    Closed,\n}",
-   "lean": "@[discriminant isize]\ninductive DoorState where\n| Idle : DoorState\n| Opening : DoorState\n| Opened : DoorState\n| Closing : DoorState\n| Closed : DoorState",
+   "kernel_line": 65,
+   "kernel_code": "pub struct Pending {\n    pub open_limit: Option<bool>,\n    pub close_limit: Option<bool>,\n    pub cmd: Option<DoorCommand>,\n    pub overcurrent: bool,\n}",
+   "lean": "structure Pending where\n  open_limit : Option Bool\n  close_limit : Option Bool\n  cmd : Option DoorCommand\n  overcurrent : Bool",
    "upstream": [
     {
      "file": "src/bin/main.rs",
-     "line": 76,
-     "code": "enum DoorState { Idle, Opening, Opened, Closing, Closed }"
+     "line": 84,
+     "code": "static DOOR_CMD: Signal<CriticalSectionRawMutex, DoorCommand> = Signal::new();\nstatic PULLEY_CMD: Signal<CriticalSectionRawMutex, PulleyCommand> = Signal::new();\nstatic OPEN_LIMIT_HIT: Signal<CriticalSectionRawMutex, bool> = Signal::new();\nstatic CLOSE_LIMIT_HIT: Signal<CriticalSectionRawMutex, bool> = Signal::new();\nstatic OVERCURRENT_DETECTED: Signal<CriticalSectionRawMutex, ()> = Signal::new();"
     }
    ],
-   "upstream_note": ""
-  },
-  "DoorCommand": {
-   "kind": "inductive",
-   "rust_path": "autodoggo_kernel::DoorCommand",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 32,
-   "kernel_code": "pub enum DoorCommand {\n    Open,\n    Close,\n}",
-   "lean": "@[discriminant isize]\ninductive DoorCommand where\n| Open : DoorCommand\n| Close : DoorCommand",
-   "upstream": [
-    {
-     "file": "src/bin/main.rs",
-     "line": 73,
-     "code": "enum DoorCommand { Open, Close }"
-    }
-   ],
-   "upstream_note": ""
+   "upstream_note": "the signals the door task takes each tick (command, limit switches, overcurrent)"
   },
   "DOOR_TIMEOUT_MS": {
    "kind": "def",
@@ -221,6 +205,42 @@
      "file": "src/bin/main.rs",
      "line": 67,
      "code": "const DOOR_TIMEOUT_MS: u64 = 10_000;"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "NOTHING": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::NOTHING",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 82,
+   "kernel_code": "const NOTHING: DoorOut =\n    DoorOut { pulley: None, take_open_limit: false, take_close_limit: false, take_cmd: false, take_overcurrent: false };",
+   "lean": "@[global_simps, irreducible]\ndef NOTHING : DoorOut :=\n  {\n    pulley := none,\n    take_open_limit := false,\n    take_close_limit := false,\n    take_cmd := false,\n    take_overcurrent := false\n  }",
+   "upstream": [],
+   "upstream_note": "port-only: a tick that signals nothing"
+  },
+  "same": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::same",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 85,
+   "kernel_code": "fn same(a: DoorState, b: DoorState) -> bool {\n    match (a, b) {\n        (DoorState::Idle, DoorState::Idle) => true,\n        (DoorState::Opening, DoorState::Opening) => true,\n        (DoorState::Opened, DoorState::Opened) => true,\n        (DoorState::Closing, DoorState::Closing) => true,\n        (DoorState::Closed, DoorState::Closed) => true,\n        _ => false,\n    }\n}",
+   "lean": "def same (a : DoorState) (b : DoorState) : Result Bool := do\n  match a with\n  | DoorState.Idle =>\n    match b with\n    | DoorState.Idle => ok true\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Opening =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok true\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Opened =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok true\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Closing =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok true\n    | DoorState.Closed => ok false\n  | DoorState.Closed =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok true",
+   "upstream": [],
+   "upstream_note": "port-only helper: DoorState equality (upstream compares state and last_state with ==)"
+  },
+  "DoorCommand": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::DoorCommand",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 32,
+   "kernel_code": "pub enum DoorCommand {\n    Open,\n    Close,\n}",
+   "lean": "@[discriminant isize]\ninductive DoorCommand where\n| Open : DoorCommand\n| Close : DoorCommand",
+   "upstream": [
+    {
+     "file": "src/bin/main.rs",
+     "line": 73,
+     "code": "enum DoorCommand { Open, Close }"
     }
    ],
    "upstream_note": ""
@@ -246,21 +266,106 @@
    ],
    "upstream_note": "what a door tick does: a pulley command to signal, the new state"
   },
-  "Pulley": {
-   "kind": "structure",
-   "rust_path": "autodoggo_kernel::Pulley",
+  "PulleyState": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::PulleyState",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 211,
-   "kernel_code": "pub struct Pulley {\n    pub state: PulleyState,\n    pub dest: PulleyState,\n    pub duty: u8,\n}",
-   "lean": "structure Pulley where\n  state : PulleyState\n  dest : PulleyState\n  duty : Std.U8",
+   "kernel_line": 199,
+   "kernel_code": "pub enum PulleyState {\n    Hold,\n    RampingUpCCW,\n    DrivingCCW,\n    RampingDownCCW,\n    RampingUpCW,\n    DrivingCW,\n    RampingDownCW,\n}",
+   "lean": "@[discriminant isize]\ninductive PulleyState where\n| Hold : PulleyState\n| RampingUpCCW : PulleyState\n| DrivingCCW : PulleyState\n| RampingDownCCW : PulleyState\n| RampingUpCW : PulleyState\n| DrivingCW : PulleyState\n| RampingDownCW : PulleyState",
    "upstream": [
     {
      "file": "src/bin/main.rs",
-     "line": 409,
-     "code": "    let mut state = PulleyState::Hold;\n    let mut dest_state = PulleyState::Hold;\n    let mut duty: u8 = 0;"
+     "line": 82,
+     "code": "enum PulleyState { Hold, RampingUpCCW, DrivingCCW, RampingDownCCW, RampingUpCW, DrivingCW, RampingDownCW }"
     }
    ],
-   "upstream_note": "pulley_driver_task's state, dest_state and duty"
+   "upstream_note": ""
+  },
+  "Duty": {
+   "kind": "structure",
+   "rust_path": "autodoggo_kernel::Duty",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 221,
+   "kernel_code": "pub struct Duty {\n    pub a: u8,\n    pub b: u8,\n}",
+   "lean": "structure Duty where\n  a : Std.U8\n  b : Std.U8",
+   "upstream": [
+    {
+     "file": "src/bin/main.rs",
+     "line": 418,
+     "code": "                ch_a.set_duty(0).unwrap();\n                ch_b.set_duty(0).unwrap();"
+    },
+    {
+     "file": "src/bin/main.rs",
+     "line": 465,
+     "code": "                    ch_a.set_duty(duty).unwrap();\n                    ch_b.set_duty(0).unwrap();"
+    }
+   ],
+   "upstream_note": "the two LEDC channels' duties set each tick"
+  },
+  "PULLEY_DUTY_MAX": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::PULLEY_DUTY_MAX",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 29,
+   "kernel_code": "pub const PULLEY_DUTY_MAX: u8 = 100;",
+   "lean": "@[global_simps, irreducible] def PULLEY_DUTY_MAX : Std.U8 := 100#u8",
+   "upstream": [
+    {
+     "file": "src/bin/main.rs",
+     "line": 70,
+     "code": "const PULLEY_DUTY_MAX: u8 = 100;"
+    }
+   ],
+   "upstream_note": ""
+  },
+  "is_open": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::is_open",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 96,
+   "kernel_code": "fn is_open(c: DoorCommand) -> bool {\n    match c {\n        DoorCommand::Open => true,\n        DoorCommand::Close => false,\n    }\n}",
+   "lean": "def is_open (c : DoorCommand) : Result Bool := do\n  match c with\n  | DoorCommand.Open => ok true\n  | DoorCommand.Close => ok false",
+   "upstream": [
+    {
+     "file": "src/bin/main.rs",
+     "line": 73,
+     "code": "enum DoorCommand { Open, Close }"
+    }
+   ],
+   "upstream_note": "port-only helper over DoorCommand: which command it is"
+  },
+  "door_step": {
+   "kind": "def",
+   "rust_path": "autodoggo_kernel::door_step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 105,
+   "kernel_code": "pub fn door_step(d: &Door, p: &Pending, now: u64, driver: bool) -> (Door, DoorOut) {\n    let mut o = NOTHING;\n    let mut last = d.last;\n    let mut timeout = d.timeout;\n    let entering = !same(d.last, d.state);\n    let state = match d.state {\n        DoorState::Idle | DoorState::Opened | DoorState::Closed => {\n            if entering {\n                last = d.state;\n                o.pulley = Some(PulleyCommand::Stop);\n            }\n            match p.cmd {\n                Some(c) => {\n                    o.take_cmd = true;\n                    let open = is_open(c);\n                    match d.state {\n                        // F2: no movement without the driver.\n                        _ if !driver => d.state,\n                        DoorState::Idle => {\n                            if open { DoorState::Opening } else { DoorState::Closing }\n                        }\n                        DoorState::Opened => {\n                            if open { DoorState::Opened } else { DoorState::Closing }\n                        }\n                        _ => {\n                            if open { DoorState::Opening } else { DoorState::Closed }\n                        }\n                    }\n                }\n                None => d.state,\n            }\n        }\n        DoorState::Opening | DoorState::Closing => {\n            let opening = match d.state {\n                DoorState::Opening => true,\n                _ => false,\n            };\n            let mut stale = false;\n            if entering {\n                last = d.state;\n                o.pulley = Some(if opening { PulleyCommand::RampUpCCW } else { PulleyCommand::RampUpCW });\n                timeout = now.saturating_add(DOOR_TIMEOUT_MS);\n                // F1: a flag raised before this movement started is not\n                // this movement's overcurrent.\n                if p.overcurrent {\n                    o.take_overcurrent = true;\n                    stale = true;\n                }\n            }\n            let limit = if opening { p.open_limit } else { p.close_limit };\n            match limit {\n                Some(hit) => {\n                    if opening {\n                        o.take_open_limit = true;\n                    } else {\n                        o.take_close_limit = true;\n                    }\n                    if hit {\n                        if opening { DoorState::Opened } else { DoorState::Closed }\n                    } else {\n                        d.state\n                    }\n                }\n                None => match p.cmd {\n                    Some(c) => {\n                        o.take_cmd = true;\n                        let open = is_open(c);\n                        if opening && !open {\n                            DoorState::Closing\n                        } else if !opening && open {\n                            DoorState::Opening\n                        } else {\n                            d.state\n                        }\n                    }\n                    None => {\n                        if p.overcurrent && !stale {\n                            o.take_overcurrent = true;\n                            // Opening stops; closing reverses (upstream).\n                            if opening { DoorState::Idle } else { DoorState::Opening }\n                        } else if now >= timeout {\n                            DoorState::Idle\n                        } else {\n                            d.state\n                        }\n                    }\n                },\n            }\n        }\n    };\n    (Door { state, last, timeout }, o)\n}",
+   "lean": "def door_step\n  (d : Door) (p : Pending) (now : Std.U64) (driver : Bool) :\n  Result (Door \u00d7 DoorOut)\n  := do\n  let b \u2190 same d.last d.state\n  match d.state with\n  | DoorState.Idle =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Idle)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then\n          ok ({ d with state := DoorState.Opening, last },\n            { o with take_cmd := true })\n        else\n          ok ({ d with state := DoorState.Closing, last },\n            { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })\n  | DoorState.Opening =>\n    let (p1, o, last, timeout, stale) \u2190\n      if \u00ac b\n      then\n        do\n        let timeout1 \u2190 lift (core.num.U64.saturating_add now DOOR_TIMEOUT_MS)\n        let (b1, b2, b3) \u2190\n          if p.overcurrent\n          then ok (true, true, true)\n          else ok (false, NOTHING.take_overcurrent, false)\n        ok ({ p with overcurrent := b1 },\n          {\n            NOTHING\n              with\n              pulley := (some PulleyCommand.RampUpCCW), take_overcurrent := b2\n          }, DoorState.Opening, timeout1, b3)\n      else ok (p, NOTHING, d.last, d.timeout, false)\n    match p1.open_limit with\n    | none =>\n      match p1.cmd with\n      | none =>\n        if p1.overcurrent\n        then\n          if stale\n          then\n            if now >= timeout\n            then ok ({ state := DoorState.Idle, last, timeout }, o)\n            else ok ({ state := DoorState.Opening, last, timeout }, o)\n          else\n            ok ({ state := DoorState.Idle, last, timeout },\n              { o with take_overcurrent := true })\n        else\n          if now >= timeout\n          then ok ({ state := DoorState.Idle, last, timeout }, o)\n          else ok ({ state := DoorState.Opening, last, timeout }, o)\n      | some c =>\n        let \u00abopen\u00bb \u2190 is_open c\n        if \u00abopen\u00bb\n        then\n          ok ({ state := DoorState.Opening, last, timeout },\n            { o with take_cmd := true })\n        else\n          ok ({ state := DoorState.Closing, last, timeout },\n            { o with take_cmd := true })\n    | some hit =>\n      if hit\n      then\n        ok ({ state := DoorState.Opened, last, timeout },\n          { o with take_open_limit := true })\n      else\n        ok ({ state := DoorState.Opening, last, timeout },\n          { o with take_open_limit := true })\n  | DoorState.Opened =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Opened)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then ok ({ d with last }, { o with take_cmd := true })\n        else\n          ok ({ d with state := DoorState.Closing, last },\n            { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })\n  | DoorState.Closing =>\n    let (p1, o, last, timeout, stale) \u2190\n      if \u00ac b\n      then\n        do\n        let timeout1 \u2190 lift (core.num.U64.saturating_add now DOOR_TIMEOUT_MS)\n        let (b1, b2, b3) \u2190\n          if p.overcurrent\n          then ok (true, true, true)\n          else ok (false, NOTHING.take_overcurrent, false)\n        ok ({ p with overcurrent := b1 },\n          {\n            NOTHING\n              with\n              pulley := (some PulleyCommand.RampUpCW), take_overcurrent := b2\n          }, DoorState.Closing, timeout1, b3)\n      else ok (p, NOTHING, d.last, d.timeout, false)\n    match p1.close_limit with\n    | none =>\n      match p1.cmd with\n      | none =>\n        if p1.overcurrent\n        then\n          if stale\n          then\n            if now >= timeout\n            then ok ({ state := DoorState.Idle, last, timeout }, o)\n            else ok ({ state := DoorState.Closing, last, timeout }, o)\n          else\n            ok ({ state := DoorState.Opening, last, timeout },\n              { o with take_overcurrent := true })\n        else\n          if now >= timeout\n          then ok ({ state := DoorState.Idle, last, timeout }, o)\n          else ok ({ state := DoorState.Closing, last, timeout }, o)\n      | some c =>\n        let \u00abopen\u00bb \u2190 is_open c\n        if \u00abopen\u00bb\n        then\n          ok ({ state := DoorState.Opening, last, timeout },\n            { o with take_cmd := true })\n        else\n          ok ({ state := DoorState.Closing, last, timeout },\n            { o with take_cmd := true })\n    | some hit =>\n      if hit\n      then\n        ok ({ state := DoorState.Closed, last, timeout },\n          { o with take_close_limit := true })\n      else\n        ok ({ state := DoorState.Closing, last, timeout },\n          { o with take_close_limit := true })\n  | DoorState.Closed =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Closed)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then\n          ok ({ d with state := DoorState.Opening, last },\n            { o with take_cmd := true })\n        else ok ({ d with last }, { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })",
+   "upstream": [
+    {
+     "file": "src/bin/main.rs",
+     "line": 294,
+     "code": "async fn door_state_machine_task() {\n    let mut state = DoorState::Idle;\n    let mut last_state = DoorState::Idle;\n    let mut timeout = Instant::now();\n\n    loop {\n        Timer::after(Duration::from_millis(10)).await;\n\n        match state {\n            DoorState::Idle => {\n                if last_state != state {\n                    info!(\"Door: Entering Idle state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::Stop);\n                }\n\n                if let Some(cmd) = DOOR_CMD.try_take() {\n                    match cmd {\n                        DoorCommand::Open => {\n                            state = DoorState::Opening;\n                            info!(\"Door: Idle->Opening (command)\");\n                        }\n                        DoorCommand::Close => {\n                            state = DoorState::Closing;\n                            info!(\"Door: Idle->Closing (command)\");\n                        }\n                    }\n                }\n            }\n            DoorState::Opening => {\n                if last_state != state {\n                    info!(\"Door: Entering Opening state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::RampUpCCW);\n                    timeout = Instant::now() + Duration::from_millis(DOOR_TIMEOUT_MS);\n                }\n\n                if let Some(limit_hit) = OPEN_LIMIT_HIT.try_take() {\n                    if limit_hit {\n                        state = DoorState::Opened;\n                        info!(\"Door: Opening->Opened (limit)\");\n                    }\n                } else if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Close {\n                        state = DoorState::Closing;\n                        info!(\"Door: Opening->Closing (command)\");\n                    }\n                } else if let Some(_) = OVERCURRENT_DETECTED.try_take() {\n                    state = DoorState::Idle;\n                    info!(\"Door: Opening->Idle (overcurrent)\");\n                } else if Instant::now() >= timeout {\n                    state = DoorState::Idle;\n                    info!(\"Door: Opening->Idle (timeout)\");\n                }\n            }\n            DoorState::Opened => {\n                if last_state != state {\n                    info!(\"Door: Entering Opened state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::Stop);\n                }\n\n                if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Close {\n                        state = DoorState::Closing;\n                        info!(\"Door: Opened->Closing (command)\");\n                    }\n                }\n            }\n            DoorState::Closing => {\n                if last_state != state {\n                    info!(\"Door: Entering Closing state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::RampUpCW);\n                    timeout = Instant::now() + Duration::from_millis(DOOR_TIMEOUT_MS);\n                }\n\n                if let Some(limit_hit) = CLOSE_LIMIT_HIT.try_take() {\n                    if limit_hit {\n                        state = DoorState::Closed;\n                        info!(\"Door: Closing->Closed (limit)\");\n                    }\n                } else if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Open {\n                        state = DoorState::Opening;\n                        info!(\"Door: Closing->Opening (command)\");\n                    }\n                } else if let Some(_) = OVERCURRENT_DETECTED.try_take() {\n                    state = DoorState::Opening;\n                    info!(\"Door: Closing->Opening (overcurrent)\");\n                } else if Instant::now() >= timeout {\n                    state = DoorState::Idle;\n                    info!(\"Door: Closing->Idle (timeout)\");\n                }\n            }\n            DoorState::Closed => {\n                if last_state != state {\n                    info!(\"Door: Entering Closed state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::Stop);\n                }\n\n                if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Open {\n                        state = DoorState::Opening;\n                        info!(\"Door: Closed->Opening (command)\");\n                    }\n                }\n            }\n        }\n    }\n}"
+    }
+   ],
+   "upstream_note": "one 10 ms tick of door_state_machine_task, with F1/F2 fixed (stale overcurrent discarded, no motion without the driver)"
+  },
+  "DoorState": {
+   "kind": "inductive",
+   "rust_path": "autodoggo_kernel::DoorState",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 38,
+   "kernel_code": "pub enum DoorState {\n    Idle,\n    Opening,\n    Opened,\n    Closing,\n    Closed,\n}",
+   "lean": "@[discriminant isize]\ninductive DoorState where\n| Idle : DoorState\n| Opening : DoorState\n| Opened : DoorState\n| Closing : DoorState\n| Closed : DoorState",
+   "upstream": [
+    {
+     "file": "src/bin/main.rs",
+     "line": 76,
+     "code": "enum DoorState { Idle, Opening, Opened, Closing, Closed }"
+    }
+   ],
+   "upstream_note": ""
   },
   "Door": {
    "kind": "structure",
@@ -294,85 +399,6 @@
    ],
    "upstream_note": ""
   },
-  "door_step": {
-   "kind": "def",
-   "rust_path": "autodoggo_kernel::door_step",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 105,
-   "kernel_code": "pub fn door_step(d: &Door, p: &Pending, now: u64, driver: bool) -> (Door, DoorOut) {\n    let mut o = NOTHING;\n    let mut last = d.last;\n    let mut timeout = d.timeout;\n    let entering = !same(d.last, d.state);\n    let state = match d.state {\n        DoorState::Idle | DoorState::Opened | DoorState::Closed => {\n            if entering {\n                last = d.state;\n                o.pulley = Some(PulleyCommand::Stop);\n            }\n            match p.cmd {\n                Some(c) => {\n                    o.take_cmd = true;\n                    let open = is_open(c);\n                    match d.state {\n                        // F2: no movement without the driver.\n                        _ if !driver => d.state,\n                        DoorState::Idle => {\n                            if open { DoorState::Opening } else { DoorState::Closing }\n                        }\n                        DoorState::Opened => {\n                            if open { DoorState::Opened } else { DoorState::Closing }\n                        }\n                        _ => {\n                            if open { DoorState::Opening } else { DoorState::Closed }\n                        }\n                    }\n                }\n                None => d.state,\n            }\n        }\n        DoorState::Opening | DoorState::Closing => {\n            let opening = match d.state {\n                DoorState::Opening => true,\n                _ => false,\n            };\n            let mut stale = false;\n            if entering {\n                last = d.state;\n                o.pulley = Some(if opening { PulleyCommand::RampUpCCW } else { PulleyCommand::RampUpCW });\n                timeout = now.saturating_add(DOOR_TIMEOUT_MS);\n                // F1: a flag raised before this movement started is not\n                // this movement's overcurrent.\n                if p.overcurrent {\n                    o.take_overcurrent = true;\n                    stale = true;\n                }\n            }\n            let limit = if opening { p.open_limit } else { p.close_limit };\n            match limit {\n                Some(hit) => {\n                    if opening {\n                        o.take_open_limit = true;\n                    } else {\n                        o.take_close_limit = true;\n                    }\n                    if hit {\n                        if opening { DoorState::Opened } else { DoorState::Closed }\n                    } else {\n                        d.state\n                    }\n                }\n                None => match p.cmd {\n                    Some(c) => {\n                        o.take_cmd = true;\n                        let open = is_open(c);\n                        if opening && !open {\n                            DoorState::Closing\n                        } else if !opening && open {\n                            DoorState::Opening\n                        } else {\n                            d.state\n                        }\n                    }\n                    None => {\n                        if p.overcurrent && !stale {\n                            o.take_overcurrent = true;\n                            // Opening stops; closing reverses (upstream).\n                            if opening { DoorState::Idle } else { DoorState::Opening }\n                        } else if now >= timeout {\n                            DoorState::Idle\n                        } else {\n                            d.state\n                        }\n                    }\n                },\n            }\n        }\n    };\n    (Door { state, last, timeout }, o)\n}",
-   "lean": "def door_step\n  (d : Door) (p : Pending) (now : Std.U64) (driver : Bool) :\n  Result (Door \u00d7 DoorOut)\n  := do\n  let b \u2190 same d.last d.state\n  match d.state with\n  | DoorState.Idle =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Idle)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then\n          ok ({ d with state := DoorState.Opening, last },\n            { o with take_cmd := true })\n        else\n          ok ({ d with state := DoorState.Closing, last },\n            { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })\n  | DoorState.Opening =>\n    let (p1, o, last, timeout, stale) \u2190\n      if \u00ac b\n      then\n        do\n        let timeout1 \u2190 lift (core.num.U64.saturating_add now DOOR_TIMEOUT_MS)\n        let (b1, b2, b3) \u2190\n          if p.overcurrent\n          then ok (true, true, true)\n          else ok (false, NOTHING.take_overcurrent, false)\n        ok ({ p with overcurrent := b1 },\n          {\n            NOTHING\n              with\n              pulley := (some PulleyCommand.RampUpCCW), take_overcurrent := b2\n          }, DoorState.Opening, timeout1, b3)\n      else ok (p, NOTHING, d.last, d.timeout, false)\n    match p1.open_limit with\n    | none =>\n      match p1.cmd with\n      | none =>\n        if p1.overcurrent\n        then\n          if stale\n          then\n            if now >= timeout\n            then ok ({ state := DoorState.Idle, last, timeout }, o)\n            else ok ({ state := DoorState.Opening, last, timeout }, o)\n          else\n            ok ({ state := DoorState.Idle, last, timeout },\n              { o with take_overcurrent := true })\n        else\n          if now >= timeout\n          then ok ({ state := DoorState.Idle, last, timeout }, o)\n          else ok ({ state := DoorState.Opening, last, timeout }, o)\n      | some c =>\n        let \u00abopen\u00bb \u2190 is_open c\n        if \u00abopen\u00bb\n        then\n          ok ({ state := DoorState.Opening, last, timeout },\n            { o with take_cmd := true })\n        else\n          ok ({ state := DoorState.Closing, last, timeout },\n            { o with take_cmd := true })\n    | some hit =>\n      if hit\n      then\n        ok ({ state := DoorState.Opened, last, timeout },\n          { o with take_open_limit := true })\n      else\n        ok ({ state := DoorState.Opening, last, timeout },\n          { o with take_open_limit := true })\n  | DoorState.Opened =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Opened)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then ok ({ d with last }, { o with take_cmd := true })\n        else\n          ok ({ d with state := DoorState.Closing, last },\n            { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })\n  | DoorState.Closing =>\n    let (p1, o, last, timeout, stale) \u2190\n      if \u00ac b\n      then\n        do\n        let timeout1 \u2190 lift (core.num.U64.saturating_add now DOOR_TIMEOUT_MS)\n        let (b1, b2, b3) \u2190\n          if p.overcurrent\n          then ok (true, true, true)\n          else ok (false, NOTHING.take_overcurrent, false)\n        ok ({ p with overcurrent := b1 },\n          {\n            NOTHING\n              with\n              pulley := (some PulleyCommand.RampUpCW), take_overcurrent := b2\n          }, DoorState.Closing, timeout1, b3)\n      else ok (p, NOTHING, d.last, d.timeout, false)\n    match p1.close_limit with\n    | none =>\n      match p1.cmd with\n      | none =>\n        if p1.overcurrent\n        then\n          if stale\n          then\n            if now >= timeout\n            then ok ({ state := DoorState.Idle, last, timeout }, o)\n            else ok ({ state := DoorState.Closing, last, timeout }, o)\n          else\n            ok ({ state := DoorState.Opening, last, timeout },\n              { o with take_overcurrent := true })\n        else\n          if now >= timeout\n          then ok ({ state := DoorState.Idle, last, timeout }, o)\n          else ok ({ state := DoorState.Closing, last, timeout }, o)\n      | some c =>\n        let \u00abopen\u00bb \u2190 is_open c\n        if \u00abopen\u00bb\n        then\n          ok ({ state := DoorState.Opening, last, timeout },\n            { o with take_cmd := true })\n        else\n          ok ({ state := DoorState.Closing, last, timeout },\n            { o with take_cmd := true })\n    | some hit =>\n      if hit\n      then\n        ok ({ state := DoorState.Closed, last, timeout },\n          { o with take_close_limit := true })\n      else\n        ok ({ state := DoorState.Closing, last, timeout },\n          { o with take_close_limit := true })\n  | DoorState.Closed =>\n    let (o, last) \u2190\n      if \u00ac b\n      then\n        ok ({ NOTHING with pulley := (some PulleyCommand.Stop) },\n          DoorState.Closed)\n      else ok (NOTHING, d.last)\n    match p.cmd with\n    | none => ok ({ d with last }, o)\n    | some c =>\n      let \u00abopen\u00bb \u2190 is_open c\n      if driver\n      then\n        if \u00abopen\u00bb\n        then\n          ok ({ d with state := DoorState.Opening, last },\n            { o with take_cmd := true })\n        else ok ({ d with last }, { o with take_cmd := true })\n      else ok ({ d with last }, { o with take_cmd := true })",
-   "upstream": [
-    {
-     "file": "src/bin/main.rs",
-     "line": 294,
-     "code": "async fn door_state_machine_task() {\n    let mut state = DoorState::Idle;\n    let mut last_state = DoorState::Idle;\n    let mut timeout = Instant::now();\n\n    loop {\n        Timer::after(Duration::from_millis(10)).await;\n\n        match state {\n            DoorState::Idle => {\n                if last_state != state {\n                    info!(\"Door: Entering Idle state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::Stop);\n                }\n\n                if let Some(cmd) = DOOR_CMD.try_take() {\n                    match cmd {\n                        DoorCommand::Open => {\n                            state = DoorState::Opening;\n                            info!(\"Door: Idle->Opening (command)\");\n                        }\n                        DoorCommand::Close => {\n                            state = DoorState::Closing;\n                            info!(\"Door: Idle->Closing (command)\");\n                        }\n                    }\n                }\n            }\n            DoorState::Opening => {\n                if last_state != state {\n                    info!(\"Door: Entering Opening state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::RampUpCCW);\n                    timeout = Instant::now() + Duration::from_millis(DOOR_TIMEOUT_MS);\n                }\n\n                if let Some(limit_hit) = OPEN_LIMIT_HIT.try_take() {\n                    if limit_hit {\n                        state = DoorState::Opened;\n                        info!(\"Door: Opening->Opened (limit)\");\n                    }\n                } else if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Close {\n                        state = DoorState::Closing;\n                        info!(\"Door: Opening->Closing (command)\");\n                    }\n                } else if let Some(_) = OVERCURRENT_DETECTED.try_take() {\n                    state = DoorState::Idle;\n                    info!(\"Door: Opening->Idle (overcurrent)\");\n                } else if Instant::now() >= timeout {\n                    state = DoorState::Idle;\n                    info!(\"Door: Opening->Idle (timeout)\");\n                }\n            }\n            DoorState::Opened => {\n                if last_state != state {\n                    info!(\"Door: Entering Opened state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::Stop);\n                }\n\n                if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Close {\n                        state = DoorState::Closing;\n                        info!(\"Door: Opened->Closing (command)\");\n                    }\n                }\n            }\n            DoorState::Closing => {\n                if last_state != state {\n                    info!(\"Door: Entering Closing state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::RampUpCW);\n                    timeout = Instant::now() + Duration::from_millis(DOOR_TIMEOUT_MS);\n                }\n\n                if let Some(limit_hit) = CLOSE_LIMIT_HIT.try_take() {\n                    if limit_hit {\n                        state = DoorState::Closed;\n                        info!(\"Door: Closing->Closed (limit)\");\n                    }\n                } else if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Open {\n                        state = DoorState::Opening;\n                        info!(\"Door: Closing->Opening (command)\");\n                    }\n                } else if let Some(_) = OVERCURRENT_DETECTED.try_take() {\n                    state = DoorState::Opening;\n                    info!(\"Door: Closing->Opening (overcurrent)\");\n                } else if Instant::now() >= timeout {\n                    state = DoorState::Idle;\n                    info!(\"Door: Closing->Idle (timeout)\");\n                }\n            }\n            DoorState::Closed => {\n                if last_state != state {\n                    info!(\"Door: Entering Closed state\");\n                    last_state = state;\n                    PULLEY_CMD.signal(PulleyCommand::Stop);\n                }\n\n                if let Some(cmd) = DOOR_CMD.try_take() {\n                    if cmd == DoorCommand::Open {\n                        state = DoorState::Opening;\n                        info!(\"Door: Closed->Opening (command)\");\n                    }\n                }\n            }\n        }\n    }\n}"
-    }
-   ],
-   "upstream_note": "one 10 ms tick of door_state_machine_task, with F1/F2 fixed (stale overcurrent discarded, no motion without the driver)"
-  },
-  "Duty": {
-   "kind": "structure",
-   "rust_path": "autodoggo_kernel::Duty",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 221,
-   "kernel_code": "pub struct Duty {\n    pub a: u8,\n    pub b: u8,\n}",
-   "lean": "structure Duty where\n  a : Std.U8\n  b : Std.U8",
-   "upstream": [
-    {
-     "file": "src/bin/main.rs",
-     "line": 418,
-     "code": "                ch_a.set_duty(0).unwrap();\n                ch_b.set_duty(0).unwrap();"
-    },
-    {
-     "file": "src/bin/main.rs",
-     "line": 465,
-     "code": "                    ch_a.set_duty(duty).unwrap();\n                    ch_b.set_duty(0).unwrap();"
-    }
-   ],
-   "upstream_note": "the two LEDC channels' duties set each tick"
-  },
-  "same": {
-   "kind": "def",
-   "rust_path": "autodoggo_kernel::same",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 85,
-   "kernel_code": "fn same(a: DoorState, b: DoorState) -> bool {\n    match (a, b) {\n        (DoorState::Idle, DoorState::Idle) => true,\n        (DoorState::Opening, DoorState::Opening) => true,\n        (DoorState::Opened, DoorState::Opened) => true,\n        (DoorState::Closing, DoorState::Closing) => true,\n        (DoorState::Closed, DoorState::Closed) => true,\n        _ => false,\n    }\n}",
-   "lean": "def same (a : DoorState) (b : DoorState) : Result Bool := do\n  match a with\n  | DoorState.Idle =>\n    match b with\n    | DoorState.Idle => ok true\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Opening =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok true\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Opened =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok true\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok false\n  | DoorState.Closing =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok true\n    | DoorState.Closed => ok false\n  | DoorState.Closed =>\n    match b with\n    | DoorState.Idle => ok false\n    | DoorState.Opening => ok false\n    | DoorState.Opened => ok false\n    | DoorState.Closing => ok false\n    | DoorState.Closed => ok true",
-   "upstream": [],
-   "upstream_note": "port-only helper: DoorState equality (upstream compares state and last_state with ==)"
-  },
-  "is_open": {
-   "kind": "def",
-   "rust_path": "autodoggo_kernel::is_open",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 96,
-   "kernel_code": "fn is_open(c: DoorCommand) -> bool {\n    match c {\n        DoorCommand::Open => true,\n        DoorCommand::Close => false,\n    }\n}",
-   "lean": "def is_open (c : DoorCommand) : Result Bool := do\n  match c with\n  | DoorCommand.Open => ok true\n  | DoorCommand.Close => ok false",
-   "upstream": [
-    {
-     "file": "src/bin/main.rs",
-     "line": 73,
-     "code": "enum DoorCommand { Open, Close }"
-    }
-   ],
-   "upstream_note": "port-only helper over DoorCommand: which command it is"
-  },
-  "PulleyState": {
-   "kind": "inductive",
-   "rust_path": "autodoggo_kernel::PulleyState",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 199,
-   "kernel_code": "pub enum PulleyState {\n    Hold,\n    RampingUpCCW,\n    DrivingCCW,\n    RampingDownCCW,\n    RampingUpCW,\n    DrivingCW,\n    RampingDownCW,\n}",
-   "lean": "@[discriminant isize]\ninductive PulleyState where\n| Hold : PulleyState\n| RampingUpCCW : PulleyState\n| DrivingCCW : PulleyState\n| RampingDownCCW : PulleyState\n| RampingUpCW : PulleyState\n| DrivingCW : PulleyState\n| RampingDownCW : PulleyState",
-   "upstream": [
-    {
-     "file": "src/bin/main.rs",
-     "line": 82,
-     "code": "enum PulleyState { Hold, RampingUpCCW, DrivingCCW, RampingDownCCW, RampingUpCW, DrivingCW, RampingDownCW }"
-    }
-   ],
-   "upstream_note": ""
-  },
   "pulley_step": {
    "kind": "def",
    "rust_path": "autodoggo_kernel::pulley_step",
@@ -389,47 +415,21 @@
    ],
    "upstream_note": "one 10 ms ramp step of pulley_driver_task, with F3 fixed (a command while ramping down kept)"
   },
-  "Pending": {
+  "Pulley": {
    "kind": "structure",
-   "rust_path": "autodoggo_kernel::Pending",
+   "rust_path": "autodoggo_kernel::Pulley",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 65,
-   "kernel_code": "pub struct Pending {\n    pub open_limit: Option<bool>,\n    pub close_limit: Option<bool>,\n    pub cmd: Option<DoorCommand>,\n    pub overcurrent: bool,\n}",
-   "lean": "structure Pending where\n  open_limit : Option Bool\n  close_limit : Option Bool\n  cmd : Option DoorCommand\n  overcurrent : Bool",
+   "kernel_line": 211,
+   "kernel_code": "pub struct Pulley {\n    pub state: PulleyState,\n    pub dest: PulleyState,\n    pub duty: u8,\n}",
+   "lean": "structure Pulley where\n  state : PulleyState\n  dest : PulleyState\n  duty : Std.U8",
    "upstream": [
     {
      "file": "src/bin/main.rs",
-     "line": 84,
-     "code": "static DOOR_CMD: Signal<CriticalSectionRawMutex, DoorCommand> = Signal::new();\nstatic PULLEY_CMD: Signal<CriticalSectionRawMutex, PulleyCommand> = Signal::new();\nstatic OPEN_LIMIT_HIT: Signal<CriticalSectionRawMutex, bool> = Signal::new();\nstatic CLOSE_LIMIT_HIT: Signal<CriticalSectionRawMutex, bool> = Signal::new();\nstatic OVERCURRENT_DETECTED: Signal<CriticalSectionRawMutex, ()> = Signal::new();"
+     "line": 409,
+     "code": "    let mut state = PulleyState::Hold;\n    let mut dest_state = PulleyState::Hold;\n    let mut duty: u8 = 0;"
     }
    ],
-   "upstream_note": "the signals the door task takes each tick (command, limit switches, overcurrent)"
-  },
-  "NOTHING": {
-   "kind": "def",
-   "rust_path": "autodoggo_kernel::NOTHING",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 82,
-   "kernel_code": "const NOTHING: DoorOut =\n    DoorOut { pulley: None, take_open_limit: false, take_close_limit: false, take_cmd: false, take_overcurrent: false };",
-   "lean": "@[global_simps, irreducible]\ndef NOTHING : DoorOut :=\n  {\n    pulley := none,\n    take_open_limit := false,\n    take_close_limit := false,\n    take_cmd := false,\n    take_overcurrent := false\n  }",
-   "upstream": [],
-   "upstream_note": "port-only: a tick that signals nothing"
-  },
-  "PULLEY_DUTY_MAX": {
-   "kind": "def",
-   "rust_path": "autodoggo_kernel::PULLEY_DUTY_MAX",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 29,
-   "kernel_code": "pub const PULLEY_DUTY_MAX: u8 = 100;",
-   "lean": "@[global_simps, irreducible] def PULLEY_DUTY_MAX : Std.U8 := 100#u8",
-   "upstream": [
-    {
-     "file": "src/bin/main.rs",
-     "line": 70,
-     "code": "const PULLEY_DUTY_MAX: u8 = 100;"
-    }
-   ],
-   "upstream_note": ""
+   "upstream_note": "pulley_driver_task's state, dest_state and duty"
   }
  },
  "specs": {}

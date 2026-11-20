@@ -19,8 +19,8 @@
     "DutyMsg",
     "Effects",
     "Ctl",
-    "expires_after",
     "Handled",
+    "expires_after",
     "Control",
     "REMOTE_CHECKIN_US"
    ],
@@ -33,15 +33,15 @@
    "statement": "theorem sent_duty_le_100 (st : Heater) (m : DutyMsg) {st' h e d}\n    (hr : duty_set st m = ok (st', h, e)) (hs : e.send = some d) : d = m.duty \u2227 d.val \u2264 100",
    "proof": "theorem sent_duty_le_100 (st : Heater) (m : DutyMsg) {st' h e d}\n    (hr : duty_set st m = ok (st', h, e)) (hs : e.send = some d) : d = m.duty \u2227 d.val \u2264 100 := by\n  rcases st with \u27e8ctl, sd\u27e9\n  rcases m with \u27e8u, p, d0, s, c, sr, sm, now\u27e9\n  simp only [duty_set, expires_after] at hr\n  cases u <;> cases p <;> cases s <;> cases c <;> cases ctl <;> (try simp [NO_EFFECTS] at hr) <;>\n    (try split_ifs at hr) <;> (try simp [NO_EFFECTS] at hr) <;> (try obtain \u27e8_, _, rfl\u27e9 := hr) <;>\n    (try simp_all) <;> scalar_tac",
    "deps": [
+    "DutyMsg",
     "Heater",
     "duty_set",
-    "DutyMsg",
-    "Ctl",
-    "Effects",
-    "NO_EFFECTS",
-    "expires_after",
-    "Handled",
     "Control",
+    "Ctl",
+    "Handled",
+    "Effects",
+    "expires_after",
+    "NO_EFFECTS",
     "REMOTE_CHECKIN_US"
    ],
    "spec": []
@@ -53,15 +53,15 @@
    "statement": "theorem remote_mismatch_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (hn : m.same_remote = false) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS)",
    "proof": "theorem remote_mismatch_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (hn : m.same_remote = false) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS) := by\n  have : \u00ac m.duty > 100#u8 := by scalar_tac\n  simp [duty_set, hc, hu, hp, hs, hk, hn, this]",
    "deps": [
+    "Heater",
+    "duty_set",
     "DutyMsg",
     "NO_EFFECTS",
-    "duty_set",
-    "Heater",
-    "Control",
+    "Ctl",
+    "Handled",
     "Effects",
     "expires_after",
-    "Handled",
-    "Ctl",
+    "Control",
     "REMOTE_CHECKIN_US"
    ],
    "spec": []
@@ -73,15 +73,15 @@
    "statement": "theorem expired_remote_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (he : exp.val \u2264 m.now.val) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS)",
    "proof": "theorem expired_remote_refused (st : Heater) (m : DutyMsg) (exp : Std.U64)\n    (hc : st.ctl = Ctl.Remote exp) (hu : m.utf8 = true) (hp : m.parsed = true) (hd : m.duty.val \u2264 100)\n    (hs : m.sender = true) (hk : m.control = Control.Remote) (he : exp.val \u2264 m.now.val) :\n    duty_set st m = ok (st, Handled.Unexpected, NO_EFFECTS) := by\n  have : \u00ac m.duty > 100#u8 := by scalar_tac\n  have he' : m.now \u2265 exp := by scalar_tac\n  cases hn : m.same_remote <;> simp [duty_set, hc, hu, hp, hs, hk, hn, this, he']",
    "deps": [
+    "Heater",
+    "duty_set",
     "DutyMsg",
     "NO_EFFECTS",
-    "duty_set",
-    "Heater",
-    "Control",
+    "Ctl",
+    "Handled",
     "Effects",
     "expires_after",
-    "Handled",
-    "Ctl",
+    "Control",
     "REMOTE_CHECKIN_US"
    ],
    "spec": []
@@ -93,15 +93,15 @@
    "statement": "theorem anonymous_refused (st : Heater) (m : DutyMsg) (hu : m.utf8 = true) (hp : m.parsed = true)\n    (hd : m.duty.val \u2264 100) (hs : m.sender = false) :\n    duty_set st m = ok (st, Handled.Invalid, NO_EFFECTS)",
    "proof": "theorem anonymous_refused (st : Heater) (m : DutyMsg) (hu : m.utf8 = true) (hp : m.parsed = true)\n    (hd : m.duty.val \u2264 100) (hs : m.sender = false) :\n    duty_set st m = ok (st, Handled.Invalid, NO_EFFECTS) := by\n  have : \u00ac m.duty > 100#u8 := by scalar_tac\n  simp [duty_set, hu, hp, hs, this]",
    "deps": [
+    "Heater",
+    "duty_set",
     "DutyMsg",
     "NO_EFFECTS",
-    "duty_set",
-    "Heater",
-    "Control",
+    "Ctl",
+    "Handled",
     "Effects",
     "expires_after",
-    "Handled",
-    "Ctl",
+    "Control",
     "REMOTE_CHECKIN_US"
    ],
    "spec": []
@@ -113,15 +113,15 @@
    "statement": "theorem remote_must_check_in (st : Heater) (m : DutyMsg) {st' h e} (exp : Std.U64)\n    (hr : duty_set st m = ok (st', h, e)) (hc : st'.ctl = Ctl.Remote exp) :\n    st'.ctl = st.ctl \u2228 exp.val \u2264 m.now.val + 60000000",
    "proof": "theorem remote_must_check_in (st : Heater) (m : DutyMsg) {st' h e} (exp : Std.U64)\n    (hr : duty_set st m = ok (st', h, e)) (hc : st'.ctl = Ctl.Remote exp) :\n    st'.ctl = st.ctl \u2228 exp.val \u2264 m.now.val + 60000000 := by\n  rcases st with \u27e8ctl, sd\u27e9\n  rcases m with \u27e8u, p, d0, s, c, sr, sm, now\u27e9\n  simp only [duty_set, expires_after] at hr\n  have hv := sat_le now REMOTE_CHECKIN_US\n  have hk : REMOTE_CHECKIN_US.val = 60000000 := by unfold REMOTE_CHECKIN_US; rfl\n  cases u <;> cases p <;> cases s <;> cases c <;> cases ctl <;> (try simp [NO_EFFECTS] at hr) <;>\n    (try split_ifs at hr) <;> (try simp [NO_EFFECTS] at hr) <;> (try obtain \u27e8rfl, _, rfl\u27e9 := hr) <;>\n    (try simp_all) <;> (try (subst_vars; omega)) <;> (try (left; rfl))",
    "deps": [
-    "DutyMsg",
-    "duty_set",
     "Heater",
-    "Control",
-    "Effects",
-    "NO_EFFECTS",
-    "expires_after",
-    "Handled",
+    "duty_set",
+    "DutyMsg",
     "Ctl",
+    "Handled",
+    "Effects",
+    "expires_after",
+    "NO_EFFECTS",
+    "Control",
     "REMOTE_CHECKIN_US"
    ],
    "spec": []
@@ -137,10 +137,10 @@
     "duty_set",
     "DutyMsg",
     "Ctl",
-    "Effects",
-    "NO_EFFECTS",
-    "expires_after",
     "Handled",
+    "Effects",
+    "expires_after",
+    "NO_EFFECTS",
     "Control",
     "REMOTE_CHECKIN_US"
    ],
@@ -190,13 +190,13 @@
    "statement": "theorem overtemp_locks (st : Safety) (t16 : Std.I32) (ts : Std.U64) (ht : t16.val \u2265 1120) {st' o}\n    (hr : on_reading st true t16 ts = ok (st', o)) : st'.locked = true",
    "proof": "theorem overtemp_locks (st : Safety) (t16 : Std.I32) (ts : Std.U64) (ht : t16.val \u2265 1120) {st' o}\n    (hr : on_reading st true t16 ts = ok (st', o)) : st'.locked = true := by\n  have hl : t16 \u2265 LOCK_T16 := by simp [LOCK_T16]; scalar_tac\n  have hu : \u00ac t16 < UNLOCK_T16 := by simp [UNLOCK_T16]; scalar_tac\n  unfold on_reading sat_add at hr\n  cases hk : st.locked <;> simp [hk, hl, hu] at hr <;> rw [\u2190 hr.1]",
    "deps": [
-    "Safety",
     "on_reading",
+    "Safety",
     "LOCK_T16",
-    "UNLOCK_T16",
     "MISSING_WINDOW_US",
-    "sat_add",
-    "SafetyOut"
+    "SafetyOut",
+    "UNLOCK_T16",
+    "sat_add"
    ],
    "spec": []
   },
@@ -207,13 +207,13 @@
    "statement": "theorem locked_until_cool (st : Safety) (v : Bool) (t16 : Std.I32) (ts : Std.U64) (hk : st.locked = true)\n    (hc : v = false \u2228 t16.val \u2265 480) {st' o} (hr : on_reading st v t16 ts = ok (st', o)) : st'.locked = true",
    "proof": "theorem locked_until_cool (st : Safety) (v : Bool) (t16 : Std.I32) (ts : Std.U64) (hk : st.locked = true)\n    (hc : v = false \u2228 t16.val \u2265 480) {st' o} (hr : on_reading st v t16 ts = ok (st', o)) : st'.locked = true := by\n  unfold on_reading sat_add at hr\n  rcases hc with rfl | hc\n  \u00b7 simp at hr; rw [\u2190 hr.1, hk]\n  \u00b7 have hu : \u00ac t16 < UNLOCK_T16 := by simp [UNLOCK_T16]; scalar_tac\n    cases v <;> simp [hk, hu] at hr <;> rw [\u2190 hr.1] <;> simp [hk]",
    "deps": [
-    "Safety",
     "on_reading",
+    "Safety",
     "LOCK_T16",
-    "UNLOCK_T16",
     "MISSING_WINDOW_US",
-    "sat_add",
-    "SafetyOut"
+    "SafetyOut",
+    "UNLOCK_T16",
+    "sat_add"
    ],
    "spec": []
   },
@@ -224,13 +224,13 @@
    "statement": "theorem invalid_reading_ignored (st : Safety) (t16 : Std.I32) (ts : Std.U64) :\n    on_reading st false t16 ts = ok (st, SafetyOut.Nothing)",
    "proof": "theorem invalid_reading_ignored (st : Safety) (t16 : Std.I32) (ts : Std.U64) :\n    on_reading st false t16 ts = ok (st, SafetyOut.Nothing) := by\n  simp [on_reading]",
    "deps": [
-    "Safety",
     "on_reading",
+    "Safety",
     "LOCK_T16",
-    "UNLOCK_T16",
     "MISSING_WINDOW_US",
-    "sat_add",
-    "SafetyOut"
+    "SafetyOut",
+    "UNLOCK_T16",
+    "sat_add"
    ],
    "spec": []
   },
@@ -244,8 +244,8 @@
     "Safety",
     "on_missing",
     "MISSING_WINDOW_US",
-    "sat_add",
-    "SafetyOut"
+    "SafetyOut",
+    "sat_add"
    ],
    "spec": []
   },
@@ -256,8 +256,8 @@
    "statement": "theorem ssr_lock_zeroes (st : Ssr) (d : Option Std.U8) :\n    ssr_step st (some SsrCmd.Lock) d = ok { locked := true, pattern := 0#u8 }",
    "proof": "theorem ssr_lock_zeroes (st : Ssr) (d : Option Std.U8) :\n    ssr_step st (some SsrCmd.Lock) d = ok { locked := true, pattern := 0#u8 } := by\n  simp [ssr_step]",
    "deps": [
-    "ssr_step",
     "Ssr",
+    "ssr_step",
     "SsrCmd"
    ],
    "spec": []
@@ -269,8 +269,8 @@
    "statement": "theorem ssr_locked_ignores_duty (st : Ssr) (d : Option Std.U8) (hk : st.locked = true) :\n    ssr_step st none d = ok st",
    "proof": "theorem ssr_locked_ignores_duty (st : Ssr) (d : Option Std.U8) (hk : st.locked = true) :\n    ssr_step st none d = ok st := by\n  simp [ssr_step, hk]",
    "deps": [
-    "ssr_step",
     "Ssr",
+    "ssr_step",
     "SsrCmd"
    ],
    "spec": []
@@ -282,9 +282,9 @@
    "statement": "theorem ssr_pattern_le_100 (st : Ssr) (c : Option SsrCmd) (d : Option Std.U8) (hs : st.pattern.val \u2264 100) {st'}\n    (hr : ssr_step st c d = ok st') : st'.pattern.val \u2264 100",
    "proof": "theorem ssr_pattern_le_100 (st : Ssr) (c : Option SsrCmd) (d : Option Std.U8) (hs : st.pattern.val \u2264 100) {st'}\n    (hr : ssr_step st c d = ok st') : st'.pattern.val \u2264 100 := by\n  unfold ssr_step at hr\n  rcases c with _ | \u27e8_ | _\u27e9 <;> rcases d with _ | d <;> simp at hr <;> (try split_ifs at hr) <;>\n    (try simp at hr) <;> subst_vars <;> simp_all <;> (try scalar_tac)",
    "deps": [
-    "ssr_step",
+    "Ssr",
     "SsrCmd",
-    "Ssr"
+    "ssr_step"
    ],
    "spec": []
   },
@@ -326,21 +326,37 @@
   }
  ],
  "decls": {
-  "ssr_step": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::ssr_step",
+  "Heater": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Heater",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 262,
-   "kernel_code": "pub fn ssr_step(st: &Ssr, cmd: Option<SsrCmd>, new_duty: Option<u8>) -> Ssr {\n    let s1 = match cmd {\n        Some(SsrCmd::Lock) => Ssr { locked: true, pattern: 0 },\n        Some(SsrCmd::Unlock) => Ssr { locked: false, pattern: st.pattern },\n        None => *st,\n    };\n    if s1.locked {\n        s1\n    } else {\n        match new_duty {\n            Some(d) => {\n                if d <= 100 { Ssr { locked: false, pattern: d } } else { s1 }\n            }\n            None => s1,\n        }\n    }\n}",
-   "lean": "def ssr_step\n  (st : Ssr) (cmd : Option SsrCmd) (new_duty : Option Std.U8) :\n  Result Ssr\n  := do\n  let s1 \u2190\n    match cmd with\n    | none => ok st\n    | some sc =>\n      do\n      let (b, i) \u2190\n        match sc with\n        | SsrCmd.Lock => ok (true, 0#u8)\n        | SsrCmd.Unlock => ok (false, st.pattern)\n      ok ({ locked := b, pattern := i } : Ssr)\n  if s1.locked\n  then ok s1\n  else\n    match new_duty with\n    | none => ok s1\n    | some d =>\n      if d <= 100#u8\n      then ok { locked := false, pattern := d }\n      else ok s1",
+   "kernel_line": 46,
+   "kernel_code": "pub struct Heater {\n    pub ctl: Ctl,\n    /// The duty last recorded.\n    pub duty: u8,\n}",
+   "lean": "structure Heater where\n  ctl : Ctl\n  duty : Std.U8",
    "upstream": [
     {
-     "file": "src/task/ssr_control.rs",
-     "line": 64,
-     "code": "            // See if we have a lock/unlock message.\n            if let Some(pubsub::WaitResult::Message(command)) =\n                ssrcontrol_command_subscriber.try_next_message()\n            {\n                match command {\n                    SsrCommand::Lock => {\n                        pattern = [false; 100];\n                        is_locked = true;\n                    }\n                    SsrCommand::Unlock => is_locked = false,\n                }\n            }\n\n            // See if we have a new duty cycle.\n            // We simply replace the pattern and continue from the same step position.\n            // Since the pattern is evenly distributed, this puts us right into the\n            // new duty cycle.\n            if !is_locked\n                && let Some(new_duty_cycle) = ssrcontrol_duty_receiver.try_changed()\n            {\n                pattern = generate_evenly_distributed_steps(new_duty_cycle);\n            }"
+     "file": "src/heater_state.rs",
+     "line": 29,
+     "code": "#[derive(Clone)]\npub struct HeaterControlState {\n    duty: u8,\n    controller: HeaterController,\n    buzzer_channel: BuzzerChannel,\n    // If set, broadcasts controller transitions over the watch channel.\n    watch: Option<&'static watch::Watch<NoopRawMutex, HeaterController, HEATER_STATE_WATCHERS>>,\n    memlog: SharedLogger,\n}"
     }
    ],
-   "upstream_note": "the per-step lock/unlock command then new-duty handling of ssr_control"
+   "upstream_note": "HeaterControlState: duty and controller; buzzer/watch/memlog handles become Effects"
+  },
+  "on_missing": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::on_missing",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 236,
+   "kernel_code": "pub fn on_missing(st: &Safety, now: u64) -> (Safety, SafetyOut) {\n    let deadline = sat_add(now, MISSING_WINDOW_US);\n    if !st.locked {\n        (Safety { locked: true, deadline }, SafetyOut::LockMissing)\n    } else {\n        (Safety { locked: true, deadline }, SafetyOut::Nothing)\n    }\n}",
+   "lean": "def on_missing\n  (st : Safety) (now : Std.U64) : Result (Safety \u00d7 SafetyOut) := do\n  let deadline \u2190 sat_add now MISSING_WINDOW_US\n  if st.locked\n  then ok ({ locked := true, deadline }, SafetyOut.Nothing)\n  else ok ({ locked := true, deadline }, SafetyOut.LockMissing)",
+   "upstream": [
+    {
+     "file": "src/task/safety.rs",
+     "line": 65,
+     "code": "            Err(_timeout) => {\n                missing_temp_deadline = Instant::now() + missing_temp_window;\n\n                if !ssr_locked {\n                    ssr_locked = true;\n                    ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                    buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                    memlog.warn(\"safety: no valid temperature updates, ssr locked\");\n                }\n            }"
+    }
+   ],
+   "upstream_note": "the timeout arm of the safety loop"
   },
   "STEPS": {
    "kind": "def",
@@ -357,85 +373,6 @@
     }
    ],
    "upstream_note": "TOTAL_STEPS (100 pattern steps)"
-  },
-  "DutyMsg": {
-   "kind": "structure",
-   "rust_path": "heater_control_kernel::DutyMsg",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 66,
-   "kernel_code": "pub struct DutyMsg {\n    /// The payload is UTF-8.\n    pub utf8: bool,\n    /// It parses as a `u8`.\n    pub parsed: bool,\n    pub duty: u8,\n    /// A non-blank `device` property.\n    pub sender: bool,\n    pub control: Control,\n    /// The sender is the remote in control (if a remote is).\n    pub same_remote: bool,\n    /// The sender is the device in manual control (if one is).\n    pub same_manual: bool,\n    pub now: u64,\n}",
-   "lean": "structure DutyMsg where\n  utf8 : Bool\n  parsed : Bool\n  duty : Std.U8\n  sender : Bool\n  control : Control\n  same_remote : Bool\n  same_manual : Bool\n  now : Std.U64",
-   "upstream": [
-    {
-     "file": "src/task/mqtt.rs",
-     "line": 608,
-     "code": "                let duty_str = core::str::from_utf8(message.payload)?;\n\n                let duty: u8 = duty_str\n                    .parse()\n                    .map_err(|_| EventHandlerError::InvalidApplicationMessage)?;\n\n                if !((0..=100).contains(&duty)) {\n                    return Err(EventHandlerError::UnexpectedApplicationMessage);\n                }\n\n                // Duty setters must identify themselves with a \"device:<device_id>\" property.\n                let sender_prop = find_user_property(&message.properties, \"device\", None)\n                    .map(|property| property.value());\n\n                let Some(sender_id) = sender_prop.filter(|id| !id.trim().is_empty()) else {\n                    return Err(EventHandlerError::InvalidApplicationMessage);\n                };\n\n                // Duty setters must announce the type of control they are requesting\n                // ('remote' or 'manual') with a \"control:<type>\" property.\n                let control_type = find_user_property(&message.properties, \"control\", None)\n                    .map(|property| property.value());"
-    }
-   ],
-   "upstream_note": "the duty/set message as handle_event parses it (UTF-8, u8, device and control properties); sender comparisons supplied by the app"
-  },
-  "Effects": {
-   "kind": "structure",
-   "rust_path": "heater_control_kernel::Effects",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 93,
-   "kernel_code": "pub struct Effects {\n    /// The duty sent to the SSR (`None`: none sent).\n    pub send: Option<u8>,\n    /// The controller changed (the buzzer sounds, the watch is told).\n    pub announce: bool,\n    /// Who controls the heater is now this sender (the app records its id).\n    pub record_sender: bool,\n}",
-   "lean": "structure Effects where\n  send : Option Std.U8\n  announce : Bool\n  record_sender : Bool",
-   "upstream": [
-    {
-     "file": "src/task/mqtt.rs",
-     "line": 639,
-     "code": "                        self.ssrcontrol_duty_sender.send(duty);"
-    },
-    {
-     "file": "src/task/mqtt.rs",
-     "line": 655,
-     "code": "                            self.ssrcontrol_duty_sender.send(duty);"
-    },
-    {
-     "file": "src/heater_state.rs",
-     "line": 150,
-     "code": "            self.buzzer_channel\n                .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                .ok();\n\n            if let Some(watch) = self.watch {\n                watch.sender().send(self.controller.clone());\n            }"
-    },
-    {
-     "file": "src/heater_state.rs",
-     "line": 189,
-     "code": "                self.buzzer_channel\n                    .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                    .ok();\n\n                // Notify the state change.\n                if let Some(watch) = self.watch {\n                    watch.sender().send(self.controller.clone());\n                }"
-    }
-   ],
-   "upstream_note": "the side effects of a duty/set: duty sent to the SSR, buzzer + watch notification on a controller change"
-  },
-  "Ssr": {
-   "kind": "structure",
-   "rust_path": "heater_control_kernel::Ssr",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 250,
-   "kernel_code": "pub struct Ssr {\n    pub locked: bool,\n    /// The duty of the pattern being played.\n    pub pattern: u8,\n}",
-   "lean": "structure Ssr where\n  locked : Bool\n  pattern : Std.U8",
-   "upstream": [
-    {
-     "file": "src/task/ssr_control.rs",
-     "line": 49,
-     "code": "    let mut pattern = generate_evenly_distributed_steps(0);\n\n    // Locking the SSR sets its duty to zero and ignores any commands until an unlock.\n    let mut is_locked = false;"
-    }
-   ],
-   "upstream_note": "the ssr_control task's state: pattern (kept as its duty) and is_locked"
-  },
-  "pattern_on": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::pattern_on",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 284,
-   "kernel_code": "pub fn pattern_on(duty: u8, i: u32) -> bool {\n    if duty > 100 || i >= STEPS {\n        return false;\n    }\n    let d = duty as u32;\n    (50 + d * (i + 1)) / 100 > (50 + d * i) / 100\n}",
-   "lean": "def pattern_on (duty : Std.U8) (i : Std.U32) : Result Bool := do\n  if duty > 100#u8\n  then ok false\n  else\n    if i >= STEPS\n    then ok false\n    else\n      let d \u2190 lift (UScalar.cast .U32 duty)\n      let i1 \u2190 i + 1#u32\n      let i2 \u2190 d * i1\n      let i3 \u2190 50#u32 + i2\n      let i4 \u2190 i3 / 100#u32\n      let i5 \u2190 d * i\n      let i6 \u2190 50#u32 + i5\n      let i7 \u2190 i6 / 100#u32\n      ok (i4 > i7)",
-   "upstream": [
-    {
-     "file": "src/task/ssr_control.rs",
-     "line": 109,
-     "code": "fn generate_evenly_distributed_steps(duty_percent: u8) -> [bool; 100] {\n    const TOTAL_STEPS: usize = 100;\n    const TOTAL_STEPS_I32: i32 = TOTAL_STEPS as i32;\n\n    if duty_percent > 100 {\n        panic!(\"duty cycle outside 0.100 range\");\n    }\n\n    // The target number of ON steps.\n    let num_on_steps_target = duty_percent as i32;\n\n    // Initialize the output array with all steps OFF (false).\n    let mut steps_array: [bool; TOTAL_STEPS] = [false; TOTAL_STEPS];\n\n    // Initialize the accumulator.\n    // Starting at `TOTAL_STEPS/2` centers the distribution of ON pulses.\n    let mut accumulator: i32 = TOTAL_STEPS_I32 / 2;\n\n    // Loop through each of the 100 steps to decide if it's ON or OFF.\n    for step in steps_array.iter_mut() {\n        // Add the \"target density\" of ON states to the accumulator.\n        accumulator += num_on_steps_target;\n\n        // Check if the accumulator has reached the threshold.\n        if accumulator >= TOTAL_STEPS_I32 {\n            *step = true; // This step is ON.\n            // \"Spend\" the credit for one ON pulse by subtracting TOTAL_STEPS\n            // from the accumulator.\n            accumulator -= TOTAL_STEPS_I32;\n        }\n        // Else, the step remains OFF (false), which is its initialized state.\n    }\n\n    steps_array\n}"
-    }
-   ],
-   "upstream_note": "generate_evenly_distributed_steps, as a closed form for step i (out-of-range duty yields false instead of panicking)"
   },
   "Control": {
    "kind": "inductive",
@@ -484,6 +421,79 @@
    ],
    "upstream_note": "SSR_LOCK_TEMP_C (70.0 C) in DS18B20 sixteenths"
   },
+  "duty_set": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::duty_set",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 109,
+   "kernel_code": "pub fn duty_set(st: &Heater, m: &DutyMsg) -> (Heater, Handled, Effects) {\n    if !m.utf8 {\n        return (*st, Handled::Utf8, NO_EFFECTS);\n    }\n    if !m.parsed {\n        return (*st, Handled::Invalid, NO_EFFECTS);\n    }\n    if m.duty > 100 {\n        return (*st, Handled::Unexpected, NO_EFFECTS);\n    }\n    if !m.sender {\n        return (*st, Handled::Invalid, NO_EFFECTS);\n    }\n    match m.control {\n        Control::Manual => {\n            // `transition_to_manual`: always possible.\n            let changed = match st.ctl {\n                Ctl::Manual => !m.same_manual,\n                _ => true,\n            };\n            (\n                Heater { ctl: Ctl::Manual, duty: m.duty },\n                Handled::Ok,\n                Effects { send: Some(m.duty), announce: changed, record_sender: changed },\n            )\n        }\n        Control::Remote => match st.ctl {\n            // A new remote announces itself.\n            Ctl::Nobody | Ctl::Manual => (\n                Heater { ctl: Ctl::Remote { expires: expires_after(m.now) }, duty: m.duty },\n                Handled::Ok,\n                Effects { send: Some(m.duty), announce: true, record_sender: true },\n            ),\n            Ctl::Remote { expires } => {\n                if !m.same_remote {\n                    (*st, Handled::Unexpected, NO_EFFECTS)\n                } else if m.now >= expires {\n                    // It failed to check in in time.\n                    (*st, Handled::Unexpected, NO_EFFECTS)\n                } else {\n                    (\n                        Heater { ctl: Ctl::Remote { expires: expires_after(m.now) }, duty: m.duty },\n                        Handled::Ok,\n                        Effects { send: Some(m.duty), announce: false, record_sender: false },\n                    )\n                }\n            }\n        },\n        Control::Other => (*st, Handled::Unexpected, NO_EFFECTS),\n        Control::Missing => (*st, Handled::Invalid, NO_EFFECTS),\n    }\n}",
+   "lean": "def duty_set\n  (st : Heater) (m : DutyMsg) : Result (Heater \u00d7 Handled \u00d7 Effects) := do\n  if m.utf8\n  then\n    if m.parsed\n    then\n      if m.duty > 100#u8\n      then ok (st, Handled.Unexpected, NO_EFFECTS)\n      else\n        if m.sender\n        then\n          match m.control with\n          | Control.Manual =>\n            match st.ctl with\n            | Ctl.Nobody =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Remote _ =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Manual =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := (\u00ac m.same_manual),\n                  record_sender := (\u00ac m.same_manual)\n                })\n          | Control.Remote =>\n            match st.ctl with\n            | Ctl.Nobody =>\n              let i \u2190 expires_after m.now\n              ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Remote expires =>\n              if m.same_remote\n              then\n                if m.now >= expires\n                then ok (st, Handled.Unexpected, NO_EFFECTS)\n                else\n                  let i \u2190 expires_after m.now\n                  ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                    {\n                      send := (some m.duty),\n                      announce := false,\n                      record_sender := false\n                    })\n              else ok (st, Handled.Unexpected, NO_EFFECTS)\n            | Ctl.Manual =>\n              let i \u2190 expires_after m.now\n              ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n          | Control.Other => ok (st, Handled.Unexpected, NO_EFFECTS)\n          | Control.Missing => ok (st, Handled.Invalid, NO_EFFECTS)\n        else ok (st, Handled.Invalid, NO_EFFECTS)\n    else ok (st, Handled.Invalid, NO_EFFECTS)\n  else ok (st, Handled.Utf8, NO_EFFECTS)",
+   "upstream": [
+    {
+     "file": "src/task/mqtt.rs",
+     "line": 607,
+     "code": "            topic if topic == &self.topics[Topic::DutySet] => {\n                let duty_str = core::str::from_utf8(message.payload)?;\n\n                let duty: u8 = duty_str\n                    .parse()\n                    .map_err(|_| EventHandlerError::InvalidApplicationMessage)?;\n\n                if !((0..=100).contains(&duty)) {\n                    return Err(EventHandlerError::UnexpectedApplicationMessage);\n                }\n\n                // Duty setters must identify themselves with a \"device:<device_id>\" property.\n                let sender_prop = find_user_property(&message.properties, \"device\", None)\n                    .map(|property| property.value());\n\n                let Some(sender_id) = sender_prop.filter(|id| !id.trim().is_empty()) else {\n                    return Err(EventHandlerError::InvalidApplicationMessage);\n                };\n\n                // Duty setters must announce the type of control they are requesting\n                // ('remote' or 'manual') with a \"control:<type>\" property.\n                let control_type = find_user_property(&message.properties, \"control\", None)\n                    .map(|property| property.value());\n\n                match control_type {\n                    // The duty sender is exerting manual control.\n                    Some(\"manual\") => {\n                        self.heater_state\n                            .lock()\n                            .await\n                            .transition_to_manual(sender_id, duty);\n\n                        self.ssrcontrol_duty_sender.send(duty);\n                        Ok(())\n                    }\n\n                    // The duty sender is a remote.\n                    Some(\"remote\") => {\n                        let state_result = self\n                            .heater_state\n                            .lock()\n                            .await\n                            .remote_update_duty(sender_id, duty);\n\n                        // Remotes can lose control, returning an error.\n                        if state_result.is_err() {\n                            Err(EventHandlerError::UnexpectedApplicationMessage)\n                        } else {\n                            self.ssrcontrol_duty_sender.send(duty);\n                            Ok(())\n                        }\n                    }\n\n                    Some(_) => Err(EventHandlerError::UnexpectedApplicationMessage),\n                    None => Err(EventHandlerError::InvalidApplicationMessage),\n                }\n            }"
+    },
+    {
+     "file": "src/heater_state.rs",
+     "line": 138,
+     "code": "    pub fn transition_to_manual(&mut self, device_id: impl Into<String>, heater_duty: u8) {\n        let device_id = device_id.into();\n\n        self.duty = heater_duty;\n\n        let new_state = HeaterController::Manual {\n            manual_id: device_id.clone(),\n        };\n\n        if self.controller != new_state {\n            self.controller = new_state;\n\n            self.buzzer_channel\n                .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                .ok();\n\n            if let Some(watch) = self.watch {\n                watch.sender().send(self.controller.clone());\n            }\n\n            self.memlog.info(format!(\n                \"state: control set to Manual by device {device_id}\"\n            ));\n        }\n    }"
+    },
+    {
+     "file": "src/heater_state.rs",
+     "line": 168,
+     "code": "    pub fn remote_update_duty(\n        &mut self,\n        device_id: impl Into<String>,\n        heater_duty: u8,\n    ) -> Result<(), StateError> {\n        let device_id = device_id.into();\n\n        match &mut self.controller {\n            //\n            // A new remote announced itself.\n            HeaterController::None | HeaterController::Manual { .. } => {\n                // Set the mode to Remote, record the remote's identifier.\n                self.controller = HeaterController::Remote {\n                    remote_id: device_id.clone(),\n                    expires: Instant::now() + REMOTE_CHECKIN_INTERVAL,\n                };\n\n                // Update the recorded duty.\n                self.duty = heater_duty;\n\n                // Sound the buzzer.\n                self.buzzer_channel\n                    .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                    .ok();\n\n                // Notify the state change.\n                if let Some(watch) = self.watch {\n                    watch.sender().send(self.controller.clone());\n                }\n\n                self.memlog.info(format!(\n                    \"state: control set to Remote by device {device_id}\"\n                ));\n\n                Ok(())\n            }\n\n            //\n            // Remote update while in remote control state.\n            HeaterController::Remote {\n                remote_id: current_remote,\n                expires,\n            } => {\n                // See if the requesting remote is the one controlling the heater.\n                if *current_remote != device_id {\n                    return Err(StateError::RemoteMismatch);\n                }\n\n                // See if the expiry time has elapsed.\n                // We use checked_duration_since because if `expires` is in the future, a regular duration\n                // calculation would underflow since Duration is unsigned.\n                if Instant::now().checked_duration_since(*expires).is_some() {\n                    return Err(StateError::RemoteExpired);\n                }\n\n                // Update the recorded duty.\n                self.duty = heater_duty;\n\n                // Set a new expiry time.\n                *expires = Instant::now() + REMOTE_CHECKIN_INTERVAL;\n\n                Ok(())\n            }\n        }\n    }"
+    }
+   ],
+   "upstream_note": "duty/set arm of handle_event with transition_to_manual and remote_update_duty flattened in"
+  },
+  "MISSING_WINDOW_US": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::MISSING_WINDOW_US",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 30,
+   "kernel_code": "pub const MISSING_WINDOW_US: u64 = 29_000_000;",
+   "lean": "@[global_simps, irreducible] def MISSING_WINDOW_US : Std.U64 := 29000000#u64",
+   "upstream": [
+    {
+     "file": "src/task/safety.rs",
+     "line": 30,
+     "code": "    let missing_temp_window =\n        4 * (TEMP_READING_INTERVAL + SENSOR_MEASUREMENT_TIME * (CHECKSUM_RETRIES as u32));"
+    },
+    {
+     "file": "src/task/temp_sensor.rs",
+     "line": 30,
+     "code": "pub(crate) const TEMP_READING_INTERVAL: Duration = Duration::from_secs(5);"
+    },
+    {
+     "file": "src/task/temp_sensor.rs",
+     "line": 33,
+     "code": "pub(crate) const SENSOR_MEASUREMENT_TIME: Duration =\n    Duration::from_millis(Resolution::Bits12.measurement_time_ms() as u64);"
+    },
+    {
+     "file": "src/task/temp_sensor.rs",
+     "line": 37,
+     "code": "pub(crate) const CHECKSUM_RETRIES: u8 = 3;"
+    }
+   ],
+   "upstream_note": "missing_temp_window = 4 * (5 s + 750 ms * 3 retries), evaluated to 29 s"
+  },
+  "Handled": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::Handled",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 84,
+   "kernel_code": "pub enum Handled {\n    Ok,\n    Utf8,\n    Invalid,\n    Unexpected,\n}",
+   "lean": "@[discriminant isize]\ninductive Handled where\n| Ok : Handled\n| Utf8 : Handled\n| Invalid : Handled\n| Unexpected : Handled",
+   "upstream": [
+    {
+     "file": "src/task/mqtt.rs",
+     "line": 596,
+     "code": "    async fn handle_event(\n        &mut self,\n        event: ClientReceivedEvent<'_, P>,\n    ) -> Result<(), EventHandlerError> {"
+    }
+   ],
+   "upstream_note": "handle_event's Result<(), EventHandlerError> (Utf8/InvalidApplicationMessage/UnexpectedApplicationMessage; the enum itself is in mountain-mqtt)"
+  },
   "reset_allowed": {
    "kind": "def",
    "rust_path": "heater_control_kernel::reset_allowed",
@@ -499,6 +509,143 @@
     }
    ],
    "upstream_note": "reset arm of handle_event: only a non-retained message resets"
+  },
+  "SafetyOut": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::SafetyOut",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 210,
+   "kernel_code": "pub enum SafetyOut {\n    Nothing,\n    LockOvertemp,\n    LockMissing,\n    Unlock,\n}",
+   "lean": "@[discriminant isize]\ninductive SafetyOut where\n| Nothing : SafetyOut\n| LockOvertemp : SafetyOut\n| LockMissing : SafetyOut\n| Unlock : SafetyOut",
+   "upstream": [
+    {
+     "file": "src/task/safety.rs",
+     "line": 50,
+     "code": "                    if !ssr_locked && temp_c >= SSR_LOCK_TEMP_C {\n                        ssr_locked = true;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                        buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                        memlog.warn(\"safety: overtemperature, ssr locked\");\n                    }\n\n                    if ssr_locked && temp_c < SSR_UNLOCK_TEMP_C {\n                        ssr_locked = false;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Unlock);\n                        memlog.info(\"safety: temperature decreasing, ssr unlocked\");\n                    }"
+    },
+    {
+     "file": "src/task/safety.rs",
+     "line": 68,
+     "code": "                if !ssr_locked {\n                    ssr_locked = true;\n                    ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                    buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                    memlog.warn(\"safety: no valid temperature updates, ssr locked\");\n                }"
+    }
+   ],
+   "upstream_note": "what one safety-loop iteration does: lock (over-temperature or missing readings, with buzzer), unlock, or nothing"
+  },
+  "Ssr": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Ssr",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 250,
+   "kernel_code": "pub struct Ssr {\n    pub locked: bool,\n    /// The duty of the pattern being played.\n    pub pattern: u8,\n}",
+   "lean": "structure Ssr where\n  locked : Bool\n  pattern : Std.U8",
+   "upstream": [
+    {
+     "file": "src/task/ssr_control.rs",
+     "line": 49,
+     "code": "    let mut pattern = generate_evenly_distributed_steps(0);\n\n    // Locking the SSR sets its duty to zero and ignores any commands until an unlock.\n    let mut is_locked = false;"
+    }
+   ],
+   "upstream_note": "the ssr_control task's state: pattern (kept as its duty) and is_locked"
+  },
+  "pattern_on": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::pattern_on",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 284,
+   "kernel_code": "pub fn pattern_on(duty: u8, i: u32) -> bool {\n    if duty > 100 || i >= STEPS {\n        return false;\n    }\n    let d = duty as u32;\n    (50 + d * (i + 1)) / 100 > (50 + d * i) / 100\n}",
+   "lean": "def pattern_on (duty : Std.U8) (i : Std.U32) : Result Bool := do\n  if duty > 100#u8\n  then ok false\n  else\n    if i >= STEPS\n    then ok false\n    else\n      let d \u2190 lift (UScalar.cast .U32 duty)\n      let i1 \u2190 i + 1#u32\n      let i2 \u2190 d * i1\n      let i3 \u2190 50#u32 + i2\n      let i4 \u2190 i3 / 100#u32\n      let i5 \u2190 d * i\n      let i6 \u2190 50#u32 + i5\n      let i7 \u2190 i6 / 100#u32\n      ok (i4 > i7)",
+   "upstream": [
+    {
+     "file": "src/task/ssr_control.rs",
+     "line": 109,
+     "code": "fn generate_evenly_distributed_steps(duty_percent: u8) -> [bool; 100] {\n    const TOTAL_STEPS: usize = 100;\n    const TOTAL_STEPS_I32: i32 = TOTAL_STEPS as i32;\n\n    if duty_percent > 100 {\n        panic!(\"duty cycle outside 0.100 range\");\n    }\n\n    // The target number of ON steps.\n    let num_on_steps_target = duty_percent as i32;\n\n    // Initialize the output array with all steps OFF (false).\n    let mut steps_array: [bool; TOTAL_STEPS] = [false; TOTAL_STEPS];\n\n    // Initialize the accumulator.\n    // Starting at `TOTAL_STEPS/2` centers the distribution of ON pulses.\n    let mut accumulator: i32 = TOTAL_STEPS_I32 / 2;\n\n    // Loop through each of the 100 steps to decide if it's ON or OFF.\n    for step in steps_array.iter_mut() {\n        // Add the \"target density\" of ON states to the accumulator.\n        accumulator += num_on_steps_target;\n\n        // Check if the accumulator has reached the threshold.\n        if accumulator >= TOTAL_STEPS_I32 {\n            *step = true; // This step is ON.\n            // \"Spend\" the credit for one ON pulse by subtracting TOTAL_STEPS\n            // from the accumulator.\n            accumulator -= TOTAL_STEPS_I32;\n        }\n        // Else, the step remains OFF (false), which is its initialized state.\n    }\n\n    steps_array\n}"
+    }
+   ],
+   "upstream_note": "generate_evenly_distributed_steps, as a closed form for step i (out-of-range duty yields false instead of panicking)"
+  },
+  "Effects": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::Effects",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 93,
+   "kernel_code": "pub struct Effects {\n    /// The duty sent to the SSR (`None`: none sent).\n    pub send: Option<u8>,\n    /// The controller changed (the buzzer sounds, the watch is told).\n    pub announce: bool,\n    /// Who controls the heater is now this sender (the app records its id).\n    pub record_sender: bool,\n}",
+   "lean": "structure Effects where\n  send : Option Std.U8\n  announce : Bool\n  record_sender : Bool",
+   "upstream": [
+    {
+     "file": "src/task/mqtt.rs",
+     "line": 639,
+     "code": "                        self.ssrcontrol_duty_sender.send(duty);"
+    },
+    {
+     "file": "src/task/mqtt.rs",
+     "line": 655,
+     "code": "                            self.ssrcontrol_duty_sender.send(duty);"
+    },
+    {
+     "file": "src/heater_state.rs",
+     "line": 150,
+     "code": "            self.buzzer_channel\n                .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                .ok();\n\n            if let Some(watch) = self.watch {\n                watch.sender().send(self.controller.clone());\n            }"
+    },
+    {
+     "file": "src/heater_state.rs",
+     "line": 189,
+     "code": "                self.buzzer_channel\n                    .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                    .ok();\n\n                // Notify the state change.\n                if let Some(watch) = self.watch {\n                    watch.sender().send(self.controller.clone());\n                }"
+    }
+   ],
+   "upstream_note": "the side effects of a duty/set: duty sent to the SSR, buzzer + watch notification on a controller change"
+  },
+  "ssr_step": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::ssr_step",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 262,
+   "kernel_code": "pub fn ssr_step(st: &Ssr, cmd: Option<SsrCmd>, new_duty: Option<u8>) -> Ssr {\n    let s1 = match cmd {\n        Some(SsrCmd::Lock) => Ssr { locked: true, pattern: 0 },\n        Some(SsrCmd::Unlock) => Ssr { locked: false, pattern: st.pattern },\n        None => *st,\n    };\n    if s1.locked {\n        s1\n    } else {\n        match new_duty {\n            Some(d) => {\n                if d <= 100 { Ssr { locked: false, pattern: d } } else { s1 }\n            }\n            None => s1,\n        }\n    }\n}",
+   "lean": "def ssr_step\n  (st : Ssr) (cmd : Option SsrCmd) (new_duty : Option Std.U8) :\n  Result Ssr\n  := do\n  let s1 \u2190\n    match cmd with\n    | none => ok st\n    | some sc =>\n      do\n      let (b, i) \u2190\n        match sc with\n        | SsrCmd.Lock => ok (true, 0#u8)\n        | SsrCmd.Unlock => ok (false, st.pattern)\n      ok ({ locked := b, pattern := i } : Ssr)\n  if s1.locked\n  then ok s1\n  else\n    match new_duty with\n    | none => ok s1\n    | some d =>\n      if d <= 100#u8\n      then ok { locked := false, pattern := d }\n      else ok s1",
+   "upstream": [
+    {
+     "file": "src/task/ssr_control.rs",
+     "line": 64,
+     "code": "            // See if we have a lock/unlock message.\n            if let Some(pubsub::WaitResult::Message(command)) =\n                ssrcontrol_command_subscriber.try_next_message()\n            {\n                match command {\n                    SsrCommand::Lock => {\n                        pattern = [false; 100];\n                        is_locked = true;\n                    }\n                    SsrCommand::Unlock => is_locked = false,\n                }\n            }\n\n            // See if we have a new duty cycle.\n            // We simply replace the pattern and continue from the same step position.\n            // Since the pattern is evenly distributed, this puts us right into the\n            // new duty cycle.\n            if !is_locked\n                && let Some(new_duty_cycle) = ssrcontrol_duty_receiver.try_changed()\n            {\n                pattern = generate_evenly_distributed_steps(new_duty_cycle);\n            }"
+    }
+   ],
+   "upstream_note": "the per-step lock/unlock command then new-duty handling of ssr_control"
+  },
+  "expires_after": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::expires_after",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 104,
+   "kernel_code": "fn expires_after(now: u64) -> u64 {\n    now.saturating_add(REMOTE_CHECKIN_US)\n}",
+   "lean": "def expires_after (now : Std.U64) : Result Std.U64 := do\n  ok (core.num.U64.saturating_add now REMOTE_CHECKIN_US)",
+   "upstream": [
+    {
+     "file": "src/heater_state.rs",
+     "line": 182,
+     "code": "                    expires: Instant::now() + REMOTE_CHECKIN_INTERVAL,"
+    },
+    {
+     "file": "src/heater_state.rs",
+     "line": 227,
+     "code": "                *expires = Instant::now() + REMOTE_CHECKIN_INTERVAL;"
+    }
+   ],
+   "upstream_note": "Instant::now() + REMOTE_CHECKIN_INTERVAL (saturating in the port)"
+  },
+  "on_reading": {
+   "kind": "def",
+   "rust_path": "heater_control_kernel::on_reading",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 219,
+   "kernel_code": "pub fn on_reading(st: &Safety, valid: bool, t16: i32, ts: u64) -> (Safety, SafetyOut) {\n    if !valid {\n        return (*st, SafetyOut::Nothing);\n    }\n    let deadline = sat_add(ts, MISSING_WINDOW_US);\n    if !st.locked && t16 >= LOCK_T16 {\n        // (upstream checks the unlock next; it can not apply: the lock\n        // needs >= 70 \u00b0C, the unlock < 30 \u00b0C)\n        return (Safety { locked: true, deadline }, SafetyOut::LockOvertemp);\n    }\n    if st.locked && t16 < UNLOCK_T16 {\n        return (Safety { locked: false, deadline }, SafetyOut::Unlock);\n    }\n    (Safety { locked: st.locked, deadline }, SafetyOut::Nothing)\n}",
+   "lean": "def on_reading\n  (st : Safety) (valid : Bool) (t16 : Std.I32) (ts : Std.U64) :\n  Result (Safety \u00d7 SafetyOut)\n  := do\n  if valid\n  then\n    let deadline \u2190 sat_add ts MISSING_WINDOW_US\n    if st.locked\n    then\n      if t16 < UNLOCK_T16\n      then ok ({ locked := false, deadline }, SafetyOut.Unlock)\n      else ok ({ locked := true, deadline }, SafetyOut.Nothing)\n    else\n      if t16 >= LOCK_T16\n      then ok ({ locked := true, deadline }, SafetyOut.LockOvertemp)\n      else ok ({ locked := false, deadline }, SafetyOut.Nothing)\n  else ok (st, SafetyOut.Nothing)",
+   "upstream": [
+    {
+     "file": "src/task/safety.rs",
+     "line": 46,
+     "code": "            Ok(reading) => {\n                if let Ok(temp_c) = reading.temperature {\n                    missing_temp_deadline = reading.timestamp + missing_temp_window;\n\n                    if !ssr_locked && temp_c >= SSR_LOCK_TEMP_C {\n                        ssr_locked = true;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                        buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                        memlog.warn(\"safety: overtemperature, ssr locked\");\n                    }\n\n                    if ssr_locked && temp_c < SSR_UNLOCK_TEMP_C {\n                        ssr_locked = false;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Unlock);\n                        memlog.info(\"safety: temperature decreasing, ssr unlocked\");\n                    }\n                }\n            }"
+    }
+   ],
+   "upstream_note": "the Ok(reading) arm of the safety loop"
   },
   "UNLOCK_T16": {
    "kind": "def",
@@ -558,115 +705,6 @@
    ],
    "upstream_note": "REMOTE_CHECKIN_INTERVAL (60 s) in embassy-time microseconds"
   },
-  "expires_after": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::expires_after",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 104,
-   "kernel_code": "fn expires_after(now: u64) -> u64 {\n    now.saturating_add(REMOTE_CHECKIN_US)\n}",
-   "lean": "def expires_after (now : Std.U64) : Result Std.U64 := do\n  ok (core.num.U64.saturating_add now REMOTE_CHECKIN_US)",
-   "upstream": [
-    {
-     "file": "src/heater_state.rs",
-     "line": 182,
-     "code": "                    expires: Instant::now() + REMOTE_CHECKIN_INTERVAL,"
-    },
-    {
-     "file": "src/heater_state.rs",
-     "line": 227,
-     "code": "                *expires = Instant::now() + REMOTE_CHECKIN_INTERVAL;"
-    }
-   ],
-   "upstream_note": "Instant::now() + REMOTE_CHECKIN_INTERVAL (saturating in the port)"
-  },
-  "duty_set": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::duty_set",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 109,
-   "kernel_code": "pub fn duty_set(st: &Heater, m: &DutyMsg) -> (Heater, Handled, Effects) {\n    if !m.utf8 {\n        return (*st, Handled::Utf8, NO_EFFECTS);\n    }\n    if !m.parsed {\n        return (*st, Handled::Invalid, NO_EFFECTS);\n    }\n    if m.duty > 100 {\n        return (*st, Handled::Unexpected, NO_EFFECTS);\n    }\n    if !m.sender {\n        return (*st, Handled::Invalid, NO_EFFECTS);\n    }\n    match m.control {\n        Control::Manual => {\n            // `transition_to_manual`: always possible.\n            let changed = match st.ctl {\n                Ctl::Manual => !m.same_manual,\n                _ => true,\n            };\n            (\n                Heater { ctl: Ctl::Manual, duty: m.duty },\n                Handled::Ok,\n                Effects { send: Some(m.duty), announce: changed, record_sender: changed },\n            )\n        }\n        Control::Remote => match st.ctl {\n            // A new remote announces itself.\n            Ctl::Nobody | Ctl::Manual => (\n                Heater { ctl: Ctl::Remote { expires: expires_after(m.now) }, duty: m.duty },\n                Handled::Ok,\n                Effects { send: Some(m.duty), announce: true, record_sender: true },\n            ),\n            Ctl::Remote { expires } => {\n                if !m.same_remote {\n                    (*st, Handled::Unexpected, NO_EFFECTS)\n                } else if m.now >= expires {\n                    // It failed to check in in time.\n                    (*st, Handled::Unexpected, NO_EFFECTS)\n                } else {\n                    (\n                        Heater { ctl: Ctl::Remote { expires: expires_after(m.now) }, duty: m.duty },\n                        Handled::Ok,\n                        Effects { send: Some(m.duty), announce: false, record_sender: false },\n                    )\n                }\n            }\n        },\n        Control::Other => (*st, Handled::Unexpected, NO_EFFECTS),\n        Control::Missing => (*st, Handled::Invalid, NO_EFFECTS),\n    }\n}",
-   "lean": "def duty_set\n  (st : Heater) (m : DutyMsg) : Result (Heater \u00d7 Handled \u00d7 Effects) := do\n  if m.utf8\n  then\n    if m.parsed\n    then\n      if m.duty > 100#u8\n      then ok (st, Handled.Unexpected, NO_EFFECTS)\n      else\n        if m.sender\n        then\n          match m.control with\n          | Control.Manual =>\n            match st.ctl with\n            | Ctl.Nobody =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Remote _ =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Manual =>\n              ok ({ ctl := Ctl.Manual, duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := (\u00ac m.same_manual),\n                  record_sender := (\u00ac m.same_manual)\n                })\n          | Control.Remote =>\n            match st.ctl with\n            | Ctl.Nobody =>\n              let i \u2190 expires_after m.now\n              ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n            | Ctl.Remote expires =>\n              if m.same_remote\n              then\n                if m.now >= expires\n                then ok (st, Handled.Unexpected, NO_EFFECTS)\n                else\n                  let i \u2190 expires_after m.now\n                  ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                    {\n                      send := (some m.duty),\n                      announce := false,\n                      record_sender := false\n                    })\n              else ok (st, Handled.Unexpected, NO_EFFECTS)\n            | Ctl.Manual =>\n              let i \u2190 expires_after m.now\n              ok ({ ctl := (Ctl.Remote i), duty := m.duty }, Handled.Ok,\n                {\n                  send := (some m.duty),\n                  announce := true,\n                  record_sender := true\n                })\n          | Control.Other => ok (st, Handled.Unexpected, NO_EFFECTS)\n          | Control.Missing => ok (st, Handled.Invalid, NO_EFFECTS)\n        else ok (st, Handled.Invalid, NO_EFFECTS)\n    else ok (st, Handled.Invalid, NO_EFFECTS)\n  else ok (st, Handled.Utf8, NO_EFFECTS)",
-   "upstream": [
-    {
-     "file": "src/task/mqtt.rs",
-     "line": 607,
-     "code": "            topic if topic == &self.topics[Topic::DutySet] => {\n                let duty_str = core::str::from_utf8(message.payload)?;\n\n                let duty: u8 = duty_str\n                    .parse()\n                    .map_err(|_| EventHandlerError::InvalidApplicationMessage)?;\n\n                if !((0..=100).contains(&duty)) {\n                    return Err(EventHandlerError::UnexpectedApplicationMessage);\n                }\n\n                // Duty setters must identify themselves with a \"device:<device_id>\" property.\n                let sender_prop = find_user_property(&message.properties, \"device\", None)\n                    .map(|property| property.value());\n\n                let Some(sender_id) = sender_prop.filter(|id| !id.trim().is_empty()) else {\n                    return Err(EventHandlerError::InvalidApplicationMessage);\n                };\n\n                // Duty setters must announce the type of control they are requesting\n                // ('remote' or 'manual') with a \"control:<type>\" property.\n                let control_type = find_user_property(&message.properties, \"control\", None)\n                    .map(|property| property.value());\n\n                match control_type {\n                    // The duty sender is exerting manual control.\n                    Some(\"manual\") => {\n                        self.heater_state\n                            .lock()\n                            .await\n                            .transition_to_manual(sender_id, duty);\n\n                        self.ssrcontrol_duty_sender.send(duty);\n                        Ok(())\n                    }\n\n                    // The duty sender is a remote.\n                    Some(\"remote\") => {\n                        let state_result = self\n                            .heater_state\n                            .lock()\n                            .await\n                            .remote_update_duty(sender_id, duty);\n\n                        // Remotes can lose control, returning an error.\n                        if state_result.is_err() {\n                            Err(EventHandlerError::UnexpectedApplicationMessage)\n                        } else {\n                            self.ssrcontrol_duty_sender.send(duty);\n                            Ok(())\n                        }\n                    }\n\n                    Some(_) => Err(EventHandlerError::UnexpectedApplicationMessage),\n                    None => Err(EventHandlerError::InvalidApplicationMessage),\n                }\n            }"
-    },
-    {
-     "file": "src/heater_state.rs",
-     "line": 138,
-     "code": "    pub fn transition_to_manual(&mut self, device_id: impl Into<String>, heater_duty: u8) {\n        let device_id = device_id.into();\n\n        self.duty = heater_duty;\n\n        let new_state = HeaterController::Manual {\n            manual_id: device_id.clone(),\n        };\n\n        if self.controller != new_state {\n            self.controller = new_state;\n\n            self.buzzer_channel\n                .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                .ok();\n\n            if let Some(watch) = self.watch {\n                watch.sender().send(self.controller.clone());\n            }\n\n            self.memlog.info(format!(\n                \"state: control set to Manual by device {device_id}\"\n            ));\n        }\n    }"
-    },
-    {
-     "file": "src/heater_state.rs",
-     "line": 168,
-     "code": "    pub fn remote_update_duty(\n        &mut self,\n        device_id: impl Into<String>,\n        heater_duty: u8,\n    ) -> Result<(), StateError> {\n        let device_id = device_id.into();\n\n        match &mut self.controller {\n            //\n            // A new remote announced itself.\n            HeaterController::None | HeaterController::Manual { .. } => {\n                // Set the mode to Remote, record the remote's identifier.\n                self.controller = HeaterController::Remote {\n                    remote_id: device_id.clone(),\n                    expires: Instant::now() + REMOTE_CHECKIN_INTERVAL,\n                };\n\n                // Update the recorded duty.\n                self.duty = heater_duty;\n\n                // Sound the buzzer.\n                self.buzzer_channel\n                    .try_send(&CONTROLLER_NOTIFICATION_PATTERN)\n                    .ok();\n\n                // Notify the state change.\n                if let Some(watch) = self.watch {\n                    watch.sender().send(self.controller.clone());\n                }\n\n                self.memlog.info(format!(\n                    \"state: control set to Remote by device {device_id}\"\n                ));\n\n                Ok(())\n            }\n\n            //\n            // Remote update while in remote control state.\n            HeaterController::Remote {\n                remote_id: current_remote,\n                expires,\n            } => {\n                // See if the requesting remote is the one controlling the heater.\n                if *current_remote != device_id {\n                    return Err(StateError::RemoteMismatch);\n                }\n\n                // See if the expiry time has elapsed.\n                // We use checked_duration_since because if `expires` is in the future, a regular duration\n                // calculation would underflow since Duration is unsigned.\n                if Instant::now().checked_duration_since(*expires).is_some() {\n                    return Err(StateError::RemoteExpired);\n                }\n\n                // Update the recorded duty.\n                self.duty = heater_duty;\n\n                // Set a new expiry time.\n                *expires = Instant::now() + REMOTE_CHECKIN_INTERVAL;\n\n                Ok(())\n            }\n        }\n    }"
-    }
-   ],
-   "upstream_note": "duty/set arm of handle_event with transition_to_manual and remote_update_duty flattened in"
-  },
-  "MISSING_WINDOW_US": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::MISSING_WINDOW_US",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 30,
-   "kernel_code": "pub const MISSING_WINDOW_US: u64 = 29_000_000;",
-   "lean": "@[global_simps, irreducible] def MISSING_WINDOW_US : Std.U64 := 29000000#u64",
-   "upstream": [
-    {
-     "file": "src/task/safety.rs",
-     "line": 30,
-     "code": "    let missing_temp_window =\n        4 * (TEMP_READING_INTERVAL + SENSOR_MEASUREMENT_TIME * (CHECKSUM_RETRIES as u32));"
-    },
-    {
-     "file": "src/task/temp_sensor.rs",
-     "line": 30,
-     "code": "pub(crate) const TEMP_READING_INTERVAL: Duration = Duration::from_secs(5);"
-    },
-    {
-     "file": "src/task/temp_sensor.rs",
-     "line": 33,
-     "code": "pub(crate) const SENSOR_MEASUREMENT_TIME: Duration =\n    Duration::from_millis(Resolution::Bits12.measurement_time_ms() as u64);"
-    },
-    {
-     "file": "src/task/temp_sensor.rs",
-     "line": 37,
-     "code": "pub(crate) const CHECKSUM_RETRIES: u8 = 3;"
-    }
-   ],
-   "upstream_note": "missing_temp_window = 4 * (5 s + 750 ms * 3 retries), evaluated to 29 s"
-  },
-  "sat_add": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::sat_add",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 198,
-   "kernel_code": "fn sat_add(a: u64, b: u64) -> u64 {\n    a.saturating_add(b)\n}",
-   "lean": "def sat_add (a : Std.U64) (b : Std.U64) : Result Std.U64 := do\n  ok (core.num.U64.saturating_add a b)",
-   "upstream": [],
-   "upstream_note": "port-only helper: saturating u64 add standing in for embassy Instant + Duration"
-  },
-  "SafetyOut": {
-   "kind": "inductive",
-   "rust_path": "heater_control_kernel::SafetyOut",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 210,
-   "kernel_code": "pub enum SafetyOut {\n    Nothing,\n    LockOvertemp,\n    LockMissing,\n    Unlock,\n}",
-   "lean": "@[discriminant isize]\ninductive SafetyOut where\n| Nothing : SafetyOut\n| LockOvertemp : SafetyOut\n| LockMissing : SafetyOut\n| Unlock : SafetyOut",
-   "upstream": [
-    {
-     "file": "src/task/safety.rs",
-     "line": 50,
-     "code": "                    if !ssr_locked && temp_c >= SSR_LOCK_TEMP_C {\n                        ssr_locked = true;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                        buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                        memlog.warn(\"safety: overtemperature, ssr locked\");\n                    }\n\n                    if ssr_locked && temp_c < SSR_UNLOCK_TEMP_C {\n                        ssr_locked = false;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Unlock);\n                        memlog.info(\"safety: temperature decreasing, ssr unlocked\");\n                    }"
-    },
-    {
-     "file": "src/task/safety.rs",
-     "line": 68,
-     "code": "                if !ssr_locked {\n                    ssr_locked = true;\n                    ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                    buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                    memlog.warn(\"safety: no valid temperature updates, ssr locked\");\n                }"
-    }
-   ],
-   "upstream_note": "what one safety-loop iteration does: lock (over-temperature or missing readings, with buzzer), unlock, or nothing"
-  },
   "Safety": {
    "kind": "structure",
    "rust_path": "heater_control_kernel::Safety",
@@ -683,85 +721,15 @@
    ],
    "upstream_note": "the safety task's loop state: missing_temp_deadline and ssr_locked"
   },
-  "Heater": {
-   "kind": "structure",
-   "rust_path": "heater_control_kernel::Heater",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 46,
-   "kernel_code": "pub struct Heater {\n    pub ctl: Ctl,\n    /// The duty last recorded.\n    pub duty: u8,\n}",
-   "lean": "structure Heater where\n  ctl : Ctl\n  duty : Std.U8",
-   "upstream": [
-    {
-     "file": "src/heater_state.rs",
-     "line": 29,
-     "code": "#[derive(Clone)]\npub struct HeaterControlState {\n    duty: u8,\n    controller: HeaterController,\n    buzzer_channel: BuzzerChannel,\n    // If set, broadcasts controller transitions over the watch channel.\n    watch: Option<&'static watch::Watch<NoopRawMutex, HeaterController, HEATER_STATE_WATCHERS>>,\n    memlog: SharedLogger,\n}"
-    }
-   ],
-   "upstream_note": "HeaterControlState: duty and controller; buzzer/watch/memlog handles become Effects"
-  },
-  "Ctl": {
-   "kind": "inductive",
-   "rust_path": "heater_control_kernel::Ctl",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 35,
-   "kernel_code": "pub enum Ctl {\n    /// No remote or manual controller.\n    Nobody,\n    /// A remote controls the heater until `expires` (it must check in).\n    Remote { expires: u64 },\n    /// A device controls it manually (no expiry).\n    Manual,\n}",
-   "lean": "@[discriminant isize]\ninductive Ctl where\n| Nobody : Ctl\n| Remote : Std.U64 \u2192 Ctl\n| Manual : Ctl",
-   "upstream": [
-    {
-     "file": "src/heater_state.rs",
-     "line": 39,
-     "code": "#[derive(Clone, Debug, Default, PartialEq)]\npub enum HeaterController {\n    #[default]\n    /// No remote or manual controller is supervising the heater.\n    None,\n\n    /// The heater is being controlled by a remote.\n    Remote {\n        // An identifier for the remote that is actively controlling the heater.\n        remote_id: String,\n        // Automatically turn off the heater if a remote has not been seen for some time.\n        expires: embassy_time::Instant,\n    },\n\n    /// The heater is being controlled manually.\n    Manual {\n        // An identifier for the device that is manually controlling the heater.\n        manual_id: String,\n    },\n}"
-    }
-   ],
-   "upstream_note": "HeaterController without the device identifiers (the app keeps those)"
-  },
-  "Handled": {
-   "kind": "inductive",
-   "rust_path": "heater_control_kernel::Handled",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 84,
-   "kernel_code": "pub enum Handled {\n    Ok,\n    Utf8,\n    Invalid,\n    Unexpected,\n}",
-   "lean": "@[discriminant isize]\ninductive Handled where\n| Ok : Handled\n| Utf8 : Handled\n| Invalid : Handled\n| Unexpected : Handled",
-   "upstream": [
-    {
-     "file": "src/task/mqtt.rs",
-     "line": 596,
-     "code": "    async fn handle_event(\n        &mut self,\n        event: ClientReceivedEvent<'_, P>,\n    ) -> Result<(), EventHandlerError> {"
-    }
-   ],
-   "upstream_note": "handle_event's Result<(), EventHandlerError> (Utf8/InvalidApplicationMessage/UnexpectedApplicationMessage; the enum itself is in mountain-mqtt)"
-  },
-  "on_reading": {
+  "sat_add": {
    "kind": "def",
-   "rust_path": "heater_control_kernel::on_reading",
+   "rust_path": "heater_control_kernel::sat_add",
    "kernel_file": "src/lib.rs",
-   "kernel_line": 219,
-   "kernel_code": "pub fn on_reading(st: &Safety, valid: bool, t16: i32, ts: u64) -> (Safety, SafetyOut) {\n    if !valid {\n        return (*st, SafetyOut::Nothing);\n    }\n    let deadline = sat_add(ts, MISSING_WINDOW_US);\n    if !st.locked && t16 >= LOCK_T16 {\n        // (upstream checks the unlock next; it can not apply: the lock\n        // needs >= 70 \u00b0C, the unlock < 30 \u00b0C)\n        return (Safety { locked: true, deadline }, SafetyOut::LockOvertemp);\n    }\n    if st.locked && t16 < UNLOCK_T16 {\n        return (Safety { locked: false, deadline }, SafetyOut::Unlock);\n    }\n    (Safety { locked: st.locked, deadline }, SafetyOut::Nothing)\n}",
-   "lean": "def on_reading\n  (st : Safety) (valid : Bool) (t16 : Std.I32) (ts : Std.U64) :\n  Result (Safety \u00d7 SafetyOut)\n  := do\n  if valid\n  then\n    let deadline \u2190 sat_add ts MISSING_WINDOW_US\n    if st.locked\n    then\n      if t16 < UNLOCK_T16\n      then ok ({ locked := false, deadline }, SafetyOut.Unlock)\n      else ok ({ locked := true, deadline }, SafetyOut.Nothing)\n    else\n      if t16 >= LOCK_T16\n      then ok ({ locked := true, deadline }, SafetyOut.LockOvertemp)\n      else ok ({ locked := false, deadline }, SafetyOut.Nothing)\n  else ok (st, SafetyOut.Nothing)",
-   "upstream": [
-    {
-     "file": "src/task/safety.rs",
-     "line": 46,
-     "code": "            Ok(reading) => {\n                if let Ok(temp_c) = reading.temperature {\n                    missing_temp_deadline = reading.timestamp + missing_temp_window;\n\n                    if !ssr_locked && temp_c >= SSR_LOCK_TEMP_C {\n                        ssr_locked = true;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                        buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                        memlog.warn(\"safety: overtemperature, ssr locked\");\n                    }\n\n                    if ssr_locked && temp_c < SSR_UNLOCK_TEMP_C {\n                        ssr_locked = false;\n                        ssrcontrol_command_sender.publish_immediate(SsrCommand::Unlock);\n                        memlog.info(\"safety: temperature decreasing, ssr unlocked\");\n                    }\n                }\n            }"
-    }
-   ],
-   "upstream_note": "the Ok(reading) arm of the safety loop"
-  },
-  "on_missing": {
-   "kind": "def",
-   "rust_path": "heater_control_kernel::on_missing",
-   "kernel_file": "src/lib.rs",
-   "kernel_line": 236,
-   "kernel_code": "pub fn on_missing(st: &Safety, now: u64) -> (Safety, SafetyOut) {\n    let deadline = sat_add(now, MISSING_WINDOW_US);\n    if !st.locked {\n        (Safety { locked: true, deadline }, SafetyOut::LockMissing)\n    } else {\n        (Safety { locked: true, deadline }, SafetyOut::Nothing)\n    }\n}",
-   "lean": "def on_missing\n  (st : Safety) (now : Std.U64) : Result (Safety \u00d7 SafetyOut) := do\n  let deadline \u2190 sat_add now MISSING_WINDOW_US\n  if st.locked\n  then ok ({ locked := true, deadline }, SafetyOut.Nothing)\n  else ok ({ locked := true, deadline }, SafetyOut.LockMissing)",
-   "upstream": [
-    {
-     "file": "src/task/safety.rs",
-     "line": 65,
-     "code": "            Err(_timeout) => {\n                missing_temp_deadline = Instant::now() + missing_temp_window;\n\n                if !ssr_locked {\n                    ssr_locked = true;\n                    ssrcontrol_command_sender.publish_immediate(SsrCommand::Lock);\n                    buzzer_channel.try_send(&SSR_LOCKED_PATTERN).ok();\n                    memlog.warn(\"safety: no valid temperature updates, ssr locked\");\n                }\n            }"
-    }
-   ],
-   "upstream_note": "the timeout arm of the safety loop"
+   "kernel_line": 198,
+   "kernel_code": "fn sat_add(a: u64, b: u64) -> u64 {\n    a.saturating_add(b)\n}",
+   "lean": "def sat_add (a : Std.U64) (b : Std.U64) : Result Std.U64 := do\n  ok (core.num.U64.saturating_add a b)",
+   "upstream": [],
+   "upstream_note": "port-only helper: saturating u64 add standing in for embassy Instant + Duration"
   },
   "expire": {
    "kind": "def",
@@ -783,6 +751,38 @@
     }
    ],
    "upstream_note": "one poll of the expire_remote task (send duty 0, clear_control)"
+  },
+  "DutyMsg": {
+   "kind": "structure",
+   "rust_path": "heater_control_kernel::DutyMsg",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 66,
+   "kernel_code": "pub struct DutyMsg {\n    /// The payload is UTF-8.\n    pub utf8: bool,\n    /// It parses as a `u8`.\n    pub parsed: bool,\n    pub duty: u8,\n    /// A non-blank `device` property.\n    pub sender: bool,\n    pub control: Control,\n    /// The sender is the remote in control (if a remote is).\n    pub same_remote: bool,\n    /// The sender is the device in manual control (if one is).\n    pub same_manual: bool,\n    pub now: u64,\n}",
+   "lean": "structure DutyMsg where\n  utf8 : Bool\n  parsed : Bool\n  duty : Std.U8\n  sender : Bool\n  control : Control\n  same_remote : Bool\n  same_manual : Bool\n  now : Std.U64",
+   "upstream": [
+    {
+     "file": "src/task/mqtt.rs",
+     "line": 608,
+     "code": "                let duty_str = core::str::from_utf8(message.payload)?;\n\n                let duty: u8 = duty_str\n                    .parse()\n                    .map_err(|_| EventHandlerError::InvalidApplicationMessage)?;\n\n                if !((0..=100).contains(&duty)) {\n                    return Err(EventHandlerError::UnexpectedApplicationMessage);\n                }\n\n                // Duty setters must identify themselves with a \"device:<device_id>\" property.\n                let sender_prop = find_user_property(&message.properties, \"device\", None)\n                    .map(|property| property.value());\n\n                let Some(sender_id) = sender_prop.filter(|id| !id.trim().is_empty()) else {\n                    return Err(EventHandlerError::InvalidApplicationMessage);\n                };\n\n                // Duty setters must announce the type of control they are requesting\n                // ('remote' or 'manual') with a \"control:<type>\" property.\n                let control_type = find_user_property(&message.properties, \"control\", None)\n                    .map(|property| property.value());"
+    }
+   ],
+   "upstream_note": "the duty/set message as handle_event parses it (UTF-8, u8, device and control properties); sender comparisons supplied by the app"
+  },
+  "Ctl": {
+   "kind": "inductive",
+   "rust_path": "heater_control_kernel::Ctl",
+   "kernel_file": "src/lib.rs",
+   "kernel_line": 35,
+   "kernel_code": "pub enum Ctl {\n    /// No remote or manual controller.\n    Nobody,\n    /// A remote controls the heater until `expires` (it must check in).\n    Remote { expires: u64 },\n    /// A device controls it manually (no expiry).\n    Manual,\n}",
+   "lean": "@[discriminant isize]\ninductive Ctl where\n| Nobody : Ctl\n| Remote : Std.U64 \u2192 Ctl\n| Manual : Ctl",
+   "upstream": [
+    {
+     "file": "src/heater_state.rs",
+     "line": 39,
+     "code": "#[derive(Clone, Debug, Default, PartialEq)]\npub enum HeaterController {\n    #[default]\n    /// No remote or manual controller is supervising the heater.\n    None,\n\n    /// The heater is being controlled by a remote.\n    Remote {\n        // An identifier for the remote that is actively controlling the heater.\n        remote_id: String,\n        // Automatically turn off the heater if a remote has not been seen for some time.\n        expires: embassy_time::Instant,\n    },\n\n    /// The heater is being controlled manually.\n    Manual {\n        // An identifier for the device that is manually controlling the heater.\n        manual_id: String,\n    },\n}"
+    }
+   ],
+   "upstream_note": "HeaterController without the device identifiers (the app keeps those)"
   }
  },
  "specs": {}
